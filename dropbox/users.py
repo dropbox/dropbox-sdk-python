@@ -7,27 +7,14 @@
 This namespace contains endpoints and data types for user management.
 """
 
-try:
-    from . import stone_validators as bv
-    from . import stone_base as bb
-except (ImportError, SystemError, ValueError):
-    # Catch errors raised when importing a relative module when not in a package.
-    # This makes testing this file directly (outside of a package) easier.
-    import stone_validators as bv
-    import stone_base as bb
+from __future__ import unicode_literals
+from stone.backends.python_rsrc import stone_base as bb
+from stone.backends.python_rsrc import stone_validators as bv
 
-try:
-    from . import (
-        common,
-        team_common,
-        team_policies,
-        users_common,
-    )
-except (ImportError, SystemError, ValueError):
-    import common
-    import team_common
-    import team_policies
-    import users_common
+from dropbox import common
+from dropbox import team_common
+from dropbox import team_policies
+from dropbox import users_common
 
 class Account(bb.Struct):
     """
@@ -48,17 +35,11 @@ class Account(bb.Struct):
 
     __slots__ = [
         '_account_id_value',
-        '_account_id_present',
         '_name_value',
-        '_name_present',
         '_email_value',
-        '_email_present',
         '_email_verified_value',
-        '_email_verified_present',
         '_profile_photo_url_value',
-        '_profile_photo_url_present',
         '_disabled_value',
-        '_disabled_present',
     ]
 
     _has_required_fields = True
@@ -70,18 +51,12 @@ class Account(bb.Struct):
                  email_verified=None,
                  disabled=None,
                  profile_photo_url=None):
-        self._account_id_value = None
-        self._account_id_present = False
-        self._name_value = None
-        self._name_present = False
-        self._email_value = None
-        self._email_present = False
-        self._email_verified_value = None
-        self._email_verified_present = False
-        self._profile_photo_url_value = None
-        self._profile_photo_url_present = False
-        self._disabled_value = None
-        self._disabled_present = False
+        self._account_id_value = bb.NOT_SET
+        self._name_value = bb.NOT_SET
+        self._email_value = bb.NOT_SET
+        self._email_verified_value = bb.NOT_SET
+        self._profile_photo_url_value = bb.NOT_SET
+        self._disabled_value = bb.NOT_SET
         if account_id is not None:
             self.account_id = account_id
         if name is not None:
@@ -95,161 +70,26 @@ class Account(bb.Struct):
         if disabled is not None:
             self.disabled = disabled
 
-    @property
-    def account_id(self):
-        """
-        The user's unique Dropbox ID.
+    # Instance attribute type: str (validator is set below)
+    account_id = bb.Attribute("account_id")
 
-        :rtype: str
-        """
-        if self._account_id_present:
-            return self._account_id_value
-        else:
-            raise AttributeError("missing required field 'account_id'")
+    # Instance attribute type: Name (validator is set below)
+    name = bb.Attribute("name", user_defined=True)
 
-    @account_id.setter
-    def account_id(self, val):
-        val = self._account_id_validator.validate(val)
-        self._account_id_value = val
-        self._account_id_present = True
+    # Instance attribute type: str (validator is set below)
+    email = bb.Attribute("email")
 
-    @account_id.deleter
-    def account_id(self):
-        self._account_id_value = None
-        self._account_id_present = False
+    # Instance attribute type: bool (validator is set below)
+    email_verified = bb.Attribute("email_verified")
 
-    @property
-    def name(self):
-        """
-        Details of a user's name.
+    # Instance attribute type: str (validator is set below)
+    profile_photo_url = bb.Attribute("profile_photo_url", nullable=True)
 
-        :rtype: Name
-        """
-        if self._name_present:
-            return self._name_value
-        else:
-            raise AttributeError("missing required field 'name'")
-
-    @name.setter
-    def name(self, val):
-        self._name_validator.validate_type_only(val)
-        self._name_value = val
-        self._name_present = True
-
-    @name.deleter
-    def name(self):
-        self._name_value = None
-        self._name_present = False
-
-    @property
-    def email(self):
-        """
-        The user's email address. Do not rely on this without checking the
-        ``email_verified`` field. Even then, it's possible that the user has
-        since lost access to their email.
-
-        :rtype: str
-        """
-        if self._email_present:
-            return self._email_value
-        else:
-            raise AttributeError("missing required field 'email'")
-
-    @email.setter
-    def email(self, val):
-        val = self._email_validator.validate(val)
-        self._email_value = val
-        self._email_present = True
-
-    @email.deleter
-    def email(self):
-        self._email_value = None
-        self._email_present = False
-
-    @property
-    def email_verified(self):
-        """
-        Whether the user has verified their email address.
-
-        :rtype: bool
-        """
-        if self._email_verified_present:
-            return self._email_verified_value
-        else:
-            raise AttributeError("missing required field 'email_verified'")
-
-    @email_verified.setter
-    def email_verified(self, val):
-        val = self._email_verified_validator.validate(val)
-        self._email_verified_value = val
-        self._email_verified_present = True
-
-    @email_verified.deleter
-    def email_verified(self):
-        self._email_verified_value = None
-        self._email_verified_present = False
-
-    @property
-    def profile_photo_url(self):
-        """
-        URL for the photo representing the user, if one is set.
-
-        :rtype: str
-        """
-        if self._profile_photo_url_present:
-            return self._profile_photo_url_value
-        else:
-            return None
-
-    @profile_photo_url.setter
-    def profile_photo_url(self, val):
-        if val is None:
-            del self.profile_photo_url
-            return
-        val = self._profile_photo_url_validator.validate(val)
-        self._profile_photo_url_value = val
-        self._profile_photo_url_present = True
-
-    @profile_photo_url.deleter
-    def profile_photo_url(self):
-        self._profile_photo_url_value = None
-        self._profile_photo_url_present = False
-
-    @property
-    def disabled(self):
-        """
-        Whether the user has been disabled.
-
-        :rtype: bool
-        """
-        if self._disabled_present:
-            return self._disabled_value
-        else:
-            raise AttributeError("missing required field 'disabled'")
-
-    @disabled.setter
-    def disabled(self, val):
-        val = self._disabled_validator.validate(val)
-        self._disabled_value = val
-        self._disabled_present = True
-
-    @disabled.deleter
-    def disabled(self):
-        self._disabled_value = None
-        self._disabled_present = False
+    # Instance attribute type: bool (validator is set below)
+    disabled = bb.Attribute("disabled")
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(Account, self)._process_custom_annotations(annotation_type, field_path, processor)
-
-    def __repr__(self):
-        return 'Account(account_id={!r}, name={!r}, email={!r}, email_verified={!r}, disabled={!r}, profile_photo_url={!r})'.format(
-            self._account_id_value,
-            self._name_value,
-            self._email_value,
-            self._email_verified_value,
-            self._disabled_value,
-            self._profile_photo_url_value,
-        )
 
 Account_validator = bv.Struct(Account)
 
@@ -267,9 +107,7 @@ class BasicAccount(Account):
 
     __slots__ = [
         '_is_teammate_value',
-        '_is_teammate_present',
         '_team_member_id_value',
-        '_team_member_id_present',
     ]
 
     _has_required_fields = True
@@ -289,80 +127,21 @@ class BasicAccount(Account):
                                            email_verified,
                                            disabled,
                                            profile_photo_url)
-        self._is_teammate_value = None
-        self._is_teammate_present = False
-        self._team_member_id_value = None
-        self._team_member_id_present = False
+        self._is_teammate_value = bb.NOT_SET
+        self._team_member_id_value = bb.NOT_SET
         if is_teammate is not None:
             self.is_teammate = is_teammate
         if team_member_id is not None:
             self.team_member_id = team_member_id
 
-    @property
-    def is_teammate(self):
-        """
-        Whether this user is a teammate of the current user. If this account is
-        the current user's account, then this will be ``True``.
+    # Instance attribute type: bool (validator is set below)
+    is_teammate = bb.Attribute("is_teammate")
 
-        :rtype: bool
-        """
-        if self._is_teammate_present:
-            return self._is_teammate_value
-        else:
-            raise AttributeError("missing required field 'is_teammate'")
-
-    @is_teammate.setter
-    def is_teammate(self, val):
-        val = self._is_teammate_validator.validate(val)
-        self._is_teammate_value = val
-        self._is_teammate_present = True
-
-    @is_teammate.deleter
-    def is_teammate(self):
-        self._is_teammate_value = None
-        self._is_teammate_present = False
-
-    @property
-    def team_member_id(self):
-        """
-        The user's unique team member id. This field will only be present if the
-        user is part of a team and ``is_teammate`` is ``True``.
-
-        :rtype: str
-        """
-        if self._team_member_id_present:
-            return self._team_member_id_value
-        else:
-            return None
-
-    @team_member_id.setter
-    def team_member_id(self, val):
-        if val is None:
-            del self.team_member_id
-            return
-        val = self._team_member_id_validator.validate(val)
-        self._team_member_id_value = val
-        self._team_member_id_present = True
-
-    @team_member_id.deleter
-    def team_member_id(self):
-        self._team_member_id_value = None
-        self._team_member_id_present = False
+    # Instance attribute type: str (validator is set below)
+    team_member_id = bb.Attribute("team_member_id", nullable=True)
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(BasicAccount, self)._process_custom_annotations(annotation_type, field_path, processor)
-
-    def __repr__(self):
-        return 'BasicAccount(account_id={!r}, name={!r}, email={!r}, email_verified={!r}, disabled={!r}, is_teammate={!r}, profile_photo_url={!r}, team_member_id={!r})'.format(
-            self._account_id_value,
-            self._name_value,
-            self._email_value,
-            self._email_verified_value,
-            self._disabled_value,
-            self._is_teammate_value,
-            self._profile_photo_url_value,
-            self._team_member_id_value,
-        )
 
 BasicAccount_validator = bv.Struct(BasicAccount)
 
@@ -428,9 +207,6 @@ class FileLockingValue(bb.Union):
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(FileLockingValue, self)._process_custom_annotations(annotation_type, field_path, processor)
 
-    def __repr__(self):
-        return 'FileLockingValue(%r, %r)' % (self._tag, self._value)
-
 FileLockingValue_validator = bv.Union(FileLockingValue)
 
 class FullAccount(Account):
@@ -458,21 +234,13 @@ class FullAccount(Account):
 
     __slots__ = [
         '_country_value',
-        '_country_present',
         '_locale_value',
-        '_locale_present',
         '_referral_link_value',
-        '_referral_link_present',
         '_team_value',
-        '_team_present',
         '_team_member_id_value',
-        '_team_member_id_present',
         '_is_paired_value',
-        '_is_paired_present',
         '_account_type_value',
-        '_account_type_present',
         '_root_info_value',
-        '_root_info_present',
     ]
 
     _has_required_fields = True
@@ -498,22 +266,14 @@ class FullAccount(Account):
                                           email_verified,
                                           disabled,
                                           profile_photo_url)
-        self._country_value = None
-        self._country_present = False
-        self._locale_value = None
-        self._locale_present = False
-        self._referral_link_value = None
-        self._referral_link_present = False
-        self._team_value = None
-        self._team_present = False
-        self._team_member_id_value = None
-        self._team_member_id_present = False
-        self._is_paired_value = None
-        self._is_paired_present = False
-        self._account_type_value = None
-        self._account_type_present = False
-        self._root_info_value = None
-        self._root_info_present = False
+        self._country_value = bb.NOT_SET
+        self._locale_value = bb.NOT_SET
+        self._referral_link_value = bb.NOT_SET
+        self._team_value = bb.NOT_SET
+        self._team_member_id_value = bb.NOT_SET
+        self._is_paired_value = bb.NOT_SET
+        self._account_type_value = bb.NOT_SET
+        self._root_info_value = bb.NOT_SET
         if country is not None:
             self.country = country
         if locale is not None:
@@ -531,224 +291,32 @@ class FullAccount(Account):
         if root_info is not None:
             self.root_info = root_info
 
-    @property
-    def country(self):
-        """
-        The user's two-letter country code, if available. Country codes are
-        based on `ISO 3166-1 <http://en.wikipedia.org/wiki/ISO_3166-1>`_.
+    # Instance attribute type: str (validator is set below)
+    country = bb.Attribute("country", nullable=True)
 
-        :rtype: str
-        """
-        if self._country_present:
-            return self._country_value
-        else:
-            return None
+    # Instance attribute type: str (validator is set below)
+    locale = bb.Attribute("locale")
 
-    @country.setter
-    def country(self, val):
-        if val is None:
-            del self.country
-            return
-        val = self._country_validator.validate(val)
-        self._country_value = val
-        self._country_present = True
+    # Instance attribute type: str (validator is set below)
+    referral_link = bb.Attribute("referral_link")
 
-    @country.deleter
-    def country(self):
-        self._country_value = None
-        self._country_present = False
+    # Instance attribute type: FullTeam (validator is set below)
+    team = bb.Attribute("team", nullable=True, user_defined=True)
 
-    @property
-    def locale(self):
-        """
-        The language that the user specified. Locale tags will be `IETF language
-        tags <http://en.wikipedia.org/wiki/IETF_language_tag>`_.
+    # Instance attribute type: str (validator is set below)
+    team_member_id = bb.Attribute("team_member_id", nullable=True)
 
-        :rtype: str
-        """
-        if self._locale_present:
-            return self._locale_value
-        else:
-            raise AttributeError("missing required field 'locale'")
+    # Instance attribute type: bool (validator is set below)
+    is_paired = bb.Attribute("is_paired")
 
-    @locale.setter
-    def locale(self, val):
-        val = self._locale_validator.validate(val)
-        self._locale_value = val
-        self._locale_present = True
+    # Instance attribute type: users_common.AccountType (validator is set below)
+    account_type = bb.Attribute("account_type", user_defined=True)
 
-    @locale.deleter
-    def locale(self):
-        self._locale_value = None
-        self._locale_present = False
-
-    @property
-    def referral_link(self):
-        """
-        The user's `referral link <https://www.dropbox.com/referrals>`_.
-
-        :rtype: str
-        """
-        if self._referral_link_present:
-            return self._referral_link_value
-        else:
-            raise AttributeError("missing required field 'referral_link'")
-
-    @referral_link.setter
-    def referral_link(self, val):
-        val = self._referral_link_validator.validate(val)
-        self._referral_link_value = val
-        self._referral_link_present = True
-
-    @referral_link.deleter
-    def referral_link(self):
-        self._referral_link_value = None
-        self._referral_link_present = False
-
-    @property
-    def team(self):
-        """
-        If this account is a member of a team, information about that team.
-
-        :rtype: FullTeam
-        """
-        if self._team_present:
-            return self._team_value
-        else:
-            return None
-
-    @team.setter
-    def team(self, val):
-        if val is None:
-            del self.team
-            return
-        self._team_validator.validate_type_only(val)
-        self._team_value = val
-        self._team_present = True
-
-    @team.deleter
-    def team(self):
-        self._team_value = None
-        self._team_present = False
-
-    @property
-    def team_member_id(self):
-        """
-        This account's unique team member id. This field will only be present if
-        ``team`` is present.
-
-        :rtype: str
-        """
-        if self._team_member_id_present:
-            return self._team_member_id_value
-        else:
-            return None
-
-    @team_member_id.setter
-    def team_member_id(self, val):
-        if val is None:
-            del self.team_member_id
-            return
-        val = self._team_member_id_validator.validate(val)
-        self._team_member_id_value = val
-        self._team_member_id_present = True
-
-    @team_member_id.deleter
-    def team_member_id(self):
-        self._team_member_id_value = None
-        self._team_member_id_present = False
-
-    @property
-    def is_paired(self):
-        """
-        Whether the user has a personal and work account. If the current account
-        is personal, then ``team`` will always be None, but ``is_paired`` will
-        indicate if a work account is linked.
-
-        :rtype: bool
-        """
-        if self._is_paired_present:
-            return self._is_paired_value
-        else:
-            raise AttributeError("missing required field 'is_paired'")
-
-    @is_paired.setter
-    def is_paired(self, val):
-        val = self._is_paired_validator.validate(val)
-        self._is_paired_value = val
-        self._is_paired_present = True
-
-    @is_paired.deleter
-    def is_paired(self):
-        self._is_paired_value = None
-        self._is_paired_present = False
-
-    @property
-    def account_type(self):
-        """
-        What type of account this user has.
-
-        :rtype: users_common.AccountType
-        """
-        if self._account_type_present:
-            return self._account_type_value
-        else:
-            raise AttributeError("missing required field 'account_type'")
-
-    @account_type.setter
-    def account_type(self, val):
-        self._account_type_validator.validate_type_only(val)
-        self._account_type_value = val
-        self._account_type_present = True
-
-    @account_type.deleter
-    def account_type(self):
-        self._account_type_value = None
-        self._account_type_present = False
-
-    @property
-    def root_info(self):
-        """
-        The root info for this account.
-
-        :rtype: common.RootInfo
-        """
-        if self._root_info_present:
-            return self._root_info_value
-        else:
-            raise AttributeError("missing required field 'root_info'")
-
-    @root_info.setter
-    def root_info(self, val):
-        self._root_info_validator.validate_type_only(val)
-        self._root_info_value = val
-        self._root_info_present = True
-
-    @root_info.deleter
-    def root_info(self):
-        self._root_info_value = None
-        self._root_info_present = False
+    # Instance attribute type: common.RootInfo (validator is set below)
+    root_info = bb.Attribute("root_info", user_defined=True)
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(FullAccount, self)._process_custom_annotations(annotation_type, field_path, processor)
-
-    def __repr__(self):
-        return 'FullAccount(account_id={!r}, name={!r}, email={!r}, email_verified={!r}, disabled={!r}, locale={!r}, referral_link={!r}, is_paired={!r}, account_type={!r}, root_info={!r}, profile_photo_url={!r}, country={!r}, team={!r}, team_member_id={!r})'.format(
-            self._account_id_value,
-            self._name_value,
-            self._email_value,
-            self._email_verified_value,
-            self._disabled_value,
-            self._locale_value,
-            self._referral_link_value,
-            self._is_paired_value,
-            self._account_type_value,
-            self._root_info_value,
-            self._profile_photo_url_value,
-            self._country_value,
-            self._team_value,
-            self._team_member_id_value,
-        )
 
 FullAccount_validator = bv.Struct(FullAccount)
 
@@ -762,9 +330,7 @@ class Team(bb.Struct):
 
     __slots__ = [
         '_id_value',
-        '_id_present',
         '_name_value',
-        '_name_present',
     ]
 
     _has_required_fields = True
@@ -772,69 +338,21 @@ class Team(bb.Struct):
     def __init__(self,
                  id=None,
                  name=None):
-        self._id_value = None
-        self._id_present = False
-        self._name_value = None
-        self._name_present = False
+        self._id_value = bb.NOT_SET
+        self._name_value = bb.NOT_SET
         if id is not None:
             self.id = id
         if name is not None:
             self.name = name
 
-    @property
-    def id(self):
-        """
-        The team's unique ID.
+    # Instance attribute type: str (validator is set below)
+    id = bb.Attribute("id")
 
-        :rtype: str
-        """
-        if self._id_present:
-            return self._id_value
-        else:
-            raise AttributeError("missing required field 'id'")
-
-    @id.setter
-    def id(self, val):
-        val = self._id_validator.validate(val)
-        self._id_value = val
-        self._id_present = True
-
-    @id.deleter
-    def id(self):
-        self._id_value = None
-        self._id_present = False
-
-    @property
-    def name(self):
-        """
-        The name of the team.
-
-        :rtype: str
-        """
-        if self._name_present:
-            return self._name_value
-        else:
-            raise AttributeError("missing required field 'name'")
-
-    @name.setter
-    def name(self, val):
-        val = self._name_validator.validate(val)
-        self._name_value = val
-        self._name_present = True
-
-    @name.deleter
-    def name(self):
-        self._name_value = None
-        self._name_present = False
+    # Instance attribute type: str (validator is set below)
+    name = bb.Attribute("name")
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(Team, self)._process_custom_annotations(annotation_type, field_path, processor)
-
-    def __repr__(self):
-        return 'Team(id={!r}, name={!r})'.format(
-            self._id_value,
-            self._name_value,
-        )
 
 Team_validator = bv.Struct(Team)
 
@@ -849,9 +367,7 @@ class FullTeam(Team):
 
     __slots__ = [
         '_sharing_policies_value',
-        '_sharing_policies_present',
         '_office_addin_policy_value',
-        '_office_addin_policy_present',
     ]
 
     _has_required_fields = True
@@ -863,71 +379,21 @@ class FullTeam(Team):
                  office_addin_policy=None):
         super(FullTeam, self).__init__(id,
                                        name)
-        self._sharing_policies_value = None
-        self._sharing_policies_present = False
-        self._office_addin_policy_value = None
-        self._office_addin_policy_present = False
+        self._sharing_policies_value = bb.NOT_SET
+        self._office_addin_policy_value = bb.NOT_SET
         if sharing_policies is not None:
             self.sharing_policies = sharing_policies
         if office_addin_policy is not None:
             self.office_addin_policy = office_addin_policy
 
-    @property
-    def sharing_policies(self):
-        """
-        Team policies governing sharing.
+    # Instance attribute type: team_policies.TeamSharingPolicies (validator is set below)
+    sharing_policies = bb.Attribute("sharing_policies", user_defined=True)
 
-        :rtype: team_policies.TeamSharingPolicies
-        """
-        if self._sharing_policies_present:
-            return self._sharing_policies_value
-        else:
-            raise AttributeError("missing required field 'sharing_policies'")
-
-    @sharing_policies.setter
-    def sharing_policies(self, val):
-        self._sharing_policies_validator.validate_type_only(val)
-        self._sharing_policies_value = val
-        self._sharing_policies_present = True
-
-    @sharing_policies.deleter
-    def sharing_policies(self):
-        self._sharing_policies_value = None
-        self._sharing_policies_present = False
-
-    @property
-    def office_addin_policy(self):
-        """
-        Team policy governing the use of the Office Add-In.
-
-        :rtype: team_policies.OfficeAddInPolicy
-        """
-        if self._office_addin_policy_present:
-            return self._office_addin_policy_value
-        else:
-            raise AttributeError("missing required field 'office_addin_policy'")
-
-    @office_addin_policy.setter
-    def office_addin_policy(self, val):
-        self._office_addin_policy_validator.validate_type_only(val)
-        self._office_addin_policy_value = val
-        self._office_addin_policy_present = True
-
-    @office_addin_policy.deleter
-    def office_addin_policy(self):
-        self._office_addin_policy_value = None
-        self._office_addin_policy_present = False
+    # Instance attribute type: team_policies.OfficeAddInPolicy (validator is set below)
+    office_addin_policy = bb.Attribute("office_addin_policy", user_defined=True)
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(FullTeam, self)._process_custom_annotations(annotation_type, field_path, processor)
-
-    def __repr__(self):
-        return 'FullTeam(id={!r}, name={!r}, sharing_policies={!r}, office_addin_policy={!r})'.format(
-            self._id_value,
-            self._name_value,
-            self._sharing_policies_value,
-            self._office_addin_policy_value,
-        )
 
 FullTeam_validator = bv.Struct(FullTeam)
 
@@ -938,48 +404,21 @@ class GetAccountArg(bb.Struct):
 
     __slots__ = [
         '_account_id_value',
-        '_account_id_present',
     ]
 
     _has_required_fields = True
 
     def __init__(self,
                  account_id=None):
-        self._account_id_value = None
-        self._account_id_present = False
+        self._account_id_value = bb.NOT_SET
         if account_id is not None:
             self.account_id = account_id
 
-    @property
-    def account_id(self):
-        """
-        A user's account identifier.
-
-        :rtype: str
-        """
-        if self._account_id_present:
-            return self._account_id_value
-        else:
-            raise AttributeError("missing required field 'account_id'")
-
-    @account_id.setter
-    def account_id(self, val):
-        val = self._account_id_validator.validate(val)
-        self._account_id_value = val
-        self._account_id_present = True
-
-    @account_id.deleter
-    def account_id(self):
-        self._account_id_value = None
-        self._account_id_present = False
+    # Instance attribute type: str (validator is set below)
+    account_id = bb.Attribute("account_id")
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(GetAccountArg, self)._process_custom_annotations(annotation_type, field_path, processor)
-
-    def __repr__(self):
-        return 'GetAccountArg(account_id={!r})'.format(
-            self._account_id_value,
-        )
 
 GetAccountArg_validator = bv.Struct(GetAccountArg)
 
@@ -991,49 +430,21 @@ class GetAccountBatchArg(bb.Struct):
 
     __slots__ = [
         '_account_ids_value',
-        '_account_ids_present',
     ]
 
     _has_required_fields = True
 
     def __init__(self,
                  account_ids=None):
-        self._account_ids_value = None
-        self._account_ids_present = False
+        self._account_ids_value = bb.NOT_SET
         if account_ids is not None:
             self.account_ids = account_ids
 
-    @property
-    def account_ids(self):
-        """
-        List of user account identifiers.  Should not contain any duplicate
-        account IDs.
-
-        :rtype: list of [str]
-        """
-        if self._account_ids_present:
-            return self._account_ids_value
-        else:
-            raise AttributeError("missing required field 'account_ids'")
-
-    @account_ids.setter
-    def account_ids(self, val):
-        val = self._account_ids_validator.validate(val)
-        self._account_ids_value = val
-        self._account_ids_present = True
-
-    @account_ids.deleter
-    def account_ids(self):
-        self._account_ids_value = None
-        self._account_ids_present = False
+    # Instance attribute type: list of [str] (validator is set below)
+    account_ids = bb.Attribute("account_ids")
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(GetAccountBatchArg, self)._process_custom_annotations(annotation_type, field_path, processor)
-
-    def __repr__(self):
-        return 'GetAccountBatchArg(account_ids={!r})'.format(
-            self._account_ids_value,
-        )
 
 GetAccountBatchArg_validator = bv.Struct(GetAccountBatchArg)
 
@@ -1095,9 +506,6 @@ class GetAccountBatchError(bb.Union):
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(GetAccountBatchError, self)._process_custom_annotations(annotation_type, field_path, processor)
 
-    def __repr__(self):
-        return 'GetAccountBatchError(%r, %r)' % (self._tag, self._value)
-
 GetAccountBatchError_validator = bv.Union(GetAccountBatchError)
 
 class GetAccountError(bb.Union):
@@ -1135,9 +543,6 @@ class GetAccountError(bb.Union):
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(GetAccountError, self)._process_custom_annotations(annotation_type, field_path, processor)
 
-    def __repr__(self):
-        return 'GetAccountError(%r, %r)' % (self._tag, self._value)
-
 GetAccountError_validator = bv.Union(GetAccountError)
 
 class IndividualSpaceAllocation(bb.Struct):
@@ -1148,48 +553,21 @@ class IndividualSpaceAllocation(bb.Struct):
 
     __slots__ = [
         '_allocated_value',
-        '_allocated_present',
     ]
 
     _has_required_fields = True
 
     def __init__(self,
                  allocated=None):
-        self._allocated_value = None
-        self._allocated_present = False
+        self._allocated_value = bb.NOT_SET
         if allocated is not None:
             self.allocated = allocated
 
-    @property
-    def allocated(self):
-        """
-        The total space allocated to the user's account (bytes).
-
-        :rtype: int
-        """
-        if self._allocated_present:
-            return self._allocated_value
-        else:
-            raise AttributeError("missing required field 'allocated'")
-
-    @allocated.setter
-    def allocated(self, val):
-        val = self._allocated_validator.validate(val)
-        self._allocated_value = val
-        self._allocated_present = True
-
-    @allocated.deleter
-    def allocated(self):
-        self._allocated_value = None
-        self._allocated_present = False
+    # Instance attribute type: int (validator is set below)
+    allocated = bb.Attribute("allocated")
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(IndividualSpaceAllocation, self)._process_custom_annotations(annotation_type, field_path, processor)
-
-    def __repr__(self):
-        return 'IndividualSpaceAllocation(allocated={!r})'.format(
-            self._allocated_value,
-        )
 
 IndividualSpaceAllocation_validator = bv.Struct(IndividualSpaceAllocation)
 
@@ -1210,15 +588,10 @@ class Name(bb.Struct):
 
     __slots__ = [
         '_given_name_value',
-        '_given_name_present',
         '_surname_value',
-        '_surname_present',
         '_familiar_name_value',
-        '_familiar_name_present',
         '_display_name_value',
-        '_display_name_present',
         '_abbreviated_name_value',
-        '_abbreviated_name_present',
     ]
 
     _has_required_fields = True
@@ -1229,16 +602,11 @@ class Name(bb.Struct):
                  familiar_name=None,
                  display_name=None,
                  abbreviated_name=None):
-        self._given_name_value = None
-        self._given_name_present = False
-        self._surname_value = None
-        self._surname_present = False
-        self._familiar_name_value = None
-        self._familiar_name_present = False
-        self._display_name_value = None
-        self._display_name_present = False
-        self._abbreviated_name_value = None
-        self._abbreviated_name_present = False
+        self._given_name_value = bb.NOT_SET
+        self._surname_value = bb.NOT_SET
+        self._familiar_name_value = bb.NOT_SET
+        self._display_name_value = bb.NOT_SET
+        self._abbreviated_name_value = bb.NOT_SET
         if given_name is not None:
             self.given_name = given_name
         if surname is not None:
@@ -1250,136 +618,23 @@ class Name(bb.Struct):
         if abbreviated_name is not None:
             self.abbreviated_name = abbreviated_name
 
-    @property
-    def given_name(self):
-        """
-        Also known as a first name.
+    # Instance attribute type: str (validator is set below)
+    given_name = bb.Attribute("given_name")
 
-        :rtype: str
-        """
-        if self._given_name_present:
-            return self._given_name_value
-        else:
-            raise AttributeError("missing required field 'given_name'")
+    # Instance attribute type: str (validator is set below)
+    surname = bb.Attribute("surname")
 
-    @given_name.setter
-    def given_name(self, val):
-        val = self._given_name_validator.validate(val)
-        self._given_name_value = val
-        self._given_name_present = True
+    # Instance attribute type: str (validator is set below)
+    familiar_name = bb.Attribute("familiar_name")
 
-    @given_name.deleter
-    def given_name(self):
-        self._given_name_value = None
-        self._given_name_present = False
+    # Instance attribute type: str (validator is set below)
+    display_name = bb.Attribute("display_name")
 
-    @property
-    def surname(self):
-        """
-        Also known as a last name or family name.
-
-        :rtype: str
-        """
-        if self._surname_present:
-            return self._surname_value
-        else:
-            raise AttributeError("missing required field 'surname'")
-
-    @surname.setter
-    def surname(self, val):
-        val = self._surname_validator.validate(val)
-        self._surname_value = val
-        self._surname_present = True
-
-    @surname.deleter
-    def surname(self):
-        self._surname_value = None
-        self._surname_present = False
-
-    @property
-    def familiar_name(self):
-        """
-        Locale-dependent name. In the US, a person's familiar name is their
-        ``given_name``, but elsewhere, it could be any combination of a person's
-        ``given_name`` and ``surname``.
-
-        :rtype: str
-        """
-        if self._familiar_name_present:
-            return self._familiar_name_value
-        else:
-            raise AttributeError("missing required field 'familiar_name'")
-
-    @familiar_name.setter
-    def familiar_name(self, val):
-        val = self._familiar_name_validator.validate(val)
-        self._familiar_name_value = val
-        self._familiar_name_present = True
-
-    @familiar_name.deleter
-    def familiar_name(self):
-        self._familiar_name_value = None
-        self._familiar_name_present = False
-
-    @property
-    def display_name(self):
-        """
-        A name that can be used directly to represent the name of a user's
-        Dropbox account.
-
-        :rtype: str
-        """
-        if self._display_name_present:
-            return self._display_name_value
-        else:
-            raise AttributeError("missing required field 'display_name'")
-
-    @display_name.setter
-    def display_name(self, val):
-        val = self._display_name_validator.validate(val)
-        self._display_name_value = val
-        self._display_name_present = True
-
-    @display_name.deleter
-    def display_name(self):
-        self._display_name_value = None
-        self._display_name_present = False
-
-    @property
-    def abbreviated_name(self):
-        """
-        An abbreviated form of the person's name. Their initials in most
-        locales.
-
-        :rtype: str
-        """
-        if self._abbreviated_name_present:
-            return self._abbreviated_name_value
-        else:
-            raise AttributeError("missing required field 'abbreviated_name'")
-
-    @abbreviated_name.setter
-    def abbreviated_name(self, val):
-        val = self._abbreviated_name_validator.validate(val)
-        self._abbreviated_name_value = val
-        self._abbreviated_name_present = True
-
-    @abbreviated_name.deleter
-    def abbreviated_name(self):
-        self._abbreviated_name_value = None
-        self._abbreviated_name_present = False
+    # Instance attribute type: str (validator is set below)
+    abbreviated_name = bb.Attribute("abbreviated_name")
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(Name, self)._process_custom_annotations(annotation_type, field_path, processor)
-
-    def __repr__(self):
-        return 'Name(given_name={!r}, surname={!r}, familiar_name={!r}, display_name={!r}, abbreviated_name={!r})'.format(
-            self._given_name_value,
-            self._surname_value,
-            self._familiar_name_value,
-            self._display_name_value,
-            self._abbreviated_name_value,
-        )
 
 Name_validator = bv.Struct(Name)
 
@@ -1447,9 +702,6 @@ class PaperAsFilesValue(bb.Union):
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(PaperAsFilesValue, self)._process_custom_annotations(annotation_type, field_path, processor)
-
-    def __repr__(self):
-        return 'PaperAsFilesValue(%r, %r)' % (self._tag, self._value)
 
 PaperAsFilesValue_validator = bv.Union(PaperAsFilesValue)
 
@@ -1544,9 +796,6 @@ class SpaceAllocation(bb.Union):
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(SpaceAllocation, self)._process_custom_annotations(annotation_type, field_path, processor)
 
-    def __repr__(self):
-        return 'SpaceAllocation(%r, %r)' % (self._tag, self._value)
-
 SpaceAllocation_validator = bv.Union(SpaceAllocation)
 
 class SpaceUsage(bb.Struct):
@@ -1559,9 +808,7 @@ class SpaceUsage(bb.Struct):
 
     __slots__ = [
         '_used_value',
-        '_used_present',
         '_allocation_value',
-        '_allocation_present',
     ]
 
     _has_required_fields = True
@@ -1569,69 +816,21 @@ class SpaceUsage(bb.Struct):
     def __init__(self,
                  used=None,
                  allocation=None):
-        self._used_value = None
-        self._used_present = False
-        self._allocation_value = None
-        self._allocation_present = False
+        self._used_value = bb.NOT_SET
+        self._allocation_value = bb.NOT_SET
         if used is not None:
             self.used = used
         if allocation is not None:
             self.allocation = allocation
 
-    @property
-    def used(self):
-        """
-        The user's total space usage (bytes).
+    # Instance attribute type: int (validator is set below)
+    used = bb.Attribute("used")
 
-        :rtype: int
-        """
-        if self._used_present:
-            return self._used_value
-        else:
-            raise AttributeError("missing required field 'used'")
-
-    @used.setter
-    def used(self, val):
-        val = self._used_validator.validate(val)
-        self._used_value = val
-        self._used_present = True
-
-    @used.deleter
-    def used(self):
-        self._used_value = None
-        self._used_present = False
-
-    @property
-    def allocation(self):
-        """
-        The user's space allocation.
-
-        :rtype: SpaceAllocation
-        """
-        if self._allocation_present:
-            return self._allocation_value
-        else:
-            raise AttributeError("missing required field 'allocation'")
-
-    @allocation.setter
-    def allocation(self, val):
-        self._allocation_validator.validate_type_only(val)
-        self._allocation_value = val
-        self._allocation_present = True
-
-    @allocation.deleter
-    def allocation(self):
-        self._allocation_value = None
-        self._allocation_present = False
+    # Instance attribute type: SpaceAllocation (validator is set below)
+    allocation = bb.Attribute("allocation", user_defined=True)
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(SpaceUsage, self)._process_custom_annotations(annotation_type, field_path, processor)
-
-    def __repr__(self):
-        return 'SpaceUsage(used={!r}, allocation={!r})'.format(
-            self._used_value,
-            self._allocation_value,
-        )
 
 SpaceUsage_validator = bv.Struct(SpaceUsage)
 
@@ -1654,15 +853,10 @@ class TeamSpaceAllocation(bb.Struct):
 
     __slots__ = [
         '_used_value',
-        '_used_present',
         '_allocated_value',
-        '_allocated_present',
         '_user_within_team_space_allocated_value',
-        '_user_within_team_space_allocated_present',
         '_user_within_team_space_limit_type_value',
-        '_user_within_team_space_limit_type_present',
         '_user_within_team_space_used_cached_value',
-        '_user_within_team_space_used_cached_present',
     ]
 
     _has_required_fields = True
@@ -1673,16 +867,11 @@ class TeamSpaceAllocation(bb.Struct):
                  user_within_team_space_allocated=None,
                  user_within_team_space_limit_type=None,
                  user_within_team_space_used_cached=None):
-        self._used_value = None
-        self._used_present = False
-        self._allocated_value = None
-        self._allocated_present = False
-        self._user_within_team_space_allocated_value = None
-        self._user_within_team_space_allocated_present = False
-        self._user_within_team_space_limit_type_value = None
-        self._user_within_team_space_limit_type_present = False
-        self._user_within_team_space_used_cached_value = None
-        self._user_within_team_space_used_cached_present = False
+        self._used_value = bb.NOT_SET
+        self._allocated_value = bb.NOT_SET
+        self._user_within_team_space_allocated_value = bb.NOT_SET
+        self._user_within_team_space_limit_type_value = bb.NOT_SET
+        self._user_within_team_space_used_cached_value = bb.NOT_SET
         if used is not None:
             self.used = used
         if allocated is not None:
@@ -1694,136 +883,23 @@ class TeamSpaceAllocation(bb.Struct):
         if user_within_team_space_used_cached is not None:
             self.user_within_team_space_used_cached = user_within_team_space_used_cached
 
-    @property
-    def used(self):
-        """
-        The total space currently used by the user's team (bytes).
+    # Instance attribute type: int (validator is set below)
+    used = bb.Attribute("used")
 
-        :rtype: int
-        """
-        if self._used_present:
-            return self._used_value
-        else:
-            raise AttributeError("missing required field 'used'")
+    # Instance attribute type: int (validator is set below)
+    allocated = bb.Attribute("allocated")
 
-    @used.setter
-    def used(self, val):
-        val = self._used_validator.validate(val)
-        self._used_value = val
-        self._used_present = True
+    # Instance attribute type: int (validator is set below)
+    user_within_team_space_allocated = bb.Attribute("user_within_team_space_allocated")
 
-    @used.deleter
-    def used(self):
-        self._used_value = None
-        self._used_present = False
+    # Instance attribute type: team_common.MemberSpaceLimitType (validator is set below)
+    user_within_team_space_limit_type = bb.Attribute("user_within_team_space_limit_type", user_defined=True)
 
-    @property
-    def allocated(self):
-        """
-        The total space allocated to the user's team (bytes).
-
-        :rtype: int
-        """
-        if self._allocated_present:
-            return self._allocated_value
-        else:
-            raise AttributeError("missing required field 'allocated'")
-
-    @allocated.setter
-    def allocated(self, val):
-        val = self._allocated_validator.validate(val)
-        self._allocated_value = val
-        self._allocated_present = True
-
-    @allocated.deleter
-    def allocated(self):
-        self._allocated_value = None
-        self._allocated_present = False
-
-    @property
-    def user_within_team_space_allocated(self):
-        """
-        The total space allocated to the user within its team allocated space (0
-        means that no restriction is imposed on the user's quota within its
-        team).
-
-        :rtype: int
-        """
-        if self._user_within_team_space_allocated_present:
-            return self._user_within_team_space_allocated_value
-        else:
-            raise AttributeError("missing required field 'user_within_team_space_allocated'")
-
-    @user_within_team_space_allocated.setter
-    def user_within_team_space_allocated(self, val):
-        val = self._user_within_team_space_allocated_validator.validate(val)
-        self._user_within_team_space_allocated_value = val
-        self._user_within_team_space_allocated_present = True
-
-    @user_within_team_space_allocated.deleter
-    def user_within_team_space_allocated(self):
-        self._user_within_team_space_allocated_value = None
-        self._user_within_team_space_allocated_present = False
-
-    @property
-    def user_within_team_space_limit_type(self):
-        """
-        The type of the space limit imposed on the team member (off, alert_only,
-        stop_sync).
-
-        :rtype: team_common.MemberSpaceLimitType
-        """
-        if self._user_within_team_space_limit_type_present:
-            return self._user_within_team_space_limit_type_value
-        else:
-            raise AttributeError("missing required field 'user_within_team_space_limit_type'")
-
-    @user_within_team_space_limit_type.setter
-    def user_within_team_space_limit_type(self, val):
-        self._user_within_team_space_limit_type_validator.validate_type_only(val)
-        self._user_within_team_space_limit_type_value = val
-        self._user_within_team_space_limit_type_present = True
-
-    @user_within_team_space_limit_type.deleter
-    def user_within_team_space_limit_type(self):
-        self._user_within_team_space_limit_type_value = None
-        self._user_within_team_space_limit_type_present = False
-
-    @property
-    def user_within_team_space_used_cached(self):
-        """
-        An accurate cached calculation of a team member's total space usage
-        (bytes).
-
-        :rtype: int
-        """
-        if self._user_within_team_space_used_cached_present:
-            return self._user_within_team_space_used_cached_value
-        else:
-            raise AttributeError("missing required field 'user_within_team_space_used_cached'")
-
-    @user_within_team_space_used_cached.setter
-    def user_within_team_space_used_cached(self, val):
-        val = self._user_within_team_space_used_cached_validator.validate(val)
-        self._user_within_team_space_used_cached_value = val
-        self._user_within_team_space_used_cached_present = True
-
-    @user_within_team_space_used_cached.deleter
-    def user_within_team_space_used_cached(self):
-        self._user_within_team_space_used_cached_value = None
-        self._user_within_team_space_used_cached_present = False
+    # Instance attribute type: int (validator is set below)
+    user_within_team_space_used_cached = bb.Attribute("user_within_team_space_used_cached")
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(TeamSpaceAllocation, self)._process_custom_annotations(annotation_type, field_path, processor)
-
-    def __repr__(self):
-        return 'TeamSpaceAllocation(used={!r}, allocated={!r}, user_within_team_space_allocated={!r}, user_within_team_space_limit_type={!r}, user_within_team_space_used_cached={!r})'.format(
-            self._used_value,
-            self._allocated_value,
-            self._user_within_team_space_allocated_value,
-            self._user_within_team_space_limit_type_value,
-            self._user_within_team_space_used_cached_value,
-        )
 
 TeamSpaceAllocation_validator = bv.Struct(TeamSpaceAllocation)
 
@@ -1875,9 +951,6 @@ class UserFeature(bb.Union):
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(UserFeature, self)._process_custom_annotations(annotation_type, field_path, processor)
-
-    def __repr__(self):
-        return 'UserFeature(%r, %r)' % (self._tag, self._value)
 
 UserFeature_validator = bv.Union(UserFeature)
 
@@ -1963,9 +1036,6 @@ class UserFeatureValue(bb.Union):
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(UserFeatureValue, self)._process_custom_annotations(annotation_type, field_path, processor)
 
-    def __repr__(self):
-        return 'UserFeatureValue(%r, %r)' % (self._tag, self._value)
-
 UserFeatureValue_validator = bv.Union(UserFeatureValue)
 
 class UserFeaturesGetValuesBatchArg(bb.Struct):
@@ -1977,49 +1047,21 @@ class UserFeaturesGetValuesBatchArg(bb.Struct):
 
     __slots__ = [
         '_features_value',
-        '_features_present',
     ]
 
     _has_required_fields = True
 
     def __init__(self,
                  features=None):
-        self._features_value = None
-        self._features_present = False
+        self._features_value = bb.NOT_SET
         if features is not None:
             self.features = features
 
-    @property
-    def features(self):
-        """
-        A list of features in :class:`UserFeature`. If the list is empty, this
-        route will return :class:`UserFeaturesGetValuesBatchError`.
-
-        :rtype: list of [UserFeature]
-        """
-        if self._features_present:
-            return self._features_value
-        else:
-            raise AttributeError("missing required field 'features'")
-
-    @features.setter
-    def features(self, val):
-        val = self._features_validator.validate(val)
-        self._features_value = val
-        self._features_present = True
-
-    @features.deleter
-    def features(self):
-        self._features_value = None
-        self._features_present = False
+    # Instance attribute type: list of [UserFeature] (validator is set below)
+    features = bb.Attribute("features")
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(UserFeaturesGetValuesBatchArg, self)._process_custom_annotations(annotation_type, field_path, processor)
-
-    def __repr__(self):
-        return 'UserFeaturesGetValuesBatchArg(features={!r})'.format(
-            self._features_value,
-        )
 
 UserFeaturesGetValuesBatchArg_validator = bv.Struct(UserFeaturesGetValuesBatchArg)
 
@@ -2059,65 +1101,37 @@ class UserFeaturesGetValuesBatchError(bb.Union):
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(UserFeaturesGetValuesBatchError, self)._process_custom_annotations(annotation_type, field_path, processor)
 
-    def __repr__(self):
-        return 'UserFeaturesGetValuesBatchError(%r, %r)' % (self._tag, self._value)
-
 UserFeaturesGetValuesBatchError_validator = bv.Union(UserFeaturesGetValuesBatchError)
 
 class UserFeaturesGetValuesBatchResult(bb.Struct):
 
     __slots__ = [
         '_values_value',
-        '_values_present',
     ]
 
     _has_required_fields = True
 
     def __init__(self,
                  values=None):
-        self._values_value = None
-        self._values_present = False
+        self._values_value = bb.NOT_SET
         if values is not None:
             self.values = values
 
-    @property
-    def values(self):
-        """
-        :rtype: list of [UserFeatureValue]
-        """
-        if self._values_present:
-            return self._values_value
-        else:
-            raise AttributeError("missing required field 'values'")
-
-    @values.setter
-    def values(self, val):
-        val = self._values_validator.validate(val)
-        self._values_value = val
-        self._values_present = True
-
-    @values.deleter
-    def values(self):
-        self._values_value = None
-        self._values_present = False
+    # Instance attribute type: list of [UserFeatureValue] (validator is set below)
+    values = bb.Attribute("values")
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(UserFeaturesGetValuesBatchResult, self)._process_custom_annotations(annotation_type, field_path, processor)
 
-    def __repr__(self):
-        return 'UserFeaturesGetValuesBatchResult(values={!r})'.format(
-            self._values_value,
-        )
-
 UserFeaturesGetValuesBatchResult_validator = bv.Struct(UserFeaturesGetValuesBatchResult)
 
 GetAccountBatchResult_validator = bv.List(BasicAccount_validator)
-Account._account_id_validator = users_common.AccountId_validator
-Account._name_validator = Name_validator
-Account._email_validator = bv.String()
-Account._email_verified_validator = bv.Boolean()
-Account._profile_photo_url_validator = bv.Nullable(bv.String())
-Account._disabled_validator = bv.Boolean()
+Account.account_id.validator = users_common.AccountId_validator
+Account.name.validator = Name_validator
+Account.email.validator = bv.String()
+Account.email_verified.validator = bv.Boolean()
+Account.profile_photo_url.validator = bv.Nullable(bv.String())
+Account.disabled.validator = bv.Boolean()
 Account._all_field_names_ = set([
     'account_id',
     'name',
@@ -2127,23 +1141,23 @@ Account._all_field_names_ = set([
     'disabled',
 ])
 Account._all_fields_ = [
-    ('account_id', Account._account_id_validator),
-    ('name', Account._name_validator),
-    ('email', Account._email_validator),
-    ('email_verified', Account._email_verified_validator),
-    ('profile_photo_url', Account._profile_photo_url_validator),
-    ('disabled', Account._disabled_validator),
+    ('account_id', Account.account_id.validator),
+    ('name', Account.name.validator),
+    ('email', Account.email.validator),
+    ('email_verified', Account.email_verified.validator),
+    ('profile_photo_url', Account.profile_photo_url.validator),
+    ('disabled', Account.disabled.validator),
 ]
 
-BasicAccount._is_teammate_validator = bv.Boolean()
-BasicAccount._team_member_id_validator = bv.Nullable(bv.String())
+BasicAccount.is_teammate.validator = bv.Boolean()
+BasicAccount.team_member_id.validator = bv.Nullable(bv.String())
 BasicAccount._all_field_names_ = Account._all_field_names_.union(set([
     'is_teammate',
     'team_member_id',
 ]))
 BasicAccount._all_fields_ = Account._all_fields_ + [
-    ('is_teammate', BasicAccount._is_teammate_validator),
-    ('team_member_id', BasicAccount._team_member_id_validator),
+    ('is_teammate', BasicAccount.is_teammate.validator),
+    ('team_member_id', BasicAccount.team_member_id.validator),
 ]
 
 FileLockingValue._enabled_validator = bv.Boolean()
@@ -2155,14 +1169,14 @@ FileLockingValue._tagmap = {
 
 FileLockingValue.other = FileLockingValue('other')
 
-FullAccount._country_validator = bv.Nullable(bv.String(min_length=2, max_length=2))
-FullAccount._locale_validator = bv.String(min_length=2)
-FullAccount._referral_link_validator = bv.String()
-FullAccount._team_validator = bv.Nullable(FullTeam_validator)
-FullAccount._team_member_id_validator = bv.Nullable(bv.String())
-FullAccount._is_paired_validator = bv.Boolean()
-FullAccount._account_type_validator = users_common.AccountType_validator
-FullAccount._root_info_validator = common.RootInfo_validator
+FullAccount.country.validator = bv.Nullable(bv.String(min_length=2, max_length=2))
+FullAccount.locale.validator = bv.String(min_length=2)
+FullAccount.referral_link.validator = bv.String()
+FullAccount.team.validator = bv.Nullable(FullTeam_validator)
+FullAccount.team_member_id.validator = bv.Nullable(bv.String())
+FullAccount.is_paired.validator = bv.Boolean()
+FullAccount.account_type.validator = users_common.AccountType_validator
+FullAccount.root_info.validator = common.RootInfo_validator
 FullAccount._all_field_names_ = Account._all_field_names_.union(set([
     'country',
     'locale',
@@ -2174,45 +1188,45 @@ FullAccount._all_field_names_ = Account._all_field_names_.union(set([
     'root_info',
 ]))
 FullAccount._all_fields_ = Account._all_fields_ + [
-    ('country', FullAccount._country_validator),
-    ('locale', FullAccount._locale_validator),
-    ('referral_link', FullAccount._referral_link_validator),
-    ('team', FullAccount._team_validator),
-    ('team_member_id', FullAccount._team_member_id_validator),
-    ('is_paired', FullAccount._is_paired_validator),
-    ('account_type', FullAccount._account_type_validator),
-    ('root_info', FullAccount._root_info_validator),
+    ('country', FullAccount.country.validator),
+    ('locale', FullAccount.locale.validator),
+    ('referral_link', FullAccount.referral_link.validator),
+    ('team', FullAccount.team.validator),
+    ('team_member_id', FullAccount.team_member_id.validator),
+    ('is_paired', FullAccount.is_paired.validator),
+    ('account_type', FullAccount.account_type.validator),
+    ('root_info', FullAccount.root_info.validator),
 ]
 
-Team._id_validator = bv.String()
-Team._name_validator = bv.String()
+Team.id.validator = bv.String()
+Team.name.validator = bv.String()
 Team._all_field_names_ = set([
     'id',
     'name',
 ])
 Team._all_fields_ = [
-    ('id', Team._id_validator),
-    ('name', Team._name_validator),
+    ('id', Team.id.validator),
+    ('name', Team.name.validator),
 ]
 
-FullTeam._sharing_policies_validator = team_policies.TeamSharingPolicies_validator
-FullTeam._office_addin_policy_validator = team_policies.OfficeAddInPolicy_validator
+FullTeam.sharing_policies.validator = team_policies.TeamSharingPolicies_validator
+FullTeam.office_addin_policy.validator = team_policies.OfficeAddInPolicy_validator
 FullTeam._all_field_names_ = Team._all_field_names_.union(set([
     'sharing_policies',
     'office_addin_policy',
 ]))
 FullTeam._all_fields_ = Team._all_fields_ + [
-    ('sharing_policies', FullTeam._sharing_policies_validator),
-    ('office_addin_policy', FullTeam._office_addin_policy_validator),
+    ('sharing_policies', FullTeam.sharing_policies.validator),
+    ('office_addin_policy', FullTeam.office_addin_policy.validator),
 ]
 
-GetAccountArg._account_id_validator = users_common.AccountId_validator
+GetAccountArg.account_id.validator = users_common.AccountId_validator
 GetAccountArg._all_field_names_ = set(['account_id'])
-GetAccountArg._all_fields_ = [('account_id', GetAccountArg._account_id_validator)]
+GetAccountArg._all_fields_ = [('account_id', GetAccountArg.account_id.validator)]
 
-GetAccountBatchArg._account_ids_validator = bv.List(users_common.AccountId_validator, min_items=1)
+GetAccountBatchArg.account_ids.validator = bv.List(users_common.AccountId_validator, min_items=1)
 GetAccountBatchArg._all_field_names_ = set(['account_ids'])
-GetAccountBatchArg._all_fields_ = [('account_ids', GetAccountBatchArg._account_ids_validator)]
+GetAccountBatchArg._all_fields_ = [('account_ids', GetAccountBatchArg.account_ids.validator)]
 
 GetAccountBatchError._no_account_validator = users_common.AccountId_validator
 GetAccountBatchError._other_validator = bv.Void()
@@ -2233,15 +1247,15 @@ GetAccountError._tagmap = {
 GetAccountError.no_account = GetAccountError('no_account')
 GetAccountError.other = GetAccountError('other')
 
-IndividualSpaceAllocation._allocated_validator = bv.UInt64()
+IndividualSpaceAllocation.allocated.validator = bv.UInt64()
 IndividualSpaceAllocation._all_field_names_ = set(['allocated'])
-IndividualSpaceAllocation._all_fields_ = [('allocated', IndividualSpaceAllocation._allocated_validator)]
+IndividualSpaceAllocation._all_fields_ = [('allocated', IndividualSpaceAllocation.allocated.validator)]
 
-Name._given_name_validator = bv.String()
-Name._surname_validator = bv.String()
-Name._familiar_name_validator = bv.String()
-Name._display_name_validator = bv.String()
-Name._abbreviated_name_validator = bv.String()
+Name.given_name.validator = bv.String()
+Name.surname.validator = bv.String()
+Name.familiar_name.validator = bv.String()
+Name.display_name.validator = bv.String()
+Name.abbreviated_name.validator = bv.String()
 Name._all_field_names_ = set([
     'given_name',
     'surname',
@@ -2250,11 +1264,11 @@ Name._all_field_names_ = set([
     'abbreviated_name',
 ])
 Name._all_fields_ = [
-    ('given_name', Name._given_name_validator),
-    ('surname', Name._surname_validator),
-    ('familiar_name', Name._familiar_name_validator),
-    ('display_name', Name._display_name_validator),
-    ('abbreviated_name', Name._abbreviated_name_validator),
+    ('given_name', Name.given_name.validator),
+    ('surname', Name.surname.validator),
+    ('familiar_name', Name.familiar_name.validator),
+    ('display_name', Name.display_name.validator),
+    ('abbreviated_name', Name.abbreviated_name.validator),
 ]
 
 PaperAsFilesValue._enabled_validator = bv.Boolean()
@@ -2277,22 +1291,22 @@ SpaceAllocation._tagmap = {
 
 SpaceAllocation.other = SpaceAllocation('other')
 
-SpaceUsage._used_validator = bv.UInt64()
-SpaceUsage._allocation_validator = SpaceAllocation_validator
+SpaceUsage.used.validator = bv.UInt64()
+SpaceUsage.allocation.validator = SpaceAllocation_validator
 SpaceUsage._all_field_names_ = set([
     'used',
     'allocation',
 ])
 SpaceUsage._all_fields_ = [
-    ('used', SpaceUsage._used_validator),
-    ('allocation', SpaceUsage._allocation_validator),
+    ('used', SpaceUsage.used.validator),
+    ('allocation', SpaceUsage.allocation.validator),
 ]
 
-TeamSpaceAllocation._used_validator = bv.UInt64()
-TeamSpaceAllocation._allocated_validator = bv.UInt64()
-TeamSpaceAllocation._user_within_team_space_allocated_validator = bv.UInt64()
-TeamSpaceAllocation._user_within_team_space_limit_type_validator = team_common.MemberSpaceLimitType_validator
-TeamSpaceAllocation._user_within_team_space_used_cached_validator = bv.UInt64()
+TeamSpaceAllocation.used.validator = bv.UInt64()
+TeamSpaceAllocation.allocated.validator = bv.UInt64()
+TeamSpaceAllocation.user_within_team_space_allocated.validator = bv.UInt64()
+TeamSpaceAllocation.user_within_team_space_limit_type.validator = team_common.MemberSpaceLimitType_validator
+TeamSpaceAllocation.user_within_team_space_used_cached.validator = bv.UInt64()
 TeamSpaceAllocation._all_field_names_ = set([
     'used',
     'allocated',
@@ -2301,11 +1315,11 @@ TeamSpaceAllocation._all_field_names_ = set([
     'user_within_team_space_used_cached',
 ])
 TeamSpaceAllocation._all_fields_ = [
-    ('used', TeamSpaceAllocation._used_validator),
-    ('allocated', TeamSpaceAllocation._allocated_validator),
-    ('user_within_team_space_allocated', TeamSpaceAllocation._user_within_team_space_allocated_validator),
-    ('user_within_team_space_limit_type', TeamSpaceAllocation._user_within_team_space_limit_type_validator),
-    ('user_within_team_space_used_cached', TeamSpaceAllocation._user_within_team_space_used_cached_validator),
+    ('used', TeamSpaceAllocation.used.validator),
+    ('allocated', TeamSpaceAllocation.allocated.validator),
+    ('user_within_team_space_allocated', TeamSpaceAllocation.user_within_team_space_allocated.validator),
+    ('user_within_team_space_limit_type', TeamSpaceAllocation.user_within_team_space_limit_type.validator),
+    ('user_within_team_space_used_cached', TeamSpaceAllocation.user_within_team_space_used_cached.validator),
 ]
 
 UserFeature._paper_as_files_validator = bv.Void()
@@ -2332,9 +1346,9 @@ UserFeatureValue._tagmap = {
 
 UserFeatureValue.other = UserFeatureValue('other')
 
-UserFeaturesGetValuesBatchArg._features_validator = bv.List(UserFeature_validator)
+UserFeaturesGetValuesBatchArg.features.validator = bv.List(UserFeature_validator)
 UserFeaturesGetValuesBatchArg._all_field_names_ = set(['features'])
-UserFeaturesGetValuesBatchArg._all_fields_ = [('features', UserFeaturesGetValuesBatchArg._features_validator)]
+UserFeaturesGetValuesBatchArg._all_fields_ = [('features', UserFeaturesGetValuesBatchArg.features.validator)]
 
 UserFeaturesGetValuesBatchError._empty_features_list_validator = bv.Void()
 UserFeaturesGetValuesBatchError._other_validator = bv.Void()
@@ -2346,9 +1360,9 @@ UserFeaturesGetValuesBatchError._tagmap = {
 UserFeaturesGetValuesBatchError.empty_features_list = UserFeaturesGetValuesBatchError('empty_features_list')
 UserFeaturesGetValuesBatchError.other = UserFeaturesGetValuesBatchError('other')
 
-UserFeaturesGetValuesBatchResult._values_validator = bv.List(UserFeatureValue_validator)
+UserFeaturesGetValuesBatchResult.values.validator = bv.List(UserFeatureValue_validator)
 UserFeaturesGetValuesBatchResult._all_field_names_ = set(['values'])
-UserFeaturesGetValuesBatchResult._all_fields_ = [('values', UserFeaturesGetValuesBatchResult._values_validator)]
+UserFeaturesGetValuesBatchResult._all_fields_ = [('values', UserFeaturesGetValuesBatchResult.values.validator)]
 
 features_get_values = bb.Route(
     'features/get_values',

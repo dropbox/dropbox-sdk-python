@@ -3,14 +3,9 @@
 # @generated
 # flake8: noqa
 # pylint: skip-file
-try:
-    from . import stone_validators as bv
-    from . import stone_base as bb
-except (ImportError, SystemError, ValueError):
-    # Catch errors raised when importing a relative module when not in a package.
-    # This makes testing this file directly (outside of a package) easier.
-    import stone_validators as bv
-    import stone_base as bb
+from __future__ import unicode_literals
+from stone.backends.python_rsrc import stone_base as bb
+from stone.backends.python_rsrc import stone_validators as bv
 
 class CameraUploadsPolicyState(bb.Union):
     """
@@ -58,9 +53,6 @@ class CameraUploadsPolicyState(bb.Union):
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(CameraUploadsPolicyState, self)._process_custom_annotations(annotation_type, field_path, processor)
-
-    def __repr__(self):
-        return 'CameraUploadsPolicyState(%r, %r)' % (self._tag, self._value)
 
 CameraUploadsPolicyState_validator = bv.Union(CameraUploadsPolicyState)
 
@@ -123,9 +115,6 @@ class ComputerBackupPolicyState(bb.Union):
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(ComputerBackupPolicyState, self)._process_custom_annotations(annotation_type, field_path, processor)
 
-    def __repr__(self):
-        return 'ComputerBackupPolicyState(%r, %r)' % (self._tag, self._value)
-
 ComputerBackupPolicyState_validator = bv.Union(ComputerBackupPolicyState)
 
 class EmmState(bb.Union):
@@ -184,9 +173,6 @@ class EmmState(bb.Union):
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(EmmState, self)._process_custom_annotations(annotation_type, field_path, processor)
 
-    def __repr__(self):
-        return 'EmmState(%r, %r)' % (self._tag, self._value)
-
 EmmState_validator = bv.Union(EmmState)
 
 class FileLockingPolicyState(bb.Union):
@@ -236,9 +222,6 @@ class FileLockingPolicyState(bb.Union):
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(FileLockingPolicyState, self)._process_custom_annotations(annotation_type, field_path, processor)
 
-    def __repr__(self):
-        return 'FileLockingPolicyState(%r, %r)' % (self._tag, self._value)
-
 FileLockingPolicyState_validator = bv.Union(FileLockingPolicyState)
 
 class GroupCreation(bb.Union):
@@ -277,9 +260,6 @@ class GroupCreation(bb.Union):
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(GroupCreation, self)._process_custom_annotations(annotation_type, field_path, processor)
-
-    def __repr__(self):
-        return 'GroupCreation(%r, %r)' % (self._tag, self._value)
 
 GroupCreation_validator = bv.Union(GroupCreation)
 
@@ -327,9 +307,6 @@ class OfficeAddInPolicy(bb.Union):
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(OfficeAddInPolicy, self)._process_custom_annotations(annotation_type, field_path, processor)
-
-    def __repr__(self):
-        return 'OfficeAddInPolicy(%r, %r)' % (self._tag, self._value)
 
 OfficeAddInPolicy_validator = bv.Union(OfficeAddInPolicy)
 
@@ -379,9 +356,6 @@ class PaperDefaultFolderPolicy(bb.Union):
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(PaperDefaultFolderPolicy, self)._process_custom_annotations(annotation_type, field_path, processor)
-
-    def __repr__(self):
-        return 'PaperDefaultFolderPolicy(%r, %r)' % (self._tag, self._value)
 
 PaperDefaultFolderPolicy_validator = bv.Union(PaperDefaultFolderPolicy)
 
@@ -433,9 +407,6 @@ class PaperDeploymentPolicy(bb.Union):
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(PaperDeploymentPolicy, self)._process_custom_annotations(annotation_type, field_path, processor)
 
-    def __repr__(self):
-        return 'PaperDeploymentPolicy(%r, %r)' % (self._tag, self._value)
-
 PaperDeploymentPolicy_validator = bv.Union(PaperDeploymentPolicy)
 
 class PaperDesktopPolicy(bb.Union):
@@ -484,9 +455,6 @@ class PaperDesktopPolicy(bb.Union):
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(PaperDesktopPolicy, self)._process_custom_annotations(annotation_type, field_path, processor)
-
-    def __repr__(self):
-        return 'PaperDesktopPolicy(%r, %r)' % (self._tag, self._value)
 
 PaperDesktopPolicy_validator = bv.Union(PaperDesktopPolicy)
 
@@ -546,9 +514,6 @@ class PaperEnabledPolicy(bb.Union):
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(PaperEnabledPolicy, self)._process_custom_annotations(annotation_type, field_path, processor)
 
-    def __repr__(self):
-        return 'PaperEnabledPolicy(%r, %r)' % (self._tag, self._value)
-
 PaperEnabledPolicy_validator = bv.Union(PaperEnabledPolicy)
 
 class PasswordControlMode(bb.Union):
@@ -595,9 +560,6 @@ class PasswordControlMode(bb.Union):
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(PasswordControlMode, self)._process_custom_annotations(annotation_type, field_path, processor)
-
-    def __repr__(self):
-        return 'PasswordControlMode(%r, %r)' % (self._tag, self._value)
 
 PasswordControlMode_validator = bv.Union(PasswordControlMode)
 
@@ -660,9 +622,6 @@ class PasswordStrengthPolicy(bb.Union):
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(PasswordStrengthPolicy, self)._process_custom_annotations(annotation_type, field_path, processor)
 
-    def __repr__(self):
-        return 'PasswordStrengthPolicy(%r, %r)' % (self._tag, self._value)
-
 PasswordStrengthPolicy_validator = bv.Union(PasswordStrengthPolicy)
 
 class RolloutMethod(bb.Union):
@@ -712,9 +671,6 @@ class RolloutMethod(bb.Union):
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(RolloutMethod, self)._process_custom_annotations(annotation_type, field_path, processor)
-
-    def __repr__(self):
-        return 'RolloutMethod(%r, %r)' % (self._tag, self._value)
 
 RolloutMethod_validator = bv.Union(RolloutMethod)
 
@@ -768,9 +724,6 @@ class SharedFolderJoinPolicy(bb.Union):
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(SharedFolderJoinPolicy, self)._process_custom_annotations(annotation_type, field_path, processor)
 
-    def __repr__(self):
-        return 'SharedFolderJoinPolicy(%r, %r)' % (self._tag, self._value)
-
 SharedFolderJoinPolicy_validator = bv.Union(SharedFolderJoinPolicy)
 
 class SharedFolderMemberPolicy(bb.Union):
@@ -821,9 +774,6 @@ class SharedFolderMemberPolicy(bb.Union):
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(SharedFolderMemberPolicy, self)._process_custom_annotations(annotation_type, field_path, processor)
-
-    def __repr__(self):
-        return 'SharedFolderMemberPolicy(%r, %r)' % (self._tag, self._value)
 
 SharedFolderMemberPolicy_validator = bv.Union(SharedFolderMemberPolicy)
 
@@ -892,9 +842,6 @@ class SharedLinkCreatePolicy(bb.Union):
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(SharedLinkCreatePolicy, self)._process_custom_annotations(annotation_type, field_path, processor)
 
-    def __repr__(self):
-        return 'SharedLinkCreatePolicy(%r, %r)' % (self._tag, self._value)
-
 SharedLinkCreatePolicy_validator = bv.Union(SharedLinkCreatePolicy)
 
 class ShowcaseDownloadPolicy(bb.Union):
@@ -944,9 +891,6 @@ class ShowcaseDownloadPolicy(bb.Union):
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(ShowcaseDownloadPolicy, self)._process_custom_annotations(annotation_type, field_path, processor)
 
-    def __repr__(self):
-        return 'ShowcaseDownloadPolicy(%r, %r)' % (self._tag, self._value)
-
 ShowcaseDownloadPolicy_validator = bv.Union(ShowcaseDownloadPolicy)
 
 class ShowcaseEnabledPolicy(bb.Union):
@@ -993,9 +937,6 @@ class ShowcaseEnabledPolicy(bb.Union):
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(ShowcaseEnabledPolicy, self)._process_custom_annotations(annotation_type, field_path, processor)
-
-    def __repr__(self):
-        return 'ShowcaseEnabledPolicy(%r, %r)' % (self._tag, self._value)
 
 ShowcaseEnabledPolicy_validator = bv.Union(ShowcaseEnabledPolicy)
 
@@ -1046,9 +987,6 @@ class ShowcaseExternalSharingPolicy(bb.Union):
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(ShowcaseExternalSharingPolicy, self)._process_custom_annotations(annotation_type, field_path, processor)
 
-    def __repr__(self):
-        return 'ShowcaseExternalSharingPolicy(%r, %r)' % (self._tag, self._value)
-
 ShowcaseExternalSharingPolicy_validator = bv.Union(ShowcaseExternalSharingPolicy)
 
 class SmartSyncPolicy(bb.Union):
@@ -1098,9 +1036,6 @@ class SmartSyncPolicy(bb.Union):
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(SmartSyncPolicy, self)._process_custom_annotations(annotation_type, field_path, processor)
 
-    def __repr__(self):
-        return 'SmartSyncPolicy(%r, %r)' % (self._tag, self._value)
-
 SmartSyncPolicy_validator = bv.Union(SmartSyncPolicy)
 
 class SmarterSmartSyncPolicyState(bb.Union):
@@ -1149,9 +1084,6 @@ class SmarterSmartSyncPolicyState(bb.Union):
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(SmarterSmartSyncPolicyState, self)._process_custom_annotations(annotation_type, field_path, processor)
-
-    def __repr__(self):
-        return 'SmarterSmartSyncPolicyState(%r, %r)' % (self._tag, self._value)
 
 SmarterSmartSyncPolicyState_validator = bv.Union(SmarterSmartSyncPolicyState)
 
@@ -1214,9 +1146,6 @@ class SsoPolicy(bb.Union):
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(SsoPolicy, self)._process_custom_annotations(annotation_type, field_path, processor)
 
-    def __repr__(self):
-        return 'SsoPolicy(%r, %r)' % (self._tag, self._value)
-
 SsoPolicy_validator = bv.Union(SsoPolicy)
 
 class SuggestMembersPolicy(bb.Union):
@@ -1266,9 +1195,6 @@ class SuggestMembersPolicy(bb.Union):
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(SuggestMembersPolicy, self)._process_custom_annotations(annotation_type, field_path, processor)
 
-    def __repr__(self):
-        return 'SuggestMembersPolicy(%r, %r)' % (self._tag, self._value)
-
 SuggestMembersPolicy_validator = bv.Union(SuggestMembersPolicy)
 
 class TeamMemberPolicies(bb.Struct):
@@ -1292,13 +1218,9 @@ class TeamMemberPolicies(bb.Struct):
 
     __slots__ = [
         '_sharing_value',
-        '_sharing_present',
         '_emm_state_value',
-        '_emm_state_present',
         '_office_addin_value',
-        '_office_addin_present',
         '_suggest_members_policy_value',
-        '_suggest_members_policy_present',
     ]
 
     _has_required_fields = True
@@ -1308,14 +1230,10 @@ class TeamMemberPolicies(bb.Struct):
                  emm_state=None,
                  office_addin=None,
                  suggest_members_policy=None):
-        self._sharing_value = None
-        self._sharing_present = False
-        self._emm_state_value = None
-        self._emm_state_present = False
-        self._office_addin_value = None
-        self._office_addin_present = False
-        self._suggest_members_policy_value = None
-        self._suggest_members_policy_present = False
+        self._sharing_value = bb.NOT_SET
+        self._emm_state_value = bb.NOT_SET
+        self._office_addin_value = bb.NOT_SET
+        self._suggest_members_policy_value = bb.NOT_SET
         if sharing is not None:
             self.sharing = sharing
         if emm_state is not None:
@@ -1325,114 +1243,20 @@ class TeamMemberPolicies(bb.Struct):
         if suggest_members_policy is not None:
             self.suggest_members_policy = suggest_members_policy
 
-    @property
-    def sharing(self):
-        """
-        Policies governing sharing.
+    # Instance attribute type: TeamSharingPolicies (validator is set below)
+    sharing = bb.Attribute("sharing", user_defined=True)
 
-        :rtype: TeamSharingPolicies
-        """
-        if self._sharing_present:
-            return self._sharing_value
-        else:
-            raise AttributeError("missing required field 'sharing'")
+    # Instance attribute type: EmmState (validator is set below)
+    emm_state = bb.Attribute("emm_state", user_defined=True)
 
-    @sharing.setter
-    def sharing(self, val):
-        self._sharing_validator.validate_type_only(val)
-        self._sharing_value = val
-        self._sharing_present = True
+    # Instance attribute type: OfficeAddInPolicy (validator is set below)
+    office_addin = bb.Attribute("office_addin", user_defined=True)
 
-    @sharing.deleter
-    def sharing(self):
-        self._sharing_value = None
-        self._sharing_present = False
-
-    @property
-    def emm_state(self):
-        """
-        This describes the Enterprise Mobility Management (EMM) state for this
-        team. This information can be used to understand if an organization is
-        integrating with a third-party EMM vendor to further manage and apply
-        restrictions upon the team's Dropbox usage on mobile devices. This is a
-        new feature and in the future we'll be adding more new fields and
-        additional documentation.
-
-        :rtype: EmmState
-        """
-        if self._emm_state_present:
-            return self._emm_state_value
-        else:
-            raise AttributeError("missing required field 'emm_state'")
-
-    @emm_state.setter
-    def emm_state(self, val):
-        self._emm_state_validator.validate_type_only(val)
-        self._emm_state_value = val
-        self._emm_state_present = True
-
-    @emm_state.deleter
-    def emm_state(self):
-        self._emm_state_value = None
-        self._emm_state_present = False
-
-    @property
-    def office_addin(self):
-        """
-        The admin policy around the Dropbox Office Add-In for this team.
-
-        :rtype: OfficeAddInPolicy
-        """
-        if self._office_addin_present:
-            return self._office_addin_value
-        else:
-            raise AttributeError("missing required field 'office_addin'")
-
-    @office_addin.setter
-    def office_addin(self, val):
-        self._office_addin_validator.validate_type_only(val)
-        self._office_addin_value = val
-        self._office_addin_present = True
-
-    @office_addin.deleter
-    def office_addin(self):
-        self._office_addin_value = None
-        self._office_addin_present = False
-
-    @property
-    def suggest_members_policy(self):
-        """
-        The team policy on if teammembers are allowed to suggest users for
-        admins to invite to the team.
-
-        :rtype: SuggestMembersPolicy
-        """
-        if self._suggest_members_policy_present:
-            return self._suggest_members_policy_value
-        else:
-            raise AttributeError("missing required field 'suggest_members_policy'")
-
-    @suggest_members_policy.setter
-    def suggest_members_policy(self, val):
-        self._suggest_members_policy_validator.validate_type_only(val)
-        self._suggest_members_policy_value = val
-        self._suggest_members_policy_present = True
-
-    @suggest_members_policy.deleter
-    def suggest_members_policy(self):
-        self._suggest_members_policy_value = None
-        self._suggest_members_policy_present = False
+    # Instance attribute type: SuggestMembersPolicy (validator is set below)
+    suggest_members_policy = bb.Attribute("suggest_members_policy", user_defined=True)
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(TeamMemberPolicies, self)._process_custom_annotations(annotation_type, field_path, processor)
-
-    def __repr__(self):
-        return 'TeamMemberPolicies(sharing={!r}, emm_state={!r}, office_addin={!r}, suggest_members_policy={!r})'.format(
-            self._sharing_value,
-            self._emm_state_value,
-            self._office_addin_value,
-            self._suggest_members_policy_value,
-        )
 
 TeamMemberPolicies_validator = bv.Struct(TeamMemberPolicies)
 
@@ -1450,11 +1274,8 @@ class TeamSharingPolicies(bb.Struct):
 
     __slots__ = [
         '_shared_folder_member_policy_value',
-        '_shared_folder_member_policy_present',
         '_shared_folder_join_policy_value',
-        '_shared_folder_join_policy_present',
         '_shared_link_create_policy_value',
-        '_shared_link_create_policy_present',
     ]
 
     _has_required_fields = True
@@ -1463,12 +1284,9 @@ class TeamSharingPolicies(bb.Struct):
                  shared_folder_member_policy=None,
                  shared_folder_join_policy=None,
                  shared_link_create_policy=None):
-        self._shared_folder_member_policy_value = None
-        self._shared_folder_member_policy_present = False
-        self._shared_folder_join_policy_value = None
-        self._shared_folder_join_policy_present = False
-        self._shared_link_create_policy_value = None
-        self._shared_link_create_policy_present = False
+        self._shared_folder_member_policy_value = bb.NOT_SET
+        self._shared_folder_join_policy_value = bb.NOT_SET
+        self._shared_link_create_policy_value = bb.NOT_SET
         if shared_folder_member_policy is not None:
             self.shared_folder_member_policy = shared_folder_member_policy
         if shared_folder_join_policy is not None:
@@ -1476,84 +1294,17 @@ class TeamSharingPolicies(bb.Struct):
         if shared_link_create_policy is not None:
             self.shared_link_create_policy = shared_link_create_policy
 
-    @property
-    def shared_folder_member_policy(self):
-        """
-        Who can join folders shared by team members.
+    # Instance attribute type: SharedFolderMemberPolicy (validator is set below)
+    shared_folder_member_policy = bb.Attribute("shared_folder_member_policy", user_defined=True)
 
-        :rtype: SharedFolderMemberPolicy
-        """
-        if self._shared_folder_member_policy_present:
-            return self._shared_folder_member_policy_value
-        else:
-            raise AttributeError("missing required field 'shared_folder_member_policy'")
+    # Instance attribute type: SharedFolderJoinPolicy (validator is set below)
+    shared_folder_join_policy = bb.Attribute("shared_folder_join_policy", user_defined=True)
 
-    @shared_folder_member_policy.setter
-    def shared_folder_member_policy(self, val):
-        self._shared_folder_member_policy_validator.validate_type_only(val)
-        self._shared_folder_member_policy_value = val
-        self._shared_folder_member_policy_present = True
-
-    @shared_folder_member_policy.deleter
-    def shared_folder_member_policy(self):
-        self._shared_folder_member_policy_value = None
-        self._shared_folder_member_policy_present = False
-
-    @property
-    def shared_folder_join_policy(self):
-        """
-        Which shared folders team members can join.
-
-        :rtype: SharedFolderJoinPolicy
-        """
-        if self._shared_folder_join_policy_present:
-            return self._shared_folder_join_policy_value
-        else:
-            raise AttributeError("missing required field 'shared_folder_join_policy'")
-
-    @shared_folder_join_policy.setter
-    def shared_folder_join_policy(self, val):
-        self._shared_folder_join_policy_validator.validate_type_only(val)
-        self._shared_folder_join_policy_value = val
-        self._shared_folder_join_policy_present = True
-
-    @shared_folder_join_policy.deleter
-    def shared_folder_join_policy(self):
-        self._shared_folder_join_policy_value = None
-        self._shared_folder_join_policy_present = False
-
-    @property
-    def shared_link_create_policy(self):
-        """
-        Who can view shared links owned by team members.
-
-        :rtype: SharedLinkCreatePolicy
-        """
-        if self._shared_link_create_policy_present:
-            return self._shared_link_create_policy_value
-        else:
-            raise AttributeError("missing required field 'shared_link_create_policy'")
-
-    @shared_link_create_policy.setter
-    def shared_link_create_policy(self, val):
-        self._shared_link_create_policy_validator.validate_type_only(val)
-        self._shared_link_create_policy_value = val
-        self._shared_link_create_policy_present = True
-
-    @shared_link_create_policy.deleter
-    def shared_link_create_policy(self):
-        self._shared_link_create_policy_value = None
-        self._shared_link_create_policy_present = False
+    # Instance attribute type: SharedLinkCreatePolicy (validator is set below)
+    shared_link_create_policy = bb.Attribute("shared_link_create_policy", user_defined=True)
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(TeamSharingPolicies, self)._process_custom_annotations(annotation_type, field_path, processor)
-
-    def __repr__(self):
-        return 'TeamSharingPolicies(shared_folder_member_policy={!r}, shared_folder_join_policy={!r}, shared_link_create_policy={!r})'.format(
-            self._shared_folder_member_policy_value,
-            self._shared_folder_join_policy_value,
-            self._shared_link_create_policy_value,
-        )
 
 TeamSharingPolicies_validator = bv.Struct(TeamSharingPolicies)
 
@@ -1603,9 +1354,6 @@ class TwoStepVerificationPolicy(bb.Union):
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(TwoStepVerificationPolicy, self)._process_custom_annotations(annotation_type, field_path, processor)
-
-    def __repr__(self):
-        return 'TwoStepVerificationPolicy(%r, %r)' % (self._tag, self._value)
 
 TwoStepVerificationPolicy_validator = bv.Union(TwoStepVerificationPolicy)
 
@@ -1667,9 +1415,6 @@ class TwoStepVerificationState(bb.Union):
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(TwoStepVerificationState, self)._process_custom_annotations(annotation_type, field_path, processor)
-
-    def __repr__(self):
-        return 'TwoStepVerificationState(%r, %r)' % (self._tag, self._value)
 
 TwoStepVerificationState_validator = bv.Union(TwoStepVerificationState)
 
@@ -1987,10 +1732,10 @@ SuggestMembersPolicy.disabled = SuggestMembersPolicy('disabled')
 SuggestMembersPolicy.enabled = SuggestMembersPolicy('enabled')
 SuggestMembersPolicy.other = SuggestMembersPolicy('other')
 
-TeamMemberPolicies._sharing_validator = TeamSharingPolicies_validator
-TeamMemberPolicies._emm_state_validator = EmmState_validator
-TeamMemberPolicies._office_addin_validator = OfficeAddInPolicy_validator
-TeamMemberPolicies._suggest_members_policy_validator = SuggestMembersPolicy_validator
+TeamMemberPolicies.sharing.validator = TeamSharingPolicies_validator
+TeamMemberPolicies.emm_state.validator = EmmState_validator
+TeamMemberPolicies.office_addin.validator = OfficeAddInPolicy_validator
+TeamMemberPolicies.suggest_members_policy.validator = SuggestMembersPolicy_validator
 TeamMemberPolicies._all_field_names_ = set([
     'sharing',
     'emm_state',
@@ -1998,24 +1743,24 @@ TeamMemberPolicies._all_field_names_ = set([
     'suggest_members_policy',
 ])
 TeamMemberPolicies._all_fields_ = [
-    ('sharing', TeamMemberPolicies._sharing_validator),
-    ('emm_state', TeamMemberPolicies._emm_state_validator),
-    ('office_addin', TeamMemberPolicies._office_addin_validator),
-    ('suggest_members_policy', TeamMemberPolicies._suggest_members_policy_validator),
+    ('sharing', TeamMemberPolicies.sharing.validator),
+    ('emm_state', TeamMemberPolicies.emm_state.validator),
+    ('office_addin', TeamMemberPolicies.office_addin.validator),
+    ('suggest_members_policy', TeamMemberPolicies.suggest_members_policy.validator),
 ]
 
-TeamSharingPolicies._shared_folder_member_policy_validator = SharedFolderMemberPolicy_validator
-TeamSharingPolicies._shared_folder_join_policy_validator = SharedFolderJoinPolicy_validator
-TeamSharingPolicies._shared_link_create_policy_validator = SharedLinkCreatePolicy_validator
+TeamSharingPolicies.shared_folder_member_policy.validator = SharedFolderMemberPolicy_validator
+TeamSharingPolicies.shared_folder_join_policy.validator = SharedFolderJoinPolicy_validator
+TeamSharingPolicies.shared_link_create_policy.validator = SharedLinkCreatePolicy_validator
 TeamSharingPolicies._all_field_names_ = set([
     'shared_folder_member_policy',
     'shared_folder_join_policy',
     'shared_link_create_policy',
 ])
 TeamSharingPolicies._all_fields_ = [
-    ('shared_folder_member_policy', TeamSharingPolicies._shared_folder_member_policy_validator),
-    ('shared_folder_join_policy', TeamSharingPolicies._shared_folder_join_policy_validator),
-    ('shared_link_create_policy', TeamSharingPolicies._shared_link_create_policy_validator),
+    ('shared_folder_member_policy', TeamSharingPolicies.shared_folder_member_policy.validator),
+    ('shared_folder_join_policy', TeamSharingPolicies.shared_folder_join_policy.validator),
+    ('shared_link_create_policy', TeamSharingPolicies.shared_link_create_policy.validator),
 ]
 
 TwoStepVerificationPolicy._require_tfa_enable_validator = bv.Void()

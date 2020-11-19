@@ -8,11 +8,11 @@ This namespace contains helpers for property and template metadata endpoints.
 
 These endpoints enable you to tag arbitrary key/value data to Dropbox files.
 
-The most basic unit in this namespace is the :type:`PropertyField`. These fields encapsulate the actual key/value data.
+The most basic unit in this namespace is the :class:`PropertyField`. These fields encapsulate the actual key/value data.
 
-Fields are added to a Dropbox file using a :type:`PropertyGroup`. Property groups contain a reference to a Dropbox file and a :type:`PropertyGroupTemplate`. Property groups are uniquely identified by the combination of their associated Dropbox file and template.
+Fields are added to a Dropbox file using a :class:`PropertyGroup`. Property groups contain a reference to a Dropbox file and a :class:`PropertyGroupTemplate`. Property groups are uniquely identified by the combination of their associated Dropbox file and template.
 
-The :type:`PropertyGroupTemplate` is a way of restricting the possible key names and value types of the data within a property group. The possible key names and value types are explicitly enumerated using :type:`PropertyFieldTemplate` objects.
+The :class:`PropertyGroupTemplate` is a way of restricting the possible key names and value types of the data within a property group. The possible key names and value types are explicitly enumerated using :class:`PropertyFieldTemplate` objects.
 
 You can think of a property group template as a class definition for a particular key/value metadata object, and the property groups themselves as the instantiations of these objects.
 
@@ -23,14 +23,9 @@ User-owned templates are accessed via the user-auth file_properties/templates/*_
 Finally, properties can be accessed from a number of endpoints that return metadata, including `files/get_metadata`, and `files/list_folder`. Properties can also be added during upload, using `files/upload`.
 """
 
-try:
-    from . import stone_validators as bv
-    from . import stone_base as bb
-except (ImportError, SystemError, ValueError):
-    # Catch errors raised when importing a relative module when not in a package.
-    # This makes testing this file directly (outside of a package) easier.
-    import stone_validators as bv
-    import stone_base as bb
+from __future__ import unicode_literals
+from stone.backends.python_rsrc import stone_base as bb
+from stone.backends.python_rsrc import stone_validators as bv
 
 class AddPropertiesArg(bb.Struct):
     """
@@ -43,9 +38,7 @@ class AddPropertiesArg(bb.Struct):
 
     __slots__ = [
         '_path_value',
-        '_path_present',
         '_property_groups_value',
-        '_property_groups_present',
     ]
 
     _has_required_fields = True
@@ -53,70 +46,21 @@ class AddPropertiesArg(bb.Struct):
     def __init__(self,
                  path=None,
                  property_groups=None):
-        self._path_value = None
-        self._path_present = False
-        self._property_groups_value = None
-        self._property_groups_present = False
+        self._path_value = bb.NOT_SET
+        self._property_groups_value = bb.NOT_SET
         if path is not None:
             self.path = path
         if property_groups is not None:
             self.property_groups = property_groups
 
-    @property
-    def path(self):
-        """
-        A unique identifier for the file or folder.
+    # Instance attribute type: str (validator is set below)
+    path = bb.Attribute("path")
 
-        :rtype: str
-        """
-        if self._path_present:
-            return self._path_value
-        else:
-            raise AttributeError("missing required field 'path'")
-
-    @path.setter
-    def path(self, val):
-        val = self._path_validator.validate(val)
-        self._path_value = val
-        self._path_present = True
-
-    @path.deleter
-    def path(self):
-        self._path_value = None
-        self._path_present = False
-
-    @property
-    def property_groups(self):
-        """
-        The property groups which are to be added to a Dropbox file. No two
-        groups in the input should  refer to the same template.
-
-        :rtype: list of [PropertyGroup]
-        """
-        if self._property_groups_present:
-            return self._property_groups_value
-        else:
-            raise AttributeError("missing required field 'property_groups'")
-
-    @property_groups.setter
-    def property_groups(self, val):
-        val = self._property_groups_validator.validate(val)
-        self._property_groups_value = val
-        self._property_groups_present = True
-
-    @property_groups.deleter
-    def property_groups(self):
-        self._property_groups_value = None
-        self._property_groups_present = False
+    # Instance attribute type: list of [PropertyGroup] (validator is set below)
+    property_groups = bb.Attribute("property_groups")
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(AddPropertiesArg, self)._process_custom_annotations(annotation_type, field_path, processor)
-
-    def __repr__(self):
-        return 'AddPropertiesArg(path={!r}, property_groups={!r})'.format(
-            self._path_value,
-            self._property_groups_value,
-        )
 
 AddPropertiesArg_validator = bv.Struct(AddPropertiesArg)
 
@@ -188,9 +132,6 @@ class TemplateError(bb.Union):
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(TemplateError, self)._process_custom_annotations(annotation_type, field_path, processor)
 
-    def __repr__(self):
-        return 'TemplateError(%r, %r)' % (self._tag, self._value)
-
 TemplateError_validator = bv.Union(TemplateError)
 
 class PropertiesError(TemplateError):
@@ -246,9 +187,6 @@ class PropertiesError(TemplateError):
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(PropertiesError, self)._process_custom_annotations(annotation_type, field_path, processor)
 
-    def __repr__(self):
-        return 'PropertiesError(%r, %r)' % (self._tag, self._value)
-
 PropertiesError_validator = bv.Union(PropertiesError)
 
 class InvalidPropertyGroupError(PropertiesError):
@@ -301,9 +239,6 @@ class InvalidPropertyGroupError(PropertiesError):
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(InvalidPropertyGroupError, self)._process_custom_annotations(annotation_type, field_path, processor)
 
-    def __repr__(self):
-        return 'InvalidPropertyGroupError(%r, %r)' % (self._tag, self._value)
-
 InvalidPropertyGroupError_validator = bv.Union(InvalidPropertyGroupError)
 
 class AddPropertiesError(InvalidPropertyGroupError):
@@ -330,9 +265,6 @@ class AddPropertiesError(InvalidPropertyGroupError):
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(AddPropertiesError, self)._process_custom_annotations(annotation_type, field_path, processor)
 
-    def __repr__(self):
-        return 'AddPropertiesError(%r, %r)' % (self._tag, self._value)
-
 AddPropertiesError_validator = bv.Union(AddPropertiesError)
 
 class PropertyGroupTemplate(bb.Struct):
@@ -350,11 +282,8 @@ class PropertyGroupTemplate(bb.Struct):
 
     __slots__ = [
         '_name_value',
-        '_name_present',
         '_description_value',
-        '_description_present',
         '_fields_value',
-        '_fields_present',
     ]
 
     _has_required_fields = True
@@ -363,12 +292,9 @@ class PropertyGroupTemplate(bb.Struct):
                  name=None,
                  description=None,
                  fields=None):
-        self._name_value = None
-        self._name_present = False
-        self._description_value = None
-        self._description_present = False
-        self._fields_value = None
-        self._fields_present = False
+        self._name_value = bb.NOT_SET
+        self._description_value = bb.NOT_SET
+        self._fields_value = bb.NOT_SET
         if name is not None:
             self.name = name
         if description is not None:
@@ -376,86 +302,17 @@ class PropertyGroupTemplate(bb.Struct):
         if fields is not None:
             self.fields = fields
 
-    @property
-    def name(self):
-        """
-        Display name for the template. Template names can be up to 256 bytes.
+    # Instance attribute type: str (validator is set below)
+    name = bb.Attribute("name")
 
-        :rtype: str
-        """
-        if self._name_present:
-            return self._name_value
-        else:
-            raise AttributeError("missing required field 'name'")
+    # Instance attribute type: str (validator is set below)
+    description = bb.Attribute("description")
 
-    @name.setter
-    def name(self, val):
-        val = self._name_validator.validate(val)
-        self._name_value = val
-        self._name_present = True
-
-    @name.deleter
-    def name(self):
-        self._name_value = None
-        self._name_present = False
-
-    @property
-    def description(self):
-        """
-        Description for the template. Template descriptions can be up to 1024
-        bytes.
-
-        :rtype: str
-        """
-        if self._description_present:
-            return self._description_value
-        else:
-            raise AttributeError("missing required field 'description'")
-
-    @description.setter
-    def description(self, val):
-        val = self._description_validator.validate(val)
-        self._description_value = val
-        self._description_present = True
-
-    @description.deleter
-    def description(self):
-        self._description_value = None
-        self._description_present = False
-
-    @property
-    def fields(self):
-        """
-        Definitions of the property fields associated with this template. There
-        can be up to 32 properties in a single template.
-
-        :rtype: list of [PropertyFieldTemplate]
-        """
-        if self._fields_present:
-            return self._fields_value
-        else:
-            raise AttributeError("missing required field 'fields'")
-
-    @fields.setter
-    def fields(self, val):
-        val = self._fields_validator.validate(val)
-        self._fields_value = val
-        self._fields_present = True
-
-    @fields.deleter
-    def fields(self):
-        self._fields_value = None
-        self._fields_present = False
+    # Instance attribute type: list of [PropertyFieldTemplate] (validator is set below)
+    fields = bb.Attribute("fields")
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(PropertyGroupTemplate, self)._process_custom_annotations(annotation_type, field_path, processor)
-
-    def __repr__(self):
-        return 'PropertyGroupTemplate(name={!r}, description={!r}, fields={!r})'.format(
-            self._name_value,
-            self._description_value,
-            self._fields_value,
-        )
 
 PropertyGroupTemplate_validator = bv.Struct(PropertyGroupTemplate)
 
@@ -477,71 +334,34 @@ class AddTemplateArg(PropertyGroupTemplate):
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(AddTemplateArg, self)._process_custom_annotations(annotation_type, field_path, processor)
 
-    def __repr__(self):
-        return 'AddTemplateArg(name={!r}, description={!r}, fields={!r})'.format(
-            self._name_value,
-            self._description_value,
-            self._fields_value,
-        )
-
 AddTemplateArg_validator = bv.Struct(AddTemplateArg)
 
 class AddTemplateResult(bb.Struct):
     """
     :ivar file_properties.AddTemplateResult.template_id: An identifier for
         template added by  See
-        :meth:`dropbox.dropbox.Dropbox.file_properties_templates_add_for_user`
+        :meth:`dropbox.dropbox_client.Dropbox.file_properties_templates_add_for_user`
         or
-        :meth:`dropbox.dropbox.Dropbox.file_properties_templates_add_for_team`.
+        :meth:`dropbox.dropbox_client.Dropbox.file_properties_templates_add_for_team`.
     """
 
     __slots__ = [
         '_template_id_value',
-        '_template_id_present',
     ]
 
     _has_required_fields = True
 
     def __init__(self,
                  template_id=None):
-        self._template_id_value = None
-        self._template_id_present = False
+        self._template_id_value = bb.NOT_SET
         if template_id is not None:
             self.template_id = template_id
 
-    @property
-    def template_id(self):
-        """
-        An identifier for template added by  See
-        :meth:`dropbox.dropbox.Dropbox.file_properties_templates_add_for_user`
-        or
-        :meth:`dropbox.dropbox.Dropbox.file_properties_templates_add_for_team`.
-
-        :rtype: str
-        """
-        if self._template_id_present:
-            return self._template_id_value
-        else:
-            raise AttributeError("missing required field 'template_id'")
-
-    @template_id.setter
-    def template_id(self, val):
-        val = self._template_id_validator.validate(val)
-        self._template_id_value = val
-        self._template_id_present = True
-
-    @template_id.deleter
-    def template_id(self):
-        self._template_id_value = None
-        self._template_id_present = False
+    # Instance attribute type: str (validator is set below)
+    template_id = bb.Attribute("template_id")
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(AddTemplateResult, self)._process_custom_annotations(annotation_type, field_path, processor)
-
-    def __repr__(self):
-        return 'AddTemplateResult(template_id={!r})'.format(
-            self._template_id_value,
-        )
 
 AddTemplateResult_validator = bv.Struct(AddTemplateResult)
 
@@ -549,58 +369,28 @@ class GetTemplateArg(bb.Struct):
     """
     :ivar file_properties.GetTemplateArg.template_id: An identifier for template
         added by route  See
-        :meth:`dropbox.dropbox.Dropbox.file_properties_templates_add_for_user`
+        :meth:`dropbox.dropbox_client.Dropbox.file_properties_templates_add_for_user`
         or
-        :meth:`dropbox.dropbox.Dropbox.file_properties_templates_add_for_team`.
+        :meth:`dropbox.dropbox_client.Dropbox.file_properties_templates_add_for_team`.
     """
 
     __slots__ = [
         '_template_id_value',
-        '_template_id_present',
     ]
 
     _has_required_fields = True
 
     def __init__(self,
                  template_id=None):
-        self._template_id_value = None
-        self._template_id_present = False
+        self._template_id_value = bb.NOT_SET
         if template_id is not None:
             self.template_id = template_id
 
-    @property
-    def template_id(self):
-        """
-        An identifier for template added by route  See
-        :meth:`dropbox.dropbox.Dropbox.file_properties_templates_add_for_user`
-        or
-        :meth:`dropbox.dropbox.Dropbox.file_properties_templates_add_for_team`.
-
-        :rtype: str
-        """
-        if self._template_id_present:
-            return self._template_id_value
-        else:
-            raise AttributeError("missing required field 'template_id'")
-
-    @template_id.setter
-    def template_id(self, val):
-        val = self._template_id_validator.validate(val)
-        self._template_id_value = val
-        self._template_id_present = True
-
-    @template_id.deleter
-    def template_id(self):
-        self._template_id_value = None
-        self._template_id_present = False
+    # Instance attribute type: str (validator is set below)
+    template_id = bb.Attribute("template_id")
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(GetTemplateArg, self)._process_custom_annotations(annotation_type, field_path, processor)
-
-    def __repr__(self):
-        return 'GetTemplateArg(template_id={!r})'.format(
-            self._template_id_value,
-        )
 
 GetTemplateArg_validator = bv.Struct(GetTemplateArg)
 
@@ -622,71 +412,34 @@ class GetTemplateResult(PropertyGroupTemplate):
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(GetTemplateResult, self)._process_custom_annotations(annotation_type, field_path, processor)
 
-    def __repr__(self):
-        return 'GetTemplateResult(name={!r}, description={!r}, fields={!r})'.format(
-            self._name_value,
-            self._description_value,
-            self._fields_value,
-        )
-
 GetTemplateResult_validator = bv.Struct(GetTemplateResult)
 
 class ListTemplateResult(bb.Struct):
     """
     :ivar file_properties.ListTemplateResult.template_ids: List of identifiers
         for templates added by  See
-        :meth:`dropbox.dropbox.Dropbox.file_properties_templates_add_for_user`
+        :meth:`dropbox.dropbox_client.Dropbox.file_properties_templates_add_for_user`
         or
-        :meth:`dropbox.dropbox.Dropbox.file_properties_templates_add_for_team`.
+        :meth:`dropbox.dropbox_client.Dropbox.file_properties_templates_add_for_team`.
     """
 
     __slots__ = [
         '_template_ids_value',
-        '_template_ids_present',
     ]
 
     _has_required_fields = True
 
     def __init__(self,
                  template_ids=None):
-        self._template_ids_value = None
-        self._template_ids_present = False
+        self._template_ids_value = bb.NOT_SET
         if template_ids is not None:
             self.template_ids = template_ids
 
-    @property
-    def template_ids(self):
-        """
-        List of identifiers for templates added by  See
-        :meth:`dropbox.dropbox.Dropbox.file_properties_templates_add_for_user`
-        or
-        :meth:`dropbox.dropbox.Dropbox.file_properties_templates_add_for_team`.
-
-        :rtype: list of [str]
-        """
-        if self._template_ids_present:
-            return self._template_ids_value
-        else:
-            raise AttributeError("missing required field 'template_ids'")
-
-    @template_ids.setter
-    def template_ids(self, val):
-        val = self._template_ids_validator.validate(val)
-        self._template_ids_value = val
-        self._template_ids_present = True
-
-    @template_ids.deleter
-    def template_ids(self):
-        self._template_ids_value = None
-        self._template_ids_present = False
+    # Instance attribute type: list of [str] (validator is set below)
+    template_ids = bb.Attribute("template_ids")
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(ListTemplateResult, self)._process_custom_annotations(annotation_type, field_path, processor)
-
-    def __repr__(self):
-        return 'ListTemplateResult(template_ids={!r})'.format(
-            self._template_ids_value,
-        )
 
 ListTemplateResult_validator = bv.Struct(ListTemplateResult)
 
@@ -727,9 +480,6 @@ class LogicalOperator(bb.Union):
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(LogicalOperator, self)._process_custom_annotations(annotation_type, field_path, processor)
 
-    def __repr__(self):
-        return 'LogicalOperator(%r, %r)' % (self._tag, self._value)
-
 LogicalOperator_validator = bv.Union(LogicalOperator)
 
 class LookUpPropertiesError(bb.Union):
@@ -766,9 +516,6 @@ class LookUpPropertiesError(bb.Union):
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(LookUpPropertiesError, self)._process_custom_annotations(annotation_type, field_path, processor)
-
-    def __repr__(self):
-        return 'LookUpPropertiesError(%r, %r)' % (self._tag, self._value)
 
 LookUpPropertiesError_validator = bv.Union(LookUpPropertiesError)
 
@@ -873,9 +620,6 @@ class LookupError(bb.Union):
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(LookupError, self)._process_custom_annotations(annotation_type, field_path, processor)
 
-    def __repr__(self):
-        return 'LookupError(%r, %r)' % (self._tag, self._value)
-
 LookupError_validator = bv.Union(LookupError)
 
 class ModifyTemplateError(TemplateError):
@@ -940,9 +684,6 @@ class ModifyTemplateError(TemplateError):
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(ModifyTemplateError, self)._process_custom_annotations(annotation_type, field_path, processor)
 
-    def __repr__(self):
-        return 'ModifyTemplateError(%r, %r)' % (self._tag, self._value)
-
 ModifyTemplateError_validator = bv.Union(ModifyTemplateError)
 
 class OverwritePropertyGroupArg(bb.Struct):
@@ -956,9 +697,7 @@ class OverwritePropertyGroupArg(bb.Struct):
 
     __slots__ = [
         '_path_value',
-        '_path_present',
         '_property_groups_value',
-        '_property_groups_present',
     ]
 
     _has_required_fields = True
@@ -966,70 +705,21 @@ class OverwritePropertyGroupArg(bb.Struct):
     def __init__(self,
                  path=None,
                  property_groups=None):
-        self._path_value = None
-        self._path_present = False
-        self._property_groups_value = None
-        self._property_groups_present = False
+        self._path_value = bb.NOT_SET
+        self._property_groups_value = bb.NOT_SET
         if path is not None:
             self.path = path
         if property_groups is not None:
             self.property_groups = property_groups
 
-    @property
-    def path(self):
-        """
-        A unique identifier for the file or folder.
+    # Instance attribute type: str (validator is set below)
+    path = bb.Attribute("path")
 
-        :rtype: str
-        """
-        if self._path_present:
-            return self._path_value
-        else:
-            raise AttributeError("missing required field 'path'")
-
-    @path.setter
-    def path(self, val):
-        val = self._path_validator.validate(val)
-        self._path_value = val
-        self._path_present = True
-
-    @path.deleter
-    def path(self):
-        self._path_value = None
-        self._path_present = False
-
-    @property
-    def property_groups(self):
-        """
-        The property groups "snapshot" updates to force apply. No two groups in
-        the input should  refer to the same template.
-
-        :rtype: list of [PropertyGroup]
-        """
-        if self._property_groups_present:
-            return self._property_groups_value
-        else:
-            raise AttributeError("missing required field 'property_groups'")
-
-    @property_groups.setter
-    def property_groups(self, val):
-        val = self._property_groups_validator.validate(val)
-        self._property_groups_value = val
-        self._property_groups_present = True
-
-    @property_groups.deleter
-    def property_groups(self):
-        self._property_groups_value = None
-        self._property_groups_present = False
+    # Instance attribute type: list of [PropertyGroup] (validator is set below)
+    property_groups = bb.Attribute("property_groups")
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(OverwritePropertyGroupArg, self)._process_custom_annotations(annotation_type, field_path, processor)
-
-    def __repr__(self):
-        return 'OverwritePropertyGroupArg(path={!r}, property_groups={!r})'.format(
-            self._path_value,
-            self._property_groups_value,
-        )
 
 OverwritePropertyGroupArg_validator = bv.Struct(OverwritePropertyGroupArg)
 
@@ -1042,9 +732,7 @@ class PropertiesSearchArg(bb.Struct):
 
     __slots__ = [
         '_queries_value',
-        '_queries_present',
         '_template_filter_value',
-        '_template_filter_present',
     ]
 
     _has_required_fields = True
@@ -1052,70 +740,21 @@ class PropertiesSearchArg(bb.Struct):
     def __init__(self,
                  queries=None,
                  template_filter=None):
-        self._queries_value = None
-        self._queries_present = False
-        self._template_filter_value = None
-        self._template_filter_present = False
+        self._queries_value = bb.NOT_SET
+        self._template_filter_value = bb.NOT_SET
         if queries is not None:
             self.queries = queries
         if template_filter is not None:
             self.template_filter = template_filter
 
-    @property
-    def queries(self):
-        """
-        Queries to search.
+    # Instance attribute type: list of [PropertiesSearchQuery] (validator is set below)
+    queries = bb.Attribute("queries")
 
-        :rtype: list of [PropertiesSearchQuery]
-        """
-        if self._queries_present:
-            return self._queries_value
-        else:
-            raise AttributeError("missing required field 'queries'")
-
-    @queries.setter
-    def queries(self, val):
-        val = self._queries_validator.validate(val)
-        self._queries_value = val
-        self._queries_present = True
-
-    @queries.deleter
-    def queries(self):
-        self._queries_value = None
-        self._queries_present = False
-
-    @property
-    def template_filter(self):
-        """
-        Filter results to contain only properties associated with these template
-        IDs.
-
-        :rtype: TemplateFilter
-        """
-        if self._template_filter_present:
-            return self._template_filter_value
-        else:
-            return TemplateFilter.filter_none
-
-    @template_filter.setter
-    def template_filter(self, val):
-        self._template_filter_validator.validate_type_only(val)
-        self._template_filter_value = val
-        self._template_filter_present = True
-
-    @template_filter.deleter
-    def template_filter(self):
-        self._template_filter_value = None
-        self._template_filter_present = False
+    # Instance attribute type: TemplateFilter (validator is set below)
+    template_filter = bb.Attribute("template_filter", user_defined=True)
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(PropertiesSearchArg, self)._process_custom_annotations(annotation_type, field_path, processor)
-
-    def __repr__(self):
-        return 'PropertiesSearchArg(queries={!r}, template_filter={!r})'.format(
-            self._queries_value,
-            self._template_filter_value,
-        )
 
 PropertiesSearchArg_validator = bv.Struct(PropertiesSearchArg)
 
@@ -1123,56 +762,28 @@ class PropertiesSearchContinueArg(bb.Struct):
     """
     :ivar file_properties.PropertiesSearchContinueArg.cursor: The cursor
         returned by your last call to
-        :meth:`dropbox.dropbox.Dropbox.file_properties_properties_search` or
-        :meth:`dropbox.dropbox.Dropbox.file_properties_properties_search_continue`.
+        :meth:`dropbox.dropbox_client.Dropbox.file_properties_properties_search`
+        or
+        :meth:`dropbox.dropbox_client.Dropbox.file_properties_properties_search_continue`.
     """
 
     __slots__ = [
         '_cursor_value',
-        '_cursor_present',
     ]
 
     _has_required_fields = True
 
     def __init__(self,
                  cursor=None):
-        self._cursor_value = None
-        self._cursor_present = False
+        self._cursor_value = bb.NOT_SET
         if cursor is not None:
             self.cursor = cursor
 
-    @property
-    def cursor(self):
-        """
-        The cursor returned by your last call to
-        :meth:`dropbox.dropbox.Dropbox.file_properties_properties_search` or
-        :meth:`dropbox.dropbox.Dropbox.file_properties_properties_search_continue`.
-
-        :rtype: str
-        """
-        if self._cursor_present:
-            return self._cursor_value
-        else:
-            raise AttributeError("missing required field 'cursor'")
-
-    @cursor.setter
-    def cursor(self, val):
-        val = self._cursor_validator.validate(val)
-        self._cursor_value = val
-        self._cursor_present = True
-
-    @cursor.deleter
-    def cursor(self):
-        self._cursor_value = None
-        self._cursor_present = False
+    # Instance attribute type: str (validator is set below)
+    cursor = bb.Attribute("cursor")
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(PropertiesSearchContinueArg, self)._process_custom_annotations(annotation_type, field_path, processor)
-
-    def __repr__(self):
-        return 'PropertiesSearchContinueArg(cursor={!r})'.format(
-            self._cursor_value,
-        )
 
 PropertiesSearchContinueArg_validator = bv.Struct(PropertiesSearchContinueArg)
 
@@ -1184,8 +795,8 @@ class PropertiesSearchContinueError(bb.Union):
 
     :ivar file_properties.PropertiesSearchContinueError.reset: Indicates that
         the cursor has been invalidated. Call
-        :meth:`dropbox.dropbox.Dropbox.file_properties_properties_search` to
-        obtain a new cursor.
+        :meth:`dropbox.dropbox_client.Dropbox.file_properties_properties_search`
+        to obtain a new cursor.
     """
 
     _catch_all = 'other'
@@ -1212,9 +823,6 @@ class PropertiesSearchContinueError(bb.Union):
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(PropertiesSearchContinueError, self)._process_custom_annotations(annotation_type, field_path, processor)
-
-    def __repr__(self):
-        return 'PropertiesSearchContinueError(%r, %r)' % (self._tag, self._value)
 
 PropertiesSearchContinueError_validator = bv.Union(PropertiesSearchContinueError)
 
@@ -1269,9 +877,6 @@ class PropertiesSearchError(bb.Union):
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(PropertiesSearchError, self)._process_custom_annotations(annotation_type, field_path, processor)
 
-    def __repr__(self):
-        return 'PropertiesSearchError(%r, %r)' % (self._tag, self._value)
-
 PropertiesSearchError_validator = bv.Union(PropertiesSearchError)
 
 class PropertiesSearchMatch(bb.Struct):
@@ -1288,13 +893,9 @@ class PropertiesSearchMatch(bb.Struct):
 
     __slots__ = [
         '_id_value',
-        '_id_present',
         '_path_value',
-        '_path_present',
         '_is_deleted_value',
-        '_is_deleted_present',
         '_property_groups_value',
-        '_property_groups_present',
     ]
 
     _has_required_fields = True
@@ -1304,14 +905,10 @@ class PropertiesSearchMatch(bb.Struct):
                  path=None,
                  is_deleted=None,
                  property_groups=None):
-        self._id_value = None
-        self._id_present = False
-        self._path_value = None
-        self._path_present = False
-        self._is_deleted_value = None
-        self._is_deleted_present = False
-        self._property_groups_value = None
-        self._property_groups_present = False
+        self._id_value = bb.NOT_SET
+        self._path_value = bb.NOT_SET
+        self._is_deleted_value = bb.NOT_SET
+        self._property_groups_value = bb.NOT_SET
         if id is not None:
             self.id = id
         if path is not None:
@@ -1321,108 +918,20 @@ class PropertiesSearchMatch(bb.Struct):
         if property_groups is not None:
             self.property_groups = property_groups
 
-    @property
-    def id(self):
-        """
-        The ID for the matched file or folder.
+    # Instance attribute type: str (validator is set below)
+    id = bb.Attribute("id")
 
-        :rtype: str
-        """
-        if self._id_present:
-            return self._id_value
-        else:
-            raise AttributeError("missing required field 'id'")
+    # Instance attribute type: str (validator is set below)
+    path = bb.Attribute("path")
 
-    @id.setter
-    def id(self, val):
-        val = self._id_validator.validate(val)
-        self._id_value = val
-        self._id_present = True
+    # Instance attribute type: bool (validator is set below)
+    is_deleted = bb.Attribute("is_deleted")
 
-    @id.deleter
-    def id(self):
-        self._id_value = None
-        self._id_present = False
-
-    @property
-    def path(self):
-        """
-        The path for the matched file or folder.
-
-        :rtype: str
-        """
-        if self._path_present:
-            return self._path_value
-        else:
-            raise AttributeError("missing required field 'path'")
-
-    @path.setter
-    def path(self, val):
-        val = self._path_validator.validate(val)
-        self._path_value = val
-        self._path_present = True
-
-    @path.deleter
-    def path(self):
-        self._path_value = None
-        self._path_present = False
-
-    @property
-    def is_deleted(self):
-        """
-        Whether the file or folder is deleted.
-
-        :rtype: bool
-        """
-        if self._is_deleted_present:
-            return self._is_deleted_value
-        else:
-            raise AttributeError("missing required field 'is_deleted'")
-
-    @is_deleted.setter
-    def is_deleted(self, val):
-        val = self._is_deleted_validator.validate(val)
-        self._is_deleted_value = val
-        self._is_deleted_present = True
-
-    @is_deleted.deleter
-    def is_deleted(self):
-        self._is_deleted_value = None
-        self._is_deleted_present = False
-
-    @property
-    def property_groups(self):
-        """
-        List of custom property groups associated with the file.
-
-        :rtype: list of [PropertyGroup]
-        """
-        if self._property_groups_present:
-            return self._property_groups_value
-        else:
-            raise AttributeError("missing required field 'property_groups'")
-
-    @property_groups.setter
-    def property_groups(self, val):
-        val = self._property_groups_validator.validate(val)
-        self._property_groups_value = val
-        self._property_groups_present = True
-
-    @property_groups.deleter
-    def property_groups(self):
-        self._property_groups_value = None
-        self._property_groups_present = False
+    # Instance attribute type: list of [PropertyGroup] (validator is set below)
+    property_groups = bb.Attribute("property_groups")
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(PropertiesSearchMatch, self)._process_custom_annotations(annotation_type, field_path, processor)
-
-    def __repr__(self):
-        return 'PropertiesSearchMatch(id={!r}, path={!r}, is_deleted={!r}, property_groups={!r})'.format(
-            self._id_value,
-            self._path_value,
-            self._is_deleted_value,
-            self._property_groups_value,
-        )
 
 PropertiesSearchMatch_validator = bv.Struct(PropertiesSearchMatch)
 
@@ -1482,9 +991,6 @@ class PropertiesSearchMode(bb.Union):
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(PropertiesSearchMode, self)._process_custom_annotations(annotation_type, field_path, processor)
 
-    def __repr__(self):
-        return 'PropertiesSearchMode(%r, %r)' % (self._tag, self._value)
-
 PropertiesSearchMode_validator = bv.Union(PropertiesSearchMode)
 
 class PropertiesSearchQuery(bb.Struct):
@@ -1499,11 +1005,8 @@ class PropertiesSearchQuery(bb.Struct):
 
     __slots__ = [
         '_query_value',
-        '_query_present',
         '_mode_value',
-        '_mode_present',
         '_logical_operator_value',
-        '_logical_operator_present',
     ]
 
     _has_required_fields = True
@@ -1512,12 +1015,9 @@ class PropertiesSearchQuery(bb.Struct):
                  query=None,
                  mode=None,
                  logical_operator=None):
-        self._query_value = None
-        self._query_present = False
-        self._mode_value = None
-        self._mode_present = False
-        self._logical_operator_value = None
-        self._logical_operator_present = False
+        self._query_value = bb.NOT_SET
+        self._mode_value = bb.NOT_SET
+        self._logical_operator_value = bb.NOT_SET
         if query is not None:
             self.query = query
         if mode is not None:
@@ -1525,84 +1025,17 @@ class PropertiesSearchQuery(bb.Struct):
         if logical_operator is not None:
             self.logical_operator = logical_operator
 
-    @property
-    def query(self):
-        """
-        The property field value for which to search across templates.
+    # Instance attribute type: str (validator is set below)
+    query = bb.Attribute("query")
 
-        :rtype: str
-        """
-        if self._query_present:
-            return self._query_value
-        else:
-            raise AttributeError("missing required field 'query'")
+    # Instance attribute type: PropertiesSearchMode (validator is set below)
+    mode = bb.Attribute("mode", user_defined=True)
 
-    @query.setter
-    def query(self, val):
-        val = self._query_validator.validate(val)
-        self._query_value = val
-        self._query_present = True
-
-    @query.deleter
-    def query(self):
-        self._query_value = None
-        self._query_present = False
-
-    @property
-    def mode(self):
-        """
-        The mode with which to perform the search.
-
-        :rtype: PropertiesSearchMode
-        """
-        if self._mode_present:
-            return self._mode_value
-        else:
-            raise AttributeError("missing required field 'mode'")
-
-    @mode.setter
-    def mode(self, val):
-        self._mode_validator.validate_type_only(val)
-        self._mode_value = val
-        self._mode_present = True
-
-    @mode.deleter
-    def mode(self):
-        self._mode_value = None
-        self._mode_present = False
-
-    @property
-    def logical_operator(self):
-        """
-        The logical operator with which to append the query.
-
-        :rtype: LogicalOperator
-        """
-        if self._logical_operator_present:
-            return self._logical_operator_value
-        else:
-            return LogicalOperator.or_operator
-
-    @logical_operator.setter
-    def logical_operator(self, val):
-        self._logical_operator_validator.validate_type_only(val)
-        self._logical_operator_value = val
-        self._logical_operator_present = True
-
-    @logical_operator.deleter
-    def logical_operator(self):
-        self._logical_operator_value = None
-        self._logical_operator_present = False
+    # Instance attribute type: LogicalOperator (validator is set below)
+    logical_operator = bb.Attribute("logical_operator", user_defined=True)
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(PropertiesSearchQuery, self)._process_custom_annotations(annotation_type, field_path, processor)
-
-    def __repr__(self):
-        return 'PropertiesSearchQuery(query={!r}, mode={!r}, logical_operator={!r})'.format(
-            self._query_value,
-            self._mode_value,
-            self._logical_operator_value,
-        )
 
 PropertiesSearchQuery_validator = bv.Struct(PropertiesSearchQuery)
 
@@ -1611,16 +1044,14 @@ class PropertiesSearchResult(bb.Struct):
     :ivar file_properties.PropertiesSearchResult.matches: A list (possibly
         empty) of matches for the query.
     :ivar file_properties.PropertiesSearchResult.cursor: Pass the cursor into
-        :meth:`dropbox.dropbox.Dropbox.file_properties_properties_search_continue`
+        :meth:`dropbox.dropbox_client.Dropbox.file_properties_properties_search_continue`
         to continue to receive search results. Cursor will be null when there
         are no more results.
     """
 
     __slots__ = [
         '_matches_value',
-        '_matches_present',
         '_cursor_value',
-        '_cursor_present',
     ]
 
     _has_required_fields = True
@@ -1628,75 +1059,21 @@ class PropertiesSearchResult(bb.Struct):
     def __init__(self,
                  matches=None,
                  cursor=None):
-        self._matches_value = None
-        self._matches_present = False
-        self._cursor_value = None
-        self._cursor_present = False
+        self._matches_value = bb.NOT_SET
+        self._cursor_value = bb.NOT_SET
         if matches is not None:
             self.matches = matches
         if cursor is not None:
             self.cursor = cursor
 
-    @property
-    def matches(self):
-        """
-        A list (possibly empty) of matches for the query.
+    # Instance attribute type: list of [PropertiesSearchMatch] (validator is set below)
+    matches = bb.Attribute("matches")
 
-        :rtype: list of [PropertiesSearchMatch]
-        """
-        if self._matches_present:
-            return self._matches_value
-        else:
-            raise AttributeError("missing required field 'matches'")
-
-    @matches.setter
-    def matches(self, val):
-        val = self._matches_validator.validate(val)
-        self._matches_value = val
-        self._matches_present = True
-
-    @matches.deleter
-    def matches(self):
-        self._matches_value = None
-        self._matches_present = False
-
-    @property
-    def cursor(self):
-        """
-        Pass the cursor into
-        :meth:`dropbox.dropbox.Dropbox.file_properties_properties_search_continue`
-        to continue to receive search results. Cursor will be null when there
-        are no more results.
-
-        :rtype: str
-        """
-        if self._cursor_present:
-            return self._cursor_value
-        else:
-            return None
-
-    @cursor.setter
-    def cursor(self, val):
-        if val is None:
-            del self.cursor
-            return
-        val = self._cursor_validator.validate(val)
-        self._cursor_value = val
-        self._cursor_present = True
-
-    @cursor.deleter
-    def cursor(self):
-        self._cursor_value = None
-        self._cursor_present = False
+    # Instance attribute type: str (validator is set below)
+    cursor = bb.Attribute("cursor", nullable=True)
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(PropertiesSearchResult, self)._process_custom_annotations(annotation_type, field_path, processor)
-
-    def __repr__(self):
-        return 'PropertiesSearchResult(matches={!r}, cursor={!r})'.format(
-            self._matches_value,
-            self._cursor_value,
-        )
 
 PropertiesSearchResult_validator = bv.Struct(PropertiesSearchResult)
 
@@ -1713,9 +1090,7 @@ class PropertyField(bb.Struct):
 
     __slots__ = [
         '_name_value',
-        '_name_present',
         '_value_value',
-        '_value_present',
     ]
 
     _has_required_fields = True
@@ -1723,71 +1098,21 @@ class PropertyField(bb.Struct):
     def __init__(self,
                  name=None,
                  value=None):
-        self._name_value = None
-        self._name_present = False
-        self._value_value = None
-        self._value_present = False
+        self._name_value = bb.NOT_SET
+        self._value_value = bb.NOT_SET
         if name is not None:
             self.name = name
         if value is not None:
             self.value = value
 
-    @property
-    def name(self):
-        """
-        Key of the property field associated with a file and template. Keys can
-        be up to 256 bytes.
+    # Instance attribute type: str (validator is set below)
+    name = bb.Attribute("name")
 
-        :rtype: str
-        """
-        if self._name_present:
-            return self._name_value
-        else:
-            raise AttributeError("missing required field 'name'")
-
-    @name.setter
-    def name(self, val):
-        val = self._name_validator.validate(val)
-        self._name_value = val
-        self._name_present = True
-
-    @name.deleter
-    def name(self):
-        self._name_value = None
-        self._name_present = False
-
-    @property
-    def value(self):
-        """
-        Value of the property field associated with a file and template. Values
-        can be up to 1024 bytes.
-
-        :rtype: str
-        """
-        if self._value_present:
-            return self._value_value
-        else:
-            raise AttributeError("missing required field 'value'")
-
-    @value.setter
-    def value(self, val):
-        val = self._value_validator.validate(val)
-        self._value_value = val
-        self._value_present = True
-
-    @value.deleter
-    def value(self):
-        self._value_value = None
-        self._value_present = False
+    # Instance attribute type: str (validator is set below)
+    value = bb.Attribute("value")
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(PropertyField, self)._process_custom_annotations(annotation_type, field_path, processor)
-
-    def __repr__(self):
-        return 'PropertyField(name={!r}, value={!r})'.format(
-            self._name_value,
-            self._value_value,
-        )
 
 PropertyField_validator = bv.Struct(PropertyField)
 
@@ -1807,11 +1132,8 @@ class PropertyFieldTemplate(bb.Struct):
 
     __slots__ = [
         '_name_value',
-        '_name_present',
         '_description_value',
-        '_description_present',
         '_type_value',
-        '_type_present',
     ]
 
     _has_required_fields = True
@@ -1820,12 +1142,9 @@ class PropertyFieldTemplate(bb.Struct):
                  name=None,
                  description=None,
                  type=None):
-        self._name_value = None
-        self._name_present = False
-        self._description_value = None
-        self._description_present = False
-        self._type_value = None
-        self._type_present = False
+        self._name_value = bb.NOT_SET
+        self._description_value = bb.NOT_SET
+        self._type_value = bb.NOT_SET
         if name is not None:
             self.name = name
         if description is not None:
@@ -1833,87 +1152,17 @@ class PropertyFieldTemplate(bb.Struct):
         if type is not None:
             self.type = type
 
-    @property
-    def name(self):
-        """
-        Key of the property field being described. Property field keys can be up
-        to 256 bytes.
+    # Instance attribute type: str (validator is set below)
+    name = bb.Attribute("name")
 
-        :rtype: str
-        """
-        if self._name_present:
-            return self._name_value
-        else:
-            raise AttributeError("missing required field 'name'")
+    # Instance attribute type: str (validator is set below)
+    description = bb.Attribute("description")
 
-    @name.setter
-    def name(self, val):
-        val = self._name_validator.validate(val)
-        self._name_value = val
-        self._name_present = True
-
-    @name.deleter
-    def name(self):
-        self._name_value = None
-        self._name_present = False
-
-    @property
-    def description(self):
-        """
-        Description of the property field. Property field descriptions can be up
-        to 1024 bytes.
-
-        :rtype: str
-        """
-        if self._description_present:
-            return self._description_value
-        else:
-            raise AttributeError("missing required field 'description'")
-
-    @description.setter
-    def description(self, val):
-        val = self._description_validator.validate(val)
-        self._description_value = val
-        self._description_present = True
-
-    @description.deleter
-    def description(self):
-        self._description_value = None
-        self._description_present = False
-
-    @property
-    def type(self):
-        """
-        Data type of the value of this property field. This type will be
-        enforced upon property creation and modifications.
-
-        :rtype: PropertyType
-        """
-        if self._type_present:
-            return self._type_value
-        else:
-            raise AttributeError("missing required field 'type'")
-
-    @type.setter
-    def type(self, val):
-        self._type_validator.validate_type_only(val)
-        self._type_value = val
-        self._type_present = True
-
-    @type.deleter
-    def type(self):
-        self._type_value = None
-        self._type_present = False
+    # Instance attribute type: PropertyType (validator is set below)
+    type = bb.Attribute("type", user_defined=True)
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(PropertyFieldTemplate, self)._process_custom_annotations(annotation_type, field_path, processor)
-
-    def __repr__(self):
-        return 'PropertyFieldTemplate(name={!r}, description={!r}, type={!r})'.format(
-            self._name_value,
-            self._description_value,
-            self._type_value,
-        )
 
 PropertyFieldTemplate_validator = bv.Struct(PropertyFieldTemplate)
 
@@ -1932,9 +1181,7 @@ class PropertyGroup(bb.Struct):
 
     __slots__ = [
         '_template_id_value',
-        '_template_id_present',
         '_fields_value',
-        '_fields_present',
     ]
 
     _has_required_fields = True
@@ -1942,70 +1189,21 @@ class PropertyGroup(bb.Struct):
     def __init__(self,
                  template_id=None,
                  fields=None):
-        self._template_id_value = None
-        self._template_id_present = False
-        self._fields_value = None
-        self._fields_present = False
+        self._template_id_value = bb.NOT_SET
+        self._fields_value = bb.NOT_SET
         if template_id is not None:
             self.template_id = template_id
         if fields is not None:
             self.fields = fields
 
-    @property
-    def template_id(self):
-        """
-        A unique identifier for the associated template.
+    # Instance attribute type: str (validator is set below)
+    template_id = bb.Attribute("template_id")
 
-        :rtype: str
-        """
-        if self._template_id_present:
-            return self._template_id_value
-        else:
-            raise AttributeError("missing required field 'template_id'")
-
-    @template_id.setter
-    def template_id(self, val):
-        val = self._template_id_validator.validate(val)
-        self._template_id_value = val
-        self._template_id_present = True
-
-    @template_id.deleter
-    def template_id(self):
-        self._template_id_value = None
-        self._template_id_present = False
-
-    @property
-    def fields(self):
-        """
-        The actual properties associated with the template. There can be up to
-        32 property types per template.
-
-        :rtype: list of [PropertyField]
-        """
-        if self._fields_present:
-            return self._fields_value
-        else:
-            raise AttributeError("missing required field 'fields'")
-
-    @fields.setter
-    def fields(self, val):
-        val = self._fields_validator.validate(val)
-        self._fields_value = val
-        self._fields_present = True
-
-    @fields.deleter
-    def fields(self):
-        self._fields_value = None
-        self._fields_present = False
+    # Instance attribute type: list of [PropertyField] (validator is set below)
+    fields = bb.Attribute("fields")
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(PropertyGroup, self)._process_custom_annotations(annotation_type, field_path, processor)
-
-    def __repr__(self):
-        return 'PropertyGroup(template_id={!r}, fields={!r})'.format(
-            self._template_id_value,
-            self._fields_value,
-        )
 
 PropertyGroup_validator = bv.Struct(PropertyGroup)
 
@@ -2022,11 +1220,8 @@ class PropertyGroupUpdate(bb.Struct):
 
     __slots__ = [
         '_template_id_value',
-        '_template_id_present',
         '_add_or_update_fields_value',
-        '_add_or_update_fields_present',
         '_remove_fields_value',
-        '_remove_fields_present',
     ]
 
     _has_required_fields = True
@@ -2035,12 +1230,9 @@ class PropertyGroupUpdate(bb.Struct):
                  template_id=None,
                  add_or_update_fields=None,
                  remove_fields=None):
-        self._template_id_value = None
-        self._template_id_present = False
-        self._add_or_update_fields_value = None
-        self._add_or_update_fields_present = False
-        self._remove_fields_value = None
-        self._remove_fields_present = False
+        self._template_id_value = bb.NOT_SET
+        self._add_or_update_fields_value = bb.NOT_SET
+        self._remove_fields_value = bb.NOT_SET
         if template_id is not None:
             self.template_id = template_id
         if add_or_update_fields is not None:
@@ -2048,92 +1240,17 @@ class PropertyGroupUpdate(bb.Struct):
         if remove_fields is not None:
             self.remove_fields = remove_fields
 
-    @property
-    def template_id(self):
-        """
-        A unique identifier for a property template.
+    # Instance attribute type: str (validator is set below)
+    template_id = bb.Attribute("template_id")
 
-        :rtype: str
-        """
-        if self._template_id_present:
-            return self._template_id_value
-        else:
-            raise AttributeError("missing required field 'template_id'")
+    # Instance attribute type: list of [PropertyField] (validator is set below)
+    add_or_update_fields = bb.Attribute("add_or_update_fields", nullable=True)
 
-    @template_id.setter
-    def template_id(self, val):
-        val = self._template_id_validator.validate(val)
-        self._template_id_value = val
-        self._template_id_present = True
-
-    @template_id.deleter
-    def template_id(self):
-        self._template_id_value = None
-        self._template_id_present = False
-
-    @property
-    def add_or_update_fields(self):
-        """
-        Property fields to update. If the property field already exists, it is
-        updated. If the property field doesn't exist, the property group is
-        added.
-
-        :rtype: list of [PropertyField]
-        """
-        if self._add_or_update_fields_present:
-            return self._add_or_update_fields_value
-        else:
-            return None
-
-    @add_or_update_fields.setter
-    def add_or_update_fields(self, val):
-        if val is None:
-            del self.add_or_update_fields
-            return
-        val = self._add_or_update_fields_validator.validate(val)
-        self._add_or_update_fields_value = val
-        self._add_or_update_fields_present = True
-
-    @add_or_update_fields.deleter
-    def add_or_update_fields(self):
-        self._add_or_update_fields_value = None
-        self._add_or_update_fields_present = False
-
-    @property
-    def remove_fields(self):
-        """
-        Property fields to remove (by name), provided they exist.
-
-        :rtype: list of [str]
-        """
-        if self._remove_fields_present:
-            return self._remove_fields_value
-        else:
-            return None
-
-    @remove_fields.setter
-    def remove_fields(self, val):
-        if val is None:
-            del self.remove_fields
-            return
-        val = self._remove_fields_validator.validate(val)
-        self._remove_fields_value = val
-        self._remove_fields_present = True
-
-    @remove_fields.deleter
-    def remove_fields(self):
-        self._remove_fields_value = None
-        self._remove_fields_present = False
+    # Instance attribute type: list of [str] (validator is set below)
+    remove_fields = bb.Attribute("remove_fields", nullable=True)
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(PropertyGroupUpdate, self)._process_custom_annotations(annotation_type, field_path, processor)
-
-    def __repr__(self):
-        return 'PropertyGroupUpdate(template_id={!r}, add_or_update_fields={!r}, remove_fields={!r})'.format(
-            self._template_id_value,
-            self._add_or_update_fields_value,
-            self._remove_fields_value,
-        )
 
 PropertyGroupUpdate_validator = bv.Struct(PropertyGroupUpdate)
 
@@ -2174,9 +1291,6 @@ class PropertyType(bb.Union):
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(PropertyType, self)._process_custom_annotations(annotation_type, field_path, processor)
 
-    def __repr__(self):
-        return 'PropertyType(%r, %r)' % (self._tag, self._value)
-
 PropertyType_validator = bv.Union(PropertyType)
 
 class RemovePropertiesArg(bb.Struct):
@@ -2185,16 +1299,14 @@ class RemovePropertiesArg(bb.Struct):
         file or folder.
     :ivar file_properties.RemovePropertiesArg.property_template_ids: A list of
         identifiers for a template created by
-        :meth:`dropbox.dropbox.Dropbox.file_properties_templates_add_for_user`
+        :meth:`dropbox.dropbox_client.Dropbox.file_properties_templates_add_for_user`
         or
-        :meth:`dropbox.dropbox.Dropbox.file_properties_templates_add_for_team`.
+        :meth:`dropbox.dropbox_client.Dropbox.file_properties_templates_add_for_team`.
     """
 
     __slots__ = [
         '_path_value',
-        '_path_present',
         '_property_template_ids_value',
-        '_property_template_ids_present',
     ]
 
     _has_required_fields = True
@@ -2202,72 +1314,21 @@ class RemovePropertiesArg(bb.Struct):
     def __init__(self,
                  path=None,
                  property_template_ids=None):
-        self._path_value = None
-        self._path_present = False
-        self._property_template_ids_value = None
-        self._property_template_ids_present = False
+        self._path_value = bb.NOT_SET
+        self._property_template_ids_value = bb.NOT_SET
         if path is not None:
             self.path = path
         if property_template_ids is not None:
             self.property_template_ids = property_template_ids
 
-    @property
-    def path(self):
-        """
-        A unique identifier for the file or folder.
+    # Instance attribute type: str (validator is set below)
+    path = bb.Attribute("path")
 
-        :rtype: str
-        """
-        if self._path_present:
-            return self._path_value
-        else:
-            raise AttributeError("missing required field 'path'")
-
-    @path.setter
-    def path(self, val):
-        val = self._path_validator.validate(val)
-        self._path_value = val
-        self._path_present = True
-
-    @path.deleter
-    def path(self):
-        self._path_value = None
-        self._path_present = False
-
-    @property
-    def property_template_ids(self):
-        """
-        A list of identifiers for a template created by
-        :meth:`dropbox.dropbox.Dropbox.file_properties_templates_add_for_user`
-        or
-        :meth:`dropbox.dropbox.Dropbox.file_properties_templates_add_for_team`.
-
-        :rtype: list of [str]
-        """
-        if self._property_template_ids_present:
-            return self._property_template_ids_value
-        else:
-            raise AttributeError("missing required field 'property_template_ids'")
-
-    @property_template_ids.setter
-    def property_template_ids(self, val):
-        val = self._property_template_ids_validator.validate(val)
-        self._property_template_ids_value = val
-        self._property_template_ids_present = True
-
-    @property_template_ids.deleter
-    def property_template_ids(self):
-        self._property_template_ids_value = None
-        self._property_template_ids_present = False
+    # Instance attribute type: list of [str] (validator is set below)
+    property_template_ids = bb.Attribute("property_template_ids")
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(RemovePropertiesArg, self)._process_custom_annotations(annotation_type, field_path, processor)
-
-    def __repr__(self):
-        return 'RemovePropertiesArg(path={!r}, property_template_ids={!r})'.format(
-            self._path_value,
-            self._property_template_ids_value,
-        )
 
 RemovePropertiesArg_validator = bv.Struct(RemovePropertiesArg)
 
@@ -2310,67 +1371,34 @@ class RemovePropertiesError(PropertiesError):
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(RemovePropertiesError, self)._process_custom_annotations(annotation_type, field_path, processor)
 
-    def __repr__(self):
-        return 'RemovePropertiesError(%r, %r)' % (self._tag, self._value)
-
 RemovePropertiesError_validator = bv.Union(RemovePropertiesError)
 
 class RemoveTemplateArg(bb.Struct):
     """
     :ivar file_properties.RemoveTemplateArg.template_id: An identifier for a
         template created by
-        :meth:`dropbox.dropbox.Dropbox.file_properties_templates_add_for_user`
+        :meth:`dropbox.dropbox_client.Dropbox.file_properties_templates_add_for_user`
         or
-        :meth:`dropbox.dropbox.Dropbox.file_properties_templates_add_for_team`.
+        :meth:`dropbox.dropbox_client.Dropbox.file_properties_templates_add_for_team`.
     """
 
     __slots__ = [
         '_template_id_value',
-        '_template_id_present',
     ]
 
     _has_required_fields = True
 
     def __init__(self,
                  template_id=None):
-        self._template_id_value = None
-        self._template_id_present = False
+        self._template_id_value = bb.NOT_SET
         if template_id is not None:
             self.template_id = template_id
 
-    @property
-    def template_id(self):
-        """
-        An identifier for a template created by
-        :meth:`dropbox.dropbox.Dropbox.file_properties_templates_add_for_user`
-        or
-        :meth:`dropbox.dropbox.Dropbox.file_properties_templates_add_for_team`.
-
-        :rtype: str
-        """
-        if self._template_id_present:
-            return self._template_id_value
-        else:
-            raise AttributeError("missing required field 'template_id'")
-
-    @template_id.setter
-    def template_id(self, val):
-        val = self._template_id_validator.validate(val)
-        self._template_id_value = val
-        self._template_id_present = True
-
-    @template_id.deleter
-    def template_id(self):
-        self._template_id_value = None
-        self._template_id_present = False
+    # Instance attribute type: str (validator is set below)
+    template_id = bb.Attribute("template_id")
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(RemoveTemplateArg, self)._process_custom_annotations(annotation_type, field_path, processor)
-
-    def __repr__(self):
-        return 'RemoveTemplateArg(template_id={!r})'.format(
-            self._template_id_value,
-        )
 
 RemoveTemplateArg_validator = bv.Struct(RemoveTemplateArg)
 
@@ -2432,9 +1460,6 @@ class TemplateFilterBase(bb.Union):
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(TemplateFilterBase, self)._process_custom_annotations(annotation_type, field_path, processor)
 
-    def __repr__(self):
-        return 'TemplateFilterBase(%r, %r)' % (self._tag, self._value)
-
 TemplateFilterBase_validator = bv.Union(TemplateFilterBase)
 
 class TemplateFilter(TemplateFilterBase):
@@ -2460,9 +1485,6 @@ class TemplateFilter(TemplateFilterBase):
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(TemplateFilter, self)._process_custom_annotations(annotation_type, field_path, processor)
-
-    def __repr__(self):
-        return 'TemplateFilter(%r, %r)' % (self._tag, self._value)
 
 TemplateFilter_validator = bv.Union(TemplateFilter)
 
@@ -2513,9 +1535,6 @@ class TemplateOwnerType(bb.Union):
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(TemplateOwnerType, self)._process_custom_annotations(annotation_type, field_path, processor)
 
-    def __repr__(self):
-        return 'TemplateOwnerType(%r, %r)' % (self._tag, self._value)
-
 TemplateOwnerType_validator = bv.Union(TemplateOwnerType)
 
 class UpdatePropertiesArg(bb.Struct):
@@ -2528,9 +1547,7 @@ class UpdatePropertiesArg(bb.Struct):
 
     __slots__ = [
         '_path_value',
-        '_path_present',
         '_update_property_groups_value',
-        '_update_property_groups_present',
     ]
 
     _has_required_fields = True
@@ -2538,69 +1555,21 @@ class UpdatePropertiesArg(bb.Struct):
     def __init__(self,
                  path=None,
                  update_property_groups=None):
-        self._path_value = None
-        self._path_present = False
-        self._update_property_groups_value = None
-        self._update_property_groups_present = False
+        self._path_value = bb.NOT_SET
+        self._update_property_groups_value = bb.NOT_SET
         if path is not None:
             self.path = path
         if update_property_groups is not None:
             self.update_property_groups = update_property_groups
 
-    @property
-    def path(self):
-        """
-        A unique identifier for the file or folder.
+    # Instance attribute type: str (validator is set below)
+    path = bb.Attribute("path")
 
-        :rtype: str
-        """
-        if self._path_present:
-            return self._path_value
-        else:
-            raise AttributeError("missing required field 'path'")
-
-    @path.setter
-    def path(self, val):
-        val = self._path_validator.validate(val)
-        self._path_value = val
-        self._path_present = True
-
-    @path.deleter
-    def path(self):
-        self._path_value = None
-        self._path_present = False
-
-    @property
-    def update_property_groups(self):
-        """
-        The property groups "delta" updates to apply.
-
-        :rtype: list of [PropertyGroupUpdate]
-        """
-        if self._update_property_groups_present:
-            return self._update_property_groups_value
-        else:
-            raise AttributeError("missing required field 'update_property_groups'")
-
-    @update_property_groups.setter
-    def update_property_groups(self, val):
-        val = self._update_property_groups_validator.validate(val)
-        self._update_property_groups_value = val
-        self._update_property_groups_present = True
-
-    @update_property_groups.deleter
-    def update_property_groups(self):
-        self._update_property_groups_value = None
-        self._update_property_groups_present = False
+    # Instance attribute type: list of [PropertyGroupUpdate] (validator is set below)
+    update_property_groups = bb.Attribute("update_property_groups")
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(UpdatePropertiesArg, self)._process_custom_annotations(annotation_type, field_path, processor)
-
-    def __repr__(self):
-        return 'UpdatePropertiesArg(path={!r}, update_property_groups={!r})'.format(
-            self._path_value,
-            self._update_property_groups_value,
-        )
 
 UpdatePropertiesArg_validator = bv.Struct(UpdatePropertiesArg)
 
@@ -2643,18 +1612,15 @@ class UpdatePropertiesError(InvalidPropertyGroupError):
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(UpdatePropertiesError, self)._process_custom_annotations(annotation_type, field_path, processor)
 
-    def __repr__(self):
-        return 'UpdatePropertiesError(%r, %r)' % (self._tag, self._value)
-
 UpdatePropertiesError_validator = bv.Union(UpdatePropertiesError)
 
 class UpdateTemplateArg(bb.Struct):
     """
     :ivar file_properties.UpdateTemplateArg.template_id: An identifier for
         template added by  See
-        :meth:`dropbox.dropbox.Dropbox.file_properties_templates_add_for_user`
+        :meth:`dropbox.dropbox_client.Dropbox.file_properties_templates_add_for_user`
         or
-        :meth:`dropbox.dropbox.Dropbox.file_properties_templates_add_for_team`.
+        :meth:`dropbox.dropbox_client.Dropbox.file_properties_templates_add_for_team`.
     :ivar file_properties.UpdateTemplateArg.name: A display name for the
         template. template names can be up to 256 bytes.
     :ivar file_properties.UpdateTemplateArg.description: Description for the new
@@ -2666,13 +1632,9 @@ class UpdateTemplateArg(bb.Struct):
 
     __slots__ = [
         '_template_id_value',
-        '_template_id_present',
         '_name_value',
-        '_name_present',
         '_description_value',
-        '_description_present',
         '_add_fields_value',
-        '_add_fields_present',
     ]
 
     _has_required_fields = True
@@ -2682,14 +1644,10 @@ class UpdateTemplateArg(bb.Struct):
                  name=None,
                  description=None,
                  add_fields=None):
-        self._template_id_value = None
-        self._template_id_present = False
-        self._name_value = None
-        self._name_present = False
-        self._description_value = None
-        self._description_present = False
-        self._add_fields_value = None
-        self._add_fields_present = False
+        self._template_id_value = bb.NOT_SET
+        self._name_value = bb.NOT_SET
+        self._description_value = bb.NOT_SET
+        self._add_fields_value = bb.NOT_SET
         if template_id is not None:
             self.template_id = template_id
         if name is not None:
@@ -2699,122 +1657,20 @@ class UpdateTemplateArg(bb.Struct):
         if add_fields is not None:
             self.add_fields = add_fields
 
-    @property
-    def template_id(self):
-        """
-        An identifier for template added by  See
-        :meth:`dropbox.dropbox.Dropbox.file_properties_templates_add_for_user`
-        or
-        :meth:`dropbox.dropbox.Dropbox.file_properties_templates_add_for_team`.
+    # Instance attribute type: str (validator is set below)
+    template_id = bb.Attribute("template_id")
 
-        :rtype: str
-        """
-        if self._template_id_present:
-            return self._template_id_value
-        else:
-            raise AttributeError("missing required field 'template_id'")
+    # Instance attribute type: str (validator is set below)
+    name = bb.Attribute("name", nullable=True)
 
-    @template_id.setter
-    def template_id(self, val):
-        val = self._template_id_validator.validate(val)
-        self._template_id_value = val
-        self._template_id_present = True
+    # Instance attribute type: str (validator is set below)
+    description = bb.Attribute("description", nullable=True)
 
-    @template_id.deleter
-    def template_id(self):
-        self._template_id_value = None
-        self._template_id_present = False
-
-    @property
-    def name(self):
-        """
-        A display name for the template. template names can be up to 256 bytes.
-
-        :rtype: str
-        """
-        if self._name_present:
-            return self._name_value
-        else:
-            return None
-
-    @name.setter
-    def name(self, val):
-        if val is None:
-            del self.name
-            return
-        val = self._name_validator.validate(val)
-        self._name_value = val
-        self._name_present = True
-
-    @name.deleter
-    def name(self):
-        self._name_value = None
-        self._name_present = False
-
-    @property
-    def description(self):
-        """
-        Description for the new template. Template descriptions can be up to
-        1024 bytes.
-
-        :rtype: str
-        """
-        if self._description_present:
-            return self._description_value
-        else:
-            return None
-
-    @description.setter
-    def description(self, val):
-        if val is None:
-            del self.description
-            return
-        val = self._description_validator.validate(val)
-        self._description_value = val
-        self._description_present = True
-
-    @description.deleter
-    def description(self):
-        self._description_value = None
-        self._description_present = False
-
-    @property
-    def add_fields(self):
-        """
-        Property field templates to be added to the group template. There can be
-        up to 32 properties in a single template.
-
-        :rtype: list of [PropertyFieldTemplate]
-        """
-        if self._add_fields_present:
-            return self._add_fields_value
-        else:
-            return None
-
-    @add_fields.setter
-    def add_fields(self, val):
-        if val is None:
-            del self.add_fields
-            return
-        val = self._add_fields_validator.validate(val)
-        self._add_fields_value = val
-        self._add_fields_present = True
-
-    @add_fields.deleter
-    def add_fields(self):
-        self._add_fields_value = None
-        self._add_fields_present = False
+    # Instance attribute type: list of [PropertyFieldTemplate] (validator is set below)
+    add_fields = bb.Attribute("add_fields", nullable=True)
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(UpdateTemplateArg, self)._process_custom_annotations(annotation_type, field_path, processor)
-
-    def __repr__(self):
-        return 'UpdateTemplateArg(template_id={!r}, name={!r}, description={!r}, add_fields={!r})'.format(
-            self._template_id_value,
-            self._name_value,
-            self._description_value,
-            self._add_fields_value,
-        )
 
 UpdateTemplateArg_validator = bv.Struct(UpdateTemplateArg)
 
@@ -2822,58 +1678,28 @@ class UpdateTemplateResult(bb.Struct):
     """
     :ivar file_properties.UpdateTemplateResult.template_id: An identifier for
         template added by route  See
-        :meth:`dropbox.dropbox.Dropbox.file_properties_templates_add_for_user`
+        :meth:`dropbox.dropbox_client.Dropbox.file_properties_templates_add_for_user`
         or
-        :meth:`dropbox.dropbox.Dropbox.file_properties_templates_add_for_team`.
+        :meth:`dropbox.dropbox_client.Dropbox.file_properties_templates_add_for_team`.
     """
 
     __slots__ = [
         '_template_id_value',
-        '_template_id_present',
     ]
 
     _has_required_fields = True
 
     def __init__(self,
                  template_id=None):
-        self._template_id_value = None
-        self._template_id_present = False
+        self._template_id_value = bb.NOT_SET
         if template_id is not None:
             self.template_id = template_id
 
-    @property
-    def template_id(self):
-        """
-        An identifier for template added by route  See
-        :meth:`dropbox.dropbox.Dropbox.file_properties_templates_add_for_user`
-        or
-        :meth:`dropbox.dropbox.Dropbox.file_properties_templates_add_for_team`.
-
-        :rtype: str
-        """
-        if self._template_id_present:
-            return self._template_id_value
-        else:
-            raise AttributeError("missing required field 'template_id'")
-
-    @template_id.setter
-    def template_id(self, val):
-        val = self._template_id_validator.validate(val)
-        self._template_id_value = val
-        self._template_id_present = True
-
-    @template_id.deleter
-    def template_id(self):
-        self._template_id_value = None
-        self._template_id_present = False
+    # Instance attribute type: str (validator is set below)
+    template_id = bb.Attribute("template_id")
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(UpdateTemplateResult, self)._process_custom_annotations(annotation_type, field_path, processor)
-
-    def __repr__(self):
-        return 'UpdateTemplateResult(template_id={!r})'.format(
-            self._template_id_value,
-        )
 
 UpdateTemplateResult_validator = bv.Struct(UpdateTemplateResult)
 
@@ -2881,15 +1707,15 @@ Id_validator = bv.String(min_length=1)
 PathOrId_validator = bv.String(pattern=u'/(.|[\\r\\n])*|id:.*|(ns:[0-9]+(/.*)?)')
 PropertiesSearchCursor_validator = bv.String(min_length=1)
 TemplateId_validator = bv.String(min_length=1, pattern=u'(/|ptid:).*')
-AddPropertiesArg._path_validator = PathOrId_validator
-AddPropertiesArg._property_groups_validator = bv.List(PropertyGroup_validator)
+AddPropertiesArg.path.validator = PathOrId_validator
+AddPropertiesArg.property_groups.validator = bv.List(PropertyGroup_validator)
 AddPropertiesArg._all_field_names_ = set([
     'path',
     'property_groups',
 ])
 AddPropertiesArg._all_fields_ = [
-    ('path', AddPropertiesArg._path_validator),
-    ('property_groups', AddPropertiesArg._property_groups_validator),
+    ('path', AddPropertiesArg.path.validator),
+    ('property_groups', AddPropertiesArg.property_groups.validator),
 ]
 
 TemplateError._template_not_found_validator = TemplateId_validator
@@ -2936,37 +1762,37 @@ AddPropertiesError._tagmap.update(InvalidPropertyGroupError._tagmap)
 
 AddPropertiesError.property_group_already_exists = AddPropertiesError('property_group_already_exists')
 
-PropertyGroupTemplate._name_validator = bv.String()
-PropertyGroupTemplate._description_validator = bv.String()
-PropertyGroupTemplate._fields_validator = bv.List(PropertyFieldTemplate_validator)
+PropertyGroupTemplate.name.validator = bv.String()
+PropertyGroupTemplate.description.validator = bv.String()
+PropertyGroupTemplate.fields.validator = bv.List(PropertyFieldTemplate_validator)
 PropertyGroupTemplate._all_field_names_ = set([
     'name',
     'description',
     'fields',
 ])
 PropertyGroupTemplate._all_fields_ = [
-    ('name', PropertyGroupTemplate._name_validator),
-    ('description', PropertyGroupTemplate._description_validator),
-    ('fields', PropertyGroupTemplate._fields_validator),
+    ('name', PropertyGroupTemplate.name.validator),
+    ('description', PropertyGroupTemplate.description.validator),
+    ('fields', PropertyGroupTemplate.fields.validator),
 ]
 
 AddTemplateArg._all_field_names_ = PropertyGroupTemplate._all_field_names_.union(set([]))
 AddTemplateArg._all_fields_ = PropertyGroupTemplate._all_fields_ + []
 
-AddTemplateResult._template_id_validator = TemplateId_validator
+AddTemplateResult.template_id.validator = TemplateId_validator
 AddTemplateResult._all_field_names_ = set(['template_id'])
-AddTemplateResult._all_fields_ = [('template_id', AddTemplateResult._template_id_validator)]
+AddTemplateResult._all_fields_ = [('template_id', AddTemplateResult.template_id.validator)]
 
-GetTemplateArg._template_id_validator = TemplateId_validator
+GetTemplateArg.template_id.validator = TemplateId_validator
 GetTemplateArg._all_field_names_ = set(['template_id'])
-GetTemplateArg._all_fields_ = [('template_id', GetTemplateArg._template_id_validator)]
+GetTemplateArg._all_fields_ = [('template_id', GetTemplateArg.template_id.validator)]
 
 GetTemplateResult._all_field_names_ = PropertyGroupTemplate._all_field_names_.union(set([]))
 GetTemplateResult._all_fields_ = PropertyGroupTemplate._all_fields_ + []
 
-ListTemplateResult._template_ids_validator = bv.List(TemplateId_validator)
+ListTemplateResult.template_ids.validator = bv.List(TemplateId_validator)
 ListTemplateResult._all_field_names_ = set(['template_ids'])
-ListTemplateResult._all_fields_ = [('template_ids', ListTemplateResult._template_ids_validator)]
+ListTemplateResult._all_fields_ = [('template_ids', ListTemplateResult.template_ids.validator)]
 
 LogicalOperator._or_operator_validator = bv.Void()
 LogicalOperator._other_validator = bv.Void()
@@ -3026,31 +1852,31 @@ ModifyTemplateError.too_many_properties = ModifyTemplateError('too_many_properti
 ModifyTemplateError.too_many_templates = ModifyTemplateError('too_many_templates')
 ModifyTemplateError.template_attribute_too_large = ModifyTemplateError('template_attribute_too_large')
 
-OverwritePropertyGroupArg._path_validator = PathOrId_validator
-OverwritePropertyGroupArg._property_groups_validator = bv.List(PropertyGroup_validator, min_items=1)
+OverwritePropertyGroupArg.path.validator = PathOrId_validator
+OverwritePropertyGroupArg.property_groups.validator = bv.List(PropertyGroup_validator, min_items=1)
 OverwritePropertyGroupArg._all_field_names_ = set([
     'path',
     'property_groups',
 ])
 OverwritePropertyGroupArg._all_fields_ = [
-    ('path', OverwritePropertyGroupArg._path_validator),
-    ('property_groups', OverwritePropertyGroupArg._property_groups_validator),
+    ('path', OverwritePropertyGroupArg.path.validator),
+    ('property_groups', OverwritePropertyGroupArg.property_groups.validator),
 ]
 
-PropertiesSearchArg._queries_validator = bv.List(PropertiesSearchQuery_validator, min_items=1)
-PropertiesSearchArg._template_filter_validator = TemplateFilter_validator
+PropertiesSearchArg.queries.validator = bv.List(PropertiesSearchQuery_validator, min_items=1)
+PropertiesSearchArg.template_filter.validator = TemplateFilter_validator
 PropertiesSearchArg._all_field_names_ = set([
     'queries',
     'template_filter',
 ])
 PropertiesSearchArg._all_fields_ = [
-    ('queries', PropertiesSearchArg._queries_validator),
-    ('template_filter', PropertiesSearchArg._template_filter_validator),
+    ('queries', PropertiesSearchArg.queries.validator),
+    ('template_filter', PropertiesSearchArg.template_filter.validator),
 ]
 
-PropertiesSearchContinueArg._cursor_validator = PropertiesSearchCursor_validator
+PropertiesSearchContinueArg.cursor.validator = PropertiesSearchCursor_validator
 PropertiesSearchContinueArg._all_field_names_ = set(['cursor'])
-PropertiesSearchContinueArg._all_fields_ = [('cursor', PropertiesSearchContinueArg._cursor_validator)]
+PropertiesSearchContinueArg._all_fields_ = [('cursor', PropertiesSearchContinueArg.cursor.validator)]
 
 PropertiesSearchContinueError._reset_validator = bv.Void()
 PropertiesSearchContinueError._other_validator = bv.Void()
@@ -3071,10 +1897,10 @@ PropertiesSearchError._tagmap = {
 
 PropertiesSearchError.other = PropertiesSearchError('other')
 
-PropertiesSearchMatch._id_validator = Id_validator
-PropertiesSearchMatch._path_validator = bv.String()
-PropertiesSearchMatch._is_deleted_validator = bv.Boolean()
-PropertiesSearchMatch._property_groups_validator = bv.List(PropertyGroup_validator)
+PropertiesSearchMatch.id.validator = Id_validator
+PropertiesSearchMatch.path.validator = bv.String()
+PropertiesSearchMatch.is_deleted.validator = bv.Boolean()
+PropertiesSearchMatch.property_groups.validator = bv.List(PropertyGroup_validator)
 PropertiesSearchMatch._all_field_names_ = set([
     'id',
     'path',
@@ -3082,10 +1908,10 @@ PropertiesSearchMatch._all_field_names_ = set([
     'property_groups',
 ])
 PropertiesSearchMatch._all_fields_ = [
-    ('id', PropertiesSearchMatch._id_validator),
-    ('path', PropertiesSearchMatch._path_validator),
-    ('is_deleted', PropertiesSearchMatch._is_deleted_validator),
-    ('property_groups', PropertiesSearchMatch._property_groups_validator),
+    ('id', PropertiesSearchMatch.id.validator),
+    ('path', PropertiesSearchMatch.path.validator),
+    ('is_deleted', PropertiesSearchMatch.is_deleted.validator),
+    ('property_groups', PropertiesSearchMatch.property_groups.validator),
 ]
 
 PropertiesSearchMode._field_name_validator = bv.String()
@@ -3097,79 +1923,79 @@ PropertiesSearchMode._tagmap = {
 
 PropertiesSearchMode.other = PropertiesSearchMode('other')
 
-PropertiesSearchQuery._query_validator = bv.String()
-PropertiesSearchQuery._mode_validator = PropertiesSearchMode_validator
-PropertiesSearchQuery._logical_operator_validator = LogicalOperator_validator
+PropertiesSearchQuery.query.validator = bv.String()
+PropertiesSearchQuery.mode.validator = PropertiesSearchMode_validator
+PropertiesSearchQuery.logical_operator.validator = LogicalOperator_validator
 PropertiesSearchQuery._all_field_names_ = set([
     'query',
     'mode',
     'logical_operator',
 ])
 PropertiesSearchQuery._all_fields_ = [
-    ('query', PropertiesSearchQuery._query_validator),
-    ('mode', PropertiesSearchQuery._mode_validator),
-    ('logical_operator', PropertiesSearchQuery._logical_operator_validator),
+    ('query', PropertiesSearchQuery.query.validator),
+    ('mode', PropertiesSearchQuery.mode.validator),
+    ('logical_operator', PropertiesSearchQuery.logical_operator.validator),
 ]
 
-PropertiesSearchResult._matches_validator = bv.List(PropertiesSearchMatch_validator)
-PropertiesSearchResult._cursor_validator = bv.Nullable(PropertiesSearchCursor_validator)
+PropertiesSearchResult.matches.validator = bv.List(PropertiesSearchMatch_validator)
+PropertiesSearchResult.cursor.validator = bv.Nullable(PropertiesSearchCursor_validator)
 PropertiesSearchResult._all_field_names_ = set([
     'matches',
     'cursor',
 ])
 PropertiesSearchResult._all_fields_ = [
-    ('matches', PropertiesSearchResult._matches_validator),
-    ('cursor', PropertiesSearchResult._cursor_validator),
+    ('matches', PropertiesSearchResult.matches.validator),
+    ('cursor', PropertiesSearchResult.cursor.validator),
 ]
 
-PropertyField._name_validator = bv.String()
-PropertyField._value_validator = bv.String()
+PropertyField.name.validator = bv.String()
+PropertyField.value.validator = bv.String()
 PropertyField._all_field_names_ = set([
     'name',
     'value',
 ])
 PropertyField._all_fields_ = [
-    ('name', PropertyField._name_validator),
-    ('value', PropertyField._value_validator),
+    ('name', PropertyField.name.validator),
+    ('value', PropertyField.value.validator),
 ]
 
-PropertyFieldTemplate._name_validator = bv.String()
-PropertyFieldTemplate._description_validator = bv.String()
-PropertyFieldTemplate._type_validator = PropertyType_validator
+PropertyFieldTemplate.name.validator = bv.String()
+PropertyFieldTemplate.description.validator = bv.String()
+PropertyFieldTemplate.type.validator = PropertyType_validator
 PropertyFieldTemplate._all_field_names_ = set([
     'name',
     'description',
     'type',
 ])
 PropertyFieldTemplate._all_fields_ = [
-    ('name', PropertyFieldTemplate._name_validator),
-    ('description', PropertyFieldTemplate._description_validator),
-    ('type', PropertyFieldTemplate._type_validator),
+    ('name', PropertyFieldTemplate.name.validator),
+    ('description', PropertyFieldTemplate.description.validator),
+    ('type', PropertyFieldTemplate.type.validator),
 ]
 
-PropertyGroup._template_id_validator = TemplateId_validator
-PropertyGroup._fields_validator = bv.List(PropertyField_validator)
+PropertyGroup.template_id.validator = TemplateId_validator
+PropertyGroup.fields.validator = bv.List(PropertyField_validator)
 PropertyGroup._all_field_names_ = set([
     'template_id',
     'fields',
 ])
 PropertyGroup._all_fields_ = [
-    ('template_id', PropertyGroup._template_id_validator),
-    ('fields', PropertyGroup._fields_validator),
+    ('template_id', PropertyGroup.template_id.validator),
+    ('fields', PropertyGroup.fields.validator),
 ]
 
-PropertyGroupUpdate._template_id_validator = TemplateId_validator
-PropertyGroupUpdate._add_or_update_fields_validator = bv.Nullable(bv.List(PropertyField_validator))
-PropertyGroupUpdate._remove_fields_validator = bv.Nullable(bv.List(bv.String()))
+PropertyGroupUpdate.template_id.validator = TemplateId_validator
+PropertyGroupUpdate.add_or_update_fields.validator = bv.Nullable(bv.List(PropertyField_validator))
+PropertyGroupUpdate.remove_fields.validator = bv.Nullable(bv.List(bv.String()))
 PropertyGroupUpdate._all_field_names_ = set([
     'template_id',
     'add_or_update_fields',
     'remove_fields',
 ])
 PropertyGroupUpdate._all_fields_ = [
-    ('template_id', PropertyGroupUpdate._template_id_validator),
-    ('add_or_update_fields', PropertyGroupUpdate._add_or_update_fields_validator),
-    ('remove_fields', PropertyGroupUpdate._remove_fields_validator),
+    ('template_id', PropertyGroupUpdate.template_id.validator),
+    ('add_or_update_fields', PropertyGroupUpdate.add_or_update_fields.validator),
+    ('remove_fields', PropertyGroupUpdate.remove_fields.validator),
 ]
 
 PropertyType._string_validator = bv.Void()
@@ -3182,15 +2008,15 @@ PropertyType._tagmap = {
 PropertyType.string = PropertyType('string')
 PropertyType.other = PropertyType('other')
 
-RemovePropertiesArg._path_validator = PathOrId_validator
-RemovePropertiesArg._property_template_ids_validator = bv.List(TemplateId_validator)
+RemovePropertiesArg.path.validator = PathOrId_validator
+RemovePropertiesArg.property_template_ids.validator = bv.List(TemplateId_validator)
 RemovePropertiesArg._all_field_names_ = set([
     'path',
     'property_template_ids',
 ])
 RemovePropertiesArg._all_fields_ = [
-    ('path', RemovePropertiesArg._path_validator),
-    ('property_template_ids', RemovePropertiesArg._property_template_ids_validator),
+    ('path', RemovePropertiesArg.path.validator),
+    ('property_template_ids', RemovePropertiesArg.property_template_ids.validator),
 ]
 
 RemovePropertiesError._property_group_lookup_validator = LookUpPropertiesError_validator
@@ -3199,9 +2025,9 @@ RemovePropertiesError._tagmap = {
 }
 RemovePropertiesError._tagmap.update(PropertiesError._tagmap)
 
-RemoveTemplateArg._template_id_validator = TemplateId_validator
+RemoveTemplateArg.template_id.validator = TemplateId_validator
 RemoveTemplateArg._all_field_names_ = set(['template_id'])
-RemoveTemplateArg._all_fields_ = [('template_id', RemoveTemplateArg._template_id_validator)]
+RemoveTemplateArg._all_fields_ = [('template_id', RemoveTemplateArg.template_id.validator)]
 
 TemplateFilterBase._filter_some_validator = bv.List(TemplateId_validator, min_items=1)
 TemplateFilterBase._other_validator = bv.Void()
@@ -3233,15 +2059,15 @@ TemplateOwnerType.user = TemplateOwnerType('user')
 TemplateOwnerType.team = TemplateOwnerType('team')
 TemplateOwnerType.other = TemplateOwnerType('other')
 
-UpdatePropertiesArg._path_validator = PathOrId_validator
-UpdatePropertiesArg._update_property_groups_validator = bv.List(PropertyGroupUpdate_validator)
+UpdatePropertiesArg.path.validator = PathOrId_validator
+UpdatePropertiesArg.update_property_groups.validator = bv.List(PropertyGroupUpdate_validator)
 UpdatePropertiesArg._all_field_names_ = set([
     'path',
     'update_property_groups',
 ])
 UpdatePropertiesArg._all_fields_ = [
-    ('path', UpdatePropertiesArg._path_validator),
-    ('update_property_groups', UpdatePropertiesArg._update_property_groups_validator),
+    ('path', UpdatePropertiesArg.path.validator),
+    ('update_property_groups', UpdatePropertiesArg.update_property_groups.validator),
 ]
 
 UpdatePropertiesError._property_group_lookup_validator = LookUpPropertiesError_validator
@@ -3250,10 +2076,10 @@ UpdatePropertiesError._tagmap = {
 }
 UpdatePropertiesError._tagmap.update(InvalidPropertyGroupError._tagmap)
 
-UpdateTemplateArg._template_id_validator = TemplateId_validator
-UpdateTemplateArg._name_validator = bv.Nullable(bv.String())
-UpdateTemplateArg._description_validator = bv.Nullable(bv.String())
-UpdateTemplateArg._add_fields_validator = bv.Nullable(bv.List(PropertyFieldTemplate_validator))
+UpdateTemplateArg.template_id.validator = TemplateId_validator
+UpdateTemplateArg.name.validator = bv.Nullable(bv.String())
+UpdateTemplateArg.description.validator = bv.Nullable(bv.String())
+UpdateTemplateArg.add_fields.validator = bv.Nullable(bv.List(PropertyFieldTemplate_validator))
 UpdateTemplateArg._all_field_names_ = set([
     'template_id',
     'name',
@@ -3261,16 +2087,18 @@ UpdateTemplateArg._all_field_names_ = set([
     'add_fields',
 ])
 UpdateTemplateArg._all_fields_ = [
-    ('template_id', UpdateTemplateArg._template_id_validator),
-    ('name', UpdateTemplateArg._name_validator),
-    ('description', UpdateTemplateArg._description_validator),
-    ('add_fields', UpdateTemplateArg._add_fields_validator),
+    ('template_id', UpdateTemplateArg.template_id.validator),
+    ('name', UpdateTemplateArg.name.validator),
+    ('description', UpdateTemplateArg.description.validator),
+    ('add_fields', UpdateTemplateArg.add_fields.validator),
 ]
 
-UpdateTemplateResult._template_id_validator = TemplateId_validator
+UpdateTemplateResult.template_id.validator = TemplateId_validator
 UpdateTemplateResult._all_field_names_ = set(['template_id'])
-UpdateTemplateResult._all_fields_ = [('template_id', UpdateTemplateResult._template_id_validator)]
+UpdateTemplateResult._all_fields_ = [('template_id', UpdateTemplateResult.template_id.validator)]
 
+PropertiesSearchArg.template_filter.default = TemplateFilter.filter_none
+PropertiesSearchQuery.logical_operator.default = LogicalOperator.or_operator
 properties_add = bb.Route(
     'properties/add',
     1,

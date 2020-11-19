@@ -3,21 +3,11 @@
 # @generated
 # flake8: noqa
 # pylint: skip-file
-try:
-    from . import stone_validators as bv
-    from . import stone_base as bb
-except (ImportError, SystemError, ValueError):
-    # Catch errors raised when importing a relative module when not in a package.
-    # This makes testing this file directly (outside of a package) easier.
-    import stone_validators as bv
-    import stone_base as bb
+from __future__ import unicode_literals
+from stone.backends.python_rsrc import stone_base as bb
+from stone.backends.python_rsrc import stone_validators as bv
 
-try:
-    from . import (
-        common,
-    )
-except (ImportError, SystemError, ValueError):
-    import common
+from dropbox import common
 
 class DeleteManualContactsArg(bb.Struct):
     """
@@ -27,48 +17,21 @@ class DeleteManualContactsArg(bb.Struct):
 
     __slots__ = [
         '_email_addresses_value',
-        '_email_addresses_present',
     ]
 
     _has_required_fields = True
 
     def __init__(self,
                  email_addresses=None):
-        self._email_addresses_value = None
-        self._email_addresses_present = False
+        self._email_addresses_value = bb.NOT_SET
         if email_addresses is not None:
             self.email_addresses = email_addresses
 
-    @property
-    def email_addresses(self):
-        """
-        List of manually added contacts to be deleted.
-
-        :rtype: list of [str]
-        """
-        if self._email_addresses_present:
-            return self._email_addresses_value
-        else:
-            raise AttributeError("missing required field 'email_addresses'")
-
-    @email_addresses.setter
-    def email_addresses(self, val):
-        val = self._email_addresses_validator.validate(val)
-        self._email_addresses_value = val
-        self._email_addresses_present = True
-
-    @email_addresses.deleter
-    def email_addresses(self):
-        self._email_addresses_value = None
-        self._email_addresses_present = False
+    # Instance attribute type: list of [str] (validator is set below)
+    email_addresses = bb.Attribute("email_addresses")
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(DeleteManualContactsArg, self)._process_custom_annotations(annotation_type, field_path, processor)
-
-    def __repr__(self):
-        return 'DeleteManualContactsArg(email_addresses={!r})'.format(
-            self._email_addresses_value,
-        )
 
 DeleteManualContactsArg_validator = bv.Struct(DeleteManualContactsArg)
 
@@ -130,14 +93,11 @@ class DeleteManualContactsError(bb.Union):
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(DeleteManualContactsError, self)._process_custom_annotations(annotation_type, field_path, processor)
 
-    def __repr__(self):
-        return 'DeleteManualContactsError(%r, %r)' % (self._tag, self._value)
-
 DeleteManualContactsError_validator = bv.Union(DeleteManualContactsError)
 
-DeleteManualContactsArg._email_addresses_validator = bv.List(common.EmailAddress_validator)
+DeleteManualContactsArg.email_addresses.validator = bv.List(common.EmailAddress_validator)
 DeleteManualContactsArg._all_field_names_ = set(['email_addresses'])
-DeleteManualContactsArg._all_fields_ = [('email_addresses', DeleteManualContactsArg._email_addresses_validator)]
+DeleteManualContactsArg._all_fields_ = [('email_addresses', DeleteManualContactsArg.email_addresses.validator)]
 
 DeleteManualContactsError._contacts_not_found_validator = bv.List(common.EmailAddress_validator)
 DeleteManualContactsError._other_validator = bv.Void()

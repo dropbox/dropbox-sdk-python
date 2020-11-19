@@ -18,19 +18,19 @@ import requests
 import six
 
 from datetime import datetime, timedelta
-from . import files, stone_serializers
-from .auth import (
+from dropbox.auth import (
     AuthError_validator,
     RateLimitError_validator,
 )
-from .common import (
+from dropbox import files
+from dropbox.common import (
     PathRoot,
     PathRoot_validator,
     PathRootError_validator
 )
-from .base import DropboxBase
-from .base_team import DropboxTeamBase
-from .exceptions import (
+from dropbox.base import DropboxBase
+from dropbox.base_team import DropboxTeamBase
+from dropbox.exceptions import (
     ApiError,
     AuthError,
     BadInputError,
@@ -39,7 +39,7 @@ from .exceptions import (
     InternalServerError,
     RateLimitError,
 )
-from .session import (
+from dropbox.session import (
     API_HOST,
     API_CONTENT_HOST,
     API_NOTIFICATION_HOST,
@@ -49,6 +49,7 @@ from .session import (
     pinned_session,
     DEFAULT_TIMEOUT
 )
+from stone.backends.python_rsrc import stone_serializers
 
 PATH_ROOT_HEADER = 'Dropbox-API-Path-Root'
 HTTP_STATUS_INVALID_PATH_ROOT = 422
@@ -276,7 +277,7 @@ class _DropboxTransport(object):
 
         :param host: The Dropbox API host to connect to.
         :param route: The route to make the request to.
-        :type route: :class:`.datatypes.stone_base.Route`
+        :type route: :class:`stone.backends.python_rsrc.stone_base.Route`
         :param request_arg: Argument for the route that conforms to the
             validator specified by route.arg_type.
         :param request_binary: String or file pointer representing the binary
