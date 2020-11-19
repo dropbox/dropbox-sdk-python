@@ -12,7 +12,7 @@ else
     git reset --hard HEAD
     git checkout -b "tmp-release-${NEW_VERSION}"
 
-    perl -pi -e "s/^__version__ = .*$/__version__ = '$1'/g" dropbox/dropbox.py
+    perl -pi -e "s/^__version__ = .*$/__version__ = '$1'/g" dropbox/dropbox_client.py
     perl -pi -e 's/(\?branch=)main$/\1\v'$1'/g ;' -e 's/(\?version=)latest$/\1\stable/g ;' -e 's/(\/en\/)latest(\/)$/\1\stable\2/g ;' -e 's/(\[Latest) (Documentation\])$/\1 Release \2/g ;' README.rst
 
     git add -u
