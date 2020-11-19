@@ -17,7 +17,7 @@ except ImportError:
 
 from setuptools import setup
 
-dbx_mod_path = os.path.join(os.path.dirname(__file__), 'dropbox/dropbox_client.py')
+dbx_mod_path = os.path.join(os.path.dirname(__file__), 'dropbox/dropbox.py')
 line = '= "UNKNOWN"'
 for line in open(dbx_mod_path):
     if line.startswith('__version__'):
@@ -52,7 +52,7 @@ dist = setup(
     install_requires=install_reqs,
     setup_requires=setup_requires,
     tests_require=test_reqs,
-    packages=['dropbox'],
+    packages=['dropbox', 'dropbox_lib'],
     package_data={'dropbox': ['trusted-certs.crt']},
     zip_safe=False,
     author_email='dev-platform@dropbox.com',

@@ -41,7 +41,7 @@ def main():
     specs = [os.path.join(os.getcwd(), s) for s in specs]
 
     dropbox_pkg_path = os.path.abspath(
-        os.path.join(os.path.dirname(sys.argv[0]), 'dropbox'))
+        os.path.join(os.path.dirname(sys.argv[0]), 'dropbox_lib'))
     if verbose:
         print('Dropbox package path: %s' % dropbox_pkg_path)
 
@@ -50,7 +50,7 @@ def main():
     subprocess.check_output(
         (['python', '-m', 'stone.cli', 'python_types', dropbox_pkg_path] +
          specs + ['-a', 'host', '-a', 'style'] +
-         ['--', '-r', 'dropbox.dropbox_client.Dropbox.{ns}_{route}', '-p', 'dropbox']))
+         ['--', '-r', 'dropbox.dropbox_client.Dropbox.{ns}_{route}', '-p', 'dropbox_lib']))
 
     if verbose:
         print('Generating Python client')
@@ -58,14 +58,14 @@ def main():
     o = subprocess.check_output(
         (['python', '-m', 'stone.cli', 'python_client', dropbox_pkg_path] +
          specs + ['-a', 'host', '-a', 'style', '-a', 'auth'] +
-         ['--', '-w', 'user,app,noauth', '-m', 'base', '-c', 'DropboxBase', '-t', 'dropbox']))
+         ['--', '-w', 'user,app,noauth', '-m', 'base', '-c', 'DropboxBase', '-t', 'dropbox_lib']))
     if o:
         print('Output:', o)
 
     o = subprocess.check_output(
         (['python', '-m', 'stone.cli', 'python_client', dropbox_pkg_path] +
          specs + ['-a', 'host', '-a', 'style', '-a', 'auth'] +
-         ['--', '-w', 'team', '-m', 'base_team', '-c', 'DropboxTeamBase', '-t', 'dropbox']))
+         ['--', '-w', 'team', '-m', 'base_team', '-c', 'DropboxTeamBase', '-t', 'dropbox_lib']))
     if o:
         print('Output:', o)
 

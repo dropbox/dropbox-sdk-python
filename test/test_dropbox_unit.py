@@ -6,7 +6,7 @@ import pytest
 
 # Tests OAuth Flow
 from dropbox import DropboxOAuth2Flow, session, Dropbox, create_session
-from dropbox.dropbox_client import BadInputException, DropboxTeam
+from dropbox.dropbox import BadInputException, DropboxTeam
 from dropbox.exceptions import AuthError
 from dropbox.oauth import OAuth2FlowNoRedirectResult, DropboxOAuth2FlowNoRedirect
 from datetime import datetime, timedelta

@@ -11,10 +11,10 @@ from __future__ import unicode_literals
 from stone.backends.python_rsrc import stone_base as bb
 from stone.backends.python_rsrc import stone_validators as bv
 
-from dropbox import common
-from dropbox import team_common
-from dropbox import team_policies
-from dropbox import users_common
+from dropbox_lib import common
+from dropbox_lib import team_common
+from dropbox_lib import team_policies
+from dropbox_lib import users_common
 
 class Account(bb.Struct):
     """

@@ -18,19 +18,19 @@ import requests
 import six
 
 from datetime import datetime, timedelta
-from dropbox.auth import (
+from dropbox_lib.auth import (
     AuthError_validator,
     RateLimitError_validator,
 )
-from dropbox import files
-from dropbox.common import (
+from dropbox_lib import files
+from dropbox_lib.common import (
     PathRoot,
     PathRoot_validator,
     PathRootError_validator
 )
-from dropbox.base import DropboxBase
-from dropbox.base_team import DropboxTeamBase
-from dropbox.exceptions import (
+from dropbox_lib.base import DropboxBase
+from dropbox_lib.base_team import DropboxTeamBase
+from .exceptions import (
     ApiError,
     AuthError,
     BadInputError,
@@ -39,7 +39,7 @@ from dropbox.exceptions import (
     InternalServerError,
     RateLimitError,
 )
-from dropbox.session import (
+from .session import (
     API_HOST,
     API_CONTENT_HOST,
     API_NOTIFICATION_HOST,

@@ -11,13 +11,13 @@ from __future__ import unicode_literals
 from stone.backends.python_rsrc import stone_base as bb
 from stone.backends.python_rsrc import stone_validators as bv
 
-from dropbox import async_
-from dropbox import common
-from dropbox import files
-from dropbox import seen_state
-from dropbox import team_common
-from dropbox import users
-from dropbox import users_common
+from dropbox_lib import async_
+from dropbox_lib import common
+from dropbox_lib import files
+from dropbox_lib import seen_state
+from dropbox_lib import team_common
+from dropbox_lib import users
+from dropbox_lib import users_common
 
 class AccessInheritance(bb.Union):
     """

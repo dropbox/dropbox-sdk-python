@@ -11,10 +11,10 @@ from __future__ import unicode_literals
 from stone.backends.python_rsrc import stone_base as bb
 from stone.backends.python_rsrc import stone_validators as bv
 
-from dropbox import async_
-from dropbox import common
-from dropbox import file_properties
-from dropbox import users_common
+from dropbox_lib import async_
+from dropbox_lib import common
+from dropbox_lib import file_properties
+from dropbox_lib import users_common
 
 class GetMetadataArg(bb.Struct):
     """

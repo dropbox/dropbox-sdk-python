@@ -11,8 +11,8 @@ from __future__ import unicode_literals
 from stone.backends.python_rsrc import stone_base as bb
 from stone.backends.python_rsrc import stone_validators as bv
 
-from dropbox import common
-from dropbox import files
+from dropbox_lib import common
+from dropbox_lib import files
 
 class GeneralFileRequestsError(bb.Union):
     """
