@@ -1070,6 +1070,168 @@ class ActorLogInfo(bb.Union):
 
 ActorLogInfo_validator = bv.Union(ActorLogInfo)
 
+class AdminAlertCategoryEnum(bb.Union):
+    """
+    Alert category
+
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+    """
+
+    _catch_all = 'other'
+    # Attribute is overwritten below the class definition
+    account_takeover = None
+    # Attribute is overwritten below the class definition
+    data_loss_protection = None
+    # Attribute is overwritten below the class definition
+    malware_sharing = None
+    # Attribute is overwritten below the class definition
+    massive_file_operation = None
+    # Attribute is overwritten below the class definition
+    na = None
+    # Attribute is overwritten below the class definition
+    threat_management = None
+    # Attribute is overwritten below the class definition
+    other = None
+
+    def is_account_takeover(self):
+        """
+        Check if the union tag is ``account_takeover``.
+
+        :rtype: bool
+        """
+        return self._tag == 'account_takeover'
+
+    def is_data_loss_protection(self):
+        """
+        Check if the union tag is ``data_loss_protection``.
+
+        :rtype: bool
+        """
+        return self._tag == 'data_loss_protection'
+
+    def is_malware_sharing(self):
+        """
+        Check if the union tag is ``malware_sharing``.
+
+        :rtype: bool
+        """
+        return self._tag == 'malware_sharing'
+
+    def is_massive_file_operation(self):
+        """
+        Check if the union tag is ``massive_file_operation``.
+
+        :rtype: bool
+        """
+        return self._tag == 'massive_file_operation'
+
+    def is_na(self):
+        """
+        Check if the union tag is ``na``.
+
+        :rtype: bool
+        """
+        return self._tag == 'na'
+
+    def is_threat_management(self):
+        """
+        Check if the union tag is ``threat_management``.
+
+        :rtype: bool
+        """
+        return self._tag == 'threat_management'
+
+    def is_other(self):
+        """
+        Check if the union tag is ``other``.
+
+        :rtype: bool
+        """
+        return self._tag == 'other'
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(AdminAlertCategoryEnum, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+AdminAlertCategoryEnum_validator = bv.Union(AdminAlertCategoryEnum)
+
+class AdminAlertSeverityEnum(bb.Union):
+    """
+    Alert severity
+
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+    """
+
+    _catch_all = 'other'
+    # Attribute is overwritten below the class definition
+    high = None
+    # Attribute is overwritten below the class definition
+    info = None
+    # Attribute is overwritten below the class definition
+    low = None
+    # Attribute is overwritten below the class definition
+    medium = None
+    # Attribute is overwritten below the class definition
+    na = None
+    # Attribute is overwritten below the class definition
+    other = None
+
+    def is_high(self):
+        """
+        Check if the union tag is ``high``.
+
+        :rtype: bool
+        """
+        return self._tag == 'high'
+
+    def is_info(self):
+        """
+        Check if the union tag is ``info``.
+
+        :rtype: bool
+        """
+        return self._tag == 'info'
+
+    def is_low(self):
+        """
+        Check if the union tag is ``low``.
+
+        :rtype: bool
+        """
+        return self._tag == 'low'
+
+    def is_medium(self):
+        """
+        Check if the union tag is ``medium``.
+
+        :rtype: bool
+        """
+        return self._tag == 'medium'
+
+    def is_na(self):
+        """
+        Check if the union tag is ``na``.
+
+        :rtype: bool
+        """
+        return self._tag == 'na'
+
+    def is_other(self):
+        """
+        Check if the union tag is ``other``.
+
+        :rtype: bool
+        """
+        return self._tag == 'other'
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(AdminAlertSeverityEnum, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+AdminAlertSeverityEnum_validator = bv.Union(AdminAlertSeverityEnum)
+
 class AdminAlertingAlertConfiguration(bb.Struct):
     """
     Alert configurations
@@ -1212,6 +1374,85 @@ class AdminAlertingChangedAlertConfigType(bb.Struct):
         super(AdminAlertingChangedAlertConfigType, self)._process_custom_annotations(annotation_type, field_path, processor)
 
 AdminAlertingChangedAlertConfigType_validator = bv.Struct(AdminAlertingChangedAlertConfigType)
+
+class AdminAlertingTriggeredAlertDetails(bb.Struct):
+    """
+    Triggered security alert.
+
+    :ivar team_log.AdminAlertingTriggeredAlertDetails.alert_name: Alert name.
+    :ivar team_log.AdminAlertingTriggeredAlertDetails.alert_severity: Alert
+        severity.
+    :ivar team_log.AdminAlertingTriggeredAlertDetails.alert_category: Alert
+        category.
+    :ivar team_log.AdminAlertingTriggeredAlertDetails.alert_instance_id: Alert
+        ID.
+    """
+
+    __slots__ = [
+        '_alert_name_value',
+        '_alert_severity_value',
+        '_alert_category_value',
+        '_alert_instance_id_value',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 alert_name=None,
+                 alert_severity=None,
+                 alert_category=None,
+                 alert_instance_id=None):
+        self._alert_name_value = bb.NOT_SET
+        self._alert_severity_value = bb.NOT_SET
+        self._alert_category_value = bb.NOT_SET
+        self._alert_instance_id_value = bb.NOT_SET
+        if alert_name is not None:
+            self.alert_name = alert_name
+        if alert_severity is not None:
+            self.alert_severity = alert_severity
+        if alert_category is not None:
+            self.alert_category = alert_category
+        if alert_instance_id is not None:
+            self.alert_instance_id = alert_instance_id
+
+    # Instance attribute type: str (validator is set below)
+    alert_name = bb.Attribute("alert_name")
+
+    # Instance attribute type: AdminAlertSeverityEnum (validator is set below)
+    alert_severity = bb.Attribute("alert_severity", user_defined=True)
+
+    # Instance attribute type: AdminAlertCategoryEnum (validator is set below)
+    alert_category = bb.Attribute("alert_category", user_defined=True)
+
+    # Instance attribute type: str (validator is set below)
+    alert_instance_id = bb.Attribute("alert_instance_id")
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(AdminAlertingTriggeredAlertDetails, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+AdminAlertingTriggeredAlertDetails_validator = bv.Struct(AdminAlertingTriggeredAlertDetails)
+
+class AdminAlertingTriggeredAlertType(bb.Struct):
+
+    __slots__ = [
+        '_description_value',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 description=None):
+        self._description_value = bb.NOT_SET
+        if description is not None:
+            self.description = description
+
+    # Instance attribute type: str (validator is set below)
+    description = bb.Attribute("description")
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(AdminAlertingTriggeredAlertType, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+AdminAlertingTriggeredAlertType_validator = bv.Struct(AdminAlertingTriggeredAlertType)
 
 class AdminRole(bb.Union):
     """
@@ -6587,6 +6828,17 @@ class EventDetails(bb.Union):
         return cls('admin_alerting_changed_alert_config_details', val)
 
     @classmethod
+    def admin_alerting_triggered_alert_details(cls, val):
+        """
+        Create an instance of this class set to the
+        ``admin_alerting_triggered_alert_details`` tag with value ``val``.
+
+        :param AdminAlertingTriggeredAlertDetails val:
+        :rtype: EventDetails
+        """
+        return cls('admin_alerting_triggered_alert_details', val)
+
+    @classmethod
     def app_link_team_details(cls, val):
         """
         Create an instance of this class set to the ``app_link_team_details``
@@ -6752,6 +7004,17 @@ class EventDetails(bb.Union):
         return cls('governance_policy_add_folders_details', val)
 
     @classmethod
+    def governance_policy_add_folder_failed_details(cls, val):
+        """
+        Create an instance of this class set to the
+        ``governance_policy_add_folder_failed_details`` tag with value ``val``.
+
+        :param GovernancePolicyAddFolderFailedDetails val:
+        :rtype: EventDetails
+        """
+        return cls('governance_policy_add_folder_failed_details', val)
+
+    @classmethod
     def governance_policy_create_details(cls, val):
         """
         Create an instance of this class set to the
@@ -6796,6 +7059,28 @@ class EventDetails(bb.Union):
         return cls('governance_policy_edit_duration_details', val)
 
     @classmethod
+    def governance_policy_export_created_details(cls, val):
+        """
+        Create an instance of this class set to the
+        ``governance_policy_export_created_details`` tag with value ``val``.
+
+        :param GovernancePolicyExportCreatedDetails val:
+        :rtype: EventDetails
+        """
+        return cls('governance_policy_export_created_details', val)
+
+    @classmethod
+    def governance_policy_export_removed_details(cls, val):
+        """
+        Create an instance of this class set to the
+        ``governance_policy_export_removed_details`` tag with value ``val``.
+
+        :param GovernancePolicyExportRemovedDetails val:
+        :rtype: EventDetails
+        """
+        return cls('governance_policy_export_removed_details', val)
+
+    @classmethod
     def governance_policy_remove_folders_details(cls, val):
         """
         Create an instance of this class set to the
@@ -6805,6 +7090,29 @@ class EventDetails(bb.Union):
         :rtype: EventDetails
         """
         return cls('governance_policy_remove_folders_details', val)
+
+    @classmethod
+    def governance_policy_report_created_details(cls, val):
+        """
+        Create an instance of this class set to the
+        ``governance_policy_report_created_details`` tag with value ``val``.
+
+        :param GovernancePolicyReportCreatedDetails val:
+        :rtype: EventDetails
+        """
+        return cls('governance_policy_report_created_details', val)
+
+    @classmethod
+    def governance_policy_zip_part_downloaded_details(cls, val):
+        """
+        Create an instance of this class set to the
+        ``governance_policy_zip_part_downloaded_details`` tag with value
+        ``val``.
+
+        :param GovernancePolicyZipPartDownloadedDetails val:
+        :rtype: EventDetails
+        """
+        return cls('governance_policy_zip_part_downloaded_details', val)
 
     @classmethod
     def legal_holds_activate_a_hold_details(cls, val):
@@ -11587,6 +11895,14 @@ class EventDetails(bb.Union):
         """
         return self._tag == 'admin_alerting_changed_alert_config_details'
 
+    def is_admin_alerting_triggered_alert_details(self):
+        """
+        Check if the union tag is ``admin_alerting_triggered_alert_details``.
+
+        :rtype: bool
+        """
+        return self._tag == 'admin_alerting_triggered_alert_details'
+
     def is_app_link_team_details(self):
         """
         Check if the union tag is ``app_link_team_details``.
@@ -11707,6 +12023,14 @@ class EventDetails(bb.Union):
         """
         return self._tag == 'governance_policy_add_folders_details'
 
+    def is_governance_policy_add_folder_failed_details(self):
+        """
+        Check if the union tag is ``governance_policy_add_folder_failed_details``.
+
+        :rtype: bool
+        """
+        return self._tag == 'governance_policy_add_folder_failed_details'
+
     def is_governance_policy_create_details(self):
         """
         Check if the union tag is ``governance_policy_create_details``.
@@ -11739,6 +12063,22 @@ class EventDetails(bb.Union):
         """
         return self._tag == 'governance_policy_edit_duration_details'
 
+    def is_governance_policy_export_created_details(self):
+        """
+        Check if the union tag is ``governance_policy_export_created_details``.
+
+        :rtype: bool
+        """
+        return self._tag == 'governance_policy_export_created_details'
+
+    def is_governance_policy_export_removed_details(self):
+        """
+        Check if the union tag is ``governance_policy_export_removed_details``.
+
+        :rtype: bool
+        """
+        return self._tag == 'governance_policy_export_removed_details'
+
     def is_governance_policy_remove_folders_details(self):
         """
         Check if the union tag is ``governance_policy_remove_folders_details``.
@@ -11746,6 +12086,22 @@ class EventDetails(bb.Union):
         :rtype: bool
         """
         return self._tag == 'governance_policy_remove_folders_details'
+
+    def is_governance_policy_report_created_details(self):
+        """
+        Check if the union tag is ``governance_policy_report_created_details``.
+
+        :rtype: bool
+        """
+        return self._tag == 'governance_policy_report_created_details'
+
+    def is_governance_policy_zip_part_downloaded_details(self):
+        """
+        Check if the union tag is ``governance_policy_zip_part_downloaded_details``.
+
+        :rtype: bool
+        """
+        return self._tag == 'governance_policy_zip_part_downloaded_details'
 
     def is_legal_holds_activate_a_hold_details(self):
         """
@@ -15197,6 +15553,16 @@ class EventDetails(bb.Union):
             raise AttributeError("tag 'admin_alerting_changed_alert_config_details' not set")
         return self._value
 
+    def get_admin_alerting_triggered_alert_details(self):
+        """
+        Only call this if :meth:`is_admin_alerting_triggered_alert_details` is true.
+
+        :rtype: AdminAlertingTriggeredAlertDetails
+        """
+        if not self.is_admin_alerting_triggered_alert_details():
+            raise AttributeError("tag 'admin_alerting_triggered_alert_details' not set")
+        return self._value
+
     def get_app_link_team_details(self):
         """
         Only call this if :meth:`is_app_link_team_details` is true.
@@ -15347,6 +15713,16 @@ class EventDetails(bb.Union):
             raise AttributeError("tag 'governance_policy_add_folders_details' not set")
         return self._value
 
+    def get_governance_policy_add_folder_failed_details(self):
+        """
+        Only call this if :meth:`is_governance_policy_add_folder_failed_details` is true.
+
+        :rtype: GovernancePolicyAddFolderFailedDetails
+        """
+        if not self.is_governance_policy_add_folder_failed_details():
+            raise AttributeError("tag 'governance_policy_add_folder_failed_details' not set")
+        return self._value
+
     def get_governance_policy_create_details(self):
         """
         Only call this if :meth:`is_governance_policy_create_details` is true.
@@ -15387,6 +15763,26 @@ class EventDetails(bb.Union):
             raise AttributeError("tag 'governance_policy_edit_duration_details' not set")
         return self._value
 
+    def get_governance_policy_export_created_details(self):
+        """
+        Only call this if :meth:`is_governance_policy_export_created_details` is true.
+
+        :rtype: GovernancePolicyExportCreatedDetails
+        """
+        if not self.is_governance_policy_export_created_details():
+            raise AttributeError("tag 'governance_policy_export_created_details' not set")
+        return self._value
+
+    def get_governance_policy_export_removed_details(self):
+        """
+        Only call this if :meth:`is_governance_policy_export_removed_details` is true.
+
+        :rtype: GovernancePolicyExportRemovedDetails
+        """
+        if not self.is_governance_policy_export_removed_details():
+            raise AttributeError("tag 'governance_policy_export_removed_details' not set")
+        return self._value
+
     def get_governance_policy_remove_folders_details(self):
         """
         Only call this if :meth:`is_governance_policy_remove_folders_details` is true.
@@ -15395,6 +15791,26 @@ class EventDetails(bb.Union):
         """
         if not self.is_governance_policy_remove_folders_details():
             raise AttributeError("tag 'governance_policy_remove_folders_details' not set")
+        return self._value
+
+    def get_governance_policy_report_created_details(self):
+        """
+        Only call this if :meth:`is_governance_policy_report_created_details` is true.
+
+        :rtype: GovernancePolicyReportCreatedDetails
+        """
+        if not self.is_governance_policy_report_created_details():
+            raise AttributeError("tag 'governance_policy_report_created_details' not set")
+        return self._value
+
+    def get_governance_policy_zip_part_downloaded_details(self):
+        """
+        Only call this if :meth:`is_governance_policy_zip_part_downloaded_details` is true.
+
+        :rtype: GovernancePolicyZipPartDownloadedDetails
+        """
+        if not self.is_governance_policy_zip_part_downloaded_details():
+            raise AttributeError("tag 'governance_policy_zip_part_downloaded_details' not set")
         return self._value
 
     def get_legal_holds_activate_a_hold_details(self):
@@ -19706,6 +20122,9 @@ class EventType(bb.Union):
     :ivar AdminAlertingChangedAlertConfigType
         EventType.admin_alerting_changed_alert_config: (admin_alerting) Changed
         an alert setting
+    :ivar AdminAlertingTriggeredAlertType
+        EventType.admin_alerting_triggered_alert: (admin_alerting) Triggered
+        security alert
     :ivar AppLinkTeamType EventType.app_link_team: (apps) Linked app for team
     :ivar AppLinkUserType EventType.app_link_user: (apps) Linked app for member
     :ivar AppUnlinkTeamType EventType.app_unlink_team: (apps) Unlinked app for
@@ -19736,6 +20155,9 @@ class EventType(bb.Union):
     :ivar GovernancePolicyAddFoldersType
         EventType.governance_policy_add_folders: (data_governance) Added folders
         to policy
+    :ivar GovernancePolicyAddFolderFailedType
+        EventType.governance_policy_add_folder_failed: (data_governance)
+        Couldn't add a folder to a policy
     :ivar GovernancePolicyCreateType EventType.governance_policy_create:
         (data_governance) Activated a new policy
     :ivar GovernancePolicyDeleteType EventType.governance_policy_delete:
@@ -19746,9 +20168,21 @@ class EventType(bb.Union):
     :ivar GovernancePolicyEditDurationType
         EventType.governance_policy_edit_duration: (data_governance) Changed
         policy duration
+    :ivar GovernancePolicyExportCreatedType
+        EventType.governance_policy_export_created: (data_governance) Created a
+        policy download
+    :ivar GovernancePolicyExportRemovedType
+        EventType.governance_policy_export_removed: (data_governance) Removed a
+        policy download
     :ivar GovernancePolicyRemoveFoldersType
         EventType.governance_policy_remove_folders: (data_governance) Removed
         folders from policy
+    :ivar GovernancePolicyReportCreatedType
+        EventType.governance_policy_report_created: (data_governance) Created a
+        summary report for a policy
+    :ivar GovernancePolicyZipPartDownloadedType
+        EventType.governance_policy_zip_part_downloaded: (data_governance)
+        Downloaded content from a policy
     :ivar LegalHoldsActivateAHoldType EventType.legal_holds_activate_a_hold:
         (data_governance) Activated a hold
     :ivar LegalHoldsAddMembersType EventType.legal_holds_add_members:
@@ -20806,6 +21240,17 @@ class EventType(bb.Union):
         return cls('admin_alerting_changed_alert_config', val)
 
     @classmethod
+    def admin_alerting_triggered_alert(cls, val):
+        """
+        Create an instance of this class set to the
+        ``admin_alerting_triggered_alert`` tag with value ``val``.
+
+        :param AdminAlertingTriggeredAlertType val:
+        :rtype: EventType
+        """
+        return cls('admin_alerting_triggered_alert', val)
+
+    @classmethod
     def app_link_team(cls, val):
         """
         Create an instance of this class set to the ``app_link_team`` tag with
@@ -20971,6 +21416,17 @@ class EventType(bb.Union):
         return cls('governance_policy_add_folders', val)
 
     @classmethod
+    def governance_policy_add_folder_failed(cls, val):
+        """
+        Create an instance of this class set to the
+        ``governance_policy_add_folder_failed`` tag with value ``val``.
+
+        :param GovernancePolicyAddFolderFailedType val:
+        :rtype: EventType
+        """
+        return cls('governance_policy_add_folder_failed', val)
+
+    @classmethod
     def governance_policy_create(cls, val):
         """
         Create an instance of this class set to the ``governance_policy_create``
@@ -21015,6 +21471,28 @@ class EventType(bb.Union):
         return cls('governance_policy_edit_duration', val)
 
     @classmethod
+    def governance_policy_export_created(cls, val):
+        """
+        Create an instance of this class set to the
+        ``governance_policy_export_created`` tag with value ``val``.
+
+        :param GovernancePolicyExportCreatedType val:
+        :rtype: EventType
+        """
+        return cls('governance_policy_export_created', val)
+
+    @classmethod
+    def governance_policy_export_removed(cls, val):
+        """
+        Create an instance of this class set to the
+        ``governance_policy_export_removed`` tag with value ``val``.
+
+        :param GovernancePolicyExportRemovedType val:
+        :rtype: EventType
+        """
+        return cls('governance_policy_export_removed', val)
+
+    @classmethod
     def governance_policy_remove_folders(cls, val):
         """
         Create an instance of this class set to the
@@ -21024,6 +21502,28 @@ class EventType(bb.Union):
         :rtype: EventType
         """
         return cls('governance_policy_remove_folders', val)
+
+    @classmethod
+    def governance_policy_report_created(cls, val):
+        """
+        Create an instance of this class set to the
+        ``governance_policy_report_created`` tag with value ``val``.
+
+        :param GovernancePolicyReportCreatedType val:
+        :rtype: EventType
+        """
+        return cls('governance_policy_report_created', val)
+
+    @classmethod
+    def governance_policy_zip_part_downloaded(cls, val):
+        """
+        Create an instance of this class set to the
+        ``governance_policy_zip_part_downloaded`` tag with value ``val``.
+
+        :param GovernancePolicyZipPartDownloadedType val:
+        :rtype: EventType
+        """
+        return cls('governance_policy_zip_part_downloaded', val)
 
     @classmethod
     def legal_holds_activate_a_hold(cls, val):
@@ -25757,6 +26257,14 @@ class EventType(bb.Union):
         """
         return self._tag == 'admin_alerting_changed_alert_config'
 
+    def is_admin_alerting_triggered_alert(self):
+        """
+        Check if the union tag is ``admin_alerting_triggered_alert``.
+
+        :rtype: bool
+        """
+        return self._tag == 'admin_alerting_triggered_alert'
+
     def is_app_link_team(self):
         """
         Check if the union tag is ``app_link_team``.
@@ -25877,6 +26385,14 @@ class EventType(bb.Union):
         """
         return self._tag == 'governance_policy_add_folders'
 
+    def is_governance_policy_add_folder_failed(self):
+        """
+        Check if the union tag is ``governance_policy_add_folder_failed``.
+
+        :rtype: bool
+        """
+        return self._tag == 'governance_policy_add_folder_failed'
+
     def is_governance_policy_create(self):
         """
         Check if the union tag is ``governance_policy_create``.
@@ -25909,6 +26425,22 @@ class EventType(bb.Union):
         """
         return self._tag == 'governance_policy_edit_duration'
 
+    def is_governance_policy_export_created(self):
+        """
+        Check if the union tag is ``governance_policy_export_created``.
+
+        :rtype: bool
+        """
+        return self._tag == 'governance_policy_export_created'
+
+    def is_governance_policy_export_removed(self):
+        """
+        Check if the union tag is ``governance_policy_export_removed``.
+
+        :rtype: bool
+        """
+        return self._tag == 'governance_policy_export_removed'
+
     def is_governance_policy_remove_folders(self):
         """
         Check if the union tag is ``governance_policy_remove_folders``.
@@ -25916,6 +26448,22 @@ class EventType(bb.Union):
         :rtype: bool
         """
         return self._tag == 'governance_policy_remove_folders'
+
+    def is_governance_policy_report_created(self):
+        """
+        Check if the union tag is ``governance_policy_report_created``.
+
+        :rtype: bool
+        """
+        return self._tag == 'governance_policy_report_created'
+
+    def is_governance_policy_zip_part_downloaded(self):
+        """
+        Check if the union tag is ``governance_policy_zip_part_downloaded``.
+
+        :rtype: bool
+        """
+        return self._tag == 'governance_policy_zip_part_downloaded'
 
     def is_legal_holds_activate_a_hold(self):
         """
@@ -29361,6 +29909,18 @@ class EventType(bb.Union):
             raise AttributeError("tag 'admin_alerting_changed_alert_config' not set")
         return self._value
 
+    def get_admin_alerting_triggered_alert(self):
+        """
+        (admin_alerting) Triggered security alert
+
+        Only call this if :meth:`is_admin_alerting_triggered_alert` is true.
+
+        :rtype: AdminAlertingTriggeredAlertType
+        """
+        if not self.is_admin_alerting_triggered_alert():
+            raise AttributeError("tag 'admin_alerting_triggered_alert' not set")
+        return self._value
+
     def get_app_link_team(self):
         """
         (apps) Linked app for team
@@ -29542,6 +30102,18 @@ class EventType(bb.Union):
             raise AttributeError("tag 'governance_policy_add_folders' not set")
         return self._value
 
+    def get_governance_policy_add_folder_failed(self):
+        """
+        (data_governance) Couldn't add a folder to a policy
+
+        Only call this if :meth:`is_governance_policy_add_folder_failed` is true.
+
+        :rtype: GovernancePolicyAddFolderFailedType
+        """
+        if not self.is_governance_policy_add_folder_failed():
+            raise AttributeError("tag 'governance_policy_add_folder_failed' not set")
+        return self._value
+
     def get_governance_policy_create(self):
         """
         (data_governance) Activated a new policy
@@ -29590,6 +30162,30 @@ class EventType(bb.Union):
             raise AttributeError("tag 'governance_policy_edit_duration' not set")
         return self._value
 
+    def get_governance_policy_export_created(self):
+        """
+        (data_governance) Created a policy download
+
+        Only call this if :meth:`is_governance_policy_export_created` is true.
+
+        :rtype: GovernancePolicyExportCreatedType
+        """
+        if not self.is_governance_policy_export_created():
+            raise AttributeError("tag 'governance_policy_export_created' not set")
+        return self._value
+
+    def get_governance_policy_export_removed(self):
+        """
+        (data_governance) Removed a policy download
+
+        Only call this if :meth:`is_governance_policy_export_removed` is true.
+
+        :rtype: GovernancePolicyExportRemovedType
+        """
+        if not self.is_governance_policy_export_removed():
+            raise AttributeError("tag 'governance_policy_export_removed' not set")
+        return self._value
+
     def get_governance_policy_remove_folders(self):
         """
         (data_governance) Removed folders from policy
@@ -29600,6 +30196,30 @@ class EventType(bb.Union):
         """
         if not self.is_governance_policy_remove_folders():
             raise AttributeError("tag 'governance_policy_remove_folders' not set")
+        return self._value
+
+    def get_governance_policy_report_created(self):
+        """
+        (data_governance) Created a summary report for a policy
+
+        Only call this if :meth:`is_governance_policy_report_created` is true.
+
+        :rtype: GovernancePolicyReportCreatedType
+        """
+        if not self.is_governance_policy_report_created():
+            raise AttributeError("tag 'governance_policy_report_created' not set")
+        return self._value
+
+    def get_governance_policy_zip_part_downloaded(self):
+        """
+        (data_governance) Downloaded content from a policy
+
+        Only call this if :meth:`is_governance_policy_zip_part_downloaded` is true.
+
+        :rtype: GovernancePolicyZipPartDownloadedType
+        """
+        if not self.is_governance_policy_zip_part_downloaded():
+            raise AttributeError("tag 'governance_policy_zip_part_downloaded' not set")
         return self._value
 
     def get_legal_holds_activate_a_hold(self):
@@ -34832,6 +35452,8 @@ class EventTypeArg(bb.Union):
 
     :ivar team_log.EventTypeArg.admin_alerting_changed_alert_config:
         (admin_alerting) Changed an alert setting
+    :ivar team_log.EventTypeArg.admin_alerting_triggered_alert: (admin_alerting)
+        Triggered security alert
     :ivar team_log.EventTypeArg.app_link_team: (apps) Linked app for team
     :ivar team_log.EventTypeArg.app_link_user: (apps) Linked app for member
     :ivar team_log.EventTypeArg.app_unlink_team: (apps) Unlinked app for team
@@ -34857,6 +35479,8 @@ class EventTypeArg(bb.Union):
         file comment
     :ivar team_log.EventTypeArg.governance_policy_add_folders: (data_governance)
         Added folders to policy
+    :ivar team_log.EventTypeArg.governance_policy_add_folder_failed:
+        (data_governance) Couldn't add a folder to a policy
     :ivar team_log.EventTypeArg.governance_policy_create: (data_governance)
         Activated a new policy
     :ivar team_log.EventTypeArg.governance_policy_delete: (data_governance)
@@ -34865,8 +35489,16 @@ class EventTypeArg(bb.Union):
         (data_governance) Edited policy
     :ivar team_log.EventTypeArg.governance_policy_edit_duration:
         (data_governance) Changed policy duration
+    :ivar team_log.EventTypeArg.governance_policy_export_created:
+        (data_governance) Created a policy download
+    :ivar team_log.EventTypeArg.governance_policy_export_removed:
+        (data_governance) Removed a policy download
     :ivar team_log.EventTypeArg.governance_policy_remove_folders:
         (data_governance) Removed folders from policy
+    :ivar team_log.EventTypeArg.governance_policy_report_created:
+        (data_governance) Created a summary report for a policy
+    :ivar team_log.EventTypeArg.governance_policy_zip_part_downloaded:
+        (data_governance) Downloaded content from a policy
     :ivar team_log.EventTypeArg.legal_holds_activate_a_hold: (data_governance)
         Activated a hold
     :ivar team_log.EventTypeArg.legal_holds_add_members: (data_governance) Added
@@ -35763,6 +36395,8 @@ class EventTypeArg(bb.Union):
     # Attribute is overwritten below the class definition
     admin_alerting_changed_alert_config = None
     # Attribute is overwritten below the class definition
+    admin_alerting_triggered_alert = None
+    # Attribute is overwritten below the class definition
     app_link_team = None
     # Attribute is overwritten below the class definition
     app_link_user = None
@@ -35793,6 +36427,8 @@ class EventTypeArg(bb.Union):
     # Attribute is overwritten below the class definition
     governance_policy_add_folders = None
     # Attribute is overwritten below the class definition
+    governance_policy_add_folder_failed = None
+    # Attribute is overwritten below the class definition
     governance_policy_create = None
     # Attribute is overwritten below the class definition
     governance_policy_delete = None
@@ -35801,7 +36437,15 @@ class EventTypeArg(bb.Union):
     # Attribute is overwritten below the class definition
     governance_policy_edit_duration = None
     # Attribute is overwritten below the class definition
+    governance_policy_export_created = None
+    # Attribute is overwritten below the class definition
+    governance_policy_export_removed = None
+    # Attribute is overwritten below the class definition
     governance_policy_remove_folders = None
+    # Attribute is overwritten below the class definition
+    governance_policy_report_created = None
+    # Attribute is overwritten below the class definition
+    governance_policy_zip_part_downloaded = None
     # Attribute is overwritten below the class definition
     legal_holds_activate_a_hold = None
     # Attribute is overwritten below the class definition
@@ -36669,6 +37313,14 @@ class EventTypeArg(bb.Union):
         """
         return self._tag == 'admin_alerting_changed_alert_config'
 
+    def is_admin_alerting_triggered_alert(self):
+        """
+        Check if the union tag is ``admin_alerting_triggered_alert``.
+
+        :rtype: bool
+        """
+        return self._tag == 'admin_alerting_triggered_alert'
+
     def is_app_link_team(self):
         """
         Check if the union tag is ``app_link_team``.
@@ -36789,6 +37441,14 @@ class EventTypeArg(bb.Union):
         """
         return self._tag == 'governance_policy_add_folders'
 
+    def is_governance_policy_add_folder_failed(self):
+        """
+        Check if the union tag is ``governance_policy_add_folder_failed``.
+
+        :rtype: bool
+        """
+        return self._tag == 'governance_policy_add_folder_failed'
+
     def is_governance_policy_create(self):
         """
         Check if the union tag is ``governance_policy_create``.
@@ -36821,6 +37481,22 @@ class EventTypeArg(bb.Union):
         """
         return self._tag == 'governance_policy_edit_duration'
 
+    def is_governance_policy_export_created(self):
+        """
+        Check if the union tag is ``governance_policy_export_created``.
+
+        :rtype: bool
+        """
+        return self._tag == 'governance_policy_export_created'
+
+    def is_governance_policy_export_removed(self):
+        """
+        Check if the union tag is ``governance_policy_export_removed``.
+
+        :rtype: bool
+        """
+        return self._tag == 'governance_policy_export_removed'
+
     def is_governance_policy_remove_folders(self):
         """
         Check if the union tag is ``governance_policy_remove_folders``.
@@ -36828,6 +37504,22 @@ class EventTypeArg(bb.Union):
         :rtype: bool
         """
         return self._tag == 'governance_policy_remove_folders'
+
+    def is_governance_policy_report_created(self):
+        """
+        Check if the union tag is ``governance_policy_report_created``.
+
+        :rtype: bool
+        """
+        return self._tag == 'governance_policy_report_created'
+
+    def is_governance_policy_zip_part_downloaded(self):
+        """
+        Check if the union tag is ``governance_policy_zip_part_downloaded``.
+
+        :rtype: bool
+        """
+        return self._tag == 'governance_policy_zip_part_downloaded'
 
     def is_legal_holds_activate_a_hold(self):
         """
@@ -43997,6 +44689,93 @@ class GoogleSsoPolicy(bb.Union):
 
 GoogleSsoPolicy_validator = bv.Union(GoogleSsoPolicy)
 
+class GovernancePolicyAddFolderFailedDetails(bb.Struct):
+    """
+    Couldn't add a folder to a policy.
+
+    :ivar team_log.GovernancePolicyAddFolderFailedDetails.governance_policy_id:
+        Policy ID.
+    :ivar team_log.GovernancePolicyAddFolderFailedDetails.name: Policy name.
+    :ivar team_log.GovernancePolicyAddFolderFailedDetails.policy_type: Policy
+        type.
+    :ivar team_log.GovernancePolicyAddFolderFailedDetails.folder: Folder.
+    :ivar team_log.GovernancePolicyAddFolderFailedDetails.reason: Reason.
+    """
+
+    __slots__ = [
+        '_governance_policy_id_value',
+        '_name_value',
+        '_policy_type_value',
+        '_folder_value',
+        '_reason_value',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 governance_policy_id=None,
+                 name=None,
+                 folder=None,
+                 policy_type=None,
+                 reason=None):
+        self._governance_policy_id_value = bb.NOT_SET
+        self._name_value = bb.NOT_SET
+        self._policy_type_value = bb.NOT_SET
+        self._folder_value = bb.NOT_SET
+        self._reason_value = bb.NOT_SET
+        if governance_policy_id is not None:
+            self.governance_policy_id = governance_policy_id
+        if name is not None:
+            self.name = name
+        if policy_type is not None:
+            self.policy_type = policy_type
+        if folder is not None:
+            self.folder = folder
+        if reason is not None:
+            self.reason = reason
+
+    # Instance attribute type: str (validator is set below)
+    governance_policy_id = bb.Attribute("governance_policy_id")
+
+    # Instance attribute type: str (validator is set below)
+    name = bb.Attribute("name")
+
+    # Instance attribute type: PolicyType (validator is set below)
+    policy_type = bb.Attribute("policy_type", nullable=True, user_defined=True)
+
+    # Instance attribute type: str (validator is set below)
+    folder = bb.Attribute("folder")
+
+    # Instance attribute type: str (validator is set below)
+    reason = bb.Attribute("reason", nullable=True)
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(GovernancePolicyAddFolderFailedDetails, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+GovernancePolicyAddFolderFailedDetails_validator = bv.Struct(GovernancePolicyAddFolderFailedDetails)
+
+class GovernancePolicyAddFolderFailedType(bb.Struct):
+
+    __slots__ = [
+        '_description_value',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 description=None):
+        self._description_value = bb.NOT_SET
+        if description is not None:
+            self.description = description
+
+    # Instance attribute type: str (validator is set below)
+    description = bb.Attribute("description")
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(GovernancePolicyAddFolderFailedType, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+GovernancePolicyAddFolderFailedType_validator = bv.Struct(GovernancePolicyAddFolderFailedType)
+
 class GovernancePolicyAddFoldersDetails(bb.Struct):
     """
     Added folders to policy.
@@ -44409,6 +45188,164 @@ class GovernancePolicyEditDurationType(bb.Struct):
 
 GovernancePolicyEditDurationType_validator = bv.Struct(GovernancePolicyEditDurationType)
 
+class GovernancePolicyExportCreatedDetails(bb.Struct):
+    """
+    Created a policy download.
+
+    :ivar team_log.GovernancePolicyExportCreatedDetails.governance_policy_id:
+        Policy ID.
+    :ivar team_log.GovernancePolicyExportCreatedDetails.name: Policy name.
+    :ivar team_log.GovernancePolicyExportCreatedDetails.policy_type: Policy
+        type.
+    :ivar team_log.GovernancePolicyExportCreatedDetails.export_name: Export
+        name.
+    """
+
+    __slots__ = [
+        '_governance_policy_id_value',
+        '_name_value',
+        '_policy_type_value',
+        '_export_name_value',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 governance_policy_id=None,
+                 name=None,
+                 export_name=None,
+                 policy_type=None):
+        self._governance_policy_id_value = bb.NOT_SET
+        self._name_value = bb.NOT_SET
+        self._policy_type_value = bb.NOT_SET
+        self._export_name_value = bb.NOT_SET
+        if governance_policy_id is not None:
+            self.governance_policy_id = governance_policy_id
+        if name is not None:
+            self.name = name
+        if policy_type is not None:
+            self.policy_type = policy_type
+        if export_name is not None:
+            self.export_name = export_name
+
+    # Instance attribute type: str (validator is set below)
+    governance_policy_id = bb.Attribute("governance_policy_id")
+
+    # Instance attribute type: str (validator is set below)
+    name = bb.Attribute("name")
+
+    # Instance attribute type: PolicyType (validator is set below)
+    policy_type = bb.Attribute("policy_type", nullable=True, user_defined=True)
+
+    # Instance attribute type: str (validator is set below)
+    export_name = bb.Attribute("export_name")
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(GovernancePolicyExportCreatedDetails, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+GovernancePolicyExportCreatedDetails_validator = bv.Struct(GovernancePolicyExportCreatedDetails)
+
+class GovernancePolicyExportCreatedType(bb.Struct):
+
+    __slots__ = [
+        '_description_value',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 description=None):
+        self._description_value = bb.NOT_SET
+        if description is not None:
+            self.description = description
+
+    # Instance attribute type: str (validator is set below)
+    description = bb.Attribute("description")
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(GovernancePolicyExportCreatedType, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+GovernancePolicyExportCreatedType_validator = bv.Struct(GovernancePolicyExportCreatedType)
+
+class GovernancePolicyExportRemovedDetails(bb.Struct):
+    """
+    Removed a policy download.
+
+    :ivar team_log.GovernancePolicyExportRemovedDetails.governance_policy_id:
+        Policy ID.
+    :ivar team_log.GovernancePolicyExportRemovedDetails.name: Policy name.
+    :ivar team_log.GovernancePolicyExportRemovedDetails.policy_type: Policy
+        type.
+    :ivar team_log.GovernancePolicyExportRemovedDetails.export_name: Export
+        name.
+    """
+
+    __slots__ = [
+        '_governance_policy_id_value',
+        '_name_value',
+        '_policy_type_value',
+        '_export_name_value',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 governance_policy_id=None,
+                 name=None,
+                 export_name=None,
+                 policy_type=None):
+        self._governance_policy_id_value = bb.NOT_SET
+        self._name_value = bb.NOT_SET
+        self._policy_type_value = bb.NOT_SET
+        self._export_name_value = bb.NOT_SET
+        if governance_policy_id is not None:
+            self.governance_policy_id = governance_policy_id
+        if name is not None:
+            self.name = name
+        if policy_type is not None:
+            self.policy_type = policy_type
+        if export_name is not None:
+            self.export_name = export_name
+
+    # Instance attribute type: str (validator is set below)
+    governance_policy_id = bb.Attribute("governance_policy_id")
+
+    # Instance attribute type: str (validator is set below)
+    name = bb.Attribute("name")
+
+    # Instance attribute type: PolicyType (validator is set below)
+    policy_type = bb.Attribute("policy_type", nullable=True, user_defined=True)
+
+    # Instance attribute type: str (validator is set below)
+    export_name = bb.Attribute("export_name")
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(GovernancePolicyExportRemovedDetails, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+GovernancePolicyExportRemovedDetails_validator = bv.Struct(GovernancePolicyExportRemovedDetails)
+
+class GovernancePolicyExportRemovedType(bb.Struct):
+
+    __slots__ = [
+        '_description_value',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 description=None):
+        self._description_value = bb.NOT_SET
+        if description is not None:
+            self.description = description
+
+    # Instance attribute type: str (validator is set below)
+    description = bb.Attribute("description")
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(GovernancePolicyExportRemovedType, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+GovernancePolicyExportRemovedType_validator = bv.Struct(GovernancePolicyExportRemovedType)
+
 class GovernancePolicyRemoveFoldersDetails(bb.Struct):
     """
     Removed folders from policy.
@@ -44495,6 +45432,164 @@ class GovernancePolicyRemoveFoldersType(bb.Struct):
         super(GovernancePolicyRemoveFoldersType, self)._process_custom_annotations(annotation_type, field_path, processor)
 
 GovernancePolicyRemoveFoldersType_validator = bv.Struct(GovernancePolicyRemoveFoldersType)
+
+class GovernancePolicyReportCreatedDetails(bb.Struct):
+    """
+    Created a summary report for a policy.
+
+    :ivar team_log.GovernancePolicyReportCreatedDetails.governance_policy_id:
+        Policy ID.
+    :ivar team_log.GovernancePolicyReportCreatedDetails.name: Policy name.
+    :ivar team_log.GovernancePolicyReportCreatedDetails.policy_type: Policy
+        type.
+    """
+
+    __slots__ = [
+        '_governance_policy_id_value',
+        '_name_value',
+        '_policy_type_value',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 governance_policy_id=None,
+                 name=None,
+                 policy_type=None):
+        self._governance_policy_id_value = bb.NOT_SET
+        self._name_value = bb.NOT_SET
+        self._policy_type_value = bb.NOT_SET
+        if governance_policy_id is not None:
+            self.governance_policy_id = governance_policy_id
+        if name is not None:
+            self.name = name
+        if policy_type is not None:
+            self.policy_type = policy_type
+
+    # Instance attribute type: str (validator is set below)
+    governance_policy_id = bb.Attribute("governance_policy_id")
+
+    # Instance attribute type: str (validator is set below)
+    name = bb.Attribute("name")
+
+    # Instance attribute type: PolicyType (validator is set below)
+    policy_type = bb.Attribute("policy_type", nullable=True, user_defined=True)
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(GovernancePolicyReportCreatedDetails, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+GovernancePolicyReportCreatedDetails_validator = bv.Struct(GovernancePolicyReportCreatedDetails)
+
+class GovernancePolicyReportCreatedType(bb.Struct):
+
+    __slots__ = [
+        '_description_value',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 description=None):
+        self._description_value = bb.NOT_SET
+        if description is not None:
+            self.description = description
+
+    # Instance attribute type: str (validator is set below)
+    description = bb.Attribute("description")
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(GovernancePolicyReportCreatedType, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+GovernancePolicyReportCreatedType_validator = bv.Struct(GovernancePolicyReportCreatedType)
+
+class GovernancePolicyZipPartDownloadedDetails(bb.Struct):
+    """
+    Downloaded content from a policy.
+
+    :ivar
+        team_log.GovernancePolicyZipPartDownloadedDetails.governance_policy_id:
+        Policy ID.
+    :ivar team_log.GovernancePolicyZipPartDownloadedDetails.name: Policy name.
+    :ivar team_log.GovernancePolicyZipPartDownloadedDetails.policy_type: Policy
+        type.
+    :ivar team_log.GovernancePolicyZipPartDownloadedDetails.export_name: Export
+        name.
+    :ivar team_log.GovernancePolicyZipPartDownloadedDetails.part: Part.
+    """
+
+    __slots__ = [
+        '_governance_policy_id_value',
+        '_name_value',
+        '_policy_type_value',
+        '_export_name_value',
+        '_part_value',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 governance_policy_id=None,
+                 name=None,
+                 export_name=None,
+                 policy_type=None,
+                 part=None):
+        self._governance_policy_id_value = bb.NOT_SET
+        self._name_value = bb.NOT_SET
+        self._policy_type_value = bb.NOT_SET
+        self._export_name_value = bb.NOT_SET
+        self._part_value = bb.NOT_SET
+        if governance_policy_id is not None:
+            self.governance_policy_id = governance_policy_id
+        if name is not None:
+            self.name = name
+        if policy_type is not None:
+            self.policy_type = policy_type
+        if export_name is not None:
+            self.export_name = export_name
+        if part is not None:
+            self.part = part
+
+    # Instance attribute type: str (validator is set below)
+    governance_policy_id = bb.Attribute("governance_policy_id")
+
+    # Instance attribute type: str (validator is set below)
+    name = bb.Attribute("name")
+
+    # Instance attribute type: PolicyType (validator is set below)
+    policy_type = bb.Attribute("policy_type", nullable=True, user_defined=True)
+
+    # Instance attribute type: str (validator is set below)
+    export_name = bb.Attribute("export_name")
+
+    # Instance attribute type: str (validator is set below)
+    part = bb.Attribute("part", nullable=True)
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(GovernancePolicyZipPartDownloadedDetails, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+GovernancePolicyZipPartDownloadedDetails_validator = bv.Struct(GovernancePolicyZipPartDownloadedDetails)
+
+class GovernancePolicyZipPartDownloadedType(bb.Struct):
+
+    __slots__ = [
+        '_description_value',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 description=None):
+        self._description_value = bb.NOT_SET
+        if description is not None:
+            self.description = description
+
+    # Instance attribute type: str (validator is set below)
+    description = bb.Attribute("description")
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(GovernancePolicyZipPartDownloadedType, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+GovernancePolicyZipPartDownloadedType_validator = bv.Struct(GovernancePolicyZipPartDownloadedType)
 
 class GroupAddExternalIdDetails(bb.Struct):
     """
@@ -67302,6 +68397,53 @@ ActorLogInfo.anonymous = ActorLogInfo('anonymous')
 ActorLogInfo.dropbox = ActorLogInfo('dropbox')
 ActorLogInfo.other = ActorLogInfo('other')
 
+AdminAlertCategoryEnum._account_takeover_validator = bv.Void()
+AdminAlertCategoryEnum._data_loss_protection_validator = bv.Void()
+AdminAlertCategoryEnum._malware_sharing_validator = bv.Void()
+AdminAlertCategoryEnum._massive_file_operation_validator = bv.Void()
+AdminAlertCategoryEnum._na_validator = bv.Void()
+AdminAlertCategoryEnum._threat_management_validator = bv.Void()
+AdminAlertCategoryEnum._other_validator = bv.Void()
+AdminAlertCategoryEnum._tagmap = {
+    'account_takeover': AdminAlertCategoryEnum._account_takeover_validator,
+    'data_loss_protection': AdminAlertCategoryEnum._data_loss_protection_validator,
+    'malware_sharing': AdminAlertCategoryEnum._malware_sharing_validator,
+    'massive_file_operation': AdminAlertCategoryEnum._massive_file_operation_validator,
+    'na': AdminAlertCategoryEnum._na_validator,
+    'threat_management': AdminAlertCategoryEnum._threat_management_validator,
+    'other': AdminAlertCategoryEnum._other_validator,
+}
+
+AdminAlertCategoryEnum.account_takeover = AdminAlertCategoryEnum('account_takeover')
+AdminAlertCategoryEnum.data_loss_protection = AdminAlertCategoryEnum('data_loss_protection')
+AdminAlertCategoryEnum.malware_sharing = AdminAlertCategoryEnum('malware_sharing')
+AdminAlertCategoryEnum.massive_file_operation = AdminAlertCategoryEnum('massive_file_operation')
+AdminAlertCategoryEnum.na = AdminAlertCategoryEnum('na')
+AdminAlertCategoryEnum.threat_management = AdminAlertCategoryEnum('threat_management')
+AdminAlertCategoryEnum.other = AdminAlertCategoryEnum('other')
+
+AdminAlertSeverityEnum._high_validator = bv.Void()
+AdminAlertSeverityEnum._info_validator = bv.Void()
+AdminAlertSeverityEnum._low_validator = bv.Void()
+AdminAlertSeverityEnum._medium_validator = bv.Void()
+AdminAlertSeverityEnum._na_validator = bv.Void()
+AdminAlertSeverityEnum._other_validator = bv.Void()
+AdminAlertSeverityEnum._tagmap = {
+    'high': AdminAlertSeverityEnum._high_validator,
+    'info': AdminAlertSeverityEnum._info_validator,
+    'low': AdminAlertSeverityEnum._low_validator,
+    'medium': AdminAlertSeverityEnum._medium_validator,
+    'na': AdminAlertSeverityEnum._na_validator,
+    'other': AdminAlertSeverityEnum._other_validator,
+}
+
+AdminAlertSeverityEnum.high = AdminAlertSeverityEnum('high')
+AdminAlertSeverityEnum.info = AdminAlertSeverityEnum('info')
+AdminAlertSeverityEnum.low = AdminAlertSeverityEnum('low')
+AdminAlertSeverityEnum.medium = AdminAlertSeverityEnum('medium')
+AdminAlertSeverityEnum.na = AdminAlertSeverityEnum('na')
+AdminAlertSeverityEnum.other = AdminAlertSeverityEnum('other')
+
 AdminAlertingAlertConfiguration.alert_state.validator = AdminAlertingAlertStatePolicy_validator
 AdminAlertingAlertConfiguration._all_field_names_ = set(['alert_state'])
 AdminAlertingAlertConfiguration._all_fields_ = [('alert_state', AdminAlertingAlertConfiguration.alert_state.validator)]
@@ -67336,6 +68478,27 @@ AdminAlertingChangedAlertConfigDetails._all_fields_ = [
 AdminAlertingChangedAlertConfigType.description.validator = bv.String()
 AdminAlertingChangedAlertConfigType._all_field_names_ = set(['description'])
 AdminAlertingChangedAlertConfigType._all_fields_ = [('description', AdminAlertingChangedAlertConfigType.description.validator)]
+
+AdminAlertingTriggeredAlertDetails.alert_name.validator = bv.String()
+AdminAlertingTriggeredAlertDetails.alert_severity.validator = AdminAlertSeverityEnum_validator
+AdminAlertingTriggeredAlertDetails.alert_category.validator = AdminAlertCategoryEnum_validator
+AdminAlertingTriggeredAlertDetails.alert_instance_id.validator = bv.String()
+AdminAlertingTriggeredAlertDetails._all_field_names_ = set([
+    'alert_name',
+    'alert_severity',
+    'alert_category',
+    'alert_instance_id',
+])
+AdminAlertingTriggeredAlertDetails._all_fields_ = [
+    ('alert_name', AdminAlertingTriggeredAlertDetails.alert_name.validator),
+    ('alert_severity', AdminAlertingTriggeredAlertDetails.alert_severity.validator),
+    ('alert_category', AdminAlertingTriggeredAlertDetails.alert_category.validator),
+    ('alert_instance_id', AdminAlertingTriggeredAlertDetails.alert_instance_id.validator),
+]
+
+AdminAlertingTriggeredAlertType.description.validator = bv.String()
+AdminAlertingTriggeredAlertType._all_field_names_ = set(['description'])
+AdminAlertingTriggeredAlertType._all_fields_ = [('description', AdminAlertingTriggeredAlertType.description.validator)]
 
 AdminRole._limited_admin_validator = bv.Void()
 AdminRole._member_only_validator = bv.Void()
@@ -68560,6 +69723,7 @@ EventCategory.trusted_teams = EventCategory('trusted_teams')
 EventCategory.other = EventCategory('other')
 
 EventDetails._admin_alerting_changed_alert_config_details_validator = AdminAlertingChangedAlertConfigDetails_validator
+EventDetails._admin_alerting_triggered_alert_details_validator = AdminAlertingTriggeredAlertDetails_validator
 EventDetails._app_link_team_details_validator = AppLinkTeamDetails_validator
 EventDetails._app_link_user_details_validator = AppLinkUserDetails_validator
 EventDetails._app_unlink_team_details_validator = AppUnlinkTeamDetails_validator
@@ -68575,11 +69739,16 @@ EventDetails._file_resolve_comment_details_validator = FileResolveCommentDetails
 EventDetails._file_unlike_comment_details_validator = FileUnlikeCommentDetails_validator
 EventDetails._file_unresolve_comment_details_validator = FileUnresolveCommentDetails_validator
 EventDetails._governance_policy_add_folders_details_validator = GovernancePolicyAddFoldersDetails_validator
+EventDetails._governance_policy_add_folder_failed_details_validator = GovernancePolicyAddFolderFailedDetails_validator
 EventDetails._governance_policy_create_details_validator = GovernancePolicyCreateDetails_validator
 EventDetails._governance_policy_delete_details_validator = GovernancePolicyDeleteDetails_validator
 EventDetails._governance_policy_edit_details_details_validator = GovernancePolicyEditDetailsDetails_validator
 EventDetails._governance_policy_edit_duration_details_validator = GovernancePolicyEditDurationDetails_validator
+EventDetails._governance_policy_export_created_details_validator = GovernancePolicyExportCreatedDetails_validator
+EventDetails._governance_policy_export_removed_details_validator = GovernancePolicyExportRemovedDetails_validator
 EventDetails._governance_policy_remove_folders_details_validator = GovernancePolicyRemoveFoldersDetails_validator
+EventDetails._governance_policy_report_created_details_validator = GovernancePolicyReportCreatedDetails_validator
+EventDetails._governance_policy_zip_part_downloaded_details_validator = GovernancePolicyZipPartDownloadedDetails_validator
 EventDetails._legal_holds_activate_a_hold_details_validator = LegalHoldsActivateAHoldDetails_validator
 EventDetails._legal_holds_add_members_details_validator = LegalHoldsAddMembersDetails_validator
 EventDetails._legal_holds_change_hold_details_details_validator = LegalHoldsChangeHoldDetailsDetails_validator
@@ -69012,6 +70181,7 @@ EventDetails._missing_details_validator = MissingDetails_validator
 EventDetails._other_validator = bv.Void()
 EventDetails._tagmap = {
     'admin_alerting_changed_alert_config_details': EventDetails._admin_alerting_changed_alert_config_details_validator,
+    'admin_alerting_triggered_alert_details': EventDetails._admin_alerting_triggered_alert_details_validator,
     'app_link_team_details': EventDetails._app_link_team_details_validator,
     'app_link_user_details': EventDetails._app_link_user_details_validator,
     'app_unlink_team_details': EventDetails._app_unlink_team_details_validator,
@@ -69027,11 +70197,16 @@ EventDetails._tagmap = {
     'file_unlike_comment_details': EventDetails._file_unlike_comment_details_validator,
     'file_unresolve_comment_details': EventDetails._file_unresolve_comment_details_validator,
     'governance_policy_add_folders_details': EventDetails._governance_policy_add_folders_details_validator,
+    'governance_policy_add_folder_failed_details': EventDetails._governance_policy_add_folder_failed_details_validator,
     'governance_policy_create_details': EventDetails._governance_policy_create_details_validator,
     'governance_policy_delete_details': EventDetails._governance_policy_delete_details_validator,
     'governance_policy_edit_details_details': EventDetails._governance_policy_edit_details_details_validator,
     'governance_policy_edit_duration_details': EventDetails._governance_policy_edit_duration_details_validator,
+    'governance_policy_export_created_details': EventDetails._governance_policy_export_created_details_validator,
+    'governance_policy_export_removed_details': EventDetails._governance_policy_export_removed_details_validator,
     'governance_policy_remove_folders_details': EventDetails._governance_policy_remove_folders_details_validator,
+    'governance_policy_report_created_details': EventDetails._governance_policy_report_created_details_validator,
+    'governance_policy_zip_part_downloaded_details': EventDetails._governance_policy_zip_part_downloaded_details_validator,
     'legal_holds_activate_a_hold_details': EventDetails._legal_holds_activate_a_hold_details_validator,
     'legal_holds_add_members_details': EventDetails._legal_holds_add_members_details_validator,
     'legal_holds_change_hold_details_details': EventDetails._legal_holds_change_hold_details_details_validator,
@@ -69467,6 +70642,7 @@ EventDetails._tagmap = {
 EventDetails.other = EventDetails('other')
 
 EventType._admin_alerting_changed_alert_config_validator = AdminAlertingChangedAlertConfigType_validator
+EventType._admin_alerting_triggered_alert_validator = AdminAlertingTriggeredAlertType_validator
 EventType._app_link_team_validator = AppLinkTeamType_validator
 EventType._app_link_user_validator = AppLinkUserType_validator
 EventType._app_unlink_team_validator = AppUnlinkTeamType_validator
@@ -69482,11 +70658,16 @@ EventType._file_resolve_comment_validator = FileResolveCommentType_validator
 EventType._file_unlike_comment_validator = FileUnlikeCommentType_validator
 EventType._file_unresolve_comment_validator = FileUnresolveCommentType_validator
 EventType._governance_policy_add_folders_validator = GovernancePolicyAddFoldersType_validator
+EventType._governance_policy_add_folder_failed_validator = GovernancePolicyAddFolderFailedType_validator
 EventType._governance_policy_create_validator = GovernancePolicyCreateType_validator
 EventType._governance_policy_delete_validator = GovernancePolicyDeleteType_validator
 EventType._governance_policy_edit_details_validator = GovernancePolicyEditDetailsType_validator
 EventType._governance_policy_edit_duration_validator = GovernancePolicyEditDurationType_validator
+EventType._governance_policy_export_created_validator = GovernancePolicyExportCreatedType_validator
+EventType._governance_policy_export_removed_validator = GovernancePolicyExportRemovedType_validator
 EventType._governance_policy_remove_folders_validator = GovernancePolicyRemoveFoldersType_validator
+EventType._governance_policy_report_created_validator = GovernancePolicyReportCreatedType_validator
+EventType._governance_policy_zip_part_downloaded_validator = GovernancePolicyZipPartDownloadedType_validator
 EventType._legal_holds_activate_a_hold_validator = LegalHoldsActivateAHoldType_validator
 EventType._legal_holds_add_members_validator = LegalHoldsAddMembersType_validator
 EventType._legal_holds_change_hold_details_validator = LegalHoldsChangeHoldDetailsType_validator
@@ -69918,6 +71099,7 @@ EventType._team_merge_request_sent_shown_to_secondary_team_validator = TeamMerge
 EventType._other_validator = bv.Void()
 EventType._tagmap = {
     'admin_alerting_changed_alert_config': EventType._admin_alerting_changed_alert_config_validator,
+    'admin_alerting_triggered_alert': EventType._admin_alerting_triggered_alert_validator,
     'app_link_team': EventType._app_link_team_validator,
     'app_link_user': EventType._app_link_user_validator,
     'app_unlink_team': EventType._app_unlink_team_validator,
@@ -69933,11 +71115,16 @@ EventType._tagmap = {
     'file_unlike_comment': EventType._file_unlike_comment_validator,
     'file_unresolve_comment': EventType._file_unresolve_comment_validator,
     'governance_policy_add_folders': EventType._governance_policy_add_folders_validator,
+    'governance_policy_add_folder_failed': EventType._governance_policy_add_folder_failed_validator,
     'governance_policy_create': EventType._governance_policy_create_validator,
     'governance_policy_delete': EventType._governance_policy_delete_validator,
     'governance_policy_edit_details': EventType._governance_policy_edit_details_validator,
     'governance_policy_edit_duration': EventType._governance_policy_edit_duration_validator,
+    'governance_policy_export_created': EventType._governance_policy_export_created_validator,
+    'governance_policy_export_removed': EventType._governance_policy_export_removed_validator,
     'governance_policy_remove_folders': EventType._governance_policy_remove_folders_validator,
+    'governance_policy_report_created': EventType._governance_policy_report_created_validator,
+    'governance_policy_zip_part_downloaded': EventType._governance_policy_zip_part_downloaded_validator,
     'legal_holds_activate_a_hold': EventType._legal_holds_activate_a_hold_validator,
     'legal_holds_add_members': EventType._legal_holds_add_members_validator,
     'legal_holds_change_hold_details': EventType._legal_holds_change_hold_details_validator,
@@ -70372,6 +71559,7 @@ EventType._tagmap = {
 EventType.other = EventType('other')
 
 EventTypeArg._admin_alerting_changed_alert_config_validator = bv.Void()
+EventTypeArg._admin_alerting_triggered_alert_validator = bv.Void()
 EventTypeArg._app_link_team_validator = bv.Void()
 EventTypeArg._app_link_user_validator = bv.Void()
 EventTypeArg._app_unlink_team_validator = bv.Void()
@@ -70387,11 +71575,16 @@ EventTypeArg._file_resolve_comment_validator = bv.Void()
 EventTypeArg._file_unlike_comment_validator = bv.Void()
 EventTypeArg._file_unresolve_comment_validator = bv.Void()
 EventTypeArg._governance_policy_add_folders_validator = bv.Void()
+EventTypeArg._governance_policy_add_folder_failed_validator = bv.Void()
 EventTypeArg._governance_policy_create_validator = bv.Void()
 EventTypeArg._governance_policy_delete_validator = bv.Void()
 EventTypeArg._governance_policy_edit_details_validator = bv.Void()
 EventTypeArg._governance_policy_edit_duration_validator = bv.Void()
+EventTypeArg._governance_policy_export_created_validator = bv.Void()
+EventTypeArg._governance_policy_export_removed_validator = bv.Void()
 EventTypeArg._governance_policy_remove_folders_validator = bv.Void()
+EventTypeArg._governance_policy_report_created_validator = bv.Void()
+EventTypeArg._governance_policy_zip_part_downloaded_validator = bv.Void()
 EventTypeArg._legal_holds_activate_a_hold_validator = bv.Void()
 EventTypeArg._legal_holds_add_members_validator = bv.Void()
 EventTypeArg._legal_holds_change_hold_details_validator = bv.Void()
@@ -70823,6 +72016,7 @@ EventTypeArg._team_merge_request_sent_shown_to_secondary_team_validator = bv.Voi
 EventTypeArg._other_validator = bv.Void()
 EventTypeArg._tagmap = {
     'admin_alerting_changed_alert_config': EventTypeArg._admin_alerting_changed_alert_config_validator,
+    'admin_alerting_triggered_alert': EventTypeArg._admin_alerting_triggered_alert_validator,
     'app_link_team': EventTypeArg._app_link_team_validator,
     'app_link_user': EventTypeArg._app_link_user_validator,
     'app_unlink_team': EventTypeArg._app_unlink_team_validator,
@@ -70838,11 +72032,16 @@ EventTypeArg._tagmap = {
     'file_unlike_comment': EventTypeArg._file_unlike_comment_validator,
     'file_unresolve_comment': EventTypeArg._file_unresolve_comment_validator,
     'governance_policy_add_folders': EventTypeArg._governance_policy_add_folders_validator,
+    'governance_policy_add_folder_failed': EventTypeArg._governance_policy_add_folder_failed_validator,
     'governance_policy_create': EventTypeArg._governance_policy_create_validator,
     'governance_policy_delete': EventTypeArg._governance_policy_delete_validator,
     'governance_policy_edit_details': EventTypeArg._governance_policy_edit_details_validator,
     'governance_policy_edit_duration': EventTypeArg._governance_policy_edit_duration_validator,
+    'governance_policy_export_created': EventTypeArg._governance_policy_export_created_validator,
+    'governance_policy_export_removed': EventTypeArg._governance_policy_export_removed_validator,
     'governance_policy_remove_folders': EventTypeArg._governance_policy_remove_folders_validator,
+    'governance_policy_report_created': EventTypeArg._governance_policy_report_created_validator,
+    'governance_policy_zip_part_downloaded': EventTypeArg._governance_policy_zip_part_downloaded_validator,
     'legal_holds_activate_a_hold': EventTypeArg._legal_holds_activate_a_hold_validator,
     'legal_holds_add_members': EventTypeArg._legal_holds_add_members_validator,
     'legal_holds_change_hold_details': EventTypeArg._legal_holds_change_hold_details_validator,
@@ -71275,6 +72474,7 @@ EventTypeArg._tagmap = {
 }
 
 EventTypeArg.admin_alerting_changed_alert_config = EventTypeArg('admin_alerting_changed_alert_config')
+EventTypeArg.admin_alerting_triggered_alert = EventTypeArg('admin_alerting_triggered_alert')
 EventTypeArg.app_link_team = EventTypeArg('app_link_team')
 EventTypeArg.app_link_user = EventTypeArg('app_link_user')
 EventTypeArg.app_unlink_team = EventTypeArg('app_unlink_team')
@@ -71290,11 +72490,16 @@ EventTypeArg.file_resolve_comment = EventTypeArg('file_resolve_comment')
 EventTypeArg.file_unlike_comment = EventTypeArg('file_unlike_comment')
 EventTypeArg.file_unresolve_comment = EventTypeArg('file_unresolve_comment')
 EventTypeArg.governance_policy_add_folders = EventTypeArg('governance_policy_add_folders')
+EventTypeArg.governance_policy_add_folder_failed = EventTypeArg('governance_policy_add_folder_failed')
 EventTypeArg.governance_policy_create = EventTypeArg('governance_policy_create')
 EventTypeArg.governance_policy_delete = EventTypeArg('governance_policy_delete')
 EventTypeArg.governance_policy_edit_details = EventTypeArg('governance_policy_edit_details')
 EventTypeArg.governance_policy_edit_duration = EventTypeArg('governance_policy_edit_duration')
+EventTypeArg.governance_policy_export_created = EventTypeArg('governance_policy_export_created')
+EventTypeArg.governance_policy_export_removed = EventTypeArg('governance_policy_export_removed')
 EventTypeArg.governance_policy_remove_folders = EventTypeArg('governance_policy_remove_folders')
+EventTypeArg.governance_policy_report_created = EventTypeArg('governance_policy_report_created')
+EventTypeArg.governance_policy_zip_part_downloaded = EventTypeArg('governance_policy_zip_part_downloaded')
 EventTypeArg.legal_holds_activate_a_hold = EventTypeArg('legal_holds_activate_a_hold')
 EventTypeArg.legal_holds_add_members = EventTypeArg('legal_holds_add_members')
 EventTypeArg.legal_holds_change_hold_details = EventTypeArg('legal_holds_change_hold_details')
@@ -72516,6 +73721,30 @@ GoogleSsoPolicy.disabled = GoogleSsoPolicy('disabled')
 GoogleSsoPolicy.enabled = GoogleSsoPolicy('enabled')
 GoogleSsoPolicy.other = GoogleSsoPolicy('other')
 
+GovernancePolicyAddFolderFailedDetails.governance_policy_id.validator = bv.String()
+GovernancePolicyAddFolderFailedDetails.name.validator = bv.String()
+GovernancePolicyAddFolderFailedDetails.policy_type.validator = bv.Nullable(PolicyType_validator)
+GovernancePolicyAddFolderFailedDetails.folder.validator = bv.String()
+GovernancePolicyAddFolderFailedDetails.reason.validator = bv.Nullable(bv.String())
+GovernancePolicyAddFolderFailedDetails._all_field_names_ = set([
+    'governance_policy_id',
+    'name',
+    'policy_type',
+    'folder',
+    'reason',
+])
+GovernancePolicyAddFolderFailedDetails._all_fields_ = [
+    ('governance_policy_id', GovernancePolicyAddFolderFailedDetails.governance_policy_id.validator),
+    ('name', GovernancePolicyAddFolderFailedDetails.name.validator),
+    ('policy_type', GovernancePolicyAddFolderFailedDetails.policy_type.validator),
+    ('folder', GovernancePolicyAddFolderFailedDetails.folder.validator),
+    ('reason', GovernancePolicyAddFolderFailedDetails.reason.validator),
+]
+
+GovernancePolicyAddFolderFailedType.description.validator = bv.String()
+GovernancePolicyAddFolderFailedType._all_field_names_ = set(['description'])
+GovernancePolicyAddFolderFailedType._all_fields_ = [('description', GovernancePolicyAddFolderFailedType.description.validator)]
+
 GovernancePolicyAddFoldersDetails.governance_policy_id.validator = bv.String()
 GovernancePolicyAddFoldersDetails.name.validator = bv.String()
 GovernancePolicyAddFoldersDetails.policy_type.validator = bv.Nullable(PolicyType_validator)
@@ -72630,6 +73859,48 @@ GovernancePolicyEditDurationType.description.validator = bv.String()
 GovernancePolicyEditDurationType._all_field_names_ = set(['description'])
 GovernancePolicyEditDurationType._all_fields_ = [('description', GovernancePolicyEditDurationType.description.validator)]
 
+GovernancePolicyExportCreatedDetails.governance_policy_id.validator = bv.String()
+GovernancePolicyExportCreatedDetails.name.validator = bv.String()
+GovernancePolicyExportCreatedDetails.policy_type.validator = bv.Nullable(PolicyType_validator)
+GovernancePolicyExportCreatedDetails.export_name.validator = bv.String()
+GovernancePolicyExportCreatedDetails._all_field_names_ = set([
+    'governance_policy_id',
+    'name',
+    'policy_type',
+    'export_name',
+])
+GovernancePolicyExportCreatedDetails._all_fields_ = [
+    ('governance_policy_id', GovernancePolicyExportCreatedDetails.governance_policy_id.validator),
+    ('name', GovernancePolicyExportCreatedDetails.name.validator),
+    ('policy_type', GovernancePolicyExportCreatedDetails.policy_type.validator),
+    ('export_name', GovernancePolicyExportCreatedDetails.export_name.validator),
+]
+
+GovernancePolicyExportCreatedType.description.validator = bv.String()
+GovernancePolicyExportCreatedType._all_field_names_ = set(['description'])
+GovernancePolicyExportCreatedType._all_fields_ = [('description', GovernancePolicyExportCreatedType.description.validator)]
+
+GovernancePolicyExportRemovedDetails.governance_policy_id.validator = bv.String()
+GovernancePolicyExportRemovedDetails.name.validator = bv.String()
+GovernancePolicyExportRemovedDetails.policy_type.validator = bv.Nullable(PolicyType_validator)
+GovernancePolicyExportRemovedDetails.export_name.validator = bv.String()
+GovernancePolicyExportRemovedDetails._all_field_names_ = set([
+    'governance_policy_id',
+    'name',
+    'policy_type',
+    'export_name',
+])
+GovernancePolicyExportRemovedDetails._all_fields_ = [
+    ('governance_policy_id', GovernancePolicyExportRemovedDetails.governance_policy_id.validator),
+    ('name', GovernancePolicyExportRemovedDetails.name.validator),
+    ('policy_type', GovernancePolicyExportRemovedDetails.policy_type.validator),
+    ('export_name', GovernancePolicyExportRemovedDetails.export_name.validator),
+]
+
+GovernancePolicyExportRemovedType.description.validator = bv.String()
+GovernancePolicyExportRemovedType._all_field_names_ = set(['description'])
+GovernancePolicyExportRemovedType._all_fields_ = [('description', GovernancePolicyExportRemovedType.description.validator)]
+
 GovernancePolicyRemoveFoldersDetails.governance_policy_id.validator = bv.String()
 GovernancePolicyRemoveFoldersDetails.name.validator = bv.String()
 GovernancePolicyRemoveFoldersDetails.policy_type.validator = bv.Nullable(PolicyType_validator)
@@ -72653,6 +73924,48 @@ GovernancePolicyRemoveFoldersDetails._all_fields_ = [
 GovernancePolicyRemoveFoldersType.description.validator = bv.String()
 GovernancePolicyRemoveFoldersType._all_field_names_ = set(['description'])
 GovernancePolicyRemoveFoldersType._all_fields_ = [('description', GovernancePolicyRemoveFoldersType.description.validator)]
+
+GovernancePolicyReportCreatedDetails.governance_policy_id.validator = bv.String()
+GovernancePolicyReportCreatedDetails.name.validator = bv.String()
+GovernancePolicyReportCreatedDetails.policy_type.validator = bv.Nullable(PolicyType_validator)
+GovernancePolicyReportCreatedDetails._all_field_names_ = set([
+    'governance_policy_id',
+    'name',
+    'policy_type',
+])
+GovernancePolicyReportCreatedDetails._all_fields_ = [
+    ('governance_policy_id', GovernancePolicyReportCreatedDetails.governance_policy_id.validator),
+    ('name', GovernancePolicyReportCreatedDetails.name.validator),
+    ('policy_type', GovernancePolicyReportCreatedDetails.policy_type.validator),
+]
+
+GovernancePolicyReportCreatedType.description.validator = bv.String()
+GovernancePolicyReportCreatedType._all_field_names_ = set(['description'])
+GovernancePolicyReportCreatedType._all_fields_ = [('description', GovernancePolicyReportCreatedType.description.validator)]
+
+GovernancePolicyZipPartDownloadedDetails.governance_policy_id.validator = bv.String()
+GovernancePolicyZipPartDownloadedDetails.name.validator = bv.String()
+GovernancePolicyZipPartDownloadedDetails.policy_type.validator = bv.Nullable(PolicyType_validator)
+GovernancePolicyZipPartDownloadedDetails.export_name.validator = bv.String()
+GovernancePolicyZipPartDownloadedDetails.part.validator = bv.Nullable(bv.String())
+GovernancePolicyZipPartDownloadedDetails._all_field_names_ = set([
+    'governance_policy_id',
+    'name',
+    'policy_type',
+    'export_name',
+    'part',
+])
+GovernancePolicyZipPartDownloadedDetails._all_fields_ = [
+    ('governance_policy_id', GovernancePolicyZipPartDownloadedDetails.governance_policy_id.validator),
+    ('name', GovernancePolicyZipPartDownloadedDetails.name.validator),
+    ('policy_type', GovernancePolicyZipPartDownloadedDetails.policy_type.validator),
+    ('export_name', GovernancePolicyZipPartDownloadedDetails.export_name.validator),
+    ('part', GovernancePolicyZipPartDownloadedDetails.part.validator),
+]
+
+GovernancePolicyZipPartDownloadedType.description.validator = bv.String()
+GovernancePolicyZipPartDownloadedType._all_field_names_ = set(['description'])
+GovernancePolicyZipPartDownloadedType._all_fields_ = [('description', GovernancePolicyZipPartDownloadedType.description.validator)]
 
 GroupAddExternalIdDetails.new_value.validator = team_common.GroupExternalId_validator
 GroupAddExternalIdDetails._all_field_names_ = set(['new_value'])
