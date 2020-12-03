@@ -125,7 +125,7 @@ class PathRootError(bb.Union):
 
     :ivar RootInfo PathRootError.invalid_root: The root namespace id in
         Dropbox-API-Path-Root header is not valid. The value of this error is
-        use's latest root info.
+        the user's latest root info.
     :ivar common.PathRootError.no_permission: You don't have permission to
         access the namespace id in Dropbox-API-Path-Root  header.
     """
@@ -174,7 +174,7 @@ class PathRootError(bb.Union):
     def get_invalid_root(self):
         """
         The root namespace id in Dropbox-API-Path-Root header is not valid. The
-        value of this error is use's latest root info.
+        value of this error is the user's latest root info.
 
         Only call this if :meth:`is_invalid_root` is true.
 
