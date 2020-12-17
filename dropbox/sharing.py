@@ -12952,7 +12952,8 @@ add_file_member = bb.Route(
     AddFileMemberArgs_validator,
     bv.List(FileMemberActionResult_validator),
     AddFileMemberError_validator,
-    {'host': u'api',
+    {'auth': u'user',
+     'host': u'api',
      'style': u'rpc'},
 )
 add_folder_member = bb.Route(
@@ -12962,7 +12963,8 @@ add_folder_member = bb.Route(
     AddFolderMemberArg_validator,
     bv.Void(),
     AddFolderMemberError_validator,
-    {'host': u'api',
+    {'auth': u'user',
+     'host': u'api',
      'style': u'rpc'},
 )
 change_file_member_access = bb.Route(
@@ -12972,7 +12974,8 @@ change_file_member_access = bb.Route(
     ChangeFileMemberAccessArgs_validator,
     FileMemberActionResult_validator,
     FileMemberActionError_validator,
-    {'host': u'api',
+    {'auth': u'user',
+     'host': u'api',
      'style': u'rpc'},
 )
 check_job_status = bb.Route(
@@ -12982,7 +12985,8 @@ check_job_status = bb.Route(
     async_.PollArg_validator,
     JobStatus_validator,
     async_.PollError_validator,
-    {'host': u'api',
+    {'auth': u'user',
+     'host': u'api',
      'style': u'rpc'},
 )
 check_remove_member_job_status = bb.Route(
@@ -12992,7 +12996,8 @@ check_remove_member_job_status = bb.Route(
     async_.PollArg_validator,
     RemoveMemberJobStatus_validator,
     async_.PollError_validator,
-    {'host': u'api',
+    {'auth': u'user',
+     'host': u'api',
      'style': u'rpc'},
 )
 check_share_job_status = bb.Route(
@@ -13002,7 +13007,8 @@ check_share_job_status = bb.Route(
     async_.PollArg_validator,
     ShareFolderJobStatus_validator,
     async_.PollError_validator,
-    {'host': u'api',
+    {'auth': u'user',
+     'host': u'api',
      'style': u'rpc'},
 )
 create_shared_link = bb.Route(
@@ -13012,7 +13018,8 @@ create_shared_link = bb.Route(
     CreateSharedLinkArg_validator,
     PathLinkMetadata_validator,
     CreateSharedLinkError_validator,
-    {'host': u'api',
+    {'auth': u'user',
+     'host': u'api',
      'style': u'rpc'},
 )
 create_shared_link_with_settings = bb.Route(
@@ -13022,7 +13029,8 @@ create_shared_link_with_settings = bb.Route(
     CreateSharedLinkWithSettingsArg_validator,
     SharedLinkMetadata_validator,
     CreateSharedLinkWithSettingsError_validator,
-    {'host': u'api',
+    {'auth': u'user',
+     'host': u'api',
      'style': u'rpc'},
 )
 get_file_metadata = bb.Route(
@@ -13032,7 +13040,8 @@ get_file_metadata = bb.Route(
     GetFileMetadataArg_validator,
     SharedFileMetadata_validator,
     GetFileMetadataError_validator,
-    {'host': u'api',
+    {'auth': u'user',
+     'host': u'api',
      'style': u'rpc'},
 )
 get_file_metadata_batch = bb.Route(
@@ -13042,7 +13051,8 @@ get_file_metadata_batch = bb.Route(
     GetFileMetadataBatchArg_validator,
     bv.List(GetFileMetadataBatchResult_validator),
     SharingUserError_validator,
-    {'host': u'api',
+    {'auth': u'user',
+     'host': u'api',
      'style': u'rpc'},
 )
 get_folder_metadata = bb.Route(
@@ -13052,7 +13062,8 @@ get_folder_metadata = bb.Route(
     GetMetadataArgs_validator,
     SharedFolderMetadata_validator,
     SharedFolderAccessError_validator,
-    {'host': u'api',
+    {'auth': u'user',
+     'host': u'api',
      'style': u'rpc'},
 )
 get_shared_link_file = bb.Route(
@@ -13062,7 +13073,8 @@ get_shared_link_file = bb.Route(
     GetSharedLinkFileArg_validator,
     SharedLinkMetadata_validator,
     GetSharedLinkFileError_validator,
-    {'host': u'content',
+    {'auth': u'user',
+     'host': u'content',
      'style': u'download'},
 )
 get_shared_link_metadata = bb.Route(
@@ -13072,7 +13084,8 @@ get_shared_link_metadata = bb.Route(
     GetSharedLinkMetadataArg_validator,
     SharedLinkMetadata_validator,
     SharedLinkError_validator,
-    {'host': u'api',
+    {'auth': u'user',
+     'host': u'api',
      'style': u'rpc'},
 )
 get_shared_links = bb.Route(
@@ -13082,7 +13095,8 @@ get_shared_links = bb.Route(
     GetSharedLinksArg_validator,
     GetSharedLinksResult_validator,
     GetSharedLinksError_validator,
-    {'host': u'api',
+    {'auth': u'user',
+     'host': u'api',
      'style': u'rpc'},
 )
 list_file_members = bb.Route(
@@ -13092,7 +13106,8 @@ list_file_members = bb.Route(
     ListFileMembersArg_validator,
     SharedFileMembers_validator,
     ListFileMembersError_validator,
-    {'host': u'api',
+    {'auth': u'user',
+     'host': u'api',
      'style': u'rpc'},
 )
 list_file_members_batch = bb.Route(
@@ -13102,7 +13117,8 @@ list_file_members_batch = bb.Route(
     ListFileMembersBatchArg_validator,
     bv.List(ListFileMembersBatchResult_validator),
     SharingUserError_validator,
-    {'host': u'api',
+    {'auth': u'user',
+     'host': u'api',
      'style': u'rpc'},
 )
 list_file_members_continue = bb.Route(
@@ -13112,7 +13128,8 @@ list_file_members_continue = bb.Route(
     ListFileMembersContinueArg_validator,
     SharedFileMembers_validator,
     ListFileMembersContinueError_validator,
-    {'host': u'api',
+    {'auth': u'user',
+     'host': u'api',
      'style': u'rpc'},
 )
 list_folder_members = bb.Route(
@@ -13122,7 +13139,8 @@ list_folder_members = bb.Route(
     ListFolderMembersArgs_validator,
     SharedFolderMembers_validator,
     SharedFolderAccessError_validator,
-    {'host': u'api',
+    {'auth': u'user',
+     'host': u'api',
      'style': u'rpc'},
 )
 list_folder_members_continue = bb.Route(
@@ -13132,7 +13150,8 @@ list_folder_members_continue = bb.Route(
     ListFolderMembersContinueArg_validator,
     SharedFolderMembers_validator,
     ListFolderMembersContinueError_validator,
-    {'host': u'api',
+    {'auth': u'user',
+     'host': u'api',
      'style': u'rpc'},
 )
 list_folders = bb.Route(
@@ -13142,7 +13161,8 @@ list_folders = bb.Route(
     ListFoldersArgs_validator,
     ListFoldersResult_validator,
     bv.Void(),
-    {'host': u'api',
+    {'auth': u'user',
+     'host': u'api',
      'style': u'rpc'},
 )
 list_folders_continue = bb.Route(
@@ -13152,7 +13172,8 @@ list_folders_continue = bb.Route(
     ListFoldersContinueArg_validator,
     ListFoldersResult_validator,
     ListFoldersContinueError_validator,
-    {'host': u'api',
+    {'auth': u'user',
+     'host': u'api',
      'style': u'rpc'},
 )
 list_mountable_folders = bb.Route(
@@ -13162,7 +13183,8 @@ list_mountable_folders = bb.Route(
     ListFoldersArgs_validator,
     ListFoldersResult_validator,
     bv.Void(),
-    {'host': u'api',
+    {'auth': u'user',
+     'host': u'api',
      'style': u'rpc'},
 )
 list_mountable_folders_continue = bb.Route(
@@ -13172,7 +13194,8 @@ list_mountable_folders_continue = bb.Route(
     ListFoldersContinueArg_validator,
     ListFoldersResult_validator,
     ListFoldersContinueError_validator,
-    {'host': u'api',
+    {'auth': u'user',
+     'host': u'api',
      'style': u'rpc'},
 )
 list_received_files = bb.Route(
@@ -13182,7 +13205,8 @@ list_received_files = bb.Route(
     ListFilesArg_validator,
     ListFilesResult_validator,
     SharingUserError_validator,
-    {'host': u'api',
+    {'auth': u'user',
+     'host': u'api',
      'style': u'rpc'},
 )
 list_received_files_continue = bb.Route(
@@ -13192,7 +13216,8 @@ list_received_files_continue = bb.Route(
     ListFilesContinueArg_validator,
     ListFilesResult_validator,
     ListFilesContinueError_validator,
-    {'host': u'api',
+    {'auth': u'user',
+     'host': u'api',
      'style': u'rpc'},
 )
 list_shared_links = bb.Route(
@@ -13202,7 +13227,8 @@ list_shared_links = bb.Route(
     ListSharedLinksArg_validator,
     ListSharedLinksResult_validator,
     ListSharedLinksError_validator,
-    {'host': u'api',
+    {'auth': u'user',
+     'host': u'api',
      'style': u'rpc'},
 )
 modify_shared_link_settings = bb.Route(
@@ -13212,7 +13238,8 @@ modify_shared_link_settings = bb.Route(
     ModifySharedLinkSettingsArgs_validator,
     SharedLinkMetadata_validator,
     ModifySharedLinkSettingsError_validator,
-    {'host': u'api',
+    {'auth': u'user',
+     'host': u'api',
      'style': u'rpc'},
 )
 mount_folder = bb.Route(
@@ -13222,7 +13249,8 @@ mount_folder = bb.Route(
     MountFolderArg_validator,
     SharedFolderMetadata_validator,
     MountFolderError_validator,
-    {'host': u'api',
+    {'auth': u'user',
+     'host': u'api',
      'style': u'rpc'},
 )
 relinquish_file_membership = bb.Route(
@@ -13232,7 +13260,8 @@ relinquish_file_membership = bb.Route(
     RelinquishFileMembershipArg_validator,
     bv.Void(),
     RelinquishFileMembershipError_validator,
-    {'host': u'api',
+    {'auth': u'user',
+     'host': u'api',
      'style': u'rpc'},
 )
 relinquish_folder_membership = bb.Route(
@@ -13242,7 +13271,8 @@ relinquish_folder_membership = bb.Route(
     RelinquishFolderMembershipArg_validator,
     async_.LaunchEmptyResult_validator,
     RelinquishFolderMembershipError_validator,
-    {'host': u'api',
+    {'auth': u'user',
+     'host': u'api',
      'style': u'rpc'},
 )
 remove_file_member = bb.Route(
@@ -13252,7 +13282,8 @@ remove_file_member = bb.Route(
     RemoveFileMemberArg_validator,
     FileMemberActionIndividualResult_validator,
     RemoveFileMemberError_validator,
-    {'host': u'api',
+    {'auth': u'user',
+     'host': u'api',
      'style': u'rpc'},
 )
 remove_file_member_2 = bb.Route(
@@ -13262,7 +13293,8 @@ remove_file_member_2 = bb.Route(
     RemoveFileMemberArg_validator,
     FileMemberRemoveActionResult_validator,
     RemoveFileMemberError_validator,
-    {'host': u'api',
+    {'auth': u'user',
+     'host': u'api',
      'style': u'rpc'},
 )
 remove_folder_member = bb.Route(
@@ -13272,7 +13304,8 @@ remove_folder_member = bb.Route(
     RemoveFolderMemberArg_validator,
     async_.LaunchResultBase_validator,
     RemoveFolderMemberError_validator,
-    {'host': u'api',
+    {'auth': u'user',
+     'host': u'api',
      'style': u'rpc'},
 )
 revoke_shared_link = bb.Route(
@@ -13282,7 +13315,8 @@ revoke_shared_link = bb.Route(
     RevokeSharedLinkArg_validator,
     bv.Void(),
     RevokeSharedLinkError_validator,
-    {'host': u'api',
+    {'auth': u'user',
+     'host': u'api',
      'style': u'rpc'},
 )
 set_access_inheritance = bb.Route(
@@ -13292,7 +13326,8 @@ set_access_inheritance = bb.Route(
     SetAccessInheritanceArg_validator,
     ShareFolderLaunch_validator,
     SetAccessInheritanceError_validator,
-    {'host': u'api',
+    {'auth': u'user',
+     'host': u'api',
      'style': u'rpc'},
 )
 share_folder = bb.Route(
@@ -13302,7 +13337,8 @@ share_folder = bb.Route(
     ShareFolderArg_validator,
     ShareFolderLaunch_validator,
     ShareFolderError_validator,
-    {'host': u'api',
+    {'auth': u'user',
+     'host': u'api',
      'style': u'rpc'},
 )
 transfer_folder = bb.Route(
@@ -13312,7 +13348,8 @@ transfer_folder = bb.Route(
     TransferFolderArg_validator,
     bv.Void(),
     TransferFolderError_validator,
-    {'host': u'api',
+    {'auth': u'user',
+     'host': u'api',
      'style': u'rpc'},
 )
 unmount_folder = bb.Route(
@@ -13322,7 +13359,8 @@ unmount_folder = bb.Route(
     UnmountFolderArg_validator,
     bv.Void(),
     UnmountFolderError_validator,
-    {'host': u'api',
+    {'auth': u'user',
+     'host': u'api',
      'style': u'rpc'},
 )
 unshare_file = bb.Route(
@@ -13332,7 +13370,8 @@ unshare_file = bb.Route(
     UnshareFileArg_validator,
     bv.Void(),
     UnshareFileError_validator,
-    {'host': u'api',
+    {'auth': u'user',
+     'host': u'api',
      'style': u'rpc'},
 )
 unshare_folder = bb.Route(
@@ -13342,7 +13381,8 @@ unshare_folder = bb.Route(
     UnshareFolderArg_validator,
     async_.LaunchEmptyResult_validator,
     UnshareFolderError_validator,
-    {'host': u'api',
+    {'auth': u'user',
+     'host': u'api',
      'style': u'rpc'},
 )
 update_file_member = bb.Route(
@@ -13352,7 +13392,8 @@ update_file_member = bb.Route(
     UpdateFileMemberArgs_validator,
     MemberAccessLevelResult_validator,
     FileMemberActionError_validator,
-    {'host': u'api',
+    {'auth': u'user',
+     'host': u'api',
      'style': u'rpc'},
 )
 update_folder_member = bb.Route(
@@ -13362,7 +13403,8 @@ update_folder_member = bb.Route(
     UpdateFolderMemberArg_validator,
     MemberAccessLevelResult_validator,
     UpdateFolderMemberError_validator,
-    {'host': u'api',
+    {'auth': u'user',
+     'host': u'api',
      'style': u'rpc'},
 )
 update_folder_policy = bb.Route(
@@ -13372,7 +13414,8 @@ update_folder_policy = bb.Route(
     UpdateFolderPolicyArg_validator,
     SharedFolderMetadata_validator,
     UpdateFolderPolicyError_validator,
-    {'host': u'api',
+    {'auth': u'user',
+     'host': u'api',
      'style': u'rpc'},
 )
 

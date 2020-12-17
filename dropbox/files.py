@@ -11719,7 +11719,8 @@ alpha_get_metadata = bb.Route(
     AlphaGetMetadataArg_validator,
     Metadata_validator,
     AlphaGetMetadataError_validator,
-    {'host': u'api',
+    {'auth': u'user',
+     'host': u'api',
      'style': u'rpc'},
 )
 alpha_upload = bb.Route(
@@ -11729,7 +11730,8 @@ alpha_upload = bb.Route(
     CommitInfoWithProperties_validator,
     FileMetadata_validator,
     UploadErrorWithProperties_validator,
-    {'host': u'content',
+    {'auth': u'user',
+     'host': u'content',
      'style': u'upload'},
 )
 copy_v2 = bb.Route(
@@ -11739,7 +11741,8 @@ copy_v2 = bb.Route(
     RelocationArg_validator,
     RelocationResult_validator,
     RelocationError_validator,
-    {'host': u'api',
+    {'auth': u'user',
+     'host': u'api',
      'style': u'rpc'},
 )
 copy = bb.Route(
@@ -11749,7 +11752,8 @@ copy = bb.Route(
     RelocationArg_validator,
     Metadata_validator,
     RelocationError_validator,
-    {'host': u'api',
+    {'auth': u'user',
+     'host': u'api',
      'style': u'rpc'},
 )
 copy_batch_v2 = bb.Route(
@@ -11759,7 +11763,8 @@ copy_batch_v2 = bb.Route(
     CopyBatchArg_validator,
     RelocationBatchV2Launch_validator,
     bv.Void(),
-    {'host': u'api',
+    {'auth': u'user',
+     'host': u'api',
      'style': u'rpc'},
 )
 copy_batch = bb.Route(
@@ -11769,7 +11774,8 @@ copy_batch = bb.Route(
     RelocationBatchArg_validator,
     RelocationBatchLaunch_validator,
     bv.Void(),
-    {'host': u'api',
+    {'auth': u'user',
+     'host': u'api',
      'style': u'rpc'},
 )
 copy_batch_check_v2 = bb.Route(
@@ -11779,7 +11785,8 @@ copy_batch_check_v2 = bb.Route(
     async_.PollArg_validator,
     RelocationBatchV2JobStatus_validator,
     async_.PollError_validator,
-    {'host': u'api',
+    {'auth': u'user',
+     'host': u'api',
      'style': u'rpc'},
 )
 copy_batch_check = bb.Route(
@@ -11789,7 +11796,8 @@ copy_batch_check = bb.Route(
     async_.PollArg_validator,
     RelocationBatchJobStatus_validator,
     async_.PollError_validator,
-    {'host': u'api',
+    {'auth': u'user',
+     'host': u'api',
      'style': u'rpc'},
 )
 copy_reference_get = bb.Route(
@@ -11799,7 +11807,8 @@ copy_reference_get = bb.Route(
     GetCopyReferenceArg_validator,
     GetCopyReferenceResult_validator,
     GetCopyReferenceError_validator,
-    {'host': u'api',
+    {'auth': u'user',
+     'host': u'api',
      'style': u'rpc'},
 )
 copy_reference_save = bb.Route(
@@ -11809,7 +11818,8 @@ copy_reference_save = bb.Route(
     SaveCopyReferenceArg_validator,
     SaveCopyReferenceResult_validator,
     SaveCopyReferenceError_validator,
-    {'host': u'api',
+    {'auth': u'user',
+     'host': u'api',
      'style': u'rpc'},
 )
 create_folder_v2 = bb.Route(
@@ -11819,7 +11829,8 @@ create_folder_v2 = bb.Route(
     CreateFolderArg_validator,
     CreateFolderResult_validator,
     CreateFolderError_validator,
-    {'host': u'api',
+    {'auth': u'user',
+     'host': u'api',
      'style': u'rpc'},
 )
 create_folder = bb.Route(
@@ -11829,7 +11840,8 @@ create_folder = bb.Route(
     CreateFolderArg_validator,
     FolderMetadata_validator,
     CreateFolderError_validator,
-    {'host': u'api',
+    {'auth': u'user',
+     'host': u'api',
      'style': u'rpc'},
 )
 create_folder_batch = bb.Route(
@@ -11839,7 +11851,8 @@ create_folder_batch = bb.Route(
     CreateFolderBatchArg_validator,
     CreateFolderBatchLaunch_validator,
     bv.Void(),
-    {'host': u'api',
+    {'auth': u'user',
+     'host': u'api',
      'style': u'rpc'},
 )
 create_folder_batch_check = bb.Route(
@@ -11849,7 +11862,8 @@ create_folder_batch_check = bb.Route(
     async_.PollArg_validator,
     CreateFolderBatchJobStatus_validator,
     async_.PollError_validator,
-    {'host': u'api',
+    {'auth': u'user',
+     'host': u'api',
      'style': u'rpc'},
 )
 delete_v2 = bb.Route(
@@ -11859,7 +11873,8 @@ delete_v2 = bb.Route(
     DeleteArg_validator,
     DeleteResult_validator,
     DeleteError_validator,
-    {'host': u'api',
+    {'auth': u'user',
+     'host': u'api',
      'style': u'rpc'},
 )
 delete = bb.Route(
@@ -11869,7 +11884,8 @@ delete = bb.Route(
     DeleteArg_validator,
     Metadata_validator,
     DeleteError_validator,
-    {'host': u'api',
+    {'auth': u'user',
+     'host': u'api',
      'style': u'rpc'},
 )
 delete_batch = bb.Route(
@@ -11879,7 +11895,8 @@ delete_batch = bb.Route(
     DeleteBatchArg_validator,
     DeleteBatchLaunch_validator,
     bv.Void(),
-    {'host': u'api',
+    {'auth': u'user',
+     'host': u'api',
      'style': u'rpc'},
 )
 delete_batch_check = bb.Route(
@@ -11889,7 +11906,8 @@ delete_batch_check = bb.Route(
     async_.PollArg_validator,
     DeleteBatchJobStatus_validator,
     async_.PollError_validator,
-    {'host': u'api',
+    {'auth': u'user',
+     'host': u'api',
      'style': u'rpc'},
 )
 download = bb.Route(
@@ -11899,7 +11917,8 @@ download = bb.Route(
     DownloadArg_validator,
     FileMetadata_validator,
     DownloadError_validator,
-    {'host': u'content',
+    {'auth': u'user',
+     'host': u'content',
      'style': u'download'},
 )
 download_zip = bb.Route(
@@ -11909,7 +11928,8 @@ download_zip = bb.Route(
     DownloadZipArg_validator,
     DownloadZipResult_validator,
     DownloadZipError_validator,
-    {'host': u'content',
+    {'auth': u'user',
+     'host': u'content',
      'style': u'download'},
 )
 export = bb.Route(
@@ -11919,7 +11939,8 @@ export = bb.Route(
     ExportArg_validator,
     ExportResult_validator,
     ExportError_validator,
-    {'host': u'content',
+    {'auth': u'user',
+     'host': u'content',
      'style': u'download'},
 )
 get_file_lock_batch = bb.Route(
@@ -11929,7 +11950,8 @@ get_file_lock_batch = bb.Route(
     LockFileBatchArg_validator,
     LockFileBatchResult_validator,
     LockFileError_validator,
-    {'host': u'api',
+    {'auth': u'user',
+     'host': u'api',
      'style': u'rpc'},
 )
 get_metadata = bb.Route(
@@ -11939,7 +11961,8 @@ get_metadata = bb.Route(
     GetMetadataArg_validator,
     Metadata_validator,
     GetMetadataError_validator,
-    {'host': u'api',
+    {'auth': u'user',
+     'host': u'api',
      'style': u'rpc'},
 )
 get_preview = bb.Route(
@@ -11949,7 +11972,8 @@ get_preview = bb.Route(
     PreviewArg_validator,
     FileMetadata_validator,
     PreviewError_validator,
-    {'host': u'content',
+    {'auth': u'user',
+     'host': u'content',
      'style': u'download'},
 )
 get_temporary_link = bb.Route(
@@ -11959,7 +11983,8 @@ get_temporary_link = bb.Route(
     GetTemporaryLinkArg_validator,
     GetTemporaryLinkResult_validator,
     GetTemporaryLinkError_validator,
-    {'host': u'api',
+    {'auth': u'user',
+     'host': u'api',
      'style': u'rpc'},
 )
 get_temporary_upload_link = bb.Route(
@@ -11969,7 +11994,8 @@ get_temporary_upload_link = bb.Route(
     GetTemporaryUploadLinkArg_validator,
     GetTemporaryUploadLinkResult_validator,
     bv.Void(),
-    {'host': u'api',
+    {'auth': u'user',
+     'host': u'api',
      'style': u'rpc'},
 )
 get_thumbnail = bb.Route(
@@ -11979,7 +12005,8 @@ get_thumbnail = bb.Route(
     ThumbnailArg_validator,
     FileMetadata_validator,
     ThumbnailError_validator,
-    {'host': u'content',
+    {'auth': u'user',
+     'host': u'content',
      'style': u'download'},
 )
 get_thumbnail_v2 = bb.Route(
@@ -11989,7 +12016,8 @@ get_thumbnail_v2 = bb.Route(
     ThumbnailV2Arg_validator,
     PreviewResult_validator,
     ThumbnailV2Error_validator,
-    {'host': u'content',
+    {'auth': u'app, user',
+     'host': u'content',
      'style': u'download'},
 )
 get_thumbnail_batch = bb.Route(
@@ -11999,7 +12027,8 @@ get_thumbnail_batch = bb.Route(
     GetThumbnailBatchArg_validator,
     GetThumbnailBatchResult_validator,
     GetThumbnailBatchError_validator,
-    {'host': u'content',
+    {'auth': u'user',
+     'host': u'content',
      'style': u'rpc'},
 )
 list_folder = bb.Route(
@@ -12009,7 +12038,8 @@ list_folder = bb.Route(
     ListFolderArg_validator,
     ListFolderResult_validator,
     ListFolderError_validator,
-    {'host': u'api',
+    {'auth': u'user',
+     'host': u'api',
      'style': u'rpc'},
 )
 list_folder_continue = bb.Route(
@@ -12019,7 +12049,8 @@ list_folder_continue = bb.Route(
     ListFolderContinueArg_validator,
     ListFolderResult_validator,
     ListFolderContinueError_validator,
-    {'host': u'api',
+    {'auth': u'user',
+     'host': u'api',
      'style': u'rpc'},
 )
 list_folder_get_latest_cursor = bb.Route(
@@ -12029,7 +12060,8 @@ list_folder_get_latest_cursor = bb.Route(
     ListFolderArg_validator,
     ListFolderGetLatestCursorResult_validator,
     ListFolderError_validator,
-    {'host': u'api',
+    {'auth': u'user',
+     'host': u'api',
      'style': u'rpc'},
 )
 list_folder_longpoll = bb.Route(
@@ -12039,7 +12071,8 @@ list_folder_longpoll = bb.Route(
     ListFolderLongpollArg_validator,
     ListFolderLongpollResult_validator,
     ListFolderLongpollError_validator,
-    {'host': u'notify',
+    {'auth': u'noauth',
+     'host': u'notify',
      'style': u'rpc'},
 )
 list_revisions = bb.Route(
@@ -12049,7 +12082,8 @@ list_revisions = bb.Route(
     ListRevisionsArg_validator,
     ListRevisionsResult_validator,
     ListRevisionsError_validator,
-    {'host': u'api',
+    {'auth': u'user',
+     'host': u'api',
      'style': u'rpc'},
 )
 lock_file_batch = bb.Route(
@@ -12059,7 +12093,8 @@ lock_file_batch = bb.Route(
     LockFileBatchArg_validator,
     LockFileBatchResult_validator,
     LockFileError_validator,
-    {'host': u'api',
+    {'auth': u'user',
+     'host': u'api',
      'style': u'rpc'},
 )
 move_v2 = bb.Route(
@@ -12069,7 +12104,8 @@ move_v2 = bb.Route(
     RelocationArg_validator,
     RelocationResult_validator,
     RelocationError_validator,
-    {'host': u'api',
+    {'auth': u'user',
+     'host': u'api',
      'style': u'rpc'},
 )
 move = bb.Route(
@@ -12079,7 +12115,8 @@ move = bb.Route(
     RelocationArg_validator,
     Metadata_validator,
     RelocationError_validator,
-    {'host': u'api',
+    {'auth': u'user',
+     'host': u'api',
      'style': u'rpc'},
 )
 move_batch_v2 = bb.Route(
@@ -12089,7 +12126,8 @@ move_batch_v2 = bb.Route(
     MoveBatchArg_validator,
     RelocationBatchV2Launch_validator,
     bv.Void(),
-    {'host': u'api',
+    {'auth': u'user',
+     'host': u'api',
      'style': u'rpc'},
 )
 move_batch = bb.Route(
@@ -12099,7 +12137,8 @@ move_batch = bb.Route(
     RelocationBatchArg_validator,
     RelocationBatchLaunch_validator,
     bv.Void(),
-    {'host': u'api',
+    {'auth': u'user',
+     'host': u'api',
      'style': u'rpc'},
 )
 move_batch_check_v2 = bb.Route(
@@ -12109,7 +12148,8 @@ move_batch_check_v2 = bb.Route(
     async_.PollArg_validator,
     RelocationBatchV2JobStatus_validator,
     async_.PollError_validator,
-    {'host': u'api',
+    {'auth': u'user',
+     'host': u'api',
      'style': u'rpc'},
 )
 move_batch_check = bb.Route(
@@ -12119,7 +12159,8 @@ move_batch_check = bb.Route(
     async_.PollArg_validator,
     RelocationBatchJobStatus_validator,
     async_.PollError_validator,
-    {'host': u'api',
+    {'auth': u'user',
+     'host': u'api',
      'style': u'rpc'},
 )
 permanently_delete = bb.Route(
@@ -12129,7 +12170,8 @@ permanently_delete = bb.Route(
     DeleteArg_validator,
     bv.Void(),
     DeleteError_validator,
-    {'host': u'api',
+    {'auth': u'user',
+     'host': u'api',
      'style': u'rpc'},
 )
 properties_add = bb.Route(
@@ -12139,7 +12181,8 @@ properties_add = bb.Route(
     file_properties.AddPropertiesArg_validator,
     bv.Void(),
     file_properties.AddPropertiesError_validator,
-    {'host': u'api',
+    {'auth': u'user',
+     'host': u'api',
      'style': u'rpc'},
 )
 properties_overwrite = bb.Route(
@@ -12149,7 +12192,8 @@ properties_overwrite = bb.Route(
     file_properties.OverwritePropertyGroupArg_validator,
     bv.Void(),
     file_properties.InvalidPropertyGroupError_validator,
-    {'host': u'api',
+    {'auth': u'user',
+     'host': u'api',
      'style': u'rpc'},
 )
 properties_remove = bb.Route(
@@ -12159,7 +12203,8 @@ properties_remove = bb.Route(
     file_properties.RemovePropertiesArg_validator,
     bv.Void(),
     file_properties.RemovePropertiesError_validator,
-    {'host': u'api',
+    {'auth': u'user',
+     'host': u'api',
      'style': u'rpc'},
 )
 properties_template_get = bb.Route(
@@ -12169,7 +12214,8 @@ properties_template_get = bb.Route(
     file_properties.GetTemplateArg_validator,
     file_properties.GetTemplateResult_validator,
     file_properties.TemplateError_validator,
-    {'host': u'api',
+    {'auth': u'user',
+     'host': u'api',
      'style': u'rpc'},
 )
 properties_template_list = bb.Route(
@@ -12179,7 +12225,8 @@ properties_template_list = bb.Route(
     bv.Void(),
     file_properties.ListTemplateResult_validator,
     file_properties.TemplateError_validator,
-    {'host': u'api',
+    {'auth': u'user',
+     'host': u'api',
      'style': u'rpc'},
 )
 properties_update = bb.Route(
@@ -12189,7 +12236,8 @@ properties_update = bb.Route(
     file_properties.UpdatePropertiesArg_validator,
     bv.Void(),
     file_properties.UpdatePropertiesError_validator,
-    {'host': u'api',
+    {'auth': u'user',
+     'host': u'api',
      'style': u'rpc'},
 )
 restore = bb.Route(
@@ -12199,7 +12247,8 @@ restore = bb.Route(
     RestoreArg_validator,
     FileMetadata_validator,
     RestoreError_validator,
-    {'host': u'api',
+    {'auth': u'user',
+     'host': u'api',
      'style': u'rpc'},
 )
 save_url = bb.Route(
@@ -12209,7 +12258,8 @@ save_url = bb.Route(
     SaveUrlArg_validator,
     SaveUrlResult_validator,
     SaveUrlError_validator,
-    {'host': u'api',
+    {'auth': u'user',
+     'host': u'api',
      'style': u'rpc'},
 )
 save_url_check_job_status = bb.Route(
@@ -12219,7 +12269,8 @@ save_url_check_job_status = bb.Route(
     async_.PollArg_validator,
     SaveUrlJobStatus_validator,
     async_.PollError_validator,
-    {'host': u'api',
+    {'auth': u'user',
+     'host': u'api',
      'style': u'rpc'},
 )
 search = bb.Route(
@@ -12229,7 +12280,8 @@ search = bb.Route(
     SearchArg_validator,
     SearchResult_validator,
     SearchError_validator,
-    {'host': u'api',
+    {'auth': u'user',
+     'host': u'api',
      'style': u'rpc'},
 )
 search_v2 = bb.Route(
@@ -12239,7 +12291,8 @@ search_v2 = bb.Route(
     SearchV2Arg_validator,
     SearchV2Result_validator,
     SearchError_validator,
-    {'host': u'api',
+    {'auth': u'user',
+     'host': u'api',
      'style': u'rpc'},
 )
 search_continue_v2 = bb.Route(
@@ -12249,7 +12302,8 @@ search_continue_v2 = bb.Route(
     SearchV2ContinueArg_validator,
     SearchV2Result_validator,
     SearchError_validator,
-    {'host': u'api',
+    {'auth': u'user',
+     'host': u'api',
      'style': u'rpc'},
 )
 unlock_file_batch = bb.Route(
@@ -12259,7 +12313,8 @@ unlock_file_batch = bb.Route(
     UnlockFileBatchArg_validator,
     LockFileBatchResult_validator,
     LockFileError_validator,
-    {'host': u'api',
+    {'auth': u'user',
+     'host': u'api',
      'style': u'rpc'},
 )
 upload = bb.Route(
@@ -12269,7 +12324,8 @@ upload = bb.Route(
     CommitInfo_validator,
     FileMetadata_validator,
     UploadError_validator,
-    {'host': u'content',
+    {'auth': u'user',
+     'host': u'content',
      'style': u'upload'},
 )
 upload_session_append_v2 = bb.Route(
@@ -12279,7 +12335,8 @@ upload_session_append_v2 = bb.Route(
     UploadSessionAppendArg_validator,
     bv.Void(),
     UploadSessionLookupError_validator,
-    {'host': u'content',
+    {'auth': u'user',
+     'host': u'content',
      'style': u'upload'},
 )
 upload_session_append = bb.Route(
@@ -12289,7 +12346,8 @@ upload_session_append = bb.Route(
     UploadSessionCursor_validator,
     bv.Void(),
     UploadSessionLookupError_validator,
-    {'host': u'content',
+    {'auth': u'user',
+     'host': u'content',
      'style': u'upload'},
 )
 upload_session_finish = bb.Route(
@@ -12299,7 +12357,8 @@ upload_session_finish = bb.Route(
     UploadSessionFinishArg_validator,
     FileMetadata_validator,
     UploadSessionFinishError_validator,
-    {'host': u'content',
+    {'auth': u'user',
+     'host': u'content',
      'style': u'upload'},
 )
 upload_session_finish_batch = bb.Route(
@@ -12309,7 +12368,8 @@ upload_session_finish_batch = bb.Route(
     UploadSessionFinishBatchArg_validator,
     UploadSessionFinishBatchLaunch_validator,
     bv.Void(),
-    {'host': u'api',
+    {'auth': u'user',
+     'host': u'api',
      'style': u'rpc'},
 )
 upload_session_finish_batch_check = bb.Route(
@@ -12319,7 +12379,8 @@ upload_session_finish_batch_check = bb.Route(
     async_.PollArg_validator,
     UploadSessionFinishBatchJobStatus_validator,
     async_.PollError_validator,
-    {'host': u'api',
+    {'auth': u'user',
+     'host': u'api',
      'style': u'rpc'},
 )
 upload_session_start = bb.Route(
@@ -12329,7 +12390,8 @@ upload_session_start = bb.Route(
     UploadSessionStartArg_validator,
     UploadSessionStartResult_validator,
     UploadSessionStartError_validator,
-    {'host': u'content',
+    {'auth': u'user',
+     'host': u'content',
      'style': u'upload'},
 )
 
