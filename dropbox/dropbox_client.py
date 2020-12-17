@@ -8,6 +8,7 @@ __all__ = [
 # before release.
 __version__ = '0.0.0'
 
+import base64
 import contextlib
 import json
 import logging
@@ -58,6 +59,11 @@ TOKEN_EXPIRATION_BUFFER = 300
 SELECT_ADMIN_HEADER = 'Dropbox-API-Select-Admin'
 
 SELECT_USER_HEADER = 'Dropbox-API-Select-User'
+
+USER_AUTH = 'user'
+TEAM_AUTH = 'team'
+APP_AUTH = 'app'
+NO_AUTH = 'noauth'
 
 class RouteResult(object):
     """The successful result of a call to a route."""
@@ -293,6 +299,7 @@ class _DropboxTransport(object):
         self.check_and_refresh_access_token()
 
         host = route.attrs['host'] or 'api'
+        auth_type = route.attrs['auth']
         route_name = namespace + '/' + route.name
         if route.version > 1:
             route_name += '_v{}'.format(route.version)
@@ -315,6 +322,7 @@ class _DropboxTransport(object):
                                                   route_name,
                                                   route_style,
                                                   serialized_arg,
+                                                  auth_type,
                                                   request_binary,
                                                   timeout=timeout)
         decoded_obj_result = json.loads(res.obj_result)
@@ -407,6 +415,7 @@ class _DropboxTransport(object):
                             route_name,
                             route_style,
                             request_arg,
+                            auth_type,
                             request_binary,
                             timeout=None):
         """
@@ -418,6 +427,7 @@ class _DropboxTransport(object):
         :param route_style: The style of the route.
         :param str request_arg: A JSON-serializable Python object representing
             the argument for the route.
+        :param auth_type str
         :param Optional[bytes] request_binary: Bytes representing the binary
             payload. Use None if there is no binary payload.
         :param Optional[float] timeout: Maximum duration in seconds
@@ -432,6 +442,7 @@ class _DropboxTransport(object):
                                                   route_name,
                                                   route_style,
                                                   serialized_arg,
+                                                  auth_type,
                                                   request_binary,
                                                   timeout=timeout)
         # This can throw a ValueError if the result is not deserializable,
@@ -447,6 +458,7 @@ class _DropboxTransport(object):
                                        route_name,
                                        route_style,
                                        request_json_arg,
+                                       auth_type,
                                        request_binary,
                                        timeout=None):
         """
@@ -465,6 +477,7 @@ class _DropboxTransport(object):
                                                 route_name,
                                                 route_style,
                                                 request_json_arg,
+                                                auth_type,
                                                 request_binary,
                                                 timeout=timeout)
             except AuthError as e:
@@ -507,6 +520,7 @@ class _DropboxTransport(object):
                             func_name,
                             route_style,
                             request_json_arg,
+                            auth_type,
                             request_binary,
                             timeout=None):
         """
@@ -529,10 +543,22 @@ class _DropboxTransport(object):
         url = self._get_route_url(fq_hostname, func_name)
 
         headers = {'User-Agent': self._user_agent}
-        if host != HOST_NOTIFY:
+        if auth_type == USER_AUTH or auth_type == TEAM_AUTH:
             headers['Authorization'] = 'Bearer %s' % self._oauth2_access_token
             if self._headers:
                 headers.update(self._headers)
+        elif auth_type == APP_AUTH:
+            if self._app_key is None or self._app_secret is None:
+                raise BadInputException('A client id and secret is required for this function')
+            auth_header = base64.b64encode("{}:{}".format(self._app_key, self._app_secret).encode("utf-8"))
+            headers['Authorization'] = 'Basic {}'.format(auth_header.decode("utf-8"))
+            print(headers['Authorization'])
+            if self._headers:
+                headers.update(self._headers)
+        elif auth_type == NO_AUTH:
+            pass
+        else:
+            raise BadInputException('Unhandled auth type: {}'.format(auth_type))
 
         # The contents of the body of the HTTP request
         body = None
