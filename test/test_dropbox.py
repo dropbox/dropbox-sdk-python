@@ -24,7 +24,7 @@ from dropbox import (
     session,
     stone_serializers,
 )
-from dropbox.dropbox import PATH_ROOT_HEADER, SELECT_USER_HEADER
+from dropbox.dropbox_client import PATH_ROOT_HEADER, SELECT_USER_HEADER
 from dropbox.exceptions import (
     ApiError,
     AuthError,
@@ -40,7 +40,7 @@ from dropbox.common import (
     PathRoot_validator,
 )
 
-def _token_from_env_or_die(env_name='DROPBOX_TOKEN'):
+def _value_from_env_or_die(env_name='DROPBOX_TOKEN'):
     oauth2_token = os.environ.get(env_name)
     if oauth2_token is None:
         print('Set {} environment variable to a valid token.'.format(env_name),
@@ -51,7 +51,7 @@ def _token_from_env_or_die(env_name='DROPBOX_TOKEN'):
 def dbx_from_env(f):
     @functools.wraps(f)
     def wrapped(self, *args, **kwargs):
-        oauth2_token = _token_from_env_or_die()
+        oauth2_token = _value_from_env_or_die()
         args += (Dropbox(oauth2_token),)
         return f(self, *args, **kwargs)
     return wrapped
@@ -59,9 +59,9 @@ def dbx_from_env(f):
 def refresh_dbx_from_env(f):
     @functools.wraps(f)
     def wrapped(self, *args, **kwargs):
-        refresh_token = _token_from_env_or_die("DROPBOX_REFRESH_TOKEN")
-        app_key = _token_from_env_or_die("DROPBOX_APP_KEY")
-        app_secret = _token_from_env_or_die("DROPBOX_APP_SECRET")
+        refresh_token = _value_from_env_or_die("DROPBOX_REFRESH_TOKEN")
+        app_key = _value_from_env_or_die("DROPBOX_APP_KEY")
+        app_secret = _value_from_env_or_die("DROPBOX_APP_SECRET")
         args += (Dropbox(oauth2_refresh_token=refresh_token,
                          app_key=app_key, app_secret=app_secret),)
         return f(self, *args, **kwargs)
@@ -70,10 +70,21 @@ def refresh_dbx_from_env(f):
 def dbx_team_from_env(f):
     @functools.wraps(f)
     def wrapped(self, *args, **kwargs):
-        team_oauth2_token = _token_from_env_or_die('DROPBOX_TEAM_TOKEN')
+        team_oauth2_token = _value_from_env_or_die('DROPBOX_TEAM_TOKEN')
         args += (DropboxTeam(team_oauth2_token),)
         return f(self, *args, **kwargs)
     return wrapped
+
+
+def dbx_app_auth_from_env(f):
+    @functools.wraps(f)
+    def wrapped(self, *args, **kwargs):
+        app_key = _value_from_env_or_die("DROPBOX_APP_KEY")
+        app_secret = _value_from_env_or_die("DROPBOX_APP_SECRET")
+        args += (Dropbox(oauth2_access_token="foo", app_key=app_key, app_secret=app_secret),)
+        return f(self, *args, **kwargs)
+    return wrapped
+
 
 MALFORMED_TOKEN = 'asdf'
 INVALID_TOKEN = 'z' * 62
@@ -119,6 +130,11 @@ class TestDropbox(unittest.TestCase):
     @refresh_dbx_from_env
     def test_refresh(self, dbx):
         dbx.users_get_current_account()
+
+    @dbx_app_auth_from_env
+    def test_app_auth(self, dbx):
+        res = dbx.check_app(query="hello world")
+        self.assertEqual(res.result, "hello world")
 
     @refresh_dbx_from_env
     def test_downscope(self, dbx):
