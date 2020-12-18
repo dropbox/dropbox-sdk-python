@@ -1,6 +1,7 @@
 __all__ = [
     'Dropbox',
     'DropboxTeam',
+    'DropboxAppAuth',
     'create_session',
 ]
 
@@ -182,18 +183,15 @@ class _DropboxTransport(object):
             refresh will request all available scopes for application
         """
 
-        if not (oauth2_access_token or oauth2_refresh_token):
-            raise BadInputException('OAuth2 access token or refresh token must be set')
-
         if headers is not None and not isinstance(headers, dict):
             raise BadInputException('Expected dict, got {}'.format(headers))
-
-        if oauth2_refresh_token and not app_key:
-            raise BadInputException("app_key is required to refresh tokens")
-
         if scope is not None and (len(scope) == 0 or not isinstance(scope, list)):
             raise BadInputException("Scope list must be of type list")
-
+        self._check_auth_args(oauth2_access_token,
+                              oauth2_refresh_token,
+                              oauth2_access_token_expiration,
+                              app_key,
+                              app_secret)
         self._oauth2_access_token = oauth2_access_token
         self._oauth2_refresh_token = oauth2_refresh_token
         self._oauth2_access_token_expiration = oauth2_access_token_expiration
@@ -228,6 +226,14 @@ class _DropboxTransport(object):
                           HOST_NOTIFY: API_NOTIFICATION_HOST}
 
         self._timeout = timeout
+
+    def _check_auth_args(self,
+                         oauth2_access_token,
+                         oauth2_refresh_token,
+                         oauth2_access_token_expiration,
+                         app_key,
+                         app_secret):
+        pass
 
     def clone(
             self,
@@ -550,7 +556,9 @@ class _DropboxTransport(object):
         elif auth_type == APP_AUTH:
             if self._app_key is None or self._app_secret is None:
                 raise BadInputException('A client id and secret is required for this function')
-            auth_header = base64.b64encode("{}:{}".format(self._app_key, self._app_secret).encode("utf-8"))
+            auth_header = base64.b64encode(
+                "{}:{}".format(self._app_key, self._app_secret).encode("utf-8")
+            )
             headers['Authorization'] = 'Basic {}'.format(auth_header.decode("utf-8"))
             print(headers['Authorization'])
             if self._headers:
@@ -701,13 +709,44 @@ class _DropboxTransport(object):
         self.close()
 
 
+def _check_user_team_auth_args(oauth2_access_token,
+                               oauth2_refresh_token,
+                               app_key):
+    if not (oauth2_access_token or oauth2_refresh_token):
+        raise BadInputException('OAuth2 access token or refresh token must be set')
+    if oauth2_refresh_token and not app_key:
+        raise BadInputException("app_key is required to refresh tokens")
+
+
 class Dropbox(_DropboxTransport, DropboxBase):
     """
     Use this class to make requests to the Dropbox API using a user's access
     token. Methods of this class are meant to act on the corresponding user's
     Dropbox.
     """
-    pass
+    def _check_auth_args(self,
+                         oauth2_access_token,
+                         oauth2_refresh_token,
+                         oauth2_access_token_expiration,
+                         app_key,
+                         app_secret):
+        _check_user_team_auth_args(oauth2_access_token, oauth2_refresh_token, app_key)
+
+
+class DropboxAppAuth(_DropboxTransport, DropboxBase):
+    """
+    Use this class to make requests to the Dropbox API using an app's app key
+    and app secret. Methods of this class are meant to act on neither users nor teams
+    """
+    def _check_auth_args(self,
+                         oauth2_access_token,
+                         oauth2_refresh_token,
+                         oauth2_access_token_expiration,
+                         app_key,
+                         app_secret):
+        if not (app_key and app_secret):
+            raise BadInputException("must provide app key and app secret")
+
 
 class DropboxTeam(_DropboxTransport, DropboxTeamBase):
     """
@@ -715,6 +754,14 @@ class DropboxTeam(_DropboxTransport, DropboxTeamBase):
     token. Methods of this class are meant to act on the team, but there is
     also an :meth:`as_user` method for assuming a team member's identity.
     """
+    def _check_auth_args(self,
+                         oauth2_access_token,
+                         oauth2_refresh_token,
+                         oauth2_access_token_expiration,
+                         app_key,
+                         app_secret):
+        _check_user_team_auth_args(oauth2_access_token, oauth2_refresh_token, app_key)
+
     def as_admin(self, team_member_id):
         """
         Allows a team credential to assume the identity of an administrator on the team

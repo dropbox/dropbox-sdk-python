@@ -19,6 +19,7 @@ except ImportError:
 
 from dropbox import (
     Dropbox,
+    DropboxAppAuth,
     DropboxOAuth2Flow,
     DropboxTeam,
     session,
@@ -81,7 +82,7 @@ def dbx_app_auth_from_env(f):
     def wrapped(self, *args, **kwargs):
         app_key = _value_from_env_or_die("DROPBOX_APP_KEY")
         app_secret = _value_from_env_or_die("DROPBOX_APP_SECRET")
-        args += (Dropbox(oauth2_access_token="foo", app_key=app_key, app_secret=app_secret),)
+        args += (DropboxAppAuth(app_key=app_key, app_secret=app_secret),)
         return f(self, *args, **kwargs)
     return wrapped
 
@@ -132,8 +133,8 @@ class TestDropbox(unittest.TestCase):
         dbx.users_get_current_account()
 
     @dbx_app_auth_from_env
-    def test_app_auth(self, dbx):
-        res = dbx.check_app(query="hello world")
+    def test_app_auth(self, dbx_app_auth):
+        res = dbx_app_auth.check_app(query="hello world")
         self.assertEqual(res.result, "hello world")
 
     @refresh_dbx_from_env
