@@ -147,7 +147,7 @@ class DropboxOAuth2FlowBase(object):
             self.code_challenge = None
 
     def _get_authorize_url(self, redirect_uri, state, token_access_type=None, scope=None,
-                           include_granted_scopes=None, code_challenge=None):
+                           include_granted_scopes=None, code_challenge=None, require_role=None, force_reapprove=None):
         params = dict(response_type='code',
                       client_id=self.consumer_key)
         if redirect_uri is not None:
@@ -166,6 +166,11 @@ class DropboxOAuth2FlowBase(object):
             if include_granted_scopes is not None:
                 assert include_granted_scopes in INCLUDE_GRANTED_SCOPES_TYPES
                 params['include_granted_scopes'] = include_granted_scopes
+
+        if require_role is not None:
+            params['require_role'] = require_role
+        if force_reapprove is not None:
+            params['force_reapprove'] = 'true' if force_reapprove else 'false'
 
         return self.build_url('/oauth2/authorize', params, WEB_HOST)
 
@@ -415,7 +420,7 @@ class DropboxOAuth2Flow(DropboxOAuth2FlowBase):
         self.session = session
         self.csrf_token_session_key = csrf_token_session_key
 
-    def start(self, url_state=None):
+    def start(self, url_state=None, require_role=None, force_reapprove=None):
         """
         Starts the OAuth 2 authorization process.
 
@@ -442,7 +447,9 @@ class DropboxOAuth2Flow(DropboxOAuth2FlowBase):
         return self._get_authorize_url(self.redirect_uri, state, self.token_access_type,
                                        scope=self.scope,
                                        include_granted_scopes=self.include_granted_scopes,
-                                       code_challenge=self.code_challenge)
+                                       code_challenge=self.code_challenge,
+                                       require_role=require_role,
+                                       force_reapprove=force_reapprove)
 
     def finish(self, query_params):
         """
