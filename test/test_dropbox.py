@@ -134,8 +134,7 @@ class TestDropbox(unittest.TestCase):
 
     @dbx_app_auth_from_env
     def test_app_auth(self, dbx_app_auth):
-        res = dbx_app_auth.check_app(query="hello world")
-        self.assertEqual(res.result, "hello world")
+        dbx_app_auth.check_app(query="hello world")
 
     @refresh_dbx_from_env
     def test_downscope(self, dbx):
