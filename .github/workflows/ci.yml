@@ -31,6 +31,10 @@ jobs:
           python -m pip install -r requirements.txt
           python -m pip install -r test/requirements.txt
           python setup.py install
+      - name: debug checks
+        run: |
+          which python
+          python -c "import sys; print(sys.version)"
       - name: Run Linter
         run: |
           flake8 setup.py dropbox example test
