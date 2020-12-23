@@ -212,7 +212,7 @@ class TestOAuth:
         assert auth_result.account_id == ACCOUNT_ID
         assert auth_result.scope == " ".join(SCOPE_LIST)
 
-        auth_flow_offline_with_scopes.requests_session.post.assert_called_once()
+        assert auth_flow_offline_with_scopes.requests_session.post.call_count == 1
         token_call_args = auth_flow_offline_with_scopes.requests_session.post.call_args_list
         assert len(token_call_args) == 1
         first_call_args = token_call_args[0]
@@ -330,7 +330,7 @@ class TestClient:
                       app_secret=APP_SECRET,
                       session=session_instance)
         dbx.check_and_refresh_access_token()
-        session_instance.post.assert_called_once()
+        assert session_instance.post.call_count == 1
 
     def test_check_refresh_with_only_refresh(self, session_instance):
         # Test Offline Case w/ only refresh
@@ -339,7 +339,7 @@ class TestClient:
                       app_secret=APP_SECRET,
                       session=session_instance)
         dbx.check_and_refresh_access_token()
-        session_instance.post.assert_called_once()
+        assert session_instance.post.call_count == 1
 
     def test_check_refresh_with_invalid_grant(self, invalid_grant_session_instance):
         dbx = Dropbox(oauth2_refresh_token=REFRESH_TOKEN,
@@ -348,7 +348,7 @@ class TestClient:
                       session=invalid_grant_session_instance)
         with pytest.raises(AuthError) as e:
             dbx.check_and_refresh_access_token()
-            invalid_grant_session_instance.post.assert_called_once()
+            assert invalid_grant_session_instance.post.call_count == 1
             assert e.error.is_invalid_access_token()
 
     def test_team_client_refresh(self, session_instance):
@@ -357,7 +357,7 @@ class TestClient:
                       app_secret=APP_SECRET,
                       session=session_instance)
         dbx.check_and_refresh_access_token()
-        session_instance.post.assert_called_once()
+        assert session_instance.post.call_count == 1
 
     def test_team_client_as_admin(self, session_instance):
         dbx = DropboxTeam(oauth2_refresh_token=REFRESH_TOKEN,
