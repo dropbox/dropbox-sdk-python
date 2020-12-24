@@ -17,7 +17,7 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - name: Publish to PyPi
-      uses: actions/setup-python@v2.1.4
+      uses: actions/setup-python@v2.2.1
       with:
         python-version: ${{ matrix.python-version }}
     - name: Install dependencies
