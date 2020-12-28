@@ -6,7 +6,7 @@ import pytest
 
 # Tests OAuth Flow
 from dropbox import DropboxOAuth2Flow, session, Dropbox, create_session
-from dropbox.dropbox_client import BadInputException, DropboxTeam
+from dropbox.dropbox_client import BadInputException, DropboxTeam, DropboxAppAuth
 from dropbox.exceptions import AuthError
 from dropbox.oauth import OAuth2FlowNoRedirectResult, DropboxOAuth2FlowNoRedirect
 from datetime import datetime, timedelta
@@ -290,6 +290,11 @@ class TestClient:
                 app_secret=APP_SECRET,
                 session=session_instance)
 
+    def test_Dropbox_with_only_app_key_and_secret(self, session_instance):
+        # Test Offline Case w/ only refresh
+        with pytest.raises(BadInputException):
+            Dropbox(app_key=APP_KEY, app_secret=APP_SECRET)
+
     def test_check_refresh_with_legacy_token(self, session_instance):
         dbx = Dropbox(oauth2_access_token=ACCESS_TOKEN, session=session_instance)
         dbx.check_and_refresh_access_token()
@@ -372,3 +377,8 @@ class TestClient:
                       app_secret=APP_SECRET,
                       session=session_instance)
         dbx.as_user(TEAM_MEMBER_ID)
+
+    def test_dropbox_app_auth(self):
+        with pytest.raises(BadInputException):
+            DropboxAppAuth(app_key=APP_KEY)
+        DropboxAppAuth(app_key=APP_KEY, app_secret=APP_SECRET)
