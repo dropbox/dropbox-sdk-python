@@ -36,7 +36,7 @@ jobs:
           flake8 setup.py dropbox example test
       - name: Run Unit Tests
         run: |
-          pytest test/test_dropbox_unit.py
+          pytest test/unit/test_dropbox_unit.py
   Docs:
     runs-on: macos-latest
     steps:
