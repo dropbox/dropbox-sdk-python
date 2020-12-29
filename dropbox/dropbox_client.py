@@ -552,7 +552,6 @@ class _DropboxTransport(object):
                 raise BadInputException('A client id and secret is required for this function')
             auth_header = base64.b64encode("{}:{}".format(self._app_key, self._app_secret).encode("utf-8"))
             headers['Authorization'] = 'Basic {}'.format(auth_header.decode("utf-8"))
-            print(headers['Authorization'])
             if self._headers:
                 headers.update(self._headers)
         elif auth_type == NO_AUTH:
