@@ -19,7 +19,6 @@ except ImportError:
 
 from dropbox import (
     Dropbox,
-    DropboxAppAuth,
     DropboxOAuth2Flow,
     DropboxTeam,
     session,
@@ -82,7 +81,7 @@ def dbx_app_auth_from_env(f):
     def wrapped(self, *args, **kwargs):
         app_key = _value_from_env_or_die("DROPBOX_APP_KEY")
         app_secret = _value_from_env_or_die("DROPBOX_APP_SECRET")
-        args += (DropboxAppAuth(app_key=app_key, app_secret=app_secret),)
+        args += (Dropbox(oauth2_access_token="foo", app_key=app_key, app_secret=app_secret),)
         return f(self, *args, **kwargs)
     return wrapped
 
