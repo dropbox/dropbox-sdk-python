@@ -6,7 +6,7 @@ import pytest
 
 # Tests OAuth Flow
 from dropbox import DropboxOAuth2Flow, session, Dropbox, create_session
-from dropbox.dropbox_client import BadInputException, DropboxTeam, DropboxAppAuth
+from dropbox.dropbox_client import BadInputException, DropboxTeam
 from dropbox.exceptions import AuthError
 from dropbox.oauth import OAuth2FlowNoRedirectResult, DropboxOAuth2FlowNoRedirect
 from datetime import datetime, timedelta
@@ -377,8 +377,3 @@ class TestClient:
                       app_secret=APP_SECRET,
                       session=session_instance)
         dbx.as_user(TEAM_MEMBER_ID)
-
-    def test_dropbox_app_auth(self):
-        with pytest.raises(BadInputException):
-            DropboxAppAuth(app_key=APP_KEY)
-        DropboxAppAuth(app_key=APP_KEY, app_secret=APP_SECRET)

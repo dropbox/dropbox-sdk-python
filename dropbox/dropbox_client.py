@@ -549,8 +549,11 @@ class _DropboxTransport(object):
                 headers.update(self._headers)
         elif auth_type == APP_AUTH:
             if self._app_key is None or self._app_secret is None:
-                raise BadInputException('Client id and client secret are required for routes with app auth')
-            auth_header = base64.b64encode("{}:{}".format(self._app_key, self._app_secret).encode("utf-8"))
+                raise BadInputException(
+                    'Client id and client secret are required for routes with app auth')
+            auth_header = base64.b64encode(
+                "{}:{}".format(self._app_key, self._app_secret).encode("utf-8")
+            )
             headers['Authorization'] = 'Basic {}'.format(auth_header.decode("utf-8"))
             if self._headers:
                 headers.update(self._headers)
