@@ -7,10 +7,10 @@ import functools
 import os
 import random
 import re
-import six
 import string
 import sys
 import unittest
+import pytest
 
 try:
     from io import BytesIO
@@ -98,34 +98,31 @@ class TestDropbox(unittest.TestCase):
         flow_obj = DropboxOAuth2Flow('dummy_app_key', 'dummy_app_secret',
             'http://localhost/dummy', 'dummy_session', 'dbx-auth-csrf-token')
 
-        six.assertRegex(
-            self,
-            flow_obj._get_authorize_url('http://localhost/redirect', 'state', 'legacy'),
+        assert re.match(
             r'^https://{}/oauth2/authorize\?'.format(re.escape(session.WEB_HOST)),
+            flow_obj._get_authorize_url('http://localhost/redirect', 'state', 'legacy'),
         )
 
-        self.assertEqual(
-            flow_obj.build_url('/oauth2/authorize'),
-            'https://{}/oauth2/authorize'.format(session.API_HOST),
-        )
+        assert flow_obj.build_url(
+            '/oauth2/authorize'
+        ) == 'https://{}/oauth2/authorize'.format(session.API_HOST)
 
-        self.assertEqual(
-            flow_obj.build_url('/oauth2/authorize', host=session.WEB_HOST),
-            'https://{}/oauth2/authorize'.format(session.WEB_HOST),
-        )
+        assert flow_obj.build_url(
+            '/oauth2/authorize', host=session.WEB_HOST
+        ) == 'https://{}/oauth2/authorize'.format(session.WEB_HOST)
 
     def test_bad_auth(self):
         # Test malformed token
         malformed_token_dbx = Dropbox(MALFORMED_TOKEN)
-        with self.assertRaises(BadInputError) as cm:
+        with pytest.raises(BadInputError) as cm:
             malformed_token_dbx.files_list_folder('')
-        self.assertIn('token is malformed', cm.exception.message)
+        assert 'token is malformed' in cm.value.message
 
         # Test reasonable-looking invalid token
         invalid_token_dbx = Dropbox(INVALID_TOKEN)
-        with self.assertRaises(AuthError) as cm:
+        with pytest.raises(AuthError) as cm:
             invalid_token_dbx.files_list_folder('')
-        self.assertTrue(cm.exception.error.is_invalid_access_token())
+        assert cm.value.error.is_invalid_access_token()
 
     @refresh_dbx_from_env
     def test_refresh(self, dbx):
@@ -139,7 +136,7 @@ class TestDropbox(unittest.TestCase):
     def test_downscope(self, dbx):
         dbx.users_get_current_account()
         dbx.refresh_access_token(scope=['files.metadata.read'])
-        with self.assertRaises(AuthError):
+        with pytest.raises(AuthError):
             # Should fail because downscoped to not include needed scope
             dbx.users_get_current_account()
 
@@ -150,9 +147,9 @@ class TestDropbox(unittest.TestCase):
         # Test API error
         random_folder_path = '/' + \
                              ''.join(random.sample(string.ascii_letters, 15))
-        with self.assertRaises(ApiError) as cm:
+        with pytest.raises(ApiError) as cm:
             dbx.files_list_folder(random_folder_path)
-        self.assertIsInstance(cm.exception.error, ListFolderError)
+        assert isinstance(cm.value.error, ListFolderError)
 
     @dbx_from_env
     def test_upload_download(self, dbx):
@@ -165,21 +162,21 @@ class TestDropbox(unittest.TestCase):
 
         # Download file
         _, resp = dbx.files_download(random_path)
-        self.assertEqual(DUMMY_PAYLOAD, resp.content)
+        assert DUMMY_PAYLOAD == resp.content
 
         # Cleanup folder
         dbx.files_delete('/Test/%s' % timestamp)
 
     @dbx_from_env
     def test_bad_upload_types(self, dbx):
-        with self.assertRaises(TypeError):
+        with pytest.raises(TypeError):
             dbx.files_upload(BytesIO(b'test'), '/Test')
 
     @dbx_from_env
     def test_clone_when_user_linked(self, dbx):
         new_dbx = dbx.clone()
-        self.assertIsNot(dbx, new_dbx)
-        self.assertIsInstance(new_dbx, dbx.__class__)
+        assert dbx is not new_dbx
+        assert isinstance(new_dbx, dbx.__class__)
 
     @dbx_from_env
     def test_with_path_root_constructor(self, dbx):
@@ -190,13 +187,13 @@ class TestDropbox(unittest.TestCase):
             PathRoot.namespace_id("123"),
         ):
             dbx_new = dbx.with_path_root(path_root)
-            self.assertIsNot(dbx_new, dbx)
+            assert dbx_new is not dbx
 
             expected = stone_serializers.json_encode(PathRoot_validator, path_root)
-            self.assertEqual(dbx_new._headers.get(PATH_ROOT_HEADER), expected)
+            assert dbx_new._headers.get(PATH_ROOT_HEADER) == expected
 
         # verify invalid mode raises ValueError
-        with self.assertRaises(ValueError):
+        with pytest.raises(ValueError):
             dbx.with_path_root(None)
 
     @dbx_from_env
@@ -221,14 +218,14 @@ class TestDropbox(unittest.TestCase):
     def test_path_root_err(self, dbx):
         # verify invalid namespace return is_no_permission error
         dbxpr = dbx.with_path_root(PathRoot.namespace_id("1234567890"))
-        with self.assertRaises(PathRootError) as cm:
+        with pytest.raises(PathRootError) as cm:
             dbxpr.files_list_folder('')
-        self.assertTrue(cm.exception.error.is_no_permission())
+        assert cm.value.error.is_no_permission()
 
         dbxpr = dbx.with_path_root(PathRoot.root("1234567890"))
-        with self.assertRaises(PathRootError) as cm:
+        with pytest.raises(PathRootError) as cm:
             dbxpr.files_list_folder('')
-        self.assertTrue(cm.exception.error.is_invalid_root())
+        assert cm.value.error.is_invalid_root()
 
     @dbx_from_env
     def test_versioned_route(self, dbx):
@@ -239,7 +236,7 @@ class TestDropbox(unittest.TestCase):
         # Delete the file with v2 route
         resp = dbx.files_delete_v2(path)
         # Verify response type is of v2 route
-        self.assertIsInstance(resp, DeleteResult)
+        assert isinstance(resp, DeleteResult)
 
 class TestDropboxTeam(unittest.TestCase):
     @dbx_team_from_env
@@ -258,22 +255,19 @@ class TestDropboxTeam(unittest.TestCase):
 
         dbx_new = dbx_as_user.with_path_root(path_root)
 
-        self.assertIsInstance(dbx_new, Dropbox)
-        self.assertEqual(dbx_new._headers.get(SELECT_USER_HEADER), '1')
+        assert isinstance(dbx_new, Dropbox)
+        assert dbx_new._headers.get(SELECT_USER_HEADER) == '1'
 
         expected = stone_serializers.json_encode(PathRoot_validator, path_root)
-        self.assertEqual(dbx_new._headers.get(PATH_ROOT_HEADER), expected)
+        assert dbx_new._headers.get(PATH_ROOT_HEADER) == expected
 
     @dbx_team_from_env
     def test_as_admin(self, dbxt):
         dbx_as_admin = dbxt.as_admin('1')
-        self.assertIsInstance(dbx_as_admin, Dropbox)
+        assert isinstance(dbx_as_admin, Dropbox)
 
     @dbx_team_from_env
     def test_clone_when_team_linked(self, dbxt):
         new_dbxt = dbxt.clone()
-        self.assertIsNot(dbxt, new_dbxt)
-        self.assertIsInstance(new_dbxt, dbxt.__class__)
-
-if __name__ == '__main__':
-    unittest.main()
+        assert dbxt is not new_dbxt
+        assert isinstance(new_dbxt, dbxt.__class__)
