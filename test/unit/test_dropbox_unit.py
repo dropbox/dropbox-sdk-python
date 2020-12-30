@@ -291,7 +291,6 @@ class TestClient:
                 session=session_instance)
 
     def test_Dropbox_with_only_app_key_and_secret(self, session_instance):
-        # Test Offline Case w/ only refresh
         with pytest.raises(BadInputException):
             Dropbox(app_key=APP_KEY, app_secret=APP_SECRET)
 
