@@ -9,7 +9,6 @@ import random
 import re
 import string
 import sys
-import unittest
 import pytest
 
 try:
@@ -48,42 +47,33 @@ def _value_from_env_or_die(env_name='DROPBOX_TOKEN'):
         sys.exit(1)
     return oauth2_token
 
-def dbx_from_env(f):
-    @functools.wraps(f)
-    def wrapped(self, *args, **kwargs):
-        oauth2_token = _value_from_env_or_die()
-        args += (Dropbox(oauth2_token),)
-        return f(self, *args, **kwargs)
-    return wrapped
 
-def refresh_dbx_from_env(f):
-    @functools.wraps(f)
-    def wrapped(self, *args, **kwargs):
-        refresh_token = _value_from_env_or_die("DROPBOX_REFRESH_TOKEN")
-        app_key = _value_from_env_or_die("DROPBOX_APP_KEY")
-        app_secret = _value_from_env_or_die("DROPBOX_APP_SECRET")
-        args += (Dropbox(oauth2_refresh_token=refresh_token,
-                         app_key=app_key, app_secret=app_secret),)
-        return f(self, *args, **kwargs)
-    return wrapped
-
-def dbx_team_from_env(f):
-    @functools.wraps(f)
-    def wrapped(self, *args, **kwargs):
-        team_oauth2_token = _value_from_env_or_die('DROPBOX_TEAM_TOKEN')
-        args += (DropboxTeam(team_oauth2_token),)
-        return f(self, *args, **kwargs)
-    return wrapped
+@pytest.fixture()
+def dbx_from_env():
+    oauth2_token = _value_from_env_or_die()
+    return Dropbox(oauth2_token)
 
 
-def dbx_app_auth_from_env(f):
-    @functools.wraps(f)
-    def wrapped(self, *args, **kwargs):
-        app_key = _value_from_env_or_die("DROPBOX_APP_KEY")
-        app_secret = _value_from_env_or_die("DROPBOX_APP_SECRET")
-        args += (Dropbox(oauth2_access_token="foo", app_key=app_key, app_secret=app_secret),)
-        return f(self, *args, **kwargs)
-    return wrapped
+@pytest.fixture()
+def refresh_dbx_from_env():
+    refresh_token = _value_from_env_or_die("DROPBOX_REFRESH_TOKEN")
+    app_key = _value_from_env_or_die("DROPBOX_APP_KEY")
+    app_secret = _value_from_env_or_die("DROPBOX_APP_SECRET")
+    return Dropbox(oauth2_refresh_token=refresh_token,
+                   app_key=app_key, app_secret=app_secret)
+
+
+@pytest.fixture()
+def dbx_team_from_env():
+    team_oauth2_token = _value_from_env_or_die('DROPBOX_TEAM_TOKEN')
+    return DropboxTeam(team_oauth2_token)
+
+
+@pytest.fixture()
+def dbx_app_auth_from_env():
+    app_key = _value_from_env_or_die("DROPBOX_APP_KEY")
+    app_secret = _value_from_env_or_die("DROPBOX_APP_SECRET")
+    return Dropbox(oauth2_access_token="foo", app_key=app_key, app_secret=app_secret)
 
 
 MALFORMED_TOKEN = 'asdf'
@@ -92,7 +82,9 @@ INVALID_TOKEN = 'z' * 62
 # Need bytes type for Python3
 DUMMY_PAYLOAD = string.ascii_letters.encode('ascii')
 
-class TestDropbox(unittest.TestCase):
+
+@pytest.mark.usefixtures("dbx_from_env", "refresh_dbx_from_env", "dbx_app_auth_from_env")
+class TestDropbox:
 
     def test_default_oauth2_urls(self):
         flow_obj = DropboxOAuth2Flow('dummy_app_key', 'dummy_app_secret',
@@ -124,133 +116,121 @@ class TestDropbox(unittest.TestCase):
             invalid_token_dbx.files_list_folder('')
         assert cm.value.error.is_invalid_access_token()
 
-    @refresh_dbx_from_env
-    def test_refresh(self, dbx):
-        dbx.users_get_current_account()
+    def test_refresh(self, refresh_dbx_from_env):
+        refresh_dbx_from_env.users_get_current_account()
 
-    @dbx_app_auth_from_env
-    def test_app_auth(self, dbx_app_auth):
-        dbx_app_auth.check_app(query="hello world")
+    def test_app_auth(self, dbx_app_auth_from_env):
+        dbx_app_auth_from_env.check_app(query="hello world")
 
-    @refresh_dbx_from_env
-    def test_downscope(self, dbx):
-        dbx.users_get_current_account()
-        dbx.refresh_access_token(scope=['files.metadata.read'])
+    def test_downscope(self, refresh_dbx_from_env):
+        refresh_dbx_from_env.users_get_current_account()
+        refresh_dbx_from_env.refresh_access_token(scope=['files.metadata.read'])
         with pytest.raises(AuthError):
             # Should fail because downscoped to not include needed scope
-            dbx.users_get_current_account()
+            refresh_dbx_from_env.users_get_current_account()
 
-    @dbx_from_env
-    def test_rpc(self, dbx):
-        dbx.files_list_folder('')
+    def test_rpc(self, dbx_from_env):
+        dbx_from_env.files_list_folder('')
 
         # Test API error
         random_folder_path = '/' + \
                              ''.join(random.sample(string.ascii_letters, 15))
         with pytest.raises(ApiError) as cm:
-            dbx.files_list_folder(random_folder_path)
+            dbx_from_env.files_list_folder(random_folder_path)
         assert isinstance(cm.value.error, ListFolderError)
 
-    @dbx_from_env
-    def test_upload_download(self, dbx):
+    def test_upload_download(self, dbx_from_env):
         # Upload file
         timestamp = str(datetime.datetime.utcnow())
         random_filename = ''.join(random.sample(string.ascii_letters, 15))
         random_path = '/Test/%s/%s' % (timestamp, random_filename)
         test_contents = DUMMY_PAYLOAD
-        dbx.files_upload(test_contents, random_path)
+        dbx_from_env.files_upload(test_contents, random_path)
 
         # Download file
-        _, resp = dbx.files_download(random_path)
+        _, resp = dbx_from_env.files_download(random_path)
         assert DUMMY_PAYLOAD == resp.content
 
         # Cleanup folder
-        dbx.files_delete('/Test/%s' % timestamp)
+        dbx_from_env.files_delete('/Test/%s' % timestamp)
 
-    @dbx_from_env
-    def test_bad_upload_types(self, dbx):
+    def test_bad_upload_types(self, dbx_from_env):
         with pytest.raises(TypeError):
-            dbx.files_upload(BytesIO(b'test'), '/Test')
+            dbx_from_env.files_upload(BytesIO(b'test'), '/Test')
 
-    @dbx_from_env
-    def test_clone_when_user_linked(self, dbx):
-        new_dbx = dbx.clone()
-        assert dbx is not new_dbx
-        assert isinstance(new_dbx, dbx.__class__)
+    def test_clone_when_user_linked(self, dbx_from_env):
+        new_dbx = dbx_from_env.clone()
+        assert dbx_from_env is not new_dbx
+        assert isinstance(new_dbx, dbx_from_env.__class__)
 
-    @dbx_from_env
-    def test_with_path_root_constructor(self, dbx):
+    def test_with_path_root_constructor(self, dbx_from_env):
         # Verify valid mode types
         for path_root in (
             PathRoot.home,
             PathRoot.root("123"),
             PathRoot.namespace_id("123"),
         ):
-            dbx_new = dbx.with_path_root(path_root)
-            assert dbx_new is not dbx
+            dbx_new = dbx_from_env.with_path_root(path_root)
+            assert dbx_new is not dbx_from_env
 
             expected = stone_serializers.json_encode(PathRoot_validator, path_root)
             assert dbx_new._headers.get(PATH_ROOT_HEADER) == expected
 
         # verify invalid mode raises ValueError
         with pytest.raises(ValueError):
-            dbx.with_path_root(None)
+            dbx_from_env.with_path_root(None)
 
-    @dbx_from_env
-    def test_path_root(self, dbx):
-        root_info = dbx.users_get_current_account().root_info
+    def test_path_root(self, dbx_from_env):
+        root_info = dbx_from_env.users_get_current_account().root_info
         root_ns = root_info.root_namespace_id
         home_ns = root_info.home_namespace_id
 
         # verify home mode
-        dbxpr = dbx.with_path_root(PathRoot.home)
+        dbxpr = dbx_from_env.with_path_root(PathRoot.home)
         dbxpr.files_list_folder('')
 
         # verify root mode
-        dbxpr = dbx.with_path_root(PathRoot.root(root_ns))
+        dbxpr = dbx_from_env.with_path_root(PathRoot.root(root_ns))
         dbxpr.files_list_folder('')
 
         # verify namespace_id mode
-        dbxpr = dbx.with_path_root(PathRoot.namespace_id(home_ns))
+        dbxpr = dbx_from_env.with_path_root(PathRoot.namespace_id(home_ns))
         dbxpr.files_list_folder('')
 
-    @dbx_from_env
-    def test_path_root_err(self, dbx):
+    def test_path_root_err(self, dbx_from_env):
         # verify invalid namespace return is_no_permission error
-        dbxpr = dbx.with_path_root(PathRoot.namespace_id("1234567890"))
+        dbxpr = dbx_from_env.with_path_root(PathRoot.namespace_id("1234567890"))
         with pytest.raises(PathRootError) as cm:
             dbxpr.files_list_folder('')
         assert cm.value.error.is_no_permission()
 
-        dbxpr = dbx.with_path_root(PathRoot.root("1234567890"))
+        dbxpr = dbx_from_env.with_path_root(PathRoot.root("1234567890"))
         with pytest.raises(PathRootError) as cm:
             dbxpr.files_list_folder('')
         assert cm.value.error.is_invalid_root()
 
-    @dbx_from_env
-    def test_versioned_route(self, dbx):
+    def test_versioned_route(self, dbx_from_env):
         # Upload a test file
         path = '/test.txt'
-        dbx.files_upload(DUMMY_PAYLOAD, path)
+        dbx_from_env.files_upload(DUMMY_PAYLOAD, path)
 
         # Delete the file with v2 route
-        resp = dbx.files_delete_v2(path)
+        resp = dbx_from_env.files_delete_v2(path)
         # Verify response type is of v2 route
         assert isinstance(resp, DeleteResult)
 
-class TestDropboxTeam(unittest.TestCase):
-    @dbx_team_from_env
-    def test_team(self, dbxt):
-        dbxt.team_groups_list()
-        r = dbxt.team_members_list()
+@pytest.mark.usefixtures("dbx_team_from_env")
+class TestDropboxTeam:
+    def test_team(self, dbx_team_from_env):
+        dbx_team_from_env.team_groups_list()
+        r = dbx_team_from_env.team_members_list()
         if r.members:
             # Only test assuming a member if there is a member
             team_member_id = r.members[0].profile.team_member_id
-            dbxt.as_user(team_member_id).files_list_folder('')
+            dbx_team_from_env.as_user(team_member_id).files_list_folder('')
 
-    @dbx_team_from_env
-    def test_as_user(self, dbxt):
-        dbx_as_user = dbxt.as_user('1')
+    def test_as_user(self, dbx_team_from_env):
+        dbx_as_user = dbx_team_from_env.as_user('1')
         path_root = PathRoot.root("123")
 
         dbx_new = dbx_as_user.with_path_root(path_root)
@@ -261,13 +241,11 @@ class TestDropboxTeam(unittest.TestCase):
         expected = stone_serializers.json_encode(PathRoot_validator, path_root)
         assert dbx_new._headers.get(PATH_ROOT_HEADER) == expected
 
-    @dbx_team_from_env
-    def test_as_admin(self, dbxt):
-        dbx_as_admin = dbxt.as_admin('1')
+    def test_as_admin(self, dbx_team_from_env):
+        dbx_as_admin = dbx_team_from_env.as_admin('1')
         assert isinstance(dbx_as_admin, Dropbox)
 
-    @dbx_team_from_env
-    def test_clone_when_team_linked(self, dbxt):
-        new_dbxt = dbxt.clone()
-        assert dbxt is not new_dbxt
-        assert isinstance(new_dbxt, dbxt.__class__)
+    def test_clone_when_team_linked(self, dbx_team_from_env):
+        new_dbxt = dbx_team_from_env.clone()
+        assert dbx_team_from_env is not new_dbxt
+        assert isinstance(new_dbxt, dbx_team_from_env.__class__)
