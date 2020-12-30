@@ -1371,7 +1371,8 @@ features_get_values = bb.Route(
     UserFeaturesGetValuesBatchArg_validator,
     UserFeaturesGetValuesBatchResult_validator,
     UserFeaturesGetValuesBatchError_validator,
-    {'host': u'api',
+    {'auth': u'user',
+     'host': u'api',
      'style': u'rpc'},
 )
 get_account = bb.Route(
@@ -1381,7 +1382,8 @@ get_account = bb.Route(
     GetAccountArg_validator,
     BasicAccount_validator,
     GetAccountError_validator,
-    {'host': u'api',
+    {'auth': u'user',
+     'host': u'api',
      'style': u'rpc'},
 )
 get_account_batch = bb.Route(
@@ -1391,7 +1393,8 @@ get_account_batch = bb.Route(
     GetAccountBatchArg_validator,
     GetAccountBatchResult_validator,
     GetAccountBatchError_validator,
-    {'host': u'api',
+    {'auth': u'user',
+     'host': u'api',
      'style': u'rpc'},
 )
 get_current_account = bb.Route(
@@ -1401,7 +1404,8 @@ get_current_account = bb.Route(
     bv.Void(),
     FullAccount_validator,
     bv.Void(),
-    {'host': u'api',
+    {'auth': u'user',
+     'host': u'api',
      'style': u'rpc'},
 )
 get_space_usage = bb.Route(
@@ -1411,7 +1415,8 @@ get_space_usage = bb.Route(
     bv.Void(),
     SpaceUsage_validator,
     bv.Void(),
-    {'host': u'api',
+    {'auth': u'user',
+     'host': u'api',
      'style': u'rpc'},
 )
 

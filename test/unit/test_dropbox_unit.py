@@ -290,6 +290,10 @@ class TestClient:
                 app_secret=APP_SECRET,
                 session=session_instance)
 
+    def test_Dropbox_with_only_app_key_and_secret(self, session_instance):
+        with pytest.raises(BadInputException):
+            Dropbox(app_key=APP_KEY, app_secret=APP_SECRET)
+
     def test_check_refresh_with_legacy_token(self, session_instance):
         dbx = Dropbox(oauth2_access_token=ACCESS_TOKEN, session=session_instance)
         dbx.check_and_refresh_access_token()

@@ -115,7 +115,8 @@ delete_manual_contacts = bb.Route(
     bv.Void(),
     bv.Void(),
     bv.Void(),
-    {'host': u'api',
+    {'auth': u'user',
+     'host': u'api',
      'style': u'rpc'},
 )
 delete_manual_contacts_batch = bb.Route(
@@ -125,7 +126,8 @@ delete_manual_contacts_batch = bb.Route(
     DeleteManualContactsArg_validator,
     bv.Void(),
     DeleteManualContactsError_validator,
-    {'host': u'api',
+    {'auth': u'user',
+     'host': u'api',
      'style': u'rpc'},
 )
 

@@ -80,7 +80,8 @@ app = bb.Route(
     EchoArg_validator,
     EchoResult_validator,
     bv.Void(),
-    {'host': u'api',
+    {'auth': u'app',
+     'host': u'api',
      'style': u'rpc'},
 )
 user = bb.Route(
@@ -90,7 +91,8 @@ user = bb.Route(
     EchoArg_validator,
     EchoResult_validator,
     bv.Void(),
-    {'host': u'api',
+    {'auth': u'user',
+     'host': u'api',
      'style': u'rpc'},
 )
 
