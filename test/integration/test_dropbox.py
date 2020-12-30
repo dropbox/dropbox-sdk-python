@@ -3,7 +3,6 @@
 from __future__ import absolute_import, division, print_function, unicode_literals
 
 import datetime
-import functools
 import os
 import random
 import re
@@ -40,12 +39,12 @@ from dropbox.common import (
 )
 
 def _value_from_env_or_die(env_name='DROPBOX_TOKEN'):
-    oauth2_token = os.environ.get(env_name)
-    if oauth2_token is None:
+    value = os.environ.get(env_name)
+    if value is None:
         print('Set {} environment variable to a valid token.'.format(env_name),
               file=sys.stderr)
         sys.exit(1)
-    return oauth2_token
+    return value
 
 
 @pytest.fixture()
