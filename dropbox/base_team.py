@@ -1834,7 +1834,8 @@ class DropboxTeamBase(object):
     def team_properties_template_get(self,
                                      template_id):
         """
-        Permission : Team member file access.
+        Permission : Team member file access. The scope for the route is
+        files.team_metadata.write.
 
         :param str template_id: An identifier for template added by route  See
             :meth:`team_templates_add_for_user` or
@@ -1860,7 +1861,8 @@ class DropboxTeamBase(object):
 
     def team_properties_template_list(self):
         """
-        Permission : Team member file access.
+        Permission : Team member file access. The scope for the route is
+        files.team_metadata.write.
 
         :rtype: :class:`dropbox.team.ListTemplateResult`
         :raises: :class:`.exceptions.ApiError`

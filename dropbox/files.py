@@ -7205,8 +7205,7 @@ SearchResult_validator = bv.Struct(SearchResult)
 class SearchV2Arg(bb.Struct):
     """
     :ivar files.SearchV2Arg.query: The string to search for. May match across
-        multiple fields based on the request arguments. Query string may be
-        rewritten to improve relevance of results.
+        multiple fields based on the request arguments.
     :ivar files.SearchV2Arg.options: Options for more targeted search results.
     :ivar files.SearchV2Arg.match_field_options: Options for search results
         match fields.
