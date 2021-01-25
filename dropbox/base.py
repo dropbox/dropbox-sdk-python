@@ -2630,8 +2630,7 @@ class DropboxBase(object):
         be returned across pages. Some results may not be returned.
 
         :param str query: The string to search for. May match across multiple
-            fields based on the request arguments. Query string may be rewritten
-            to improve relevance of results.
+            fields based on the request arguments.
         :param Nullable[:class:`dropbox.files.SearchOptions`] options: Options
             for more targeted search results.
         :param Nullable[:class:`dropbox.files.SearchMatchFieldOptions`]

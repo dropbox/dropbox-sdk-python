@@ -1737,10 +1737,8 @@ class AppLogInfo(bb.Struct):
     """
     App's logged information.
 
-    :ivar team_log.AppLogInfo.app_id: App unique ID. Might be missing due to
-        historical data gap.
-    :ivar team_log.AppLogInfo.display_name: App display name. Might be missing
-        due to historical data gap.
+    :ivar team_log.AppLogInfo.app_id: App unique ID.
+    :ivar team_log.AppLogInfo.display_name: App display name.
     """
 
     __slots__ = [
@@ -3998,11 +3996,11 @@ class DeviceSessionLogInfo(bb.Struct):
     Device's session logged information.
 
     :ivar team_log.DeviceSessionLogInfo.ip_address: The IP address of the last
-        activity from this session. Might be missing due to historical data gap.
+        activity from this session.
     :ivar team_log.DeviceSessionLogInfo.created: The time this session was
-        created. Might be missing due to historical data gap.
+        created.
     :ivar team_log.DeviceSessionLogInfo.updated: The time of the last activity
-        from this session. Might be missing due to historical data gap.
+        from this session.
     """
 
     __slots__ = [
@@ -4046,7 +4044,7 @@ class DesktopDeviceSessionLogInfo(DeviceSessionLogInfo):
     Information about linked Dropbox desktop client sessions
 
     :ivar team_log.DesktopDeviceSessionLogInfo.session_info: Desktop session
-        unique id. Might be missing due to historical data gap.
+        unique id.
     :ivar team_log.DesktopDeviceSessionLogInfo.host_name: Name of the hosting
         desktop.
     :ivar team_log.DesktopDeviceSessionLogInfo.client_type: The Dropbox desktop
@@ -4130,8 +4128,7 @@ class SessionLogInfo(bb.Struct):
     """
     Session's logged information.
 
-    :ivar team_log.SessionLogInfo.session_id: Session ID. Might be missing due
-        to historical data gap.
+    :ivar team_log.SessionLogInfo.session_id: Session ID.
     """
 
     __slots__ = [
@@ -4699,7 +4696,7 @@ class DeviceDeleteOnUnlinkFailDetails(bb.Struct):
     Failed to delete all files from unlinked device.
 
     :ivar team_log.DeviceDeleteOnUnlinkFailDetails.session_info: Session unique
-        id. Might be missing due to historical data gap.
+        id.
     :ivar team_log.DeviceDeleteOnUnlinkFailDetails.display_name: The device
         name. Might be missing due to historical data gap.
     :ivar team_log.DeviceDeleteOnUnlinkFailDetails.num_failures: The number of
@@ -4769,7 +4766,7 @@ class DeviceDeleteOnUnlinkSuccessDetails(bb.Struct):
     Deleted all files from unlinked device.
 
     :ivar team_log.DeviceDeleteOnUnlinkSuccessDetails.session_info: Session
-        unique id. Might be missing due to historical data gap.
+        unique id.
     :ivar team_log.DeviceDeleteOnUnlinkSuccessDetails.display_name: The device
         name. Might be missing due to historical data gap.
     """
@@ -41305,7 +41302,7 @@ class FailureDetailsLogInfo(bb.Struct):
     Provides details about a failure
 
     :ivar team_log.FailureDetailsLogInfo.user_friendly_message: A user friendly
-        explanation of the error. Might be missing due to historical data gap.
+        explanation of the error.
     :ivar team_log.FailureDetailsLogInfo.technical_error_message: A technical
         explanation of the error. This is relevant for some errors.
     """
@@ -41691,8 +41688,7 @@ class FileAddCommentDetails(bb.Struct):
     """
     Added file comment.
 
-    :ivar team_log.FileAddCommentDetails.comment_text: Comment text. Might be
-        missing due to historical data gap.
+    :ivar team_log.FileAddCommentDetails.comment_text: Comment text.
     """
 
     __slots__ = [
@@ -42044,8 +42040,7 @@ class FileDeleteCommentDetails(bb.Struct):
     """
     Deleted file comment.
 
-    :ivar team_log.FileDeleteCommentDetails.comment_text: Comment text. Might be
-        missing due to historical data gap.
+    :ivar team_log.FileDeleteCommentDetails.comment_text: Comment text.
     """
 
     __slots__ = [
@@ -42174,8 +42169,7 @@ class FileEditCommentDetails(bb.Struct):
     """
     Edited file comment.
 
-    :ivar team_log.FileEditCommentDetails.comment_text: Comment text. Might be
-        missing due to historical data gap.
+    :ivar team_log.FileEditCommentDetails.comment_text: Comment text.
     :ivar team_log.FileEditCommentDetails.previous_comment_text: Previous
         comment text.
     """
@@ -42314,8 +42308,7 @@ class FileLikeCommentDetails(bb.Struct):
     """
     Liked file comment.
 
-    :ivar team_log.FileLikeCommentDetails.comment_text: Comment text. Might be
-        missing due to historical data gap.
+    :ivar team_log.FileLikeCommentDetails.comment_text: Comment text.
     """
 
     __slots__ = [
@@ -42485,10 +42478,8 @@ class FileOrFolderLogInfo(bb.Struct):
     Generic information relevant both for files and folders
 
     :ivar team_log.FileOrFolderLogInfo.path: Path relative to event context.
-    :ivar team_log.FileOrFolderLogInfo.display_name: Display name. Might be
-        missing due to historical data gap.
-    :ivar team_log.FileOrFolderLogInfo.file_id: Unique ID. Might be missing due
-        to historical data gap.
+    :ivar team_log.FileOrFolderLogInfo.display_name: Display name.
+    :ivar team_log.FileOrFolderLogInfo.file_id: Unique ID.
     :ivar team_log.FileOrFolderLogInfo.file_size: File or folder size in bytes.
     """
 
@@ -42938,8 +42929,7 @@ class FileRequestDeadline(bb.Struct):
     :ivar team_log.FileRequestDeadline.deadline: The deadline for this file
         request. Might be missing due to historical data gap.
     :ivar team_log.FileRequestDeadline.allow_late_uploads: If set, allow uploads
-        after the deadline has passed. Might be missing due to historical data
-        gap.
+        after the deadline has passed.
     """
 
     __slots__ = [
@@ -43036,8 +43026,7 @@ class FileRequestDetails(bb.Struct):
 
     :ivar team_log.FileRequestDetails.asset_index: Asset position in the Assets
         list.
-    :ivar team_log.FileRequestDetails.deadline: File request deadline. Might be
-        missing due to historical data gap.
+    :ivar team_log.FileRequestDetails.deadline: File request deadline.
     """
 
     __slots__ = [
@@ -43079,9 +43068,9 @@ class FileRequestReceiveFileDetails(bb.Struct):
     :ivar team_log.FileRequestReceiveFileDetails.submitted_file_names: Submitted
         file names.
     :ivar team_log.FileRequestReceiveFileDetails.submitter_name: The name as
-        provided by the submitter. Might be missing due to historical data gap.
+        provided by the submitter.
     :ivar team_log.FileRequestReceiveFileDetails.submitter_email: The email as
-        provided by the submitter. Might be missing due to historical data gap.
+        provided by the submitter.
     """
 
     __slots__ = [
@@ -43348,8 +43337,7 @@ class FileResolveCommentDetails(bb.Struct):
     """
     Resolved file comment.
 
-    :ivar team_log.FileResolveCommentDetails.comment_text: Comment text. Might
-        be missing due to historical data gap.
+    :ivar team_log.FileResolveCommentDetails.comment_text: Comment text.
     """
 
     __slots__ = [
@@ -43923,8 +43911,7 @@ class FileUnlikeCommentDetails(bb.Struct):
     """
     Unliked file comment.
 
-    :ivar team_log.FileUnlikeCommentDetails.comment_text: Comment text. Might be
-        missing due to historical data gap.
+    :ivar team_log.FileUnlikeCommentDetails.comment_text: Comment text.
     """
 
     __slots__ = [
@@ -43973,8 +43960,7 @@ class FileUnresolveCommentDetails(bb.Struct):
     """
     Unresolved file comment.
 
-    :ivar team_log.FileUnresolveCommentDetails.comment_text: Comment text. Might
-        be missing due to historical data gap.
+    :ivar team_log.FileUnresolveCommentDetails.comment_text: Comment text.
     """
 
     __slots__ = [
@@ -45861,7 +45847,7 @@ class GroupCreateDetails(bb.Struct):
     Created group.
 
     :ivar team_log.GroupCreateDetails.is_company_managed: Is company managed
-        group. Might be missing due to historical data gap.
+        group.
     :ivar team_log.GroupCreateDetails.join_policy: Group join policy.
     """
 
@@ -45920,7 +45906,7 @@ class GroupDeleteDetails(bb.Struct):
     Deleted group.
 
     :ivar team_log.GroupDeleteDetails.is_company_managed: Is company managed
-        group. Might be missing due to historical data gap.
+        group.
     """
 
     __slots__ = [
@@ -46054,7 +46040,7 @@ class GroupJoinPolicyUpdatedDetails(bb.Struct):
     Updated group join policy.
 
     :ivar team_log.GroupJoinPolicyUpdatedDetails.is_company_managed: Is company
-        managed group. Might be missing due to historical data gap.
+        managed group.
     :ivar team_log.GroupJoinPolicyUpdatedDetails.join_policy: Group join policy.
     """
 
@@ -46112,11 +46098,9 @@ class GroupLogInfo(bb.Struct):
     """
     Group's logged information.
 
-    :ivar team_log.GroupLogInfo.group_id: The unique id of this group. Might be
-        missing due to historical data gap.
+    :ivar team_log.GroupLogInfo.group_id: The unique id of this group.
     :ivar team_log.GroupLogInfo.display_name: The name of this group.
-    :ivar team_log.GroupLogInfo.external_id: External group ID. Might be missing
-        due to historical data gap.
+    :ivar team_log.GroupLogInfo.external_id: External group ID.
     """
 
     __slots__ = [
@@ -47062,7 +47046,6 @@ class LegacyDeviceSessionLogInfo(DeviceSessionLogInfo):
     Information on sessions, in legacy format
 
     :ivar team_log.LegacyDeviceSessionLogInfo.session_info: Session unique id.
-        Might be missing due to historical data gap.
     :ivar team_log.LegacyDeviceSessionLogInfo.display_name: The device name.
         Might be missing due to historical data gap.
     :ivar team_log.LegacyDeviceSessionLogInfo.is_emm_managed: Is device managed
@@ -50285,7 +50268,7 @@ class MobileDeviceSessionLogInfo(DeviceSessionLogInfo):
     Information about linked Dropbox mobile client sessions
 
     :ivar team_log.MobileDeviceSessionLogInfo.session_info: Mobile session
-        unique id. Might be missing due to historical data gap.
+        unique id.
     :ivar team_log.MobileDeviceSessionLogInfo.device_name: The device name.
     :ivar team_log.MobileDeviceSessionLogInfo.client_type: The mobile
         application type.
@@ -50386,13 +50369,11 @@ class NamespaceRelativePathLogInfo(bb.Struct):
     """
     Namespace relative path details.
 
-    :ivar team_log.NamespaceRelativePathLogInfo.ns_id: Namespace ID. Might be
-        missing due to historical data gap.
+    :ivar team_log.NamespaceRelativePathLogInfo.ns_id: Namespace ID.
     :ivar team_log.NamespaceRelativePathLogInfo.relative_path: A path relative
-        to the specified namespace ID. Might be missing due to historical data
-        gap.
+        to the specified namespace ID.
     :ivar team_log.NamespaceRelativePathLogInfo.is_shared_namespace: True if the
-        namespace is shared. Might be missing due to historical data gap.
+        namespace is shared.
     """
 
     __slots__ = [
@@ -50871,12 +50852,9 @@ class UserLogInfo(bb.Struct):
     """
     User's logged information.
 
-    :ivar team_log.UserLogInfo.account_id: User unique ID. Might be missing due
-        to historical data gap.
-    :ivar team_log.UserLogInfo.display_name: User display name. Might be missing
-        due to historical data gap.
-    :ivar team_log.UserLogInfo.email: User email address. Might be missing due
-        to historical data gap.
+    :ivar team_log.UserLogInfo.account_id: User unique ID.
+    :ivar team_log.UserLogInfo.display_name: User display name.
+    :ivar team_log.UserLogInfo.email: User email address.
     """
 
     __slots__ = [
@@ -52443,8 +52421,7 @@ class PaperDocAddCommentDetails(bb.Struct):
 
     :ivar team_log.PaperDocAddCommentDetails.event_uuid: Event unique
         identifier.
-    :ivar team_log.PaperDocAddCommentDetails.comment_text: Comment text. Might
-        be missing due to historical data gap.
+    :ivar team_log.PaperDocAddCommentDetails.comment_text: Comment text.
     """
 
     __slots__ = [
@@ -52564,10 +52541,9 @@ class PaperDocChangeSharingPolicyDetails(bb.Struct):
     :ivar team_log.PaperDocChangeSharingPolicyDetails.event_uuid: Event unique
         identifier.
     :ivar team_log.PaperDocChangeSharingPolicyDetails.public_sharing_policy:
-        Sharing policy with external users. Might be missing due to historical
-        data gap.
+        Sharing policy with external users.
     :ivar team_log.PaperDocChangeSharingPolicyDetails.team_sharing_policy:
-        Sharing policy with team. Might be missing due to historical data gap.
+        Sharing policy with team.
     """
 
     __slots__ = [
@@ -52707,7 +52683,6 @@ class PaperDocDeleteCommentDetails(bb.Struct):
     :ivar team_log.PaperDocDeleteCommentDetails.event_uuid: Event unique
         identifier.
     :ivar team_log.PaperDocDeleteCommentDetails.comment_text: Comment text.
-        Might be missing due to historical data gap.
     """
 
     __slots__ = [
@@ -52874,8 +52849,7 @@ class PaperDocEditCommentDetails(bb.Struct):
 
     :ivar team_log.PaperDocEditCommentDetails.event_uuid: Event unique
         identifier.
-    :ivar team_log.PaperDocEditCommentDetails.comment_text: Comment text. Might
-        be missing due to historical data gap.
+    :ivar team_log.PaperDocEditCommentDetails.comment_text: Comment text.
     """
 
     __slots__ = [
@@ -53201,7 +53175,6 @@ class PaperDocResolveCommentDetails(bb.Struct):
     :ivar team_log.PaperDocResolveCommentDetails.event_uuid: Event unique
         identifier.
     :ivar team_log.PaperDocResolveCommentDetails.comment_text: Comment text.
-        Might be missing due to historical data gap.
     """
 
     __slots__ = [
@@ -53459,7 +53432,6 @@ class PaperDocUnresolveCommentDetails(bb.Struct):
     :ivar team_log.PaperDocUnresolveCommentDetails.event_uuid: Event unique
         identifier.
     :ivar team_log.PaperDocUnresolveCommentDetails.comment_text: Comment text.
-        Might be missing due to historical data gap.
     """
 
     __slots__ = [
@@ -54807,7 +54779,7 @@ class PathLogInfo(bb.Struct):
     Path's details.
 
     :ivar team_log.PathLogInfo.contextual: Fully qualified path relative to
-        event's context. Might be missing due to historical data gap.
+        event's context.
     :ivar team_log.PathLogInfo.namespace_relative: Path relative to the
         namespace containing the content.
     """
@@ -55024,9 +54996,19 @@ class PolicyType(bb.Union):
 
     _catch_all = 'other'
     # Attribute is overwritten below the class definition
+    disposition = None
+    # Attribute is overwritten below the class definition
     retention = None
     # Attribute is overwritten below the class definition
     other = None
+
+    def is_disposition(self):
+        """
+        Check if the union tag is ``disposition``.
+
+        :rtype: bool
+        """
+        return self._tag == 'disposition'
 
     def is_retention(self):
         """
@@ -56200,7 +56182,6 @@ class SfAddGroupDetails(bb.Struct):
     :ivar team_log.SfAddGroupDetails.original_folder_name: Original shared
         folder name.
     :ivar team_log.SfAddGroupDetails.sharing_permission: Sharing permission.
-        Might be missing due to historical data gap.
     :ivar team_log.SfAddGroupDetails.team_name: Team name.
     """
 
@@ -56280,7 +56261,7 @@ class SfAllowNonMembersToViewSharedLinksDetails(bb.Struct):
         team_log.SfAllowNonMembersToViewSharedLinksDetails.original_folder_name:
         Original shared folder name.
     :ivar team_log.SfAllowNonMembersToViewSharedLinksDetails.shared_folder_type:
-        Shared folder type. Might be missing due to historical data gap.
+        Shared folder type.
     """
 
     __slots__ = [
@@ -56350,10 +56331,9 @@ class SfExternalInviteWarnDetails(bb.Struct):
     :ivar team_log.SfExternalInviteWarnDetails.original_folder_name: Original
         shared folder name.
     :ivar team_log.SfExternalInviteWarnDetails.new_sharing_permission: New
-        sharing permission. Might be missing due to historical data gap.
+        sharing permission.
     :ivar team_log.SfExternalInviteWarnDetails.previous_sharing_permission:
-        Previous sharing permission. Might be missing due to historical data
-        gap.
+        Previous sharing permission.
     """
 
     __slots__ = [
@@ -56431,10 +56411,9 @@ class SfFbInviteChangeRoleDetails(bb.Struct):
     :ivar team_log.SfFbInviteChangeRoleDetails.original_folder_name: Original
         shared folder name.
     :ivar team_log.SfFbInviteChangeRoleDetails.previous_sharing_permission:
-        Previous sharing permission. Might be missing due to historical data
-        gap.
+        Previous sharing permission.
     :ivar team_log.SfFbInviteChangeRoleDetails.new_sharing_permission: New
-        sharing permission. Might be missing due to historical data gap.
+        sharing permission.
     """
 
     __slots__ = [
@@ -56512,7 +56491,6 @@ class SfFbInviteDetails(bb.Struct):
     :ivar team_log.SfFbInviteDetails.original_folder_name: Original shared
         folder name.
     :ivar team_log.SfFbInviteDetails.sharing_permission: Sharing permission.
-        Might be missing due to historical data gap.
     """
 
     __slots__ = [
@@ -56752,10 +56730,9 @@ class SfTeamInviteChangeRoleDetails(bb.Struct):
     :ivar team_log.SfTeamInviteChangeRoleDetails.original_folder_name: Original
         shared folder name.
     :ivar team_log.SfTeamInviteChangeRoleDetails.new_sharing_permission: New
-        sharing permission. Might be missing due to historical data gap.
+        sharing permission.
     :ivar team_log.SfTeamInviteChangeRoleDetails.previous_sharing_permission:
-        Previous sharing permission. Might be missing due to historical data
-        gap.
+        Previous sharing permission.
     """
 
     __slots__ = [
@@ -56833,7 +56810,6 @@ class SfTeamInviteDetails(bb.Struct):
     :ivar team_log.SfTeamInviteDetails.original_folder_name: Original shared
         folder name.
     :ivar team_log.SfTeamInviteDetails.sharing_permission: Sharing permission.
-        Might be missing due to historical data gap.
     """
 
     __slots__ = [
@@ -56943,7 +56919,7 @@ class SfTeamJoinFromOobLinkDetails(bb.Struct):
     :ivar team_log.SfTeamJoinFromOobLinkDetails.token_key: Shared link token
         key.
     :ivar team_log.SfTeamJoinFromOobLinkDetails.sharing_permission: Sharing
-        permission. Might be missing due to historical data gap.
+        permission.
     """
 
     __slots__ = [
@@ -57654,7 +57630,7 @@ class SharedContentChangeViewerInfoPolicyDetails(bb.Struct):
     :ivar team_log.SharedContentChangeViewerInfoPolicyDetails.new_value: New
         viewer info policy.
     :ivar team_log.SharedContentChangeViewerInfoPolicyDetails.previous_value:
-        Previous view info policy. Might be missing due to historical data gap.
+        Previous view info policy.
     """
 
     __slots__ = [
@@ -58660,7 +58636,6 @@ class SharedFolderCreateDetails(bb.Struct):
     Created shared folder.
 
     :ivar team_log.SharedFolderCreateDetails.target_ns_id: Target namespace ID.
-        Might be missing due to historical data gap.
     """
 
     __slots__ = [
@@ -58836,13 +58811,12 @@ class SharedFolderNestDetails(bb.Struct):
     Changed parent of shared folder.
 
     :ivar team_log.SharedFolderNestDetails.previous_parent_ns_id: Previous
-        parent namespace ID. Might be missing due to historical data gap.
+        parent namespace ID.
     :ivar team_log.SharedFolderNestDetails.new_parent_ns_id: New parent
-        namespace ID. Might be missing due to historical data gap.
+        namespace ID.
     :ivar team_log.SharedFolderNestDetails.previous_ns_path: Previous namespace
-        path. Might be missing due to historical data gap.
+        path.
     :ivar team_log.SharedFolderNestDetails.new_ns_path: New namespace path.
-        Might be missing due to historical data gap.
     """
 
     __slots__ = [
@@ -63020,7 +62994,7 @@ class SsoAddLogoutUrlDetails(bb.Struct):
     Added sign-out URL for SSO.
 
     :ivar team_log.SsoAddLogoutUrlDetails.new_value: New single sign-on logout
-        URL. Might be missing due to historical data gap.
+        URL.
     """
 
     __slots__ = [
@@ -63192,7 +63166,7 @@ class SsoChangeLogoutUrlDetails(bb.Struct):
     :ivar team_log.SsoChangeLogoutUrlDetails.previous_value: Previous single
         sign-on logout URL. Might be missing due to historical data gap.
     :ivar team_log.SsoChangeLogoutUrlDetails.new_value: New single sign-on
-        logout URL. Might be missing due to historical data gap.
+        logout URL.
     """
 
     __slots__ = [
@@ -64415,8 +64389,7 @@ class TeamMemberLogInfo(UserLogInfo):
     """
     Team member's logged information.
 
-    :ivar team_log.TeamMemberLogInfo.team_member_id: Team member ID. Might be
-        missing due to historical data gap.
+    :ivar team_log.TeamMemberLogInfo.team_member_id: Team member ID.
     :ivar team_log.TeamMemberLogInfo.member_external_id: Team member external
         ID.
     :ivar team_log.TeamMemberLogInfo.team: Details about this user&#x2019s team
@@ -67802,7 +67775,6 @@ class WebDeviceSessionLogInfo(DeviceSessionLogInfo):
     Information on active web sessions
 
     :ivar team_log.WebDeviceSessionLogInfo.session_info: Web session unique id.
-        Might be missing due to historical data gap.
     :ivar team_log.WebDeviceSessionLogInfo.user_agent: Information on the
         hosting device.
     :ivar team_log.WebDeviceSessionLogInfo.os: Information on the hosting
@@ -76109,13 +76081,16 @@ PlacementRestriction.japan_only = PlacementRestriction('japan_only')
 PlacementRestriction.none = PlacementRestriction('none')
 PlacementRestriction.other = PlacementRestriction('other')
 
+PolicyType._disposition_validator = bv.Void()
 PolicyType._retention_validator = bv.Void()
 PolicyType._other_validator = bv.Void()
 PolicyType._tagmap = {
+    'disposition': PolicyType._disposition_validator,
     'retention': PolicyType._retention_validator,
     'other': PolicyType._other_validator,
 }
 
+PolicyType.disposition = PolicyType('disposition')
 PolicyType.retention = PolicyType('retention')
 PolicyType.other = PolicyType('other')
 

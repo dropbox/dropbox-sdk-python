@@ -5343,6 +5343,8 @@ class LegalHoldsPolicyUpdateError(LegalHoldsError):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
+    :ivar team.LegalHoldsPolicyUpdateError.transient_error: Temporary
+        infrastructure failure, please retry.
     :ivar team.LegalHoldsPolicyUpdateError.inactive_legal_hold: Trying to
         release an inactive legal hold.
     :ivar
@@ -5362,6 +5364,8 @@ class LegalHoldsPolicyUpdateError(LegalHoldsError):
     """
 
     # Attribute is overwritten below the class definition
+    transient_error = None
+    # Attribute is overwritten below the class definition
     inactive_legal_hold = None
     # Attribute is overwritten below the class definition
     legal_hold_performing_another_operation = None
@@ -5375,6 +5379,14 @@ class LegalHoldsPolicyUpdateError(LegalHoldsError):
     name_must_be_unique = None
     # Attribute is overwritten below the class definition
     legal_hold_policy_not_found = None
+
+    def is_transient_error(self):
+        """
+        Check if the union tag is ``transient_error``.
+
+        :rtype: bool
+        """
+        return self._tag == 'transient_error'
 
     def is_inactive_legal_hold(self):
         """
@@ -13743,6 +13755,7 @@ LegalHoldsPolicyUpdateArg._all_fields_ = [
     ('members', LegalHoldsPolicyUpdateArg.members.validator),
 ]
 
+LegalHoldsPolicyUpdateError._transient_error_validator = bv.Void()
 LegalHoldsPolicyUpdateError._inactive_legal_hold_validator = bv.Void()
 LegalHoldsPolicyUpdateError._legal_hold_performing_another_operation_validator = bv.Void()
 LegalHoldsPolicyUpdateError._invalid_members_validator = bv.Void()
@@ -13751,6 +13764,7 @@ LegalHoldsPolicyUpdateError._empty_members_list_validator = bv.Void()
 LegalHoldsPolicyUpdateError._name_must_be_unique_validator = bv.Void()
 LegalHoldsPolicyUpdateError._legal_hold_policy_not_found_validator = bv.Void()
 LegalHoldsPolicyUpdateError._tagmap = {
+    'transient_error': LegalHoldsPolicyUpdateError._transient_error_validator,
     'inactive_legal_hold': LegalHoldsPolicyUpdateError._inactive_legal_hold_validator,
     'legal_hold_performing_another_operation': LegalHoldsPolicyUpdateError._legal_hold_performing_another_operation_validator,
     'invalid_members': LegalHoldsPolicyUpdateError._invalid_members_validator,
@@ -13761,6 +13775,7 @@ LegalHoldsPolicyUpdateError._tagmap = {
 }
 LegalHoldsPolicyUpdateError._tagmap.update(LegalHoldsError._tagmap)
 
+LegalHoldsPolicyUpdateError.transient_error = LegalHoldsPolicyUpdateError('transient_error')
 LegalHoldsPolicyUpdateError.inactive_legal_hold = LegalHoldsPolicyUpdateError('inactive_legal_hold')
 LegalHoldsPolicyUpdateError.legal_hold_performing_another_operation = LegalHoldsPolicyUpdateError('legal_hold_performing_another_operation')
 LegalHoldsPolicyUpdateError.invalid_members = LegalHoldsPolicyUpdateError('invalid_members')
