@@ -15342,7 +15342,8 @@ devices_list_member_devices = bb.Route(
     ListMemberDevicesArg_validator,
     ListMemberDevicesResult_validator,
     ListMemberDevicesError_validator,
-    {'host': u'api',
+    {'auth': u'team',
+     'host': u'api',
      'style': u'rpc'},
 )
 devices_list_members_devices = bb.Route(
@@ -15352,7 +15353,8 @@ devices_list_members_devices = bb.Route(
     ListMembersDevicesArg_validator,
     ListMembersDevicesResult_validator,
     ListMembersDevicesError_validator,
-    {'host': u'api',
+    {'auth': u'team',
+     'host': u'api',
      'style': u'rpc'},
 )
 devices_list_team_devices = bb.Route(
@@ -15362,7 +15364,8 @@ devices_list_team_devices = bb.Route(
     ListTeamDevicesArg_validator,
     ListTeamDevicesResult_validator,
     ListTeamDevicesError_validator,
-    {'host': u'api',
+    {'auth': u'team',
+     'host': u'api',
      'style': u'rpc'},
 )
 devices_revoke_device_session = bb.Route(
@@ -15372,7 +15375,8 @@ devices_revoke_device_session = bb.Route(
     RevokeDeviceSessionArg_validator,
     bv.Void(),
     RevokeDeviceSessionError_validator,
-    {'host': u'api',
+    {'auth': u'team',
+     'host': u'api',
      'style': u'rpc'},
 )
 devices_revoke_device_session_batch = bb.Route(
@@ -15382,7 +15386,8 @@ devices_revoke_device_session_batch = bb.Route(
     RevokeDeviceSessionBatchArg_validator,
     RevokeDeviceSessionBatchResult_validator,
     RevokeDeviceSessionBatchError_validator,
-    {'host': u'api',
+    {'auth': u'team',
+     'host': u'api',
      'style': u'rpc'},
 )
 features_get_values = bb.Route(
@@ -15392,7 +15397,8 @@ features_get_values = bb.Route(
     FeaturesGetValuesBatchArg_validator,
     FeaturesGetValuesBatchResult_validator,
     FeaturesGetValuesBatchError_validator,
-    {'host': u'api',
+    {'auth': u'team',
+     'host': u'api',
      'style': u'rpc'},
 )
 get_info = bb.Route(
@@ -15402,7 +15408,8 @@ get_info = bb.Route(
     bv.Void(),
     TeamGetInfoResult_validator,
     bv.Void(),
-    {'host': u'api',
+    {'auth': u'team',
+     'host': u'api',
      'style': u'rpc'},
 )
 groups_create = bb.Route(
@@ -15412,7 +15419,8 @@ groups_create = bb.Route(
     GroupCreateArg_validator,
     GroupFullInfo_validator,
     GroupCreateError_validator,
-    {'host': u'api',
+    {'auth': u'team',
+     'host': u'api',
      'style': u'rpc'},
 )
 groups_delete = bb.Route(
@@ -15422,7 +15430,8 @@ groups_delete = bb.Route(
     GroupSelector_validator,
     async_.LaunchEmptyResult_validator,
     GroupDeleteError_validator,
-    {'host': u'api',
+    {'auth': u'team',
+     'host': u'api',
      'style': u'rpc'},
 )
 groups_get_info = bb.Route(
@@ -15432,7 +15441,8 @@ groups_get_info = bb.Route(
     GroupsSelector_validator,
     GroupsGetInfoResult_validator,
     GroupsGetInfoError_validator,
-    {'host': u'api',
+    {'auth': u'team',
+     'host': u'api',
      'style': u'rpc'},
 )
 groups_job_status_get = bb.Route(
@@ -15442,7 +15452,8 @@ groups_job_status_get = bb.Route(
     async_.PollArg_validator,
     async_.PollEmptyResult_validator,
     GroupsPollError_validator,
-    {'host': u'api',
+    {'auth': u'team',
+     'host': u'api',
      'style': u'rpc'},
 )
 groups_list = bb.Route(
@@ -15452,7 +15463,8 @@ groups_list = bb.Route(
     GroupsListArg_validator,
     GroupsListResult_validator,
     bv.Void(),
-    {'host': u'api',
+    {'auth': u'team',
+     'host': u'api',
      'style': u'rpc'},
 )
 groups_list_continue = bb.Route(
@@ -15462,7 +15474,8 @@ groups_list_continue = bb.Route(
     GroupsListContinueArg_validator,
     GroupsListResult_validator,
     GroupsListContinueError_validator,
-    {'host': u'api',
+    {'auth': u'team',
+     'host': u'api',
      'style': u'rpc'},
 )
 groups_members_add = bb.Route(
@@ -15472,7 +15485,8 @@ groups_members_add = bb.Route(
     GroupMembersAddArg_validator,
     GroupMembersChangeResult_validator,
     GroupMembersAddError_validator,
-    {'host': u'api',
+    {'auth': u'team',
+     'host': u'api',
      'style': u'rpc'},
 )
 groups_members_list = bb.Route(
@@ -15482,7 +15496,8 @@ groups_members_list = bb.Route(
     GroupsMembersListArg_validator,
     GroupsMembersListResult_validator,
     GroupSelectorError_validator,
-    {'host': u'api',
+    {'auth': u'team',
+     'host': u'api',
      'style': u'rpc'},
 )
 groups_members_list_continue = bb.Route(
@@ -15492,7 +15507,8 @@ groups_members_list_continue = bb.Route(
     GroupsMembersListContinueArg_validator,
     GroupsMembersListResult_validator,
     GroupsMembersListContinueError_validator,
-    {'host': u'api',
+    {'auth': u'team',
+     'host': u'api',
      'style': u'rpc'},
 )
 groups_members_remove = bb.Route(
@@ -15502,7 +15518,8 @@ groups_members_remove = bb.Route(
     GroupMembersRemoveArg_validator,
     GroupMembersChangeResult_validator,
     GroupMembersRemoveError_validator,
-    {'host': u'api',
+    {'auth': u'team',
+     'host': u'api',
      'style': u'rpc'},
 )
 groups_members_set_access_type = bb.Route(
@@ -15512,7 +15529,8 @@ groups_members_set_access_type = bb.Route(
     GroupMembersSetAccessTypeArg_validator,
     GroupsGetInfoResult_validator,
     GroupMemberSetAccessTypeError_validator,
-    {'host': u'api',
+    {'auth': u'team',
+     'host': u'api',
      'style': u'rpc'},
 )
 groups_update = bb.Route(
@@ -15522,7 +15540,8 @@ groups_update = bb.Route(
     GroupUpdateArgs_validator,
     GroupFullInfo_validator,
     GroupUpdateError_validator,
-    {'host': u'api',
+    {'auth': u'team',
+     'host': u'api',
      'style': u'rpc'},
 )
 legal_holds_create_policy = bb.Route(
@@ -15532,7 +15551,8 @@ legal_holds_create_policy = bb.Route(
     LegalHoldsPolicyCreateArg_validator,
     LegalHoldsPolicyCreateResult_validator,
     LegalHoldsPolicyCreateError_validator,
-    {'host': u'api',
+    {'auth': u'team',
+     'host': u'api',
      'style': u'rpc'},
 )
 legal_holds_get_policy = bb.Route(
@@ -15542,7 +15562,8 @@ legal_holds_get_policy = bb.Route(
     LegalHoldsGetPolicyArg_validator,
     LegalHoldsGetPolicyResult_validator,
     LegalHoldsGetPolicyError_validator,
-    {'host': u'api',
+    {'auth': u'team',
+     'host': u'api',
      'style': u'rpc'},
 )
 legal_holds_list_held_revisions = bb.Route(
@@ -15552,7 +15573,8 @@ legal_holds_list_held_revisions = bb.Route(
     LegalHoldsListHeldRevisionsArg_validator,
     LegalHoldsListHeldRevisionResult_validator,
     LegalHoldsListHeldRevisionsError_validator,
-    {'host': u'api',
+    {'auth': u'team',
+     'host': u'api',
      'style': u'rpc'},
 )
 legal_holds_list_held_revisions_continue = bb.Route(
@@ -15562,7 +15584,8 @@ legal_holds_list_held_revisions_continue = bb.Route(
     LegalHoldsListHeldRevisionsContinueArg_validator,
     LegalHoldsListHeldRevisionResult_validator,
     LegalHoldsListHeldRevisionsError_validator,
-    {'host': u'api',
+    {'auth': u'team',
+     'host': u'api',
      'style': u'rpc'},
 )
 legal_holds_list_policies = bb.Route(
@@ -15572,7 +15595,8 @@ legal_holds_list_policies = bb.Route(
     LegalHoldsListPoliciesArg_validator,
     LegalHoldsListPoliciesResult_validator,
     LegalHoldsListPoliciesError_validator,
-    {'host': u'api',
+    {'auth': u'team',
+     'host': u'api',
      'style': u'rpc'},
 )
 legal_holds_release_policy = bb.Route(
@@ -15582,7 +15606,8 @@ legal_holds_release_policy = bb.Route(
     LegalHoldsPolicyReleaseArg_validator,
     bv.Void(),
     LegalHoldsPolicyReleaseError_validator,
-    {'host': u'api',
+    {'auth': u'team',
+     'host': u'api',
      'style': u'rpc'},
 )
 legal_holds_update_policy = bb.Route(
@@ -15592,7 +15617,8 @@ legal_holds_update_policy = bb.Route(
     LegalHoldsPolicyUpdateArg_validator,
     LegalHoldsPolicyUpdateResult_validator,
     LegalHoldsPolicyUpdateError_validator,
-    {'host': u'api',
+    {'auth': u'team',
+     'host': u'api',
      'style': u'rpc'},
 )
 linked_apps_list_member_linked_apps = bb.Route(
@@ -15602,7 +15628,8 @@ linked_apps_list_member_linked_apps = bb.Route(
     ListMemberAppsArg_validator,
     ListMemberAppsResult_validator,
     ListMemberAppsError_validator,
-    {'host': u'api',
+    {'auth': u'team',
+     'host': u'api',
      'style': u'rpc'},
 )
 linked_apps_list_members_linked_apps = bb.Route(
@@ -15612,7 +15639,8 @@ linked_apps_list_members_linked_apps = bb.Route(
     ListMembersAppsArg_validator,
     ListMembersAppsResult_validator,
     ListMembersAppsError_validator,
-    {'host': u'api',
+    {'auth': u'team',
+     'host': u'api',
      'style': u'rpc'},
 )
 linked_apps_list_team_linked_apps = bb.Route(
@@ -15622,7 +15650,8 @@ linked_apps_list_team_linked_apps = bb.Route(
     ListTeamAppsArg_validator,
     ListTeamAppsResult_validator,
     ListTeamAppsError_validator,
-    {'host': u'api',
+    {'auth': u'team',
+     'host': u'api',
      'style': u'rpc'},
 )
 linked_apps_revoke_linked_app = bb.Route(
@@ -15632,7 +15661,8 @@ linked_apps_revoke_linked_app = bb.Route(
     RevokeLinkedApiAppArg_validator,
     bv.Void(),
     RevokeLinkedAppError_validator,
-    {'host': u'api',
+    {'auth': u'team',
+     'host': u'api',
      'style': u'rpc'},
 )
 linked_apps_revoke_linked_app_batch = bb.Route(
@@ -15642,7 +15672,8 @@ linked_apps_revoke_linked_app_batch = bb.Route(
     RevokeLinkedApiAppBatchArg_validator,
     RevokeLinkedAppBatchResult_validator,
     RevokeLinkedAppBatchError_validator,
-    {'host': u'api',
+    {'auth': u'team',
+     'host': u'api',
      'style': u'rpc'},
 )
 member_space_limits_excluded_users_add = bb.Route(
@@ -15652,7 +15683,8 @@ member_space_limits_excluded_users_add = bb.Route(
     ExcludedUsersUpdateArg_validator,
     ExcludedUsersUpdateResult_validator,
     ExcludedUsersUpdateError_validator,
-    {'host': u'api',
+    {'auth': u'team',
+     'host': u'api',
      'style': u'rpc'},
 )
 member_space_limits_excluded_users_list = bb.Route(
@@ -15662,7 +15694,8 @@ member_space_limits_excluded_users_list = bb.Route(
     ExcludedUsersListArg_validator,
     ExcludedUsersListResult_validator,
     ExcludedUsersListError_validator,
-    {'host': u'api',
+    {'auth': u'team',
+     'host': u'api',
      'style': u'rpc'},
 )
 member_space_limits_excluded_users_list_continue = bb.Route(
@@ -15672,7 +15705,8 @@ member_space_limits_excluded_users_list_continue = bb.Route(
     ExcludedUsersListContinueArg_validator,
     ExcludedUsersListResult_validator,
     ExcludedUsersListContinueError_validator,
-    {'host': u'api',
+    {'auth': u'team',
+     'host': u'api',
      'style': u'rpc'},
 )
 member_space_limits_excluded_users_remove = bb.Route(
@@ -15682,7 +15716,8 @@ member_space_limits_excluded_users_remove = bb.Route(
     ExcludedUsersUpdateArg_validator,
     ExcludedUsersUpdateResult_validator,
     ExcludedUsersUpdateError_validator,
-    {'host': u'api',
+    {'auth': u'team',
+     'host': u'api',
      'style': u'rpc'},
 )
 member_space_limits_get_custom_quota = bb.Route(
@@ -15692,7 +15727,8 @@ member_space_limits_get_custom_quota = bb.Route(
     CustomQuotaUsersArg_validator,
     bv.List(CustomQuotaResult_validator),
     CustomQuotaError_validator,
-    {'host': u'api',
+    {'auth': u'team',
+     'host': u'api',
      'style': u'rpc'},
 )
 member_space_limits_remove_custom_quota = bb.Route(
@@ -15702,7 +15738,8 @@ member_space_limits_remove_custom_quota = bb.Route(
     CustomQuotaUsersArg_validator,
     bv.List(RemoveCustomQuotaResult_validator),
     CustomQuotaError_validator,
-    {'host': u'api',
+    {'auth': u'team',
+     'host': u'api',
      'style': u'rpc'},
 )
 member_space_limits_set_custom_quota = bb.Route(
@@ -15712,7 +15749,8 @@ member_space_limits_set_custom_quota = bb.Route(
     SetCustomQuotaArg_validator,
     bv.List(CustomQuotaResult_validator),
     SetCustomQuotaError_validator,
-    {'host': u'api',
+    {'auth': u'team',
+     'host': u'api',
      'style': u'rpc'},
 )
 members_add = bb.Route(
@@ -15722,7 +15760,8 @@ members_add = bb.Route(
     MembersAddArg_validator,
     MembersAddLaunch_validator,
     bv.Void(),
-    {'host': u'api',
+    {'auth': u'team',
+     'host': u'api',
      'style': u'rpc'},
 )
 members_add_job_status_get = bb.Route(
@@ -15732,7 +15771,8 @@ members_add_job_status_get = bb.Route(
     async_.PollArg_validator,
     MembersAddJobStatus_validator,
     async_.PollError_validator,
-    {'host': u'api',
+    {'auth': u'team',
+     'host': u'api',
      'style': u'rpc'},
 )
 members_delete_profile_photo = bb.Route(
@@ -15742,7 +15782,8 @@ members_delete_profile_photo = bb.Route(
     MembersDeleteProfilePhotoArg_validator,
     TeamMemberInfo_validator,
     MembersDeleteProfilePhotoError_validator,
-    {'host': u'api',
+    {'auth': u'team',
+     'host': u'api',
      'style': u'rpc'},
 )
 members_get_info = bb.Route(
@@ -15752,7 +15793,8 @@ members_get_info = bb.Route(
     MembersGetInfoArgs_validator,
     MembersGetInfoResult_validator,
     MembersGetInfoError_validator,
-    {'host': u'api',
+    {'auth': u'team',
+     'host': u'api',
      'style': u'rpc'},
 )
 members_list = bb.Route(
@@ -15762,7 +15804,8 @@ members_list = bb.Route(
     MembersListArg_validator,
     MembersListResult_validator,
     MembersListError_validator,
-    {'host': u'api',
+    {'auth': u'team',
+     'host': u'api',
      'style': u'rpc'},
 )
 members_list_continue = bb.Route(
@@ -15772,7 +15815,8 @@ members_list_continue = bb.Route(
     MembersListContinueArg_validator,
     MembersListResult_validator,
     MembersListContinueError_validator,
-    {'host': u'api',
+    {'auth': u'team',
+     'host': u'api',
      'style': u'rpc'},
 )
 members_move_former_member_files = bb.Route(
@@ -15782,7 +15826,8 @@ members_move_former_member_files = bb.Route(
     MembersDataTransferArg_validator,
     async_.LaunchEmptyResult_validator,
     MembersTransferFormerMembersFilesError_validator,
-    {'host': u'api',
+    {'auth': u'team',
+     'host': u'api',
      'style': u'rpc'},
 )
 members_move_former_member_files_job_status_check = bb.Route(
@@ -15792,7 +15837,8 @@ members_move_former_member_files_job_status_check = bb.Route(
     async_.PollArg_validator,
     async_.PollEmptyResult_validator,
     async_.PollError_validator,
-    {'host': u'api',
+    {'auth': u'team',
+     'host': u'api',
      'style': u'rpc'},
 )
 members_recover = bb.Route(
@@ -15802,7 +15848,8 @@ members_recover = bb.Route(
     MembersRecoverArg_validator,
     bv.Void(),
     MembersRecoverError_validator,
-    {'host': u'api',
+    {'auth': u'team',
+     'host': u'api',
      'style': u'rpc'},
 )
 members_remove = bb.Route(
@@ -15812,7 +15859,8 @@ members_remove = bb.Route(
     MembersRemoveArg_validator,
     async_.LaunchEmptyResult_validator,
     MembersRemoveError_validator,
-    {'host': u'api',
+    {'auth': u'team',
+     'host': u'api',
      'style': u'rpc'},
 )
 members_remove_job_status_get = bb.Route(
@@ -15822,7 +15870,8 @@ members_remove_job_status_get = bb.Route(
     async_.PollArg_validator,
     async_.PollEmptyResult_validator,
     async_.PollError_validator,
-    {'host': u'api',
+    {'auth': u'team',
+     'host': u'api',
      'style': u'rpc'},
 )
 members_secondary_emails_add = bb.Route(
@@ -15832,7 +15881,8 @@ members_secondary_emails_add = bb.Route(
     AddSecondaryEmailsArg_validator,
     AddSecondaryEmailsResult_validator,
     AddSecondaryEmailsError_validator,
-    {'host': u'api',
+    {'auth': u'team',
+     'host': u'api',
      'style': u'rpc'},
 )
 members_secondary_emails_delete = bb.Route(
@@ -15842,7 +15892,8 @@ members_secondary_emails_delete = bb.Route(
     DeleteSecondaryEmailsArg_validator,
     DeleteSecondaryEmailsResult_validator,
     bv.Void(),
-    {'host': u'api',
+    {'auth': u'team',
+     'host': u'api',
      'style': u'rpc'},
 )
 members_secondary_emails_resend_verification_emails = bb.Route(
@@ -15852,7 +15903,8 @@ members_secondary_emails_resend_verification_emails = bb.Route(
     ResendVerificationEmailArg_validator,
     ResendVerificationEmailResult_validator,
     bv.Void(),
-    {'host': u'api',
+    {'auth': u'team',
+     'host': u'api',
      'style': u'rpc'},
 )
 members_send_welcome_email = bb.Route(
@@ -15862,7 +15914,8 @@ members_send_welcome_email = bb.Route(
     UserSelectorArg_validator,
     bv.Void(),
     MembersSendWelcomeError_validator,
-    {'host': u'api',
+    {'auth': u'team',
+     'host': u'api',
      'style': u'rpc'},
 )
 members_set_admin_permissions = bb.Route(
@@ -15872,7 +15925,8 @@ members_set_admin_permissions = bb.Route(
     MembersSetPermissionsArg_validator,
     MembersSetPermissionsResult_validator,
     MembersSetPermissionsError_validator,
-    {'host': u'api',
+    {'auth': u'team',
+     'host': u'api',
      'style': u'rpc'},
 )
 members_set_profile = bb.Route(
@@ -15882,7 +15936,8 @@ members_set_profile = bb.Route(
     MembersSetProfileArg_validator,
     TeamMemberInfo_validator,
     MembersSetProfileError_validator,
-    {'host': u'api',
+    {'auth': u'team',
+     'host': u'api',
      'style': u'rpc'},
 )
 members_set_profile_photo = bb.Route(
@@ -15892,7 +15947,8 @@ members_set_profile_photo = bb.Route(
     MembersSetProfilePhotoArg_validator,
     TeamMemberInfo_validator,
     MembersSetProfilePhotoError_validator,
-    {'host': u'api',
+    {'auth': u'team',
+     'host': u'api',
      'style': u'rpc'},
 )
 members_suspend = bb.Route(
@@ -15902,7 +15958,8 @@ members_suspend = bb.Route(
     MembersDeactivateArg_validator,
     bv.Void(),
     MembersSuspendError_validator,
-    {'host': u'api',
+    {'auth': u'team',
+     'host': u'api',
      'style': u'rpc'},
 )
 members_unsuspend = bb.Route(
@@ -15912,7 +15969,8 @@ members_unsuspend = bb.Route(
     MembersUnsuspendArg_validator,
     bv.Void(),
     MembersUnsuspendError_validator,
-    {'host': u'api',
+    {'auth': u'team',
+     'host': u'api',
      'style': u'rpc'},
 )
 namespaces_list = bb.Route(
@@ -15922,7 +15980,8 @@ namespaces_list = bb.Route(
     TeamNamespacesListArg_validator,
     TeamNamespacesListResult_validator,
     TeamNamespacesListError_validator,
-    {'host': u'api',
+    {'auth': u'team',
+     'host': u'api',
      'style': u'rpc'},
 )
 namespaces_list_continue = bb.Route(
@@ -15932,7 +15991,8 @@ namespaces_list_continue = bb.Route(
     TeamNamespacesListContinueArg_validator,
     TeamNamespacesListResult_validator,
     TeamNamespacesListContinueError_validator,
-    {'host': u'api',
+    {'auth': u'team',
+     'host': u'api',
      'style': u'rpc'},
 )
 properties_template_add = bb.Route(
@@ -15942,7 +16002,8 @@ properties_template_add = bb.Route(
     file_properties.AddTemplateArg_validator,
     file_properties.AddTemplateResult_validator,
     file_properties.ModifyTemplateError_validator,
-    {'host': u'api',
+    {'auth': u'team',
+     'host': u'api',
      'style': u'rpc'},
 )
 properties_template_get = bb.Route(
@@ -15952,7 +16013,8 @@ properties_template_get = bb.Route(
     file_properties.GetTemplateArg_validator,
     file_properties.GetTemplateResult_validator,
     file_properties.TemplateError_validator,
-    {'host': u'api',
+    {'auth': u'team',
+     'host': u'api',
      'style': u'rpc'},
 )
 properties_template_list = bb.Route(
@@ -15962,7 +16024,8 @@ properties_template_list = bb.Route(
     bv.Void(),
     file_properties.ListTemplateResult_validator,
     file_properties.TemplateError_validator,
-    {'host': u'api',
+    {'auth': u'team',
+     'host': u'api',
      'style': u'rpc'},
 )
 properties_template_update = bb.Route(
@@ -15972,7 +16035,8 @@ properties_template_update = bb.Route(
     file_properties.UpdateTemplateArg_validator,
     file_properties.UpdateTemplateResult_validator,
     file_properties.ModifyTemplateError_validator,
-    {'host': u'api',
+    {'auth': u'team',
+     'host': u'api',
      'style': u'rpc'},
 )
 reports_get_activity = bb.Route(
@@ -15982,7 +16046,8 @@ reports_get_activity = bb.Route(
     DateRange_validator,
     GetActivityReport_validator,
     DateRangeError_validator,
-    {'host': u'api',
+    {'auth': u'team',
+     'host': u'api',
      'style': u'rpc'},
 )
 reports_get_devices = bb.Route(
@@ -15992,7 +16057,8 @@ reports_get_devices = bb.Route(
     DateRange_validator,
     GetDevicesReport_validator,
     DateRangeError_validator,
-    {'host': u'api',
+    {'auth': u'team',
+     'host': u'api',
      'style': u'rpc'},
 )
 reports_get_membership = bb.Route(
@@ -16002,7 +16068,8 @@ reports_get_membership = bb.Route(
     DateRange_validator,
     GetMembershipReport_validator,
     DateRangeError_validator,
-    {'host': u'api',
+    {'auth': u'team',
+     'host': u'api',
      'style': u'rpc'},
 )
 reports_get_storage = bb.Route(
@@ -16012,7 +16079,8 @@ reports_get_storage = bb.Route(
     DateRange_validator,
     GetStorageReport_validator,
     DateRangeError_validator,
-    {'host': u'api',
+    {'auth': u'team',
+     'host': u'api',
      'style': u'rpc'},
 )
 team_folder_activate = bb.Route(
@@ -16022,7 +16090,8 @@ team_folder_activate = bb.Route(
     TeamFolderIdArg_validator,
     TeamFolderMetadata_validator,
     TeamFolderActivateError_validator,
-    {'host': u'api',
+    {'auth': u'team',
+     'host': u'api',
      'style': u'rpc'},
 )
 team_folder_archive = bb.Route(
@@ -16032,7 +16101,8 @@ team_folder_archive = bb.Route(
     TeamFolderArchiveArg_validator,
     TeamFolderArchiveLaunch_validator,
     TeamFolderArchiveError_validator,
-    {'host': u'api',
+    {'auth': u'team',
+     'host': u'api',
      'style': u'rpc'},
 )
 team_folder_archive_check = bb.Route(
@@ -16042,7 +16112,8 @@ team_folder_archive_check = bb.Route(
     async_.PollArg_validator,
     TeamFolderArchiveJobStatus_validator,
     async_.PollError_validator,
-    {'host': u'api',
+    {'auth': u'team',
+     'host': u'api',
      'style': u'rpc'},
 )
 team_folder_create = bb.Route(
@@ -16052,7 +16123,8 @@ team_folder_create = bb.Route(
     TeamFolderCreateArg_validator,
     TeamFolderMetadata_validator,
     TeamFolderCreateError_validator,
-    {'host': u'api',
+    {'auth': u'team',
+     'host': u'api',
      'style': u'rpc'},
 )
 team_folder_get_info = bb.Route(
@@ -16062,7 +16134,8 @@ team_folder_get_info = bb.Route(
     TeamFolderIdListArg_validator,
     bv.List(TeamFolderGetInfoItem_validator),
     bv.Void(),
-    {'host': u'api',
+    {'auth': u'team',
+     'host': u'api',
      'style': u'rpc'},
 )
 team_folder_list = bb.Route(
@@ -16072,7 +16145,8 @@ team_folder_list = bb.Route(
     TeamFolderListArg_validator,
     TeamFolderListResult_validator,
     TeamFolderListError_validator,
-    {'host': u'api',
+    {'auth': u'team',
+     'host': u'api',
      'style': u'rpc'},
 )
 team_folder_list_continue = bb.Route(
@@ -16082,7 +16156,8 @@ team_folder_list_continue = bb.Route(
     TeamFolderListContinueArg_validator,
     TeamFolderListResult_validator,
     TeamFolderListContinueError_validator,
-    {'host': u'api',
+    {'auth': u'team',
+     'host': u'api',
      'style': u'rpc'},
 )
 team_folder_permanently_delete = bb.Route(
@@ -16092,7 +16167,8 @@ team_folder_permanently_delete = bb.Route(
     TeamFolderIdArg_validator,
     bv.Void(),
     TeamFolderPermanentlyDeleteError_validator,
-    {'host': u'api',
+    {'auth': u'team',
+     'host': u'api',
      'style': u'rpc'},
 )
 team_folder_rename = bb.Route(
@@ -16102,7 +16178,8 @@ team_folder_rename = bb.Route(
     TeamFolderRenameArg_validator,
     TeamFolderMetadata_validator,
     TeamFolderRenameError_validator,
-    {'host': u'api',
+    {'auth': u'team',
+     'host': u'api',
      'style': u'rpc'},
 )
 team_folder_update_sync_settings = bb.Route(
@@ -16112,7 +16189,8 @@ team_folder_update_sync_settings = bb.Route(
     TeamFolderUpdateSyncSettingsArg_validator,
     TeamFolderMetadata_validator,
     TeamFolderUpdateSyncSettingsError_validator,
-    {'host': u'api',
+    {'auth': u'team',
+     'host': u'api',
      'style': u'rpc'},
 )
 token_get_authenticated_admin = bb.Route(
@@ -16122,7 +16200,8 @@ token_get_authenticated_admin = bb.Route(
     bv.Void(),
     TokenGetAuthenticatedAdminResult_validator,
     TokenGetAuthenticatedAdminError_validator,
-    {'host': u'api',
+    {'auth': u'team',
+     'host': u'api',
      'style': u'rpc'},
 )
 

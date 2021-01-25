@@ -79068,7 +79068,8 @@ get_events = bb.Route(
     GetTeamEventsArg_validator,
     GetTeamEventsResult_validator,
     GetTeamEventsError_validator,
-    {'host': u'api',
+    {'auth': u'team',
+     'host': u'api',
      'style': u'rpc'},
 )
 get_events_continue = bb.Route(
@@ -79078,7 +79079,8 @@ get_events_continue = bb.Route(
     GetTeamEventsContinueArg_validator,
     GetTeamEventsResult_validator,
     GetTeamEventsContinueError_validator,
-    {'host': u'api',
+    {'auth': u'team',
+     'host': u'api',
      'style': u'rpc'},
 )
 
