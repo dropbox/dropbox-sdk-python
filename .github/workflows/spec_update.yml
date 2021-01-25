@@ -54,7 +54,7 @@ jobs:
           pip install -r requirements.txt
           python generate_base_client.py
       - name: Create Pull Request
-        uses: peter-evans/create-pull-request@v3.5.1
+        uses: peter-evans/create-pull-request@v3.6.0
         if: steps.git-diff-num.outputs.num-diff != 0
         with:
           token: ${{ secrets.SPEC_UPDATE_TOKEN }}
