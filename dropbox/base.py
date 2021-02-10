@@ -1372,13 +1372,19 @@ class DropboxBase(object):
         return r[0]
 
     def files_export(self,
-                     path):
+                     path,
+                     export_format=None):
         """
         Export a file from a user's Dropbox. This route only supports exporting
         files that cannot be downloaded directly  and whose
         ``ExportResult.file_metadata`` has ``ExportInfo.export_as`` populated.
 
         :param str path: The path of the file to be exported.
+        :param Nullable[str] export_format: The file format to which the file
+            should be exported. This must be one of the formats listed in the
+            file's export_options returned by :meth:`files_get_metadata`. If
+            none is specified, the default format (specified in export_as in
+            file metadata) will be used.
         :rtype: (:class:`dropbox.files.ExportResult`,
                  :class:`requests.models.Response`)
         :raises: :class:`.exceptions.ApiError`
@@ -1392,7 +1398,8 @@ class DropboxBase(object):
         <https://docs.python.org/2/library/contextlib.html#contextlib.closing>`_
         context manager to ensure this.
         """
-        arg = files.ExportArg(path)
+        arg = files.ExportArg(path,
+                              export_format)
         r = self.request(
             files.export,
             'files',
@@ -1403,7 +1410,8 @@ class DropboxBase(object):
 
     def files_export_to_file(self,
                              download_path,
-                             path):
+                             path,
+                             export_format=None):
         """
         Export a file from a user's Dropbox. This route only supports exporting
         files that cannot be downloaded directly  and whose
@@ -1411,13 +1419,19 @@ class DropboxBase(object):
 
         :param str download_path: Path on local machine to save file.
         :param str path: The path of the file to be exported.
+        :param Nullable[str] export_format: The file format to which the file
+            should be exported. This must be one of the formats listed in the
+            file's export_options returned by :meth:`files_get_metadata`. If
+            none is specified, the default format (specified in export_as in
+            file metadata) will be used.
         :rtype: :class:`dropbox.files.ExportResult`
         :raises: :class:`.exceptions.ApiError`
 
         If this raises, ApiError will contain:
             :class:`dropbox.files.ExportError`
         """
-        arg = files.ExportArg(path)
+        arg = files.ExportArg(path,
+                              export_format)
         r = self.request(
             files.export,
             'files',
@@ -1647,9 +1661,9 @@ class DropboxBase(object):
                             mode=files.ThumbnailMode.strict):
         """
         Get a thumbnail for an image. This method currently supports files with
-        the following file extensions: jpg, jpeg, png, tiff, tif, gif and bmp.
-        Photos that are larger than 20MB in size won't be converted to a
-        thumbnail.
+        the following file extensions: jpg, jpeg, png, tiff, tif, gif, webp, ppm
+        and bmp. Photos that are larger than 20MB in size won't be converted to
+        a thumbnail.
 
         :param str path: The path to the image file you want to thumbnail.
         :param format: The format for the thumbnail image, jpeg (default) or
@@ -1694,9 +1708,9 @@ class DropboxBase(object):
                                     mode=files.ThumbnailMode.strict):
         """
         Get a thumbnail for an image. This method currently supports files with
-        the following file extensions: jpg, jpeg, png, tiff, tif, gif and bmp.
-        Photos that are larger than 20MB in size won't be converted to a
-        thumbnail.
+        the following file extensions: jpg, jpeg, png, tiff, tif, gif, webp, ppm
+        and bmp. Photos that are larger than 20MB in size won't be converted to
+        a thumbnail.
 
         :param str download_path: Path on local machine to save file.
         :param str path: The path to the image file you want to thumbnail.
@@ -1734,7 +1748,10 @@ class DropboxBase(object):
                                size=files.ThumbnailSize.w64h64,
                                mode=files.ThumbnailMode.strict):
         """
-        Get a thumbnail for a file.
+        Get a thumbnail for an image. This method currently supports files with
+        the following file extensions: jpg, jpeg, png, tiff, tif, gif, webp, ppm
+        and bmp. Photos that are larger than 20MB in size won't be converted to
+        a thumbnail.
 
         :param resource: Information specifying which file to preview. This
             could be a path to a file, a shared link pointing to a file, or a
@@ -1781,7 +1798,10 @@ class DropboxBase(object):
                                        size=files.ThumbnailSize.w64h64,
                                        mode=files.ThumbnailMode.strict):
         """
-        Get a thumbnail for a file.
+        Get a thumbnail for an image. This method currently supports files with
+        the following file extensions: jpg, jpeg, png, tiff, tif, gif, webp, ppm
+        and bmp. Photos that are larger than 20MB in size won't be converted to
+        a thumbnail.
 
         :param str download_path: Path on local machine to save file.
         :param resource: Information specifying which file to preview. This
@@ -1821,8 +1841,9 @@ class DropboxBase(object):
         """
         Get thumbnails for a list of images. We allow up to 25 thumbnails in a
         single batch. This method currently supports files with the following
-        file extensions: jpg, jpeg, png, tiff, tif, gif and bmp. Photos that are
-        larger than 20MB in size won't be converted to a thumbnail.
+        file extensions: jpg, jpeg, png, tiff, tif, gif, webp, ppm and bmp.
+        Photos that are larger than 20MB in size won't be converted to a
+        thumbnail.
 
         :param List[:class:`dropbox.files.ThumbnailArg`] entries: List of files
             to get thumbnails.
@@ -2826,7 +2847,7 @@ class DropboxBase(object):
         :param bytes f: Contents to upload.
         :param str session_id: The upload session ID (returned by
             :meth:`files_upload_session_start`).
-        :param int offset: The amount of data that has been uploaded so far. We
+        :param int offset: Offset in bytes at which data should be appended. We
             use this to make sure upload data isn't lost or duplicated in the
             event of a network error.
         :rtype: None
@@ -2958,15 +2979,14 @@ class DropboxBase(object):
         :meth:`files_upload_session_finish` to save all the data to a file in
         Dropbox. A single request should not upload more than 150 MB. The
         maximum size of a file one can upload to an upload session is 350 GB. An
-        upload session can be used for a maximum of 48 hours. Attempting to use
-        an ``UploadSessionStartResult.session_id`` with
+        upload session can be used for a maximum of 7 days. Attempting to use an
+        ``UploadSessionStartResult.session_id`` with
         :meth:`files_upload_session_append_v2` or
-        :meth:`files_upload_session_finish` more than 48 hours after its
-        creation will return a ``UploadSessionLookupError.not_found``. Calls to
-        this endpoint will count as data transport calls for any Dropbox
-        Business teams with a limit on the number of data transport calls
-        allowed per month. For more information, see the `Data transport limit
-        page
+        :meth:`files_upload_session_finish` more than 7 days after its creation
+        will return a ``UploadSessionLookupError.not_found``. Calls to this
+        endpoint will count as data transport calls for any Dropbox Business
+        teams with a limit on the number of data transport calls allowed per
+        month. For more information, see the `Data transport limit page
         <https://www.dropbox.com/developers/reference/data-transport-limit>`_.
         By default, upload sessions require you to send content of the file in
         sequential order via consecutive :meth:`files_upload_session_start`,
