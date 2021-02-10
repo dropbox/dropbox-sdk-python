@@ -1237,27 +1237,133 @@ class AdminAlertingAlertConfiguration(bb.Struct):
     Alert configurations
 
     :ivar team_log.AdminAlertingAlertConfiguration.alert_state: Alert state.
+    :ivar team_log.AdminAlertingAlertConfiguration.sensitivity_level:
+        Sensitivity level.
+    :ivar team_log.AdminAlertingAlertConfiguration.recipients_settings:
+        Recipient settings.
     """
 
     __slots__ = [
         '_alert_state_value',
+        '_sensitivity_level_value',
+        '_recipients_settings_value',
     ]
 
-    _has_required_fields = True
+    _has_required_fields = False
 
     def __init__(self,
-                 alert_state=None):
+                 alert_state=None,
+                 sensitivity_level=None,
+                 recipients_settings=None):
         self._alert_state_value = bb.NOT_SET
+        self._sensitivity_level_value = bb.NOT_SET
+        self._recipients_settings_value = bb.NOT_SET
         if alert_state is not None:
             self.alert_state = alert_state
+        if sensitivity_level is not None:
+            self.sensitivity_level = sensitivity_level
+        if recipients_settings is not None:
+            self.recipients_settings = recipients_settings
 
     # Instance attribute type: AdminAlertingAlertStatePolicy (validator is set below)
-    alert_state = bb.Attribute("alert_state", user_defined=True)
+    alert_state = bb.Attribute("alert_state", nullable=True, user_defined=True)
+
+    # Instance attribute type: AdminAlertingAlertSensitivity (validator is set below)
+    sensitivity_level = bb.Attribute("sensitivity_level", nullable=True, user_defined=True)
+
+    # Instance attribute type: RecipientsConfiguration (validator is set below)
+    recipients_settings = bb.Attribute("recipients_settings", nullable=True, user_defined=True)
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(AdminAlertingAlertConfiguration, self)._process_custom_annotations(annotation_type, field_path, processor)
 
 AdminAlertingAlertConfiguration_validator = bv.Struct(AdminAlertingAlertConfiguration)
+
+class AdminAlertingAlertSensitivity(bb.Union):
+    """
+    Alert sensitivity
+
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+    """
+
+    _catch_all = 'other'
+    # Attribute is overwritten below the class definition
+    high = None
+    # Attribute is overwritten below the class definition
+    highest = None
+    # Attribute is overwritten below the class definition
+    invalid = None
+    # Attribute is overwritten below the class definition
+    low = None
+    # Attribute is overwritten below the class definition
+    lowest = None
+    # Attribute is overwritten below the class definition
+    medium = None
+    # Attribute is overwritten below the class definition
+    other = None
+
+    def is_high(self):
+        """
+        Check if the union tag is ``high``.
+
+        :rtype: bool
+        """
+        return self._tag == 'high'
+
+    def is_highest(self):
+        """
+        Check if the union tag is ``highest``.
+
+        :rtype: bool
+        """
+        return self._tag == 'highest'
+
+    def is_invalid(self):
+        """
+        Check if the union tag is ``invalid``.
+
+        :rtype: bool
+        """
+        return self._tag == 'invalid'
+
+    def is_low(self):
+        """
+        Check if the union tag is ``low``.
+
+        :rtype: bool
+        """
+        return self._tag == 'low'
+
+    def is_lowest(self):
+        """
+        Check if the union tag is ``lowest``.
+
+        :rtype: bool
+        """
+        return self._tag == 'lowest'
+
+    def is_medium(self):
+        """
+        Check if the union tag is ``medium``.
+
+        :rtype: bool
+        """
+        return self._tag == 'medium'
+
+    def is_other(self):
+        """
+        Check if the union tag is ``other``.
+
+        :rtype: bool
+        """
+        return self._tag == 'other'
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(AdminAlertingAlertSensitivity, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+AdminAlertingAlertSensitivity_validator = bv.Union(AdminAlertingAlertSensitivity)
 
 class AdminAlertingAlertStatePolicy(bb.Union):
     """
@@ -1527,6 +1633,72 @@ class AdminRole(bb.Union):
         super(AdminRole, self)._process_custom_annotations(annotation_type, field_path, processor)
 
 AdminRole_validator = bv.Union(AdminRole)
+
+class AlertRecipientsSettingType(bb.Union):
+    """
+    Alert recipients setting type
+
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+    """
+
+    _catch_all = 'other'
+    # Attribute is overwritten below the class definition
+    custom_list = None
+    # Attribute is overwritten below the class definition
+    invalid = None
+    # Attribute is overwritten below the class definition
+    none = None
+    # Attribute is overwritten below the class definition
+    team_admins = None
+    # Attribute is overwritten below the class definition
+    other = None
+
+    def is_custom_list(self):
+        """
+        Check if the union tag is ``custom_list``.
+
+        :rtype: bool
+        """
+        return self._tag == 'custom_list'
+
+    def is_invalid(self):
+        """
+        Check if the union tag is ``invalid``.
+
+        :rtype: bool
+        """
+        return self._tag == 'invalid'
+
+    def is_none(self):
+        """
+        Check if the union tag is ``none``.
+
+        :rtype: bool
+        """
+        return self._tag == 'none'
+
+    def is_team_admins(self):
+        """
+        Check if the union tag is ``team_admins``.
+
+        :rtype: bool
+        """
+        return self._tag == 'team_admins'
+
+    def is_other(self):
+        """
+        Check if the union tag is ``other``.
+
+        :rtype: bool
+        """
+        return self._tag == 'other'
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(AlertRecipientsSettingType, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+AlertRecipientsSettingType_validator = bv.Union(AlertRecipientsSettingType)
 
 class AllowDownloadDisabledDetails(bb.Struct):
     """
@@ -7768,6 +7940,39 @@ class EventDetails(bb.Union):
         return cls('folder_overview_item_unpinned_details', val)
 
     @classmethod
+    def object_label_added_details(cls, val):
+        """
+        Create an instance of this class set to the
+        ``object_label_added_details`` tag with value ``val``.
+
+        :param ObjectLabelAddedDetails val:
+        :rtype: EventDetails
+        """
+        return cls('object_label_added_details', val)
+
+    @classmethod
+    def object_label_removed_details(cls, val):
+        """
+        Create an instance of this class set to the
+        ``object_label_removed_details`` tag with value ``val``.
+
+        :param ObjectLabelRemovedDetails val:
+        :rtype: EventDetails
+        """
+        return cls('object_label_removed_details', val)
+
+    @classmethod
+    def object_label_updated_value_details(cls, val):
+        """
+        Create an instance of this class set to the
+        ``object_label_updated_value_details`` tag with value ``val``.
+
+        :param ObjectLabelUpdatedValueDetails val:
+        :rtype: EventDetails
+        """
+        return cls('object_label_updated_value_details', val)
+
+    @classmethod
     def rewind_folder_details(cls, val):
         """
         Create an instance of this class set to the ``rewind_folder_details``
@@ -12572,6 +12777,30 @@ class EventDetails(bb.Union):
         """
         return self._tag == 'folder_overview_item_unpinned_details'
 
+    def is_object_label_added_details(self):
+        """
+        Check if the union tag is ``object_label_added_details``.
+
+        :rtype: bool
+        """
+        return self._tag == 'object_label_added_details'
+
+    def is_object_label_removed_details(self):
+        """
+        Check if the union tag is ``object_label_removed_details``.
+
+        :rtype: bool
+        """
+        return self._tag == 'object_label_removed_details'
+
+    def is_object_label_updated_value_details(self):
+        """
+        Check if the union tag is ``object_label_updated_value_details``.
+
+        :rtype: bool
+        """
+        return self._tag == 'object_label_updated_value_details'
+
     def is_rewind_folder_details(self):
         """
         Check if the union tag is ``rewind_folder_details``.
@@ -16398,6 +16627,36 @@ class EventDetails(bb.Union):
         """
         if not self.is_folder_overview_item_unpinned_details():
             raise AttributeError("tag 'folder_overview_item_unpinned_details' not set")
+        return self._value
+
+    def get_object_label_added_details(self):
+        """
+        Only call this if :meth:`is_object_label_added_details` is true.
+
+        :rtype: ObjectLabelAddedDetails
+        """
+        if not self.is_object_label_added_details():
+            raise AttributeError("tag 'object_label_added_details' not set")
+        return self._value
+
+    def get_object_label_removed_details(self):
+        """
+        Only call this if :meth:`is_object_label_removed_details` is true.
+
+        :rtype: ObjectLabelRemovedDetails
+        """
+        if not self.is_object_label_removed_details():
+            raise AttributeError("tag 'object_label_removed_details' not set")
+        return self._value
+
+    def get_object_label_updated_value_details(self):
+        """
+        Only call this if :meth:`is_object_label_updated_value_details` is true.
+
+        :rtype: ObjectLabelUpdatedValueDetails
+        """
+        if not self.is_object_label_updated_value_details():
+            raise AttributeError("tag 'object_label_updated_value_details' not set")
         return self._value
 
     def get_rewind_folder_details(self):
@@ -20318,6 +20577,12 @@ class EventType(bb.Union):
     :ivar FolderOverviewItemUnpinnedType
         EventType.folder_overview_item_unpinned: (file_operations) Unpinned item
         from folder overview
+    :ivar ObjectLabelAddedType EventType.object_label_added: (file_operations)
+        Added a label
+    :ivar ObjectLabelRemovedType EventType.object_label_removed:
+        (file_operations) Removed a label
+    :ivar ObjectLabelUpdatedValueType EventType.object_label_updated_value:
+        (file_operations) Updated a label's value
     :ivar RewindFolderType EventType.rewind_folder: (file_operations) Rewound a
         folder
     :ivar FileRequestChangeType EventType.file_request_change: (file_requests)
@@ -22172,6 +22437,39 @@ class EventType(bb.Union):
         :rtype: EventType
         """
         return cls('folder_overview_item_unpinned', val)
+
+    @classmethod
+    def object_label_added(cls, val):
+        """
+        Create an instance of this class set to the ``object_label_added`` tag
+        with value ``val``.
+
+        :param ObjectLabelAddedType val:
+        :rtype: EventType
+        """
+        return cls('object_label_added', val)
+
+    @classmethod
+    def object_label_removed(cls, val):
+        """
+        Create an instance of this class set to the ``object_label_removed`` tag
+        with value ``val``.
+
+        :param ObjectLabelRemovedType val:
+        :rtype: EventType
+        """
+        return cls('object_label_removed', val)
+
+    @classmethod
+    def object_label_updated_value(cls, val):
+        """
+        Create an instance of this class set to the
+        ``object_label_updated_value`` tag with value ``val``.
+
+        :param ObjectLabelUpdatedValueType val:
+        :rtype: EventType
+        """
+        return cls('object_label_updated_value', val)
 
     @classmethod
     def rewind_folder(cls, val):
@@ -26934,6 +27232,30 @@ class EventType(bb.Union):
         """
         return self._tag == 'folder_overview_item_unpinned'
 
+    def is_object_label_added(self):
+        """
+        Check if the union tag is ``object_label_added``.
+
+        :rtype: bool
+        """
+        return self._tag == 'object_label_added'
+
+    def is_object_label_removed(self):
+        """
+        Check if the union tag is ``object_label_removed``.
+
+        :rtype: bool
+        """
+        return self._tag == 'object_label_removed'
+
+    def is_object_label_updated_value(self):
+        """
+        Check if the union tag is ``object_label_updated_value``.
+
+        :rtype: bool
+        """
+        return self._tag == 'object_label_updated_value'
+
     def is_rewind_folder(self):
         """
         Check if the union tag is ``rewind_folder``.
@@ -30929,6 +31251,42 @@ class EventType(bb.Union):
         """
         if not self.is_folder_overview_item_unpinned():
             raise AttributeError("tag 'folder_overview_item_unpinned' not set")
+        return self._value
+
+    def get_object_label_added(self):
+        """
+        (file_operations) Added a label
+
+        Only call this if :meth:`is_object_label_added` is true.
+
+        :rtype: ObjectLabelAddedType
+        """
+        if not self.is_object_label_added():
+            raise AttributeError("tag 'object_label_added' not set")
+        return self._value
+
+    def get_object_label_removed(self):
+        """
+        (file_operations) Removed a label
+
+        Only call this if :meth:`is_object_label_removed` is true.
+
+        :rtype: ObjectLabelRemovedType
+        """
+        if not self.is_object_label_removed():
+            raise AttributeError("tag 'object_label_removed' not set")
+        return self._value
+
+    def get_object_label_updated_value(self):
+        """
+        (file_operations) Updated a label's value
+
+        Only call this if :meth:`is_object_label_updated_value` is true.
+
+        :rtype: ObjectLabelUpdatedValueType
+        """
+        if not self.is_object_label_updated_value():
+            raise AttributeError("tag 'object_label_updated_value' not set")
         return self._value
 
     def get_rewind_folder(self):
@@ -35614,6 +35972,12 @@ class EventTypeArg(bb.Union):
         Pinned item to folder overview
     :ivar team_log.EventTypeArg.folder_overview_item_unpinned: (file_operations)
         Unpinned item from folder overview
+    :ivar team_log.EventTypeArg.object_label_added: (file_operations) Added a
+        label
+    :ivar team_log.EventTypeArg.object_label_removed: (file_operations) Removed
+        a label
+    :ivar team_log.EventTypeArg.object_label_updated_value: (file_operations)
+        Updated a label's value
     :ivar team_log.EventTypeArg.rewind_folder: (file_operations) Rewound a
         folder
     :ivar team_log.EventTypeArg.file_request_change: (file_requests) Changed
@@ -36561,6 +36925,12 @@ class EventTypeArg(bb.Union):
     folder_overview_item_pinned = None
     # Attribute is overwritten below the class definition
     folder_overview_item_unpinned = None
+    # Attribute is overwritten below the class definition
+    object_label_added = None
+    # Attribute is overwritten below the class definition
+    object_label_removed = None
+    # Attribute is overwritten below the class definition
+    object_label_updated_value = None
     # Attribute is overwritten below the class definition
     rewind_folder = None
     # Attribute is overwritten below the class definition
@@ -37989,6 +38359,30 @@ class EventTypeArg(bb.Union):
         :rtype: bool
         """
         return self._tag == 'folder_overview_item_unpinned'
+
+    def is_object_label_added(self):
+        """
+        Check if the union tag is ``object_label_added``.
+
+        :rtype: bool
+        """
+        return self._tag == 'object_label_added'
+
+    def is_object_label_removed(self):
+        """
+        Check if the union tag is ``object_label_removed``.
+
+        :rtype: bool
+        """
+        return self._tag == 'object_label_removed'
+
+    def is_object_label_updated_value(self):
+        """
+        Check if the union tag is ``object_label_updated_value``.
+
+        :rtype: bool
+        """
+        return self._tag == 'object_label_updated_value'
 
     def is_rewind_folder(self):
         """
@@ -47041,6 +47435,42 @@ class JoinTeamDetails(bb.Struct):
 
 JoinTeamDetails_validator = bv.Struct(JoinTeamDetails)
 
+class LabelType(bb.Union):
+    """
+    Label type
+
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+    """
+
+    _catch_all = 'other'
+    # Attribute is overwritten below the class definition
+    personal_information = None
+    # Attribute is overwritten below the class definition
+    other = None
+
+    def is_personal_information(self):
+        """
+        Check if the union tag is ``personal_information``.
+
+        :rtype: bool
+        """
+        return self._tag == 'personal_information'
+
+    def is_other(self):
+        """
+        Check if the union tag is ``other``.
+
+        :rtype: bool
+        """
+        return self._tag == 'other'
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(LabelType, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+LabelType_validator = bv.Union(LabelType)
+
 class LegacyDeviceSessionLogInfo(DeviceSessionLogInfo):
     """
     Information on sessions, in legacy format
@@ -51144,6 +51574,156 @@ class NoteSharedType(bb.Struct):
 
 NoteSharedType_validator = bv.Struct(NoteSharedType)
 
+class ObjectLabelAddedDetails(bb.Struct):
+    """
+    Added a label.
+
+    :ivar team_log.ObjectLabelAddedDetails.label_type: Labels mark a file or
+        folder.
+    """
+
+    __slots__ = [
+        '_label_type_value',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 label_type=None):
+        self._label_type_value = bb.NOT_SET
+        if label_type is not None:
+            self.label_type = label_type
+
+    # Instance attribute type: LabelType (validator is set below)
+    label_type = bb.Attribute("label_type", user_defined=True)
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(ObjectLabelAddedDetails, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+ObjectLabelAddedDetails_validator = bv.Struct(ObjectLabelAddedDetails)
+
+class ObjectLabelAddedType(bb.Struct):
+
+    __slots__ = [
+        '_description_value',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 description=None):
+        self._description_value = bb.NOT_SET
+        if description is not None:
+            self.description = description
+
+    # Instance attribute type: str (validator is set below)
+    description = bb.Attribute("description")
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(ObjectLabelAddedType, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+ObjectLabelAddedType_validator = bv.Struct(ObjectLabelAddedType)
+
+class ObjectLabelRemovedDetails(bb.Struct):
+    """
+    Removed a label.
+
+    :ivar team_log.ObjectLabelRemovedDetails.label_type: Labels mark a file or
+        folder.
+    """
+
+    __slots__ = [
+        '_label_type_value',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 label_type=None):
+        self._label_type_value = bb.NOT_SET
+        if label_type is not None:
+            self.label_type = label_type
+
+    # Instance attribute type: LabelType (validator is set below)
+    label_type = bb.Attribute("label_type", user_defined=True)
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(ObjectLabelRemovedDetails, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+ObjectLabelRemovedDetails_validator = bv.Struct(ObjectLabelRemovedDetails)
+
+class ObjectLabelRemovedType(bb.Struct):
+
+    __slots__ = [
+        '_description_value',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 description=None):
+        self._description_value = bb.NOT_SET
+        if description is not None:
+            self.description = description
+
+    # Instance attribute type: str (validator is set below)
+    description = bb.Attribute("description")
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(ObjectLabelRemovedType, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+ObjectLabelRemovedType_validator = bv.Struct(ObjectLabelRemovedType)
+
+class ObjectLabelUpdatedValueDetails(bb.Struct):
+    """
+    Updated a label's value.
+
+    :ivar team_log.ObjectLabelUpdatedValueDetails.label_type: Labels mark a file
+        or folder.
+    """
+
+    __slots__ = [
+        '_label_type_value',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 label_type=None):
+        self._label_type_value = bb.NOT_SET
+        if label_type is not None:
+            self.label_type = label_type
+
+    # Instance attribute type: LabelType (validator is set below)
+    label_type = bb.Attribute("label_type", user_defined=True)
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(ObjectLabelUpdatedValueDetails, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+ObjectLabelUpdatedValueDetails_validator = bv.Struct(ObjectLabelUpdatedValueDetails)
+
+class ObjectLabelUpdatedValueType(bb.Struct):
+
+    __slots__ = [
+        '_description_value',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 description=None):
+        self._description_value = bb.NOT_SET
+        if description is not None:
+            self.description = description
+
+    # Instance attribute type: str (validator is set below)
+    description = bb.Attribute("description")
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(ObjectLabelUpdatedValueType, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+ObjectLabelUpdatedValueType_validator = bv.Struct(ObjectLabelUpdatedValueType)
+
 class OpenNoteSharedDetails(bb.Struct):
     """
     Opened shared Paper doc.
@@ -54940,6 +55520,8 @@ class PlacementRestriction(bb.Union):
     # Attribute is overwritten below the class definition
     none = None
     # Attribute is overwritten below the class definition
+    uk_only = None
+    # Attribute is overwritten below the class definition
     other = None
 
     def is_australia_only(self):
@@ -54973,6 +55555,14 @@ class PlacementRestriction(bb.Union):
         :rtype: bool
         """
         return self._tag == 'none'
+
+    def is_uk_only(self):
+        """
+        Check if the union tag is ``uk_only``.
+
+        :rtype: bool
+        """
+        return self._tag == 'uk_only'
 
     def is_other(self):
         """
@@ -55268,6 +55858,53 @@ class QuickActionType(bb.Union):
         super(QuickActionType, self)._process_custom_annotations(annotation_type, field_path, processor)
 
 QuickActionType_validator = bv.Union(QuickActionType)
+
+class RecipientsConfiguration(bb.Struct):
+    """
+    Recipients Configuration
+
+    :ivar team_log.RecipientsConfiguration.recipient_setting_type: Recipients
+        setting type.
+    :ivar team_log.RecipientsConfiguration.emails: A list of user emails to
+        notify.
+    :ivar team_log.RecipientsConfiguration.groups: A list of groups to notify.
+    """
+
+    __slots__ = [
+        '_recipient_setting_type_value',
+        '_emails_value',
+        '_groups_value',
+    ]
+
+    _has_required_fields = False
+
+    def __init__(self,
+                 recipient_setting_type=None,
+                 emails=None,
+                 groups=None):
+        self._recipient_setting_type_value = bb.NOT_SET
+        self._emails_value = bb.NOT_SET
+        self._groups_value = bb.NOT_SET
+        if recipient_setting_type is not None:
+            self.recipient_setting_type = recipient_setting_type
+        if emails is not None:
+            self.emails = emails
+        if groups is not None:
+            self.groups = groups
+
+    # Instance attribute type: AlertRecipientsSettingType (validator is set below)
+    recipient_setting_type = bb.Attribute("recipient_setting_type", nullable=True, user_defined=True)
+
+    # Instance attribute type: list of [str] (validator is set below)
+    emails = bb.Attribute("emails", nullable=True)
+
+    # Instance attribute type: list of [str] (validator is set below)
+    groups = bb.Attribute("groups", nullable=True)
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(RecipientsConfiguration, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+RecipientsConfiguration_validator = bv.Struct(RecipientsConfiguration)
 
 class RelocateAssetReferencesLogInfo(bb.Struct):
     """
@@ -68416,9 +69053,44 @@ AdminAlertSeverityEnum.medium = AdminAlertSeverityEnum('medium')
 AdminAlertSeverityEnum.na = AdminAlertSeverityEnum('na')
 AdminAlertSeverityEnum.other = AdminAlertSeverityEnum('other')
 
-AdminAlertingAlertConfiguration.alert_state.validator = AdminAlertingAlertStatePolicy_validator
-AdminAlertingAlertConfiguration._all_field_names_ = set(['alert_state'])
-AdminAlertingAlertConfiguration._all_fields_ = [('alert_state', AdminAlertingAlertConfiguration.alert_state.validator)]
+AdminAlertingAlertConfiguration.alert_state.validator = bv.Nullable(AdminAlertingAlertStatePolicy_validator)
+AdminAlertingAlertConfiguration.sensitivity_level.validator = bv.Nullable(AdminAlertingAlertSensitivity_validator)
+AdminAlertingAlertConfiguration.recipients_settings.validator = bv.Nullable(RecipientsConfiguration_validator)
+AdminAlertingAlertConfiguration._all_field_names_ = set([
+    'alert_state',
+    'sensitivity_level',
+    'recipients_settings',
+])
+AdminAlertingAlertConfiguration._all_fields_ = [
+    ('alert_state', AdminAlertingAlertConfiguration.alert_state.validator),
+    ('sensitivity_level', AdminAlertingAlertConfiguration.sensitivity_level.validator),
+    ('recipients_settings', AdminAlertingAlertConfiguration.recipients_settings.validator),
+]
+
+AdminAlertingAlertSensitivity._high_validator = bv.Void()
+AdminAlertingAlertSensitivity._highest_validator = bv.Void()
+AdminAlertingAlertSensitivity._invalid_validator = bv.Void()
+AdminAlertingAlertSensitivity._low_validator = bv.Void()
+AdminAlertingAlertSensitivity._lowest_validator = bv.Void()
+AdminAlertingAlertSensitivity._medium_validator = bv.Void()
+AdminAlertingAlertSensitivity._other_validator = bv.Void()
+AdminAlertingAlertSensitivity._tagmap = {
+    'high': AdminAlertingAlertSensitivity._high_validator,
+    'highest': AdminAlertingAlertSensitivity._highest_validator,
+    'invalid': AdminAlertingAlertSensitivity._invalid_validator,
+    'low': AdminAlertingAlertSensitivity._low_validator,
+    'lowest': AdminAlertingAlertSensitivity._lowest_validator,
+    'medium': AdminAlertingAlertSensitivity._medium_validator,
+    'other': AdminAlertingAlertSensitivity._other_validator,
+}
+
+AdminAlertingAlertSensitivity.high = AdminAlertingAlertSensitivity('high')
+AdminAlertingAlertSensitivity.highest = AdminAlertingAlertSensitivity('highest')
+AdminAlertingAlertSensitivity.invalid = AdminAlertingAlertSensitivity('invalid')
+AdminAlertingAlertSensitivity.low = AdminAlertingAlertSensitivity('low')
+AdminAlertingAlertSensitivity.lowest = AdminAlertingAlertSensitivity('lowest')
+AdminAlertingAlertSensitivity.medium = AdminAlertingAlertSensitivity('medium')
+AdminAlertingAlertSensitivity.other = AdminAlertingAlertSensitivity('other')
 
 AdminAlertingAlertStatePolicy._off_validator = bv.Void()
 AdminAlertingAlertStatePolicy._on_validator = bv.Void()
@@ -68493,6 +69165,25 @@ AdminRole.support_admin = AdminRole('support_admin')
 AdminRole.team_admin = AdminRole('team_admin')
 AdminRole.user_management_admin = AdminRole('user_management_admin')
 AdminRole.other = AdminRole('other')
+
+AlertRecipientsSettingType._custom_list_validator = bv.Void()
+AlertRecipientsSettingType._invalid_validator = bv.Void()
+AlertRecipientsSettingType._none_validator = bv.Void()
+AlertRecipientsSettingType._team_admins_validator = bv.Void()
+AlertRecipientsSettingType._other_validator = bv.Void()
+AlertRecipientsSettingType._tagmap = {
+    'custom_list': AlertRecipientsSettingType._custom_list_validator,
+    'invalid': AlertRecipientsSettingType._invalid_validator,
+    'none': AlertRecipientsSettingType._none_validator,
+    'team_admins': AlertRecipientsSettingType._team_admins_validator,
+    'other': AlertRecipientsSettingType._other_validator,
+}
+
+AlertRecipientsSettingType.custom_list = AlertRecipientsSettingType('custom_list')
+AlertRecipientsSettingType.invalid = AlertRecipientsSettingType('invalid')
+AlertRecipientsSettingType.none = AlertRecipientsSettingType('none')
+AlertRecipientsSettingType.team_admins = AlertRecipientsSettingType('team_admins')
+AlertRecipientsSettingType.other = AlertRecipientsSettingType('other')
 
 AllowDownloadDisabledDetails._all_field_names_ = set([])
 AllowDownloadDisabledDetails._all_fields_ = []
@@ -69780,6 +70471,9 @@ EventDetails._file_save_copy_reference_details_validator = FileSaveCopyReference
 EventDetails._folder_overview_description_changed_details_validator = FolderOverviewDescriptionChangedDetails_validator
 EventDetails._folder_overview_item_pinned_details_validator = FolderOverviewItemPinnedDetails_validator
 EventDetails._folder_overview_item_unpinned_details_validator = FolderOverviewItemUnpinnedDetails_validator
+EventDetails._object_label_added_details_validator = ObjectLabelAddedDetails_validator
+EventDetails._object_label_removed_details_validator = ObjectLabelRemovedDetails_validator
+EventDetails._object_label_updated_value_details_validator = ObjectLabelUpdatedValueDetails_validator
 EventDetails._rewind_folder_details_validator = RewindFolderDetails_validator
 EventDetails._file_request_change_details_validator = FileRequestChangeDetails_validator
 EventDetails._file_request_close_details_validator = FileRequestCloseDetails_validator
@@ -70238,6 +70932,9 @@ EventDetails._tagmap = {
     'folder_overview_description_changed_details': EventDetails._folder_overview_description_changed_details_validator,
     'folder_overview_item_pinned_details': EventDetails._folder_overview_item_pinned_details_validator,
     'folder_overview_item_unpinned_details': EventDetails._folder_overview_item_unpinned_details_validator,
+    'object_label_added_details': EventDetails._object_label_added_details_validator,
+    'object_label_removed_details': EventDetails._object_label_removed_details_validator,
+    'object_label_updated_value_details': EventDetails._object_label_updated_value_details_validator,
     'rewind_folder_details': EventDetails._rewind_folder_details_validator,
     'file_request_change_details': EventDetails._file_request_change_details_validator,
     'file_request_close_details': EventDetails._file_request_close_details_validator,
@@ -70699,6 +71396,9 @@ EventType._file_save_copy_reference_validator = FileSaveCopyReferenceType_valida
 EventType._folder_overview_description_changed_validator = FolderOverviewDescriptionChangedType_validator
 EventType._folder_overview_item_pinned_validator = FolderOverviewItemPinnedType_validator
 EventType._folder_overview_item_unpinned_validator = FolderOverviewItemUnpinnedType_validator
+EventType._object_label_added_validator = ObjectLabelAddedType_validator
+EventType._object_label_removed_validator = ObjectLabelRemovedType_validator
+EventType._object_label_updated_value_validator = ObjectLabelUpdatedValueType_validator
 EventType._rewind_folder_validator = RewindFolderType_validator
 EventType._file_request_change_validator = FileRequestChangeType_validator
 EventType._file_request_close_validator = FileRequestCloseType_validator
@@ -71156,6 +71856,9 @@ EventType._tagmap = {
     'folder_overview_description_changed': EventType._folder_overview_description_changed_validator,
     'folder_overview_item_pinned': EventType._folder_overview_item_pinned_validator,
     'folder_overview_item_unpinned': EventType._folder_overview_item_unpinned_validator,
+    'object_label_added': EventType._object_label_added_validator,
+    'object_label_removed': EventType._object_label_removed_validator,
+    'object_label_updated_value': EventType._object_label_updated_value_validator,
     'rewind_folder': EventType._rewind_folder_validator,
     'file_request_change': EventType._file_request_change_validator,
     'file_request_close': EventType._file_request_close_validator,
@@ -71616,6 +72319,9 @@ EventTypeArg._file_save_copy_reference_validator = bv.Void()
 EventTypeArg._folder_overview_description_changed_validator = bv.Void()
 EventTypeArg._folder_overview_item_pinned_validator = bv.Void()
 EventTypeArg._folder_overview_item_unpinned_validator = bv.Void()
+EventTypeArg._object_label_added_validator = bv.Void()
+EventTypeArg._object_label_removed_validator = bv.Void()
+EventTypeArg._object_label_updated_value_validator = bv.Void()
 EventTypeArg._rewind_folder_validator = bv.Void()
 EventTypeArg._file_request_change_validator = bv.Void()
 EventTypeArg._file_request_close_validator = bv.Void()
@@ -72073,6 +72779,9 @@ EventTypeArg._tagmap = {
     'folder_overview_description_changed': EventTypeArg._folder_overview_description_changed_validator,
     'folder_overview_item_pinned': EventTypeArg._folder_overview_item_pinned_validator,
     'folder_overview_item_unpinned': EventTypeArg._folder_overview_item_unpinned_validator,
+    'object_label_added': EventTypeArg._object_label_added_validator,
+    'object_label_removed': EventTypeArg._object_label_removed_validator,
+    'object_label_updated_value': EventTypeArg._object_label_updated_value_validator,
     'rewind_folder': EventTypeArg._rewind_folder_validator,
     'file_request_change': EventTypeArg._file_request_change_validator,
     'file_request_close': EventTypeArg._file_request_close_validator,
@@ -72531,6 +73240,9 @@ EventTypeArg.file_save_copy_reference = EventTypeArg('file_save_copy_reference')
 EventTypeArg.folder_overview_description_changed = EventTypeArg('folder_overview_description_changed')
 EventTypeArg.folder_overview_item_pinned = EventTypeArg('folder_overview_item_pinned')
 EventTypeArg.folder_overview_item_unpinned = EventTypeArg('folder_overview_item_unpinned')
+EventTypeArg.object_label_added = EventTypeArg('object_label_added')
+EventTypeArg.object_label_removed = EventTypeArg('object_label_removed')
+EventTypeArg.object_label_updated_value = EventTypeArg('object_label_updated_value')
 EventTypeArg.rewind_folder = EventTypeArg('rewind_folder')
 EventTypeArg.file_request_change = EventTypeArg('file_request_change')
 EventTypeArg.file_request_close = EventTypeArg('file_request_close')
@@ -74285,6 +74997,16 @@ JoinTeamDetails._all_fields_ = [
     ('has_linked_shared_folders', JoinTeamDetails.has_linked_shared_folders.validator),
 ]
 
+LabelType._personal_information_validator = bv.Void()
+LabelType._other_validator = bv.Void()
+LabelType._tagmap = {
+    'personal_information': LabelType._personal_information_validator,
+    'other': LabelType._other_validator,
+}
+
+LabelType.personal_information = LabelType('personal_information')
+LabelType.other = LabelType('other')
+
 LegacyDeviceSessionLogInfo.session_info.validator = bv.Nullable(SessionLogInfo_validator)
 LegacyDeviceSessionLogInfo.display_name.validator = bv.Nullable(bv.String())
 LegacyDeviceSessionLogInfo.is_emm_managed.validator = bv.Nullable(bv.Boolean())
@@ -75266,6 +75988,30 @@ NoteSharedType.description.validator = bv.String()
 NoteSharedType._all_field_names_ = set(['description'])
 NoteSharedType._all_fields_ = [('description', NoteSharedType.description.validator)]
 
+ObjectLabelAddedDetails.label_type.validator = LabelType_validator
+ObjectLabelAddedDetails._all_field_names_ = set(['label_type'])
+ObjectLabelAddedDetails._all_fields_ = [('label_type', ObjectLabelAddedDetails.label_type.validator)]
+
+ObjectLabelAddedType.description.validator = bv.String()
+ObjectLabelAddedType._all_field_names_ = set(['description'])
+ObjectLabelAddedType._all_fields_ = [('description', ObjectLabelAddedType.description.validator)]
+
+ObjectLabelRemovedDetails.label_type.validator = LabelType_validator
+ObjectLabelRemovedDetails._all_field_names_ = set(['label_type'])
+ObjectLabelRemovedDetails._all_fields_ = [('label_type', ObjectLabelRemovedDetails.label_type.validator)]
+
+ObjectLabelRemovedType.description.validator = bv.String()
+ObjectLabelRemovedType._all_field_names_ = set(['description'])
+ObjectLabelRemovedType._all_fields_ = [('description', ObjectLabelRemovedType.description.validator)]
+
+ObjectLabelUpdatedValueDetails.label_type.validator = LabelType_validator
+ObjectLabelUpdatedValueDetails._all_field_names_ = set(['label_type'])
+ObjectLabelUpdatedValueDetails._all_fields_ = [('label_type', ObjectLabelUpdatedValueDetails.label_type.validator)]
+
+ObjectLabelUpdatedValueType.description.validator = bv.String()
+ObjectLabelUpdatedValueType._all_field_names_ = set(['description'])
+ObjectLabelUpdatedValueType._all_fields_ = [('description', ObjectLabelUpdatedValueType.description.validator)]
+
 OpenNoteSharedDetails._all_field_names_ = set([])
 OpenNoteSharedDetails._all_fields_ = []
 
@@ -76066,12 +76812,14 @@ PlacementRestriction._australia_only_validator = bv.Void()
 PlacementRestriction._europe_only_validator = bv.Void()
 PlacementRestriction._japan_only_validator = bv.Void()
 PlacementRestriction._none_validator = bv.Void()
+PlacementRestriction._uk_only_validator = bv.Void()
 PlacementRestriction._other_validator = bv.Void()
 PlacementRestriction._tagmap = {
     'australia_only': PlacementRestriction._australia_only_validator,
     'europe_only': PlacementRestriction._europe_only_validator,
     'japan_only': PlacementRestriction._japan_only_validator,
     'none': PlacementRestriction._none_validator,
+    'uk_only': PlacementRestriction._uk_only_validator,
     'other': PlacementRestriction._other_validator,
 }
 
@@ -76079,6 +76827,7 @@ PlacementRestriction.australia_only = PlacementRestriction('australia_only')
 PlacementRestriction.europe_only = PlacementRestriction('europe_only')
 PlacementRestriction.japan_only = PlacementRestriction('japan_only')
 PlacementRestriction.none = PlacementRestriction('none')
+PlacementRestriction.uk_only = PlacementRestriction('uk_only')
 PlacementRestriction.other = PlacementRestriction('other')
 
 PolicyType._disposition_validator = bv.Void()
@@ -76162,6 +76911,20 @@ QuickActionType.unlink_app = QuickActionType('unlink_app')
 QuickActionType.unlink_device = QuickActionType('unlink_device')
 QuickActionType.unlink_session = QuickActionType('unlink_session')
 QuickActionType.other = QuickActionType('other')
+
+RecipientsConfiguration.recipient_setting_type.validator = bv.Nullable(AlertRecipientsSettingType_validator)
+RecipientsConfiguration.emails.validator = bv.Nullable(bv.List(EmailAddress_validator))
+RecipientsConfiguration.groups.validator = bv.Nullable(bv.List(bv.String()))
+RecipientsConfiguration._all_field_names_ = set([
+    'recipient_setting_type',
+    'emails',
+    'groups',
+])
+RecipientsConfiguration._all_fields_ = [
+    ('recipient_setting_type', RecipientsConfiguration.recipient_setting_type.validator),
+    ('emails', RecipientsConfiguration.emails.validator),
+    ('groups', RecipientsConfiguration.groups.validator),
+]
 
 RelocateAssetReferencesLogInfo.src_asset_index.validator = bv.UInt64()
 RelocateAssetReferencesLogInfo.dest_asset_index.validator = bv.UInt64()

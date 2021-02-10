@@ -1785,22 +1785,36 @@ DownloadZipResult_validator = bv.Struct(DownloadZipResult)
 class ExportArg(bb.Struct):
     """
     :ivar files.ExportArg.path: The path of the file to be exported.
+    :ivar files.ExportArg.export_format: The file format to which the file
+        should be exported. This must be one of the formats listed in the file's
+        export_options returned by
+        :meth:`dropbox.dropbox_client.Dropbox.files_get_metadata`. If none is
+        specified, the default format (specified in export_as in file metadata)
+        will be used.
     """
 
     __slots__ = [
         '_path_value',
+        '_export_format_value',
     ]
 
     _has_required_fields = True
 
     def __init__(self,
-                 path=None):
+                 path=None,
+                 export_format=None):
         self._path_value = bb.NOT_SET
+        self._export_format_value = bb.NOT_SET
         if path is not None:
             self.path = path
+        if export_format is not None:
+            self.export_format = export_format
 
     # Instance attribute type: str (validator is set below)
     path = bb.Attribute("path")
+
+    # Instance attribute type: str (validator is set below)
+    export_format = bb.Attribute("export_format", nullable=True)
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(ExportArg, self)._process_custom_annotations(annotation_type, field_path, processor)
@@ -1815,6 +1829,8 @@ class ExportError(bb.Union):
 
     :ivar files.ExportError.non_exportable: This file type cannot be exported.
         Use :meth:`dropbox.dropbox_client.Dropbox.files_download` instead.
+    :ivar files.ExportError.invalid_export_format: The specified export format
+        is not a valid option for this file type.
     :ivar files.ExportError.retry_error: The exportable content is not yet
         available. Please retry later.
     """
@@ -1822,6 +1838,8 @@ class ExportError(bb.Union):
     _catch_all = 'other'
     # Attribute is overwritten below the class definition
     non_exportable = None
+    # Attribute is overwritten below the class definition
+    invalid_export_format = None
     # Attribute is overwritten below the class definition
     retry_error = None
     # Attribute is overwritten below the class definition
@@ -1853,6 +1871,14 @@ class ExportError(bb.Union):
         :rtype: bool
         """
         return self._tag == 'non_exportable'
+
+    def is_invalid_export_format(self):
+        """
+        Check if the union tag is ``invalid_export_format``.
+
+        :rtype: bool
+        """
+        return self._tag == 'invalid_export_format'
 
     def is_retry_error(self):
         """
@@ -1891,22 +1917,33 @@ class ExportInfo(bb.Struct):
 
     :ivar files.ExportInfo.export_as: Format to which the file can be exported
         to.
+    :ivar files.ExportInfo.export_options: Additional formats to which the file
+        can be exported. These values can be specified as the export_format in
+        /files/export.
     """
 
     __slots__ = [
         '_export_as_value',
+        '_export_options_value',
     ]
 
     _has_required_fields = False
 
     def __init__(self,
-                 export_as=None):
+                 export_as=None,
+                 export_options=None):
         self._export_as_value = bb.NOT_SET
+        self._export_options_value = bb.NOT_SET
         if export_as is not None:
             self.export_as = export_as
+        if export_options is not None:
+            self.export_options = export_options
 
     # Instance attribute type: str (validator is set below)
     export_as = bb.Attribute("export_as", nullable=True)
+
+    # Instance attribute type: list of [str] (validator is set below)
+    export_options = bb.Attribute("export_options", nullable=True)
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(ExportInfo, self)._process_custom_annotations(annotation_type, field_path, processor)
@@ -1922,12 +1959,15 @@ class ExportMetadata(bb.Struct):
         content. This field can be used to verify data integrity. Similar to
         content hash. For more information see our `Content hash
         <https://www.dropbox.com/developers/reference/content-hash>`_ page.
+    :ivar files.ExportMetadata.paper_revision: If the file is a Paper doc, this
+        gives the latest doc revision.
     """
 
     __slots__ = [
         '_name_value',
         '_size_value',
         '_export_hash_value',
+        '_paper_revision_value',
     ]
 
     _has_required_fields = True
@@ -1935,16 +1975,20 @@ class ExportMetadata(bb.Struct):
     def __init__(self,
                  name=None,
                  size=None,
-                 export_hash=None):
+                 export_hash=None,
+                 paper_revision=None):
         self._name_value = bb.NOT_SET
         self._size_value = bb.NOT_SET
         self._export_hash_value = bb.NOT_SET
+        self._paper_revision_value = bb.NOT_SET
         if name is not None:
             self.name = name
         if size is not None:
             self.size = size
         if export_hash is not None:
             self.export_hash = export_hash
+        if paper_revision is not None:
+            self.paper_revision = paper_revision
 
     # Instance attribute type: str (validator is set below)
     name = bb.Attribute("name")
@@ -1954,6 +1998,9 @@ class ExportMetadata(bb.Struct):
 
     # Instance attribute type: str (validator is set below)
     export_hash = bb.Attribute("export_hash", nullable=True)
+
+    # Instance attribute type: int (validator is set below)
+    paper_revision = bb.Attribute("paper_revision", nullable=True)
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(ExportMetadata, self)._process_custom_annotations(annotation_type, field_path, processor)
@@ -2864,6 +2911,10 @@ class GetTemporaryLinkError(bb.Union):
     :ivar files.GetTemporaryLinkError.unsupported_file: Cannot get temporary
         link to this file type; use
         :meth:`dropbox.dropbox_client.Dropbox.files_export` instead.
+    :ivar files.GetTemporaryLinkError.not_allowed: The user is not allowed to
+        request a temporary link to the specified file. For example, this can
+        occur if the file is restricted or if the user's links are `banned
+        <https://help.dropbox.com/files-folders/share/banned-links>`_.
     """
 
     _catch_all = 'other'
@@ -2871,6 +2922,8 @@ class GetTemporaryLinkError(bb.Union):
     email_not_verified = None
     # Attribute is overwritten below the class definition
     unsupported_file = None
+    # Attribute is overwritten below the class definition
+    not_allowed = None
     # Attribute is overwritten below the class definition
     other = None
 
@@ -2908,6 +2961,14 @@ class GetTemporaryLinkError(bb.Union):
         :rtype: bool
         """
         return self._tag == 'unsupported_file'
+
+    def is_not_allowed(self):
+        """
+        Check if the union tag is ``not_allowed``.
+
+        :rtype: bool
+        """
+        return self._tag == 'not_allowed'
 
     def is_other(self):
         """
@@ -8389,8 +8450,8 @@ class UploadSessionCursor(bb.Struct):
     """
     :ivar files.UploadSessionCursor.session_id: The upload session ID (returned
         by :meth:`dropbox.dropbox_client.Dropbox.files_upload_session_start`).
-    :ivar files.UploadSessionCursor.offset: The amount of data that has been
-        uploaded so far. We use this to make sure upload data isn't lost or
+    :ivar files.UploadSessionCursor.offset: Offset in bytes at which data should
+        be appended. We use this to make sure upload data isn't lost or
         duplicated in the event of a network error.
     """
 
@@ -8889,7 +8950,7 @@ class UploadSessionLookupError(bb.Union):
     corresponding ``get_*`` method.
 
     :ivar files.UploadSessionLookupError.not_found: The upload session ID was
-        not found or has expired. Upload sessions are valid for 48 hours.
+        not found or has expired. Upload sessions are valid for 7 days.
     :ivar UploadSessionOffsetError UploadSessionLookupError.incorrect_offset:
         The specified offset was incorrect. See the value for the correct
         offset. This error may occur when a previous request was received and
@@ -9169,7 +9230,7 @@ class UploadSessionType(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar files.UploadSessionType.sequential: Pieces of content are uploaded
+    :ivar files.UploadSessionType.sequential: Pieces of data are uploaded
         sequentially one after another. This is the default behavior.
     :ivar files.UploadSessionType.concurrent: Pieces of data can be uploaded in
         concurrent RPCs in any order.
@@ -9975,40 +10036,60 @@ DownloadZipResult._all_field_names_ = set(['metadata'])
 DownloadZipResult._all_fields_ = [('metadata', DownloadZipResult.metadata.validator)]
 
 ExportArg.path.validator = ReadPath_validator
-ExportArg._all_field_names_ = set(['path'])
-ExportArg._all_fields_ = [('path', ExportArg.path.validator)]
+ExportArg.export_format.validator = bv.Nullable(bv.String())
+ExportArg._all_field_names_ = set([
+    'path',
+    'export_format',
+])
+ExportArg._all_fields_ = [
+    ('path', ExportArg.path.validator),
+    ('export_format', ExportArg.export_format.validator),
+]
 
 ExportError._path_validator = LookupError_validator
 ExportError._non_exportable_validator = bv.Void()
+ExportError._invalid_export_format_validator = bv.Void()
 ExportError._retry_error_validator = bv.Void()
 ExportError._other_validator = bv.Void()
 ExportError._tagmap = {
     'path': ExportError._path_validator,
     'non_exportable': ExportError._non_exportable_validator,
+    'invalid_export_format': ExportError._invalid_export_format_validator,
     'retry_error': ExportError._retry_error_validator,
     'other': ExportError._other_validator,
 }
 
 ExportError.non_exportable = ExportError('non_exportable')
+ExportError.invalid_export_format = ExportError('invalid_export_format')
 ExportError.retry_error = ExportError('retry_error')
 ExportError.other = ExportError('other')
 
 ExportInfo.export_as.validator = bv.Nullable(bv.String())
-ExportInfo._all_field_names_ = set(['export_as'])
-ExportInfo._all_fields_ = [('export_as', ExportInfo.export_as.validator)]
+ExportInfo.export_options.validator = bv.Nullable(bv.List(bv.String()))
+ExportInfo._all_field_names_ = set([
+    'export_as',
+    'export_options',
+])
+ExportInfo._all_fields_ = [
+    ('export_as', ExportInfo.export_as.validator),
+    ('export_options', ExportInfo.export_options.validator),
+]
 
 ExportMetadata.name.validator = bv.String()
 ExportMetadata.size.validator = bv.UInt64()
 ExportMetadata.export_hash.validator = bv.Nullable(Sha256HexHash_validator)
+ExportMetadata.paper_revision.validator = bv.Nullable(bv.Int64())
 ExportMetadata._all_field_names_ = set([
     'name',
     'size',
     'export_hash',
+    'paper_revision',
 ])
 ExportMetadata._all_fields_ = [
     ('name', ExportMetadata.name.validator),
     ('size', ExportMetadata.size.validator),
     ('export_hash', ExportMetadata.export_hash.validator),
+    ('paper_revision', ExportMetadata.paper_revision.validator),
 ]
 
 ExportResult.export_metadata.validator = ExportMetadata_validator
@@ -10239,16 +10320,19 @@ GetTemporaryLinkArg._all_fields_ = [('path', GetTemporaryLinkArg.path.validator)
 GetTemporaryLinkError._path_validator = LookupError_validator
 GetTemporaryLinkError._email_not_verified_validator = bv.Void()
 GetTemporaryLinkError._unsupported_file_validator = bv.Void()
+GetTemporaryLinkError._not_allowed_validator = bv.Void()
 GetTemporaryLinkError._other_validator = bv.Void()
 GetTemporaryLinkError._tagmap = {
     'path': GetTemporaryLinkError._path_validator,
     'email_not_verified': GetTemporaryLinkError._email_not_verified_validator,
     'unsupported_file': GetTemporaryLinkError._unsupported_file_validator,
+    'not_allowed': GetTemporaryLinkError._not_allowed_validator,
     'other': GetTemporaryLinkError._other_validator,
 }
 
 GetTemporaryLinkError.email_not_verified = GetTemporaryLinkError('email_not_verified')
 GetTemporaryLinkError.unsupported_file = GetTemporaryLinkError('unsupported_file')
+GetTemporaryLinkError.not_allowed = GetTemporaryLinkError('not_allowed')
 GetTemporaryLinkError.other = GetTemporaryLinkError('other')
 
 GetTemporaryLinkResult.metadata.validator = FileMetadata_validator
