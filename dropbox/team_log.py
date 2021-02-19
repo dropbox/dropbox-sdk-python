@@ -3389,7 +3389,7 @@ ClassificationPolicyEnumWrapper_validator = bv.Union(ClassificationPolicyEnumWra
 
 class ClassificationType(bb.Union):
     """
-    The type of classification (currently only PII)
+    The type of classification (currently only personal information)
 
     This class acts as a tagged union. Only one of the ``is_*`` methods will
     return true. To get the associated value of a tag (if one exists), use the
@@ -3398,9 +3398,19 @@ class ClassificationType(bb.Union):
 
     _catch_all = 'other'
     # Attribute is overwritten below the class definition
+    personal_information = None
+    # Attribute is overwritten below the class definition
     pii = None
     # Attribute is overwritten below the class definition
     other = None
+
+    def is_personal_information(self):
+        """
+        Check if the union tag is ``personal_information``.
+
+        :rtype: bool
+        """
+        return self._tag == 'personal_information'
 
     def is_pii(self):
         """
@@ -5531,6 +5541,50 @@ class DisabledDomainInvitesType(bb.Struct):
 
 DisabledDomainInvitesType_validator = bv.Struct(DisabledDomainInvitesType)
 
+class DispositionActionType(bb.Union):
+    """
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+    """
+
+    _catch_all = 'other'
+    # Attribute is overwritten below the class definition
+    automatic_delete = None
+    # Attribute is overwritten below the class definition
+    automatic_permanently_delete = None
+    # Attribute is overwritten below the class definition
+    other = None
+
+    def is_automatic_delete(self):
+        """
+        Check if the union tag is ``automatic_delete``.
+
+        :rtype: bool
+        """
+        return self._tag == 'automatic_delete'
+
+    def is_automatic_permanently_delete(self):
+        """
+        Check if the union tag is ``automatic_permanently_delete``.
+
+        :rtype: bool
+        """
+        return self._tag == 'automatic_permanently_delete'
+
+    def is_other(self):
+        """
+        Check if the union tag is ``other``.
+
+        :rtype: bool
+        """
+        return self._tag == 'other'
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(DispositionActionType, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+DispositionActionType_validator = bv.Union(DispositionActionType)
+
 class DomainInvitesApproveRequestToJoinTeamDetails(bb.Struct):
     """
     Approved user's request to join team.
@@ -7182,6 +7236,17 @@ class EventDetails(bb.Union):
         :rtype: EventDetails
         """
         return cls('governance_policy_add_folder_failed_details', val)
+
+    @classmethod
+    def governance_policy_content_disposed_details(cls, val):
+        """
+        Create an instance of this class set to the
+        ``governance_policy_content_disposed_details`` tag with value ``val``.
+
+        :param GovernancePolicyContentDisposedDetails val:
+        :rtype: EventDetails
+        """
+        return cls('governance_policy_content_disposed_details', val)
 
     @classmethod
     def governance_policy_create_details(cls, val):
@@ -12233,6 +12298,14 @@ class EventDetails(bb.Union):
         """
         return self._tag == 'governance_policy_add_folder_failed_details'
 
+    def is_governance_policy_content_disposed_details(self):
+        """
+        Check if the union tag is ``governance_policy_content_disposed_details``.
+
+        :rtype: bool
+        """
+        return self._tag == 'governance_policy_content_disposed_details'
+
     def is_governance_policy_create_details(self):
         """
         Check if the union tag is ``governance_policy_create_details``.
@@ -15947,6 +16020,16 @@ class EventDetails(bb.Union):
         """
         if not self.is_governance_policy_add_folder_failed_details():
             raise AttributeError("tag 'governance_policy_add_folder_failed_details' not set")
+        return self._value
+
+    def get_governance_policy_content_disposed_details(self):
+        """
+        Only call this if :meth:`is_governance_policy_content_disposed_details` is true.
+
+        :rtype: GovernancePolicyContentDisposedDetails
+        """
+        if not self.is_governance_policy_content_disposed_details():
+            raise AttributeError("tag 'governance_policy_content_disposed_details' not set")
         return self._value
 
     def get_governance_policy_create_details(self):
@@ -20414,6 +20497,9 @@ class EventType(bb.Union):
     :ivar GovernancePolicyAddFolderFailedType
         EventType.governance_policy_add_folder_failed: (data_governance)
         Couldn't add a folder to a policy
+    :ivar GovernancePolicyContentDisposedType
+        EventType.governance_policy_content_disposed: (data_governance) Content
+        disposed
     :ivar GovernancePolicyCreateType EventType.governance_policy_create:
         (data_governance) Activated a new policy
     :ivar GovernancePolicyDeleteType EventType.governance_policy_delete:
@@ -21687,6 +21773,17 @@ class EventType(bb.Union):
         :rtype: EventType
         """
         return cls('governance_policy_add_folder_failed', val)
+
+    @classmethod
+    def governance_policy_content_disposed(cls, val):
+        """
+        Create an instance of this class set to the
+        ``governance_policy_content_disposed`` tag with value ``val``.
+
+        :param GovernancePolicyContentDisposedType val:
+        :rtype: EventType
+        """
+        return cls('governance_policy_content_disposed', val)
 
     @classmethod
     def governance_policy_create(cls, val):
@@ -26688,6 +26785,14 @@ class EventType(bb.Union):
         """
         return self._tag == 'governance_policy_add_folder_failed'
 
+    def is_governance_policy_content_disposed(self):
+        """
+        Check if the union tag is ``governance_policy_content_disposed``.
+
+        :rtype: bool
+        """
+        return self._tag == 'governance_policy_content_disposed'
+
     def is_governance_policy_create(self):
         """
         Check if the union tag is ``governance_policy_create``.
@@ -30431,6 +30536,18 @@ class EventType(bb.Union):
         """
         if not self.is_governance_policy_add_folder_failed():
             raise AttributeError("tag 'governance_policy_add_folder_failed' not set")
+        return self._value
+
+    def get_governance_policy_content_disposed(self):
+        """
+        (data_governance) Content disposed
+
+        Only call this if :meth:`is_governance_policy_content_disposed` is true.
+
+        :rtype: GovernancePolicyContentDisposedType
+        """
+        if not self.is_governance_policy_content_disposed():
+            raise AttributeError("tag 'governance_policy_content_disposed' not set")
         return self._value
 
     def get_governance_policy_create(self):
@@ -35836,6 +35953,8 @@ class EventTypeArg(bb.Union):
         Added folders to policy
     :ivar team_log.EventTypeArg.governance_policy_add_folder_failed:
         (data_governance) Couldn't add a folder to a policy
+    :ivar team_log.EventTypeArg.governance_policy_content_disposed:
+        (data_governance) Content disposed
     :ivar team_log.EventTypeArg.governance_policy_create: (data_governance)
         Activated a new policy
     :ivar team_log.EventTypeArg.governance_policy_delete: (data_governance)
@@ -36789,6 +36908,8 @@ class EventTypeArg(bb.Union):
     governance_policy_add_folders = None
     # Attribute is overwritten below the class definition
     governance_policy_add_folder_failed = None
+    # Attribute is overwritten below the class definition
+    governance_policy_content_disposed = None
     # Attribute is overwritten below the class definition
     governance_policy_create = None
     # Attribute is overwritten below the class definition
@@ -37815,6 +37936,14 @@ class EventTypeArg(bb.Union):
         :rtype: bool
         """
         return self._tag == 'governance_policy_add_folder_failed'
+
+    def is_governance_policy_content_disposed(self):
+        """
+        Check if the union tag is ``governance_policy_content_disposed``.
+
+        :rtype: bool
+        """
+        return self._tag == 'governance_policy_content_disposed'
 
     def is_governance_policy_create(self):
         """
@@ -45232,6 +45361,85 @@ class GovernancePolicyAddFoldersType(bb.Struct):
         super(GovernancePolicyAddFoldersType, self)._process_custom_annotations(annotation_type, field_path, processor)
 
 GovernancePolicyAddFoldersType_validator = bv.Struct(GovernancePolicyAddFoldersType)
+
+class GovernancePolicyContentDisposedDetails(bb.Struct):
+    """
+    Content disposed.
+
+    :ivar team_log.GovernancePolicyContentDisposedDetails.governance_policy_id:
+        Policy ID.
+    :ivar team_log.GovernancePolicyContentDisposedDetails.name: Policy name.
+    :ivar team_log.GovernancePolicyContentDisposedDetails.policy_type: Policy
+        type.
+    :ivar team_log.GovernancePolicyContentDisposedDetails.disposition_type:
+        Disposition type.
+    """
+
+    __slots__ = [
+        '_governance_policy_id_value',
+        '_name_value',
+        '_policy_type_value',
+        '_disposition_type_value',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 governance_policy_id=None,
+                 name=None,
+                 disposition_type=None,
+                 policy_type=None):
+        self._governance_policy_id_value = bb.NOT_SET
+        self._name_value = bb.NOT_SET
+        self._policy_type_value = bb.NOT_SET
+        self._disposition_type_value = bb.NOT_SET
+        if governance_policy_id is not None:
+            self.governance_policy_id = governance_policy_id
+        if name is not None:
+            self.name = name
+        if policy_type is not None:
+            self.policy_type = policy_type
+        if disposition_type is not None:
+            self.disposition_type = disposition_type
+
+    # Instance attribute type: str (validator is set below)
+    governance_policy_id = bb.Attribute("governance_policy_id")
+
+    # Instance attribute type: str (validator is set below)
+    name = bb.Attribute("name")
+
+    # Instance attribute type: PolicyType (validator is set below)
+    policy_type = bb.Attribute("policy_type", nullable=True, user_defined=True)
+
+    # Instance attribute type: DispositionActionType (validator is set below)
+    disposition_type = bb.Attribute("disposition_type", user_defined=True)
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(GovernancePolicyContentDisposedDetails, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+GovernancePolicyContentDisposedDetails_validator = bv.Struct(GovernancePolicyContentDisposedDetails)
+
+class GovernancePolicyContentDisposedType(bb.Struct):
+
+    __slots__ = [
+        '_description_value',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 description=None):
+        self._description_value = bb.NOT_SET
+        if description is not None:
+            self.description = description
+
+    # Instance attribute type: str (validator is set below)
+    description = bb.Attribute("description")
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(GovernancePolicyContentDisposedType, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+GovernancePolicyContentDisposedType_validator = bv.Struct(GovernancePolicyContentDisposedType)
 
 class GovernancePolicyCreateDetails(bb.Struct):
     """
@@ -69579,13 +69787,16 @@ ClassificationPolicyEnumWrapper.disabled = ClassificationPolicyEnumWrapper('disa
 ClassificationPolicyEnumWrapper.enabled = ClassificationPolicyEnumWrapper('enabled')
 ClassificationPolicyEnumWrapper.other = ClassificationPolicyEnumWrapper('other')
 
+ClassificationType._personal_information_validator = bv.Void()
 ClassificationType._pii_validator = bv.Void()
 ClassificationType._other_validator = bv.Void()
 ClassificationType._tagmap = {
+    'personal_information': ClassificationType._personal_information_validator,
     'pii': ClassificationType._pii_validator,
     'other': ClassificationType._other_validator,
 }
 
+ClassificationType.personal_information = ClassificationType('personal_information')
 ClassificationType.pii = ClassificationType('pii')
 ClassificationType.other = ClassificationType('other')
 
@@ -70076,6 +70287,19 @@ DisabledDomainInvitesType.description.validator = bv.String()
 DisabledDomainInvitesType._all_field_names_ = set(['description'])
 DisabledDomainInvitesType._all_fields_ = [('description', DisabledDomainInvitesType.description.validator)]
 
+DispositionActionType._automatic_delete_validator = bv.Void()
+DispositionActionType._automatic_permanently_delete_validator = bv.Void()
+DispositionActionType._other_validator = bv.Void()
+DispositionActionType._tagmap = {
+    'automatic_delete': DispositionActionType._automatic_delete_validator,
+    'automatic_permanently_delete': DispositionActionType._automatic_permanently_delete_validator,
+    'other': DispositionActionType._other_validator,
+}
+
+DispositionActionType.automatic_delete = DispositionActionType('automatic_delete')
+DispositionActionType.automatic_permanently_delete = DispositionActionType('automatic_permanently_delete')
+DispositionActionType.other = DispositionActionType('other')
+
 DomainInvitesApproveRequestToJoinTeamDetails._all_field_names_ = set([])
 DomainInvitesApproveRequestToJoinTeamDetails._all_fields_ = []
 
@@ -70403,6 +70627,7 @@ EventDetails._file_unlike_comment_details_validator = FileUnlikeCommentDetails_v
 EventDetails._file_unresolve_comment_details_validator = FileUnresolveCommentDetails_validator
 EventDetails._governance_policy_add_folders_details_validator = GovernancePolicyAddFoldersDetails_validator
 EventDetails._governance_policy_add_folder_failed_details_validator = GovernancePolicyAddFolderFailedDetails_validator
+EventDetails._governance_policy_content_disposed_details_validator = GovernancePolicyContentDisposedDetails_validator
 EventDetails._governance_policy_create_details_validator = GovernancePolicyCreateDetails_validator
 EventDetails._governance_policy_delete_details_validator = GovernancePolicyDeleteDetails_validator
 EventDetails._governance_policy_edit_details_details_validator = GovernancePolicyEditDetailsDetails_validator
@@ -70864,6 +71089,7 @@ EventDetails._tagmap = {
     'file_unresolve_comment_details': EventDetails._file_unresolve_comment_details_validator,
     'governance_policy_add_folders_details': EventDetails._governance_policy_add_folders_details_validator,
     'governance_policy_add_folder_failed_details': EventDetails._governance_policy_add_folder_failed_details_validator,
+    'governance_policy_content_disposed_details': EventDetails._governance_policy_content_disposed_details_validator,
     'governance_policy_create_details': EventDetails._governance_policy_create_details_validator,
     'governance_policy_delete_details': EventDetails._governance_policy_delete_details_validator,
     'governance_policy_edit_details_details': EventDetails._governance_policy_edit_details_details_validator,
@@ -71328,6 +71554,7 @@ EventType._file_unlike_comment_validator = FileUnlikeCommentType_validator
 EventType._file_unresolve_comment_validator = FileUnresolveCommentType_validator
 EventType._governance_policy_add_folders_validator = GovernancePolicyAddFoldersType_validator
 EventType._governance_policy_add_folder_failed_validator = GovernancePolicyAddFolderFailedType_validator
+EventType._governance_policy_content_disposed_validator = GovernancePolicyContentDisposedType_validator
 EventType._governance_policy_create_validator = GovernancePolicyCreateType_validator
 EventType._governance_policy_delete_validator = GovernancePolicyDeleteType_validator
 EventType._governance_policy_edit_details_validator = GovernancePolicyEditDetailsType_validator
@@ -71788,6 +72015,7 @@ EventType._tagmap = {
     'file_unresolve_comment': EventType._file_unresolve_comment_validator,
     'governance_policy_add_folders': EventType._governance_policy_add_folders_validator,
     'governance_policy_add_folder_failed': EventType._governance_policy_add_folder_failed_validator,
+    'governance_policy_content_disposed': EventType._governance_policy_content_disposed_validator,
     'governance_policy_create': EventType._governance_policy_create_validator,
     'governance_policy_delete': EventType._governance_policy_delete_validator,
     'governance_policy_edit_details': EventType._governance_policy_edit_details_validator,
@@ -72251,6 +72479,7 @@ EventTypeArg._file_unlike_comment_validator = bv.Void()
 EventTypeArg._file_unresolve_comment_validator = bv.Void()
 EventTypeArg._governance_policy_add_folders_validator = bv.Void()
 EventTypeArg._governance_policy_add_folder_failed_validator = bv.Void()
+EventTypeArg._governance_policy_content_disposed_validator = bv.Void()
 EventTypeArg._governance_policy_create_validator = bv.Void()
 EventTypeArg._governance_policy_delete_validator = bv.Void()
 EventTypeArg._governance_policy_edit_details_validator = bv.Void()
@@ -72711,6 +72940,7 @@ EventTypeArg._tagmap = {
     'file_unresolve_comment': EventTypeArg._file_unresolve_comment_validator,
     'governance_policy_add_folders': EventTypeArg._governance_policy_add_folders_validator,
     'governance_policy_add_folder_failed': EventTypeArg._governance_policy_add_folder_failed_validator,
+    'governance_policy_content_disposed': EventTypeArg._governance_policy_content_disposed_validator,
     'governance_policy_create': EventTypeArg._governance_policy_create_validator,
     'governance_policy_delete': EventTypeArg._governance_policy_delete_validator,
     'governance_policy_edit_details': EventTypeArg._governance_policy_edit_details_validator,
@@ -73172,6 +73402,7 @@ EventTypeArg.file_unlike_comment = EventTypeArg('file_unlike_comment')
 EventTypeArg.file_unresolve_comment = EventTypeArg('file_unresolve_comment')
 EventTypeArg.governance_policy_add_folders = EventTypeArg('governance_policy_add_folders')
 EventTypeArg.governance_policy_add_folder_failed = EventTypeArg('governance_policy_add_folder_failed')
+EventTypeArg.governance_policy_content_disposed = EventTypeArg('governance_policy_content_disposed')
 EventTypeArg.governance_policy_create = EventTypeArg('governance_policy_create')
 EventTypeArg.governance_policy_delete = EventTypeArg('governance_policy_delete')
 EventTypeArg.governance_policy_edit_details = EventTypeArg('governance_policy_edit_details')
@@ -74449,6 +74680,27 @@ GovernancePolicyAddFoldersDetails._all_fields_ = [
 GovernancePolicyAddFoldersType.description.validator = bv.String()
 GovernancePolicyAddFoldersType._all_field_names_ = set(['description'])
 GovernancePolicyAddFoldersType._all_fields_ = [('description', GovernancePolicyAddFoldersType.description.validator)]
+
+GovernancePolicyContentDisposedDetails.governance_policy_id.validator = bv.String()
+GovernancePolicyContentDisposedDetails.name.validator = bv.String()
+GovernancePolicyContentDisposedDetails.policy_type.validator = bv.Nullable(PolicyType_validator)
+GovernancePolicyContentDisposedDetails.disposition_type.validator = DispositionActionType_validator
+GovernancePolicyContentDisposedDetails._all_field_names_ = set([
+    'governance_policy_id',
+    'name',
+    'policy_type',
+    'disposition_type',
+])
+GovernancePolicyContentDisposedDetails._all_fields_ = [
+    ('governance_policy_id', GovernancePolicyContentDisposedDetails.governance_policy_id.validator),
+    ('name', GovernancePolicyContentDisposedDetails.name.validator),
+    ('policy_type', GovernancePolicyContentDisposedDetails.policy_type.validator),
+    ('disposition_type', GovernancePolicyContentDisposedDetails.disposition_type.validator),
+]
+
+GovernancePolicyContentDisposedType.description.validator = bv.String()
+GovernancePolicyContentDisposedType._all_field_names_ = set(['description'])
+GovernancePolicyContentDisposedType._all_fields_ = [('description', GovernancePolicyContentDisposedType.description.validator)]
 
 GovernancePolicyCreateDetails.governance_policy_id.validator = bv.String()
 GovernancePolicyCreateDetails.name.validator = bv.String()

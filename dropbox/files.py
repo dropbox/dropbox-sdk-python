@@ -1960,7 +1960,8 @@ class ExportMetadata(bb.Struct):
         content hash. For more information see our `Content hash
         <https://www.dropbox.com/developers/reference/content-hash>`_ page.
     :ivar files.ExportMetadata.paper_revision: If the file is a Paper doc, this
-        gives the latest doc revision.
+        gives the latest doc revision which can be used in
+        :meth:`dropbox.dropbox_client.Dropbox.files_paper_update`.
     """
 
     __slots__ = [
@@ -3377,6 +3378,69 @@ class HighlightSpan(bb.Struct):
         super(HighlightSpan, self)._process_custom_annotations(annotation_type, field_path, processor)
 
 HighlightSpan_validator = bv.Struct(HighlightSpan)
+
+class ImportFormat(bb.Union):
+    """
+    The import format of the incoming Paper doc content.
+
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+
+    :ivar files.ImportFormat.html: The provided data is interpreted as standard
+        HTML.
+    :ivar files.ImportFormat.markdown: The provided data is interpreted as
+        markdown.
+    :ivar files.ImportFormat.plain_text: The provided data is interpreted as
+        plain text.
+    """
+
+    _catch_all = 'other'
+    # Attribute is overwritten below the class definition
+    html = None
+    # Attribute is overwritten below the class definition
+    markdown = None
+    # Attribute is overwritten below the class definition
+    plain_text = None
+    # Attribute is overwritten below the class definition
+    other = None
+
+    def is_html(self):
+        """
+        Check if the union tag is ``html``.
+
+        :rtype: bool
+        """
+        return self._tag == 'html'
+
+    def is_markdown(self):
+        """
+        Check if the union tag is ``markdown``.
+
+        :rtype: bool
+        """
+        return self._tag == 'markdown'
+
+    def is_plain_text(self):
+        """
+        Check if the union tag is ``plain_text``.
+
+        :rtype: bool
+        """
+        return self._tag == 'plain_text'
+
+    def is_other(self):
+        """
+        Check if the union tag is ``other``.
+
+        :rtype: bool
+        """
+        return self._tag == 'other'
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(ImportFormat, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+ImportFormat_validator = bv.Union(ImportFormat)
 
 class ListFolderArg(bb.Struct):
     """
@@ -4901,6 +4965,466 @@ class MoveIntoVaultError(bb.Union):
         super(MoveIntoVaultError, self)._process_custom_annotations(annotation_type, field_path, processor)
 
 MoveIntoVaultError_validator = bv.Union(MoveIntoVaultError)
+
+class PaperContentError(bb.Union):
+    """
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+
+    :ivar files.PaperContentError.insufficient_permissions: Your account does
+        not have permissions to edit Paper docs.
+    :ivar files.PaperContentError.content_malformed: The provided content was
+        malformed and cannot be imported to Paper.
+    :ivar files.PaperContentError.doc_length_exceeded: The Paper doc would be
+        too large, split the content into multiple docs.
+    :ivar files.PaperContentError.image_size_exceeded: The imported document
+        contains an image that is too large. The current limit is 1MB. This only
+        applies to HTML with data URI.
+    """
+
+    _catch_all = 'other'
+    # Attribute is overwritten below the class definition
+    insufficient_permissions = None
+    # Attribute is overwritten below the class definition
+    content_malformed = None
+    # Attribute is overwritten below the class definition
+    doc_length_exceeded = None
+    # Attribute is overwritten below the class definition
+    image_size_exceeded = None
+    # Attribute is overwritten below the class definition
+    other = None
+
+    def is_insufficient_permissions(self):
+        """
+        Check if the union tag is ``insufficient_permissions``.
+
+        :rtype: bool
+        """
+        return self._tag == 'insufficient_permissions'
+
+    def is_content_malformed(self):
+        """
+        Check if the union tag is ``content_malformed``.
+
+        :rtype: bool
+        """
+        return self._tag == 'content_malformed'
+
+    def is_doc_length_exceeded(self):
+        """
+        Check if the union tag is ``doc_length_exceeded``.
+
+        :rtype: bool
+        """
+        return self._tag == 'doc_length_exceeded'
+
+    def is_image_size_exceeded(self):
+        """
+        Check if the union tag is ``image_size_exceeded``.
+
+        :rtype: bool
+        """
+        return self._tag == 'image_size_exceeded'
+
+    def is_other(self):
+        """
+        Check if the union tag is ``other``.
+
+        :rtype: bool
+        """
+        return self._tag == 'other'
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(PaperContentError, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+PaperContentError_validator = bv.Union(PaperContentError)
+
+class PaperCreateArg(bb.Struct):
+    """
+    :ivar files.PaperCreateArg.path: The fully qualified path to the location in
+        the user's Dropbox where the Paper Doc should be created. This should
+        include the document's title and end with .paper.
+    :ivar files.PaperCreateArg.import_format: The format of the provided data.
+    """
+
+    __slots__ = [
+        '_path_value',
+        '_import_format_value',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 path=None,
+                 import_format=None):
+        self._path_value = bb.NOT_SET
+        self._import_format_value = bb.NOT_SET
+        if path is not None:
+            self.path = path
+        if import_format is not None:
+            self.import_format = import_format
+
+    # Instance attribute type: str (validator is set below)
+    path = bb.Attribute("path")
+
+    # Instance attribute type: ImportFormat (validator is set below)
+    import_format = bb.Attribute("import_format", user_defined=True)
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(PaperCreateArg, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+PaperCreateArg_validator = bv.Struct(PaperCreateArg)
+
+class PaperCreateError(PaperContentError):
+    """
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+
+    :ivar files.PaperCreateError.invalid_path: The file could not be saved to
+        the specified location.
+    :ivar files.PaperCreateError.email_unverified: The user's email must be
+        verified to create Paper docs.
+    :ivar files.PaperCreateError.invalid_file_extension: The file path must end
+        in .paper.
+    :ivar files.PaperCreateError.paper_disabled: Paper is disabled for your
+        team.
+    """
+
+    # Attribute is overwritten below the class definition
+    invalid_path = None
+    # Attribute is overwritten below the class definition
+    email_unverified = None
+    # Attribute is overwritten below the class definition
+    invalid_file_extension = None
+    # Attribute is overwritten below the class definition
+    paper_disabled = None
+
+    def is_invalid_path(self):
+        """
+        Check if the union tag is ``invalid_path``.
+
+        :rtype: bool
+        """
+        return self._tag == 'invalid_path'
+
+    def is_email_unverified(self):
+        """
+        Check if the union tag is ``email_unverified``.
+
+        :rtype: bool
+        """
+        return self._tag == 'email_unverified'
+
+    def is_invalid_file_extension(self):
+        """
+        Check if the union tag is ``invalid_file_extension``.
+
+        :rtype: bool
+        """
+        return self._tag == 'invalid_file_extension'
+
+    def is_paper_disabled(self):
+        """
+        Check if the union tag is ``paper_disabled``.
+
+        :rtype: bool
+        """
+        return self._tag == 'paper_disabled'
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(PaperCreateError, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+PaperCreateError_validator = bv.Union(PaperCreateError)
+
+class PaperCreateResult(bb.Struct):
+    """
+    :ivar files.PaperCreateResult.url: URL to open the Paper Doc.
+    :ivar files.PaperCreateResult.result_path: The fully qualified path the
+        Paper Doc was actually created at.
+    :ivar files.PaperCreateResult.file_id: The id to use in Dropbox APIs when
+        referencing the Paper Doc.
+    :ivar files.PaperCreateResult.paper_revision: The current doc revision.
+    """
+
+    __slots__ = [
+        '_url_value',
+        '_result_path_value',
+        '_file_id_value',
+        '_paper_revision_value',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 url=None,
+                 result_path=None,
+                 file_id=None,
+                 paper_revision=None):
+        self._url_value = bb.NOT_SET
+        self._result_path_value = bb.NOT_SET
+        self._file_id_value = bb.NOT_SET
+        self._paper_revision_value = bb.NOT_SET
+        if url is not None:
+            self.url = url
+        if result_path is not None:
+            self.result_path = result_path
+        if file_id is not None:
+            self.file_id = file_id
+        if paper_revision is not None:
+            self.paper_revision = paper_revision
+
+    # Instance attribute type: str (validator is set below)
+    url = bb.Attribute("url")
+
+    # Instance attribute type: str (validator is set below)
+    result_path = bb.Attribute("result_path")
+
+    # Instance attribute type: str (validator is set below)
+    file_id = bb.Attribute("file_id")
+
+    # Instance attribute type: int (validator is set below)
+    paper_revision = bb.Attribute("paper_revision")
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(PaperCreateResult, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+PaperCreateResult_validator = bv.Struct(PaperCreateResult)
+
+class PaperDocUpdatePolicy(bb.Union):
+    """
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+
+    :ivar files.PaperDocUpdatePolicy.update: Sets the doc content to the
+        provided content if the provided paper_revision matches the latest doc
+        revision. Otherwise, returns an error.
+    :ivar files.PaperDocUpdatePolicy.overwrite: Sets the doc content to the
+        provided content without checking paper_revision.
+    :ivar files.PaperDocUpdatePolicy.prepend: Adds the provided content to the
+        beginning of the doc without checking paper_revision.
+    :ivar files.PaperDocUpdatePolicy.append: Adds the provided content to the
+        end of the doc without checking paper_revision.
+    """
+
+    _catch_all = 'other'
+    # Attribute is overwritten below the class definition
+    update = None
+    # Attribute is overwritten below the class definition
+    overwrite = None
+    # Attribute is overwritten below the class definition
+    prepend = None
+    # Attribute is overwritten below the class definition
+    append = None
+    # Attribute is overwritten below the class definition
+    other = None
+
+    def is_update(self):
+        """
+        Check if the union tag is ``update``.
+
+        :rtype: bool
+        """
+        return self._tag == 'update'
+
+    def is_overwrite(self):
+        """
+        Check if the union tag is ``overwrite``.
+
+        :rtype: bool
+        """
+        return self._tag == 'overwrite'
+
+    def is_prepend(self):
+        """
+        Check if the union tag is ``prepend``.
+
+        :rtype: bool
+        """
+        return self._tag == 'prepend'
+
+    def is_append(self):
+        """
+        Check if the union tag is ``append``.
+
+        :rtype: bool
+        """
+        return self._tag == 'append'
+
+    def is_other(self):
+        """
+        Check if the union tag is ``other``.
+
+        :rtype: bool
+        """
+        return self._tag == 'other'
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(PaperDocUpdatePolicy, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+PaperDocUpdatePolicy_validator = bv.Union(PaperDocUpdatePolicy)
+
+class PaperUpdateArg(bb.Struct):
+    """
+    :ivar files.PaperUpdateArg.path: Path in the user's Dropbox to update. The
+        path must correspond to a Paper doc or an error will be returned.
+    :ivar files.PaperUpdateArg.import_format: The format of the provided data.
+    :ivar files.PaperUpdateArg.doc_update_policy: How the provided content
+        should be applied to the doc.
+    :ivar files.PaperUpdateArg.paper_revision: The latest doc revision. Required
+        when doc_update_policy is update. This value must match the current
+        revision of the doc or error revision_mismatch will be returned.
+    """
+
+    __slots__ = [
+        '_path_value',
+        '_import_format_value',
+        '_doc_update_policy_value',
+        '_paper_revision_value',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 path=None,
+                 import_format=None,
+                 doc_update_policy=None,
+                 paper_revision=None):
+        self._path_value = bb.NOT_SET
+        self._import_format_value = bb.NOT_SET
+        self._doc_update_policy_value = bb.NOT_SET
+        self._paper_revision_value = bb.NOT_SET
+        if path is not None:
+            self.path = path
+        if import_format is not None:
+            self.import_format = import_format
+        if doc_update_policy is not None:
+            self.doc_update_policy = doc_update_policy
+        if paper_revision is not None:
+            self.paper_revision = paper_revision
+
+    # Instance attribute type: str (validator is set below)
+    path = bb.Attribute("path")
+
+    # Instance attribute type: ImportFormat (validator is set below)
+    import_format = bb.Attribute("import_format", user_defined=True)
+
+    # Instance attribute type: PaperDocUpdatePolicy (validator is set below)
+    doc_update_policy = bb.Attribute("doc_update_policy", user_defined=True)
+
+    # Instance attribute type: int (validator is set below)
+    paper_revision = bb.Attribute("paper_revision", nullable=True)
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(PaperUpdateArg, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+PaperUpdateArg_validator = bv.Struct(PaperUpdateArg)
+
+class PaperUpdateError(PaperContentError):
+    """
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+
+    :ivar files.PaperUpdateError.revision_mismatch: The provided revision does
+        not match the document head.
+    :ivar files.PaperUpdateError.doc_archived: This operation is not allowed on
+        archived Paper docs.
+    :ivar files.PaperUpdateError.doc_deleted: This operation is not allowed on
+        deleted Paper docs.
+    """
+
+    # Attribute is overwritten below the class definition
+    revision_mismatch = None
+    # Attribute is overwritten below the class definition
+    doc_archived = None
+    # Attribute is overwritten below the class definition
+    doc_deleted = None
+
+    @classmethod
+    def path(cls, val):
+        """
+        Create an instance of this class set to the ``path`` tag with value
+        ``val``.
+
+        :param LookupError val:
+        :rtype: PaperUpdateError
+        """
+        return cls('path', val)
+
+    def is_path(self):
+        """
+        Check if the union tag is ``path``.
+
+        :rtype: bool
+        """
+        return self._tag == 'path'
+
+    def is_revision_mismatch(self):
+        """
+        Check if the union tag is ``revision_mismatch``.
+
+        :rtype: bool
+        """
+        return self._tag == 'revision_mismatch'
+
+    def is_doc_archived(self):
+        """
+        Check if the union tag is ``doc_archived``.
+
+        :rtype: bool
+        """
+        return self._tag == 'doc_archived'
+
+    def is_doc_deleted(self):
+        """
+        Check if the union tag is ``doc_deleted``.
+
+        :rtype: bool
+        """
+        return self._tag == 'doc_deleted'
+
+    def get_path(self):
+        """
+        Only call this if :meth:`is_path` is true.
+
+        :rtype: LookupError
+        """
+        if not self.is_path():
+            raise AttributeError("tag 'path' not set")
+        return self._value
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(PaperUpdateError, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+PaperUpdateError_validator = bv.Union(PaperUpdateError)
+
+class PaperUpdateResult(bb.Struct):
+    """
+    :ivar files.PaperUpdateResult.paper_revision: The current doc revision.
+    """
+
+    __slots__ = [
+        '_paper_revision_value',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 paper_revision=None):
+        self._paper_revision_value = bb.NOT_SET
+        if paper_revision is not None:
+            self.paper_revision = paper_revision
+
+    # Instance attribute type: int (validator is set below)
+    paper_revision = bb.Attribute("paper_revision")
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(PaperUpdateResult, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+PaperUpdateResult_validator = bv.Struct(PaperUpdateResult)
 
 class PathOrLink(bb.Union):
     """
@@ -10423,6 +10947,22 @@ HighlightSpan._all_fields_ = [
     ('is_highlighted', HighlightSpan.is_highlighted.validator),
 ]
 
+ImportFormat._html_validator = bv.Void()
+ImportFormat._markdown_validator = bv.Void()
+ImportFormat._plain_text_validator = bv.Void()
+ImportFormat._other_validator = bv.Void()
+ImportFormat._tagmap = {
+    'html': ImportFormat._html_validator,
+    'markdown': ImportFormat._markdown_validator,
+    'plain_text': ImportFormat._plain_text_validator,
+    'other': ImportFormat._other_validator,
+}
+
+ImportFormat.html = ImportFormat('html')
+ImportFormat.markdown = ImportFormat('markdown')
+ImportFormat.plain_text = ImportFormat('plain_text')
+ImportFormat.other = ImportFormat('other')
+
 ListFolderArg.path.validator = PathROrId_validator
 ListFolderArg.recursive.validator = bv.Boolean()
 ListFolderArg.include_media_info.validator = bv.Boolean()
@@ -10760,6 +11300,126 @@ MoveIntoVaultError._tagmap = {
 
 MoveIntoVaultError.is_shared_folder = MoveIntoVaultError('is_shared_folder')
 MoveIntoVaultError.other = MoveIntoVaultError('other')
+
+PaperContentError._insufficient_permissions_validator = bv.Void()
+PaperContentError._content_malformed_validator = bv.Void()
+PaperContentError._doc_length_exceeded_validator = bv.Void()
+PaperContentError._image_size_exceeded_validator = bv.Void()
+PaperContentError._other_validator = bv.Void()
+PaperContentError._tagmap = {
+    'insufficient_permissions': PaperContentError._insufficient_permissions_validator,
+    'content_malformed': PaperContentError._content_malformed_validator,
+    'doc_length_exceeded': PaperContentError._doc_length_exceeded_validator,
+    'image_size_exceeded': PaperContentError._image_size_exceeded_validator,
+    'other': PaperContentError._other_validator,
+}
+
+PaperContentError.insufficient_permissions = PaperContentError('insufficient_permissions')
+PaperContentError.content_malformed = PaperContentError('content_malformed')
+PaperContentError.doc_length_exceeded = PaperContentError('doc_length_exceeded')
+PaperContentError.image_size_exceeded = PaperContentError('image_size_exceeded')
+PaperContentError.other = PaperContentError('other')
+
+PaperCreateArg.path.validator = Path_validator
+PaperCreateArg.import_format.validator = ImportFormat_validator
+PaperCreateArg._all_field_names_ = set([
+    'path',
+    'import_format',
+])
+PaperCreateArg._all_fields_ = [
+    ('path', PaperCreateArg.path.validator),
+    ('import_format', PaperCreateArg.import_format.validator),
+]
+
+PaperCreateError._invalid_path_validator = bv.Void()
+PaperCreateError._email_unverified_validator = bv.Void()
+PaperCreateError._invalid_file_extension_validator = bv.Void()
+PaperCreateError._paper_disabled_validator = bv.Void()
+PaperCreateError._tagmap = {
+    'invalid_path': PaperCreateError._invalid_path_validator,
+    'email_unverified': PaperCreateError._email_unverified_validator,
+    'invalid_file_extension': PaperCreateError._invalid_file_extension_validator,
+    'paper_disabled': PaperCreateError._paper_disabled_validator,
+}
+PaperCreateError._tagmap.update(PaperContentError._tagmap)
+
+PaperCreateError.invalid_path = PaperCreateError('invalid_path')
+PaperCreateError.email_unverified = PaperCreateError('email_unverified')
+PaperCreateError.invalid_file_extension = PaperCreateError('invalid_file_extension')
+PaperCreateError.paper_disabled = PaperCreateError('paper_disabled')
+
+PaperCreateResult.url.validator = bv.String()
+PaperCreateResult.result_path.validator = bv.String()
+PaperCreateResult.file_id.validator = FileId_validator
+PaperCreateResult.paper_revision.validator = bv.Int64()
+PaperCreateResult._all_field_names_ = set([
+    'url',
+    'result_path',
+    'file_id',
+    'paper_revision',
+])
+PaperCreateResult._all_fields_ = [
+    ('url', PaperCreateResult.url.validator),
+    ('result_path', PaperCreateResult.result_path.validator),
+    ('file_id', PaperCreateResult.file_id.validator),
+    ('paper_revision', PaperCreateResult.paper_revision.validator),
+]
+
+PaperDocUpdatePolicy._update_validator = bv.Void()
+PaperDocUpdatePolicy._overwrite_validator = bv.Void()
+PaperDocUpdatePolicy._prepend_validator = bv.Void()
+PaperDocUpdatePolicy._append_validator = bv.Void()
+PaperDocUpdatePolicy._other_validator = bv.Void()
+PaperDocUpdatePolicy._tagmap = {
+    'update': PaperDocUpdatePolicy._update_validator,
+    'overwrite': PaperDocUpdatePolicy._overwrite_validator,
+    'prepend': PaperDocUpdatePolicy._prepend_validator,
+    'append': PaperDocUpdatePolicy._append_validator,
+    'other': PaperDocUpdatePolicy._other_validator,
+}
+
+PaperDocUpdatePolicy.update = PaperDocUpdatePolicy('update')
+PaperDocUpdatePolicy.overwrite = PaperDocUpdatePolicy('overwrite')
+PaperDocUpdatePolicy.prepend = PaperDocUpdatePolicy('prepend')
+PaperDocUpdatePolicy.append = PaperDocUpdatePolicy('append')
+PaperDocUpdatePolicy.other = PaperDocUpdatePolicy('other')
+
+PaperUpdateArg.path.validator = WritePathOrId_validator
+PaperUpdateArg.import_format.validator = ImportFormat_validator
+PaperUpdateArg.doc_update_policy.validator = PaperDocUpdatePolicy_validator
+PaperUpdateArg.paper_revision.validator = bv.Nullable(bv.Int64())
+PaperUpdateArg._all_field_names_ = set([
+    'path',
+    'import_format',
+    'doc_update_policy',
+    'paper_revision',
+])
+PaperUpdateArg._all_fields_ = [
+    ('path', PaperUpdateArg.path.validator),
+    ('import_format', PaperUpdateArg.import_format.validator),
+    ('doc_update_policy', PaperUpdateArg.doc_update_policy.validator),
+    ('paper_revision', PaperUpdateArg.paper_revision.validator),
+]
+
+PaperUpdateError._path_validator = LookupError_validator
+PaperUpdateError._revision_mismatch_validator = bv.Void()
+PaperUpdateError._doc_archived_validator = bv.Void()
+PaperUpdateError._doc_deleted_validator = bv.Void()
+PaperUpdateError._tagmap = {
+    'path': PaperUpdateError._path_validator,
+    'revision_mismatch': PaperUpdateError._revision_mismatch_validator,
+    'doc_archived': PaperUpdateError._doc_archived_validator,
+    'doc_deleted': PaperUpdateError._doc_deleted_validator,
+}
+PaperUpdateError._tagmap.update(PaperContentError._tagmap)
+
+PaperUpdateError.revision_mismatch = PaperUpdateError('revision_mismatch')
+PaperUpdateError.doc_archived = PaperUpdateError('doc_archived')
+PaperUpdateError.doc_deleted = PaperUpdateError('doc_deleted')
+
+PaperUpdateResult.paper_revision.validator = bv.Int64()
+PaperUpdateResult._all_field_names_ = set(['paper_revision'])
+PaperUpdateResult._all_fields_ = [('paper_revision', PaperUpdateResult.paper_revision.validator)]
 
 PathOrLink._path_validator = ReadPath_validator
 PathOrLink._link_validator = SharedLinkFileInfo_validator
@@ -12246,6 +12906,28 @@ move_batch_check = bb.Route(
      'host': u'api',
      'style': u'rpc'},
 )
+paper_create = bb.Route(
+    'paper/create',
+    1,
+    False,
+    PaperCreateArg_validator,
+    PaperCreateResult_validator,
+    PaperCreateError_validator,
+    {'auth': u'user',
+     'host': u'api',
+     'style': u'upload'},
+)
+paper_update = bb.Route(
+    'paper/update',
+    1,
+    False,
+    PaperUpdateArg_validator,
+    PaperUpdateResult_validator,
+    PaperUpdateError_validator,
+    {'auth': u'user',
+     'host': u'api',
+     'style': u'upload'},
+)
 permanently_delete = bb.Route(
     'permanently_delete',
     1,
@@ -12520,6 +13202,8 @@ ROUTES = {
     'move_batch': move_batch,
     'move_batch/check:2': move_batch_check_v2,
     'move_batch/check': move_batch_check,
+    'paper/create': paper_create,
+    'paper/update': paper_update,
     'permanently_delete': permanently_delete,
     'properties/add': properties_add,
     'properties/overwrite': properties_overwrite,

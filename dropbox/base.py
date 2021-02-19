@@ -2335,6 +2335,73 @@ class DropboxBase(object):
         )
         return r
 
+    def files_paper_create(self,
+                           f,
+                           path,
+                           import_format):
+        """
+        Creates a new Paper doc with the provided content.
+
+        :param bytes f: Contents to upload.
+        :param str path: The fully qualified path to the location in the user's
+            Dropbox where the Paper Doc should be created. This should include
+            the document's title and end with .paper.
+        :param import_format: The format of the provided data.
+        :type import_format: :class:`dropbox.files.ImportFormat`
+        :rtype: :class:`dropbox.files.PaperCreateResult`
+        :raises: :class:`.exceptions.ApiError`
+
+        If this raises, ApiError will contain:
+            :class:`dropbox.files.PaperCreateError`
+        """
+        arg = files.PaperCreateArg(path,
+                                   import_format)
+        r = self.request(
+            files.paper_create,
+            'files',
+            arg,
+            f,
+        )
+        return r
+
+    def files_paper_update(self,
+                           f,
+                           path,
+                           import_format,
+                           doc_update_policy,
+                           paper_revision=None):
+        """
+        Updates an existing Paper doc with the provided content.
+
+        :param bytes f: Contents to upload.
+        :param str path: Path in the user's Dropbox to update. The path must
+            correspond to a Paper doc or an error will be returned.
+        :param import_format: The format of the provided data.
+        :type import_format: :class:`dropbox.files.ImportFormat`
+        :param doc_update_policy: How the provided content should be applied to
+            the doc.
+        :type doc_update_policy: :class:`dropbox.files.PaperDocUpdatePolicy`
+        :param Nullable[int] paper_revision: The latest doc revision. Required
+            when doc_update_policy is update. This value must match the current
+            revision of the doc or error revision_mismatch will be returned.
+        :rtype: :class:`dropbox.files.PaperUpdateResult`
+        :raises: :class:`.exceptions.ApiError`
+
+        If this raises, ApiError will contain:
+            :class:`dropbox.files.PaperUpdateError`
+        """
+        arg = files.PaperUpdateArg(path,
+                                   import_format,
+                                   doc_update_policy,
+                                   paper_revision)
+        r = self.request(
+            files.paper_update,
+            'files',
+            arg,
+            f,
+        )
+        return r
+
     def files_permanently_delete(self,
                                  path,
                                  parent_rev=None):
