@@ -1927,7 +1927,8 @@ class DropboxTeamBase(object):
                                   start_date=None,
                                   end_date=None):
         """
-        Retrieves reporting data about a team's user activity.
+        Retrieves reporting data about a team's user activity. Deprecated: Will
+        be removed on July 1st 2021.
 
         :param Nullable[datetime] start_date: Optional starting date
             (inclusive). If start_date is None or too long ago, this field will
@@ -1957,7 +1958,8 @@ class DropboxTeamBase(object):
                                  start_date=None,
                                  end_date=None):
         """
-        Retrieves reporting data about a team's linked devices.
+        Retrieves reporting data about a team's linked devices. Deprecated: Will
+        be removed on July 1st 2021.
 
         :param Nullable[datetime] start_date: Optional starting date
             (inclusive). If start_date is None or too long ago, this field will
@@ -1987,7 +1989,8 @@ class DropboxTeamBase(object):
                                     start_date=None,
                                     end_date=None):
         """
-        Retrieves reporting data about a team's membership.
+        Retrieves reporting data about a team's membership. Deprecated: Will be
+        removed on July 1st 2021.
 
         :param Nullable[datetime] start_date: Optional starting date
             (inclusive). If start_date is None or too long ago, this field will
@@ -2017,7 +2020,8 @@ class DropboxTeamBase(object):
                                  start_date=None,
                                  end_date=None):
         """
-        Retrieves reporting data about a team's storage usage.
+        Retrieves reporting data about a team's storage usage. Deprecated: Will
+        be removed on July 1st 2021.
 
         :param Nullable[datetime] start_date: Optional starting date
             (inclusive). If start_date is None or too long ago, this field will
