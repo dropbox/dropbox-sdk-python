@@ -31,7 +31,7 @@ install_reqs = [
 ]
 
 setup_requires = [
-    'pytest-runner',
+    'pytest-runner == 5.2.0',
 ]
 
 test_reqs = [
