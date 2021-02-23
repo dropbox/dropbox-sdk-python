@@ -365,7 +365,6 @@ class DropboxOAuth2Flow(DropboxOAuth2FlowBase):
         Construct an instance.
 
         :param str consumer_key: Your API app's "app key".
-        :param str consumer_secret: Your API app's "app secret".
         :param str redirect_uri: The URI that the Dropbox server will redirect the user to after the
             user finishes authorizing your app.  This URI must be HTTPS-based and pre-registered
             with the Dropbox servers, though localhost URIs are allowed without pre-registration and
@@ -374,6 +373,7 @@ class DropboxOAuth2Flow(DropboxOAuth2FlowBase):
             (Will be used to save the CSRF token).
         :param str csrf_token_session_key: The key to use when storing the CSRF token in the session
             (For example: "dropbox-auth-csrf-token").
+        :param str consumer_secret: Your API app's "app secret".
         :param str locale: The locale of the user of your application. For example "en" or "en_US".
             Some API calls return localized data and error messages; this setting tells the server
             which locale to use. By default, the server uses "en_US".
