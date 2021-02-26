@@ -24,11 +24,12 @@ for line in open(dbx_mod_path):
         break
 version = eval(line.split('=', 1)[1].strip())  # pylint: disable=eval-used
 
-install_reqs = [
-    'requests >= 2.16.2',
-    'six >= 1.12.0',
-    'stone >= 2.*',
-]
+# WARNING: This imposes limitations on test/requirements.txt such that the
+# full Pip syntax is not supported. See also
+# <http://stackoverflow.com/questions/14399534/>.
+install_reqs = []
+with open('requirements.txt') as f:
+    install_reqs += f.read().splitlines()
 
 setup_requires = [
     # Pin pytest-runner to 5.2.0, since 5.3.0 uses `find_namespaces` directive, not supported in
@@ -36,13 +37,10 @@ setup_requires = [
     'pytest-runner == 5.2.0',
 ]
 
-test_reqs = [
-    'pytest',
-]
-
 # WARNING: This imposes limitations on test/requirements.txt such that the
 # full Pip syntax is not supported. See also
 # <http://stackoverflow.com/questions/14399534/>.
+test_reqs = []
 with open('test/requirements.txt') as f:
     test_reqs += f.read().splitlines()
 
