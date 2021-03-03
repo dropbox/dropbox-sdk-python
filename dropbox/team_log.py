@@ -1569,6 +1569,8 @@ class AdminRole(bb.Union):
 
     _catch_all = 'other'
     # Attribute is overwritten below the class definition
+    billing_admin = None
+    # Attribute is overwritten below the class definition
     limited_admin = None
     # Attribute is overwritten below the class definition
     member_only = None
@@ -1580,6 +1582,14 @@ class AdminRole(bb.Union):
     user_management_admin = None
     # Attribute is overwritten below the class definition
     other = None
+
+    def is_billing_admin(self):
+        """
+        Check if the union tag is ``billing_admin``.
+
+        :rtype: bool
+        """
+        return self._tag == 'billing_admin'
 
     def is_limited_admin(self):
         """
@@ -69352,6 +69362,7 @@ AdminAlertingTriggeredAlertType.description.validator = bv.String()
 AdminAlertingTriggeredAlertType._all_field_names_ = set(['description'])
 AdminAlertingTriggeredAlertType._all_fields_ = [('description', AdminAlertingTriggeredAlertType.description.validator)]
 
+AdminRole._billing_admin_validator = bv.Void()
 AdminRole._limited_admin_validator = bv.Void()
 AdminRole._member_only_validator = bv.Void()
 AdminRole._support_admin_validator = bv.Void()
@@ -69359,6 +69370,7 @@ AdminRole._team_admin_validator = bv.Void()
 AdminRole._user_management_admin_validator = bv.Void()
 AdminRole._other_validator = bv.Void()
 AdminRole._tagmap = {
+    'billing_admin': AdminRole._billing_admin_validator,
     'limited_admin': AdminRole._limited_admin_validator,
     'member_only': AdminRole._member_only_validator,
     'support_admin': AdminRole._support_admin_validator,
@@ -69367,6 +69379,7 @@ AdminRole._tagmap = {
     'other': AdminRole._other_validator,
 }
 
+AdminRole.billing_admin = AdminRole('billing_admin')
 AdminRole.limited_admin = AdminRole('limited_admin')
 AdminRole.member_only = AdminRole('member_only')
 AdminRole.support_admin = AdminRole('support_admin')
