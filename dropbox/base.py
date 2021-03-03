@@ -90,7 +90,10 @@ class DropboxBase(object):
 
     def auth_token_revoke(self):
         """
-        Disables the access token used to authenticate the call.
+        Disables the access token used to authenticate the call. If there is a
+        corresponding refresh token for the access token, this disables that
+        refresh token, as well as any other access tokens for that refresh
+        token.
 
         :rtype: None
         """
@@ -1317,9 +1320,10 @@ class DropboxBase(object):
                            path):
         """
         Download a folder from the user's Dropbox, as a zip file. The folder
-        must be less than 20 GB in size and have fewer than 10,000 total files.
-        The input cannot be a single file. Any single file must be less than 4GB
-        in size.
+        must be less than 20 GB in size and any single file within must be less
+        than 4 GB in size. The resulting zip must have fewer than 10,000 total
+        file and folder entries, including the top level folder. The input
+        cannot be a single file.
 
         :param str path: The path of the folder to download.
         :rtype: (:class:`dropbox.files.DownloadZipResult`,
@@ -1349,9 +1353,10 @@ class DropboxBase(object):
                                    path):
         """
         Download a folder from the user's Dropbox, as a zip file. The folder
-        must be less than 20 GB in size and have fewer than 10,000 total files.
-        The input cannot be a single file. Any single file must be less than 4GB
-        in size.
+        must be less than 20 GB in size and any single file within must be less
+        than 4 GB in size. The resulting zip must have fewer than 10,000 total
+        file and folder entries, including the top level folder. The input
+        cannot be a single file.
 
         :param str download_path: Path on local machine to save file.
         :param str path: The path of the folder to download.
