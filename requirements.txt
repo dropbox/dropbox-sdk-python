@@ -2,7 +2,7 @@ ply
 pytest
 pytest-runner
 requests
-six==1.14.0
+six
 sphinx
 twine
 wheel
