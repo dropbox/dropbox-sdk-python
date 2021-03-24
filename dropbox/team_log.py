@@ -3366,6 +3366,10 @@ class ClassificationPolicyEnumWrapper(bb.Union):
     # Attribute is overwritten below the class definition
     enabled = None
     # Attribute is overwritten below the class definition
+    member_and_team_folders = None
+    # Attribute is overwritten below the class definition
+    team_folders = None
+    # Attribute is overwritten below the class definition
     other = None
 
     def is_disabled(self):
@@ -3383,6 +3387,22 @@ class ClassificationPolicyEnumWrapper(bb.Union):
         :rtype: bool
         """
         return self._tag == 'enabled'
+
+    def is_member_and_team_folders(self):
+        """
+        Check if the union tag is ``member_and_team_folders``.
+
+        :rtype: bool
+        """
+        return self._tag == 'member_and_team_folders'
+
+    def is_team_folders(self):
+        """
+        Check if the union tag is ``team_folders``.
+
+        :rtype: bool
+        """
+        return self._tag == 'team_folders'
 
     def is_other(self):
         """
@@ -69789,15 +69809,21 @@ ClassificationCreateReportType._all_fields_ = [('description', ClassificationCre
 
 ClassificationPolicyEnumWrapper._disabled_validator = bv.Void()
 ClassificationPolicyEnumWrapper._enabled_validator = bv.Void()
+ClassificationPolicyEnumWrapper._member_and_team_folders_validator = bv.Void()
+ClassificationPolicyEnumWrapper._team_folders_validator = bv.Void()
 ClassificationPolicyEnumWrapper._other_validator = bv.Void()
 ClassificationPolicyEnumWrapper._tagmap = {
     'disabled': ClassificationPolicyEnumWrapper._disabled_validator,
     'enabled': ClassificationPolicyEnumWrapper._enabled_validator,
+    'member_and_team_folders': ClassificationPolicyEnumWrapper._member_and_team_folders_validator,
+    'team_folders': ClassificationPolicyEnumWrapper._team_folders_validator,
     'other': ClassificationPolicyEnumWrapper._other_validator,
 }
 
 ClassificationPolicyEnumWrapper.disabled = ClassificationPolicyEnumWrapper('disabled')
 ClassificationPolicyEnumWrapper.enabled = ClassificationPolicyEnumWrapper('enabled')
+ClassificationPolicyEnumWrapper.member_and_team_folders = ClassificationPolicyEnumWrapper('member_and_team_folders')
+ClassificationPolicyEnumWrapper.team_folders = ClassificationPolicyEnumWrapper('team_folders')
 ClassificationPolicyEnumWrapper.other = ClassificationPolicyEnumWrapper('other')
 
 ClassificationType._personal_information_validator = bv.Void()

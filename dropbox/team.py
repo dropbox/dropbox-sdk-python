@@ -591,7 +591,8 @@ class AdminTier(bb.Union):
     :ivar team.AdminTier.user_management_admin: User can do most user
         provisioning, de-provisioning and management.
     :ivar team.AdminTier.support_admin: User can do a limited set of common
-        support tasks for existing users.
+        support tasks for existing users. Note: Dropbox is adding new types of
+        admin roles; these may display as support_admin.
     :ivar team.AdminTier.member_only: User is not an admin of the team.
     """
 
