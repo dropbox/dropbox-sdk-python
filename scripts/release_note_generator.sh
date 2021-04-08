@@ -1,5 +1,6 @@
 #!/bin/sh
 
+git fetch origin --tags
 last_version=$(git tag --sort v:refname | tail -n 2 | head -n 1)
 echo "Getting commit history since $last_version"
 num_commits=$(git rev-list --count $last_version..HEAD)
