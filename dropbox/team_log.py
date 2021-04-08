@@ -1085,6 +1085,8 @@ class AdminAlertCategoryEnum(bb.Union):
     # Attribute is overwritten below the class definition
     data_loss_protection = None
     # Attribute is overwritten below the class definition
+    information_governance = None
+    # Attribute is overwritten below the class definition
     malware_sharing = None
     # Attribute is overwritten below the class definition
     massive_file_operation = None
@@ -1110,6 +1112,14 @@ class AdminAlertCategoryEnum(bb.Union):
         :rtype: bool
         """
         return self._tag == 'data_loss_protection'
+
+    def is_information_governance(self):
+        """
+        Check if the union tag is ``information_governance``.
+
+        :rtype: bool
+        """
+        return self._tag == 'information_governance'
 
     def is_malware_sharing(self):
         """
@@ -1560,6 +1570,104 @@ class AdminAlertingTriggeredAlertType(bb.Struct):
 
 AdminAlertingTriggeredAlertType_validator = bv.Struct(AdminAlertingTriggeredAlertType)
 
+class AdminConsoleAppPermission(bb.Union):
+    """
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+    """
+
+    _catch_all = 'other'
+    # Attribute is overwritten below the class definition
+    default_for_listed_apps = None
+    # Attribute is overwritten below the class definition
+    default_for_unlisted_apps = None
+    # Attribute is overwritten below the class definition
+    other = None
+
+    def is_default_for_listed_apps(self):
+        """
+        Check if the union tag is ``default_for_listed_apps``.
+
+        :rtype: bool
+        """
+        return self._tag == 'default_for_listed_apps'
+
+    def is_default_for_unlisted_apps(self):
+        """
+        Check if the union tag is ``default_for_unlisted_apps``.
+
+        :rtype: bool
+        """
+        return self._tag == 'default_for_unlisted_apps'
+
+    def is_other(self):
+        """
+        Check if the union tag is ``other``.
+
+        :rtype: bool
+        """
+        return self._tag == 'other'
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(AdminConsoleAppPermission, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+AdminConsoleAppPermission_validator = bv.Union(AdminConsoleAppPermission)
+
+class AdminConsoleAppPolicy(bb.Union):
+    """
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+    """
+
+    _catch_all = 'other'
+    # Attribute is overwritten below the class definition
+    allow = None
+    # Attribute is overwritten below the class definition
+    block = None
+    # Attribute is overwritten below the class definition
+    default = None
+    # Attribute is overwritten below the class definition
+    other = None
+
+    def is_allow(self):
+        """
+        Check if the union tag is ``allow``.
+
+        :rtype: bool
+        """
+        return self._tag == 'allow'
+
+    def is_block(self):
+        """
+        Check if the union tag is ``block``.
+
+        :rtype: bool
+        """
+        return self._tag == 'block'
+
+    def is_default(self):
+        """
+        Check if the union tag is ``default``.
+
+        :rtype: bool
+        """
+        return self._tag == 'default'
+
+    def is_other(self):
+        """
+        Check if the union tag is ``other``.
+
+        :rtype: bool
+        """
+        return self._tag == 'other'
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(AdminConsoleAppPolicy, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+AdminConsoleAppPolicy_validator = bv.Union(AdminConsoleAppPolicy)
+
 class AdminRole(bb.Union):
     """
     This class acts as a tagged union. Only one of the ``is_*`` methods will
@@ -1571,9 +1679,17 @@ class AdminRole(bb.Union):
     # Attribute is overwritten below the class definition
     billing_admin = None
     # Attribute is overwritten below the class definition
+    compliance_admin = None
+    # Attribute is overwritten below the class definition
+    content_admin = None
+    # Attribute is overwritten below the class definition
     limited_admin = None
     # Attribute is overwritten below the class definition
     member_only = None
+    # Attribute is overwritten below the class definition
+    reporting_admin = None
+    # Attribute is overwritten below the class definition
+    security_admin = None
     # Attribute is overwritten below the class definition
     support_admin = None
     # Attribute is overwritten below the class definition
@@ -1591,6 +1707,22 @@ class AdminRole(bb.Union):
         """
         return self._tag == 'billing_admin'
 
+    def is_compliance_admin(self):
+        """
+        Check if the union tag is ``compliance_admin``.
+
+        :rtype: bool
+        """
+        return self._tag == 'compliance_admin'
+
+    def is_content_admin(self):
+        """
+        Check if the union tag is ``content_admin``.
+
+        :rtype: bool
+        """
+        return self._tag == 'content_admin'
+
     def is_limited_admin(self):
         """
         Check if the union tag is ``limited_admin``.
@@ -1606,6 +1738,22 @@ class AdminRole(bb.Union):
         :rtype: bool
         """
         return self._tag == 'member_only'
+
+    def is_reporting_admin(self):
+        """
+        Check if the union tag is ``reporting_admin``.
+
+        :rtype: bool
+        """
+        return self._tag == 'reporting_admin'
+
+    def is_security_admin(self):
+        """
+        Check if the union tag is ``security_admin``.
+
+        :rtype: bool
+        """
+        return self._tag == 'security_admin'
 
     def is_support_admin(self):
         """
@@ -1817,6 +1965,56 @@ class ApiSessionLogInfo(bb.Struct):
 
 ApiSessionLogInfo_validator = bv.Struct(ApiSessionLogInfo)
 
+class AppBlockedByPermissionsDetails(bb.Struct):
+    """
+    Failed to connect app for member.
+
+    :ivar team_log.AppBlockedByPermissionsDetails.app_info: Relevant application
+        details.
+    """
+
+    __slots__ = [
+        '_app_info_value',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 app_info=None):
+        self._app_info_value = bb.NOT_SET
+        if app_info is not None:
+            self.app_info = app_info
+
+    # Instance attribute type: AppLogInfo (validator is set below)
+    app_info = bb.Attribute("app_info", user_defined=True)
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(AppBlockedByPermissionsDetails, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+AppBlockedByPermissionsDetails_validator = bv.Struct(AppBlockedByPermissionsDetails)
+
+class AppBlockedByPermissionsType(bb.Struct):
+
+    __slots__ = [
+        '_description_value',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 description=None):
+        self._description_value = bb.NOT_SET
+        if description is not None:
+            self.description = description
+
+    # Instance attribute type: str (validator is set below)
+    description = bb.Attribute("description")
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(AppBlockedByPermissionsType, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+AppBlockedByPermissionsType_validator = bv.Struct(AppBlockedByPermissionsType)
+
 class AppLinkTeamDetails(bb.Struct):
     """
     Linked app for team.
@@ -1950,6 +2148,83 @@ class AppLogInfo(bb.Struct):
         super(AppLogInfo, self)._process_custom_annotations(annotation_type, field_path, processor)
 
 AppLogInfo_validator = bv.StructTree(AppLogInfo)
+
+class AppPermissionsChangedDetails(bb.Struct):
+    """
+    Changed app permissions.
+
+    :ivar team_log.AppPermissionsChangedDetails.app_name: Name of the app.
+    :ivar team_log.AppPermissionsChangedDetails.permission: Permission that was
+        changed.
+    :ivar team_log.AppPermissionsChangedDetails.previous_value: Previous policy.
+    :ivar team_log.AppPermissionsChangedDetails.new_value: New policy.
+    """
+
+    __slots__ = [
+        '_app_name_value',
+        '_permission_value',
+        '_previous_value_value',
+        '_new_value_value',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 previous_value=None,
+                 new_value=None,
+                 app_name=None,
+                 permission=None):
+        self._app_name_value = bb.NOT_SET
+        self._permission_value = bb.NOT_SET
+        self._previous_value_value = bb.NOT_SET
+        self._new_value_value = bb.NOT_SET
+        if app_name is not None:
+            self.app_name = app_name
+        if permission is not None:
+            self.permission = permission
+        if previous_value is not None:
+            self.previous_value = previous_value
+        if new_value is not None:
+            self.new_value = new_value
+
+    # Instance attribute type: str (validator is set below)
+    app_name = bb.Attribute("app_name", nullable=True)
+
+    # Instance attribute type: AdminConsoleAppPermission (validator is set below)
+    permission = bb.Attribute("permission", nullable=True, user_defined=True)
+
+    # Instance attribute type: AdminConsoleAppPolicy (validator is set below)
+    previous_value = bb.Attribute("previous_value", user_defined=True)
+
+    # Instance attribute type: AdminConsoleAppPolicy (validator is set below)
+    new_value = bb.Attribute("new_value", user_defined=True)
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(AppPermissionsChangedDetails, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+AppPermissionsChangedDetails_validator = bv.Struct(AppPermissionsChangedDetails)
+
+class AppPermissionsChangedType(bb.Struct):
+
+    __slots__ = [
+        '_description_value',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 description=None):
+        self._description_value = bb.NOT_SET
+        if description is not None:
+            self.description = description
+
+    # Instance attribute type: str (validator is set below)
+    description = bb.Attribute("description")
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(AppPermissionsChangedType, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+AppPermissionsChangedType_validator = bv.Struct(AppPermissionsChangedType)
 
 class AppUnlinkTeamDetails(bb.Struct):
     """
@@ -7092,6 +7367,17 @@ class EventDetails(bb.Union):
         return cls('admin_alerting_triggered_alert_details', val)
 
     @classmethod
+    def app_blocked_by_permissions_details(cls, val):
+        """
+        Create an instance of this class set to the
+        ``app_blocked_by_permissions_details`` tag with value ``val``.
+
+        :param AppBlockedByPermissionsDetails val:
+        :rtype: EventDetails
+        """
+        return cls('app_blocked_by_permissions_details', val)
+
+    @classmethod
     def app_link_team_details(cls, val):
         """
         Create an instance of this class set to the ``app_link_team_details``
@@ -10878,6 +11164,17 @@ class EventDetails(bb.Union):
         return cls('allow_download_enabled_details', val)
 
     @classmethod
+    def app_permissions_changed_details(cls, val):
+        """
+        Create an instance of this class set to the
+        ``app_permissions_changed_details`` tag with value ``val``.
+
+        :param AppPermissionsChangedDetails val:
+        :rtype: EventDetails
+        """
+        return cls('app_permissions_changed_details', val)
+
+    @classmethod
     def camera_uploads_policy_changed_details(cls, val):
         """
         Create an instance of this class set to the
@@ -12199,6 +12496,14 @@ class EventDetails(bb.Union):
         :rtype: bool
         """
         return self._tag == 'admin_alerting_triggered_alert_details'
+
+    def is_app_blocked_by_permissions_details(self):
+        """
+        Check if the union tag is ``app_blocked_by_permissions_details``.
+
+        :rtype: bool
+        """
+        return self._tag == 'app_blocked_by_permissions_details'
 
     def is_app_link_team_details(self):
         """
@@ -14936,6 +15241,14 @@ class EventDetails(bb.Union):
         """
         return self._tag == 'allow_download_enabled_details'
 
+    def is_app_permissions_changed_details(self):
+        """
+        Check if the union tag is ``app_permissions_changed_details``.
+
+        :rtype: bool
+        """
+        return self._tag == 'app_permissions_changed_details'
+
     def is_camera_uploads_policy_changed_details(self):
         """
         Check if the union tag is ``camera_uploads_policy_changed_details``.
@@ -15890,6 +16203,16 @@ class EventDetails(bb.Union):
         """
         if not self.is_admin_alerting_triggered_alert_details():
             raise AttributeError("tag 'admin_alerting_triggered_alert_details' not set")
+        return self._value
+
+    def get_app_blocked_by_permissions_details(self):
+        """
+        Only call this if :meth:`is_app_blocked_by_permissions_details` is true.
+
+        :rtype: AppBlockedByPermissionsDetails
+        """
+        if not self.is_app_blocked_by_permissions_details():
+            raise AttributeError("tag 'app_blocked_by_permissions_details' not set")
         return self._value
 
     def get_app_link_team_details(self):
@@ -19312,6 +19635,16 @@ class EventDetails(bb.Union):
             raise AttributeError("tag 'allow_download_enabled_details' not set")
         return self._value
 
+    def get_app_permissions_changed_details(self):
+        """
+        Only call this if :meth:`is_app_permissions_changed_details` is true.
+
+        :rtype: AppPermissionsChangedDetails
+        """
+        if not self.is_app_permissions_changed_details():
+            raise AttributeError("tag 'app_permissions_changed_details' not set")
+        return self._value
+
     def get_camera_uploads_policy_changed_details(self):
         """
         Only call this if :meth:`is_camera_uploads_policy_changed_details` is true.
@@ -20494,6 +20827,8 @@ class EventType(bb.Union):
     :ivar AdminAlertingTriggeredAlertType
         EventType.admin_alerting_triggered_alert: (admin_alerting) Triggered
         security alert
+    :ivar AppBlockedByPermissionsType EventType.app_blocked_by_permissions:
+        (apps) Failed to connect app for member
     :ivar AppLinkTeamType EventType.app_link_team: (apps) Linked app for team
     :ivar AppLinkUserType EventType.app_link_user: (apps) Linked app for member
     :ivar AppUnlinkTeamType EventType.app_unlink_team: (apps) Unlinked app for
@@ -21281,6 +21616,8 @@ class EventType(bb.Union):
         (team_policies) Disabled downloads (deprecated, no longer logged)
     :ivar AllowDownloadEnabledType EventType.allow_download_enabled:
         (team_policies) Enabled downloads (deprecated, no longer logged)
+    :ivar AppPermissionsChangedType EventType.app_permissions_changed:
+        (team_policies) Changed app permissions
     :ivar CameraUploadsPolicyChangedType
         EventType.camera_uploads_policy_changed: (team_policies) Changed camera
         uploads setting for team
@@ -21627,6 +21964,17 @@ class EventType(bb.Union):
         :rtype: EventType
         """
         return cls('admin_alerting_triggered_alert', val)
+
+    @classmethod
+    def app_blocked_by_permissions(cls, val):
+        """
+        Create an instance of this class set to the
+        ``app_blocked_by_permissions`` tag with value ``val``.
+
+        :param AppBlockedByPermissionsType val:
+        :rtype: EventType
+        """
+        return cls('app_blocked_by_permissions', val)
 
     @classmethod
     def app_link_team(cls, val):
@@ -25395,6 +25743,17 @@ class EventType(bb.Union):
         return cls('allow_download_enabled', val)
 
     @classmethod
+    def app_permissions_changed(cls, val):
+        """
+        Create an instance of this class set to the ``app_permissions_changed``
+        tag with value ``val``.
+
+        :param AppPermissionsChangedType val:
+        :rtype: EventType
+        """
+        return cls('app_permissions_changed', val)
+
+    @classmethod
     def camera_uploads_policy_changed(cls, val):
         """
         Create an instance of this class set to the
@@ -26686,6 +27045,14 @@ class EventType(bb.Union):
         :rtype: bool
         """
         return self._tag == 'admin_alerting_triggered_alert'
+
+    def is_app_blocked_by_permissions(self):
+        """
+        Check if the union tag is ``app_blocked_by_permissions``.
+
+        :rtype: bool
+        """
+        return self._tag == 'app_blocked_by_permissions'
 
     def is_app_link_team(self):
         """
@@ -29423,6 +29790,14 @@ class EventType(bb.Union):
         """
         return self._tag == 'allow_download_enabled'
 
+    def is_app_permissions_changed(self):
+        """
+        Check if the union tag is ``app_permissions_changed``.
+
+        :rtype: bool
+        """
+        return self._tag == 'app_permissions_changed'
+
     def is_camera_uploads_policy_changed(self):
         """
         Check if the union tag is ``camera_uploads_policy_changed``.
@@ -30373,6 +30748,18 @@ class EventType(bb.Union):
         """
         if not self.is_admin_alerting_triggered_alert():
             raise AttributeError("tag 'admin_alerting_triggered_alert' not set")
+        return self._value
+
+    def get_app_blocked_by_permissions(self):
+        """
+        (apps) Failed to connect app for member
+
+        Only call this if :meth:`is_app_blocked_by_permissions` is true.
+
+        :rtype: AppBlockedByPermissionsType
+        """
+        if not self.is_app_blocked_by_permissions():
+            raise AttributeError("tag 'app_blocked_by_permissions' not set")
         return self._value
 
     def get_app_link_team(self):
@@ -34523,6 +34910,18 @@ class EventType(bb.Union):
             raise AttributeError("tag 'allow_download_enabled' not set")
         return self._value
 
+    def get_app_permissions_changed(self):
+        """
+        (team_policies) Changed app permissions
+
+        Only call this if :meth:`is_app_permissions_changed` is true.
+
+        :rtype: AppPermissionsChangedType
+        """
+        if not self.is_app_permissions_changed():
+            raise AttributeError("tag 'app_permissions_changed' not set")
+        return self._value
+
     def get_camera_uploads_policy_changed(self):
         """
         (team_policies) Changed camera uploads setting for team
@@ -35956,6 +36355,8 @@ class EventTypeArg(bb.Union):
         (admin_alerting) Changed an alert setting
     :ivar team_log.EventTypeArg.admin_alerting_triggered_alert: (admin_alerting)
         Triggered security alert
+    :ivar team_log.EventTypeArg.app_blocked_by_permissions: (apps) Failed to
+        connect app for member
     :ivar team_log.EventTypeArg.app_link_team: (apps) Linked app for team
     :ivar team_log.EventTypeArg.app_link_user: (apps) Linked app for member
     :ivar team_log.EventTypeArg.app_unlink_team: (apps) Unlinked app for team
@@ -36631,6 +37032,8 @@ class EventTypeArg(bb.Union):
         Disabled downloads (deprecated, no longer logged)
     :ivar team_log.EventTypeArg.allow_download_enabled: (team_policies) Enabled
         downloads (deprecated, no longer logged)
+    :ivar team_log.EventTypeArg.app_permissions_changed: (team_policies) Changed
+        app permissions
     :ivar team_log.EventTypeArg.camera_uploads_policy_changed: (team_policies)
         Changed camera uploads setting for team
     :ivar team_log.EventTypeArg.classification_change_policy: (team_policies)
@@ -36906,6 +37309,8 @@ class EventTypeArg(bb.Union):
     admin_alerting_changed_alert_config = None
     # Attribute is overwritten below the class definition
     admin_alerting_triggered_alert = None
+    # Attribute is overwritten below the class definition
+    app_blocked_by_permissions = None
     # Attribute is overwritten below the class definition
     app_link_team = None
     # Attribute is overwritten below the class definition
@@ -37591,6 +37996,8 @@ class EventTypeArg(bb.Union):
     # Attribute is overwritten below the class definition
     allow_download_enabled = None
     # Attribute is overwritten below the class definition
+    app_permissions_changed = None
+    # Attribute is overwritten below the class definition
     camera_uploads_policy_changed = None
     # Attribute is overwritten below the class definition
     classification_change_policy = None
@@ -37838,6 +38245,14 @@ class EventTypeArg(bb.Union):
         :rtype: bool
         """
         return self._tag == 'admin_alerting_triggered_alert'
+
+    def is_app_blocked_by_permissions(self):
+        """
+        Check if the union tag is ``app_blocked_by_permissions``.
+
+        :rtype: bool
+        """
+        return self._tag == 'app_blocked_by_permissions'
 
     def is_app_link_team(self):
         """
@@ -40574,6 +40989,14 @@ class EventTypeArg(bb.Union):
         :rtype: bool
         """
         return self._tag == 'allow_download_enabled'
+
+    def is_app_permissions_changed(self):
+        """
+        Check if the union tag is ``app_permissions_changed``.
+
+        :rtype: bool
+        """
+        return self._tag == 'app_permissions_changed'
 
     def is_camera_uploads_policy_changed(self):
         """
@@ -69246,6 +69669,7 @@ ActorLogInfo.other = ActorLogInfo('other')
 
 AdminAlertCategoryEnum._account_takeover_validator = bv.Void()
 AdminAlertCategoryEnum._data_loss_protection_validator = bv.Void()
+AdminAlertCategoryEnum._information_governance_validator = bv.Void()
 AdminAlertCategoryEnum._malware_sharing_validator = bv.Void()
 AdminAlertCategoryEnum._massive_file_operation_validator = bv.Void()
 AdminAlertCategoryEnum._na_validator = bv.Void()
@@ -69254,6 +69678,7 @@ AdminAlertCategoryEnum._other_validator = bv.Void()
 AdminAlertCategoryEnum._tagmap = {
     'account_takeover': AdminAlertCategoryEnum._account_takeover_validator,
     'data_loss_protection': AdminAlertCategoryEnum._data_loss_protection_validator,
+    'information_governance': AdminAlertCategoryEnum._information_governance_validator,
     'malware_sharing': AdminAlertCategoryEnum._malware_sharing_validator,
     'massive_file_operation': AdminAlertCategoryEnum._massive_file_operation_validator,
     'na': AdminAlertCategoryEnum._na_validator,
@@ -69263,6 +69688,7 @@ AdminAlertCategoryEnum._tagmap = {
 
 AdminAlertCategoryEnum.account_takeover = AdminAlertCategoryEnum('account_takeover')
 AdminAlertCategoryEnum.data_loss_protection = AdminAlertCategoryEnum('data_loss_protection')
+AdminAlertCategoryEnum.information_governance = AdminAlertCategoryEnum('information_governance')
 AdminAlertCategoryEnum.malware_sharing = AdminAlertCategoryEnum('malware_sharing')
 AdminAlertCategoryEnum.massive_file_operation = AdminAlertCategoryEnum('massive_file_operation')
 AdminAlertCategoryEnum.na = AdminAlertCategoryEnum('na')
@@ -69382,17 +69808,54 @@ AdminAlertingTriggeredAlertType.description.validator = bv.String()
 AdminAlertingTriggeredAlertType._all_field_names_ = set(['description'])
 AdminAlertingTriggeredAlertType._all_fields_ = [('description', AdminAlertingTriggeredAlertType.description.validator)]
 
+AdminConsoleAppPermission._default_for_listed_apps_validator = bv.Void()
+AdminConsoleAppPermission._default_for_unlisted_apps_validator = bv.Void()
+AdminConsoleAppPermission._other_validator = bv.Void()
+AdminConsoleAppPermission._tagmap = {
+    'default_for_listed_apps': AdminConsoleAppPermission._default_for_listed_apps_validator,
+    'default_for_unlisted_apps': AdminConsoleAppPermission._default_for_unlisted_apps_validator,
+    'other': AdminConsoleAppPermission._other_validator,
+}
+
+AdminConsoleAppPermission.default_for_listed_apps = AdminConsoleAppPermission('default_for_listed_apps')
+AdminConsoleAppPermission.default_for_unlisted_apps = AdminConsoleAppPermission('default_for_unlisted_apps')
+AdminConsoleAppPermission.other = AdminConsoleAppPermission('other')
+
+AdminConsoleAppPolicy._allow_validator = bv.Void()
+AdminConsoleAppPolicy._block_validator = bv.Void()
+AdminConsoleAppPolicy._default_validator = bv.Void()
+AdminConsoleAppPolicy._other_validator = bv.Void()
+AdminConsoleAppPolicy._tagmap = {
+    'allow': AdminConsoleAppPolicy._allow_validator,
+    'block': AdminConsoleAppPolicy._block_validator,
+    'default': AdminConsoleAppPolicy._default_validator,
+    'other': AdminConsoleAppPolicy._other_validator,
+}
+
+AdminConsoleAppPolicy.allow = AdminConsoleAppPolicy('allow')
+AdminConsoleAppPolicy.block = AdminConsoleAppPolicy('block')
+AdminConsoleAppPolicy.default = AdminConsoleAppPolicy('default')
+AdminConsoleAppPolicy.other = AdminConsoleAppPolicy('other')
+
 AdminRole._billing_admin_validator = bv.Void()
+AdminRole._compliance_admin_validator = bv.Void()
+AdminRole._content_admin_validator = bv.Void()
 AdminRole._limited_admin_validator = bv.Void()
 AdminRole._member_only_validator = bv.Void()
+AdminRole._reporting_admin_validator = bv.Void()
+AdminRole._security_admin_validator = bv.Void()
 AdminRole._support_admin_validator = bv.Void()
 AdminRole._team_admin_validator = bv.Void()
 AdminRole._user_management_admin_validator = bv.Void()
 AdminRole._other_validator = bv.Void()
 AdminRole._tagmap = {
     'billing_admin': AdminRole._billing_admin_validator,
+    'compliance_admin': AdminRole._compliance_admin_validator,
+    'content_admin': AdminRole._content_admin_validator,
     'limited_admin': AdminRole._limited_admin_validator,
     'member_only': AdminRole._member_only_validator,
+    'reporting_admin': AdminRole._reporting_admin_validator,
+    'security_admin': AdminRole._security_admin_validator,
     'support_admin': AdminRole._support_admin_validator,
     'team_admin': AdminRole._team_admin_validator,
     'user_management_admin': AdminRole._user_management_admin_validator,
@@ -69400,8 +69863,12 @@ AdminRole._tagmap = {
 }
 
 AdminRole.billing_admin = AdminRole('billing_admin')
+AdminRole.compliance_admin = AdminRole('compliance_admin')
+AdminRole.content_admin = AdminRole('content_admin')
 AdminRole.limited_admin = AdminRole('limited_admin')
 AdminRole.member_only = AdminRole('member_only')
+AdminRole.reporting_admin = AdminRole('reporting_admin')
+AdminRole.security_admin = AdminRole('security_admin')
 AdminRole.support_admin = AdminRole('support_admin')
 AdminRole.team_admin = AdminRole('team_admin')
 AdminRole.user_management_admin = AdminRole('user_management_admin')
@@ -69444,6 +69911,14 @@ ApiSessionLogInfo.request_id.validator = RequestId_validator
 ApiSessionLogInfo._all_field_names_ = set(['request_id'])
 ApiSessionLogInfo._all_fields_ = [('request_id', ApiSessionLogInfo.request_id.validator)]
 
+AppBlockedByPermissionsDetails.app_info.validator = AppLogInfo_validator
+AppBlockedByPermissionsDetails._all_field_names_ = set(['app_info'])
+AppBlockedByPermissionsDetails._all_fields_ = [('app_info', AppBlockedByPermissionsDetails.app_info.validator)]
+
+AppBlockedByPermissionsType.description.validator = bv.String()
+AppBlockedByPermissionsType._all_field_names_ = set(['description'])
+AppBlockedByPermissionsType._all_fields_ = [('description', AppBlockedByPermissionsType.description.validator)]
+
 AppLinkTeamDetails.app_info.validator = AppLogInfo_validator
 AppLinkTeamDetails._all_field_names_ = set(['app_info'])
 AppLinkTeamDetails._all_fields_ = [('app_info', AppLinkTeamDetails.app_info.validator)]
@@ -69484,6 +69959,27 @@ AppLogInfo._pytype_to_tag_and_subtype_ = {
     TeamLinkedAppLogInfo: ((u'team_linked_app',), TeamLinkedAppLogInfo_validator),
 }
 AppLogInfo._is_catch_all_ = True
+
+AppPermissionsChangedDetails.app_name.validator = bv.Nullable(bv.String())
+AppPermissionsChangedDetails.permission.validator = bv.Nullable(AdminConsoleAppPermission_validator)
+AppPermissionsChangedDetails.previous_value.validator = AdminConsoleAppPolicy_validator
+AppPermissionsChangedDetails.new_value.validator = AdminConsoleAppPolicy_validator
+AppPermissionsChangedDetails._all_field_names_ = set([
+    'app_name',
+    'permission',
+    'previous_value',
+    'new_value',
+])
+AppPermissionsChangedDetails._all_fields_ = [
+    ('app_name', AppPermissionsChangedDetails.app_name.validator),
+    ('permission', AppPermissionsChangedDetails.permission.validator),
+    ('previous_value', AppPermissionsChangedDetails.previous_value.validator),
+    ('new_value', AppPermissionsChangedDetails.new_value.validator),
+]
+
+AppPermissionsChangedType.description.validator = bv.String()
+AppPermissionsChangedType._all_field_names_ = set(['description'])
+AppPermissionsChangedType._all_fields_ = [('description', AppPermissionsChangedType.description.validator)]
 
 AppUnlinkTeamDetails.app_info.validator = AppLogInfo_validator
 AppUnlinkTeamDetails._all_field_names_ = set(['app_info'])
@@ -70650,6 +71146,7 @@ EventCategory.other = EventCategory('other')
 
 EventDetails._admin_alerting_changed_alert_config_details_validator = AdminAlertingChangedAlertConfigDetails_validator
 EventDetails._admin_alerting_triggered_alert_details_validator = AdminAlertingTriggeredAlertDetails_validator
+EventDetails._app_blocked_by_permissions_details_validator = AppBlockedByPermissionsDetails_validator
 EventDetails._app_link_team_details_validator = AppLinkTeamDetails_validator
 EventDetails._app_link_user_details_validator = AppLinkUserDetails_validator
 EventDetails._app_unlink_team_details_validator = AppUnlinkTeamDetails_validator
@@ -70992,6 +71489,7 @@ EventDetails._team_selective_sync_settings_changed_details_validator = TeamSelec
 EventDetails._account_capture_change_policy_details_validator = AccountCaptureChangePolicyDetails_validator
 EventDetails._allow_download_disabled_details_validator = AllowDownloadDisabledDetails_validator
 EventDetails._allow_download_enabled_details_validator = AllowDownloadEnabledDetails_validator
+EventDetails._app_permissions_changed_details_validator = AppPermissionsChangedDetails_validator
 EventDetails._camera_uploads_policy_changed_details_validator = CameraUploadsPolicyChangedDetails_validator
 EventDetails._classification_change_policy_details_validator = ClassificationChangePolicyDetails_validator
 EventDetails._computer_backup_policy_changed_details_validator = ComputerBackupPolicyChangedDetails_validator
@@ -71112,6 +71610,7 @@ EventDetails._other_validator = bv.Void()
 EventDetails._tagmap = {
     'admin_alerting_changed_alert_config_details': EventDetails._admin_alerting_changed_alert_config_details_validator,
     'admin_alerting_triggered_alert_details': EventDetails._admin_alerting_triggered_alert_details_validator,
+    'app_blocked_by_permissions_details': EventDetails._app_blocked_by_permissions_details_validator,
     'app_link_team_details': EventDetails._app_link_team_details_validator,
     'app_link_user_details': EventDetails._app_link_user_details_validator,
     'app_unlink_team_details': EventDetails._app_unlink_team_details_validator,
@@ -71454,6 +71953,7 @@ EventDetails._tagmap = {
     'account_capture_change_policy_details': EventDetails._account_capture_change_policy_details_validator,
     'allow_download_disabled_details': EventDetails._allow_download_disabled_details_validator,
     'allow_download_enabled_details': EventDetails._allow_download_enabled_details_validator,
+    'app_permissions_changed_details': EventDetails._app_permissions_changed_details_validator,
     'camera_uploads_policy_changed_details': EventDetails._camera_uploads_policy_changed_details_validator,
     'classification_change_policy_details': EventDetails._classification_change_policy_details_validator,
     'computer_backup_policy_changed_details': EventDetails._computer_backup_policy_changed_details_validator,
@@ -71577,6 +72077,7 @@ EventDetails.other = EventDetails('other')
 
 EventType._admin_alerting_changed_alert_config_validator = AdminAlertingChangedAlertConfigType_validator
 EventType._admin_alerting_triggered_alert_validator = AdminAlertingTriggeredAlertType_validator
+EventType._app_blocked_by_permissions_validator = AppBlockedByPermissionsType_validator
 EventType._app_link_team_validator = AppLinkTeamType_validator
 EventType._app_link_user_validator = AppLinkUserType_validator
 EventType._app_unlink_team_validator = AppUnlinkTeamType_validator
@@ -71919,6 +72420,7 @@ EventType._team_selective_sync_settings_changed_validator = TeamSelectiveSyncSet
 EventType._account_capture_change_policy_validator = AccountCaptureChangePolicyType_validator
 EventType._allow_download_disabled_validator = AllowDownloadDisabledType_validator
 EventType._allow_download_enabled_validator = AllowDownloadEnabledType_validator
+EventType._app_permissions_changed_validator = AppPermissionsChangedType_validator
 EventType._camera_uploads_policy_changed_validator = CameraUploadsPolicyChangedType_validator
 EventType._classification_change_policy_validator = ClassificationChangePolicyType_validator
 EventType._computer_backup_policy_changed_validator = ComputerBackupPolicyChangedType_validator
@@ -72038,6 +72540,7 @@ EventType._other_validator = bv.Void()
 EventType._tagmap = {
     'admin_alerting_changed_alert_config': EventType._admin_alerting_changed_alert_config_validator,
     'admin_alerting_triggered_alert': EventType._admin_alerting_triggered_alert_validator,
+    'app_blocked_by_permissions': EventType._app_blocked_by_permissions_validator,
     'app_link_team': EventType._app_link_team_validator,
     'app_link_user': EventType._app_link_user_validator,
     'app_unlink_team': EventType._app_unlink_team_validator,
@@ -72380,6 +72883,7 @@ EventType._tagmap = {
     'account_capture_change_policy': EventType._account_capture_change_policy_validator,
     'allow_download_disabled': EventType._allow_download_disabled_validator,
     'allow_download_enabled': EventType._allow_download_enabled_validator,
+    'app_permissions_changed': EventType._app_permissions_changed_validator,
     'camera_uploads_policy_changed': EventType._camera_uploads_policy_changed_validator,
     'classification_change_policy': EventType._classification_change_policy_validator,
     'computer_backup_policy_changed': EventType._computer_backup_policy_changed_validator,
@@ -72502,6 +73006,7 @@ EventType.other = EventType('other')
 
 EventTypeArg._admin_alerting_changed_alert_config_validator = bv.Void()
 EventTypeArg._admin_alerting_triggered_alert_validator = bv.Void()
+EventTypeArg._app_blocked_by_permissions_validator = bv.Void()
 EventTypeArg._app_link_team_validator = bv.Void()
 EventTypeArg._app_link_user_validator = bv.Void()
 EventTypeArg._app_unlink_team_validator = bv.Void()
@@ -72844,6 +73349,7 @@ EventTypeArg._team_selective_sync_settings_changed_validator = bv.Void()
 EventTypeArg._account_capture_change_policy_validator = bv.Void()
 EventTypeArg._allow_download_disabled_validator = bv.Void()
 EventTypeArg._allow_download_enabled_validator = bv.Void()
+EventTypeArg._app_permissions_changed_validator = bv.Void()
 EventTypeArg._camera_uploads_policy_changed_validator = bv.Void()
 EventTypeArg._classification_change_policy_validator = bv.Void()
 EventTypeArg._computer_backup_policy_changed_validator = bv.Void()
@@ -72963,6 +73469,7 @@ EventTypeArg._other_validator = bv.Void()
 EventTypeArg._tagmap = {
     'admin_alerting_changed_alert_config': EventTypeArg._admin_alerting_changed_alert_config_validator,
     'admin_alerting_triggered_alert': EventTypeArg._admin_alerting_triggered_alert_validator,
+    'app_blocked_by_permissions': EventTypeArg._app_blocked_by_permissions_validator,
     'app_link_team': EventTypeArg._app_link_team_validator,
     'app_link_user': EventTypeArg._app_link_user_validator,
     'app_unlink_team': EventTypeArg._app_unlink_team_validator,
@@ -73305,6 +73812,7 @@ EventTypeArg._tagmap = {
     'account_capture_change_policy': EventTypeArg._account_capture_change_policy_validator,
     'allow_download_disabled': EventTypeArg._allow_download_disabled_validator,
     'allow_download_enabled': EventTypeArg._allow_download_enabled_validator,
+    'app_permissions_changed': EventTypeArg._app_permissions_changed_validator,
     'camera_uploads_policy_changed': EventTypeArg._camera_uploads_policy_changed_validator,
     'classification_change_policy': EventTypeArg._classification_change_policy_validator,
     'computer_backup_policy_changed': EventTypeArg._computer_backup_policy_changed_validator,
@@ -73425,6 +73933,7 @@ EventTypeArg._tagmap = {
 
 EventTypeArg.admin_alerting_changed_alert_config = EventTypeArg('admin_alerting_changed_alert_config')
 EventTypeArg.admin_alerting_triggered_alert = EventTypeArg('admin_alerting_triggered_alert')
+EventTypeArg.app_blocked_by_permissions = EventTypeArg('app_blocked_by_permissions')
 EventTypeArg.app_link_team = EventTypeArg('app_link_team')
 EventTypeArg.app_link_user = EventTypeArg('app_link_user')
 EventTypeArg.app_unlink_team = EventTypeArg('app_unlink_team')
@@ -73767,6 +74276,7 @@ EventTypeArg.team_selective_sync_settings_changed = EventTypeArg('team_selective
 EventTypeArg.account_capture_change_policy = EventTypeArg('account_capture_change_policy')
 EventTypeArg.allow_download_disabled = EventTypeArg('allow_download_disabled')
 EventTypeArg.allow_download_enabled = EventTypeArg('allow_download_enabled')
+EventTypeArg.app_permissions_changed = EventTypeArg('app_permissions_changed')
 EventTypeArg.camera_uploads_policy_changed = EventTypeArg('camera_uploads_policy_changed')
 EventTypeArg.classification_change_policy = EventTypeArg('classification_change_policy')
 EventTypeArg.computer_backup_policy_changed = EventTypeArg('computer_backup_policy_changed')
