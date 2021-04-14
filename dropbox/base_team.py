@@ -1276,6 +1276,23 @@ class DropboxTeamBase(object):
         )
         return r
 
+    def team_members_get_available_team_member_roles(self):
+        """
+        Get available TeamMemberRoles for the connected team. To be used with
+        :meth:`team_members_set_admin_permissions_v2`. Permission : Team member
+        management.
+
+        :rtype: :class:`dropbox.team.MembersGetAvailableTeamMemberRolesResult`
+        """
+        arg = None
+        r = self.request(
+            team.members_get_available_team_member_roles,
+            'team',
+            arg,
+            None,
+        )
+        return r
+
     def team_members_get_info(self,
                               members):
         """
@@ -1606,6 +1623,34 @@ class DropboxTeamBase(object):
             None,
         )
         return None
+
+    def team_members_set_admin_permissions_v2(self,
+                                              user,
+                                              new_roles=None):
+        """
+        Updates a team member's permissions. Permission : Team member
+        management.
+
+        :param user: Identity of user whose role will be set.
+        :type user: :class:`dropbox.team.UserSelectorArg`
+        :param Nullable[List[str]] new_roles: The new roles for the member. Send
+            empty list to make user member only. For now, only up to one role is
+            allowed.
+        :rtype: :class:`dropbox.team.MembersSetPermissions2Result`
+        :raises: :class:`.exceptions.ApiError`
+
+        If this raises, ApiError will contain:
+            :class:`dropbox.team.MembersSetPermissions2Error`
+        """
+        arg = team.MembersSetPermissions2Arg(user,
+                                             new_roles)
+        r = self.request(
+            team.members_set_admin_permissions_v2,
+            'team',
+            arg,
+            None,
+        )
+        return r
 
     def team_members_set_admin_permissions(self,
                                            user,

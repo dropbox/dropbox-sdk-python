@@ -7421,6 +7421,34 @@ class MembersDeleteProfilePhotoError(MemberSelectorError):
 
 MembersDeleteProfilePhotoError_validator = bv.Union(MembersDeleteProfilePhotoError)
 
+class MembersGetAvailableTeamMemberRolesResult(bb.Struct):
+    """
+    Available TeamMemberRole for the connected team. To be used with
+    :meth:`dropbox.dropbox_client.Dropbox.team_members_set_admin_permissions`.
+
+    :ivar team.MembersGetAvailableTeamMemberRolesResult.roles: Available roles.
+    """
+
+    __slots__ = [
+        '_roles_value',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 roles=None):
+        self._roles_value = bb.NOT_SET
+        if roles is not None:
+            self.roles = roles
+
+    # Instance attribute type: list of [TeamMemberRole] (validator is set below)
+    roles = bb.Attribute("roles")
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(MembersGetAvailableTeamMemberRolesResult, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+MembersGetAvailableTeamMemberRolesResult_validator = bv.Struct(MembersGetAvailableTeamMemberRolesResult)
+
 class MembersGetInfoArgs(bb.Struct):
     """
     :ivar team.MembersGetInfoArgs.members: List of team members.
@@ -8224,6 +8252,157 @@ class MembersSendWelcomeError(MemberSelectorError):
         super(MembersSendWelcomeError, self)._process_custom_annotations(annotation_type, field_path, processor)
 
 MembersSendWelcomeError_validator = bv.Union(MembersSendWelcomeError)
+
+class MembersSetPermissions2Arg(bb.Struct):
+    """
+    Exactly one of team_member_id, email, or external_id must be provided to
+    identify the user account.
+
+    :ivar team.MembersSetPermissions2Arg.user: Identity of user whose role will
+        be set.
+    :ivar team.MembersSetPermissions2Arg.new_roles: The new roles for the
+        member. Send empty list to make user member only. For now, only up to
+        one role is allowed.
+    """
+
+    __slots__ = [
+        '_user_value',
+        '_new_roles_value',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 user=None,
+                 new_roles=None):
+        self._user_value = bb.NOT_SET
+        self._new_roles_value = bb.NOT_SET
+        if user is not None:
+            self.user = user
+        if new_roles is not None:
+            self.new_roles = new_roles
+
+    # Instance attribute type: UserSelectorArg (validator is set below)
+    user = bb.Attribute("user", user_defined=True)
+
+    # Instance attribute type: list of [str] (validator is set below)
+    new_roles = bb.Attribute("new_roles", nullable=True)
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(MembersSetPermissions2Arg, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+MembersSetPermissions2Arg_validator = bv.Struct(MembersSetPermissions2Arg)
+
+class MembersSetPermissions2Error(UserSelectorError):
+    """
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+
+    :ivar team.MembersSetPermissions2Error.last_admin: Cannot remove the admin
+        setting of the last admin.
+    :ivar team.MembersSetPermissions2Error.user_not_in_team: The user is not a
+        member of the team.
+    :ivar team.MembersSetPermissions2Error.cannot_set_permissions: Cannot
+        remove/grant permissions. This can happen if the team member is
+        suspended.
+    :ivar team.MembersSetPermissions2Error.role_not_found: No matching role
+        found. At least one of the provided new_roles does not exist on this
+        team.
+    """
+
+    _catch_all = 'other'
+    # Attribute is overwritten below the class definition
+    last_admin = None
+    # Attribute is overwritten below the class definition
+    user_not_in_team = None
+    # Attribute is overwritten below the class definition
+    cannot_set_permissions = None
+    # Attribute is overwritten below the class definition
+    role_not_found = None
+    # Attribute is overwritten below the class definition
+    other = None
+
+    def is_last_admin(self):
+        """
+        Check if the union tag is ``last_admin``.
+
+        :rtype: bool
+        """
+        return self._tag == 'last_admin'
+
+    def is_user_not_in_team(self):
+        """
+        Check if the union tag is ``user_not_in_team``.
+
+        :rtype: bool
+        """
+        return self._tag == 'user_not_in_team'
+
+    def is_cannot_set_permissions(self):
+        """
+        Check if the union tag is ``cannot_set_permissions``.
+
+        :rtype: bool
+        """
+        return self._tag == 'cannot_set_permissions'
+
+    def is_role_not_found(self):
+        """
+        Check if the union tag is ``role_not_found``.
+
+        :rtype: bool
+        """
+        return self._tag == 'role_not_found'
+
+    def is_other(self):
+        """
+        Check if the union tag is ``other``.
+
+        :rtype: bool
+        """
+        return self._tag == 'other'
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(MembersSetPermissions2Error, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+MembersSetPermissions2Error_validator = bv.Union(MembersSetPermissions2Error)
+
+class MembersSetPermissions2Result(bb.Struct):
+    """
+    :ivar team.MembersSetPermissions2Result.team_member_id: The member ID of the
+        user to which the change was applied.
+    :ivar team.MembersSetPermissions2Result.roles: The roles after the change.
+        Empty in case the user become a non-admin.
+    """
+
+    __slots__ = [
+        '_team_member_id_value',
+        '_roles_value',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 team_member_id=None,
+                 roles=None):
+        self._team_member_id_value = bb.NOT_SET
+        self._roles_value = bb.NOT_SET
+        if team_member_id is not None:
+            self.team_member_id = team_member_id
+        if roles is not None:
+            self.roles = roles
+
+    # Instance attribute type: str (validator is set below)
+    team_member_id = bb.Attribute("team_member_id")
+
+    # Instance attribute type: list of [TeamMemberRole] (validator is set below)
+    roles = bb.Attribute("roles", nullable=True)
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(MembersSetPermissions2Result, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+MembersSetPermissions2Result_validator = bv.Struct(MembersSetPermissions2Result)
 
 class MembersSetPermissionsArg(bb.Struct):
     """
@@ -11297,6 +11476,54 @@ class TeamMemberProfile(MemberProfile):
 
 TeamMemberProfile_validator = bv.Struct(TeamMemberProfile)
 
+class TeamMemberRole(bb.Struct):
+    """
+    A role which can be attached to a team member. This replaces AdminTier; each
+    AdminTier corresponds to a new TeamMemberRole with a matching name.
+
+    :ivar team.TeamMemberRole.role_id: A string containing encoded role ID. For
+        roles defined by Dropbox, this is the same across all teams.
+    :ivar team.TeamMemberRole.name: The role display name.
+    :ivar team.TeamMemberRole.description: Role description. Describes which
+        permissions come with this role.
+    """
+
+    __slots__ = [
+        '_role_id_value',
+        '_name_value',
+        '_description_value',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 role_id=None,
+                 name=None,
+                 description=None):
+        self._role_id_value = bb.NOT_SET
+        self._name_value = bb.NOT_SET
+        self._description_value = bb.NOT_SET
+        if role_id is not None:
+            self.role_id = role_id
+        if name is not None:
+            self.name = name
+        if description is not None:
+            self.description = description
+
+    # Instance attribute type: str (validator is set below)
+    role_id = bb.Attribute("role_id")
+
+    # Instance attribute type: str (validator is set below)
+    name = bb.Attribute("name")
+
+    # Instance attribute type: str (validator is set below)
+    description = bb.Attribute("description")
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(TeamMemberRole, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+TeamMemberRole_validator = bv.Struct(TeamMemberRole)
+
 class TeamMemberStatus(bb.Union):
     """
     The user's status as a member of a specific team.
@@ -12592,6 +12819,7 @@ NumberPerDay_validator = bv.List(bv.Nullable(bv.UInt64()))
 Path_validator = bv.String(pattern=u'(/(.|[\\r\\n])*)?')
 SecondaryEmail_validator = secondary_emails.SecondaryEmail_validator
 SecondaryEmail = secondary_emails.SecondaryEmail
+TeamMemberRoleId_validator = bv.String(max_length=128, pattern=u'pid_dbtmr:.*')
 UserQuota_validator = bv.UInt32(min_value=15)
 DeviceSession.session_id.validator = bv.String()
 DeviceSession.ip_address.validator = bv.Nullable(bv.String())
@@ -14210,6 +14438,10 @@ MembersDeleteProfilePhotoError._tagmap.update(MemberSelectorError._tagmap)
 MembersDeleteProfilePhotoError.set_profile_disallowed = MembersDeleteProfilePhotoError('set_profile_disallowed')
 MembersDeleteProfilePhotoError.other = MembersDeleteProfilePhotoError('other')
 
+MembersGetAvailableTeamMemberRolesResult.roles.validator = bv.List(TeamMemberRole_validator)
+MembersGetAvailableTeamMemberRolesResult._all_field_names_ = set(['roles'])
+MembersGetAvailableTeamMemberRolesResult._all_fields_ = [('roles', MembersGetAvailableTeamMemberRolesResult.roles.validator)]
+
 MembersGetInfoArgs.members.validator = bv.List(UserSelectorArg_validator)
 MembersGetInfoArgs._all_field_names_ = set(['members'])
 MembersGetInfoArgs._all_fields_ = [('members', MembersGetInfoArgs.members.validator)]
@@ -14400,6 +14632,48 @@ MembersSendWelcomeError._tagmap = {
 MembersSendWelcomeError._tagmap.update(MemberSelectorError._tagmap)
 
 MembersSendWelcomeError.other = MembersSendWelcomeError('other')
+
+MembersSetPermissions2Arg.user.validator = UserSelectorArg_validator
+MembersSetPermissions2Arg.new_roles.validator = bv.Nullable(bv.List(TeamMemberRoleId_validator, max_items=1))
+MembersSetPermissions2Arg._all_field_names_ = set([
+    'user',
+    'new_roles',
+])
+MembersSetPermissions2Arg._all_fields_ = [
+    ('user', MembersSetPermissions2Arg.user.validator),
+    ('new_roles', MembersSetPermissions2Arg.new_roles.validator),
+]
+
+MembersSetPermissions2Error._last_admin_validator = bv.Void()
+MembersSetPermissions2Error._user_not_in_team_validator = bv.Void()
+MembersSetPermissions2Error._cannot_set_permissions_validator = bv.Void()
+MembersSetPermissions2Error._role_not_found_validator = bv.Void()
+MembersSetPermissions2Error._other_validator = bv.Void()
+MembersSetPermissions2Error._tagmap = {
+    'last_admin': MembersSetPermissions2Error._last_admin_validator,
+    'user_not_in_team': MembersSetPermissions2Error._user_not_in_team_validator,
+    'cannot_set_permissions': MembersSetPermissions2Error._cannot_set_permissions_validator,
+    'role_not_found': MembersSetPermissions2Error._role_not_found_validator,
+    'other': MembersSetPermissions2Error._other_validator,
+}
+MembersSetPermissions2Error._tagmap.update(UserSelectorError._tagmap)
+
+MembersSetPermissions2Error.last_admin = MembersSetPermissions2Error('last_admin')
+MembersSetPermissions2Error.user_not_in_team = MembersSetPermissions2Error('user_not_in_team')
+MembersSetPermissions2Error.cannot_set_permissions = MembersSetPermissions2Error('cannot_set_permissions')
+MembersSetPermissions2Error.role_not_found = MembersSetPermissions2Error('role_not_found')
+MembersSetPermissions2Error.other = MembersSetPermissions2Error('other')
+
+MembersSetPermissions2Result.team_member_id.validator = team_common.TeamMemberId_validator
+MembersSetPermissions2Result.roles.validator = bv.Nullable(bv.List(TeamMemberRole_validator))
+MembersSetPermissions2Result._all_field_names_ = set([
+    'team_member_id',
+    'roles',
+])
+MembersSetPermissions2Result._all_fields_ = [
+    ('team_member_id', MembersSetPermissions2Result.team_member_id.validator),
+    ('roles', MembersSetPermissions2Result.roles.validator),
+]
 
 MembersSetPermissionsArg.user.validator = UserSelectorArg_validator
 MembersSetPermissionsArg.new_role.validator = AdminTier_validator
@@ -15089,6 +15363,20 @@ TeamMemberProfile._all_field_names_ = MemberProfile._all_field_names_.union(set(
 TeamMemberProfile._all_fields_ = MemberProfile._all_fields_ + [
     ('groups', TeamMemberProfile.groups.validator),
     ('member_folder_id', TeamMemberProfile.member_folder_id.validator),
+]
+
+TeamMemberRole.role_id.validator = TeamMemberRoleId_validator
+TeamMemberRole.name.validator = bv.String(max_length=32)
+TeamMemberRole.description.validator = bv.String(max_length=256)
+TeamMemberRole._all_field_names_ = set([
+    'role_id',
+    'name',
+    'description',
+])
+TeamMemberRole._all_fields_ = [
+    ('role_id', TeamMemberRole.role_id.validator),
+    ('name', TeamMemberRole.name.validator),
+    ('description', TeamMemberRole.description.validator),
 ]
 
 TeamMemberStatus._active_validator = bv.Void()
@@ -15802,6 +16090,17 @@ members_delete_profile_photo = bb.Route(
      'host': u'api',
      'style': u'rpc'},
 )
+members_get_available_team_member_roles = bb.Route(
+    'members/get_available_team_member_roles',
+    1,
+    False,
+    bv.Void(),
+    MembersGetAvailableTeamMemberRolesResult_validator,
+    bv.Void(),
+    {'auth': u'team',
+     'host': u'api',
+     'style': u'rpc'},
+)
 members_get_info = bb.Route(
     'members/get_info',
     1,
@@ -15930,6 +16229,17 @@ members_send_welcome_email = bb.Route(
     UserSelectorArg_validator,
     bv.Void(),
     MembersSendWelcomeError_validator,
+    {'auth': u'team',
+     'host': u'api',
+     'style': u'rpc'},
+)
+members_set_admin_permissions_v2 = bb.Route(
+    'members/set_admin_permissions',
+    2,
+    False,
+    MembersSetPermissions2Arg_validator,
+    MembersSetPermissions2Result_validator,
+    MembersSetPermissions2Error_validator,
     {'auth': u'team',
      'host': u'api',
      'style': u'rpc'},
@@ -16263,6 +16573,7 @@ ROUTES = {
     'members/add': members_add,
     'members/add/job_status/get': members_add_job_status_get,
     'members/delete_profile_photo': members_delete_profile_photo,
+    'members/get_available_team_member_roles': members_get_available_team_member_roles,
     'members/get_info': members_get_info,
     'members/list': members_list,
     'members/list/continue': members_list_continue,
@@ -16275,6 +16586,7 @@ ROUTES = {
     'members/secondary_emails/delete': members_secondary_emails_delete,
     'members/secondary_emails/resend_verification_emails': members_secondary_emails_resend_verification_emails,
     'members/send_welcome_email': members_send_welcome_email,
+    'members/set_admin_permissions:2': members_set_admin_permissions_v2,
     'members/set_admin_permissions': members_set_admin_permissions,
     'members/set_profile': members_set_profile,
     'members/set_profile_photo': members_set_profile_photo,
