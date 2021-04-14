@@ -1303,8 +1303,10 @@ class CreateSharedLinkWithSettingsError(bb.Union):
     :ivar SharedLinkSettingsError
         CreateSharedLinkWithSettingsError.settings_error: There is an error with
         the given settings.
-    :ivar sharing.CreateSharedLinkWithSettingsError.access_denied: Access to the
-        requested path is forbidden.
+    :ivar sharing.CreateSharedLinkWithSettingsError.access_denied: The user is
+        not allowed to create a shared link to the specified file. For  example,
+        this can occur if the file is restricted or if the user's links are
+        `banned <https://help.dropbox.com/files-folders/share/banned-links>`_.
     """
 
     _catch_all = None
