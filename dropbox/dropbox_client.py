@@ -358,9 +358,10 @@ class _DropboxTransport(object):
         :return:
         """
         can_refresh = self._oauth2_refresh_token and self._app_key
-        needs_refresh = self._oauth2_access_token_expiration and \
-            (datetime.utcnow() + timedelta(seconds=TOKEN_EXPIRATION_BUFFER)) >= \
-            self._oauth2_access_token_expiration
+        needs_refresh = self._oauth2_refresh_token and \
+            (not self._oauth2_access_token_expiration or
+            (datetime.utcnow() + timedelta(seconds=TOKEN_EXPIRATION_BUFFER)) >=
+            self._oauth2_access_token_expiration)
         needs_token = not self._oauth2_access_token
         if (needs_refresh or needs_token) and can_refresh:
             self.refresh_access_token(scope=self._scope)
