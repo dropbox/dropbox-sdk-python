@@ -6259,19 +6259,21 @@ class MemberAccess(bb.Struct):
 
 MemberAccess_validator = bv.Struct(MemberAccess)
 
-class MemberAddArg(bb.Struct):
+class MemberAddArgBase(bb.Struct):
     """
-    :ivar team.MemberAddArg.member_given_name: Member's first name.
-    :ivar team.MemberAddArg.member_surname: Member's last name.
-    :ivar team.MemberAddArg.member_external_id: External ID for member.
-    :ivar team.MemberAddArg.member_persistent_id: Persistent ID for member. This
-        field is only available to teams using persistent ID SAML configuration.
-    :ivar team.MemberAddArg.send_welcome_email: Whether to send a welcome email
-        to the member. If send_welcome_email is false, no email invitation will
-        be sent to the user. This may be useful for apps using single sign-on
-        (SSO) flows for onboarding that want to handle announcements themselves.
-    :ivar team.MemberAddArg.is_directory_restricted: Whether a user is directory
-        restricted.
+    :ivar team.MemberAddArgBase.member_given_name: Member's first name.
+    :ivar team.MemberAddArgBase.member_surname: Member's last name.
+    :ivar team.MemberAddArgBase.member_external_id: External ID for member.
+    :ivar team.MemberAddArgBase.member_persistent_id: Persistent ID for member.
+        This field is only available to teams using persistent ID SAML
+        configuration.
+    :ivar team.MemberAddArgBase.send_welcome_email: Whether to send a welcome
+        email to the member. If send_welcome_email is false, no email invitation
+        will be sent to the user. This may be useful for apps using single
+        sign-on (SSO) flows for onboarding that want to handle announcements
+        themselves.
+    :ivar team.MemberAddArgBase.is_directory_restricted: Whether a user is
+        directory restricted.
     """
 
     __slots__ = [
@@ -6281,7 +6283,6 @@ class MemberAddArg(bb.Struct):
         '_member_external_id_value',
         '_member_persistent_id_value',
         '_send_welcome_email_value',
-        '_role_value',
         '_is_directory_restricted_value',
     ]
 
@@ -6294,7 +6295,6 @@ class MemberAddArg(bb.Struct):
                  member_external_id=None,
                  member_persistent_id=None,
                  send_welcome_email=None,
-                 role=None,
                  is_directory_restricted=None):
         self._member_email_value = bb.NOT_SET
         self._member_given_name_value = bb.NOT_SET
@@ -6302,7 +6302,6 @@ class MemberAddArg(bb.Struct):
         self._member_external_id_value = bb.NOT_SET
         self._member_persistent_id_value = bb.NOT_SET
         self._send_welcome_email_value = bb.NOT_SET
-        self._role_value = bb.NOT_SET
         self._is_directory_restricted_value = bb.NOT_SET
         if member_email is not None:
             self.member_email = member_email
@@ -6316,8 +6315,6 @@ class MemberAddArg(bb.Struct):
             self.member_persistent_id = member_persistent_id
         if send_welcome_email is not None:
             self.send_welcome_email = send_welcome_email
-        if role is not None:
-            self.role = role
         if is_directory_restricted is not None:
             self.is_directory_restricted = is_directory_restricted
 
@@ -6339,69 +6336,85 @@ class MemberAddArg(bb.Struct):
     # Instance attribute type: bool (validator is set below)
     send_welcome_email = bb.Attribute("send_welcome_email")
 
-    # Instance attribute type: AdminTier (validator is set below)
-    role = bb.Attribute("role", user_defined=True)
-
     # Instance attribute type: bool (validator is set below)
     is_directory_restricted = bb.Attribute("is_directory_restricted", nullable=True)
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(MemberAddArgBase, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+MemberAddArgBase_validator = bv.Struct(MemberAddArgBase)
+
+class MemberAddArg(MemberAddArgBase):
+
+    __slots__ = [
+        '_role_value',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 member_email=None,
+                 member_given_name=None,
+                 member_surname=None,
+                 member_external_id=None,
+                 member_persistent_id=None,
+                 send_welcome_email=None,
+                 is_directory_restricted=None,
+                 role=None):
+        super(MemberAddArg, self).__init__(member_email,
+                                           member_given_name,
+                                           member_surname,
+                                           member_external_id,
+                                           member_persistent_id,
+                                           send_welcome_email,
+                                           is_directory_restricted)
+        self._role_value = bb.NOT_SET
+        if role is not None:
+            self.role = role
+
+    # Instance attribute type: AdminTier (validator is set below)
+    role = bb.Attribute("role", user_defined=True)
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(MemberAddArg, self)._process_custom_annotations(annotation_type, field_path, processor)
 
 MemberAddArg_validator = bv.Struct(MemberAddArg)
 
-class MemberAddResult(bb.Union):
+class MemberAddResultBase(bb.Union):
     """
-    Describes the result of attempting to add a single user to the team.
-    'success' is the only value indicating that a user was indeed added to the
-    team - the other values explain the type of failure that occurred, and
-    include the email of the user for which the operation has failed.
-
     This class acts as a tagged union. Only one of the ``is_*`` methods will
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar TeamMemberInfo MemberAddResult.success: Describes a user that was
-        successfully added to the team.
-    :ivar str team.MemberAddResult.team_license_limit: Team is already full. The
-        organization has no available licenses.
-    :ivar str team.MemberAddResult.free_team_member_limit_reached: Team is
+    :ivar str team.MemberAddResultBase.team_license_limit: Team is already full.
+        The organization has no available licenses.
+    :ivar str team.MemberAddResultBase.free_team_member_limit_reached: Team is
         already full. The free team member limit has been reached.
-    :ivar str team.MemberAddResult.user_already_on_team: User is already on this
-        team. The provided email address is associated with a user who is
+    :ivar str team.MemberAddResultBase.user_already_on_team: User is already on
+        this team. The provided email address is associated with a user who is
         already a member of (including in recoverable state) or invited to the
         team.
-    :ivar str team.MemberAddResult.user_on_another_team: User is already on
+    :ivar str team.MemberAddResultBase.user_on_another_team: User is already on
         another team. The provided email address is associated with a user that
         is already a member or invited to another team.
-    :ivar str team.MemberAddResult.user_already_paired: User is already paired.
-    :ivar str team.MemberAddResult.user_migration_failed: User migration has
+    :ivar str team.MemberAddResultBase.user_already_paired: User is already
+        paired.
+    :ivar str team.MemberAddResultBase.user_migration_failed: User migration has
         failed.
-    :ivar str team.MemberAddResult.duplicate_external_member_id: A user with the
-        given external member ID already exists on the team (including in
+    :ivar str team.MemberAddResultBase.duplicate_external_member_id: A user with
+        the given external member ID already exists on the team (including in
         recoverable state).
-    :ivar str team.MemberAddResult.duplicate_member_persistent_id: A user with
-        the given persistent ID already exists on the team (including in
+    :ivar str team.MemberAddResultBase.duplicate_member_persistent_id: A user
+        with the given persistent ID already exists on the team (including in
         recoverable state).
-    :ivar str team.MemberAddResult.persistent_id_disabled: Persistent ID is only
-        available to teams with persistent ID SAML configuration. Please contact
-        Dropbox for more information.
-    :ivar str team.MemberAddResult.user_creation_failed: User creation has
+    :ivar str team.MemberAddResultBase.persistent_id_disabled: Persistent ID is
+        only available to teams with persistent ID SAML configuration. Please
+        contact Dropbox for more information.
+    :ivar str team.MemberAddResultBase.user_creation_failed: User creation has
         failed.
     """
 
     _catch_all = None
-
-    @classmethod
-    def success(cls, val):
-        """
-        Create an instance of this class set to the ``success`` tag with value
-        ``val``.
-
-        :param TeamMemberInfo val:
-        :rtype: MemberAddResult
-        """
-        return cls('success', val)
 
     @classmethod
     def team_license_limit(cls, val):
@@ -6410,7 +6423,7 @@ class MemberAddResult(bb.Union):
         with value ``val``.
 
         :param str val:
-        :rtype: MemberAddResult
+        :rtype: MemberAddResultBase
         """
         return cls('team_license_limit', val)
 
@@ -6421,7 +6434,7 @@ class MemberAddResult(bb.Union):
         ``free_team_member_limit_reached`` tag with value ``val``.
 
         :param str val:
-        :rtype: MemberAddResult
+        :rtype: MemberAddResultBase
         """
         return cls('free_team_member_limit_reached', val)
 
@@ -6432,7 +6445,7 @@ class MemberAddResult(bb.Union):
         with value ``val``.
 
         :param str val:
-        :rtype: MemberAddResult
+        :rtype: MemberAddResultBase
         """
         return cls('user_already_on_team', val)
 
@@ -6443,7 +6456,7 @@ class MemberAddResult(bb.Union):
         with value ``val``.
 
         :param str val:
-        :rtype: MemberAddResult
+        :rtype: MemberAddResultBase
         """
         return cls('user_on_another_team', val)
 
@@ -6454,7 +6467,7 @@ class MemberAddResult(bb.Union):
         with value ``val``.
 
         :param str val:
-        :rtype: MemberAddResult
+        :rtype: MemberAddResultBase
         """
         return cls('user_already_paired', val)
 
@@ -6465,7 +6478,7 @@ class MemberAddResult(bb.Union):
         tag with value ``val``.
 
         :param str val:
-        :rtype: MemberAddResult
+        :rtype: MemberAddResultBase
         """
         return cls('user_migration_failed', val)
 
@@ -6476,7 +6489,7 @@ class MemberAddResult(bb.Union):
         ``duplicate_external_member_id`` tag with value ``val``.
 
         :param str val:
-        :rtype: MemberAddResult
+        :rtype: MemberAddResultBase
         """
         return cls('duplicate_external_member_id', val)
 
@@ -6487,7 +6500,7 @@ class MemberAddResult(bb.Union):
         ``duplicate_member_persistent_id`` tag with value ``val``.
 
         :param str val:
-        :rtype: MemberAddResult
+        :rtype: MemberAddResultBase
         """
         return cls('duplicate_member_persistent_id', val)
 
@@ -6498,7 +6511,7 @@ class MemberAddResult(bb.Union):
         tag with value ``val``.
 
         :param str val:
-        :rtype: MemberAddResult
+        :rtype: MemberAddResultBase
         """
         return cls('persistent_id_disabled', val)
 
@@ -6509,17 +6522,9 @@ class MemberAddResult(bb.Union):
         with value ``val``.
 
         :param str val:
-        :rtype: MemberAddResult
+        :rtype: MemberAddResultBase
         """
         return cls('user_creation_failed', val)
-
-    def is_success(self):
-        """
-        Check if the union tag is ``success``.
-
-        :rtype: bool
-        """
-        return self._tag == 'success'
 
     def is_team_license_limit(self):
         """
@@ -6600,18 +6605,6 @@ class MemberAddResult(bb.Union):
         :rtype: bool
         """
         return self._tag == 'user_creation_failed'
-
-    def get_success(self):
-        """
-        Describes a user that was successfully added to the team.
-
-        Only call this if :meth:`is_success` is true.
-
-        :rtype: TeamMemberInfo
-        """
-        if not self.is_success():
-            raise AttributeError("tag 'success' not set")
-        return self._value
 
     def get_team_license_limit(self):
         """
@@ -6741,9 +6734,159 @@ class MemberAddResult(bb.Union):
         return self._value
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(MemberAddResultBase, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+MemberAddResultBase_validator = bv.Union(MemberAddResultBase)
+
+class MemberAddResult(MemberAddResultBase):
+    """
+    Describes the result of attempting to add a single user to the team.
+    'success' is the only value indicating that a user was indeed added to the
+    team - the other values explain the type of failure that occurred, and
+    include the email of the user for which the operation has failed.
+
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+
+    :ivar TeamMemberInfo MemberAddResult.success: Describes a user that was
+        successfully added to the team.
+    """
+
+    @classmethod
+    def success(cls, val):
+        """
+        Create an instance of this class set to the ``success`` tag with value
+        ``val``.
+
+        :param TeamMemberInfo val:
+        :rtype: MemberAddResult
+        """
+        return cls('success', val)
+
+    def is_success(self):
+        """
+        Check if the union tag is ``success``.
+
+        :rtype: bool
+        """
+        return self._tag == 'success'
+
+    def get_success(self):
+        """
+        Describes a user that was successfully added to the team.
+
+        Only call this if :meth:`is_success` is true.
+
+        :rtype: TeamMemberInfo
+        """
+        if not self.is_success():
+            raise AttributeError("tag 'success' not set")
+        return self._value
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(MemberAddResult, self)._process_custom_annotations(annotation_type, field_path, processor)
 
 MemberAddResult_validator = bv.Union(MemberAddResult)
+
+class MemberAddV2Arg(MemberAddArgBase):
+
+    __slots__ = [
+        '_role_ids_value',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 member_email=None,
+                 member_given_name=None,
+                 member_surname=None,
+                 member_external_id=None,
+                 member_persistent_id=None,
+                 send_welcome_email=None,
+                 is_directory_restricted=None,
+                 role_ids=None):
+        super(MemberAddV2Arg, self).__init__(member_email,
+                                             member_given_name,
+                                             member_surname,
+                                             member_external_id,
+                                             member_persistent_id,
+                                             send_welcome_email,
+                                             is_directory_restricted)
+        self._role_ids_value = bb.NOT_SET
+        if role_ids is not None:
+            self.role_ids = role_ids
+
+    # Instance attribute type: list of [str] (validator is set below)
+    role_ids = bb.Attribute("role_ids", nullable=True)
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(MemberAddV2Arg, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+MemberAddV2Arg_validator = bv.Struct(MemberAddV2Arg)
+
+class MemberAddV2Result(MemberAddResultBase):
+    """
+    Describes the result of attempting to add a single user to the team.
+    'success' is the only value indicating that a user was indeed added to the
+    team - the other values explain the type of failure that occurred, and
+    include the email of the user for which the operation has failed.
+
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+
+    :ivar TeamMemberInfoV2 MemberAddV2Result.success: Describes a user that was
+        successfully added to the team.
+    """
+
+    _catch_all = 'other'
+    # Attribute is overwritten below the class definition
+    other = None
+
+    @classmethod
+    def success(cls, val):
+        """
+        Create an instance of this class set to the ``success`` tag with value
+        ``val``.
+
+        :param TeamMemberInfoV2 val:
+        :rtype: MemberAddV2Result
+        """
+        return cls('success', val)
+
+    def is_success(self):
+        """
+        Check if the union tag is ``success``.
+
+        :rtype: bool
+        """
+        return self._tag == 'success'
+
+    def is_other(self):
+        """
+        Check if the union tag is ``other``.
+
+        :rtype: bool
+        """
+        return self._tag == 'other'
+
+    def get_success(self):
+        """
+        Describes a user that was successfully added to the team.
+
+        Only call this if :meth:`is_success` is true.
+
+        :rtype: TeamMemberInfoV2
+        """
+        if not self.is_success():
+            raise AttributeError("tag 'success' not set")
+        return self._value
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(MemberAddV2Result, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+MemberAddV2Result_validator = bv.Union(MemberAddV2Result)
 
 class MemberDevices(bb.Struct):
     """
@@ -7064,17 +7207,40 @@ class MemberSelectorError(UserSelectorError):
 
 MemberSelectorError_validator = bv.Union(MemberSelectorError)
 
-class MembersAddArg(bb.Struct):
+class MembersAddArgBase(bb.Struct):
     """
-    :ivar team.MembersAddArg.new_members: Details of new members to be added to
-        the team.
-    :ivar team.MembersAddArg.force_async: Whether to force the add to happen
+    :ivar team.MembersAddArgBase.force_async: Whether to force the add to happen
         asynchronously.
     """
 
     __slots__ = [
-        '_new_members_value',
         '_force_async_value',
+    ]
+
+    _has_required_fields = False
+
+    def __init__(self,
+                 force_async=None):
+        self._force_async_value = bb.NOT_SET
+        if force_async is not None:
+            self.force_async = force_async
+
+    # Instance attribute type: bool (validator is set below)
+    force_async = bb.Attribute("force_async")
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(MembersAddArgBase, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+MembersAddArgBase_validator = bv.Struct(MembersAddArgBase)
+
+class MembersAddArg(MembersAddArgBase):
+    """
+    :ivar team.MembersAddArg.new_members: Details of new members to be added to
+        the team.
+    """
+
+    __slots__ = [
+        '_new_members_value',
     ]
 
     _has_required_fields = True
@@ -7082,18 +7248,13 @@ class MembersAddArg(bb.Struct):
     def __init__(self,
                  new_members=None,
                  force_async=None):
+        super(MembersAddArg, self).__init__(force_async)
         self._new_members_value = bb.NOT_SET
-        self._force_async_value = bb.NOT_SET
         if new_members is not None:
             self.new_members = new_members
-        if force_async is not None:
-            self.force_async = force_async
 
     # Instance attribute type: list of [MemberAddArg] (validator is set below)
     new_members = bb.Attribute("new_members")
-
-    # Instance attribute type: bool (validator is set below)
-    force_async = bb.Attribute("force_async")
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(MembersAddArg, self)._process_custom_annotations(annotation_type, field_path, processor)
@@ -7185,6 +7346,103 @@ class MembersAddJobStatus(async_.PollResultBase):
 
 MembersAddJobStatus_validator = bv.Union(MembersAddJobStatus)
 
+class MembersAddJobStatusV2Result(async_.PollResultBase):
+    """
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+
+    :ivar list of [MemberAddV2Result] team.MembersAddJobStatusV2Result.complete:
+        The asynchronous job has finished. For each member that was specified in
+        the parameter :type:`MembersAddArg` that was provided to
+        :route:`members/add:2`, a corresponding item is returned in this list.
+    :ivar str team.MembersAddJobStatusV2Result.failed: The asynchronous job
+        returned an error. The string contains an error message.
+    """
+
+    _catch_all = 'other'
+    # Attribute is overwritten below the class definition
+    other = None
+
+    @classmethod
+    def complete(cls, val):
+        """
+        Create an instance of this class set to the ``complete`` tag with value
+        ``val``.
+
+        :param list of [MemberAddV2Result] val:
+        :rtype: MembersAddJobStatusV2Result
+        """
+        return cls('complete', val)
+
+    @classmethod
+    def failed(cls, val):
+        """
+        Create an instance of this class set to the ``failed`` tag with value
+        ``val``.
+
+        :param str val:
+        :rtype: MembersAddJobStatusV2Result
+        """
+        return cls('failed', val)
+
+    def is_complete(self):
+        """
+        Check if the union tag is ``complete``.
+
+        :rtype: bool
+        """
+        return self._tag == 'complete'
+
+    def is_failed(self):
+        """
+        Check if the union tag is ``failed``.
+
+        :rtype: bool
+        """
+        return self._tag == 'failed'
+
+    def is_other(self):
+        """
+        Check if the union tag is ``other``.
+
+        :rtype: bool
+        """
+        return self._tag == 'other'
+
+    def get_complete(self):
+        """
+        The asynchronous job has finished. For each member that was specified in
+        the parameter :class:`MembersAddArg` that was provided to
+        :meth:`dropbox.dropbox_client.Dropbox.team_members_add`, a corresponding
+        item is returned in this list.
+
+        Only call this if :meth:`is_complete` is true.
+
+        :rtype: list of [MemberAddV2Result]
+        """
+        if not self.is_complete():
+            raise AttributeError("tag 'complete' not set")
+        return self._value
+
+    def get_failed(self):
+        """
+        The asynchronous job returned an error. The string contains an error
+        message.
+
+        Only call this if :meth:`is_failed` is true.
+
+        :rtype: str
+        """
+        if not self.is_failed():
+            raise AttributeError("tag 'failed' not set")
+        return self._value
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(MembersAddJobStatusV2Result, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+MembersAddJobStatusV2Result_validator = bv.Union(MembersAddJobStatusV2Result)
+
 class MembersAddLaunch(async_.LaunchResultBase):
     """
     This class acts as a tagged union. Only one of the ``is_*`` methods will
@@ -7225,6 +7483,87 @@ class MembersAddLaunch(async_.LaunchResultBase):
         super(MembersAddLaunch, self)._process_custom_annotations(annotation_type, field_path, processor)
 
 MembersAddLaunch_validator = bv.Union(MembersAddLaunch)
+
+class MembersAddLaunchV2Result(async_.LaunchResultBase):
+    """
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+    """
+
+    _catch_all = 'other'
+    # Attribute is overwritten below the class definition
+    other = None
+
+    @classmethod
+    def complete(cls, val):
+        """
+        Create an instance of this class set to the ``complete`` tag with value
+        ``val``.
+
+        :param list of [MemberAddV2Result] val:
+        :rtype: MembersAddLaunchV2Result
+        """
+        return cls('complete', val)
+
+    def is_complete(self):
+        """
+        Check if the union tag is ``complete``.
+
+        :rtype: bool
+        """
+        return self._tag == 'complete'
+
+    def is_other(self):
+        """
+        Check if the union tag is ``other``.
+
+        :rtype: bool
+        """
+        return self._tag == 'other'
+
+    def get_complete(self):
+        """
+        Only call this if :meth:`is_complete` is true.
+
+        :rtype: list of [MemberAddV2Result]
+        """
+        if not self.is_complete():
+            raise AttributeError("tag 'complete' not set")
+        return self._value
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(MembersAddLaunchV2Result, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+MembersAddLaunchV2Result_validator = bv.Union(MembersAddLaunchV2Result)
+
+class MembersAddV2Arg(MembersAddArgBase):
+    """
+    :ivar team.MembersAddV2Arg.new_members: Details of new members to be added
+        to the team.
+    """
+
+    __slots__ = [
+        '_new_members_value',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 new_members=None,
+                 force_async=None):
+        super(MembersAddV2Arg, self).__init__(force_async)
+        self._new_members_value = bb.NOT_SET
+        if new_members is not None:
+            self.new_members = new_members
+
+    # Instance attribute type: list of [MemberAddV2Arg] (validator is set below)
+    new_members = bb.Attribute("new_members")
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(MembersAddV2Arg, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+MembersAddV2Arg_validator = bv.Struct(MembersAddV2Arg)
 
 class MembersDeactivateBaseArg(bb.Struct):
     """
@@ -7498,21 +7837,17 @@ class MembersGetInfoError(bb.Union):
 
 MembersGetInfoError_validator = bv.Union(MembersGetInfoError)
 
-class MembersGetInfoItem(bb.Union):
+class MembersGetInfoItemBase(bb.Union):
     """
-    Describes a result obtained for a single user whose id was specified in the
-    parameter of :meth:`dropbox.dropbox_client.Dropbox.team_members_get_info`.
-
     This class acts as a tagged union. Only one of the ``is_*`` methods will
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar str team.MembersGetInfoItem.id_not_found: An ID that was provided as a
-        parameter to :route:`members/get_info`, and did not match a
-        corresponding user. This might be a team_member_id, an email, or an
-        external ID, depending on how the method was called.
-    :ivar TeamMemberInfo MembersGetInfoItem.member_info: Info about a team
-        member.
+    :ivar str team.MembersGetInfoItemBase.id_not_found: An ID that was provided
+        as a parameter to :route:`members/get_info` or
+        :route:`members/get_info:2`, and did not match a corresponding user.
+        This might be a team_member_id, an email, or an external ID, depending
+        on how the method was called.
     """
 
     _catch_all = None
@@ -7524,9 +7859,51 @@ class MembersGetInfoItem(bb.Union):
         value ``val``.
 
         :param str val:
-        :rtype: MembersGetInfoItem
+        :rtype: MembersGetInfoItemBase
         """
         return cls('id_not_found', val)
+
+    def is_id_not_found(self):
+        """
+        Check if the union tag is ``id_not_found``.
+
+        :rtype: bool
+        """
+        return self._tag == 'id_not_found'
+
+    def get_id_not_found(self):
+        """
+        An ID that was provided as a parameter to
+        :meth:`dropbox.dropbox_client.Dropbox.team_members_get_info` or
+        :meth:`dropbox.dropbox_client.Dropbox.team_members_get_info`, and did
+        not match a corresponding user. This might be a team_member_id, an
+        email, or an external ID, depending on how the method was called.
+
+        Only call this if :meth:`is_id_not_found` is true.
+
+        :rtype: str
+        """
+        if not self.is_id_not_found():
+            raise AttributeError("tag 'id_not_found' not set")
+        return self._value
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(MembersGetInfoItemBase, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+MembersGetInfoItemBase_validator = bv.Union(MembersGetInfoItemBase)
+
+class MembersGetInfoItem(MembersGetInfoItemBase):
+    """
+    Describes a result obtained for a single user whose id was specified in the
+    parameter of :meth:`dropbox.dropbox_client.Dropbox.team_members_get_info`.
+
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+
+    :ivar TeamMemberInfo MembersGetInfoItem.member_info: Info about a team
+        member.
+    """
 
     @classmethod
     def member_info(cls, val):
@@ -7539,14 +7916,6 @@ class MembersGetInfoItem(bb.Union):
         """
         return cls('member_info', val)
 
-    def is_id_not_found(self):
-        """
-        Check if the union tag is ``id_not_found``.
-
-        :rtype: bool
-        """
-        return self._tag == 'id_not_found'
-
     def is_member_info(self):
         """
         Check if the union tag is ``member_info``.
@@ -7554,21 +7923,6 @@ class MembersGetInfoItem(bb.Union):
         :rtype: bool
         """
         return self._tag == 'member_info'
-
-    def get_id_not_found(self):
-        """
-        An ID that was provided as a parameter to
-        :meth:`dropbox.dropbox_client.Dropbox.team_members_get_info`, and did
-        not match a corresponding user. This might be a team_member_id, an
-        email, or an external ID, depending on how the method was called.
-
-        Only call this if :meth:`is_id_not_found` is true.
-
-        :rtype: str
-        """
-        if not self.is_id_not_found():
-            raise AttributeError("tag 'id_not_found' not set")
-        return self._value
 
     def get_member_info(self):
         """
@@ -7586,6 +7940,117 @@ class MembersGetInfoItem(bb.Union):
         super(MembersGetInfoItem, self)._process_custom_annotations(annotation_type, field_path, processor)
 
 MembersGetInfoItem_validator = bv.Union(MembersGetInfoItem)
+
+class MembersGetInfoItemV2(MembersGetInfoItemBase):
+    """
+    Describes a result obtained for a single user whose id was specified in the
+    parameter of :meth:`dropbox.dropbox_client.Dropbox.team_members_get_info`.
+
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+
+    :ivar TeamMemberInfoV2 MembersGetInfoItemV2.member_info: Info about a team
+        member.
+    """
+
+    _catch_all = 'other'
+    # Attribute is overwritten below the class definition
+    other = None
+
+    @classmethod
+    def member_info(cls, val):
+        """
+        Create an instance of this class set to the ``member_info`` tag with
+        value ``val``.
+
+        :param TeamMemberInfoV2 val:
+        :rtype: MembersGetInfoItemV2
+        """
+        return cls('member_info', val)
+
+    def is_member_info(self):
+        """
+        Check if the union tag is ``member_info``.
+
+        :rtype: bool
+        """
+        return self._tag == 'member_info'
+
+    def is_other(self):
+        """
+        Check if the union tag is ``other``.
+
+        :rtype: bool
+        """
+        return self._tag == 'other'
+
+    def get_member_info(self):
+        """
+        Info about a team member.
+
+        Only call this if :meth:`is_member_info` is true.
+
+        :rtype: TeamMemberInfoV2
+        """
+        if not self.is_member_info():
+            raise AttributeError("tag 'member_info' not set")
+        return self._value
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(MembersGetInfoItemV2, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+MembersGetInfoItemV2_validator = bv.Union(MembersGetInfoItemV2)
+
+class MembersGetInfoV2Arg(bb.Struct):
+    """
+    :ivar team.MembersGetInfoV2Arg.members: List of team members.
+    """
+
+    __slots__ = [
+        '_members_value',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 members=None):
+        self._members_value = bb.NOT_SET
+        if members is not None:
+            self.members = members
+
+    # Instance attribute type: list of [UserSelectorArg] (validator is set below)
+    members = bb.Attribute("members")
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(MembersGetInfoV2Arg, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+MembersGetInfoV2Arg_validator = bv.Struct(MembersGetInfoV2Arg)
+
+class MembersGetInfoV2Result(bb.Struct):
+    """
+    :ivar team.MembersGetInfoV2Result.members_info: List of team members info.
+    """
+
+    __slots__ = [
+        '_members_info_value',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 members_info=None):
+        self._members_info_value = bb.NOT_SET
+        if members_info is not None:
+            self.members_info = members_info
+
+    # Instance attribute type: list of [MembersGetInfoItemV2] (validator is set below)
+    members_info = bb.Attribute("members_info")
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(MembersGetInfoV2Result, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+MembersGetInfoV2Result_validator = bv.Struct(MembersGetInfoV2Result)
 
 class MembersInfo(bb.Struct):
     """
@@ -7791,6 +8256,54 @@ class MembersListResult(bb.Struct):
         super(MembersListResult, self)._process_custom_annotations(annotation_type, field_path, processor)
 
 MembersListResult_validator = bv.Struct(MembersListResult)
+
+class MembersListV2Result(bb.Struct):
+    """
+    :ivar team.MembersListV2Result.members: List of team members.
+    :ivar team.MembersListV2Result.cursor: Pass the cursor into
+        :meth:`dropbox.dropbox_client.Dropbox.team_members_list_continue` to
+        obtain the additional members.
+    :ivar team.MembersListV2Result.has_more: Is true if there are additional
+        team members that have not been returned yet. An additional call to
+        :meth:`dropbox.dropbox_client.Dropbox.team_members_list_continue` can
+        retrieve them.
+    """
+
+    __slots__ = [
+        '_members_value',
+        '_cursor_value',
+        '_has_more_value',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 members=None,
+                 cursor=None,
+                 has_more=None):
+        self._members_value = bb.NOT_SET
+        self._cursor_value = bb.NOT_SET
+        self._has_more_value = bb.NOT_SET
+        if members is not None:
+            self.members = members
+        if cursor is not None:
+            self.cursor = cursor
+        if has_more is not None:
+            self.has_more = has_more
+
+    # Instance attribute type: list of [TeamMemberInfoV2] (validator is set below)
+    members = bb.Attribute("members")
+
+    # Instance attribute type: str (validator is set below)
+    cursor = bb.Attribute("cursor")
+
+    # Instance attribute type: bool (validator is set below)
+    has_more = bb.Attribute("has_more")
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(MembersListV2Result, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+MembersListV2Result_validator = bv.Struct(MembersListV2Result)
 
 class MembersRecoverArg(bb.Struct):
     """
@@ -11408,6 +11921,72 @@ class TeamMemberInfo(bb.Struct):
 
 TeamMemberInfo_validator = bv.Struct(TeamMemberInfo)
 
+class TeamMemberInfoV2(bb.Struct):
+    """
+    Information about a team member.
+
+    :ivar team.TeamMemberInfoV2.profile: Profile of a user as a member of a
+        team.
+    :ivar team.TeamMemberInfoV2.roles: The user's roles in the team.
+    """
+
+    __slots__ = [
+        '_profile_value',
+        '_roles_value',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 profile=None,
+                 roles=None):
+        self._profile_value = bb.NOT_SET
+        self._roles_value = bb.NOT_SET
+        if profile is not None:
+            self.profile = profile
+        if roles is not None:
+            self.roles = roles
+
+    # Instance attribute type: TeamMemberProfile (validator is set below)
+    profile = bb.Attribute("profile", user_defined=True)
+
+    # Instance attribute type: list of [TeamMemberRole] (validator is set below)
+    roles = bb.Attribute("roles", nullable=True)
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(TeamMemberInfoV2, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+TeamMemberInfoV2_validator = bv.Struct(TeamMemberInfoV2)
+
+class TeamMemberInfoV2Result(bb.Struct):
+    """
+    Information about a team member, after the change, like at
+    :meth:`dropbox.dropbox_client.Dropbox.team_members_set_profile`.
+
+    :ivar team.TeamMemberInfoV2Result.member_info: Member info, after the
+        change.
+    """
+
+    __slots__ = [
+        '_member_info_value',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 member_info=None):
+        self._member_info_value = bb.NOT_SET
+        if member_info is not None:
+            self.member_info = member_info
+
+    # Instance attribute type: TeamMemberInfoV2 (validator is set below)
+    member_info = bb.Attribute("member_info", user_defined=True)
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(TeamMemberInfoV2Result, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+TeamMemberInfoV2Result_validator = bv.Struct(TeamMemberInfoV2Result)
+
 class TeamMemberProfile(MemberProfile):
     """
     Profile of a user as a member of a team.
@@ -14221,59 +14800,78 @@ MemberAccess._all_fields_ = [
     ('access_type', MemberAccess.access_type.validator),
 ]
 
-MemberAddArg.member_email.validator = common.EmailAddress_validator
-MemberAddArg.member_given_name.validator = bv.Nullable(common.OptionalNamePart_validator)
-MemberAddArg.member_surname.validator = bv.Nullable(common.OptionalNamePart_validator)
-MemberAddArg.member_external_id.validator = bv.Nullable(team_common.MemberExternalId_validator)
-MemberAddArg.member_persistent_id.validator = bv.Nullable(bv.String())
-MemberAddArg.send_welcome_email.validator = bv.Boolean()
-MemberAddArg.role.validator = AdminTier_validator
-MemberAddArg.is_directory_restricted.validator = bv.Nullable(bv.Boolean())
-MemberAddArg._all_field_names_ = set([
+MemberAddArgBase.member_email.validator = common.EmailAddress_validator
+MemberAddArgBase.member_given_name.validator = bv.Nullable(common.OptionalNamePart_validator)
+MemberAddArgBase.member_surname.validator = bv.Nullable(common.OptionalNamePart_validator)
+MemberAddArgBase.member_external_id.validator = bv.Nullable(team_common.MemberExternalId_validator)
+MemberAddArgBase.member_persistent_id.validator = bv.Nullable(bv.String())
+MemberAddArgBase.send_welcome_email.validator = bv.Boolean()
+MemberAddArgBase.is_directory_restricted.validator = bv.Nullable(bv.Boolean())
+MemberAddArgBase._all_field_names_ = set([
     'member_email',
     'member_given_name',
     'member_surname',
     'member_external_id',
     'member_persistent_id',
     'send_welcome_email',
-    'role',
     'is_directory_restricted',
 ])
-MemberAddArg._all_fields_ = [
-    ('member_email', MemberAddArg.member_email.validator),
-    ('member_given_name', MemberAddArg.member_given_name.validator),
-    ('member_surname', MemberAddArg.member_surname.validator),
-    ('member_external_id', MemberAddArg.member_external_id.validator),
-    ('member_persistent_id', MemberAddArg.member_persistent_id.validator),
-    ('send_welcome_email', MemberAddArg.send_welcome_email.validator),
-    ('role', MemberAddArg.role.validator),
-    ('is_directory_restricted', MemberAddArg.is_directory_restricted.validator),
+MemberAddArgBase._all_fields_ = [
+    ('member_email', MemberAddArgBase.member_email.validator),
+    ('member_given_name', MemberAddArgBase.member_given_name.validator),
+    ('member_surname', MemberAddArgBase.member_surname.validator),
+    ('member_external_id', MemberAddArgBase.member_external_id.validator),
+    ('member_persistent_id', MemberAddArgBase.member_persistent_id.validator),
+    ('send_welcome_email', MemberAddArgBase.send_welcome_email.validator),
+    ('is_directory_restricted', MemberAddArgBase.is_directory_restricted.validator),
 ]
 
+MemberAddArg.role.validator = AdminTier_validator
+MemberAddArg._all_field_names_ = MemberAddArgBase._all_field_names_.union(set(['role']))
+MemberAddArg._all_fields_ = MemberAddArgBase._all_fields_ + [('role', MemberAddArg.role.validator)]
+
+MemberAddResultBase._team_license_limit_validator = common.EmailAddress_validator
+MemberAddResultBase._free_team_member_limit_reached_validator = common.EmailAddress_validator
+MemberAddResultBase._user_already_on_team_validator = common.EmailAddress_validator
+MemberAddResultBase._user_on_another_team_validator = common.EmailAddress_validator
+MemberAddResultBase._user_already_paired_validator = common.EmailAddress_validator
+MemberAddResultBase._user_migration_failed_validator = common.EmailAddress_validator
+MemberAddResultBase._duplicate_external_member_id_validator = common.EmailAddress_validator
+MemberAddResultBase._duplicate_member_persistent_id_validator = common.EmailAddress_validator
+MemberAddResultBase._persistent_id_disabled_validator = common.EmailAddress_validator
+MemberAddResultBase._user_creation_failed_validator = common.EmailAddress_validator
+MemberAddResultBase._tagmap = {
+    'team_license_limit': MemberAddResultBase._team_license_limit_validator,
+    'free_team_member_limit_reached': MemberAddResultBase._free_team_member_limit_reached_validator,
+    'user_already_on_team': MemberAddResultBase._user_already_on_team_validator,
+    'user_on_another_team': MemberAddResultBase._user_on_another_team_validator,
+    'user_already_paired': MemberAddResultBase._user_already_paired_validator,
+    'user_migration_failed': MemberAddResultBase._user_migration_failed_validator,
+    'duplicate_external_member_id': MemberAddResultBase._duplicate_external_member_id_validator,
+    'duplicate_member_persistent_id': MemberAddResultBase._duplicate_member_persistent_id_validator,
+    'persistent_id_disabled': MemberAddResultBase._persistent_id_disabled_validator,
+    'user_creation_failed': MemberAddResultBase._user_creation_failed_validator,
+}
+
 MemberAddResult._success_validator = TeamMemberInfo_validator
-MemberAddResult._team_license_limit_validator = common.EmailAddress_validator
-MemberAddResult._free_team_member_limit_reached_validator = common.EmailAddress_validator
-MemberAddResult._user_already_on_team_validator = common.EmailAddress_validator
-MemberAddResult._user_on_another_team_validator = common.EmailAddress_validator
-MemberAddResult._user_already_paired_validator = common.EmailAddress_validator
-MemberAddResult._user_migration_failed_validator = common.EmailAddress_validator
-MemberAddResult._duplicate_external_member_id_validator = common.EmailAddress_validator
-MemberAddResult._duplicate_member_persistent_id_validator = common.EmailAddress_validator
-MemberAddResult._persistent_id_disabled_validator = common.EmailAddress_validator
-MemberAddResult._user_creation_failed_validator = common.EmailAddress_validator
 MemberAddResult._tagmap = {
     'success': MemberAddResult._success_validator,
-    'team_license_limit': MemberAddResult._team_license_limit_validator,
-    'free_team_member_limit_reached': MemberAddResult._free_team_member_limit_reached_validator,
-    'user_already_on_team': MemberAddResult._user_already_on_team_validator,
-    'user_on_another_team': MemberAddResult._user_on_another_team_validator,
-    'user_already_paired': MemberAddResult._user_already_paired_validator,
-    'user_migration_failed': MemberAddResult._user_migration_failed_validator,
-    'duplicate_external_member_id': MemberAddResult._duplicate_external_member_id_validator,
-    'duplicate_member_persistent_id': MemberAddResult._duplicate_member_persistent_id_validator,
-    'persistent_id_disabled': MemberAddResult._persistent_id_disabled_validator,
-    'user_creation_failed': MemberAddResult._user_creation_failed_validator,
 }
+MemberAddResult._tagmap.update(MemberAddResultBase._tagmap)
+
+MemberAddV2Arg.role_ids.validator = bv.Nullable(bv.List(TeamMemberRoleId_validator, max_items=1))
+MemberAddV2Arg._all_field_names_ = MemberAddArgBase._all_field_names_.union(set(['role_ids']))
+MemberAddV2Arg._all_fields_ = MemberAddArgBase._all_fields_ + [('role_ids', MemberAddV2Arg.role_ids.validator)]
+
+MemberAddV2Result._success_validator = TeamMemberInfoV2_validator
+MemberAddV2Result._other_validator = bv.Void()
+MemberAddV2Result._tagmap = {
+    'success': MemberAddV2Result._success_validator,
+    'other': MemberAddV2Result._other_validator,
+}
+MemberAddV2Result._tagmap.update(MemberAddResultBase._tagmap)
+
+MemberAddV2Result.other = MemberAddV2Result('other')
 
 MemberDevices.team_member_id.validator = bv.String()
 MemberDevices.web_sessions.validator = bv.Nullable(bv.List(ActiveWebSession_validator))
@@ -14368,16 +14966,13 @@ MemberSelectorError._tagmap.update(UserSelectorError._tagmap)
 
 MemberSelectorError.user_not_in_team = MemberSelectorError('user_not_in_team')
 
+MembersAddArgBase.force_async.validator = bv.Boolean()
+MembersAddArgBase._all_field_names_ = set(['force_async'])
+MembersAddArgBase._all_fields_ = [('force_async', MembersAddArgBase.force_async.validator)]
+
 MembersAddArg.new_members.validator = bv.List(MemberAddArg_validator)
-MembersAddArg.force_async.validator = bv.Boolean()
-MembersAddArg._all_field_names_ = set([
-    'new_members',
-    'force_async',
-])
-MembersAddArg._all_fields_ = [
-    ('new_members', MembersAddArg.new_members.validator),
-    ('force_async', MembersAddArg.force_async.validator),
-]
+MembersAddArg._all_field_names_ = MembersAddArgBase._all_field_names_.union(set(['new_members']))
+MembersAddArg._all_fields_ = MembersAddArgBase._all_fields_ + [('new_members', MembersAddArg.new_members.validator)]
 
 MembersAddJobStatus._complete_validator = bv.List(MemberAddResult_validator)
 MembersAddJobStatus._failed_validator = bv.String()
@@ -14387,11 +14982,37 @@ MembersAddJobStatus._tagmap = {
 }
 MembersAddJobStatus._tagmap.update(async_.PollResultBase._tagmap)
 
+MembersAddJobStatusV2Result._complete_validator = bv.List(MemberAddV2Result_validator)
+MembersAddJobStatusV2Result._failed_validator = bv.String()
+MembersAddJobStatusV2Result._other_validator = bv.Void()
+MembersAddJobStatusV2Result._tagmap = {
+    'complete': MembersAddJobStatusV2Result._complete_validator,
+    'failed': MembersAddJobStatusV2Result._failed_validator,
+    'other': MembersAddJobStatusV2Result._other_validator,
+}
+MembersAddJobStatusV2Result._tagmap.update(async_.PollResultBase._tagmap)
+
+MembersAddJobStatusV2Result.other = MembersAddJobStatusV2Result('other')
+
 MembersAddLaunch._complete_validator = bv.List(MemberAddResult_validator)
 MembersAddLaunch._tagmap = {
     'complete': MembersAddLaunch._complete_validator,
 }
 MembersAddLaunch._tagmap.update(async_.LaunchResultBase._tagmap)
+
+MembersAddLaunchV2Result._complete_validator = bv.List(MemberAddV2Result_validator)
+MembersAddLaunchV2Result._other_validator = bv.Void()
+MembersAddLaunchV2Result._tagmap = {
+    'complete': MembersAddLaunchV2Result._complete_validator,
+    'other': MembersAddLaunchV2Result._other_validator,
+}
+MembersAddLaunchV2Result._tagmap.update(async_.LaunchResultBase._tagmap)
+
+MembersAddLaunchV2Result.other = MembersAddLaunchV2Result('other')
+
+MembersAddV2Arg.new_members.validator = bv.List(MemberAddV2Arg_validator)
+MembersAddV2Arg._all_field_names_ = MembersAddArgBase._all_field_names_.union(set(['new_members']))
+MembersAddV2Arg._all_fields_ = MembersAddArgBase._all_fields_ + [('new_members', MembersAddV2Arg.new_members.validator)]
 
 MembersDeactivateBaseArg.user.validator = UserSelectorArg_validator
 MembersDeactivateBaseArg._all_field_names_ = set(['user'])
@@ -14453,12 +15074,34 @@ MembersGetInfoError._tagmap = {
 
 MembersGetInfoError.other = MembersGetInfoError('other')
 
-MembersGetInfoItem._id_not_found_validator = bv.String()
+MembersGetInfoItemBase._id_not_found_validator = bv.String()
+MembersGetInfoItemBase._tagmap = {
+    'id_not_found': MembersGetInfoItemBase._id_not_found_validator,
+}
+
 MembersGetInfoItem._member_info_validator = TeamMemberInfo_validator
 MembersGetInfoItem._tagmap = {
-    'id_not_found': MembersGetInfoItem._id_not_found_validator,
     'member_info': MembersGetInfoItem._member_info_validator,
 }
+MembersGetInfoItem._tagmap.update(MembersGetInfoItemBase._tagmap)
+
+MembersGetInfoItemV2._member_info_validator = TeamMemberInfoV2_validator
+MembersGetInfoItemV2._other_validator = bv.Void()
+MembersGetInfoItemV2._tagmap = {
+    'member_info': MembersGetInfoItemV2._member_info_validator,
+    'other': MembersGetInfoItemV2._other_validator,
+}
+MembersGetInfoItemV2._tagmap.update(MembersGetInfoItemBase._tagmap)
+
+MembersGetInfoItemV2.other = MembersGetInfoItemV2('other')
+
+MembersGetInfoV2Arg.members.validator = bv.List(UserSelectorArg_validator)
+MembersGetInfoV2Arg._all_field_names_ = set(['members'])
+MembersGetInfoV2Arg._all_fields_ = [('members', MembersGetInfoV2Arg.members.validator)]
+
+MembersGetInfoV2Result.members_info.validator = bv.List(MembersGetInfoItemV2_validator)
+MembersGetInfoV2Result._all_field_names_ = set(['members_info'])
+MembersGetInfoV2Result._all_fields_ = [('members_info', MembersGetInfoV2Result.members_info.validator)]
 
 MembersInfo.team_member_ids.validator = bv.List(team_common.TeamMemberId_validator)
 MembersInfo.permanently_deleted_users.validator = bv.UInt64()
@@ -14515,6 +15158,20 @@ MembersListResult._all_fields_ = [
     ('members', MembersListResult.members.validator),
     ('cursor', MembersListResult.cursor.validator),
     ('has_more', MembersListResult.has_more.validator),
+]
+
+MembersListV2Result.members.validator = bv.List(TeamMemberInfoV2_validator)
+MembersListV2Result.cursor.validator = bv.String()
+MembersListV2Result.has_more.validator = bv.Boolean()
+MembersListV2Result._all_field_names_ = set([
+    'members',
+    'cursor',
+    'has_more',
+])
+MembersListV2Result._all_fields_ = [
+    ('members', MembersListV2Result.members.validator),
+    ('cursor', MembersListV2Result.cursor.validator),
+    ('has_more', MembersListV2Result.has_more.validator),
 ]
 
 MembersRecoverArg.user.validator = UserSelectorArg_validator
@@ -15354,6 +16011,21 @@ TeamMemberInfo._all_fields_ = [
     ('role', TeamMemberInfo.role.validator),
 ]
 
+TeamMemberInfoV2.profile.validator = TeamMemberProfile_validator
+TeamMemberInfoV2.roles.validator = bv.Nullable(bv.List(TeamMemberRole_validator))
+TeamMemberInfoV2._all_field_names_ = set([
+    'profile',
+    'roles',
+])
+TeamMemberInfoV2._all_fields_ = [
+    ('profile', TeamMemberInfoV2.profile.validator),
+    ('roles', TeamMemberInfoV2.roles.validator),
+]
+
+TeamMemberInfoV2Result.member_info.validator = TeamMemberInfoV2_validator
+TeamMemberInfoV2Result._all_field_names_ = set(['member_info'])
+TeamMemberInfoV2Result._all_fields_ = [('member_info', TeamMemberInfoV2Result.member_info.validator)]
+
 TeamMemberProfile.groups.validator = bv.List(team_common.GroupId_validator)
 TeamMemberProfile.member_folder_id.validator = common.NamespaceId_validator
 TeamMemberProfile._all_field_names_ = MemberProfile._all_field_names_.union(set([
@@ -15626,9 +16298,9 @@ ListMembersDevicesArg.include_mobile_clients.default = True
 ListTeamDevicesArg.include_web_sessions.default = True
 ListTeamDevicesArg.include_desktop_clients.default = True
 ListTeamDevicesArg.include_mobile_clients.default = True
-MemberAddArg.send_welcome_email.default = True
+MemberAddArgBase.send_welcome_email.default = True
 MemberAddArg.role.default = AdminTier.member_only
-MembersAddArg.force_async.default = False
+MembersAddArgBase.force_async.default = False
 MembersDeactivateArg.wipe_data.default = True
 MembersListArg.limit.default = 1000
 MembersListArg.include_removed.default = False
@@ -16057,6 +16729,17 @@ member_space_limits_set_custom_quota = bb.Route(
      'host': u'api',
      'style': u'rpc'},
 )
+members_add_v2 = bb.Route(
+    'members/add',
+    2,
+    False,
+    MembersAddV2Arg_validator,
+    MembersAddLaunchV2Result_validator,
+    bv.Void(),
+    {'auth': u'team',
+     'host': u'api',
+     'style': u'rpc'},
+)
 members_add = bb.Route(
     'members/add',
     1,
@@ -16068,6 +16751,17 @@ members_add = bb.Route(
      'host': u'api',
      'style': u'rpc'},
 )
+members_add_job_status_get_v2 = bb.Route(
+    'members/add/job_status/get',
+    2,
+    False,
+    async_.PollArg_validator,
+    MembersAddJobStatusV2Result_validator,
+    async_.PollError_validator,
+    {'auth': u'team',
+     'host': u'api',
+     'style': u'rpc'},
+)
 members_add_job_status_get = bb.Route(
     'members/add/job_status/get',
     1,
@@ -16075,6 +16769,17 @@ members_add_job_status_get = bb.Route(
     async_.PollArg_validator,
     MembersAddJobStatus_validator,
     async_.PollError_validator,
+    {'auth': u'team',
+     'host': u'api',
+     'style': u'rpc'},
+)
+members_delete_profile_photo_v2 = bb.Route(
+    'members/delete_profile_photo',
+    2,
+    False,
+    MembersDeleteProfilePhotoArg_validator,
+    TeamMemberInfoV2Result_validator,
+    MembersDeleteProfilePhotoError_validator,
     {'auth': u'team',
      'host': u'api',
      'style': u'rpc'},
@@ -16101,6 +16806,17 @@ members_get_available_team_member_roles = bb.Route(
      'host': u'api',
      'style': u'rpc'},
 )
+members_get_info_v2 = bb.Route(
+    'members/get_info',
+    2,
+    False,
+    MembersGetInfoV2Arg_validator,
+    MembersGetInfoV2Result_validator,
+    MembersGetInfoError_validator,
+    {'auth': u'team',
+     'host': u'api',
+     'style': u'rpc'},
+)
 members_get_info = bb.Route(
     'members/get_info',
     1,
@@ -16112,6 +16828,17 @@ members_get_info = bb.Route(
      'host': u'api',
      'style': u'rpc'},
 )
+members_list_v2 = bb.Route(
+    'members/list',
+    2,
+    False,
+    MembersListArg_validator,
+    MembersListV2Result_validator,
+    MembersListError_validator,
+    {'auth': u'team',
+     'host': u'api',
+     'style': u'rpc'},
+)
 members_list = bb.Route(
     'members/list',
     1,
@@ -16119,6 +16846,17 @@ members_list = bb.Route(
     MembersListArg_validator,
     MembersListResult_validator,
     MembersListError_validator,
+    {'auth': u'team',
+     'host': u'api',
+     'style': u'rpc'},
+)
+members_list_continue_v2 = bb.Route(
+    'members/list/continue',
+    2,
+    False,
+    MembersListContinueArg_validator,
+    MembersListV2Result_validator,
+    MembersListContinueError_validator,
     {'auth': u'team',
      'host': u'api',
      'style': u'rpc'},
@@ -16255,6 +16993,17 @@ members_set_admin_permissions = bb.Route(
      'host': u'api',
      'style': u'rpc'},
 )
+members_set_profile_v2 = bb.Route(
+    'members/set_profile',
+    2,
+    False,
+    MembersSetProfileArg_validator,
+    TeamMemberInfoV2Result_validator,
+    MembersSetProfileError_validator,
+    {'auth': u'team',
+     'host': u'api',
+     'style': u'rpc'},
+)
 members_set_profile = bb.Route(
     'members/set_profile',
     1,
@@ -16262,6 +17011,17 @@ members_set_profile = bb.Route(
     MembersSetProfileArg_validator,
     TeamMemberInfo_validator,
     MembersSetProfileError_validator,
+    {'auth': u'team',
+     'host': u'api',
+     'style': u'rpc'},
+)
+members_set_profile_photo_v2 = bb.Route(
+    'members/set_profile_photo',
+    2,
+    False,
+    MembersSetProfilePhotoArg_validator,
+    TeamMemberInfoV2Result_validator,
+    MembersSetProfilePhotoError_validator,
     {'auth': u'team',
      'host': u'api',
      'style': u'rpc'},
@@ -16570,12 +17330,18 @@ ROUTES = {
     'member_space_limits/get_custom_quota': member_space_limits_get_custom_quota,
     'member_space_limits/remove_custom_quota': member_space_limits_remove_custom_quota,
     'member_space_limits/set_custom_quota': member_space_limits_set_custom_quota,
+    'members/add:2': members_add_v2,
     'members/add': members_add,
+    'members/add/job_status/get:2': members_add_job_status_get_v2,
     'members/add/job_status/get': members_add_job_status_get,
+    'members/delete_profile_photo:2': members_delete_profile_photo_v2,
     'members/delete_profile_photo': members_delete_profile_photo,
     'members/get_available_team_member_roles': members_get_available_team_member_roles,
+    'members/get_info:2': members_get_info_v2,
     'members/get_info': members_get_info,
+    'members/list:2': members_list_v2,
     'members/list': members_list,
+    'members/list/continue:2': members_list_continue_v2,
     'members/list/continue': members_list_continue,
     'members/move_former_member_files': members_move_former_member_files,
     'members/move_former_member_files/job_status/check': members_move_former_member_files_job_status_check,
@@ -16588,7 +17354,9 @@ ROUTES = {
     'members/send_welcome_email': members_send_welcome_email,
     'members/set_admin_permissions:2': members_set_admin_permissions_v2,
     'members/set_admin_permissions': members_set_admin_permissions,
+    'members/set_profile:2': members_set_profile_v2,
     'members/set_profile': members_set_profile,
+    'members/set_profile_photo:2': members_set_profile_photo_v2,
     'members/set_profile_photo': members_set_profile_photo,
     'members/suspend': members_suspend,
     'members/unsuspend': members_unsuspend,

@@ -51218,6 +51218,44 @@ class MemberTransferAccountContentsType(bb.Struct):
 
 MemberTransferAccountContentsType_validator = bv.Struct(MemberTransferAccountContentsType)
 
+class MemberTransferredInternalFields(bb.Struct):
+    """
+    Internal only - fields for target team computations
+
+    :ivar team_log.MemberTransferredInternalFields.source_team_id: Internal only
+        - team user was moved from.
+    :ivar team_log.MemberTransferredInternalFields.target_team_id: Internal only
+        - team user was moved to.
+    """
+
+    __slots__ = [
+        '_source_team_id_value',
+        '_target_team_id_value',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 source_team_id=None,
+                 target_team_id=None):
+        self._source_team_id_value = bb.NOT_SET
+        self._target_team_id_value = bb.NOT_SET
+        if source_team_id is not None:
+            self.source_team_id = source_team_id
+        if target_team_id is not None:
+            self.target_team_id = target_team_id
+
+    # Instance attribute type: str (validator is set below)
+    source_team_id = bb.Attribute("source_team_id")
+
+    # Instance attribute type: str (validator is set below)
+    target_team_id = bb.Attribute("target_team_id")
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(MemberTransferredInternalFields, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+MemberTransferredInternalFields_validator = bv.Struct(MemberTransferredInternalFields)
+
 class MicrosoftOfficeAddinChangePolicyDetails(bb.Struct):
     """
     Enabled/disabled Microsoft Office add-in.
@@ -76543,6 +76581,17 @@ MemberTransferAccountContentsDetails._all_fields_ = []
 MemberTransferAccountContentsType.description.validator = bv.String()
 MemberTransferAccountContentsType._all_field_names_ = set(['description'])
 MemberTransferAccountContentsType._all_fields_ = [('description', MemberTransferAccountContentsType.description.validator)]
+
+MemberTransferredInternalFields.source_team_id.validator = team_common.TeamId_validator
+MemberTransferredInternalFields.target_team_id.validator = team_common.TeamId_validator
+MemberTransferredInternalFields._all_field_names_ = set([
+    'source_team_id',
+    'target_team_id',
+])
+MemberTransferredInternalFields._all_fields_ = [
+    ('source_team_id', MemberTransferredInternalFields.source_team_id.validator),
+    ('target_team_id', MemberTransferredInternalFields.target_team_id.validator),
+]
 
 MicrosoftOfficeAddinChangePolicyDetails.new_value.validator = MicrosoftOfficeAddinPolicy_validator
 MicrosoftOfficeAddinChangePolicyDetails.previous_value.validator = bv.Nullable(MicrosoftOfficeAddinPolicy_validator)
