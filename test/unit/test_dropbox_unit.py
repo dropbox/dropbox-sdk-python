@@ -345,6 +345,18 @@ class TestClient:
         dbx.check_and_refresh_access_token()
         assert session_instance.post.call_count == 1
 
+    def test_refresh_token_with_no_expiration(self, session_instance):
+        # Test refresh token is refreshed when not given expiration
+        dbx = Dropbox(oauth2_access_token=ACCESS_TOKEN,
+                      oauth2_refresh_token=REFRESH_TOKEN,
+                      oauth2_access_token_expiration=None,
+                      app_key=APP_KEY,
+                      app_secret=APP_SECRET,
+                      session=session_instance)
+        dbx.check_and_refresh_access_token()
+        assert session_instance.post.call_count == 1
+        assert dbx._oauth2_access_token_expiration
+
     def test_check_refresh_with_invalid_grant(self, invalid_grant_session_instance):
         dbx = Dropbox(oauth2_refresh_token=REFRESH_TOKEN,
                       app_key=APP_KEY,
