@@ -1197,6 +1197,36 @@ class DropboxTeamBase(object):
         )
         return r
 
+    def team_members_add_v2(self,
+                            new_members,
+                            force_async=False):
+        """
+        Adds members to a team. Permission : Team member management A maximum of
+        20 members can be specified in a single call. If no Dropbox account
+        exists with the email address specified, a new Dropbox account will be
+        created with the given email address, and that account will be invited
+        to the team. If a personal Dropbox account exists with the email address
+        specified in the call, this call will create a placeholder Dropbox
+        account for the user on the team and send an email inviting the user to
+        migrate their existing personal account onto the team. Team member
+        management apps are required to set an initial given_name and surname
+        for a user to use in the team invitation and for 'Perform as team
+        member' actions taken on the user before they become 'active'.
+
+        :param List[:class:`dropbox.team.MemberAddV2Arg`] new_members: Details
+            of new members to be added to the team.
+        :rtype: :class:`dropbox.team.MembersAddLaunchV2Result`
+        """
+        arg = team.MembersAddV2Arg(new_members,
+                                   force_async)
+        r = self.request(
+            team.members_add_v2,
+            'team',
+            arg,
+            None,
+        )
+        return r
+
     def team_members_add(self,
                          new_members,
                          force_async=False):
@@ -1215,14 +1245,36 @@ class DropboxTeamBase(object):
 
         :param List[:class:`dropbox.team.MemberAddArg`] new_members: Details of
             new members to be added to the team.
-        :param bool force_async: Whether to force the add to happen
-            asynchronously.
         :rtype: :class:`dropbox.team.MembersAddLaunch`
         """
         arg = team.MembersAddArg(new_members,
                                  force_async)
         r = self.request(
             team.members_add,
+            'team',
+            arg,
+            None,
+        )
+        return r
+
+    def team_members_add_job_status_get_v2(self,
+                                           async_job_id):
+        """
+        Once an async_job_id is returned from :meth:`team_members_add_v2` , use
+        this to poll the status of the asynchronous request. Permission : Team
+        member management.
+
+        :param str async_job_id: Id of the asynchronous job. This is the value
+            of a response returned from the method that launched the job.
+        :rtype: :class:`dropbox.team.MembersAddJobStatusV2Result`
+        :raises: :class:`.exceptions.ApiError`
+
+        If this raises, ApiError will contain:
+            :class:`dropbox.team.PollError`
+        """
+        arg = async_.PollArg(async_job_id)
+        r = self.request(
+            team.members_add_job_status_get_v2,
             'team',
             arg,
             None,
@@ -1247,6 +1299,29 @@ class DropboxTeamBase(object):
         arg = async_.PollArg(async_job_id)
         r = self.request(
             team.members_add_job_status_get,
+            'team',
+            arg,
+            None,
+        )
+        return r
+
+    def team_members_delete_profile_photo_v2(self,
+                                             user):
+        """
+        Deletes a team member's profile photo. Permission : Team member
+        management.
+
+        :param user: Identity of the user whose profile photo will be deleted.
+        :type user: :class:`dropbox.team.UserSelectorArg`
+        :rtype: :class:`dropbox.team.TeamMemberInfoV2Result`
+        :raises: :class:`.exceptions.ApiError`
+
+        If this raises, ApiError will contain:
+            :class:`dropbox.team.MembersDeleteProfilePhotoError`
+        """
+        arg = team.MembersDeleteProfilePhotoArg(user)
+        r = self.request(
+            team.members_delete_profile_photo_v2,
             'team',
             arg,
             None,
@@ -1293,6 +1368,31 @@ class DropboxTeamBase(object):
         )
         return r
 
+    def team_members_get_info_v2(self,
+                                 members):
+        """
+        Returns information about multiple team members. Permission : Team
+        information This endpoint will return
+        ``MembersGetInfoItem.id_not_found``, for IDs (or emails) that cannot be
+        matched to a valid team member.
+
+        :param List[:class:`dropbox.team.UserSelectorArg`] members: List of team
+            members.
+        :rtype: :class:`dropbox.team.MembersGetInfoV2Result`
+        :raises: :class:`.exceptions.ApiError`
+
+        If this raises, ApiError will contain:
+            :class:`dropbox.team.MembersGetInfoError`
+        """
+        arg = team.MembersGetInfoV2Arg(members)
+        r = self.request(
+            team.members_get_info_v2,
+            'team',
+            arg,
+            None,
+        )
+        return r
+
     def team_members_get_info(self,
                               members):
         """
@@ -1318,6 +1418,30 @@ class DropboxTeamBase(object):
         )
         return r
 
+    def team_members_list_v2(self,
+                             limit=1000,
+                             include_removed=False):
+        """
+        Lists members of a team. Permission : Team information.
+
+        :param int limit: Number of results to return per call.
+        :param bool include_removed: Whether to return removed members.
+        :rtype: :class:`dropbox.team.MembersListV2Result`
+        :raises: :class:`.exceptions.ApiError`
+
+        If this raises, ApiError will contain:
+            :class:`dropbox.team.MembersListError`
+        """
+        arg = team.MembersListArg(limit,
+                                  include_removed)
+        r = self.request(
+            team.members_list_v2,
+            'team',
+            arg,
+            None,
+        )
+        return r
+
     def team_members_list(self,
                           limit=1000,
                           include_removed=False):
@@ -1336,6 +1460,30 @@ class DropboxTeamBase(object):
                                   include_removed)
         r = self.request(
             team.members_list,
+            'team',
+            arg,
+            None,
+        )
+        return r
+
+    def team_members_list_continue_v2(self,
+                                      cursor):
+        """
+        Once a cursor has been retrieved from :meth:`team_members_list_v2`, use
+        this to paginate through all team members. Permission : Team
+        information.
+
+        :param str cursor: Indicates from what point to get the next set of
+            members.
+        :rtype: :class:`dropbox.team.MembersListV2Result`
+        :raises: :class:`.exceptions.ApiError`
+
+        If this raises, ApiError will contain:
+            :class:`dropbox.team.MembersListContinueError`
+        """
+        arg = team.MembersListContinueArg(cursor)
+        r = self.request(
+            team.members_list_continue_v2,
             'team',
             arg,
             None,
@@ -1679,6 +1827,48 @@ class DropboxTeamBase(object):
         )
         return r
 
+    def team_members_set_profile_v2(self,
+                                    user,
+                                    new_email=None,
+                                    new_external_id=None,
+                                    new_given_name=None,
+                                    new_surname=None,
+                                    new_persistent_id=None,
+                                    new_is_directory_restricted=None):
+        """
+        Updates a team member's profile. Permission : Team member management.
+
+        :param user: Identity of user whose profile will be set.
+        :type user: :class:`dropbox.team.UserSelectorArg`
+        :param Nullable[str] new_email: New email for member.
+        :param Nullable[str] new_external_id: New external ID for member.
+        :param Nullable[str] new_given_name: New given name for member.
+        :param Nullable[str] new_surname: New surname for member.
+        :param Nullable[str] new_persistent_id: New persistent ID. This field
+            only available to teams using persistent ID SAML configuration.
+        :param Nullable[bool] new_is_directory_restricted: New value for whether
+            the user is a directory restricted user.
+        :rtype: :class:`dropbox.team.TeamMemberInfoV2Result`
+        :raises: :class:`.exceptions.ApiError`
+
+        If this raises, ApiError will contain:
+            :class:`dropbox.team.MembersSetProfileError`
+        """
+        arg = team.MembersSetProfileArg(user,
+                                        new_email,
+                                        new_external_id,
+                                        new_given_name,
+                                        new_surname,
+                                        new_persistent_id,
+                                        new_is_directory_restricted)
+        r = self.request(
+            team.members_set_profile_v2,
+            'team',
+            arg,
+            None,
+        )
+        return r
+
     def team_members_set_profile(self,
                                  user,
                                  new_email=None,
@@ -1715,6 +1905,33 @@ class DropboxTeamBase(object):
                                         new_is_directory_restricted)
         r = self.request(
             team.members_set_profile,
+            'team',
+            arg,
+            None,
+        )
+        return r
+
+    def team_members_set_profile_photo_v2(self,
+                                          user,
+                                          photo):
+        """
+        Updates a team member's profile photo. Permission : Team member
+        management.
+
+        :param user: Identity of the user whose profile photo will be set.
+        :type user: :class:`dropbox.team.UserSelectorArg`
+        :param photo: Image to set as the member's new profile photo.
+        :type photo: :class:`dropbox.team.PhotoSourceArg`
+        :rtype: :class:`dropbox.team.TeamMemberInfoV2Result`
+        :raises: :class:`.exceptions.ApiError`
+
+        If this raises, ApiError will contain:
+            :class:`dropbox.team.MembersSetProfilePhotoError`
+        """
+        arg = team.MembersSetProfilePhotoArg(user,
+                                             photo)
+        r = self.request(
+            team.members_set_profile_photo_v2,
             'team',
             arg,
             None,
