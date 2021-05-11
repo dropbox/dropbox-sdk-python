@@ -48109,6 +48109,8 @@ class LabelType(bb.Union):
     # Attribute is overwritten below the class definition
     personal_information = None
     # Attribute is overwritten below the class definition
+    user_defined_tag = None
+    # Attribute is overwritten below the class definition
     other = None
 
     def is_personal_information(self):
@@ -48118,6 +48120,14 @@ class LabelType(bb.Union):
         :rtype: bool
         """
         return self._tag == 'personal_information'
+
+    def is_user_defined_tag(self):
+        """
+        Check if the union tag is ``user_defined_tag``.
+
+        :rtype: bool
+        """
+        return self._tag == 'user_defined_tag'
 
     def is_other(self):
         """
@@ -75837,13 +75847,16 @@ JoinTeamDetails._all_fields_ = [
 ]
 
 LabelType._personal_information_validator = bv.Void()
+LabelType._user_defined_tag_validator = bv.Void()
 LabelType._other_validator = bv.Void()
 LabelType._tagmap = {
     'personal_information': LabelType._personal_information_validator,
+    'user_defined_tag': LabelType._user_defined_tag_validator,
     'other': LabelType._other_validator,
 }
 
 LabelType.personal_information = LabelType('personal_information')
+LabelType.user_defined_tag = LabelType('user_defined_tag')
 LabelType.other = LabelType('other')
 
 LegacyDeviceSessionLogInfo.session_info.validator = bv.Nullable(SessionLogInfo_validator)
