@@ -1166,6 +1166,82 @@ class AdminAlertCategoryEnum(bb.Union):
 
 AdminAlertCategoryEnum_validator = bv.Union(AdminAlertCategoryEnum)
 
+class AdminAlertGeneralStateEnum(bb.Union):
+    """
+    Alert state
+
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+    """
+
+    _catch_all = 'other'
+    # Attribute is overwritten below the class definition
+    active = None
+    # Attribute is overwritten below the class definition
+    dismissed = None
+    # Attribute is overwritten below the class definition
+    in_progress = None
+    # Attribute is overwritten below the class definition
+    na = None
+    # Attribute is overwritten below the class definition
+    resolved = None
+    # Attribute is overwritten below the class definition
+    other = None
+
+    def is_active(self):
+        """
+        Check if the union tag is ``active``.
+
+        :rtype: bool
+        """
+        return self._tag == 'active'
+
+    def is_dismissed(self):
+        """
+        Check if the union tag is ``dismissed``.
+
+        :rtype: bool
+        """
+        return self._tag == 'dismissed'
+
+    def is_in_progress(self):
+        """
+        Check if the union tag is ``in_progress``.
+
+        :rtype: bool
+        """
+        return self._tag == 'in_progress'
+
+    def is_na(self):
+        """
+        Check if the union tag is ``na``.
+
+        :rtype: bool
+        """
+        return self._tag == 'na'
+
+    def is_resolved(self):
+        """
+        Check if the union tag is ``resolved``.
+
+        :rtype: bool
+        """
+        return self._tag == 'resolved'
+
+    def is_other(self):
+        """
+        Check if the union tag is ``other``.
+
+        :rtype: bool
+        """
+        return self._tag == 'other'
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(AdminAlertGeneralStateEnum, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+AdminAlertGeneralStateEnum_validator = bv.Union(AdminAlertGeneralStateEnum)
+
 class AdminAlertSeverityEnum(bb.Union):
     """
     Alert severity
@@ -1374,6 +1450,105 @@ class AdminAlertingAlertSensitivity(bb.Union):
         super(AdminAlertingAlertSensitivity, self)._process_custom_annotations(annotation_type, field_path, processor)
 
 AdminAlertingAlertSensitivity_validator = bv.Union(AdminAlertingAlertSensitivity)
+
+class AdminAlertingAlertStateChangedDetails(bb.Struct):
+    """
+    Changed an alert state.
+
+    :ivar team_log.AdminAlertingAlertStateChangedDetails.alert_name: Alert name.
+    :ivar team_log.AdminAlertingAlertStateChangedDetails.alert_severity: Alert
+        severity.
+    :ivar team_log.AdminAlertingAlertStateChangedDetails.alert_category: Alert
+        category.
+    :ivar team_log.AdminAlertingAlertStateChangedDetails.alert_instance_id:
+        Alert ID.
+    :ivar team_log.AdminAlertingAlertStateChangedDetails.previous_value: Alert
+        state before the change.
+    :ivar team_log.AdminAlertingAlertStateChangedDetails.new_value: Alert state
+        after the change.
+    """
+
+    __slots__ = [
+        '_alert_name_value',
+        '_alert_severity_value',
+        '_alert_category_value',
+        '_alert_instance_id_value',
+        '_previous_value_value',
+        '_new_value_value',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 alert_name=None,
+                 alert_severity=None,
+                 alert_category=None,
+                 alert_instance_id=None,
+                 previous_value=None,
+                 new_value=None):
+        self._alert_name_value = bb.NOT_SET
+        self._alert_severity_value = bb.NOT_SET
+        self._alert_category_value = bb.NOT_SET
+        self._alert_instance_id_value = bb.NOT_SET
+        self._previous_value_value = bb.NOT_SET
+        self._new_value_value = bb.NOT_SET
+        if alert_name is not None:
+            self.alert_name = alert_name
+        if alert_severity is not None:
+            self.alert_severity = alert_severity
+        if alert_category is not None:
+            self.alert_category = alert_category
+        if alert_instance_id is not None:
+            self.alert_instance_id = alert_instance_id
+        if previous_value is not None:
+            self.previous_value = previous_value
+        if new_value is not None:
+            self.new_value = new_value
+
+    # Instance attribute type: str (validator is set below)
+    alert_name = bb.Attribute("alert_name")
+
+    # Instance attribute type: AdminAlertSeverityEnum (validator is set below)
+    alert_severity = bb.Attribute("alert_severity", user_defined=True)
+
+    # Instance attribute type: AdminAlertCategoryEnum (validator is set below)
+    alert_category = bb.Attribute("alert_category", user_defined=True)
+
+    # Instance attribute type: str (validator is set below)
+    alert_instance_id = bb.Attribute("alert_instance_id")
+
+    # Instance attribute type: AdminAlertGeneralStateEnum (validator is set below)
+    previous_value = bb.Attribute("previous_value", user_defined=True)
+
+    # Instance attribute type: AdminAlertGeneralStateEnum (validator is set below)
+    new_value = bb.Attribute("new_value", user_defined=True)
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(AdminAlertingAlertStateChangedDetails, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+AdminAlertingAlertStateChangedDetails_validator = bv.Struct(AdminAlertingAlertStateChangedDetails)
+
+class AdminAlertingAlertStateChangedType(bb.Struct):
+
+    __slots__ = [
+        '_description_value',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 description=None):
+        self._description_value = bb.NOT_SET
+        if description is not None:
+            self.description = description
+
+    # Instance attribute type: str (validator is set below)
+    description = bb.Attribute("description")
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(AdminAlertingAlertStateChangedType, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+AdminAlertingAlertStateChangedType_validator = bv.Struct(AdminAlertingAlertStateChangedType)
 
 class AdminAlertingAlertStatePolicy(bb.Union):
     """
@@ -7345,6 +7520,17 @@ class EventDetails(bb.Union):
     other = None
 
     @classmethod
+    def admin_alerting_alert_state_changed_details(cls, val):
+        """
+        Create an instance of this class set to the
+        ``admin_alerting_alert_state_changed_details`` tag with value ``val``.
+
+        :param AdminAlertingAlertStateChangedDetails val:
+        :rtype: EventDetails
+        """
+        return cls('admin_alerting_alert_state_changed_details', val)
+
+    @classmethod
     def admin_alerting_changed_alert_config_details(cls, val):
         """
         Create an instance of this class set to the
@@ -8352,6 +8538,17 @@ class EventDetails(bb.Union):
         :rtype: EventDetails
         """
         return cls('object_label_updated_value_details', val)
+
+    @classmethod
+    def organize_folder_with_tidy_details(cls, val):
+        """
+        Create an instance of this class set to the
+        ``organize_folder_with_tidy_details`` tag with value ``val``.
+
+        :param OrganizeFolderWithTidyDetails val:
+        :rtype: EventDetails
+        """
+        return cls('organize_folder_with_tidy_details', val)
 
     @classmethod
     def rewind_folder_details(cls, val):
@@ -12481,6 +12678,14 @@ class EventDetails(bb.Union):
         """
         return cls('missing_details', val)
 
+    def is_admin_alerting_alert_state_changed_details(self):
+        """
+        Check if the union tag is ``admin_alerting_alert_state_changed_details``.
+
+        :rtype: bool
+        """
+        return self._tag == 'admin_alerting_alert_state_changed_details'
+
     def is_admin_alerting_changed_alert_config_details(self):
         """
         Check if the union tag is ``admin_alerting_changed_alert_config_details``.
@@ -13208,6 +13413,14 @@ class EventDetails(bb.Union):
         :rtype: bool
         """
         return self._tag == 'object_label_updated_value_details'
+
+    def is_organize_folder_with_tidy_details(self):
+        """
+        Check if the union tag is ``organize_folder_with_tidy_details``.
+
+        :rtype: bool
+        """
+        return self._tag == 'organize_folder_with_tidy_details'
 
     def is_rewind_folder_details(self):
         """
@@ -16185,6 +16398,16 @@ class EventDetails(bb.Union):
         """
         return self._tag == 'other'
 
+    def get_admin_alerting_alert_state_changed_details(self):
+        """
+        Only call this if :meth:`is_admin_alerting_alert_state_changed_details` is true.
+
+        :rtype: AdminAlertingAlertStateChangedDetails
+        """
+        if not self.is_admin_alerting_alert_state_changed_details():
+            raise AttributeError("tag 'admin_alerting_alert_state_changed_details' not set")
+        return self._value
+
     def get_admin_alerting_changed_alert_config_details(self):
         """
         Only call this if :meth:`is_admin_alerting_changed_alert_config_details` is true.
@@ -17093,6 +17316,16 @@ class EventDetails(bb.Union):
         """
         if not self.is_object_label_updated_value_details():
             raise AttributeError("tag 'object_label_updated_value_details' not set")
+        return self._value
+
+    def get_organize_folder_with_tidy_details(self):
+        """
+        Only call this if :meth:`is_organize_folder_with_tidy_details` is true.
+
+        :rtype: OrganizeFolderWithTidyDetails
+        """
+        if not self.is_organize_folder_with_tidy_details():
+            raise AttributeError("tag 'organize_folder_with_tidy_details' not set")
         return self._value
 
     def get_rewind_folder_details(self):
@@ -20821,6 +21054,9 @@ class EventType(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
+    :ivar AdminAlertingAlertStateChangedType
+        EventType.admin_alerting_alert_state_changed: (admin_alerting) Changed
+        an alert state
     :ivar AdminAlertingChangedAlertConfigType
         EventType.admin_alerting_changed_alert_config: (admin_alerting) Changed
         an alert setting
@@ -21034,6 +21270,8 @@ class EventType(bb.Union):
         (file_operations) Removed a label
     :ivar ObjectLabelUpdatedValueType EventType.object_label_updated_value:
         (file_operations) Updated a label's value
+    :ivar OrganizeFolderWithTidyType EventType.organize_folder_with_tidy:
+        (file_operations) Organized a folder with the Tidy Up action
     :ivar RewindFolderType EventType.rewind_folder: (file_operations) Rewound a
         folder
     :ivar FileRequestChangeType EventType.file_request_change: (file_requests)
@@ -21942,6 +22180,17 @@ class EventType(bb.Union):
     _catch_all = 'other'
     # Attribute is overwritten below the class definition
     other = None
+
+    @classmethod
+    def admin_alerting_alert_state_changed(cls, val):
+        """
+        Create an instance of this class set to the
+        ``admin_alerting_alert_state_changed`` tag with value ``val``.
+
+        :param AdminAlertingAlertStateChangedType val:
+        :rtype: EventType
+        """
+        return cls('admin_alerting_alert_state_changed', val)
 
     @classmethod
     def admin_alerting_changed_alert_config(cls, val):
@@ -22945,6 +23194,17 @@ class EventType(bb.Union):
         :rtype: EventType
         """
         return cls('object_label_updated_value', val)
+
+    @classmethod
+    def organize_folder_with_tidy(cls, val):
+        """
+        Create an instance of this class set to the
+        ``organize_folder_with_tidy`` tag with value ``val``.
+
+        :param OrganizeFolderWithTidyType val:
+        :rtype: EventType
+        """
+        return cls('organize_folder_with_tidy', val)
 
     @classmethod
     def rewind_folder(cls, val):
@@ -27030,6 +27290,14 @@ class EventType(bb.Union):
         """
         return cls('team_merge_request_sent_shown_to_secondary_team', val)
 
+    def is_admin_alerting_alert_state_changed(self):
+        """
+        Check if the union tag is ``admin_alerting_alert_state_changed``.
+
+        :rtype: bool
+        """
+        return self._tag == 'admin_alerting_alert_state_changed'
+
     def is_admin_alerting_changed_alert_config(self):
         """
         Check if the union tag is ``admin_alerting_changed_alert_config``.
@@ -27757,6 +28025,14 @@ class EventType(bb.Union):
         :rtype: bool
         """
         return self._tag == 'object_label_updated_value'
+
+    def is_organize_folder_with_tidy(self):
+        """
+        Check if the union tag is ``organize_folder_with_tidy``.
+
+        :rtype: bool
+        """
+        return self._tag == 'organize_folder_with_tidy'
 
     def is_rewind_folder(self):
         """
@@ -30726,6 +31002,18 @@ class EventType(bb.Union):
         """
         return self._tag == 'other'
 
+    def get_admin_alerting_alert_state_changed(self):
+        """
+        (admin_alerting) Changed an alert state
+
+        Only call this if :meth:`is_admin_alerting_alert_state_changed` is true.
+
+        :rtype: AdminAlertingAlertStateChangedType
+        """
+        if not self.is_admin_alerting_alert_state_changed():
+            raise AttributeError("tag 'admin_alerting_alert_state_changed' not set")
+        return self._value
+
     def get_admin_alerting_changed_alert_config(self):
         """
         (admin_alerting) Changed an alert setting
@@ -31821,6 +32109,18 @@ class EventType(bb.Union):
         """
         if not self.is_object_label_updated_value():
             raise AttributeError("tag 'object_label_updated_value' not set")
+        return self._value
+
+    def get_organize_folder_with_tidy(self):
+        """
+        (file_operations) Organized a folder with the Tidy Up action
+
+        Only call this if :meth:`is_organize_folder_with_tidy` is true.
+
+        :rtype: OrganizeFolderWithTidyType
+        """
+        if not self.is_organize_folder_with_tidy():
+            raise AttributeError("tag 'organize_folder_with_tidy' not set")
         return self._value
 
     def get_rewind_folder(self):
@@ -36351,6 +36651,8 @@ class EventTypeArg(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
+    :ivar team_log.EventTypeArg.admin_alerting_alert_state_changed:
+        (admin_alerting) Changed an alert state
     :ivar team_log.EventTypeArg.admin_alerting_changed_alert_config:
         (admin_alerting) Changed an alert setting
     :ivar team_log.EventTypeArg.admin_alerting_triggered_alert: (admin_alerting)
@@ -36528,6 +36830,8 @@ class EventTypeArg(bb.Union):
         a label
     :ivar team_log.EventTypeArg.object_label_updated_value: (file_operations)
         Updated a label's value
+    :ivar team_log.EventTypeArg.organize_folder_with_tidy: (file_operations)
+        Organized a folder with the Tidy Up action
     :ivar team_log.EventTypeArg.rewind_folder: (file_operations) Rewound a
         folder
     :ivar team_log.EventTypeArg.file_request_change: (file_requests) Changed
@@ -37306,6 +37610,8 @@ class EventTypeArg(bb.Union):
 
     _catch_all = 'other'
     # Attribute is overwritten below the class definition
+    admin_alerting_alert_state_changed = None
+    # Attribute is overwritten below the class definition
     admin_alerting_changed_alert_config = None
     # Attribute is overwritten below the class definition
     admin_alerting_triggered_alert = None
@@ -37487,6 +37793,8 @@ class EventTypeArg(bb.Union):
     object_label_removed = None
     # Attribute is overwritten below the class definition
     object_label_updated_value = None
+    # Attribute is overwritten below the class definition
+    organize_folder_with_tidy = None
     # Attribute is overwritten below the class definition
     rewind_folder = None
     # Attribute is overwritten below the class definition
@@ -38230,6 +38538,14 @@ class EventTypeArg(bb.Union):
     # Attribute is overwritten below the class definition
     other = None
 
+    def is_admin_alerting_alert_state_changed(self):
+        """
+        Check if the union tag is ``admin_alerting_alert_state_changed``.
+
+        :rtype: bool
+        """
+        return self._tag == 'admin_alerting_alert_state_changed'
+
     def is_admin_alerting_changed_alert_config(self):
         """
         Check if the union tag is ``admin_alerting_changed_alert_config``.
@@ -38957,6 +39273,14 @@ class EventTypeArg(bb.Union):
         :rtype: bool
         """
         return self._tag == 'object_label_updated_value'
+
+    def is_organize_folder_with_tidy(self):
+        """
+        Check if the union tag is ``organize_folder_with_tidy``.
+
+        :rtype: bool
+        """
+        return self._tag == 'organize_folder_with_tidy'
 
     def is_rewind_folder(self):
         """
@@ -52527,6 +52851,46 @@ class OrganizationName(bb.Struct):
         super(OrganizationName, self)._process_custom_annotations(annotation_type, field_path, processor)
 
 OrganizationName_validator = bv.Struct(OrganizationName)
+
+class OrganizeFolderWithTidyDetails(bb.Struct):
+    """
+    Organized a folder with the Tidy Up action.
+    """
+
+    __slots__ = [
+    ]
+
+    _has_required_fields = False
+
+    def __init__(self):
+        pass
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(OrganizeFolderWithTidyDetails, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+OrganizeFolderWithTidyDetails_validator = bv.Struct(OrganizeFolderWithTidyDetails)
+
+class OrganizeFolderWithTidyType(bb.Struct):
+
+    __slots__ = [
+        '_description_value',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 description=None):
+        self._description_value = bb.NOT_SET
+        if description is not None:
+            self.description = description
+
+    # Instance attribute type: str (validator is set below)
+    description = bb.Attribute("description")
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(OrganizeFolderWithTidyType, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+OrganizeFolderWithTidyType_validator = bv.Struct(OrganizeFolderWithTidyType)
 
 class OriginLogInfo(bb.Struct):
     """
@@ -69743,6 +70107,28 @@ AdminAlertCategoryEnum.na = AdminAlertCategoryEnum('na')
 AdminAlertCategoryEnum.threat_management = AdminAlertCategoryEnum('threat_management')
 AdminAlertCategoryEnum.other = AdminAlertCategoryEnum('other')
 
+AdminAlertGeneralStateEnum._active_validator = bv.Void()
+AdminAlertGeneralStateEnum._dismissed_validator = bv.Void()
+AdminAlertGeneralStateEnum._in_progress_validator = bv.Void()
+AdminAlertGeneralStateEnum._na_validator = bv.Void()
+AdminAlertGeneralStateEnum._resolved_validator = bv.Void()
+AdminAlertGeneralStateEnum._other_validator = bv.Void()
+AdminAlertGeneralStateEnum._tagmap = {
+    'active': AdminAlertGeneralStateEnum._active_validator,
+    'dismissed': AdminAlertGeneralStateEnum._dismissed_validator,
+    'in_progress': AdminAlertGeneralStateEnum._in_progress_validator,
+    'na': AdminAlertGeneralStateEnum._na_validator,
+    'resolved': AdminAlertGeneralStateEnum._resolved_validator,
+    'other': AdminAlertGeneralStateEnum._other_validator,
+}
+
+AdminAlertGeneralStateEnum.active = AdminAlertGeneralStateEnum('active')
+AdminAlertGeneralStateEnum.dismissed = AdminAlertGeneralStateEnum('dismissed')
+AdminAlertGeneralStateEnum.in_progress = AdminAlertGeneralStateEnum('in_progress')
+AdminAlertGeneralStateEnum.na = AdminAlertGeneralStateEnum('na')
+AdminAlertGeneralStateEnum.resolved = AdminAlertGeneralStateEnum('resolved')
+AdminAlertGeneralStateEnum.other = AdminAlertGeneralStateEnum('other')
+
 AdminAlertSeverityEnum._high_validator = bv.Void()
 AdminAlertSeverityEnum._info_validator = bv.Void()
 AdminAlertSeverityEnum._low_validator = bv.Void()
@@ -69803,6 +70189,33 @@ AdminAlertingAlertSensitivity.low = AdminAlertingAlertSensitivity('low')
 AdminAlertingAlertSensitivity.lowest = AdminAlertingAlertSensitivity('lowest')
 AdminAlertingAlertSensitivity.medium = AdminAlertingAlertSensitivity('medium')
 AdminAlertingAlertSensitivity.other = AdminAlertingAlertSensitivity('other')
+
+AdminAlertingAlertStateChangedDetails.alert_name.validator = bv.String()
+AdminAlertingAlertStateChangedDetails.alert_severity.validator = AdminAlertSeverityEnum_validator
+AdminAlertingAlertStateChangedDetails.alert_category.validator = AdminAlertCategoryEnum_validator
+AdminAlertingAlertStateChangedDetails.alert_instance_id.validator = bv.String()
+AdminAlertingAlertStateChangedDetails.previous_value.validator = AdminAlertGeneralStateEnum_validator
+AdminAlertingAlertStateChangedDetails.new_value.validator = AdminAlertGeneralStateEnum_validator
+AdminAlertingAlertStateChangedDetails._all_field_names_ = set([
+    'alert_name',
+    'alert_severity',
+    'alert_category',
+    'alert_instance_id',
+    'previous_value',
+    'new_value',
+])
+AdminAlertingAlertStateChangedDetails._all_fields_ = [
+    ('alert_name', AdminAlertingAlertStateChangedDetails.alert_name.validator),
+    ('alert_severity', AdminAlertingAlertStateChangedDetails.alert_severity.validator),
+    ('alert_category', AdminAlertingAlertStateChangedDetails.alert_category.validator),
+    ('alert_instance_id', AdminAlertingAlertStateChangedDetails.alert_instance_id.validator),
+    ('previous_value', AdminAlertingAlertStateChangedDetails.previous_value.validator),
+    ('new_value', AdminAlertingAlertStateChangedDetails.new_value.validator),
+]
+
+AdminAlertingAlertStateChangedType.description.validator = bv.String()
+AdminAlertingAlertStateChangedType._all_field_names_ = set(['description'])
+AdminAlertingAlertStateChangedType._all_fields_ = [('description', AdminAlertingAlertStateChangedType.description.validator)]
 
 AdminAlertingAlertStatePolicy._off_validator = bv.Void()
 AdminAlertingAlertStatePolicy._on_validator = bv.Void()
@@ -71192,6 +71605,7 @@ EventCategory.tfa = EventCategory('tfa')
 EventCategory.trusted_teams = EventCategory('trusted_teams')
 EventCategory.other = EventCategory('other')
 
+EventDetails._admin_alerting_alert_state_changed_details_validator = AdminAlertingAlertStateChangedDetails_validator
 EventDetails._admin_alerting_changed_alert_config_details_validator = AdminAlertingChangedAlertConfigDetails_validator
 EventDetails._admin_alerting_triggered_alert_details_validator = AdminAlertingTriggeredAlertDetails_validator
 EventDetails._app_blocked_by_permissions_details_validator = AppBlockedByPermissionsDetails_validator
@@ -71283,6 +71697,7 @@ EventDetails._folder_overview_item_unpinned_details_validator = FolderOverviewIt
 EventDetails._object_label_added_details_validator = ObjectLabelAddedDetails_validator
 EventDetails._object_label_removed_details_validator = ObjectLabelRemovedDetails_validator
 EventDetails._object_label_updated_value_details_validator = ObjectLabelUpdatedValueDetails_validator
+EventDetails._organize_folder_with_tidy_details_validator = OrganizeFolderWithTidyDetails_validator
 EventDetails._rewind_folder_details_validator = RewindFolderDetails_validator
 EventDetails._file_request_change_details_validator = FileRequestChangeDetails_validator
 EventDetails._file_request_close_details_validator = FileRequestCloseDetails_validator
@@ -71656,6 +72071,7 @@ EventDetails._team_merge_request_sent_shown_to_secondary_team_details_validator 
 EventDetails._missing_details_validator = MissingDetails_validator
 EventDetails._other_validator = bv.Void()
 EventDetails._tagmap = {
+    'admin_alerting_alert_state_changed_details': EventDetails._admin_alerting_alert_state_changed_details_validator,
     'admin_alerting_changed_alert_config_details': EventDetails._admin_alerting_changed_alert_config_details_validator,
     'admin_alerting_triggered_alert_details': EventDetails._admin_alerting_triggered_alert_details_validator,
     'app_blocked_by_permissions_details': EventDetails._app_blocked_by_permissions_details_validator,
@@ -71747,6 +72163,7 @@ EventDetails._tagmap = {
     'object_label_added_details': EventDetails._object_label_added_details_validator,
     'object_label_removed_details': EventDetails._object_label_removed_details_validator,
     'object_label_updated_value_details': EventDetails._object_label_updated_value_details_validator,
+    'organize_folder_with_tidy_details': EventDetails._organize_folder_with_tidy_details_validator,
     'rewind_folder_details': EventDetails._rewind_folder_details_validator,
     'file_request_change_details': EventDetails._file_request_change_details_validator,
     'file_request_close_details': EventDetails._file_request_close_details_validator,
@@ -72123,6 +72540,7 @@ EventDetails._tagmap = {
 
 EventDetails.other = EventDetails('other')
 
+EventType._admin_alerting_alert_state_changed_validator = AdminAlertingAlertStateChangedType_validator
 EventType._admin_alerting_changed_alert_config_validator = AdminAlertingChangedAlertConfigType_validator
 EventType._admin_alerting_triggered_alert_validator = AdminAlertingTriggeredAlertType_validator
 EventType._app_blocked_by_permissions_validator = AppBlockedByPermissionsType_validator
@@ -72214,6 +72632,7 @@ EventType._folder_overview_item_unpinned_validator = FolderOverviewItemUnpinnedT
 EventType._object_label_added_validator = ObjectLabelAddedType_validator
 EventType._object_label_removed_validator = ObjectLabelRemovedType_validator
 EventType._object_label_updated_value_validator = ObjectLabelUpdatedValueType_validator
+EventType._organize_folder_with_tidy_validator = OrganizeFolderWithTidyType_validator
 EventType._rewind_folder_validator = RewindFolderType_validator
 EventType._file_request_change_validator = FileRequestChangeType_validator
 EventType._file_request_close_validator = FileRequestCloseType_validator
@@ -72586,6 +73005,7 @@ EventType._team_merge_request_sent_shown_to_primary_team_validator = TeamMergeRe
 EventType._team_merge_request_sent_shown_to_secondary_team_validator = TeamMergeRequestSentShownToSecondaryTeamType_validator
 EventType._other_validator = bv.Void()
 EventType._tagmap = {
+    'admin_alerting_alert_state_changed': EventType._admin_alerting_alert_state_changed_validator,
     'admin_alerting_changed_alert_config': EventType._admin_alerting_changed_alert_config_validator,
     'admin_alerting_triggered_alert': EventType._admin_alerting_triggered_alert_validator,
     'app_blocked_by_permissions': EventType._app_blocked_by_permissions_validator,
@@ -72677,6 +73097,7 @@ EventType._tagmap = {
     'object_label_added': EventType._object_label_added_validator,
     'object_label_removed': EventType._object_label_removed_validator,
     'object_label_updated_value': EventType._object_label_updated_value_validator,
+    'organize_folder_with_tidy': EventType._organize_folder_with_tidy_validator,
     'rewind_folder': EventType._rewind_folder_validator,
     'file_request_change': EventType._file_request_change_validator,
     'file_request_close': EventType._file_request_close_validator,
@@ -73052,6 +73473,7 @@ EventType._tagmap = {
 
 EventType.other = EventType('other')
 
+EventTypeArg._admin_alerting_alert_state_changed_validator = bv.Void()
 EventTypeArg._admin_alerting_changed_alert_config_validator = bv.Void()
 EventTypeArg._admin_alerting_triggered_alert_validator = bv.Void()
 EventTypeArg._app_blocked_by_permissions_validator = bv.Void()
@@ -73143,6 +73565,7 @@ EventTypeArg._folder_overview_item_unpinned_validator = bv.Void()
 EventTypeArg._object_label_added_validator = bv.Void()
 EventTypeArg._object_label_removed_validator = bv.Void()
 EventTypeArg._object_label_updated_value_validator = bv.Void()
+EventTypeArg._organize_folder_with_tidy_validator = bv.Void()
 EventTypeArg._rewind_folder_validator = bv.Void()
 EventTypeArg._file_request_change_validator = bv.Void()
 EventTypeArg._file_request_close_validator = bv.Void()
@@ -73515,6 +73938,7 @@ EventTypeArg._team_merge_request_sent_shown_to_primary_team_validator = bv.Void(
 EventTypeArg._team_merge_request_sent_shown_to_secondary_team_validator = bv.Void()
 EventTypeArg._other_validator = bv.Void()
 EventTypeArg._tagmap = {
+    'admin_alerting_alert_state_changed': EventTypeArg._admin_alerting_alert_state_changed_validator,
     'admin_alerting_changed_alert_config': EventTypeArg._admin_alerting_changed_alert_config_validator,
     'admin_alerting_triggered_alert': EventTypeArg._admin_alerting_triggered_alert_validator,
     'app_blocked_by_permissions': EventTypeArg._app_blocked_by_permissions_validator,
@@ -73606,6 +74030,7 @@ EventTypeArg._tagmap = {
     'object_label_added': EventTypeArg._object_label_added_validator,
     'object_label_removed': EventTypeArg._object_label_removed_validator,
     'object_label_updated_value': EventTypeArg._object_label_updated_value_validator,
+    'organize_folder_with_tidy': EventTypeArg._organize_folder_with_tidy_validator,
     'rewind_folder': EventTypeArg._rewind_folder_validator,
     'file_request_change': EventTypeArg._file_request_change_validator,
     'file_request_close': EventTypeArg._file_request_close_validator,
@@ -73979,6 +74404,7 @@ EventTypeArg._tagmap = {
     'other': EventTypeArg._other_validator,
 }
 
+EventTypeArg.admin_alerting_alert_state_changed = EventTypeArg('admin_alerting_alert_state_changed')
 EventTypeArg.admin_alerting_changed_alert_config = EventTypeArg('admin_alerting_changed_alert_config')
 EventTypeArg.admin_alerting_triggered_alert = EventTypeArg('admin_alerting_triggered_alert')
 EventTypeArg.app_blocked_by_permissions = EventTypeArg('app_blocked_by_permissions')
@@ -74070,6 +74496,7 @@ EventTypeArg.folder_overview_item_unpinned = EventTypeArg('folder_overview_item_
 EventTypeArg.object_label_added = EventTypeArg('object_label_added')
 EventTypeArg.object_label_removed = EventTypeArg('object_label_removed')
 EventTypeArg.object_label_updated_value = EventTypeArg('object_label_updated_value')
+EventTypeArg.organize_folder_with_tidy = EventTypeArg('organize_folder_with_tidy')
 EventTypeArg.rewind_folder = EventTypeArg('rewind_folder')
 EventTypeArg.file_request_change = EventTypeArg('file_request_change')
 EventTypeArg.file_request_close = EventTypeArg('file_request_close')
@@ -76889,6 +77316,13 @@ OrganizationDetails._all_fields_ = [('organization', OrganizationDetails.organiz
 OrganizationName.organization.validator = bv.String()
 OrganizationName._all_field_names_ = set(['organization'])
 OrganizationName._all_fields_ = [('organization', OrganizationName.organization.validator)]
+
+OrganizeFolderWithTidyDetails._all_field_names_ = set([])
+OrganizeFolderWithTidyDetails._all_fields_ = []
+
+OrganizeFolderWithTidyType.description.validator = bv.String()
+OrganizeFolderWithTidyType._all_field_names_ = set(['description'])
+OrganizeFolderWithTidyType._all_fields_ = [('description', OrganizeFolderWithTidyType.description.validator)]
 
 OriginLogInfo.geo_location.validator = bv.Nullable(GeoLocationLogInfo_validator)
 OriginLogInfo.access_method.validator = AccessMethodLogInfo_validator
