@@ -4026,8 +4026,9 @@ class LinkAudience(bb.Union):
         merely points the user to the content, and does not grant additional
         rights to the user. Members of the content who use this link can only
         access the content with their pre-existing access rights.
-    :ivar sharing.LinkAudience.password: A link-specific password is required to
-        access the link. Login is not required.
+    :ivar sharing.LinkAudience.password: Use `require_password` instead. A
+        link-specific password is required to access the link. Login is not
+        required.
     :ivar sharing.LinkAudience.members: Link is accessible only by members of
         the content.
     """
@@ -9096,11 +9097,10 @@ SharedLinkPolicy_validator = bv.Union(SharedLinkPolicy)
 
 class SharedLinkSettings(bb.Struct):
     """
-    :ivar sharing.SharedLinkSettings.requested_visibility: The requested access
-        for this shared link.
-    :ivar sharing.SharedLinkSettings.link_password: If ``requested_visibility``
-        is ``RequestedVisibility.password`` this is needed to specify the
-        password to access the link.
+    :ivar sharing.SharedLinkSettings.require_password: Boolean flag to enable or
+        disable password protection.
+    :ivar sharing.SharedLinkSettings.link_password: If ``require_password`` is
+        true, this is needed to specify the password to access the link.
     :ivar sharing.SharedLinkSettings.expires: Expiration time of the shared
         link. By default the link won't expire.
     :ivar sharing.SharedLinkSettings.audience: The new audience who can benefit
@@ -9112,31 +9112,36 @@ class SharedLinkSettings(bb.Struct):
     :ivar sharing.SharedLinkSettings.access: Requested access level you want the
         audience to gain from this link. Note, modifying access level for an
         existing link is not supported.
+    :ivar sharing.SharedLinkSettings.requested_visibility: Use ``audience``
+        instead.  The requested access for this shared link.
     """
 
     __slots__ = [
-        '_requested_visibility_value',
+        '_require_password_value',
         '_link_password_value',
         '_expires_value',
         '_audience_value',
         '_access_value',
+        '_requested_visibility_value',
     ]
 
     _has_required_fields = False
 
     def __init__(self,
-                 requested_visibility=None,
+                 require_password=None,
                  link_password=None,
                  expires=None,
                  audience=None,
-                 access=None):
-        self._requested_visibility_value = bb.NOT_SET
+                 access=None,
+                 requested_visibility=None):
+        self._require_password_value = bb.NOT_SET
         self._link_password_value = bb.NOT_SET
         self._expires_value = bb.NOT_SET
         self._audience_value = bb.NOT_SET
         self._access_value = bb.NOT_SET
-        if requested_visibility is not None:
-            self.requested_visibility = requested_visibility
+        self._requested_visibility_value = bb.NOT_SET
+        if require_password is not None:
+            self.require_password = require_password
         if link_password is not None:
             self.link_password = link_password
         if expires is not None:
@@ -9145,9 +9150,11 @@ class SharedLinkSettings(bb.Struct):
             self.audience = audience
         if access is not None:
             self.access = access
+        if requested_visibility is not None:
+            self.requested_visibility = requested_visibility
 
-    # Instance attribute type: RequestedVisibility (validator is set below)
-    requested_visibility = bb.Attribute("requested_visibility", nullable=True, user_defined=True)
+    # Instance attribute type: bool (validator is set below)
+    require_password = bb.Attribute("require_password", nullable=True)
 
     # Instance attribute type: str (validator is set below)
     link_password = bb.Attribute("link_password", nullable=True)
@@ -9160,6 +9167,9 @@ class SharedLinkSettings(bb.Struct):
 
     # Instance attribute type: RequestedLinkAccessLevel (validator is set below)
     access = bb.Attribute("access", nullable=True, user_defined=True)
+
+    # Instance attribute type: RequestedVisibility (validator is set below)
+    requested_visibility = bb.Attribute("requested_visibility", nullable=True, user_defined=True)
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(SharedLinkSettings, self)._process_custom_annotations(annotation_type, field_path, processor)
@@ -12594,24 +12604,27 @@ SharedLinkPolicy.team = SharedLinkPolicy('team')
 SharedLinkPolicy.members = SharedLinkPolicy('members')
 SharedLinkPolicy.other = SharedLinkPolicy('other')
 
-SharedLinkSettings.requested_visibility.validator = bv.Nullable(RequestedVisibility_validator)
+SharedLinkSettings.require_password.validator = bv.Nullable(bv.Boolean())
 SharedLinkSettings.link_password.validator = bv.Nullable(bv.String())
 SharedLinkSettings.expires.validator = bv.Nullable(common.DropboxTimestamp_validator)
 SharedLinkSettings.audience.validator = bv.Nullable(LinkAudience_validator)
 SharedLinkSettings.access.validator = bv.Nullable(RequestedLinkAccessLevel_validator)
+SharedLinkSettings.requested_visibility.validator = bv.Nullable(RequestedVisibility_validator)
 SharedLinkSettings._all_field_names_ = set([
-    'requested_visibility',
+    'require_password',
     'link_password',
     'expires',
     'audience',
     'access',
+    'requested_visibility',
 ])
 SharedLinkSettings._all_fields_ = [
-    ('requested_visibility', SharedLinkSettings.requested_visibility.validator),
+    ('require_password', SharedLinkSettings.require_password.validator),
     ('link_password', SharedLinkSettings.link_password.validator),
     ('expires', SharedLinkSettings.expires.validator),
     ('audience', SharedLinkSettings.audience.validator),
     ('access', SharedLinkSettings.access.validator),
+    ('requested_visibility', SharedLinkSettings.requested_visibility.validator),
 ]
 
 SharedLinkSettingsError._invalid_settings_validator = bv.Void()
