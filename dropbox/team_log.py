@@ -2499,6 +2499,46 @@ class AppUnlinkUserType(bb.Struct):
 
 AppUnlinkUserType_validator = bv.Struct(AppUnlinkUserType)
 
+class ApplyNamingConventionDetails(bb.Struct):
+    """
+    Applied a Naming Convention rule.
+    """
+
+    __slots__ = [
+    ]
+
+    _has_required_fields = False
+
+    def __init__(self):
+        pass
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(ApplyNamingConventionDetails, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+ApplyNamingConventionDetails_validator = bv.Struct(ApplyNamingConventionDetails)
+
+class ApplyNamingConventionType(bb.Struct):
+
+    __slots__ = [
+        '_description_value',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 description=None):
+        self._description_value = bb.NOT_SET
+        if description is not None:
+            self.description = description
+
+    # Instance attribute type: str (validator is set below)
+    description = bb.Attribute("description")
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(ApplyNamingConventionType, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+ApplyNamingConventionType_validator = bv.Struct(ApplyNamingConventionType)
+
 class AssetLogInfo(bb.Union):
     """
     Asset details.
@@ -3490,6 +3530,53 @@ class Certificate(bb.Struct):
         super(Certificate, self)._process_custom_annotations(annotation_type, field_path, processor)
 
 Certificate_validator = bv.Struct(Certificate)
+
+class ChangeLinkExpirationPolicy(bb.Union):
+    """
+    Policy for deciding whether the team's default expiration days policy must
+    be enforced when an externally shared is updated
+
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+    """
+
+    _catch_all = 'other'
+    # Attribute is overwritten below the class definition
+    allowed = None
+    # Attribute is overwritten below the class definition
+    not_allowed = None
+    # Attribute is overwritten below the class definition
+    other = None
+
+    def is_allowed(self):
+        """
+        Check if the union tag is ``allowed``.
+
+        :rtype: bool
+        """
+        return self._tag == 'allowed'
+
+    def is_not_allowed(self):
+        """
+        Check if the union tag is ``not_allowed``.
+
+        :rtype: bool
+        """
+        return self._tag == 'not_allowed'
+
+    def is_other(self):
+        """
+        Check if the union tag is ``other``.
+
+        :rtype: bool
+        """
+        return self._tag == 'other'
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(ChangeLinkExpirationPolicy, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+ChangeLinkExpirationPolicy_validator = bv.Union(ChangeLinkExpirationPolicy)
 
 class ChangedEnterpriseAdminRoleDetails(bb.Struct):
     """
@@ -4602,6 +4689,113 @@ class DataPlacementRestrictionSatisfyPolicyType(bb.Struct):
         super(DataPlacementRestrictionSatisfyPolicyType, self)._process_custom_annotations(annotation_type, field_path, processor)
 
 DataPlacementRestrictionSatisfyPolicyType_validator = bv.Struct(DataPlacementRestrictionSatisfyPolicyType)
+
+class DefaultLinkExpirationDaysPolicy(bb.Union):
+    """
+    Policy for the default number of days until an externally shared link
+    expires
+
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+    """
+
+    _catch_all = 'other'
+    # Attribute is overwritten below the class definition
+    day_1 = None
+    # Attribute is overwritten below the class definition
+    day_180 = None
+    # Attribute is overwritten below the class definition
+    day_3 = None
+    # Attribute is overwritten below the class definition
+    day_30 = None
+    # Attribute is overwritten below the class definition
+    day_7 = None
+    # Attribute is overwritten below the class definition
+    day_90 = None
+    # Attribute is overwritten below the class definition
+    none = None
+    # Attribute is overwritten below the class definition
+    year_1 = None
+    # Attribute is overwritten below the class definition
+    other = None
+
+    def is_day_1(self):
+        """
+        Check if the union tag is ``day_1``.
+
+        :rtype: bool
+        """
+        return self._tag == 'day_1'
+
+    def is_day_180(self):
+        """
+        Check if the union tag is ``day_180``.
+
+        :rtype: bool
+        """
+        return self._tag == 'day_180'
+
+    def is_day_3(self):
+        """
+        Check if the union tag is ``day_3``.
+
+        :rtype: bool
+        """
+        return self._tag == 'day_3'
+
+    def is_day_30(self):
+        """
+        Check if the union tag is ``day_30``.
+
+        :rtype: bool
+        """
+        return self._tag == 'day_30'
+
+    def is_day_7(self):
+        """
+        Check if the union tag is ``day_7``.
+
+        :rtype: bool
+        """
+        return self._tag == 'day_7'
+
+    def is_day_90(self):
+        """
+        Check if the union tag is ``day_90``.
+
+        :rtype: bool
+        """
+        return self._tag == 'day_90'
+
+    def is_none(self):
+        """
+        Check if the union tag is ``none``.
+
+        :rtype: bool
+        """
+        return self._tag == 'none'
+
+    def is_year_1(self):
+        """
+        Check if the union tag is ``year_1``.
+
+        :rtype: bool
+        """
+        return self._tag == 'year_1'
+
+    def is_other(self):
+        """
+        Check if the union tag is ``other``.
+
+        :rtype: bool
+        """
+        return self._tag == 'other'
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(DefaultLinkExpirationDaysPolicy, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+DefaultLinkExpirationDaysPolicy_validator = bv.Union(DefaultLinkExpirationDaysPolicy)
 
 class DeleteTeamInviteLinkDetails(bb.Struct):
     """
@@ -7130,6 +7324,53 @@ class EndedEnterpriseAdminSessionType(bb.Struct):
 
 EndedEnterpriseAdminSessionType_validator = bv.Struct(EndedEnterpriseAdminSessionType)
 
+class EnforceLinkPasswordPolicy(bb.Union):
+    """
+    Policy for deciding whether password must be enforced when an externally
+    shared link is updated
+
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+    """
+
+    _catch_all = 'other'
+    # Attribute is overwritten below the class definition
+    optional = None
+    # Attribute is overwritten below the class definition
+    required = None
+    # Attribute is overwritten below the class definition
+    other = None
+
+    def is_optional(self):
+        """
+        Check if the union tag is ``optional``.
+
+        :rtype: bool
+        """
+        return self._tag == 'optional'
+
+    def is_required(self):
+        """
+        Check if the union tag is ``required``.
+
+        :rtype: bool
+        """
+        return self._tag == 'required'
+
+    def is_other(self):
+        """
+        Check if the union tag is ``other``.
+
+        :rtype: bool
+        """
+        return self._tag == 'other'
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(EnforceLinkPasswordPolicy, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+EnforceLinkPasswordPolicy_validator = bv.Union(EnforceLinkPasswordPolicy)
+
 class EnterpriseSettingsLockingDetails(bb.Struct):
     """
     Changed who can update a setting.
@@ -8298,6 +8539,17 @@ class EventDetails(bb.Union):
         return cls('enabled_domain_invites_details', val)
 
     @classmethod
+    def apply_naming_convention_details(cls, val):
+        """
+        Create an instance of this class set to the
+        ``apply_naming_convention_details`` tag with value ``val``.
+
+        :param ApplyNamingConventionDetails val:
+        :rtype: EventDetails
+        """
+        return cls('apply_naming_convention_details', val)
+
+    @classmethod
     def create_folder_details(cls, val):
         """
         Create an instance of this class set to the ``create_folder_details``
@@ -8560,6 +8812,28 @@ class EventDetails(bb.Union):
         :rtype: EventDetails
         """
         return cls('rewind_folder_details', val)
+
+    @classmethod
+    def user_tags_added_details(cls, val):
+        """
+        Create an instance of this class set to the ``user_tags_added_details``
+        tag with value ``val``.
+
+        :param UserTagsAddedDetails val:
+        :rtype: EventDetails
+        """
+        return cls('user_tags_added_details', val)
+
+    @classmethod
+    def user_tags_removed_details(cls, val):
+        """
+        Create an instance of this class set to the
+        ``user_tags_removed_details`` tag with value ``val``.
+
+        :param UserTagsRemovedDetails val:
+        :rtype: EventDetails
+        """
+        return cls('user_tags_removed_details', val)
 
     @classmethod
     def file_request_change_details(cls, val):
@@ -11934,6 +12208,42 @@ class EventDetails(bb.Union):
         return cls('sharing_change_folder_join_policy_details', val)
 
     @classmethod
+    def sharing_change_link_allow_change_expiration_policy_details(cls, val):
+        """
+        Create an instance of this class set to the
+        ``sharing_change_link_allow_change_expiration_policy_details`` tag with
+        value ``val``.
+
+        :param SharingChangeLinkAllowChangeExpirationPolicyDetails val:
+        :rtype: EventDetails
+        """
+        return cls('sharing_change_link_allow_change_expiration_policy_details', val)
+
+    @classmethod
+    def sharing_change_link_default_expiration_policy_details(cls, val):
+        """
+        Create an instance of this class set to the
+        ``sharing_change_link_default_expiration_policy_details`` tag with value
+        ``val``.
+
+        :param SharingChangeLinkDefaultExpirationPolicyDetails val:
+        :rtype: EventDetails
+        """
+        return cls('sharing_change_link_default_expiration_policy_details', val)
+
+    @classmethod
+    def sharing_change_link_enforce_password_policy_details(cls, val):
+        """
+        Create an instance of this class set to the
+        ``sharing_change_link_enforce_password_policy_details`` tag with value
+        ``val``.
+
+        :param SharingChangeLinkEnforcePasswordPolicyDetails val:
+        :rtype: EventDetails
+        """
+        return cls('sharing_change_link_enforce_password_policy_details', val)
+
+    @classmethod
     def sharing_change_link_policy_details(cls, val):
         """
         Create an instance of this class set to the
@@ -13238,6 +13548,14 @@ class EventDetails(bb.Union):
         """
         return self._tag == 'enabled_domain_invites_details'
 
+    def is_apply_naming_convention_details(self):
+        """
+        Check if the union tag is ``apply_naming_convention_details``.
+
+        :rtype: bool
+        """
+        return self._tag == 'apply_naming_convention_details'
+
     def is_create_folder_details(self):
         """
         Check if the union tag is ``create_folder_details``.
@@ -13429,6 +13747,22 @@ class EventDetails(bb.Union):
         :rtype: bool
         """
         return self._tag == 'rewind_folder_details'
+
+    def is_user_tags_added_details(self):
+        """
+        Check if the union tag is ``user_tags_added_details``.
+
+        :rtype: bool
+        """
+        return self._tag == 'user_tags_added_details'
+
+    def is_user_tags_removed_details(self):
+        """
+        Check if the union tag is ``user_tags_removed_details``.
+
+        :rtype: bool
+        """
+        return self._tag == 'user_tags_removed_details'
 
     def is_file_request_change_details(self):
         """
@@ -15862,6 +16196,30 @@ class EventDetails(bb.Union):
         """
         return self._tag == 'sharing_change_folder_join_policy_details'
 
+    def is_sharing_change_link_allow_change_expiration_policy_details(self):
+        """
+        Check if the union tag is ``sharing_change_link_allow_change_expiration_policy_details``.
+
+        :rtype: bool
+        """
+        return self._tag == 'sharing_change_link_allow_change_expiration_policy_details'
+
+    def is_sharing_change_link_default_expiration_policy_details(self):
+        """
+        Check if the union tag is ``sharing_change_link_default_expiration_policy_details``.
+
+        :rtype: bool
+        """
+        return self._tag == 'sharing_change_link_default_expiration_policy_details'
+
+    def is_sharing_change_link_enforce_password_policy_details(self):
+        """
+        Check if the union tag is ``sharing_change_link_enforce_password_policy_details``.
+
+        :rtype: bool
+        """
+        return self._tag == 'sharing_change_link_enforce_password_policy_details'
+
     def is_sharing_change_link_policy_details(self):
         """
         Check if the union tag is ``sharing_change_link_policy_details``.
@@ -17098,6 +17456,16 @@ class EventDetails(bb.Union):
             raise AttributeError("tag 'enabled_domain_invites_details' not set")
         return self._value
 
+    def get_apply_naming_convention_details(self):
+        """
+        Only call this if :meth:`is_apply_naming_convention_details` is true.
+
+        :rtype: ApplyNamingConventionDetails
+        """
+        if not self.is_apply_naming_convention_details():
+            raise AttributeError("tag 'apply_naming_convention_details' not set")
+        return self._value
+
     def get_create_folder_details(self):
         """
         Only call this if :meth:`is_create_folder_details` is true.
@@ -17336,6 +17704,26 @@ class EventDetails(bb.Union):
         """
         if not self.is_rewind_folder_details():
             raise AttributeError("tag 'rewind_folder_details' not set")
+        return self._value
+
+    def get_user_tags_added_details(self):
+        """
+        Only call this if :meth:`is_user_tags_added_details` is true.
+
+        :rtype: UserTagsAddedDetails
+        """
+        if not self.is_user_tags_added_details():
+            raise AttributeError("tag 'user_tags_added_details' not set")
+        return self._value
+
+    def get_user_tags_removed_details(self):
+        """
+        Only call this if :meth:`is_user_tags_removed_details` is true.
+
+        :rtype: UserTagsRemovedDetails
+        """
+        if not self.is_user_tags_removed_details():
+            raise AttributeError("tag 'user_tags_removed_details' not set")
         return self._value
 
     def get_file_request_change_details(self):
@@ -20378,6 +20766,36 @@ class EventDetails(bb.Union):
             raise AttributeError("tag 'sharing_change_folder_join_policy_details' not set")
         return self._value
 
+    def get_sharing_change_link_allow_change_expiration_policy_details(self):
+        """
+        Only call this if :meth:`is_sharing_change_link_allow_change_expiration_policy_details` is true.
+
+        :rtype: SharingChangeLinkAllowChangeExpirationPolicyDetails
+        """
+        if not self.is_sharing_change_link_allow_change_expiration_policy_details():
+            raise AttributeError("tag 'sharing_change_link_allow_change_expiration_policy_details' not set")
+        return self._value
+
+    def get_sharing_change_link_default_expiration_policy_details(self):
+        """
+        Only call this if :meth:`is_sharing_change_link_default_expiration_policy_details` is true.
+
+        :rtype: SharingChangeLinkDefaultExpirationPolicyDetails
+        """
+        if not self.is_sharing_change_link_default_expiration_policy_details():
+            raise AttributeError("tag 'sharing_change_link_default_expiration_policy_details' not set")
+        return self._value
+
+    def get_sharing_change_link_enforce_password_policy_details(self):
+        """
+        Only call this if :meth:`is_sharing_change_link_enforce_password_policy_details` is true.
+
+        :rtype: SharingChangeLinkEnforcePasswordPolicyDetails
+        """
+        if not self.is_sharing_change_link_enforce_password_policy_details():
+            raise AttributeError("tag 'sharing_change_link_enforce_password_policy_details' not set")
+        return self._value
+
     def get_sharing_change_link_policy_details(self):
         """
         Only call this if :meth:`is_sharing_change_link_policy_details` is true.
@@ -21224,6 +21642,8 @@ class EventType(bb.Union):
         from list of verified team domains
     :ivar EnabledDomainInvitesType EventType.enabled_domain_invites: (domains)
         Enabled domain invites (deprecated, no longer logged)
+    :ivar ApplyNamingConventionType EventType.apply_naming_convention:
+        (file_operations) Applied a Naming Convention rule
     :ivar CreateFolderType EventType.create_folder: (file_operations) Created
         folders (deprecated, no longer logged)
     :ivar FileAddType EventType.file_add: (file_operations) Added files and/or
@@ -21274,6 +21694,10 @@ class EventType(bb.Union):
         (file_operations) Organized a folder with the Tidy Up action
     :ivar RewindFolderType EventType.rewind_folder: (file_operations) Rewound a
         folder
+    :ivar UserTagsAddedType EventType.user_tags_added: (file_operations) Tagged
+        a file
+    :ivar UserTagsRemovedType EventType.user_tags_removed: (file_operations)
+        Removed tags
     :ivar FileRequestChangeType EventType.file_request_change: (file_requests)
         Changed file request
     :ivar FileRequestCloseType EventType.file_request_close: (file_requests)
@@ -22000,6 +22424,17 @@ class EventType(bb.Union):
     :ivar SharingChangeFolderJoinPolicyType
         EventType.sharing_change_folder_join_policy: (team_policies) Changed
         whether team members can join shared folders owned outside team
+    :ivar SharingChangeLinkAllowChangeExpirationPolicyType
+        EventType.sharing_change_link_allow_change_expiration_policy:
+        (team_policies) Changed the password requirement for the links shared
+        outside of the team
+    :ivar SharingChangeLinkDefaultExpirationPolicyType
+        EventType.sharing_change_link_default_expiration_policy: (team_policies)
+        Changed the default expiration for the links shared outside of the team
+    :ivar SharingChangeLinkEnforcePasswordPolicyType
+        EventType.sharing_change_link_enforce_password_policy: (team_policies)
+        Changed the allow remove or change expiration policy for the links
+        shared outside of the team
     :ivar SharingChangeLinkPolicyType EventType.sharing_change_link_policy:
         (team_policies) Changed whether members can share links outside team,
         and if links are accessible only by team members or anyone by default
@@ -22954,6 +23389,17 @@ class EventType(bb.Union):
         return cls('enabled_domain_invites', val)
 
     @classmethod
+    def apply_naming_convention(cls, val):
+        """
+        Create an instance of this class set to the ``apply_naming_convention``
+        tag with value ``val``.
+
+        :param ApplyNamingConventionType val:
+        :rtype: EventType
+        """
+        return cls('apply_naming_convention', val)
+
+    @classmethod
     def create_folder(cls, val):
         """
         Create an instance of this class set to the ``create_folder`` tag with
@@ -23216,6 +23662,28 @@ class EventType(bb.Union):
         :rtype: EventType
         """
         return cls('rewind_folder', val)
+
+    @classmethod
+    def user_tags_added(cls, val):
+        """
+        Create an instance of this class set to the ``user_tags_added`` tag with
+        value ``val``.
+
+        :param UserTagsAddedType val:
+        :rtype: EventType
+        """
+        return cls('user_tags_added', val)
+
+    @classmethod
+    def user_tags_removed(cls, val):
+        """
+        Create an instance of this class set to the ``user_tags_removed`` tag
+        with value ``val``.
+
+        :param UserTagsRemovedType val:
+        :rtype: EventType
+        """
+        return cls('user_tags_removed', val)
 
     @classmethod
     def file_request_change(cls, val):
@@ -26564,6 +27032,41 @@ class EventType(bb.Union):
         return cls('sharing_change_folder_join_policy', val)
 
     @classmethod
+    def sharing_change_link_allow_change_expiration_policy(cls, val):
+        """
+        Create an instance of this class set to the
+        ``sharing_change_link_allow_change_expiration_policy`` tag with value
+        ``val``.
+
+        :param SharingChangeLinkAllowChangeExpirationPolicyType val:
+        :rtype: EventType
+        """
+        return cls('sharing_change_link_allow_change_expiration_policy', val)
+
+    @classmethod
+    def sharing_change_link_default_expiration_policy(cls, val):
+        """
+        Create an instance of this class set to the
+        ``sharing_change_link_default_expiration_policy`` tag with value
+        ``val``.
+
+        :param SharingChangeLinkDefaultExpirationPolicyType val:
+        :rtype: EventType
+        """
+        return cls('sharing_change_link_default_expiration_policy', val)
+
+    @classmethod
+    def sharing_change_link_enforce_password_policy(cls, val):
+        """
+        Create an instance of this class set to the
+        ``sharing_change_link_enforce_password_policy`` tag with value ``val``.
+
+        :param SharingChangeLinkEnforcePasswordPolicyType val:
+        :rtype: EventType
+        """
+        return cls('sharing_change_link_enforce_password_policy', val)
+
+    @classmethod
     def sharing_change_link_policy(cls, val):
         """
         Create an instance of this class set to the
@@ -27850,6 +28353,14 @@ class EventType(bb.Union):
         """
         return self._tag == 'enabled_domain_invites'
 
+    def is_apply_naming_convention(self):
+        """
+        Check if the union tag is ``apply_naming_convention``.
+
+        :rtype: bool
+        """
+        return self._tag == 'apply_naming_convention'
+
     def is_create_folder(self):
         """
         Check if the union tag is ``create_folder``.
@@ -28041,6 +28552,22 @@ class EventType(bb.Union):
         :rtype: bool
         """
         return self._tag == 'rewind_folder'
+
+    def is_user_tags_added(self):
+        """
+        Check if the union tag is ``user_tags_added``.
+
+        :rtype: bool
+        """
+        return self._tag == 'user_tags_added'
+
+    def is_user_tags_removed(self):
+        """
+        Check if the union tag is ``user_tags_removed``.
+
+        :rtype: bool
+        """
+        return self._tag == 'user_tags_removed'
 
     def is_file_request_change(self):
         """
@@ -30474,6 +31001,30 @@ class EventType(bb.Union):
         """
         return self._tag == 'sharing_change_folder_join_policy'
 
+    def is_sharing_change_link_allow_change_expiration_policy(self):
+        """
+        Check if the union tag is ``sharing_change_link_allow_change_expiration_policy``.
+
+        :rtype: bool
+        """
+        return self._tag == 'sharing_change_link_allow_change_expiration_policy'
+
+    def is_sharing_change_link_default_expiration_policy(self):
+        """
+        Check if the union tag is ``sharing_change_link_default_expiration_policy``.
+
+        :rtype: bool
+        """
+        return self._tag == 'sharing_change_link_default_expiration_policy'
+
+    def is_sharing_change_link_enforce_password_policy(self):
+        """
+        Check if the union tag is ``sharing_change_link_enforce_password_policy``.
+
+        :rtype: bool
+        """
+        return self._tag == 'sharing_change_link_enforce_password_policy'
+
     def is_sharing_change_link_policy(self):
         """
         Check if the union tag is ``sharing_change_link_policy``.
@@ -31847,6 +32398,18 @@ class EventType(bb.Union):
             raise AttributeError("tag 'enabled_domain_invites' not set")
         return self._value
 
+    def get_apply_naming_convention(self):
+        """
+        (file_operations) Applied a Naming Convention rule
+
+        Only call this if :meth:`is_apply_naming_convention` is true.
+
+        :rtype: ApplyNamingConventionType
+        """
+        if not self.is_apply_naming_convention():
+            raise AttributeError("tag 'apply_naming_convention' not set")
+        return self._value
+
     def get_create_folder(self):
         """
         (file_operations) Created folders (deprecated, no longer logged)
@@ -32133,6 +32696,30 @@ class EventType(bb.Union):
         """
         if not self.is_rewind_folder():
             raise AttributeError("tag 'rewind_folder' not set")
+        return self._value
+
+    def get_user_tags_added(self):
+        """
+        (file_operations) Tagged a file
+
+        Only call this if :meth:`is_user_tags_added` is true.
+
+        :rtype: UserTagsAddedType
+        """
+        if not self.is_user_tags_added():
+            raise AttributeError("tag 'user_tags_added' not set")
+        return self._value
+
+    def get_user_tags_removed(self):
+        """
+        (file_operations) Removed tags
+
+        Only call this if :meth:`is_user_tags_removed` is true.
+
+        :rtype: UserTagsRemovedType
+        """
+        if not self.is_user_tags_removed():
+            raise AttributeError("tag 'user_tags_removed' not set")
         return self._value
 
     def get_file_request_change(self):
@@ -35838,6 +36425,45 @@ class EventType(bb.Union):
             raise AttributeError("tag 'sharing_change_folder_join_policy' not set")
         return self._value
 
+    def get_sharing_change_link_allow_change_expiration_policy(self):
+        """
+        (team_policies) Changed the password requirement for the links shared
+        outside of the team
+
+        Only call this if :meth:`is_sharing_change_link_allow_change_expiration_policy` is true.
+
+        :rtype: SharingChangeLinkAllowChangeExpirationPolicyType
+        """
+        if not self.is_sharing_change_link_allow_change_expiration_policy():
+            raise AttributeError("tag 'sharing_change_link_allow_change_expiration_policy' not set")
+        return self._value
+
+    def get_sharing_change_link_default_expiration_policy(self):
+        """
+        (team_policies) Changed the default expiration for the links shared
+        outside of the team
+
+        Only call this if :meth:`is_sharing_change_link_default_expiration_policy` is true.
+
+        :rtype: SharingChangeLinkDefaultExpirationPolicyType
+        """
+        if not self.is_sharing_change_link_default_expiration_policy():
+            raise AttributeError("tag 'sharing_change_link_default_expiration_policy' not set")
+        return self._value
+
+    def get_sharing_change_link_enforce_password_policy(self):
+        """
+        (team_policies) Changed the allow remove or change expiration policy for
+        the links shared outside of the team
+
+        Only call this if :meth:`is_sharing_change_link_enforce_password_policy` is true.
+
+        :rtype: SharingChangeLinkEnforcePasswordPolicyType
+        """
+        if not self.is_sharing_change_link_enforce_password_policy():
+            raise AttributeError("tag 'sharing_change_link_enforce_password_policy' not set")
+        return self._value
+
     def get_sharing_change_link_policy(self):
         """
         (team_policies) Changed whether members can share links outside team,
@@ -36787,6 +37413,8 @@ class EventTypeArg(bb.Union):
         Removed domain from list of verified team domains
     :ivar team_log.EventTypeArg.enabled_domain_invites: (domains) Enabled domain
         invites (deprecated, no longer logged)
+    :ivar team_log.EventTypeArg.apply_naming_convention: (file_operations)
+        Applied a Naming Convention rule
     :ivar team_log.EventTypeArg.create_folder: (file_operations) Created folders
         (deprecated, no longer logged)
     :ivar team_log.EventTypeArg.file_add: (file_operations) Added files and/or
@@ -36834,6 +37462,9 @@ class EventTypeArg(bb.Union):
         Organized a folder with the Tidy Up action
     :ivar team_log.EventTypeArg.rewind_folder: (file_operations) Rewound a
         folder
+    :ivar team_log.EventTypeArg.user_tags_added: (file_operations) Tagged a file
+    :ivar team_log.EventTypeArg.user_tags_removed: (file_operations) Removed
+        tags
     :ivar team_log.EventTypeArg.file_request_change: (file_requests) Changed
         file request
     :ivar team_log.EventTypeArg.file_request_close: (file_requests) Closed file
@@ -37450,6 +38081,16 @@ class EventTypeArg(bb.Union):
     :ivar team_log.EventTypeArg.sharing_change_folder_join_policy:
         (team_policies) Changed whether team members can join shared folders
         owned outside team
+    :ivar
+        team_log.EventTypeArg.sharing_change_link_allow_change_expiration_policy:
+        (team_policies) Changed the password requirement for the links shared
+        outside of the team
+    :ivar team_log.EventTypeArg.sharing_change_link_default_expiration_policy:
+        (team_policies) Changed the default expiration for the links shared
+        outside of the team
+    :ivar team_log.EventTypeArg.sharing_change_link_enforce_password_policy:
+        (team_policies) Changed the allow remove or change expiration policy for
+        the links shared outside of the team
     :ivar team_log.EventTypeArg.sharing_change_link_policy: (team_policies)
         Changed whether members can share links outside team, and if links are
         accessible only by team members or anyone by default
@@ -37750,6 +38391,8 @@ class EventTypeArg(bb.Union):
     # Attribute is overwritten below the class definition
     enabled_domain_invites = None
     # Attribute is overwritten below the class definition
+    apply_naming_convention = None
+    # Attribute is overwritten below the class definition
     create_folder = None
     # Attribute is overwritten below the class definition
     file_add = None
@@ -37797,6 +38440,10 @@ class EventTypeArg(bb.Union):
     organize_folder_with_tidy = None
     # Attribute is overwritten below the class definition
     rewind_folder = None
+    # Attribute is overwritten below the class definition
+    user_tags_added = None
+    # Attribute is overwritten below the class definition
+    user_tags_removed = None
     # Attribute is overwritten below the class definition
     file_request_change = None
     # Attribute is overwritten below the class definition
@@ -38405,6 +39052,12 @@ class EventTypeArg(bb.Union):
     send_for_signature_policy_changed = None
     # Attribute is overwritten below the class definition
     sharing_change_folder_join_policy = None
+    # Attribute is overwritten below the class definition
+    sharing_change_link_allow_change_expiration_policy = None
+    # Attribute is overwritten below the class definition
+    sharing_change_link_default_expiration_policy = None
+    # Attribute is overwritten below the class definition
+    sharing_change_link_enforce_password_policy = None
     # Attribute is overwritten below the class definition
     sharing_change_link_policy = None
     # Attribute is overwritten below the class definition
@@ -39098,6 +39751,14 @@ class EventTypeArg(bb.Union):
         """
         return self._tag == 'enabled_domain_invites'
 
+    def is_apply_naming_convention(self):
+        """
+        Check if the union tag is ``apply_naming_convention``.
+
+        :rtype: bool
+        """
+        return self._tag == 'apply_naming_convention'
+
     def is_create_folder(self):
         """
         Check if the union tag is ``create_folder``.
@@ -39289,6 +39950,22 @@ class EventTypeArg(bb.Union):
         :rtype: bool
         """
         return self._tag == 'rewind_folder'
+
+    def is_user_tags_added(self):
+        """
+        Check if the union tag is ``user_tags_added``.
+
+        :rtype: bool
+        """
+        return self._tag == 'user_tags_added'
+
+    def is_user_tags_removed(self):
+        """
+        Check if the union tag is ``user_tags_removed``.
+
+        :rtype: bool
+        """
+        return self._tag == 'user_tags_removed'
 
     def is_file_request_change(self):
         """
@@ -41721,6 +42398,30 @@ class EventTypeArg(bb.Union):
         :rtype: bool
         """
         return self._tag == 'sharing_change_folder_join_policy'
+
+    def is_sharing_change_link_allow_change_expiration_policy(self):
+        """
+        Check if the union tag is ``sharing_change_link_allow_change_expiration_policy``.
+
+        :rtype: bool
+        """
+        return self._tag == 'sharing_change_link_allow_change_expiration_policy'
+
+    def is_sharing_change_link_default_expiration_policy(self):
+        """
+        Check if the union tag is ``sharing_change_link_default_expiration_policy``.
+
+        :rtype: bool
+        """
+        return self._tag == 'sharing_change_link_default_expiration_policy'
+
+    def is_sharing_change_link_enforce_password_policy(self):
+        """
+        Check if the union tag is ``sharing_change_link_enforce_password_policy``.
+
+        :rtype: bool
+        """
+        return self._tag == 'sharing_change_link_enforce_password_policy'
 
     def is_sharing_change_link_policy(self):
         """
@@ -48433,6 +49134,8 @@ class LabelType(bb.Union):
     # Attribute is overwritten below the class definition
     personal_information = None
     # Attribute is overwritten below the class definition
+    test_only = None
+    # Attribute is overwritten below the class definition
     user_defined_tag = None
     # Attribute is overwritten below the class definition
     other = None
@@ -48444,6 +49147,14 @@ class LabelType(bb.Union):
         :rtype: bool
         """
         return self._tag == 'personal_information'
+
+    def is_test_only(self):
+        """
+        Check if the union tag is ``test_only``.
+
+        :rtype: bool
+        """
+        return self._tag == 'test_only'
 
     def is_user_defined_tag(self):
         """
@@ -62064,6 +62775,189 @@ class SharingChangeFolderJoinPolicyType(bb.Struct):
 
 SharingChangeFolderJoinPolicyType_validator = bv.Struct(SharingChangeFolderJoinPolicyType)
 
+class SharingChangeLinkAllowChangeExpirationPolicyDetails(bb.Struct):
+    """
+    Changed the password requirement for the links shared outside of the team.
+
+    :ivar
+        team_log.SharingChangeLinkAllowChangeExpirationPolicyDetails.new_value:
+        To.
+    :ivar
+        team_log.SharingChangeLinkAllowChangeExpirationPolicyDetails.previous_value:
+        From.
+    """
+
+    __slots__ = [
+        '_new_value_value',
+        '_previous_value_value',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 new_value=None,
+                 previous_value=None):
+        self._new_value_value = bb.NOT_SET
+        self._previous_value_value = bb.NOT_SET
+        if new_value is not None:
+            self.new_value = new_value
+        if previous_value is not None:
+            self.previous_value = previous_value
+
+    # Instance attribute type: EnforceLinkPasswordPolicy (validator is set below)
+    new_value = bb.Attribute("new_value", user_defined=True)
+
+    # Instance attribute type: EnforceLinkPasswordPolicy (validator is set below)
+    previous_value = bb.Attribute("previous_value", nullable=True, user_defined=True)
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(SharingChangeLinkAllowChangeExpirationPolicyDetails, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+SharingChangeLinkAllowChangeExpirationPolicyDetails_validator = bv.Struct(SharingChangeLinkAllowChangeExpirationPolicyDetails)
+
+class SharingChangeLinkAllowChangeExpirationPolicyType(bb.Struct):
+
+    __slots__ = [
+        '_description_value',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 description=None):
+        self._description_value = bb.NOT_SET
+        if description is not None:
+            self.description = description
+
+    # Instance attribute type: str (validator is set below)
+    description = bb.Attribute("description")
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(SharingChangeLinkAllowChangeExpirationPolicyType, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+SharingChangeLinkAllowChangeExpirationPolicyType_validator = bv.Struct(SharingChangeLinkAllowChangeExpirationPolicyType)
+
+class SharingChangeLinkDefaultExpirationPolicyDetails(bb.Struct):
+    """
+    Changed the default expiration for the links shared outside of the team.
+
+    :ivar team_log.SharingChangeLinkDefaultExpirationPolicyDetails.new_value:
+        To.
+    :ivar
+        team_log.SharingChangeLinkDefaultExpirationPolicyDetails.previous_value:
+        From.
+    """
+
+    __slots__ = [
+        '_new_value_value',
+        '_previous_value_value',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 new_value=None,
+                 previous_value=None):
+        self._new_value_value = bb.NOT_SET
+        self._previous_value_value = bb.NOT_SET
+        if new_value is not None:
+            self.new_value = new_value
+        if previous_value is not None:
+            self.previous_value = previous_value
+
+    # Instance attribute type: DefaultLinkExpirationDaysPolicy (validator is set below)
+    new_value = bb.Attribute("new_value", user_defined=True)
+
+    # Instance attribute type: DefaultLinkExpirationDaysPolicy (validator is set below)
+    previous_value = bb.Attribute("previous_value", nullable=True, user_defined=True)
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(SharingChangeLinkDefaultExpirationPolicyDetails, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+SharingChangeLinkDefaultExpirationPolicyDetails_validator = bv.Struct(SharingChangeLinkDefaultExpirationPolicyDetails)
+
+class SharingChangeLinkDefaultExpirationPolicyType(bb.Struct):
+
+    __slots__ = [
+        '_description_value',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 description=None):
+        self._description_value = bb.NOT_SET
+        if description is not None:
+            self.description = description
+
+    # Instance attribute type: str (validator is set below)
+    description = bb.Attribute("description")
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(SharingChangeLinkDefaultExpirationPolicyType, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+SharingChangeLinkDefaultExpirationPolicyType_validator = bv.Struct(SharingChangeLinkDefaultExpirationPolicyType)
+
+class SharingChangeLinkEnforcePasswordPolicyDetails(bb.Struct):
+    """
+    Changed the allow remove or change expiration policy for the links shared
+    outside of the team.
+
+    :ivar team_log.SharingChangeLinkEnforcePasswordPolicyDetails.new_value: To.
+    :ivar team_log.SharingChangeLinkEnforcePasswordPolicyDetails.previous_value:
+        From.
+    """
+
+    __slots__ = [
+        '_new_value_value',
+        '_previous_value_value',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 new_value=None,
+                 previous_value=None):
+        self._new_value_value = bb.NOT_SET
+        self._previous_value_value = bb.NOT_SET
+        if new_value is not None:
+            self.new_value = new_value
+        if previous_value is not None:
+            self.previous_value = previous_value
+
+    # Instance attribute type: ChangeLinkExpirationPolicy (validator is set below)
+    new_value = bb.Attribute("new_value", user_defined=True)
+
+    # Instance attribute type: ChangeLinkExpirationPolicy (validator is set below)
+    previous_value = bb.Attribute("previous_value", nullable=True, user_defined=True)
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(SharingChangeLinkEnforcePasswordPolicyDetails, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+SharingChangeLinkEnforcePasswordPolicyDetails_validator = bv.Struct(SharingChangeLinkEnforcePasswordPolicyDetails)
+
+class SharingChangeLinkEnforcePasswordPolicyType(bb.Struct):
+
+    __slots__ = [
+        '_description_value',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 description=None):
+        self._description_value = bb.NOT_SET
+        if description is not None:
+            self.description = description
+
+    # Instance attribute type: str (validator is set below)
+    description = bb.Attribute("description")
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(SharingChangeLinkEnforcePasswordPolicyType, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+SharingChangeLinkEnforcePasswordPolicyType_validator = bv.Struct(SharingChangeLinkEnforcePasswordPolicyType)
+
 class SharingChangeLinkPolicyDetails(bb.Struct):
     """
     Changed whether members can share links outside team, and if links are
@@ -69314,6 +70208,104 @@ class UserOrTeamLinkedAppLogInfo(AppLogInfo):
 
 UserOrTeamLinkedAppLogInfo_validator = bv.Struct(UserOrTeamLinkedAppLogInfo)
 
+class UserTagsAddedDetails(bb.Struct):
+    """
+    Tagged a file.
+
+    :ivar team_log.UserTagsAddedDetails.values: values.
+    """
+
+    __slots__ = [
+        '_values_value',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 values=None):
+        self._values_value = bb.NOT_SET
+        if values is not None:
+            self.values = values
+
+    # Instance attribute type: list of [str] (validator is set below)
+    values = bb.Attribute("values")
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(UserTagsAddedDetails, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+UserTagsAddedDetails_validator = bv.Struct(UserTagsAddedDetails)
+
+class UserTagsAddedType(bb.Struct):
+
+    __slots__ = [
+        '_description_value',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 description=None):
+        self._description_value = bb.NOT_SET
+        if description is not None:
+            self.description = description
+
+    # Instance attribute type: str (validator is set below)
+    description = bb.Attribute("description")
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(UserTagsAddedType, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+UserTagsAddedType_validator = bv.Struct(UserTagsAddedType)
+
+class UserTagsRemovedDetails(bb.Struct):
+    """
+    Removed tags.
+
+    :ivar team_log.UserTagsRemovedDetails.values: values.
+    """
+
+    __slots__ = [
+        '_values_value',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 values=None):
+        self._values_value = bb.NOT_SET
+        if values is not None:
+            self.values = values
+
+    # Instance attribute type: list of [str] (validator is set below)
+    values = bb.Attribute("values")
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(UserTagsRemovedDetails, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+UserTagsRemovedDetails_validator = bv.Struct(UserTagsRemovedDetails)
+
+class UserTagsRemovedType(bb.Struct):
+
+    __slots__ = [
+        '_description_value',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 description=None):
+        self._description_value = bb.NOT_SET
+        if description is not None:
+            self.description = description
+
+    # Instance attribute type: str (validator is set below)
+    description = bb.Attribute("description")
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(UserTagsRemovedType, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+UserTagsRemovedType_validator = bv.Struct(UserTagsRemovedType)
+
 class ViewerInfoPolicyChangedDetails(bb.Struct):
     """
     Changed team policy for viewer info.
@@ -70458,6 +71450,13 @@ AppUnlinkUserType.description.validator = bv.String()
 AppUnlinkUserType._all_field_names_ = set(['description'])
 AppUnlinkUserType._all_fields_ = [('description', AppUnlinkUserType.description.validator)]
 
+ApplyNamingConventionDetails._all_field_names_ = set([])
+ApplyNamingConventionDetails._all_fields_ = []
+
+ApplyNamingConventionType.description.validator = bv.String()
+ApplyNamingConventionType._all_field_names_ = set(['description'])
+ApplyNamingConventionType._all_fields_ = [('description', ApplyNamingConventionType.description.validator)]
+
 AssetLogInfo._file_validator = FileLogInfo_validator
 AssetLogInfo._folder_validator = FolderLogInfo_validator
 AssetLogInfo._paper_document_validator = PaperDocumentLogInfo_validator
@@ -70691,6 +71690,19 @@ Certificate._all_fields_ = [
     ('sha1_fingerprint', Certificate.sha1_fingerprint.validator),
     ('common_name', Certificate.common_name.validator),
 ]
+
+ChangeLinkExpirationPolicy._allowed_validator = bv.Void()
+ChangeLinkExpirationPolicy._not_allowed_validator = bv.Void()
+ChangeLinkExpirationPolicy._other_validator = bv.Void()
+ChangeLinkExpirationPolicy._tagmap = {
+    'allowed': ChangeLinkExpirationPolicy._allowed_validator,
+    'not_allowed': ChangeLinkExpirationPolicy._not_allowed_validator,
+    'other': ChangeLinkExpirationPolicy._other_validator,
+}
+
+ChangeLinkExpirationPolicy.allowed = ChangeLinkExpirationPolicy('allowed')
+ChangeLinkExpirationPolicy.not_allowed = ChangeLinkExpirationPolicy('not_allowed')
+ChangeLinkExpirationPolicy.other = ChangeLinkExpirationPolicy('other')
 
 ChangedEnterpriseAdminRoleDetails.previous_value.validator = FedAdminRole_validator
 ChangedEnterpriseAdminRoleDetails.new_value.validator = FedAdminRole_validator
@@ -70932,6 +71944,37 @@ DataPlacementRestrictionSatisfyPolicyDetails._all_fields_ = [('placement_restric
 DataPlacementRestrictionSatisfyPolicyType.description.validator = bv.String()
 DataPlacementRestrictionSatisfyPolicyType._all_field_names_ = set(['description'])
 DataPlacementRestrictionSatisfyPolicyType._all_fields_ = [('description', DataPlacementRestrictionSatisfyPolicyType.description.validator)]
+
+DefaultLinkExpirationDaysPolicy._day_1_validator = bv.Void()
+DefaultLinkExpirationDaysPolicy._day_180_validator = bv.Void()
+DefaultLinkExpirationDaysPolicy._day_3_validator = bv.Void()
+DefaultLinkExpirationDaysPolicy._day_30_validator = bv.Void()
+DefaultLinkExpirationDaysPolicy._day_7_validator = bv.Void()
+DefaultLinkExpirationDaysPolicy._day_90_validator = bv.Void()
+DefaultLinkExpirationDaysPolicy._none_validator = bv.Void()
+DefaultLinkExpirationDaysPolicy._year_1_validator = bv.Void()
+DefaultLinkExpirationDaysPolicy._other_validator = bv.Void()
+DefaultLinkExpirationDaysPolicy._tagmap = {
+    'day_1': DefaultLinkExpirationDaysPolicy._day_1_validator,
+    'day_180': DefaultLinkExpirationDaysPolicy._day_180_validator,
+    'day_3': DefaultLinkExpirationDaysPolicy._day_3_validator,
+    'day_30': DefaultLinkExpirationDaysPolicy._day_30_validator,
+    'day_7': DefaultLinkExpirationDaysPolicy._day_7_validator,
+    'day_90': DefaultLinkExpirationDaysPolicy._day_90_validator,
+    'none': DefaultLinkExpirationDaysPolicy._none_validator,
+    'year_1': DefaultLinkExpirationDaysPolicy._year_1_validator,
+    'other': DefaultLinkExpirationDaysPolicy._other_validator,
+}
+
+DefaultLinkExpirationDaysPolicy.day_1 = DefaultLinkExpirationDaysPolicy('day_1')
+DefaultLinkExpirationDaysPolicy.day_180 = DefaultLinkExpirationDaysPolicy('day_180')
+DefaultLinkExpirationDaysPolicy.day_3 = DefaultLinkExpirationDaysPolicy('day_3')
+DefaultLinkExpirationDaysPolicy.day_30 = DefaultLinkExpirationDaysPolicy('day_30')
+DefaultLinkExpirationDaysPolicy.day_7 = DefaultLinkExpirationDaysPolicy('day_7')
+DefaultLinkExpirationDaysPolicy.day_90 = DefaultLinkExpirationDaysPolicy('day_90')
+DefaultLinkExpirationDaysPolicy.none = DefaultLinkExpirationDaysPolicy('none')
+DefaultLinkExpirationDaysPolicy.year_1 = DefaultLinkExpirationDaysPolicy('year_1')
+DefaultLinkExpirationDaysPolicy.other = DefaultLinkExpirationDaysPolicy('other')
 
 DeleteTeamInviteLinkDetails.link_url.validator = bv.String()
 DeleteTeamInviteLinkDetails._all_field_names_ = set(['link_url'])
@@ -71511,6 +72554,19 @@ EndedEnterpriseAdminSessionType.description.validator = bv.String()
 EndedEnterpriseAdminSessionType._all_field_names_ = set(['description'])
 EndedEnterpriseAdminSessionType._all_fields_ = [('description', EndedEnterpriseAdminSessionType.description.validator)]
 
+EnforceLinkPasswordPolicy._optional_validator = bv.Void()
+EnforceLinkPasswordPolicy._required_validator = bv.Void()
+EnforceLinkPasswordPolicy._other_validator = bv.Void()
+EnforceLinkPasswordPolicy._tagmap = {
+    'optional': EnforceLinkPasswordPolicy._optional_validator,
+    'required': EnforceLinkPasswordPolicy._required_validator,
+    'other': EnforceLinkPasswordPolicy._other_validator,
+}
+
+EnforceLinkPasswordPolicy.optional = EnforceLinkPasswordPolicy('optional')
+EnforceLinkPasswordPolicy.required = EnforceLinkPasswordPolicy('required')
+EnforceLinkPasswordPolicy.other = EnforceLinkPasswordPolicy('other')
+
 EnterpriseSettingsLockingDetails.team_name.validator = bv.String()
 EnterpriseSettingsLockingDetails.settings_page_name.validator = bv.String()
 EnterpriseSettingsLockingDetails.previous_settings_page_locking_state.validator = bv.String()
@@ -71675,6 +72731,7 @@ EventDetails._domain_verification_add_domain_fail_details_validator = DomainVeri
 EventDetails._domain_verification_add_domain_success_details_validator = DomainVerificationAddDomainSuccessDetails_validator
 EventDetails._domain_verification_remove_domain_details_validator = DomainVerificationRemoveDomainDetails_validator
 EventDetails._enabled_domain_invites_details_validator = EnabledDomainInvitesDetails_validator
+EventDetails._apply_naming_convention_details_validator = ApplyNamingConventionDetails_validator
 EventDetails._create_folder_details_validator = CreateFolderDetails_validator
 EventDetails._file_add_details_validator = FileAddDetails_validator
 EventDetails._file_copy_details_validator = FileCopyDetails_validator
@@ -71699,6 +72756,8 @@ EventDetails._object_label_removed_details_validator = ObjectLabelRemovedDetails
 EventDetails._object_label_updated_value_details_validator = ObjectLabelUpdatedValueDetails_validator
 EventDetails._organize_folder_with_tidy_details_validator = OrganizeFolderWithTidyDetails_validator
 EventDetails._rewind_folder_details_validator = RewindFolderDetails_validator
+EventDetails._user_tags_added_details_validator = UserTagsAddedDetails_validator
+EventDetails._user_tags_removed_details_validator = UserTagsRemovedDetails_validator
 EventDetails._file_request_change_details_validator = FileRequestChangeDetails_validator
 EventDetails._file_request_close_details_validator = FileRequestCloseDetails_validator
 EventDetails._file_request_create_details_validator = FileRequestCreateDetails_validator
@@ -72003,6 +73062,9 @@ EventDetails._reseller_support_change_policy_details_validator = ResellerSupport
 EventDetails._rewind_policy_changed_details_validator = RewindPolicyChangedDetails_validator
 EventDetails._send_for_signature_policy_changed_details_validator = SendForSignaturePolicyChangedDetails_validator
 EventDetails._sharing_change_folder_join_policy_details_validator = SharingChangeFolderJoinPolicyDetails_validator
+EventDetails._sharing_change_link_allow_change_expiration_policy_details_validator = SharingChangeLinkAllowChangeExpirationPolicyDetails_validator
+EventDetails._sharing_change_link_default_expiration_policy_details_validator = SharingChangeLinkDefaultExpirationPolicyDetails_validator
+EventDetails._sharing_change_link_enforce_password_policy_details_validator = SharingChangeLinkEnforcePasswordPolicyDetails_validator
 EventDetails._sharing_change_link_policy_details_validator = SharingChangeLinkPolicyDetails_validator
 EventDetails._sharing_change_member_policy_details_validator = SharingChangeMemberPolicyDetails_validator
 EventDetails._showcase_change_download_policy_details_validator = ShowcaseChangeDownloadPolicyDetails_validator
@@ -72141,6 +73203,7 @@ EventDetails._tagmap = {
     'domain_verification_add_domain_success_details': EventDetails._domain_verification_add_domain_success_details_validator,
     'domain_verification_remove_domain_details': EventDetails._domain_verification_remove_domain_details_validator,
     'enabled_domain_invites_details': EventDetails._enabled_domain_invites_details_validator,
+    'apply_naming_convention_details': EventDetails._apply_naming_convention_details_validator,
     'create_folder_details': EventDetails._create_folder_details_validator,
     'file_add_details': EventDetails._file_add_details_validator,
     'file_copy_details': EventDetails._file_copy_details_validator,
@@ -72165,6 +73228,8 @@ EventDetails._tagmap = {
     'object_label_updated_value_details': EventDetails._object_label_updated_value_details_validator,
     'organize_folder_with_tidy_details': EventDetails._organize_folder_with_tidy_details_validator,
     'rewind_folder_details': EventDetails._rewind_folder_details_validator,
+    'user_tags_added_details': EventDetails._user_tags_added_details_validator,
+    'user_tags_removed_details': EventDetails._user_tags_removed_details_validator,
     'file_request_change_details': EventDetails._file_request_change_details_validator,
     'file_request_close_details': EventDetails._file_request_close_details_validator,
     'file_request_create_details': EventDetails._file_request_create_details_validator,
@@ -72469,6 +73534,9 @@ EventDetails._tagmap = {
     'rewind_policy_changed_details': EventDetails._rewind_policy_changed_details_validator,
     'send_for_signature_policy_changed_details': EventDetails._send_for_signature_policy_changed_details_validator,
     'sharing_change_folder_join_policy_details': EventDetails._sharing_change_folder_join_policy_details_validator,
+    'sharing_change_link_allow_change_expiration_policy_details': EventDetails._sharing_change_link_allow_change_expiration_policy_details_validator,
+    'sharing_change_link_default_expiration_policy_details': EventDetails._sharing_change_link_default_expiration_policy_details_validator,
+    'sharing_change_link_enforce_password_policy_details': EventDetails._sharing_change_link_enforce_password_policy_details_validator,
     'sharing_change_link_policy_details': EventDetails._sharing_change_link_policy_details_validator,
     'sharing_change_member_policy_details': EventDetails._sharing_change_member_policy_details_validator,
     'showcase_change_download_policy_details': EventDetails._showcase_change_download_policy_details_validator,
@@ -72610,6 +73678,7 @@ EventType._domain_verification_add_domain_fail_validator = DomainVerificationAdd
 EventType._domain_verification_add_domain_success_validator = DomainVerificationAddDomainSuccessType_validator
 EventType._domain_verification_remove_domain_validator = DomainVerificationRemoveDomainType_validator
 EventType._enabled_domain_invites_validator = EnabledDomainInvitesType_validator
+EventType._apply_naming_convention_validator = ApplyNamingConventionType_validator
 EventType._create_folder_validator = CreateFolderType_validator
 EventType._file_add_validator = FileAddType_validator
 EventType._file_copy_validator = FileCopyType_validator
@@ -72634,6 +73703,8 @@ EventType._object_label_removed_validator = ObjectLabelRemovedType_validator
 EventType._object_label_updated_value_validator = ObjectLabelUpdatedValueType_validator
 EventType._organize_folder_with_tidy_validator = OrganizeFolderWithTidyType_validator
 EventType._rewind_folder_validator = RewindFolderType_validator
+EventType._user_tags_added_validator = UserTagsAddedType_validator
+EventType._user_tags_removed_validator = UserTagsRemovedType_validator
 EventType._file_request_change_validator = FileRequestChangeType_validator
 EventType._file_request_close_validator = FileRequestCloseType_validator
 EventType._file_request_create_validator = FileRequestCreateType_validator
@@ -72938,6 +74009,9 @@ EventType._reseller_support_change_policy_validator = ResellerSupportChangePolic
 EventType._rewind_policy_changed_validator = RewindPolicyChangedType_validator
 EventType._send_for_signature_policy_changed_validator = SendForSignaturePolicyChangedType_validator
 EventType._sharing_change_folder_join_policy_validator = SharingChangeFolderJoinPolicyType_validator
+EventType._sharing_change_link_allow_change_expiration_policy_validator = SharingChangeLinkAllowChangeExpirationPolicyType_validator
+EventType._sharing_change_link_default_expiration_policy_validator = SharingChangeLinkDefaultExpirationPolicyType_validator
+EventType._sharing_change_link_enforce_password_policy_validator = SharingChangeLinkEnforcePasswordPolicyType_validator
 EventType._sharing_change_link_policy_validator = SharingChangeLinkPolicyType_validator
 EventType._sharing_change_member_policy_validator = SharingChangeMemberPolicyType_validator
 EventType._showcase_change_download_policy_validator = ShowcaseChangeDownloadPolicyType_validator
@@ -73075,6 +74149,7 @@ EventType._tagmap = {
     'domain_verification_add_domain_success': EventType._domain_verification_add_domain_success_validator,
     'domain_verification_remove_domain': EventType._domain_verification_remove_domain_validator,
     'enabled_domain_invites': EventType._enabled_domain_invites_validator,
+    'apply_naming_convention': EventType._apply_naming_convention_validator,
     'create_folder': EventType._create_folder_validator,
     'file_add': EventType._file_add_validator,
     'file_copy': EventType._file_copy_validator,
@@ -73099,6 +74174,8 @@ EventType._tagmap = {
     'object_label_updated_value': EventType._object_label_updated_value_validator,
     'organize_folder_with_tidy': EventType._organize_folder_with_tidy_validator,
     'rewind_folder': EventType._rewind_folder_validator,
+    'user_tags_added': EventType._user_tags_added_validator,
+    'user_tags_removed': EventType._user_tags_removed_validator,
     'file_request_change': EventType._file_request_change_validator,
     'file_request_close': EventType._file_request_close_validator,
     'file_request_create': EventType._file_request_create_validator,
@@ -73403,6 +74480,9 @@ EventType._tagmap = {
     'rewind_policy_changed': EventType._rewind_policy_changed_validator,
     'send_for_signature_policy_changed': EventType._send_for_signature_policy_changed_validator,
     'sharing_change_folder_join_policy': EventType._sharing_change_folder_join_policy_validator,
+    'sharing_change_link_allow_change_expiration_policy': EventType._sharing_change_link_allow_change_expiration_policy_validator,
+    'sharing_change_link_default_expiration_policy': EventType._sharing_change_link_default_expiration_policy_validator,
+    'sharing_change_link_enforce_password_policy': EventType._sharing_change_link_enforce_password_policy_validator,
     'sharing_change_link_policy': EventType._sharing_change_link_policy_validator,
     'sharing_change_member_policy': EventType._sharing_change_member_policy_validator,
     'showcase_change_download_policy': EventType._showcase_change_download_policy_validator,
@@ -73543,6 +74623,7 @@ EventTypeArg._domain_verification_add_domain_fail_validator = bv.Void()
 EventTypeArg._domain_verification_add_domain_success_validator = bv.Void()
 EventTypeArg._domain_verification_remove_domain_validator = bv.Void()
 EventTypeArg._enabled_domain_invites_validator = bv.Void()
+EventTypeArg._apply_naming_convention_validator = bv.Void()
 EventTypeArg._create_folder_validator = bv.Void()
 EventTypeArg._file_add_validator = bv.Void()
 EventTypeArg._file_copy_validator = bv.Void()
@@ -73567,6 +74648,8 @@ EventTypeArg._object_label_removed_validator = bv.Void()
 EventTypeArg._object_label_updated_value_validator = bv.Void()
 EventTypeArg._organize_folder_with_tidy_validator = bv.Void()
 EventTypeArg._rewind_folder_validator = bv.Void()
+EventTypeArg._user_tags_added_validator = bv.Void()
+EventTypeArg._user_tags_removed_validator = bv.Void()
 EventTypeArg._file_request_change_validator = bv.Void()
 EventTypeArg._file_request_close_validator = bv.Void()
 EventTypeArg._file_request_create_validator = bv.Void()
@@ -73871,6 +74954,9 @@ EventTypeArg._reseller_support_change_policy_validator = bv.Void()
 EventTypeArg._rewind_policy_changed_validator = bv.Void()
 EventTypeArg._send_for_signature_policy_changed_validator = bv.Void()
 EventTypeArg._sharing_change_folder_join_policy_validator = bv.Void()
+EventTypeArg._sharing_change_link_allow_change_expiration_policy_validator = bv.Void()
+EventTypeArg._sharing_change_link_default_expiration_policy_validator = bv.Void()
+EventTypeArg._sharing_change_link_enforce_password_policy_validator = bv.Void()
 EventTypeArg._sharing_change_link_policy_validator = bv.Void()
 EventTypeArg._sharing_change_member_policy_validator = bv.Void()
 EventTypeArg._showcase_change_download_policy_validator = bv.Void()
@@ -74008,6 +75094,7 @@ EventTypeArg._tagmap = {
     'domain_verification_add_domain_success': EventTypeArg._domain_verification_add_domain_success_validator,
     'domain_verification_remove_domain': EventTypeArg._domain_verification_remove_domain_validator,
     'enabled_domain_invites': EventTypeArg._enabled_domain_invites_validator,
+    'apply_naming_convention': EventTypeArg._apply_naming_convention_validator,
     'create_folder': EventTypeArg._create_folder_validator,
     'file_add': EventTypeArg._file_add_validator,
     'file_copy': EventTypeArg._file_copy_validator,
@@ -74032,6 +75119,8 @@ EventTypeArg._tagmap = {
     'object_label_updated_value': EventTypeArg._object_label_updated_value_validator,
     'organize_folder_with_tidy': EventTypeArg._organize_folder_with_tidy_validator,
     'rewind_folder': EventTypeArg._rewind_folder_validator,
+    'user_tags_added': EventTypeArg._user_tags_added_validator,
+    'user_tags_removed': EventTypeArg._user_tags_removed_validator,
     'file_request_change': EventTypeArg._file_request_change_validator,
     'file_request_close': EventTypeArg._file_request_close_validator,
     'file_request_create': EventTypeArg._file_request_create_validator,
@@ -74336,6 +75425,9 @@ EventTypeArg._tagmap = {
     'rewind_policy_changed': EventTypeArg._rewind_policy_changed_validator,
     'send_for_signature_policy_changed': EventTypeArg._send_for_signature_policy_changed_validator,
     'sharing_change_folder_join_policy': EventTypeArg._sharing_change_folder_join_policy_validator,
+    'sharing_change_link_allow_change_expiration_policy': EventTypeArg._sharing_change_link_allow_change_expiration_policy_validator,
+    'sharing_change_link_default_expiration_policy': EventTypeArg._sharing_change_link_default_expiration_policy_validator,
+    'sharing_change_link_enforce_password_policy': EventTypeArg._sharing_change_link_enforce_password_policy_validator,
     'sharing_change_link_policy': EventTypeArg._sharing_change_link_policy_validator,
     'sharing_change_member_policy': EventTypeArg._sharing_change_member_policy_validator,
     'showcase_change_download_policy': EventTypeArg._showcase_change_download_policy_validator,
@@ -74474,6 +75566,7 @@ EventTypeArg.domain_verification_add_domain_fail = EventTypeArg('domain_verifica
 EventTypeArg.domain_verification_add_domain_success = EventTypeArg('domain_verification_add_domain_success')
 EventTypeArg.domain_verification_remove_domain = EventTypeArg('domain_verification_remove_domain')
 EventTypeArg.enabled_domain_invites = EventTypeArg('enabled_domain_invites')
+EventTypeArg.apply_naming_convention = EventTypeArg('apply_naming_convention')
 EventTypeArg.create_folder = EventTypeArg('create_folder')
 EventTypeArg.file_add = EventTypeArg('file_add')
 EventTypeArg.file_copy = EventTypeArg('file_copy')
@@ -74498,6 +75591,8 @@ EventTypeArg.object_label_removed = EventTypeArg('object_label_removed')
 EventTypeArg.object_label_updated_value = EventTypeArg('object_label_updated_value')
 EventTypeArg.organize_folder_with_tidy = EventTypeArg('organize_folder_with_tidy')
 EventTypeArg.rewind_folder = EventTypeArg('rewind_folder')
+EventTypeArg.user_tags_added = EventTypeArg('user_tags_added')
+EventTypeArg.user_tags_removed = EventTypeArg('user_tags_removed')
 EventTypeArg.file_request_change = EventTypeArg('file_request_change')
 EventTypeArg.file_request_close = EventTypeArg('file_request_close')
 EventTypeArg.file_request_create = EventTypeArg('file_request_create')
@@ -74802,6 +75897,9 @@ EventTypeArg.reseller_support_change_policy = EventTypeArg('reseller_support_cha
 EventTypeArg.rewind_policy_changed = EventTypeArg('rewind_policy_changed')
 EventTypeArg.send_for_signature_policy_changed = EventTypeArg('send_for_signature_policy_changed')
 EventTypeArg.sharing_change_folder_join_policy = EventTypeArg('sharing_change_folder_join_policy')
+EventTypeArg.sharing_change_link_allow_change_expiration_policy = EventTypeArg('sharing_change_link_allow_change_expiration_policy')
+EventTypeArg.sharing_change_link_default_expiration_policy = EventTypeArg('sharing_change_link_default_expiration_policy')
+EventTypeArg.sharing_change_link_enforce_password_policy = EventTypeArg('sharing_change_link_enforce_password_policy')
 EventTypeArg.sharing_change_link_policy = EventTypeArg('sharing_change_link_policy')
 EventTypeArg.sharing_change_member_policy = EventTypeArg('sharing_change_member_policy')
 EventTypeArg.showcase_change_download_policy = EventTypeArg('showcase_change_download_policy')
@@ -76274,15 +77372,18 @@ JoinTeamDetails._all_fields_ = [
 ]
 
 LabelType._personal_information_validator = bv.Void()
+LabelType._test_only_validator = bv.Void()
 LabelType._user_defined_tag_validator = bv.Void()
 LabelType._other_validator = bv.Void()
 LabelType._tagmap = {
     'personal_information': LabelType._personal_information_validator,
+    'test_only': LabelType._test_only_validator,
     'user_defined_tag': LabelType._user_defined_tag_validator,
     'other': LabelType._other_validator,
 }
 
 LabelType.personal_information = LabelType('personal_information')
+LabelType.test_only = LabelType('test_only')
 LabelType.user_defined_tag = LabelType('user_defined_tag')
 LabelType.other = LabelType('other')
 
@@ -79393,6 +80494,51 @@ SharingChangeFolderJoinPolicyType.description.validator = bv.String()
 SharingChangeFolderJoinPolicyType._all_field_names_ = set(['description'])
 SharingChangeFolderJoinPolicyType._all_fields_ = [('description', SharingChangeFolderJoinPolicyType.description.validator)]
 
+SharingChangeLinkAllowChangeExpirationPolicyDetails.new_value.validator = EnforceLinkPasswordPolicy_validator
+SharingChangeLinkAllowChangeExpirationPolicyDetails.previous_value.validator = bv.Nullable(EnforceLinkPasswordPolicy_validator)
+SharingChangeLinkAllowChangeExpirationPolicyDetails._all_field_names_ = set([
+    'new_value',
+    'previous_value',
+])
+SharingChangeLinkAllowChangeExpirationPolicyDetails._all_fields_ = [
+    ('new_value', SharingChangeLinkAllowChangeExpirationPolicyDetails.new_value.validator),
+    ('previous_value', SharingChangeLinkAllowChangeExpirationPolicyDetails.previous_value.validator),
+]
+
+SharingChangeLinkAllowChangeExpirationPolicyType.description.validator = bv.String()
+SharingChangeLinkAllowChangeExpirationPolicyType._all_field_names_ = set(['description'])
+SharingChangeLinkAllowChangeExpirationPolicyType._all_fields_ = [('description', SharingChangeLinkAllowChangeExpirationPolicyType.description.validator)]
+
+SharingChangeLinkDefaultExpirationPolicyDetails.new_value.validator = DefaultLinkExpirationDaysPolicy_validator
+SharingChangeLinkDefaultExpirationPolicyDetails.previous_value.validator = bv.Nullable(DefaultLinkExpirationDaysPolicy_validator)
+SharingChangeLinkDefaultExpirationPolicyDetails._all_field_names_ = set([
+    'new_value',
+    'previous_value',
+])
+SharingChangeLinkDefaultExpirationPolicyDetails._all_fields_ = [
+    ('new_value', SharingChangeLinkDefaultExpirationPolicyDetails.new_value.validator),
+    ('previous_value', SharingChangeLinkDefaultExpirationPolicyDetails.previous_value.validator),
+]
+
+SharingChangeLinkDefaultExpirationPolicyType.description.validator = bv.String()
+SharingChangeLinkDefaultExpirationPolicyType._all_field_names_ = set(['description'])
+SharingChangeLinkDefaultExpirationPolicyType._all_fields_ = [('description', SharingChangeLinkDefaultExpirationPolicyType.description.validator)]
+
+SharingChangeLinkEnforcePasswordPolicyDetails.new_value.validator = ChangeLinkExpirationPolicy_validator
+SharingChangeLinkEnforcePasswordPolicyDetails.previous_value.validator = bv.Nullable(ChangeLinkExpirationPolicy_validator)
+SharingChangeLinkEnforcePasswordPolicyDetails._all_field_names_ = set([
+    'new_value',
+    'previous_value',
+])
+SharingChangeLinkEnforcePasswordPolicyDetails._all_fields_ = [
+    ('new_value', SharingChangeLinkEnforcePasswordPolicyDetails.new_value.validator),
+    ('previous_value', SharingChangeLinkEnforcePasswordPolicyDetails.previous_value.validator),
+]
+
+SharingChangeLinkEnforcePasswordPolicyType.description.validator = bv.String()
+SharingChangeLinkEnforcePasswordPolicyType._all_field_names_ = set(['description'])
+SharingChangeLinkEnforcePasswordPolicyType._all_fields_ = [('description', SharingChangeLinkEnforcePasswordPolicyType.description.validator)]
+
 SharingChangeLinkPolicyDetails.new_value.validator = SharingLinkPolicy_validator
 SharingChangeLinkPolicyDetails.previous_value.validator = bv.Nullable(SharingLinkPolicy_validator)
 SharingChangeLinkPolicyDetails._all_field_names_ = set([
@@ -80958,6 +82104,22 @@ UserOrTeamLinkedAppLogInfo._field_names_ = set([])
 UserOrTeamLinkedAppLogInfo._all_field_names_ = AppLogInfo._all_field_names_.union(UserOrTeamLinkedAppLogInfo._field_names_)
 UserOrTeamLinkedAppLogInfo._fields_ = []
 UserOrTeamLinkedAppLogInfo._all_fields_ = AppLogInfo._all_fields_ + UserOrTeamLinkedAppLogInfo._fields_
+
+UserTagsAddedDetails.values.validator = bv.List(bv.String())
+UserTagsAddedDetails._all_field_names_ = set(['values'])
+UserTagsAddedDetails._all_fields_ = [('values', UserTagsAddedDetails.values.validator)]
+
+UserTagsAddedType.description.validator = bv.String()
+UserTagsAddedType._all_field_names_ = set(['description'])
+UserTagsAddedType._all_fields_ = [('description', UserTagsAddedType.description.validator)]
+
+UserTagsRemovedDetails.values.validator = bv.List(bv.String())
+UserTagsRemovedDetails._all_field_names_ = set(['values'])
+UserTagsRemovedDetails._all_fields_ = [('values', UserTagsRemovedDetails.values.validator)]
+
+UserTagsRemovedType.description.validator = bv.String()
+UserTagsRemovedType._all_field_names_ = set(['description'])
+UserTagsRemovedType._all_fields_ = [('description', UserTagsRemovedType.description.validator)]
 
 ViewerInfoPolicyChangedDetails.previous_value.validator = PassPolicy_validator
 ViewerInfoPolicyChangedDetails.new_value.validator = PassPolicy_validator
