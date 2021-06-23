@@ -11953,6 +11953,18 @@ class EventDetails(bb.Union):
         return cls('integration_policy_changed_details', val)
 
     @classmethod
+    def invite_acceptance_email_policy_changed_details(cls, val):
+        """
+        Create an instance of this class set to the
+        ``invite_acceptance_email_policy_changed_details`` tag with value
+        ``val``.
+
+        :param InviteAcceptanceEmailPolicyChangedDetails val:
+        :rtype: EventDetails
+        """
+        return cls('invite_acceptance_email_policy_changed_details', val)
+
+    @classmethod
     def member_requests_change_policy_details(cls, val):
         """
         Create an instance of this class set to the
@@ -16011,6 +16023,14 @@ class EventDetails(bb.Union):
         :rtype: bool
         """
         return self._tag == 'integration_policy_changed_details'
+
+    def is_invite_acceptance_email_policy_changed_details(self):
+        """
+        Check if the union tag is ``invite_acceptance_email_policy_changed_details``.
+
+        :rtype: bool
+        """
+        return self._tag == 'invite_acceptance_email_policy_changed_details'
 
     def is_member_requests_change_policy_details(self):
         """
@@ -20536,6 +20556,16 @@ class EventDetails(bb.Union):
             raise AttributeError("tag 'integration_policy_changed_details' not set")
         return self._value
 
+    def get_invite_acceptance_email_policy_changed_details(self):
+        """
+        Only call this if :meth:`is_invite_acceptance_email_policy_changed_details` is true.
+
+        :rtype: InviteAcceptanceEmailPolicyChangedDetails
+        """
+        if not self.is_invite_acceptance_email_policy_changed_details():
+            raise AttributeError("tag 'invite_acceptance_email_policy_changed_details' not set")
+        return self._value
+
     def get_member_requests_change_policy_details(self):
         """
         Only call this if :meth:`is_member_requests_change_policy_details` is true.
@@ -22354,6 +22384,9 @@ class EventType(bb.Union):
         who can create groups
     :ivar IntegrationPolicyChangedType EventType.integration_policy_changed:
         (team_policies) Changed integration policy for team
+    :ivar InviteAcceptanceEmailPolicyChangedType
+        EventType.invite_acceptance_email_policy_changed: (team_policies)
+        Changed invite accept email policy for team
     :ivar MemberRequestsChangePolicyType
         EventType.member_requests_change_policy: (team_policies) Changed whether
         users can find team when not invited
@@ -26779,6 +26812,17 @@ class EventType(bb.Union):
         return cls('integration_policy_changed', val)
 
     @classmethod
+    def invite_acceptance_email_policy_changed(cls, val):
+        """
+        Create an instance of this class set to the
+        ``invite_acceptance_email_policy_changed`` tag with value ``val``.
+
+        :param InviteAcceptanceEmailPolicyChangedType val:
+        :rtype: EventType
+        """
+        return cls('invite_acceptance_email_policy_changed', val)
+
+    @classmethod
     def member_requests_change_policy(cls, val):
         """
         Create an instance of this class set to the
@@ -30816,6 +30860,14 @@ class EventType(bb.Union):
         :rtype: bool
         """
         return self._tag == 'integration_policy_changed'
+
+    def is_invite_acceptance_email_policy_changed(self):
+        """
+        Check if the union tag is ``invite_acceptance_email_policy_changed``.
+
+        :rtype: bool
+        """
+        return self._tag == 'invite_acceptance_email_policy_changed'
 
     def is_member_requests_change_policy(self):
         """
@@ -36142,6 +36194,18 @@ class EventType(bb.Union):
             raise AttributeError("tag 'integration_policy_changed' not set")
         return self._value
 
+    def get_invite_acceptance_email_policy_changed(self):
+        """
+        (team_policies) Changed invite accept email policy for team
+
+        Only call this if :meth:`is_invite_acceptance_email_policy_changed` is true.
+
+        :rtype: InviteAcceptanceEmailPolicyChangedType
+        """
+        if not self.is_invite_acceptance_email_policy_changed():
+            raise AttributeError("tag 'invite_acceptance_email_policy_changed' not set")
+        return self._value
+
     def get_member_requests_change_policy(self):
         """
         (team_policies) Changed whether users can find team when not invited
@@ -38030,6 +38094,8 @@ class EventTypeArg(bb.Union):
         (team_policies) Changed who can create groups
     :ivar team_log.EventTypeArg.integration_policy_changed: (team_policies)
         Changed integration policy for team
+    :ivar team_log.EventTypeArg.invite_acceptance_email_policy_changed:
+        (team_policies) Changed invite accept email policy for team
     :ivar team_log.EventTypeArg.member_requests_change_policy: (team_policies)
         Changed whether users can find team when not invited
     :ivar team_log.EventTypeArg.member_send_invite_policy_changed:
@@ -39006,6 +39072,8 @@ class EventTypeArg(bb.Union):
     group_user_management_change_policy = None
     # Attribute is overwritten below the class definition
     integration_policy_changed = None
+    # Attribute is overwritten below the class definition
+    invite_acceptance_email_policy_changed = None
     # Attribute is overwritten below the class definition
     member_requests_change_policy = None
     # Attribute is overwritten below the class definition
@@ -42214,6 +42282,14 @@ class EventTypeArg(bb.Union):
         :rtype: bool
         """
         return self._tag == 'integration_policy_changed'
+
+    def is_invite_acceptance_email_policy_changed(self):
+        """
+        Check if the union tag is ``invite_acceptance_email_policy_changed``.
+
+        :rtype: bool
+        """
+        return self._tag == 'invite_acceptance_email_policy_changed'
 
     def is_member_requests_change_policy(self):
         """
@@ -48945,6 +49021,112 @@ class IntegrationPolicyChangedType(bb.Struct):
         super(IntegrationPolicyChangedType, self)._process_custom_annotations(annotation_type, field_path, processor)
 
 IntegrationPolicyChangedType_validator = bv.Struct(IntegrationPolicyChangedType)
+
+class InviteAcceptanceEmailPolicy(bb.Union):
+    """
+    Policy for deciding whether team admins receive email when an invitation to
+    join the team is accepted
+
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+    """
+
+    _catch_all = 'other'
+    # Attribute is overwritten below the class definition
+    disabled = None
+    # Attribute is overwritten below the class definition
+    enabled = None
+    # Attribute is overwritten below the class definition
+    other = None
+
+    def is_disabled(self):
+        """
+        Check if the union tag is ``disabled``.
+
+        :rtype: bool
+        """
+        return self._tag == 'disabled'
+
+    def is_enabled(self):
+        """
+        Check if the union tag is ``enabled``.
+
+        :rtype: bool
+        """
+        return self._tag == 'enabled'
+
+    def is_other(self):
+        """
+        Check if the union tag is ``other``.
+
+        :rtype: bool
+        """
+        return self._tag == 'other'
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(InviteAcceptanceEmailPolicy, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+InviteAcceptanceEmailPolicy_validator = bv.Union(InviteAcceptanceEmailPolicy)
+
+class InviteAcceptanceEmailPolicyChangedDetails(bb.Struct):
+    """
+    Changed invite accept email policy for team.
+
+    :ivar team_log.InviteAcceptanceEmailPolicyChangedDetails.new_value: To.
+    :ivar team_log.InviteAcceptanceEmailPolicyChangedDetails.previous_value:
+        From.
+    """
+
+    __slots__ = [
+        '_new_value_value',
+        '_previous_value_value',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 new_value=None,
+                 previous_value=None):
+        self._new_value_value = bb.NOT_SET
+        self._previous_value_value = bb.NOT_SET
+        if new_value is not None:
+            self.new_value = new_value
+        if previous_value is not None:
+            self.previous_value = previous_value
+
+    # Instance attribute type: InviteAcceptanceEmailPolicy (validator is set below)
+    new_value = bb.Attribute("new_value", user_defined=True)
+
+    # Instance attribute type: InviteAcceptanceEmailPolicy (validator is set below)
+    previous_value = bb.Attribute("previous_value", user_defined=True)
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(InviteAcceptanceEmailPolicyChangedDetails, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+InviteAcceptanceEmailPolicyChangedDetails_validator = bv.Struct(InviteAcceptanceEmailPolicyChangedDetails)
+
+class InviteAcceptanceEmailPolicyChangedType(bb.Struct):
+
+    __slots__ = [
+        '_description_value',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 description=None):
+        self._description_value = bb.NOT_SET
+        if description is not None:
+            self.description = description
+
+    # Instance attribute type: str (validator is set below)
+    description = bb.Attribute("description")
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(InviteAcceptanceEmailPolicyChangedType, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+InviteAcceptanceEmailPolicyChangedType_validator = bv.Struct(InviteAcceptanceEmailPolicyChangedType)
 
 class InviteMethod(bb.Union):
     """
@@ -73039,6 +73221,7 @@ EventDetails._file_transfers_policy_changed_details_validator = FileTransfersPol
 EventDetails._google_sso_change_policy_details_validator = GoogleSsoChangePolicyDetails_validator
 EventDetails._group_user_management_change_policy_details_validator = GroupUserManagementChangePolicyDetails_validator
 EventDetails._integration_policy_changed_details_validator = IntegrationPolicyChangedDetails_validator
+EventDetails._invite_acceptance_email_policy_changed_details_validator = InviteAcceptanceEmailPolicyChangedDetails_validator
 EventDetails._member_requests_change_policy_details_validator = MemberRequestsChangePolicyDetails_validator
 EventDetails._member_send_invite_policy_changed_details_validator = MemberSendInvitePolicyChangedDetails_validator
 EventDetails._member_space_limits_add_exception_details_validator = MemberSpaceLimitsAddExceptionDetails_validator
@@ -73511,6 +73694,7 @@ EventDetails._tagmap = {
     'google_sso_change_policy_details': EventDetails._google_sso_change_policy_details_validator,
     'group_user_management_change_policy_details': EventDetails._group_user_management_change_policy_details_validator,
     'integration_policy_changed_details': EventDetails._integration_policy_changed_details_validator,
+    'invite_acceptance_email_policy_changed_details': EventDetails._invite_acceptance_email_policy_changed_details_validator,
     'member_requests_change_policy_details': EventDetails._member_requests_change_policy_details_validator,
     'member_send_invite_policy_changed_details': EventDetails._member_send_invite_policy_changed_details_validator,
     'member_space_limits_add_exception_details': EventDetails._member_space_limits_add_exception_details_validator,
@@ -73986,6 +74170,7 @@ EventType._file_transfers_policy_changed_validator = FileTransfersPolicyChangedT
 EventType._google_sso_change_policy_validator = GoogleSsoChangePolicyType_validator
 EventType._group_user_management_change_policy_validator = GroupUserManagementChangePolicyType_validator
 EventType._integration_policy_changed_validator = IntegrationPolicyChangedType_validator
+EventType._invite_acceptance_email_policy_changed_validator = InviteAcceptanceEmailPolicyChangedType_validator
 EventType._member_requests_change_policy_validator = MemberRequestsChangePolicyType_validator
 EventType._member_send_invite_policy_changed_validator = MemberSendInvitePolicyChangedType_validator
 EventType._member_space_limits_add_exception_validator = MemberSpaceLimitsAddExceptionType_validator
@@ -74457,6 +74642,7 @@ EventType._tagmap = {
     'google_sso_change_policy': EventType._google_sso_change_policy_validator,
     'group_user_management_change_policy': EventType._group_user_management_change_policy_validator,
     'integration_policy_changed': EventType._integration_policy_changed_validator,
+    'invite_acceptance_email_policy_changed': EventType._invite_acceptance_email_policy_changed_validator,
     'member_requests_change_policy': EventType._member_requests_change_policy_validator,
     'member_send_invite_policy_changed': EventType._member_send_invite_policy_changed_validator,
     'member_space_limits_add_exception': EventType._member_space_limits_add_exception_validator,
@@ -74931,6 +75117,7 @@ EventTypeArg._file_transfers_policy_changed_validator = bv.Void()
 EventTypeArg._google_sso_change_policy_validator = bv.Void()
 EventTypeArg._group_user_management_change_policy_validator = bv.Void()
 EventTypeArg._integration_policy_changed_validator = bv.Void()
+EventTypeArg._invite_acceptance_email_policy_changed_validator = bv.Void()
 EventTypeArg._member_requests_change_policy_validator = bv.Void()
 EventTypeArg._member_send_invite_policy_changed_validator = bv.Void()
 EventTypeArg._member_space_limits_add_exception_validator = bv.Void()
@@ -75402,6 +75589,7 @@ EventTypeArg._tagmap = {
     'google_sso_change_policy': EventTypeArg._google_sso_change_policy_validator,
     'group_user_management_change_policy': EventTypeArg._group_user_management_change_policy_validator,
     'integration_policy_changed': EventTypeArg._integration_policy_changed_validator,
+    'invite_acceptance_email_policy_changed': EventTypeArg._invite_acceptance_email_policy_changed_validator,
     'member_requests_change_policy': EventTypeArg._member_requests_change_policy_validator,
     'member_send_invite_policy_changed': EventTypeArg._member_send_invite_policy_changed_validator,
     'member_space_limits_add_exception': EventTypeArg._member_space_limits_add_exception_validator,
@@ -75874,6 +76062,7 @@ EventTypeArg.file_transfers_policy_changed = EventTypeArg('file_transfers_policy
 EventTypeArg.google_sso_change_policy = EventTypeArg('google_sso_change_policy')
 EventTypeArg.group_user_management_change_policy = EventTypeArg('group_user_management_change_policy')
 EventTypeArg.integration_policy_changed = EventTypeArg('integration_policy_changed')
+EventTypeArg.invite_acceptance_email_policy_changed = EventTypeArg('invite_acceptance_email_policy_changed')
 EventTypeArg.member_requests_change_policy = EventTypeArg('member_requests_change_policy')
 EventTypeArg.member_send_invite_policy_changed = EventTypeArg('member_send_invite_policy_changed')
 EventTypeArg.member_space_limits_add_exception = EventTypeArg('member_space_limits_add_exception')
@@ -77319,6 +77508,34 @@ IntegrationPolicyChangedDetails._all_fields_ = [
 IntegrationPolicyChangedType.description.validator = bv.String()
 IntegrationPolicyChangedType._all_field_names_ = set(['description'])
 IntegrationPolicyChangedType._all_fields_ = [('description', IntegrationPolicyChangedType.description.validator)]
+
+InviteAcceptanceEmailPolicy._disabled_validator = bv.Void()
+InviteAcceptanceEmailPolicy._enabled_validator = bv.Void()
+InviteAcceptanceEmailPolicy._other_validator = bv.Void()
+InviteAcceptanceEmailPolicy._tagmap = {
+    'disabled': InviteAcceptanceEmailPolicy._disabled_validator,
+    'enabled': InviteAcceptanceEmailPolicy._enabled_validator,
+    'other': InviteAcceptanceEmailPolicy._other_validator,
+}
+
+InviteAcceptanceEmailPolicy.disabled = InviteAcceptanceEmailPolicy('disabled')
+InviteAcceptanceEmailPolicy.enabled = InviteAcceptanceEmailPolicy('enabled')
+InviteAcceptanceEmailPolicy.other = InviteAcceptanceEmailPolicy('other')
+
+InviteAcceptanceEmailPolicyChangedDetails.new_value.validator = InviteAcceptanceEmailPolicy_validator
+InviteAcceptanceEmailPolicyChangedDetails.previous_value.validator = InviteAcceptanceEmailPolicy_validator
+InviteAcceptanceEmailPolicyChangedDetails._all_field_names_ = set([
+    'new_value',
+    'previous_value',
+])
+InviteAcceptanceEmailPolicyChangedDetails._all_fields_ = [
+    ('new_value', InviteAcceptanceEmailPolicyChangedDetails.new_value.validator),
+    ('previous_value', InviteAcceptanceEmailPolicyChangedDetails.previous_value.validator),
+]
+
+InviteAcceptanceEmailPolicyChangedType.description.validator = bv.String()
+InviteAcceptanceEmailPolicyChangedType._all_field_names_ = set(['description'])
+InviteAcceptanceEmailPolicyChangedType._all_fields_ = [('description', InviteAcceptanceEmailPolicyChangedType.description.validator)]
 
 InviteMethod._auto_approve_validator = bv.Void()
 InviteMethod._invite_link_validator = bv.Void()

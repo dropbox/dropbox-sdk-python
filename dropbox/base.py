@@ -1628,7 +1628,7 @@ class DropboxBase(object):
         https://content.dropboxapi.com/apitul/1/bNi2uIYF51cVBND --header
         "Content-Type: application/octet-stream" --data-binary @local_file.txt
         A successful temporary upload link consumption request returns the
-        content hash of the uploaded data in JSON format.  Example succesful
+        content hash of the uploaded data in JSON format.  Example successful
         temporary upload link consumption response: {"content-hash":
         "599d71033d700ac892a0e48fa61b125d2f5994"}  An unsuccessful temporary
         upload link consumption request returns any of the following status
@@ -3827,7 +3827,7 @@ class DropboxBase(object):
         :param str file: File to which to add members.
         :param List[:class:`dropbox.sharing.MemberSelector`] members: Members to
             add. Note that even an email address is given, this may result in a
-            user being directy added to the membership if that email is the
+            user being directly added to the membership if that email is the
             user's main account email.
         :param Nullable[str] custom_message: Message to send to added members in
             their invitation.
