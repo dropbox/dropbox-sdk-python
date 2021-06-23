@@ -205,8 +205,8 @@ class AddFileMemberArgs(bb.Struct):
 
     :ivar sharing.AddFileMemberArgs.file: File to which to add members.
     :ivar sharing.AddFileMemberArgs.members: Members to add. Note that even an
-        email address is given, this may result in a user being directy added to
-        the membership if that email is the user's main account email.
+        email address is given, this may result in a user being directly added
+        to the membership if that email is the user's main account email.
     :ivar sharing.AddFileMemberArgs.custom_message: Message to send to added
         members in their invitation.
     :ivar sharing.AddFileMemberArgs.quiet: Whether added members should be

@@ -152,7 +152,7 @@ class AddSecondaryEmailResult(bb.Union):
     Result of trying to add a secondary email to a user. 'success' is the only
     value indicating that a secondary email was successfully added to a user.
     The other values explain the type of error that occurred, and include the
-    email for which the error occured.
+    email for which the error occurred.
 
     This class acts as a tagged union. Only one of the ``is_*`` methods will
     return true. To get the associated value of a tag (if one exists), use the
@@ -1082,7 +1082,7 @@ class DeleteSecondaryEmailResult(bb.Union):
     Result of trying to delete a secondary email address. 'success' is the only
     value indicating that a secondary email was successfully deleted. The other
     values explain the type of error that occurred, and include the email for
-    which the error occured.
+    which the error occurred.
 
     This class acts as a tagged union. Only one of the ``is_*`` methods will
     return true. To get the associated value of a tag (if one exists), use the
@@ -4462,7 +4462,7 @@ class LegalHoldPolicy(bb.Struct):
     :ivar team.LegalHoldPolicy.activation_time: The time at which the legal hold
         was activated.
     :ivar team.LegalHoldPolicy.members: Team members IDs and number of
-        permanetly deleted members under hold.
+        permanently deleted members under hold.
     :ivar team.LegalHoldPolicy.status: The current state of the hold.
     :ivar team.LegalHoldPolicy.start_date: Start date of the legal hold policy.
     :ivar team.LegalHoldPolicy.end_date: End date of the legal hold policy.
@@ -9982,7 +9982,7 @@ class ResendSecondaryEmailResult(bb.Union):
     Result of trying to resend verification email to a secondary email address.
     'success' is the only value indicating that a verification email was
     successfully sent. The other values explain the type of error that occurred,
-    and include the email for which the error occured.
+    and include the email for which the error occurred.
 
     This class acts as a tagged union. Only one of the ``is_*`` methods will
     return true. To get the associated value of a tag (if one exists), use the
@@ -12620,7 +12620,7 @@ class UserAddResult(bb.Union):
     Result of trying to add secondary emails to a user. 'success' is the only
     value indicating that a user was successfully retrieved for adding secondary
     emails. The other values explain the type of error that occurred, and
-    include the user for which the error occured.
+    include the user for which the error occurred.
 
     This class acts as a tagged union. Only one of the ``is_*`` methods will
     return true. To get the associated value of a tag (if one exists), use the
@@ -12880,7 +12880,7 @@ class UserDeleteResult(bb.Union):
     Result of trying to delete a user's secondary emails. 'success' is the only
     value indicating that a user was successfully retrieved for deleting
     secondary emails. The other values explain the type of error that occurred,
-    and include the user for which the error occured.
+    and include the user for which the error occurred.
 
     This class acts as a tagged union. Only one of the ``is_*`` methods will
     return true. To get the associated value of a tag (if one exists), use the
@@ -13007,7 +13007,7 @@ class UserResendResult(bb.Union):
     Result of trying to resend verification emails to a user. 'success' is the
     only value indicating that a user was successfully retrieved for sending
     verification emails. The other values explain the type of error that
-    occurred, and include the user for which the error occured.
+    occurred, and include the user for which the error occurred.
 
     This class acts as a tagged union. Only one of the ``is_*`` methods will
     return true. To get the associated value of a tag (if one exists), use the
