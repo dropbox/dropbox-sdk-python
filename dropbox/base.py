@@ -3895,39 +3895,6 @@ class DropboxBase(object):
         )
         return None
 
-    def sharing_change_file_member_access(self,
-                                          file,
-                                          member,
-                                          access_level):
-        """
-        Identical to update_file_member but with less information returned.
-
-        :param str file: File for which we are changing a member's access.
-        :param member: The member whose access we are changing.
-        :type member: :class:`dropbox.sharing.MemberSelector`
-        :param access_level: The new access level for the member.
-        :type access_level: :class:`dropbox.sharing.AccessLevel`
-        :rtype: :class:`dropbox.sharing.FileMemberActionResult`
-        :raises: :class:`.exceptions.ApiError`
-
-        If this raises, ApiError will contain:
-            :class:`dropbox.sharing.FileMemberActionError`
-        """
-        warnings.warn(
-            'change_file_member_access is deprecated. Use update_file_member.',
-            DeprecationWarning,
-        )
-        arg = sharing.ChangeFileMemberAccessArgs(file,
-                                                 member,
-                                                 access_level)
-        r = self.request(
-            sharing.change_file_member_access,
-            'sharing',
-            arg,
-            None,
-        )
-        return r
-
     def sharing_check_job_status(self,
                                  async_job_id):
         """
@@ -5024,6 +4991,11 @@ class DropboxBase(object):
         """
         Changes a member's access on a shared file.
 
+        :param str file: File for which we are changing a member's access.
+        :param member: The member whose access we are changing.
+        :type member: :class:`dropbox.sharing.MemberSelector`
+        :param access_level: The new access level for the member.
+        :type access_level: :class:`dropbox.sharing.AccessLevel`
         :rtype: :class:`dropbox.sharing.MemberAccessLevelResult`
         :raises: :class:`.exceptions.ApiError`
 

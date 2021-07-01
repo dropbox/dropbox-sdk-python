@@ -1030,55 +1030,6 @@ class AudienceRestrictingSharedFolder(bb.Struct):
 
 AudienceRestrictingSharedFolder_validator = bv.Struct(AudienceRestrictingSharedFolder)
 
-class ChangeFileMemberAccessArgs(bb.Struct):
-    """
-    Arguments for
-    :meth:`dropbox.dropbox_client.Dropbox.sharing_change_file_member_access`.
-
-    :ivar sharing.ChangeFileMemberAccessArgs.file: File for which we are
-        changing a member's access.
-    :ivar sharing.ChangeFileMemberAccessArgs.member: The member whose access we
-        are changing.
-    :ivar sharing.ChangeFileMemberAccessArgs.access_level: The new access level
-        for the member.
-    """
-
-    __slots__ = [
-        '_file_value',
-        '_member_value',
-        '_access_level_value',
-    ]
-
-    _has_required_fields = True
-
-    def __init__(self,
-                 file=None,
-                 member=None,
-                 access_level=None):
-        self._file_value = bb.NOT_SET
-        self._member_value = bb.NOT_SET
-        self._access_level_value = bb.NOT_SET
-        if file is not None:
-            self.file = file
-        if member is not None:
-            self.member = member
-        if access_level is not None:
-            self.access_level = access_level
-
-    # Instance attribute type: str (validator is set below)
-    file = bb.Attribute("file")
-
-    # Instance attribute type: MemberSelector (validator is set below)
-    member = bb.Attribute("member", user_defined=True)
-
-    # Instance attribute type: AccessLevel (validator is set below)
-    access_level = bb.Attribute("access_level", user_defined=True)
-
-    def _process_custom_annotations(self, annotation_type, field_path, processor):
-        super(ChangeFileMemberAccessArgs, self)._process_custom_annotations(annotation_type, field_path, processor)
-
-ChangeFileMemberAccessArgs_validator = bv.Struct(ChangeFileMemberAccessArgs)
-
 class LinkMetadata(bb.Struct):
     """
     Metadata for a shared link. This can be either a :class:`PathLinkMetadata`
@@ -2229,8 +2180,7 @@ FileMemberActionIndividualResult_validator = bv.Union(FileMemberActionIndividual
 class FileMemberActionResult(bb.Struct):
     """
     Per-member result for
-    :meth:`dropbox.dropbox_client.Dropbox.sharing_add_file_member` or
-    :meth:`dropbox.dropbox_client.Dropbox.sharing_change_file_member_access`.
+    :meth:`dropbox.dropbox_client.Dropbox.sharing_add_file_member`.
 
     :ivar sharing.FileMemberActionResult.member: One of specified input members.
     :ivar sharing.FileMemberActionResult.result: The outcome of the action on
@@ -9907,13 +9857,23 @@ class UnshareFolderError(bb.Union):
 
 UnshareFolderError_validator = bv.Union(UnshareFolderError)
 
-class UpdateFileMemberArgs(ChangeFileMemberAccessArgs):
+class UpdateFileMemberArgs(bb.Struct):
     """
     Arguments for
     :meth:`dropbox.dropbox_client.Dropbox.sharing_update_file_member`.
+
+    :ivar sharing.UpdateFileMemberArgs.file: File for which we are changing a
+        member's access.
+    :ivar sharing.UpdateFileMemberArgs.member: The member whose access we are
+        changing.
+    :ivar sharing.UpdateFileMemberArgs.access_level: The new access level for
+        the member.
     """
 
     __slots__ = [
+        '_file_value',
+        '_member_value',
+        '_access_level_value',
     ]
 
     _has_required_fields = True
@@ -9922,9 +9882,24 @@ class UpdateFileMemberArgs(ChangeFileMemberAccessArgs):
                  file=None,
                  member=None,
                  access_level=None):
-        super(UpdateFileMemberArgs, self).__init__(file,
-                                                   member,
-                                                   access_level)
+        self._file_value = bb.NOT_SET
+        self._member_value = bb.NOT_SET
+        self._access_level_value = bb.NOT_SET
+        if file is not None:
+            self.file = file
+        if member is not None:
+            self.member = member
+        if access_level is not None:
+            self.access_level = access_level
+
+    # Instance attribute type: str (validator is set below)
+    file = bb.Attribute("file")
+
+    # Instance attribute type: MemberSelector (validator is set below)
+    member = bb.Attribute("member", user_defined=True)
+
+    # Instance attribute type: AccessLevel (validator is set below)
+    access_level = bb.Attribute("access_level", user_defined=True)
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(UpdateFileMemberArgs, self)._process_custom_annotations(annotation_type, field_path, processor)
@@ -10836,20 +10811,6 @@ AudienceRestrictingSharedFolder._all_fields_ = [
     ('shared_folder_id', AudienceRestrictingSharedFolder.shared_folder_id.validator),
     ('name', AudienceRestrictingSharedFolder.name.validator),
     ('audience', AudienceRestrictingSharedFolder.audience.validator),
-]
-
-ChangeFileMemberAccessArgs.file.validator = PathOrId_validator
-ChangeFileMemberAccessArgs.member.validator = MemberSelector_validator
-ChangeFileMemberAccessArgs.access_level.validator = AccessLevel_validator
-ChangeFileMemberAccessArgs._all_field_names_ = set([
-    'file',
-    'member',
-    'access_level',
-])
-ChangeFileMemberAccessArgs._all_fields_ = [
-    ('file', ChangeFileMemberAccessArgs.file.validator),
-    ('member', ChangeFileMemberAccessArgs.member.validator),
-    ('access_level', ChangeFileMemberAccessArgs.access_level.validator),
 ]
 
 LinkMetadata.url.validator = bv.String()
@@ -12784,8 +12745,19 @@ UnshareFolderError.no_permission = UnshareFolderError('no_permission')
 UnshareFolderError.too_many_files = UnshareFolderError('too_many_files')
 UnshareFolderError.other = UnshareFolderError('other')
 
-UpdateFileMemberArgs._all_field_names_ = ChangeFileMemberAccessArgs._all_field_names_.union(set([]))
-UpdateFileMemberArgs._all_fields_ = ChangeFileMemberAccessArgs._all_fields_ + []
+UpdateFileMemberArgs.file.validator = PathOrId_validator
+UpdateFileMemberArgs.member.validator = MemberSelector_validator
+UpdateFileMemberArgs.access_level.validator = AccessLevel_validator
+UpdateFileMemberArgs._all_field_names_ = set([
+    'file',
+    'member',
+    'access_level',
+])
+UpdateFileMemberArgs._all_fields_ = [
+    ('file', UpdateFileMemberArgs.file.validator),
+    ('member', UpdateFileMemberArgs.member.validator),
+    ('access_level', UpdateFileMemberArgs.access_level.validator),
+]
 
 UpdateFolderMemberArg.shared_folder_id.validator = common.SharedFolderId_validator
 UpdateFolderMemberArg.member.validator = MemberSelector_validator
@@ -12978,17 +12950,6 @@ add_folder_member = bb.Route(
     AddFolderMemberArg_validator,
     bv.Void(),
     AddFolderMemberError_validator,
-    {'auth': u'user',
-     'host': u'api',
-     'style': u'rpc'},
-)
-change_file_member_access = bb.Route(
-    'change_file_member_access',
-    1,
-    True,
-    ChangeFileMemberAccessArgs_validator,
-    FileMemberActionResult_validator,
-    FileMemberActionError_validator,
     {'auth': u'user',
      'host': u'api',
      'style': u'rpc'},
@@ -13437,7 +13398,6 @@ update_folder_policy = bb.Route(
 ROUTES = {
     'add_file_member': add_file_member,
     'add_folder_member': add_folder_member,
-    'change_file_member_access': change_file_member_access,
     'check_job_status': check_job_status,
     'check_remove_member_job_status': check_remove_member_job_status,
     'check_share_job_status': check_share_job_status,
