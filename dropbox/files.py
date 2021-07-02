@@ -12781,7 +12781,7 @@ list_folder = bb.Route(
     ListFolderArg_validator,
     ListFolderResult_validator,
     ListFolderError_validator,
-    {'auth': u'app, user',
+    {'auth': u'user',
      'host': u'api',
      'style': u'rpc'},
 )
@@ -12792,7 +12792,7 @@ list_folder_continue = bb.Route(
     ListFolderContinueArg_validator,
     ListFolderResult_validator,
     ListFolderContinueError_validator,
-    {'auth': u'app, user',
+    {'auth': u'user',
      'host': u'api',
      'style': u'rpc'},
 )
@@ -12803,7 +12803,7 @@ list_folder_get_latest_cursor = bb.Route(
     ListFolderArg_validator,
     ListFolderGetLatestCursorResult_validator,
     ListFolderError_validator,
-    {'auth': u'app, user',
+    {'auth': u'user',
      'host': u'api',
      'style': u'rpc'},
 )
