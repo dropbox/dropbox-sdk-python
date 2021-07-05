@@ -544,11 +544,14 @@ class _DropboxTransport(object):
         url = self._get_route_url(fq_hostname, func_name)
 
         headers = {'User-Agent': self._user_agent}
-        if auth_type == USER_AUTH or auth_type == TEAM_AUTH:
+        auth_types = auth_type.replace(' ', '').split(',')
+        if auth_type == NO_AUTH:
+            pass
+        elif (USER_AUTH in auth_types or TEAM_AUTH in auth_types) and self._oauth2_access_token:
             headers['Authorization'] = 'Bearer %s' % self._oauth2_access_token
             if self._headers:
                 headers.update(self._headers)
-        elif auth_type == APP_AUTH:
+        elif APP_AUTH in auth_types:
             if self._app_key is None or self._app_secret is None:
                 raise BadInputException(
                     'Client id and client secret are required for routes with app auth')
@@ -558,8 +561,6 @@ class _DropboxTransport(object):
             headers['Authorization'] = 'Basic {}'.format(auth_header.decode("utf-8"))
             if self._headers:
                 headers.update(self._headers)
-        elif auth_type == NO_AUTH:
-            pass
         else:
             raise BadInputException('Unhandled auth type: {}'.format(auth_type))
 
