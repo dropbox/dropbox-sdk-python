@@ -3967,17 +3967,14 @@ class DropboxBase(object):
                                    pending_upload=None):
         """
         Create a shared link. If a shared link already exists for the given
-        path, that link is returned. Note that in the returned
-        :class:`dropbox.sharing.PathLinkMetadata`, the ``PathLinkMetadata.url``
-        field is the shortened URL if ``CreateSharedLinkArg.short_url`` argument
-        is set to ``True``. Previously, it was technically possible to break a
-        shared link by moving or renaming the corresponding file or folder. In
-        the future, this will no longer be the case, so your app shouldn't rely
-        on this behavior. Instead, if your app needs to revoke a shared link,
-        use :meth:`sharing_revoke_shared_link`.
+        path, that link is returned. Previously, it was technically possible to
+        break a shared link by moving or renaming the corresponding file or
+        folder. In the future, this will no longer be the case, so your app
+        shouldn't rely on this behavior. Instead, if your app needs to revoke a
+        shared link, use :meth:`sharing_revoke_shared_link`.
 
         :param str path: The path to share.
-        :param bool short_url: Whether to return a shortened URL.
+        :type short_url: bool
         :param Nullable[:class:`dropbox.sharing.PendingUploadMode`]
             pending_upload: If it's okay to share a path that does not yet
             exist, set this to either ``PendingUploadMode.file`` or
@@ -4224,8 +4221,7 @@ class DropboxBase(object):
         all shared links for the current user, including collection links, up to
         a maximum of 1000 links. If a non-empty path is given, returns a list of
         all shared links that allow access to the given path.  Collection links
-        are never returned in this case. Note that the url field in the response
-        is never the shortened URL.
+        are never returned in this case.
 
         :param Nullable[str] path: See :meth:`sharing_get_shared_links`
             description.
