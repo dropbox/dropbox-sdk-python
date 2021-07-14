@@ -1257,8 +1257,6 @@ CollectionLinkMetadata_validator = bv.Struct(CollectionLinkMetadata)
 class CreateSharedLinkArg(bb.Struct):
     """
     :ivar sharing.CreateSharedLinkArg.path: The path to share.
-    :ivar sharing.CreateSharedLinkArg.short_url: Whether to return a shortened
-        URL.
     :ivar sharing.CreateSharedLinkArg.pending_upload: If it's okay to share a
         path that does not yet exist, set this to either
         ``PendingUploadMode.file`` or ``PendingUploadMode.folder`` to indicate
