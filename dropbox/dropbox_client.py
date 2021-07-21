@@ -182,8 +182,8 @@ class _DropboxTransport(object):
             refresh will request all available scopes for application
         """
 
-        if not (oauth2_access_token or oauth2_refresh_token):
-            raise BadInputException('OAuth2 access token or refresh token must be set')
+        if not (oauth2_access_token or oauth2_refresh_token or (app_key and app_secret)):
+            raise BadInputException('OAuth2 access token or refresh token or app key/secret must be set')
 
         if headers is not None and not isinstance(headers, dict):
             raise BadInputException('Expected dict, got {}'.format(headers))

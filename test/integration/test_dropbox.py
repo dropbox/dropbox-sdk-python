@@ -32,6 +32,8 @@ from dropbox.exceptions import (
 from dropbox.files import (
     DeleteResult,
     ListFolderError,
+    PathOrLink,
+    SharedLinkFileInfo,
 )
 from dropbox.common import (
     PathRoot,
@@ -41,7 +43,7 @@ from dropbox.common import (
 def _value_from_env_or_die(env_name='DROPBOX_TOKEN'):
     value = os.environ.get(env_name)
     if value is None:
-        print('Set {} environment variable to a valid token.'.format(env_name),
+        print('Set {} environment variable to a valid value.'.format(env_name),
               file=sys.stderr)
         sys.exit(1)
     return value
@@ -72,7 +74,12 @@ def dbx_team_from_env():
 def dbx_app_auth_from_env():
     app_key = _value_from_env_or_die("DROPBOX_APP_KEY")
     app_secret = _value_from_env_or_die("DROPBOX_APP_SECRET")
-    return Dropbox(oauth2_access_token="foo", app_key=app_key, app_secret=app_secret)
+    return Dropbox(app_key=app_key, app_secret=app_secret)
+
+
+@pytest.fixture()
+def dbx_share_url_from_env():
+    return _value_from_env_or_die("DROPBOX_SHARED_LINK")
 
 
 MALFORMED_TOKEN = 'asdf'
@@ -82,9 +89,8 @@ INVALID_TOKEN = 'z' * 62
 DUMMY_PAYLOAD = string.ascii_letters.encode('ascii')
 
 
-@pytest.mark.usefixtures("dbx_from_env", "refresh_dbx_from_env", "dbx_app_auth_from_env")
+@pytest.mark.usefixtures("dbx_from_env", "refresh_dbx_from_env", "dbx_app_auth_from_env", "dbx_share_url_from_env")
 class TestDropbox:
-
     def test_default_oauth2_urls(self):
         flow_obj = DropboxOAuth2Flow('dummy_app_key', 'dummy_app_secret',
             'http://localhost/dummy', 'dummy_session', 'dbx-auth-csrf-token')
@@ -114,6 +120,19 @@ class TestDropbox:
         with pytest.raises(AuthError) as cm:
             invalid_token_dbx.files_list_folder('')
         assert cm.value.error.is_invalid_access_token()
+
+    def test_multi_auth(self, dbx_from_env, dbx_app_auth_from_env, dbx_share_url_from_env):
+        # Test for user (with oauth token)
+        preview_result, resp = dbx_from_env.files_get_thumbnail_v2(
+            PathOrLink.link(SharedLinkFileInfo(url=dbx_share_url_from_env))
+        )
+        assert resp.status_code == 200
+
+        # Test for app (with app key and secret)
+        preview_result, resp = dbx_from_env.files_get_thumbnail_v2(
+            PathOrLink.link(SharedLinkFileInfo(url=dbx_share_url_from_env))
+        )
+        assert resp.status_code == 200
 
     def test_refresh(self, refresh_dbx_from_env):
         refresh_dbx_from_env.users_get_current_account()
