@@ -89,7 +89,9 @@ INVALID_TOKEN = 'z' * 62
 DUMMY_PAYLOAD = string.ascii_letters.encode('ascii')
 
 
-@pytest.mark.usefixtures("dbx_from_env", "refresh_dbx_from_env", "dbx_app_auth_from_env", "dbx_share_url_from_env")
+@pytest.mark.usefixtures(
+    "dbx_from_env", "refresh_dbx_from_env", "dbx_app_auth_from_env", "dbx_share_url_from_env"
+)
 class TestDropbox:
     def test_default_oauth2_urls(self):
         flow_obj = DropboxOAuth2Flow('dummy_app_key', 'dummy_app_secret',

@@ -183,7 +183,9 @@ class _DropboxTransport(object):
         """
 
         if not (oauth2_access_token or oauth2_refresh_token or (app_key and app_secret)):
-            raise BadInputException('OAuth2 access token or refresh token or app key/secret must be set')
+            raise BadInputException(
+                'OAuth2 access token or refresh token or app key/secret must be set'
+            )
 
         if headers is not None and not isinstance(headers, dict):
             raise BadInputException('Expected dict, got {}'.format(headers))
