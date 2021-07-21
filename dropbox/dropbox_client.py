@@ -182,8 +182,10 @@ class _DropboxTransport(object):
             refresh will request all available scopes for application
         """
 
-        if not (oauth2_access_token or oauth2_refresh_token):
-            raise BadInputException('OAuth2 access token or refresh token must be set')
+        if not (oauth2_access_token or oauth2_refresh_token or (app_key and app_secret)):
+            raise BadInputException(
+                'OAuth2 access token or refresh token or app key/secret must be set'
+            )
 
         if headers is not None and not isinstance(headers, dict):
             raise BadInputException('Expected dict, got {}'.format(headers))
@@ -544,11 +546,12 @@ class _DropboxTransport(object):
         url = self._get_route_url(fq_hostname, func_name)
 
         headers = {'User-Agent': self._user_agent}
-        if auth_type == USER_AUTH or auth_type == TEAM_AUTH:
+        auth_types = auth_type.replace(' ', '').split(',')
+        if (USER_AUTH in auth_types or TEAM_AUTH in auth_types) and self._oauth2_access_token:
             headers['Authorization'] = 'Bearer %s' % self._oauth2_access_token
             if self._headers:
                 headers.update(self._headers)
-        elif auth_type == APP_AUTH:
+        elif APP_AUTH in auth_types:
             if self._app_key is None or self._app_secret is None:
                 raise BadInputException(
                     'Client id and client secret are required for routes with app auth')
