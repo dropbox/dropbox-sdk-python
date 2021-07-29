@@ -3534,7 +3534,7 @@ Certificate_validator = bv.Struct(Certificate)
 class ChangeLinkExpirationPolicy(bb.Union):
     """
     Policy for deciding whether the team's default expiration days policy must
-    be enforced when an externally shared is updated
+    be enforced when an externally shared link is updated
 
     This class acts as a tagged union. Only one of the ``is_*`` methods will
     return true. To get the associated value of a tag (if one exists), use the
@@ -22459,15 +22459,15 @@ class EventType(bb.Union):
         whether team members can join shared folders owned outside team
     :ivar SharingChangeLinkAllowChangeExpirationPolicyType
         EventType.sharing_change_link_allow_change_expiration_policy:
-        (team_policies) Changed the password requirement for the links shared
-        outside of the team
+        (team_policies) Changed the allow remove or change expiration policy for
+        the links shared outside of the team
     :ivar SharingChangeLinkDefaultExpirationPolicyType
         EventType.sharing_change_link_default_expiration_policy: (team_policies)
         Changed the default expiration for the links shared outside of the team
     :ivar SharingChangeLinkEnforcePasswordPolicyType
         EventType.sharing_change_link_enforce_password_policy: (team_policies)
-        Changed the allow remove or change expiration policy for the links
-        shared outside of the team
+        Changed the password requirement for the links shared outside of the
+        team
     :ivar SharingChangeLinkPolicyType EventType.sharing_change_link_policy:
         (team_policies) Changed whether members can share links outside team,
         and if links are accessible only by team members or anyone by default
@@ -36491,8 +36491,8 @@ class EventType(bb.Union):
 
     def get_sharing_change_link_allow_change_expiration_policy(self):
         """
-        (team_policies) Changed the password requirement for the links shared
-        outside of the team
+        (team_policies) Changed the allow remove or change expiration policy for
+        the links shared outside of the team
 
         Only call this if :meth:`is_sharing_change_link_allow_change_expiration_policy` is true.
 
@@ -36517,8 +36517,8 @@ class EventType(bb.Union):
 
     def get_sharing_change_link_enforce_password_policy(self):
         """
-        (team_policies) Changed the allow remove or change expiration policy for
-        the links shared outside of the team
+        (team_policies) Changed the password requirement for the links shared
+        outside of the team
 
         Only call this if :meth:`is_sharing_change_link_enforce_password_policy` is true.
 
@@ -38149,14 +38149,14 @@ class EventTypeArg(bb.Union):
         owned outside team
     :ivar
         team_log.EventTypeArg.sharing_change_link_allow_change_expiration_policy:
-        (team_policies) Changed the password requirement for the links shared
-        outside of the team
+        (team_policies) Changed the allow remove or change expiration policy for
+        the links shared outside of the team
     :ivar team_log.EventTypeArg.sharing_change_link_default_expiration_policy:
         (team_policies) Changed the default expiration for the links shared
         outside of the team
     :ivar team_log.EventTypeArg.sharing_change_link_enforce_password_policy:
-        (team_policies) Changed the allow remove or change expiration policy for
-        the links shared outside of the team
+        (team_policies) Changed the password requirement for the links shared
+        outside of the team
     :ivar team_log.EventTypeArg.sharing_change_link_policy: (team_policies)
         Changed whether members can share links outside team, and if links are
         accessible only by team members or anyone by default
@@ -62959,7 +62959,8 @@ SharingChangeFolderJoinPolicyType_validator = bv.Struct(SharingChangeFolderJoinP
 
 class SharingChangeLinkAllowChangeExpirationPolicyDetails(bb.Struct):
     """
-    Changed the password requirement for the links shared outside of the team.
+    Changed the allow remove or change expiration policy for the links shared
+    outside of the team.
 
     :ivar
         team_log.SharingChangeLinkAllowChangeExpirationPolicyDetails.new_value:
@@ -63082,8 +63083,7 @@ SharingChangeLinkDefaultExpirationPolicyType_validator = bv.Struct(SharingChange
 
 class SharingChangeLinkEnforcePasswordPolicyDetails(bb.Struct):
     """
-    Changed the allow remove or change expiration policy for the links shared
-    outside of the team.
+    Changed the password requirement for the links shared outside of the team.
 
     :ivar team_log.SharingChangeLinkEnforcePasswordPolicyDetails.new_value: To.
     :ivar team_log.SharingChangeLinkEnforcePasswordPolicyDetails.previous_value:
