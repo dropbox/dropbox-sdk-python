@@ -40,7 +40,24 @@ from dropbox.common import (
     PathRoot_validator,
 )
 
-def _value_from_env_or_die(env_name='DROPBOX_TOKEN'):
+# Key Types
+REFRESH_TOKEN_KEY = "REFRESH_TOKEN"
+ACCESS_TOKEN_KEY = "DROPBOX_TOKEN"
+CLIENT_ID_KEY = "CLIENT_ID"
+CLIENT_SECRET_KEY = "CLIENT_SECRET"
+# App Types
+SCOPED_KEY = "SCOPED"
+LEGACY_KEY = "LEGACY"
+# User Types
+USER_KEY = "USER"
+TEAM_KEY = "TEAM"
+# Misc types
+SHARED_LINK_KEY = "DROPBOX_SHARED_LINK"
+
+def format_env_name(app_type=SCOPED_KEY, user_type=USER_KEY, key_type=ACCESS_TOKEN_KEY):
+    return '{}_{}_{}'.format(app_type, user_type, key_type)
+
+def _value_from_env_or_die(env_name):
     value = os.environ.get(env_name)
     if value is None:
         print('Set {} environment variable to a valid value.'.format(env_name),
@@ -51,35 +68,35 @@ def _value_from_env_or_die(env_name='DROPBOX_TOKEN'):
 
 @pytest.fixture()
 def dbx_from_env():
-    oauth2_token = _value_from_env_or_die()
+    oauth2_token = _value_from_env_or_die(format_env_name())
     return Dropbox(oauth2_token)
 
 
 @pytest.fixture()
 def refresh_dbx_from_env():
-    refresh_token = _value_from_env_or_die("DROPBOX_REFRESH_TOKEN")
-    app_key = _value_from_env_or_die("DROPBOX_APP_KEY")
-    app_secret = _value_from_env_or_die("DROPBOX_APP_SECRET")
+    refresh_token = _value_from_env_or_die(format_env_name(SCOPED_KEY, USER_KEY, REFRESH_TOKEN_KEY))
+    app_key = _value_from_env_or_die(format_env_name(SCOPED_KEY, USER_KEY, CLIENT_ID_KEY))
+    app_secret = _value_from_env_or_die(format_env_name(SCOPED_KEY, USER_KEY, CLIENT_SECRET_KEY))
     return Dropbox(oauth2_refresh_token=refresh_token,
                    app_key=app_key, app_secret=app_secret)
 
 
 @pytest.fixture()
 def dbx_team_from_env():
-    team_oauth2_token = _value_from_env_or_die('DROPBOX_TEAM_TOKEN')
+    team_oauth2_token = _value_from_env_or_die(format_env_name(SCOPED_KEY, TEAM_KEY, REFRESH_TOKEN_KEY))
     return DropboxTeam(team_oauth2_token)
 
 
 @pytest.fixture()
 def dbx_app_auth_from_env():
-    app_key = _value_from_env_or_die("DROPBOX_APP_KEY")
-    app_secret = _value_from_env_or_die("DROPBOX_APP_SECRET")
+    app_key = _value_from_env_or_die(format_env_name(SCOPED_KEY, USER_KEY, CLIENT_ID_KEY))
+    app_secret = _value_from_env_or_die(format_env_name(SCOPED_KEY, USER_KEY, CLIENT_SECRET_KEY))
     return Dropbox(app_key=app_key, app_secret=app_secret)
 
 
 @pytest.fixture()
 def dbx_share_url_from_env():
-    return _value_from_env_or_die("DROPBOX_SHARED_LINK")
+    return _value_from_env_or_die(SHARED_LINK_KEY)
 
 
 MALFORMED_TOKEN = 'asdf'
