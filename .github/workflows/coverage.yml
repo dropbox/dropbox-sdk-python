@@ -63,7 +63,7 @@ jobs:
           SCOPED_TEAM_REFRESH_TOKEN: ${{ secrets.SCOPED_TEAM_REFRESH_TOKEN }}
           DROPBOX_SHARED_LINK: ${{ secrets.DROPBOX_SHARED_LINK }}
         run: |
-          coverage run --rcfile=.coveragerc -m pytest test/integration/
+          coverage run --rcfile=.coveragerc -m pytest test/integration/test_dropbox.py
           coverage xml
       - name: Publish Coverage
         uses: codecov/codecov-action@v1.3.2
