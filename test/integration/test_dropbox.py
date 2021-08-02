@@ -114,8 +114,16 @@ STATIC_FILE = "/test.txt"
 def pytest_setup():
     print("Setup")
     dbx = Dropbox(_value_from_env_or_die(format_env_name()))
-    dbx.files_delete(STATIC_FILE)
-    dbx.files_delete('/Test/%s' % TIMESTAMP)
+
+    try: 
+        dbx.files_delete(STATIC_FILE)
+    except Exception:
+        print("File not found")
+
+    try: 
+        dbx.files_delete('/Test/%s' % TIMESTAMP)
+    except Exception:
+        print("File not found")
 
 
 @pytest.mark.usefixtures(
