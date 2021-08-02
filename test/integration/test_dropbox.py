@@ -8,6 +8,7 @@ import random
 import re
 import string
 import sys
+from _pytest.mark import param
 import pytest
 
 try:
@@ -105,9 +106,23 @@ INVALID_TOKEN = 'z' * 62
 # Need bytes type for Python3
 DUMMY_PAYLOAD = string.ascii_letters.encode('ascii')
 
+RANDOM_FOLDER = random.sample(string.ascii_letters, 15)
+TIMESTAMP = str(datetime.datetime.utcnow())
+STATIC_FILE = "/test.txt"
+
+@pytest.fixture(scope='module', autouse=True)
+def pytest_setup():
+    print("Setup")
+    dbx = dbx_from_env()
+    dbx.files_delete(STATIC_FILE)
+    dbx.files_delete('/Test/%s' % TIMESTAMP)
+
 
 @pytest.mark.usefixtures(
-    "dbx_from_env", "refresh_dbx_from_env", "dbx_app_auth_from_env", "dbx_share_url_from_env"
+    "dbx_from_env", 
+    "refresh_dbx_from_env", 
+    "dbx_app_auth_from_env", 
+    "dbx_share_url_from_env"
 )
 class TestDropbox:
     def test_default_oauth2_urls(self):
@@ -171,16 +186,15 @@ class TestDropbox:
 
         # Test API error
         random_folder_path = '/' + \
-                             ''.join(random.sample(string.ascii_letters, 15))
+                             ''.join(RANDOM_FOLDER)
         with pytest.raises(ApiError) as cm:
             dbx_from_env.files_list_folder(random_folder_path)
         assert isinstance(cm.value.error, ListFolderError)
 
     def test_upload_download(self, dbx_from_env):
         # Upload file
-        timestamp = str(datetime.datetime.utcnow())
-        random_filename = ''.join(random.sample(string.ascii_letters, 15))
-        random_path = '/Test/%s/%s' % (timestamp, random_filename)
+        random_filename = ''.join(RANDOM_FOLDER)
+        random_path = '/Test/%s/%s' % (TIMESTAMP, random_filename)
         test_contents = DUMMY_PAYLOAD
         dbx_from_env.files_upload(test_contents, random_path)
 
@@ -189,7 +203,7 @@ class TestDropbox:
         assert DUMMY_PAYLOAD == resp.content
 
         # Cleanup folder
-        dbx_from_env.files_delete('/Test/%s' % timestamp)
+        dbx_from_env.files_delete('/Test/%s' % TIMESTAMP)
 
     def test_bad_upload_types(self, dbx_from_env):
         with pytest.raises(TypeError):
@@ -248,11 +262,10 @@ class TestDropbox:
 
     def test_versioned_route(self, dbx_from_env):
         # Upload a test file
-        path = '/test.txt'
-        dbx_from_env.files_upload(DUMMY_PAYLOAD, path)
+        dbx_from_env.files_upload(DUMMY_PAYLOAD, STATIC_FILE)
 
         # Delete the file with v2 route
-        resp = dbx_from_env.files_delete_v2(path)
+        resp = dbx_from_env.files_delete_v2(STATIC_FILE)
         # Verify response type is of v2 route
         assert isinstance(resp, DeleteResult)
 
