@@ -8,7 +8,6 @@ import random
 import re
 import string
 import sys
-from _pytest.mark import param
 import pytest
 
 try:
@@ -84,7 +83,8 @@ def refresh_dbx_from_env():
 
 @pytest.fixture()
 def dbx_team_from_env():
-    team_oauth2_token = _value_from_env_or_die(format_env_name(SCOPED_KEY, TEAM_KEY, REFRESH_TOKEN_KEY))
+    team_oauth2_token = _value_from_env_or_die(
+        format_env_name(SCOPED_KEY, TEAM_KEY, REFRESH_TOKEN_KEY))
     return DropboxTeam(team_oauth2_token)
 
 
@@ -113,15 +113,15 @@ STATIC_FILE = "/test.txt"
 @pytest.fixture(scope='module', autouse=True)
 def pytest_setup():
     print("Setup")
-    dbx = dbx_from_env()
+    dbx = Dropbox(_value_from_env_or_die(format_env_name()))
     dbx.files_delete(STATIC_FILE)
     dbx.files_delete('/Test/%s' % TIMESTAMP)
 
 
 @pytest.mark.usefixtures(
-    "dbx_from_env", 
-    "refresh_dbx_from_env", 
-    "dbx_app_auth_from_env", 
+    "dbx_from_env",
+    "refresh_dbx_from_env",
+    "dbx_app_auth_from_env",
     "dbx_share_url_from_env"
 )
 class TestDropbox:
