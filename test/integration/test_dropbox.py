@@ -40,7 +40,24 @@ from dropbox.common import (
     PathRoot_validator,
 )
 
-def _value_from_env_or_die(env_name='DROPBOX_TOKEN'):
+# Key Types
+REFRESH_TOKEN_KEY = "REFRESH_TOKEN"
+ACCESS_TOKEN_KEY = "DROPBOX_TOKEN"
+CLIENT_ID_KEY = "CLIENT_ID"
+CLIENT_SECRET_KEY = "CLIENT_SECRET"
+# App Types
+SCOPED_KEY = "SCOPED"
+LEGACY_KEY = "LEGACY"
+# User Types
+USER_KEY = "USER"
+TEAM_KEY = "TEAM"
+# Misc types
+SHARED_LINK_KEY = "DROPBOX_SHARED_LINK"
+
+def format_env_name(app_type=SCOPED_KEY, user_type=USER_KEY, key_type=ACCESS_TOKEN_KEY):
+    return '{}_{}_{}'.format(app_type, user_type, key_type)
+
+def _value_from_env_or_die(env_name):
     value = os.environ.get(env_name)
     if value is None:
         print('Set {} environment variable to a valid value.'.format(env_name),
@@ -51,35 +68,36 @@ def _value_from_env_or_die(env_name='DROPBOX_TOKEN'):
 
 @pytest.fixture()
 def dbx_from_env():
-    oauth2_token = _value_from_env_or_die()
+    oauth2_token = _value_from_env_or_die(format_env_name())
     return Dropbox(oauth2_token)
 
 
 @pytest.fixture()
 def refresh_dbx_from_env():
-    refresh_token = _value_from_env_or_die("DROPBOX_REFRESH_TOKEN")
-    app_key = _value_from_env_or_die("DROPBOX_APP_KEY")
-    app_secret = _value_from_env_or_die("DROPBOX_APP_SECRET")
+    refresh_token = _value_from_env_or_die(format_env_name(SCOPED_KEY, USER_KEY, REFRESH_TOKEN_KEY))
+    app_key = _value_from_env_or_die(format_env_name(SCOPED_KEY, USER_KEY, CLIENT_ID_KEY))
+    app_secret = _value_from_env_or_die(format_env_name(SCOPED_KEY, USER_KEY, CLIENT_SECRET_KEY))
     return Dropbox(oauth2_refresh_token=refresh_token,
                    app_key=app_key, app_secret=app_secret)
 
 
 @pytest.fixture()
 def dbx_team_from_env():
-    team_oauth2_token = _value_from_env_or_die('DROPBOX_TEAM_TOKEN')
+    team_oauth2_token = _value_from_env_or_die(
+        format_env_name(SCOPED_KEY, TEAM_KEY, ACCESS_TOKEN_KEY))
     return DropboxTeam(team_oauth2_token)
 
 
 @pytest.fixture()
 def dbx_app_auth_from_env():
-    app_key = _value_from_env_or_die("DROPBOX_APP_KEY")
-    app_secret = _value_from_env_or_die("DROPBOX_APP_SECRET")
+    app_key = _value_from_env_or_die(format_env_name(SCOPED_KEY, USER_KEY, CLIENT_ID_KEY))
+    app_secret = _value_from_env_or_die(format_env_name(SCOPED_KEY, USER_KEY, CLIENT_SECRET_KEY))
     return Dropbox(app_key=app_key, app_secret=app_secret)
 
 
 @pytest.fixture()
 def dbx_share_url_from_env():
-    return _value_from_env_or_die("DROPBOX_SHARED_LINK")
+    return _value_from_env_or_die(SHARED_LINK_KEY)
 
 
 MALFORMED_TOKEN = 'asdf'
@@ -88,9 +106,31 @@ INVALID_TOKEN = 'z' * 62
 # Need bytes type for Python3
 DUMMY_PAYLOAD = string.ascii_letters.encode('ascii')
 
+RANDOM_FOLDER = random.sample(string.ascii_letters, 15)
+TIMESTAMP = str(datetime.datetime.utcnow())
+STATIC_FILE = "/test.txt"
+
+@pytest.fixture(scope='module', autouse=True)
+def pytest_setup():
+    print("Setup")
+    dbx = Dropbox(_value_from_env_or_die(format_env_name()))
+
+    try:
+        dbx.files_delete(STATIC_FILE)
+    except Exception:
+        print("File not found")
+
+    try:
+        dbx.files_delete('/Test/%s' % TIMESTAMP)
+    except Exception:
+        print("File not found")
+
 
 @pytest.mark.usefixtures(
-    "dbx_from_env", "refresh_dbx_from_env", "dbx_app_auth_from_env", "dbx_share_url_from_env"
+    "dbx_from_env",
+    "refresh_dbx_from_env",
+    "dbx_app_auth_from_env",
+    "dbx_share_url_from_env"
 )
 class TestDropbox:
     def test_default_oauth2_urls(self):
@@ -154,16 +194,15 @@ class TestDropbox:
 
         # Test API error
         random_folder_path = '/' + \
-                             ''.join(random.sample(string.ascii_letters, 15))
+                             ''.join(RANDOM_FOLDER)
         with pytest.raises(ApiError) as cm:
             dbx_from_env.files_list_folder(random_folder_path)
         assert isinstance(cm.value.error, ListFolderError)
 
     def test_upload_download(self, dbx_from_env):
         # Upload file
-        timestamp = str(datetime.datetime.utcnow())
-        random_filename = ''.join(random.sample(string.ascii_letters, 15))
-        random_path = '/Test/%s/%s' % (timestamp, random_filename)
+        random_filename = ''.join(RANDOM_FOLDER)
+        random_path = '/Test/%s/%s' % (TIMESTAMP, random_filename)
         test_contents = DUMMY_PAYLOAD
         dbx_from_env.files_upload(test_contents, random_path)
 
@@ -172,7 +211,7 @@ class TestDropbox:
         assert DUMMY_PAYLOAD == resp.content
 
         # Cleanup folder
-        dbx_from_env.files_delete('/Test/%s' % timestamp)
+        dbx_from_env.files_delete('/Test/%s' % TIMESTAMP)
 
     def test_bad_upload_types(self, dbx_from_env):
         with pytest.raises(TypeError):
@@ -231,11 +270,10 @@ class TestDropbox:
 
     def test_versioned_route(self, dbx_from_env):
         # Upload a test file
-        path = '/test.txt'
-        dbx_from_env.files_upload(DUMMY_PAYLOAD, path)
+        dbx_from_env.files_upload(DUMMY_PAYLOAD, STATIC_FILE)
 
         # Delete the file with v2 route
-        resp = dbx_from_env.files_delete_v2(path)
+        resp = dbx_from_env.files_delete_v2(STATIC_FILE)
         # Verify response type is of v2 route
         assert isinstance(resp, DeleteResult)
 
