@@ -84,7 +84,7 @@ def refresh_dbx_from_env():
 @pytest.fixture()
 def dbx_team_from_env():
     team_oauth2_token = _value_from_env_or_die(
-        format_env_name(SCOPED_KEY, TEAM_KEY, REFRESH_TOKEN_KEY))
+        format_env_name(SCOPED_KEY, TEAM_KEY, ACCESS_TOKEN_KEY))
     return DropboxTeam(team_oauth2_token)
 
 
@@ -115,12 +115,12 @@ def pytest_setup():
     print("Setup")
     dbx = Dropbox(_value_from_env_or_die(format_env_name()))
 
-    try: 
+    try:
         dbx.files_delete(STATIC_FILE)
     except Exception:
         print("File not found")
 
-    try: 
+    try:
         dbx.files_delete('/Test/%s' % TIMESTAMP)
     except Exception:
         print("File not found")
