@@ -4668,7 +4668,8 @@ class DropboxBase(object):
 
         :param str shared_folder_id: The ID for the shared folder.
         :param bool leave_a_copy: Keep a copy of the folder's contents upon
-            relinquishing membership.
+            relinquishing membership. This must be set to false when the folder
+            is within a team folder or another shared folder.
         :rtype: :class:`dropbox.sharing.LaunchEmptyResult`
         :raises: :class:`.exceptions.ApiError`
 
@@ -4758,8 +4759,9 @@ class DropboxBase(object):
         :type member: :class:`dropbox.sharing.MemberSelector`
         :param bool leave_a_copy: If true, the removed user will keep their copy
             of the folder after it's unshared, assuming it was mounted.
-            Otherwise, it will be removed from their Dropbox. Also, this must be
-            set to false when kicking a group.
+            Otherwise, it will be removed from their Dropbox. This must be set
+            to false when removing a group, or when the folder is within a team
+            folder or another shared folder.
         :rtype: :class:`dropbox.sharing.LaunchResultBase`
         :raises: :class:`.exceptions.ApiError`
 

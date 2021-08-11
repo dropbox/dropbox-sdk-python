@@ -2332,7 +2332,8 @@ class DropboxTeamBase(object):
                                  force_async_off=False):
         """
         Sets an active team folder's status to archived and removes all folder
-        and file members. Permission : Team member file access.
+        and file members. This endpoint cannot be used for teams that have a
+        shared team space. Permission : Team member file access.
 
         :param bool force_async_off: Whether to force the archive to happen
             synchronously.
@@ -2375,8 +2376,9 @@ class DropboxTeamBase(object):
                                 name,
                                 sync_setting=None):
         """
-        Creates a new, active, team folder with no members. Permission : Team
-        member file access.
+        Creates a new, active, team folder with no members. This endpoint can
+        only be used for teams that do not already have a shared team space.
+        Permission : Team member file access.
 
         :param str name: Name for the new team folder.
         :param Nullable[:class:`dropbox.team.SyncSettingArg`] sync_setting: The
@@ -2464,7 +2466,8 @@ class DropboxTeamBase(object):
     def team_team_folder_permanently_delete(self,
                                             team_folder_id):
         """
-        Permanently deletes an archived team folder. Permission : Team member
+        Permanently deletes an archived team folder. This endpoint cannot be
+        used for teams that have a shared team space. Permission : Team member
         file access.
 
         :param str team_folder_id: The ID of the team folder.
