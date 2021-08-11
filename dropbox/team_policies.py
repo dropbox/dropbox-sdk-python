@@ -175,6 +175,55 @@ class EmmState(bb.Union):
 
 EmmState_validator = bv.Union(EmmState)
 
+class ExternalDriveBackupPolicyState(bb.Union):
+    """
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+
+    :ivar team_policies.ExternalDriveBackupPolicyState.disabled: External Drive
+        Backup feature is disabled.
+    :ivar team_policies.ExternalDriveBackupPolicyState.enabled: External Drive
+        Backup feature is enabled.
+    """
+
+    _catch_all = 'other'
+    # Attribute is overwritten below the class definition
+    disabled = None
+    # Attribute is overwritten below the class definition
+    enabled = None
+    # Attribute is overwritten below the class definition
+    other = None
+
+    def is_disabled(self):
+        """
+        Check if the union tag is ``disabled``.
+
+        :rtype: bool
+        """
+        return self._tag == 'disabled'
+
+    def is_enabled(self):
+        """
+        Check if the union tag is ``enabled``.
+
+        :rtype: bool
+        """
+        return self._tag == 'enabled'
+
+    def is_other(self):
+        """
+        Check if the union tag is ``other``.
+
+        :rtype: bool
+        """
+        return self._tag == 'other'
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(ExternalDriveBackupPolicyState, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+ExternalDriveBackupPolicyState_validator = bv.Union(ExternalDriveBackupPolicyState)
+
 class FileLockingPolicyState(bb.Union):
     """
     This class acts as a tagged union. Only one of the ``is_*`` methods will
@@ -1462,6 +1511,19 @@ EmmState.disabled = EmmState('disabled')
 EmmState.optional = EmmState('optional')
 EmmState.required = EmmState('required')
 EmmState.other = EmmState('other')
+
+ExternalDriveBackupPolicyState._disabled_validator = bv.Void()
+ExternalDriveBackupPolicyState._enabled_validator = bv.Void()
+ExternalDriveBackupPolicyState._other_validator = bv.Void()
+ExternalDriveBackupPolicyState._tagmap = {
+    'disabled': ExternalDriveBackupPolicyState._disabled_validator,
+    'enabled': ExternalDriveBackupPolicyState._enabled_validator,
+    'other': ExternalDriveBackupPolicyState._other_validator,
+}
+
+ExternalDriveBackupPolicyState.disabled = ExternalDriveBackupPolicyState('disabled')
+ExternalDriveBackupPolicyState.enabled = ExternalDriveBackupPolicyState('enabled')
+ExternalDriveBackupPolicyState.other = ExternalDriveBackupPolicyState('other')
 
 FileLockingPolicyState._disabled_validator = bv.Void()
 FileLockingPolicyState._enabled_validator = bv.Void()

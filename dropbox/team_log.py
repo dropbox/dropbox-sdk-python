@@ -11853,6 +11853,17 @@ class EventDetails(bb.Union):
         return cls('extended_version_history_change_policy_details', val)
 
     @classmethod
+    def external_drive_backup_policy_changed_details(cls, val):
+        """
+        Create an instance of this class set to the
+        ``external_drive_backup_policy_changed_details`` tag with value ``val``.
+
+        :param ExternalDriveBackupPolicyChangedDetails val:
+        :rtype: EventDetails
+        """
+        return cls('external_drive_backup_policy_changed_details', val)
+
+    @classmethod
     def file_comments_change_policy_details(cls, val):
         """
         Create an instance of this class set to the
@@ -15951,6 +15962,14 @@ class EventDetails(bb.Union):
         :rtype: bool
         """
         return self._tag == 'extended_version_history_change_policy_details'
+
+    def is_external_drive_backup_policy_changed_details(self):
+        """
+        Check if the union tag is ``external_drive_backup_policy_changed_details``.
+
+        :rtype: bool
+        """
+        return self._tag == 'external_drive_backup_policy_changed_details'
 
     def is_file_comments_change_policy_details(self):
         """
@@ -20466,6 +20485,16 @@ class EventDetails(bb.Union):
             raise AttributeError("tag 'extended_version_history_change_policy_details' not set")
         return self._value
 
+    def get_external_drive_backup_policy_changed_details(self):
+        """
+        Only call this if :meth:`is_external_drive_backup_policy_changed_details` is true.
+
+        :rtype: ExternalDriveBackupPolicyChangedDetails
+        """
+        if not self.is_external_drive_backup_policy_changed_details():
+            raise AttributeError("tag 'external_drive_backup_policy_changed_details' not set")
+        return self._value
+
     def get_file_comments_change_policy_details(self):
         """
         Only call this if :meth:`is_file_comments_change_policy_details` is true.
@@ -22362,6 +22391,9 @@ class EventType(bb.Union):
     :ivar ExtendedVersionHistoryChangePolicyType
         EventType.extended_version_history_change_policy: (team_policies)
         Accepted/opted out of extended version history
+    :ivar ExternalDriveBackupPolicyChangedType
+        EventType.external_drive_backup_policy_changed: (team_policies) Changed
+        external drive backup policy for team
     :ivar FileCommentsChangePolicyType EventType.file_comments_change_policy:
         (team_policies) Enabled/disabled commenting on team files
     :ivar FileLockingPolicyChangedType EventType.file_locking_policy_changed:
@@ -26713,6 +26745,17 @@ class EventType(bb.Union):
         return cls('extended_version_history_change_policy', val)
 
     @classmethod
+    def external_drive_backup_policy_changed(cls, val):
+        """
+        Create an instance of this class set to the
+        ``external_drive_backup_policy_changed`` tag with value ``val``.
+
+        :param ExternalDriveBackupPolicyChangedType val:
+        :rtype: EventType
+        """
+        return cls('external_drive_backup_policy_changed', val)
+
+    @classmethod
     def file_comments_change_policy(cls, val):
         """
         Create an instance of this class set to the
@@ -30788,6 +30831,14 @@ class EventType(bb.Union):
         :rtype: bool
         """
         return self._tag == 'extended_version_history_change_policy'
+
+    def is_external_drive_backup_policy_changed(self):
+        """
+        Check if the union tag is ``external_drive_backup_policy_changed``.
+
+        :rtype: bool
+        """
+        return self._tag == 'external_drive_backup_policy_changed'
 
     def is_file_comments_change_policy(self):
         """
@@ -36084,6 +36135,18 @@ class EventType(bb.Union):
             raise AttributeError("tag 'extended_version_history_change_policy' not set")
         return self._value
 
+    def get_external_drive_backup_policy_changed(self):
+        """
+        (team_policies) Changed external drive backup policy for team
+
+        Only call this if :meth:`is_external_drive_backup_policy_changed` is true.
+
+        :rtype: ExternalDriveBackupPolicyChangedType
+        """
+        if not self.is_external_drive_backup_policy_changed():
+            raise AttributeError("tag 'external_drive_backup_policy_changed' not set")
+        return self._value
+
     def get_file_comments_change_policy(self):
         """
         (team_policies) Enabled/disabled commenting on team files
@@ -38075,6 +38138,8 @@ class EventTypeArg(bb.Union):
         members from EMM exception list
     :ivar team_log.EventTypeArg.extended_version_history_change_policy:
         (team_policies) Accepted/opted out of extended version history
+    :ivar team_log.EventTypeArg.external_drive_backup_policy_changed:
+        (team_policies) Changed external drive backup policy for team
     :ivar team_log.EventTypeArg.file_comments_change_policy: (team_policies)
         Enabled/disabled commenting on team files
     :ivar team_log.EventTypeArg.file_locking_policy_changed: (team_policies)
@@ -39054,6 +39119,8 @@ class EventTypeArg(bb.Union):
     emm_remove_exception = None
     # Attribute is overwritten below the class definition
     extended_version_history_change_policy = None
+    # Attribute is overwritten below the class definition
+    external_drive_backup_policy_changed = None
     # Attribute is overwritten below the class definition
     file_comments_change_policy = None
     # Attribute is overwritten below the class definition
@@ -42211,6 +42278,14 @@ class EventTypeArg(bb.Union):
         """
         return self._tag == 'extended_version_history_change_policy'
 
+    def is_external_drive_backup_policy_changed(self):
+        """
+        Check if the union tag is ``external_drive_backup_policy_changed``.
+
+        :rtype: bool
+        """
+        return self._tag == 'external_drive_backup_policy_changed'
+
     def is_file_comments_change_policy(self):
         """
         Check if the union tag is ``file_comments_change_policy``.
@@ -43246,6 +43321,112 @@ class ExtendedVersionHistoryPolicy(bb.Union):
         super(ExtendedVersionHistoryPolicy, self)._process_custom_annotations(annotation_type, field_path, processor)
 
 ExtendedVersionHistoryPolicy_validator = bv.Union(ExtendedVersionHistoryPolicy)
+
+class ExternalDriveBackupPolicy(bb.Union):
+    """
+    Policy for controlling team access to external drive backup feature
+
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+    """
+
+    _catch_all = 'other'
+    # Attribute is overwritten below the class definition
+    disabled = None
+    # Attribute is overwritten below the class definition
+    enabled = None
+    # Attribute is overwritten below the class definition
+    other = None
+
+    def is_disabled(self):
+        """
+        Check if the union tag is ``disabled``.
+
+        :rtype: bool
+        """
+        return self._tag == 'disabled'
+
+    def is_enabled(self):
+        """
+        Check if the union tag is ``enabled``.
+
+        :rtype: bool
+        """
+        return self._tag == 'enabled'
+
+    def is_other(self):
+        """
+        Check if the union tag is ``other``.
+
+        :rtype: bool
+        """
+        return self._tag == 'other'
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(ExternalDriveBackupPolicy, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+ExternalDriveBackupPolicy_validator = bv.Union(ExternalDriveBackupPolicy)
+
+class ExternalDriveBackupPolicyChangedDetails(bb.Struct):
+    """
+    Changed external drive backup policy for team.
+
+    :ivar team_log.ExternalDriveBackupPolicyChangedDetails.new_value: New
+        external drive backup policy.
+    :ivar team_log.ExternalDriveBackupPolicyChangedDetails.previous_value:
+        Previous external drive backup policy.
+    """
+
+    __slots__ = [
+        '_new_value_value',
+        '_previous_value_value',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 new_value=None,
+                 previous_value=None):
+        self._new_value_value = bb.NOT_SET
+        self._previous_value_value = bb.NOT_SET
+        if new_value is not None:
+            self.new_value = new_value
+        if previous_value is not None:
+            self.previous_value = previous_value
+
+    # Instance attribute type: ExternalDriveBackupPolicy (validator is set below)
+    new_value = bb.Attribute("new_value", user_defined=True)
+
+    # Instance attribute type: ExternalDriveBackupPolicy (validator is set below)
+    previous_value = bb.Attribute("previous_value", user_defined=True)
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(ExternalDriveBackupPolicyChangedDetails, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+ExternalDriveBackupPolicyChangedDetails_validator = bv.Struct(ExternalDriveBackupPolicyChangedDetails)
+
+class ExternalDriveBackupPolicyChangedType(bb.Struct):
+
+    __slots__ = [
+        '_description_value',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 description=None):
+        self._description_value = bb.NOT_SET
+        if description is not None:
+            self.description = description
+
+    # Instance attribute type: str (validator is set below)
+    description = bb.Attribute("description")
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(ExternalDriveBackupPolicyChangedType, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+ExternalDriveBackupPolicyChangedType_validator = bv.Struct(ExternalDriveBackupPolicyChangedType)
 
 class ExternalSharingCreateReportDetails(bb.Struct):
     """
@@ -73212,6 +73393,7 @@ EventDetails._emm_add_exception_details_validator = EmmAddExceptionDetails_valid
 EventDetails._emm_change_policy_details_validator = EmmChangePolicyDetails_validator
 EventDetails._emm_remove_exception_details_validator = EmmRemoveExceptionDetails_validator
 EventDetails._extended_version_history_change_policy_details_validator = ExtendedVersionHistoryChangePolicyDetails_validator
+EventDetails._external_drive_backup_policy_changed_details_validator = ExternalDriveBackupPolicyChangedDetails_validator
 EventDetails._file_comments_change_policy_details_validator = FileCommentsChangePolicyDetails_validator
 EventDetails._file_locking_policy_changed_details_validator = FileLockingPolicyChangedDetails_validator
 EventDetails._file_requests_change_policy_details_validator = FileRequestsChangePolicyDetails_validator
@@ -73685,6 +73867,7 @@ EventDetails._tagmap = {
     'emm_change_policy_details': EventDetails._emm_change_policy_details_validator,
     'emm_remove_exception_details': EventDetails._emm_remove_exception_details_validator,
     'extended_version_history_change_policy_details': EventDetails._extended_version_history_change_policy_details_validator,
+    'external_drive_backup_policy_changed_details': EventDetails._external_drive_backup_policy_changed_details_validator,
     'file_comments_change_policy_details': EventDetails._file_comments_change_policy_details_validator,
     'file_locking_policy_changed_details': EventDetails._file_locking_policy_changed_details_validator,
     'file_requests_change_policy_details': EventDetails._file_requests_change_policy_details_validator,
@@ -74161,6 +74344,7 @@ EventType._emm_add_exception_validator = EmmAddExceptionType_validator
 EventType._emm_change_policy_validator = EmmChangePolicyType_validator
 EventType._emm_remove_exception_validator = EmmRemoveExceptionType_validator
 EventType._extended_version_history_change_policy_validator = ExtendedVersionHistoryChangePolicyType_validator
+EventType._external_drive_backup_policy_changed_validator = ExternalDriveBackupPolicyChangedType_validator
 EventType._file_comments_change_policy_validator = FileCommentsChangePolicyType_validator
 EventType._file_locking_policy_changed_validator = FileLockingPolicyChangedType_validator
 EventType._file_requests_change_policy_validator = FileRequestsChangePolicyType_validator
@@ -74633,6 +74817,7 @@ EventType._tagmap = {
     'emm_change_policy': EventType._emm_change_policy_validator,
     'emm_remove_exception': EventType._emm_remove_exception_validator,
     'extended_version_history_change_policy': EventType._extended_version_history_change_policy_validator,
+    'external_drive_backup_policy_changed': EventType._external_drive_backup_policy_changed_validator,
     'file_comments_change_policy': EventType._file_comments_change_policy_validator,
     'file_locking_policy_changed': EventType._file_locking_policy_changed_validator,
     'file_requests_change_policy': EventType._file_requests_change_policy_validator,
@@ -75108,6 +75293,7 @@ EventTypeArg._emm_add_exception_validator = bv.Void()
 EventTypeArg._emm_change_policy_validator = bv.Void()
 EventTypeArg._emm_remove_exception_validator = bv.Void()
 EventTypeArg._extended_version_history_change_policy_validator = bv.Void()
+EventTypeArg._external_drive_backup_policy_changed_validator = bv.Void()
 EventTypeArg._file_comments_change_policy_validator = bv.Void()
 EventTypeArg._file_locking_policy_changed_validator = bv.Void()
 EventTypeArg._file_requests_change_policy_validator = bv.Void()
@@ -75580,6 +75766,7 @@ EventTypeArg._tagmap = {
     'emm_change_policy': EventTypeArg._emm_change_policy_validator,
     'emm_remove_exception': EventTypeArg._emm_remove_exception_validator,
     'extended_version_history_change_policy': EventTypeArg._extended_version_history_change_policy_validator,
+    'external_drive_backup_policy_changed': EventTypeArg._external_drive_backup_policy_changed_validator,
     'file_comments_change_policy': EventTypeArg._file_comments_change_policy_validator,
     'file_locking_policy_changed': EventTypeArg._file_locking_policy_changed_validator,
     'file_requests_change_policy': EventTypeArg._file_requests_change_policy_validator,
@@ -76053,6 +76240,7 @@ EventTypeArg.emm_add_exception = EventTypeArg('emm_add_exception')
 EventTypeArg.emm_change_policy = EventTypeArg('emm_change_policy')
 EventTypeArg.emm_remove_exception = EventTypeArg('emm_remove_exception')
 EventTypeArg.extended_version_history_change_policy = EventTypeArg('extended_version_history_change_policy')
+EventTypeArg.external_drive_backup_policy_changed = EventTypeArg('external_drive_backup_policy_changed')
 EventTypeArg.file_comments_change_policy = EventTypeArg('file_comments_change_policy')
 EventTypeArg.file_locking_policy_changed = EventTypeArg('file_locking_policy_changed')
 EventTypeArg.file_requests_change_policy = EventTypeArg('file_requests_change_policy')
@@ -76204,6 +76392,34 @@ ExtendedVersionHistoryPolicy.explicitly_unlimited = ExtendedVersionHistoryPolicy
 ExtendedVersionHistoryPolicy.implicitly_limited = ExtendedVersionHistoryPolicy('implicitly_limited')
 ExtendedVersionHistoryPolicy.implicitly_unlimited = ExtendedVersionHistoryPolicy('implicitly_unlimited')
 ExtendedVersionHistoryPolicy.other = ExtendedVersionHistoryPolicy('other')
+
+ExternalDriveBackupPolicy._disabled_validator = bv.Void()
+ExternalDriveBackupPolicy._enabled_validator = bv.Void()
+ExternalDriveBackupPolicy._other_validator = bv.Void()
+ExternalDriveBackupPolicy._tagmap = {
+    'disabled': ExternalDriveBackupPolicy._disabled_validator,
+    'enabled': ExternalDriveBackupPolicy._enabled_validator,
+    'other': ExternalDriveBackupPolicy._other_validator,
+}
+
+ExternalDriveBackupPolicy.disabled = ExternalDriveBackupPolicy('disabled')
+ExternalDriveBackupPolicy.enabled = ExternalDriveBackupPolicy('enabled')
+ExternalDriveBackupPolicy.other = ExternalDriveBackupPolicy('other')
+
+ExternalDriveBackupPolicyChangedDetails.new_value.validator = ExternalDriveBackupPolicy_validator
+ExternalDriveBackupPolicyChangedDetails.previous_value.validator = ExternalDriveBackupPolicy_validator
+ExternalDriveBackupPolicyChangedDetails._all_field_names_ = set([
+    'new_value',
+    'previous_value',
+])
+ExternalDriveBackupPolicyChangedDetails._all_fields_ = [
+    ('new_value', ExternalDriveBackupPolicyChangedDetails.new_value.validator),
+    ('previous_value', ExternalDriveBackupPolicyChangedDetails.previous_value.validator),
+]
+
+ExternalDriveBackupPolicyChangedType.description.validator = bv.String()
+ExternalDriveBackupPolicyChangedType._all_field_names_ = set(['description'])
+ExternalDriveBackupPolicyChangedType._all_fields_ = [('description', ExternalDriveBackupPolicyChangedType.description.validator)]
 
 ExternalSharingCreateReportDetails._all_field_names_ = set([])
 ExternalSharingCreateReportDetails._all_fields_ = []

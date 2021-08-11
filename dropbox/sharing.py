@@ -7034,7 +7034,8 @@ class RelinquishFolderMembershipArg(bb.Struct):
     :ivar sharing.RelinquishFolderMembershipArg.shared_folder_id: The ID for the
         shared folder.
     :ivar sharing.RelinquishFolderMembershipArg.leave_a_copy: Keep a copy of the
-        folder's contents upon relinquishing membership.
+        folder's contents upon relinquishing membership. This must be set to
+        false when the folder is within a team folder or another shared folder.
     """
 
     __slots__ = [
@@ -7366,8 +7367,9 @@ class RemoveFolderMemberArg(bb.Struct):
         folder.
     :ivar sharing.RemoveFolderMemberArg.leave_a_copy: If true, the removed user
         will keep their copy of the folder after it's unshared, assuming it was
-        mounted. Otherwise, it will be removed from their Dropbox. Also, this
-        must be set to false when kicking a group.
+        mounted. Otherwise, it will be removed from their Dropbox. This must be
+        set to false when removing a group, or when the folder is within a team
+        folder or another shared folder.
     """
 
     __slots__ = [
@@ -10689,7 +10691,8 @@ class UserFileMembershipInfo(UserMembershipInfo):
     last seen timestamp.
 
     :ivar sharing.UserFileMembershipInfo.time_last_seen: The UTC timestamp of
-        when the user has last seen the content, if they have.
+        when the user has last seen the content. Only populated if the user has
+        seen the content and the caller has a plan that includes viewer history.
     :ivar sharing.UserFileMembershipInfo.platform_type: The platform on which
         the user has last seen the content, or unknown.
     """
