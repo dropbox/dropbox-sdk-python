@@ -3450,6 +3450,120 @@ class CameraUploadsPolicyChangedType(bb.Struct):
 
 CameraUploadsPolicyChangedType_validator = bv.Struct(CameraUploadsPolicyChangedType)
 
+class CaptureTranscriptPolicy(bb.Union):
+    """
+    Policy for deciding whether team users can transcription in Capture
+
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+    """
+
+    _catch_all = 'other'
+    # Attribute is overwritten below the class definition
+    default = None
+    # Attribute is overwritten below the class definition
+    disabled = None
+    # Attribute is overwritten below the class definition
+    enabled = None
+    # Attribute is overwritten below the class definition
+    other = None
+
+    def is_default(self):
+        """
+        Check if the union tag is ``default``.
+
+        :rtype: bool
+        """
+        return self._tag == 'default'
+
+    def is_disabled(self):
+        """
+        Check if the union tag is ``disabled``.
+
+        :rtype: bool
+        """
+        return self._tag == 'disabled'
+
+    def is_enabled(self):
+        """
+        Check if the union tag is ``enabled``.
+
+        :rtype: bool
+        """
+        return self._tag == 'enabled'
+
+    def is_other(self):
+        """
+        Check if the union tag is ``other``.
+
+        :rtype: bool
+        """
+        return self._tag == 'other'
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(CaptureTranscriptPolicy, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+CaptureTranscriptPolicy_validator = bv.Union(CaptureTranscriptPolicy)
+
+class CaptureTranscriptPolicyChangedDetails(bb.Struct):
+    """
+    Changed Capture transcription policy for team.
+
+    :ivar team_log.CaptureTranscriptPolicyChangedDetails.new_value: To.
+    :ivar team_log.CaptureTranscriptPolicyChangedDetails.previous_value: From.
+    """
+
+    __slots__ = [
+        '_new_value_value',
+        '_previous_value_value',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 new_value=None,
+                 previous_value=None):
+        self._new_value_value = bb.NOT_SET
+        self._previous_value_value = bb.NOT_SET
+        if new_value is not None:
+            self.new_value = new_value
+        if previous_value is not None:
+            self.previous_value = previous_value
+
+    # Instance attribute type: CaptureTranscriptPolicy (validator is set below)
+    new_value = bb.Attribute("new_value", user_defined=True)
+
+    # Instance attribute type: CaptureTranscriptPolicy (validator is set below)
+    previous_value = bb.Attribute("previous_value", user_defined=True)
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(CaptureTranscriptPolicyChangedDetails, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+CaptureTranscriptPolicyChangedDetails_validator = bv.Struct(CaptureTranscriptPolicyChangedDetails)
+
+class CaptureTranscriptPolicyChangedType(bb.Struct):
+
+    __slots__ = [
+        '_description_value',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 description=None):
+        self._description_value = bb.NOT_SET
+        if description is not None:
+            self.description = description
+
+    # Instance attribute type: str (validator is set below)
+    description = bb.Attribute("description")
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(CaptureTranscriptPolicyChangedType, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+CaptureTranscriptPolicyChangedType_validator = bv.Struct(CaptureTranscriptPolicyChangedType)
+
 class Certificate(bb.Struct):
     """
     Certificate details.
@@ -11657,6 +11771,17 @@ class EventDetails(bb.Union):
         return cls('camera_uploads_policy_changed_details', val)
 
     @classmethod
+    def capture_transcript_policy_changed_details(cls, val):
+        """
+        Create an instance of this class set to the
+        ``capture_transcript_policy_changed_details`` tag with value ``val``.
+
+        :param CaptureTranscriptPolicyChangedDetails val:
+        :rtype: EventDetails
+        """
+        return cls('capture_transcript_policy_changed_details', val)
+
+    @classmethod
     def classification_change_policy_details(cls, val):
         """
         Create an instance of this class set to the
@@ -15826,6 +15951,14 @@ class EventDetails(bb.Union):
         :rtype: bool
         """
         return self._tag == 'camera_uploads_policy_changed_details'
+
+    def is_capture_transcript_policy_changed_details(self):
+        """
+        Check if the union tag is ``capture_transcript_policy_changed_details``.
+
+        :rtype: bool
+        """
+        return self._tag == 'capture_transcript_policy_changed_details'
 
     def is_classification_change_policy_details(self):
         """
@@ -20315,6 +20448,16 @@ class EventDetails(bb.Union):
             raise AttributeError("tag 'camera_uploads_policy_changed_details' not set")
         return self._value
 
+    def get_capture_transcript_policy_changed_details(self):
+        """
+        Only call this if :meth:`is_capture_transcript_policy_changed_details` is true.
+
+        :rtype: CaptureTranscriptPolicyChangedDetails
+        """
+        if not self.is_capture_transcript_policy_changed_details():
+            raise AttributeError("tag 'capture_transcript_policy_changed_details' not set")
+        return self._value
+
     def get_classification_change_policy_details(self):
         """
         Only call this if :meth:`is_classification_change_policy_details` is true.
@@ -22342,6 +22485,9 @@ class EventType(bb.Union):
     :ivar CameraUploadsPolicyChangedType
         EventType.camera_uploads_policy_changed: (team_policies) Changed camera
         uploads setting for team
+    :ivar CaptureTranscriptPolicyChangedType
+        EventType.capture_transcript_policy_changed: (team_policies) Changed
+        Capture transcription policy for team
     :ivar ClassificationChangePolicyType EventType.classification_change_policy:
         (team_policies) Changed classification policy for team
     :ivar ComputerBackupPolicyChangedType
@@ -26558,6 +26704,17 @@ class EventType(bb.Union):
         return cls('camera_uploads_policy_changed', val)
 
     @classmethod
+    def capture_transcript_policy_changed(cls, val):
+        """
+        Create an instance of this class set to the
+        ``capture_transcript_policy_changed`` tag with value ``val``.
+
+        :param CaptureTranscriptPolicyChangedType val:
+        :rtype: EventType
+        """
+        return cls('capture_transcript_policy_changed', val)
+
+    @classmethod
     def classification_change_policy(cls, val):
         """
         Create an instance of this class set to the
@@ -30695,6 +30852,14 @@ class EventType(bb.Union):
         :rtype: bool
         """
         return self._tag == 'camera_uploads_policy_changed'
+
+    def is_capture_transcript_policy_changed(self):
+        """
+        Check if the union tag is ``capture_transcript_policy_changed``.
+
+        :rtype: bool
+        """
+        return self._tag == 'capture_transcript_policy_changed'
 
     def is_classification_change_policy(self):
         """
@@ -35924,6 +36089,18 @@ class EventType(bb.Union):
             raise AttributeError("tag 'camera_uploads_policy_changed' not set")
         return self._value
 
+    def get_capture_transcript_policy_changed(self):
+        """
+        (team_policies) Changed Capture transcription policy for team
+
+        Only call this if :meth:`is_capture_transcript_policy_changed` is true.
+
+        :rtype: CaptureTranscriptPolicyChangedType
+        """
+        if not self.is_capture_transcript_policy_changed():
+            raise AttributeError("tag 'capture_transcript_policy_changed' not set")
+        return self._value
+
     def get_classification_change_policy(self):
         """
         (team_policies) Changed classification policy for team
@@ -38098,6 +38275,8 @@ class EventTypeArg(bb.Union):
         app permissions
     :ivar team_log.EventTypeArg.camera_uploads_policy_changed: (team_policies)
         Changed camera uploads setting for team
+    :ivar team_log.EventTypeArg.capture_transcript_policy_changed:
+        (team_policies) Changed Capture transcription policy for team
     :ivar team_log.EventTypeArg.classification_change_policy: (team_policies)
         Changed classification policy for team
     :ivar team_log.EventTypeArg.computer_backup_policy_changed: (team_policies)
@@ -39085,6 +39264,8 @@ class EventTypeArg(bb.Union):
     app_permissions_changed = None
     # Attribute is overwritten below the class definition
     camera_uploads_policy_changed = None
+    # Attribute is overwritten below the class definition
+    capture_transcript_policy_changed = None
     # Attribute is overwritten below the class definition
     classification_change_policy = None
     # Attribute is overwritten below the class definition
@@ -42141,6 +42322,14 @@ class EventTypeArg(bb.Union):
         :rtype: bool
         """
         return self._tag == 'camera_uploads_policy_changed'
+
+    def is_capture_transcript_policy_changed(self):
+        """
+        Check if the union tag is ``capture_transcript_policy_changed``.
+
+        :rtype: bool
+        """
+        return self._tag == 'capture_transcript_policy_changed'
 
     def is_classification_change_policy(self):
         """
@@ -72028,6 +72217,37 @@ CameraUploadsPolicyChangedType.description.validator = bv.String()
 CameraUploadsPolicyChangedType._all_field_names_ = set(['description'])
 CameraUploadsPolicyChangedType._all_fields_ = [('description', CameraUploadsPolicyChangedType.description.validator)]
 
+CaptureTranscriptPolicy._default_validator = bv.Void()
+CaptureTranscriptPolicy._disabled_validator = bv.Void()
+CaptureTranscriptPolicy._enabled_validator = bv.Void()
+CaptureTranscriptPolicy._other_validator = bv.Void()
+CaptureTranscriptPolicy._tagmap = {
+    'default': CaptureTranscriptPolicy._default_validator,
+    'disabled': CaptureTranscriptPolicy._disabled_validator,
+    'enabled': CaptureTranscriptPolicy._enabled_validator,
+    'other': CaptureTranscriptPolicy._other_validator,
+}
+
+CaptureTranscriptPolicy.default = CaptureTranscriptPolicy('default')
+CaptureTranscriptPolicy.disabled = CaptureTranscriptPolicy('disabled')
+CaptureTranscriptPolicy.enabled = CaptureTranscriptPolicy('enabled')
+CaptureTranscriptPolicy.other = CaptureTranscriptPolicy('other')
+
+CaptureTranscriptPolicyChangedDetails.new_value.validator = CaptureTranscriptPolicy_validator
+CaptureTranscriptPolicyChangedDetails.previous_value.validator = CaptureTranscriptPolicy_validator
+CaptureTranscriptPolicyChangedDetails._all_field_names_ = set([
+    'new_value',
+    'previous_value',
+])
+CaptureTranscriptPolicyChangedDetails._all_fields_ = [
+    ('new_value', CaptureTranscriptPolicyChangedDetails.new_value.validator),
+    ('previous_value', CaptureTranscriptPolicyChangedDetails.previous_value.validator),
+]
+
+CaptureTranscriptPolicyChangedType.description.validator = bv.String()
+CaptureTranscriptPolicyChangedType._all_field_names_ = set(['description'])
+CaptureTranscriptPolicyChangedType._all_fields_ = [('description', CaptureTranscriptPolicyChangedType.description.validator)]
+
 Certificate.subject.validator = bv.String()
 Certificate.issuer.validator = bv.String()
 Certificate.issue_date.validator = bv.String()
@@ -73376,6 +73596,7 @@ EventDetails._allow_download_disabled_details_validator = AllowDownloadDisabledD
 EventDetails._allow_download_enabled_details_validator = AllowDownloadEnabledDetails_validator
 EventDetails._app_permissions_changed_details_validator = AppPermissionsChangedDetails_validator
 EventDetails._camera_uploads_policy_changed_details_validator = CameraUploadsPolicyChangedDetails_validator
+EventDetails._capture_transcript_policy_changed_details_validator = CaptureTranscriptPolicyChangedDetails_validator
 EventDetails._classification_change_policy_details_validator = ClassificationChangePolicyDetails_validator
 EventDetails._computer_backup_policy_changed_details_validator = ComputerBackupPolicyChangedDetails_validator
 EventDetails._content_administration_policy_changed_details_validator = ContentAdministrationPolicyChangedDetails_validator
@@ -73850,6 +74071,7 @@ EventDetails._tagmap = {
     'allow_download_enabled_details': EventDetails._allow_download_enabled_details_validator,
     'app_permissions_changed_details': EventDetails._app_permissions_changed_details_validator,
     'camera_uploads_policy_changed_details': EventDetails._camera_uploads_policy_changed_details_validator,
+    'capture_transcript_policy_changed_details': EventDetails._capture_transcript_policy_changed_details_validator,
     'classification_change_policy_details': EventDetails._classification_change_policy_details_validator,
     'computer_backup_policy_changed_details': EventDetails._computer_backup_policy_changed_details_validator,
     'content_administration_policy_changed_details': EventDetails._content_administration_policy_changed_details_validator,
@@ -74327,6 +74549,7 @@ EventType._allow_download_disabled_validator = AllowDownloadDisabledType_validat
 EventType._allow_download_enabled_validator = AllowDownloadEnabledType_validator
 EventType._app_permissions_changed_validator = AppPermissionsChangedType_validator
 EventType._camera_uploads_policy_changed_validator = CameraUploadsPolicyChangedType_validator
+EventType._capture_transcript_policy_changed_validator = CaptureTranscriptPolicyChangedType_validator
 EventType._classification_change_policy_validator = ClassificationChangePolicyType_validator
 EventType._computer_backup_policy_changed_validator = ComputerBackupPolicyChangedType_validator
 EventType._content_administration_policy_changed_validator = ContentAdministrationPolicyChangedType_validator
@@ -74800,6 +75023,7 @@ EventType._tagmap = {
     'allow_download_enabled': EventType._allow_download_enabled_validator,
     'app_permissions_changed': EventType._app_permissions_changed_validator,
     'camera_uploads_policy_changed': EventType._camera_uploads_policy_changed_validator,
+    'capture_transcript_policy_changed': EventType._capture_transcript_policy_changed_validator,
     'classification_change_policy': EventType._classification_change_policy_validator,
     'computer_backup_policy_changed': EventType._computer_backup_policy_changed_validator,
     'content_administration_policy_changed': EventType._content_administration_policy_changed_validator,
@@ -75276,6 +75500,7 @@ EventTypeArg._allow_download_disabled_validator = bv.Void()
 EventTypeArg._allow_download_enabled_validator = bv.Void()
 EventTypeArg._app_permissions_changed_validator = bv.Void()
 EventTypeArg._camera_uploads_policy_changed_validator = bv.Void()
+EventTypeArg._capture_transcript_policy_changed_validator = bv.Void()
 EventTypeArg._classification_change_policy_validator = bv.Void()
 EventTypeArg._computer_backup_policy_changed_validator = bv.Void()
 EventTypeArg._content_administration_policy_changed_validator = bv.Void()
@@ -75749,6 +75974,7 @@ EventTypeArg._tagmap = {
     'allow_download_enabled': EventTypeArg._allow_download_enabled_validator,
     'app_permissions_changed': EventTypeArg._app_permissions_changed_validator,
     'camera_uploads_policy_changed': EventTypeArg._camera_uploads_policy_changed_validator,
+    'capture_transcript_policy_changed': EventTypeArg._capture_transcript_policy_changed_validator,
     'classification_change_policy': EventTypeArg._classification_change_policy_validator,
     'computer_backup_policy_changed': EventTypeArg._computer_backup_policy_changed_validator,
     'content_administration_policy_changed': EventTypeArg._content_administration_policy_changed_validator,
@@ -76223,6 +76449,7 @@ EventTypeArg.allow_download_disabled = EventTypeArg('allow_download_disabled')
 EventTypeArg.allow_download_enabled = EventTypeArg('allow_download_enabled')
 EventTypeArg.app_permissions_changed = EventTypeArg('app_permissions_changed')
 EventTypeArg.camera_uploads_policy_changed = EventTypeArg('camera_uploads_policy_changed')
+EventTypeArg.capture_transcript_policy_changed = EventTypeArg('capture_transcript_policy_changed')
 EventTypeArg.classification_change_policy = EventTypeArg('classification_change_policy')
 EventTypeArg.computer_backup_policy_changed = EventTypeArg('computer_backup_policy_changed')
 EventTypeArg.content_administration_policy_changed = EventTypeArg('content_administration_policy_changed')
