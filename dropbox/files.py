@@ -10120,10 +10120,14 @@ class WriteMode(bb.Union):
     :ivar files.WriteMode.overwrite: Always overwrite the existing file. The
         autorename strategy is the same as it is for ``add``.
     :ivar str files.WriteMode.update: Overwrite if the given "rev" matches the
-        existing file's "rev". The autorename strategy is to append the string
-        "conflicted copy" to the file name. For example, "document.txt" might
-        become "document (conflicted copy).txt" or "document (Panda's conflicted
-        copy).txt".
+        existing file's "rev". The supplied value should be the latest known
+        "rev" of the file, for example, from :type:`FileMetadata`, from when the
+        file was last downloaded by the app. This will cause the file on the
+        Dropbox servers to be overwritten if the given "rev" matches the
+        existing file's current "rev" on the Dropbox servers. The autorename
+        strategy is to append the string "conflicted copy" to the file name. For
+        example, "document.txt" might become "document (conflicted copy).txt" or
+        "document (Panda's conflicted copy).txt".
     """
 
     _catch_all = None
@@ -10170,9 +10174,14 @@ class WriteMode(bb.Union):
     def get_update(self):
         """
         Overwrite if the given "rev" matches the existing file's "rev". The
-        autorename strategy is to append the string "conflicted copy" to the
-        file name. For example, "document.txt" might become "document
-        (conflicted copy).txt" or "document (Panda's conflicted copy).txt".
+        supplied value should be the latest known "rev" of the file, for
+        example, from :class:`FileMetadata`, from when the file was last
+        downloaded by the app. This will cause the file on the Dropbox servers
+        to be overwritten if the given "rev" matches the existing file's current
+        "rev" on the Dropbox servers. The autorename strategy is to append the
+        string "conflicted copy" to the file name. For example, "document.txt"
+        might become "document (conflicted copy).txt" or "document (Panda's
+        conflicted copy).txt".
 
         Only call this if :meth:`is_update` is true.
 
