@@ -6998,6 +6998,200 @@ class DurationLogInfo(bb.Struct):
 
 DurationLogInfo_validator = bv.Struct(DurationLogInfo)
 
+class EmailIngestPolicy(bb.Union):
+    """
+    Email ingest policy
+
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+    """
+
+    _catch_all = 'other'
+    # Attribute is overwritten below the class definition
+    disabled = None
+    # Attribute is overwritten below the class definition
+    enabled = None
+    # Attribute is overwritten below the class definition
+    other = None
+
+    def is_disabled(self):
+        """
+        Check if the union tag is ``disabled``.
+
+        :rtype: bool
+        """
+        return self._tag == 'disabled'
+
+    def is_enabled(self):
+        """
+        Check if the union tag is ``enabled``.
+
+        :rtype: bool
+        """
+        return self._tag == 'enabled'
+
+    def is_other(self):
+        """
+        Check if the union tag is ``other``.
+
+        :rtype: bool
+        """
+        return self._tag == 'other'
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(EmailIngestPolicy, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+EmailIngestPolicy_validator = bv.Union(EmailIngestPolicy)
+
+class EmailIngestPolicyChangedDetails(bb.Struct):
+    """
+    Changed email to my dropbox policy for team.
+
+    :ivar team_log.EmailIngestPolicyChangedDetails.new_value: New email to my
+        dropbox policy.
+    :ivar team_log.EmailIngestPolicyChangedDetails.previous_value: Previous
+        email to my dropbox policy.
+    """
+
+    __slots__ = [
+        '_new_value_value',
+        '_previous_value_value',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 new_value=None,
+                 previous_value=None):
+        self._new_value_value = bb.NOT_SET
+        self._previous_value_value = bb.NOT_SET
+        if new_value is not None:
+            self.new_value = new_value
+        if previous_value is not None:
+            self.previous_value = previous_value
+
+    # Instance attribute type: EmailIngestPolicy (validator is set below)
+    new_value = bb.Attribute("new_value", user_defined=True)
+
+    # Instance attribute type: EmailIngestPolicy (validator is set below)
+    previous_value = bb.Attribute("previous_value", user_defined=True)
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(EmailIngestPolicyChangedDetails, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+EmailIngestPolicyChangedDetails_validator = bv.Struct(EmailIngestPolicyChangedDetails)
+
+class EmailIngestPolicyChangedType(bb.Struct):
+
+    __slots__ = [
+        '_description_value',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 description=None):
+        self._description_value = bb.NOT_SET
+        if description is not None:
+            self.description = description
+
+    # Instance attribute type: str (validator is set below)
+    description = bb.Attribute("description")
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(EmailIngestPolicyChangedType, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+EmailIngestPolicyChangedType_validator = bv.Struct(EmailIngestPolicyChangedType)
+
+class EmailIngestReceiveFileDetails(bb.Struct):
+    """
+    Received files via Email to my Dropbox.
+
+    :ivar team_log.EmailIngestReceiveFileDetails.inbox_name: Inbox name.
+    :ivar team_log.EmailIngestReceiveFileDetails.attachment_names: Submitted
+        file names.
+    :ivar team_log.EmailIngestReceiveFileDetails.subject: Subject of the email.
+    :ivar team_log.EmailIngestReceiveFileDetails.from_name: The name as provided
+        by the submitter.
+    :ivar team_log.EmailIngestReceiveFileDetails.from_email: The email as
+        provided by the submitter.
+    """
+
+    __slots__ = [
+        '_inbox_name_value',
+        '_attachment_names_value',
+        '_subject_value',
+        '_from_name_value',
+        '_from_email_value',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 inbox_name=None,
+                 attachment_names=None,
+                 subject=None,
+                 from_name=None,
+                 from_email=None):
+        self._inbox_name_value = bb.NOT_SET
+        self._attachment_names_value = bb.NOT_SET
+        self._subject_value = bb.NOT_SET
+        self._from_name_value = bb.NOT_SET
+        self._from_email_value = bb.NOT_SET
+        if inbox_name is not None:
+            self.inbox_name = inbox_name
+        if attachment_names is not None:
+            self.attachment_names = attachment_names
+        if subject is not None:
+            self.subject = subject
+        if from_name is not None:
+            self.from_name = from_name
+        if from_email is not None:
+            self.from_email = from_email
+
+    # Instance attribute type: str (validator is set below)
+    inbox_name = bb.Attribute("inbox_name")
+
+    # Instance attribute type: list of [str] (validator is set below)
+    attachment_names = bb.Attribute("attachment_names")
+
+    # Instance attribute type: str (validator is set below)
+    subject = bb.Attribute("subject", nullable=True)
+
+    # Instance attribute type: str (validator is set below)
+    from_name = bb.Attribute("from_name", nullable=True)
+
+    # Instance attribute type: str (validator is set below)
+    from_email = bb.Attribute("from_email", nullable=True)
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(EmailIngestReceiveFileDetails, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+EmailIngestReceiveFileDetails_validator = bv.Struct(EmailIngestReceiveFileDetails)
+
+class EmailIngestReceiveFileType(bb.Struct):
+
+    __slots__ = [
+        '_description_value',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 description=None):
+        self._description_value = bb.NOT_SET
+        if description is not None:
+            self.description = description
+
+    # Instance attribute type: str (validator is set below)
+    description = bb.Attribute("description")
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(EmailIngestReceiveFileType, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+EmailIngestReceiveFileType_validator = bv.Struct(EmailIngestReceiveFileType)
+
 class EmmAddExceptionDetails(bb.Struct):
     """
     Added members to EMM exception list.
@@ -8948,6 +9142,17 @@ class EventDetails(bb.Union):
         :rtype: EventDetails
         """
         return cls('user_tags_removed_details', val)
+
+    @classmethod
+    def email_ingest_receive_file_details(cls, val):
+        """
+        Create an instance of this class set to the
+        ``email_ingest_receive_file_details`` tag with value ``val``.
+
+        :param EmailIngestReceiveFileDetails val:
+        :rtype: EventDetails
+        """
+        return cls('email_ingest_receive_file_details', val)
 
     @classmethod
     def file_request_change_details(cls, val):
@@ -11933,6 +12138,17 @@ class EventDetails(bb.Union):
         return cls('directory_restrictions_remove_members_details', val)
 
     @classmethod
+    def email_ingest_policy_changed_details(cls, val):
+        """
+        Create an instance of this class set to the
+        ``email_ingest_policy_changed_details`` tag with value ``val``.
+
+        :param EmailIngestPolicyChangedDetails val:
+        :rtype: EventDetails
+        """
+        return cls('email_ingest_policy_changed_details', val)
+
+    @classmethod
     def emm_add_exception_details(cls, val):
         """
         Create an instance of this class set to the
@@ -13911,6 +14127,14 @@ class EventDetails(bb.Union):
         :rtype: bool
         """
         return self._tag == 'user_tags_removed_details'
+
+    def is_email_ingest_receive_file_details(self):
+        """
+        Check if the union tag is ``email_ingest_receive_file_details``.
+
+        :rtype: bool
+        """
+        return self._tag == 'email_ingest_receive_file_details'
 
     def is_file_request_change_details(self):
         """
@@ -16064,6 +16288,14 @@ class EventDetails(bb.Union):
         """
         return self._tag == 'directory_restrictions_remove_members_details'
 
+    def is_email_ingest_policy_changed_details(self):
+        """
+        Check if the union tag is ``email_ingest_policy_changed_details``.
+
+        :rtype: bool
+        """
+        return self._tag == 'email_ingest_policy_changed_details'
+
     def is_emm_add_exception_details(self):
         """
         Check if the union tag is ``emm_add_exception_details``.
@@ -17896,6 +18128,16 @@ class EventDetails(bb.Union):
         """
         if not self.is_user_tags_removed_details():
             raise AttributeError("tag 'user_tags_removed_details' not set")
+        return self._value
+
+    def get_email_ingest_receive_file_details(self):
+        """
+        Only call this if :meth:`is_email_ingest_receive_file_details` is true.
+
+        :rtype: EmailIngestReceiveFileDetails
+        """
+        if not self.is_email_ingest_receive_file_details():
+            raise AttributeError("tag 'email_ingest_receive_file_details' not set")
         return self._value
 
     def get_file_request_change_details(self):
@@ -20588,6 +20830,16 @@ class EventDetails(bb.Union):
             raise AttributeError("tag 'directory_restrictions_remove_members_details' not set")
         return self._value
 
+    def get_email_ingest_policy_changed_details(self):
+        """
+        Only call this if :meth:`is_email_ingest_policy_changed_details` is true.
+
+        :rtype: EmailIngestPolicyChangedDetails
+        """
+        if not self.is_email_ingest_policy_changed_details():
+            raise AttributeError("tag 'email_ingest_policy_changed_details' not set")
+        return self._value
+
     def get_emm_add_exception_details(self):
         """
         Only call this if :meth:`is_emm_add_exception_details` is true.
@@ -21900,6 +22152,8 @@ class EventType(bb.Union):
         a file
     :ivar UserTagsRemovedType EventType.user_tags_removed: (file_operations)
         Removed tags
+    :ivar EmailIngestReceiveFileType EventType.email_ingest_receive_file:
+        (file_requests) Received files via Email to my Dropbox
     :ivar FileRequestChangeType EventType.file_request_change: (file_requests)
         Changed file request
     :ivar FileRequestCloseType EventType.file_request_close: (file_requests)
@@ -22528,6 +22782,8 @@ class EventType(bb.Union):
     :ivar DirectoryRestrictionsRemoveMembersType
         EventType.directory_restrictions_remove_members: (team_policies) Removed
         members from directory restrictions list
+    :ivar EmailIngestPolicyChangedType EventType.email_ingest_policy_changed:
+        (team_policies) Changed email to my dropbox policy for team
     :ivar EmmAddExceptionType EventType.emm_add_exception: (team_policies) Added
         members to EMM exception list
     :ivar EmmChangePolicyType EventType.emm_change_policy: (team_policies)
@@ -23895,6 +24151,17 @@ class EventType(bb.Union):
         :rtype: EventType
         """
         return cls('user_tags_removed', val)
+
+    @classmethod
+    def email_ingest_receive_file(cls, val):
+        """
+        Create an instance of this class set to the
+        ``email_ingest_receive_file`` tag with value ``val``.
+
+        :param EmailIngestReceiveFileType val:
+        :rtype: EventType
+        """
+        return cls('email_ingest_receive_file', val)
 
     @classmethod
     def file_request_change(cls, val):
@@ -26858,6 +27125,17 @@ class EventType(bb.Union):
         return cls('directory_restrictions_remove_members', val)
 
     @classmethod
+    def email_ingest_policy_changed(cls, val):
+        """
+        Create an instance of this class set to the
+        ``email_ingest_policy_changed`` tag with value ``val``.
+
+        :param EmailIngestPolicyChangedType val:
+        :rtype: EventType
+        """
+        return cls('email_ingest_policy_changed', val)
+
+    @classmethod
     def emm_add_exception(cls, val):
         """
         Create an instance of this class set to the ``emm_add_exception`` tag
@@ -28812,6 +29090,14 @@ class EventType(bb.Union):
         :rtype: bool
         """
         return self._tag == 'user_tags_removed'
+
+    def is_email_ingest_receive_file(self):
+        """
+        Check if the union tag is ``email_ingest_receive_file``.
+
+        :rtype: bool
+        """
+        return self._tag == 'email_ingest_receive_file'
 
     def is_file_request_change(self):
         """
@@ -30965,6 +31251,14 @@ class EventType(bb.Union):
         """
         return self._tag == 'directory_restrictions_remove_members'
 
+    def is_email_ingest_policy_changed(self):
+        """
+        Check if the union tag is ``email_ingest_policy_changed``.
+
+        :rtype: bool
+        """
+        return self._tag == 'email_ingest_policy_changed'
+
     def is_emm_add_exception(self):
         """
         Check if the union tag is ``emm_add_exception``.
@@ -32988,6 +33282,18 @@ class EventType(bb.Union):
         """
         if not self.is_user_tags_removed():
             raise AttributeError("tag 'user_tags_removed' not set")
+        return self._value
+
+    def get_email_ingest_receive_file(self):
+        """
+        (file_requests) Received files via Email to my Dropbox
+
+        Only call this if :meth:`is_email_ingest_receive_file` is true.
+
+        :rtype: EmailIngestReceiveFileType
+        """
+        if not self.is_email_ingest_receive_file():
+            raise AttributeError("tag 'email_ingest_receive_file' not set")
         return self._value
 
     def get_file_request_change(self):
@@ -36263,6 +36569,18 @@ class EventType(bb.Union):
             raise AttributeError("tag 'directory_restrictions_remove_members' not set")
         return self._value
 
+    def get_email_ingest_policy_changed(self):
+        """
+        (team_policies) Changed email to my dropbox policy for team
+
+        Only call this if :meth:`is_email_ingest_policy_changed` is true.
+
+        :rtype: EmailIngestPolicyChangedType
+        """
+        if not self.is_email_ingest_policy_changed():
+            raise AttributeError("tag 'email_ingest_policy_changed' not set")
+        return self._value
+
     def get_emm_add_exception(self):
         """
         (team_policies) Added members to EMM exception list
@@ -37769,6 +38087,8 @@ class EventTypeArg(bb.Union):
     :ivar team_log.EventTypeArg.user_tags_added: (file_operations) Tagged a file
     :ivar team_log.EventTypeArg.user_tags_removed: (file_operations) Removed
         tags
+    :ivar team_log.EventTypeArg.email_ingest_receive_file: (file_requests)
+        Received files via Email to my Dropbox
     :ivar team_log.EventTypeArg.file_request_change: (file_requests) Changed
         file request
     :ivar team_log.EventTypeArg.file_request_close: (file_requests) Closed file
@@ -38309,6 +38629,8 @@ class EventTypeArg(bb.Union):
         (team_policies) Added members to directory restrictions list
     :ivar team_log.EventTypeArg.directory_restrictions_remove_members:
         (team_policies) Removed members from directory restrictions list
+    :ivar team_log.EventTypeArg.email_ingest_policy_changed: (team_policies)
+        Changed email to my dropbox policy for team
     :ivar team_log.EventTypeArg.emm_add_exception: (team_policies) Added members
         to EMM exception list
     :ivar team_log.EventTypeArg.emm_change_policy: (team_policies)
@@ -38754,6 +39076,8 @@ class EventTypeArg(bb.Union):
     user_tags_added = None
     # Attribute is overwritten below the class definition
     user_tags_removed = None
+    # Attribute is overwritten below the class definition
+    email_ingest_receive_file = None
     # Attribute is overwritten below the class definition
     file_request_change = None
     # Attribute is overwritten below the class definition
@@ -39292,6 +39616,8 @@ class EventTypeArg(bb.Union):
     directory_restrictions_add_members = None
     # Attribute is overwritten below the class definition
     directory_restrictions_remove_members = None
+    # Attribute is overwritten below the class definition
+    email_ingest_policy_changed = None
     # Attribute is overwritten below the class definition
     emm_add_exception = None
     # Attribute is overwritten below the class definition
@@ -40282,6 +40608,14 @@ class EventTypeArg(bb.Union):
         :rtype: bool
         """
         return self._tag == 'user_tags_removed'
+
+    def is_email_ingest_receive_file(self):
+        """
+        Check if the union tag is ``email_ingest_receive_file``.
+
+        :rtype: bool
+        """
+        return self._tag == 'email_ingest_receive_file'
 
     def is_file_request_change(self):
         """
@@ -42434,6 +42768,14 @@ class EventTypeArg(bb.Union):
         :rtype: bool
         """
         return self._tag == 'directory_restrictions_remove_members'
+
+    def is_email_ingest_policy_changed(self):
+        """
+        Check if the union tag is ``email_ingest_policy_changed``.
+
+        :rtype: bool
+        """
+        return self._tag == 'email_ingest_policy_changed'
 
     def is_emm_add_exception(self):
         """
@@ -73057,6 +73399,58 @@ DurationLogInfo._all_fields_ = [
     ('amount', DurationLogInfo.amount.validator),
 ]
 
+EmailIngestPolicy._disabled_validator = bv.Void()
+EmailIngestPolicy._enabled_validator = bv.Void()
+EmailIngestPolicy._other_validator = bv.Void()
+EmailIngestPolicy._tagmap = {
+    'disabled': EmailIngestPolicy._disabled_validator,
+    'enabled': EmailIngestPolicy._enabled_validator,
+    'other': EmailIngestPolicy._other_validator,
+}
+
+EmailIngestPolicy.disabled = EmailIngestPolicy('disabled')
+EmailIngestPolicy.enabled = EmailIngestPolicy('enabled')
+EmailIngestPolicy.other = EmailIngestPolicy('other')
+
+EmailIngestPolicyChangedDetails.new_value.validator = EmailIngestPolicy_validator
+EmailIngestPolicyChangedDetails.previous_value.validator = EmailIngestPolicy_validator
+EmailIngestPolicyChangedDetails._all_field_names_ = set([
+    'new_value',
+    'previous_value',
+])
+EmailIngestPolicyChangedDetails._all_fields_ = [
+    ('new_value', EmailIngestPolicyChangedDetails.new_value.validator),
+    ('previous_value', EmailIngestPolicyChangedDetails.previous_value.validator),
+]
+
+EmailIngestPolicyChangedType.description.validator = bv.String()
+EmailIngestPolicyChangedType._all_field_names_ = set(['description'])
+EmailIngestPolicyChangedType._all_fields_ = [('description', EmailIngestPolicyChangedType.description.validator)]
+
+EmailIngestReceiveFileDetails.inbox_name.validator = bv.String()
+EmailIngestReceiveFileDetails.attachment_names.validator = bv.List(bv.String())
+EmailIngestReceiveFileDetails.subject.validator = bv.Nullable(bv.String())
+EmailIngestReceiveFileDetails.from_name.validator = bv.Nullable(common.DisplayNameLegacy_validator)
+EmailIngestReceiveFileDetails.from_email.validator = bv.Nullable(EmailAddress_validator)
+EmailIngestReceiveFileDetails._all_field_names_ = set([
+    'inbox_name',
+    'attachment_names',
+    'subject',
+    'from_name',
+    'from_email',
+])
+EmailIngestReceiveFileDetails._all_fields_ = [
+    ('inbox_name', EmailIngestReceiveFileDetails.inbox_name.validator),
+    ('attachment_names', EmailIngestReceiveFileDetails.attachment_names.validator),
+    ('subject', EmailIngestReceiveFileDetails.subject.validator),
+    ('from_name', EmailIngestReceiveFileDetails.from_name.validator),
+    ('from_email', EmailIngestReceiveFileDetails.from_email.validator),
+]
+
+EmailIngestReceiveFileType.description.validator = bv.String()
+EmailIngestReceiveFileType._all_field_names_ = set(['description'])
+EmailIngestReceiveFileType._all_fields_ = [('description', EmailIngestReceiveFileType.description.validator)]
+
 EmmAddExceptionDetails._all_field_names_ = set([])
 EmmAddExceptionDetails._all_fields_ = []
 
@@ -73341,6 +73735,7 @@ EventDetails._organize_folder_with_tidy_details_validator = OrganizeFolderWithTi
 EventDetails._rewind_folder_details_validator = RewindFolderDetails_validator
 EventDetails._user_tags_added_details_validator = UserTagsAddedDetails_validator
 EventDetails._user_tags_removed_details_validator = UserTagsRemovedDetails_validator
+EventDetails._email_ingest_receive_file_details_validator = EmailIngestReceiveFileDetails_validator
 EventDetails._file_request_change_details_validator = FileRequestChangeDetails_validator
 EventDetails._file_request_close_details_validator = FileRequestCloseDetails_validator
 EventDetails._file_request_create_details_validator = FileRequestCreateDetails_validator
@@ -73610,6 +74005,7 @@ EventDetails._device_approvals_change_unlink_action_details_validator = DeviceAp
 EventDetails._device_approvals_remove_exception_details_validator = DeviceApprovalsRemoveExceptionDetails_validator
 EventDetails._directory_restrictions_add_members_details_validator = DirectoryRestrictionsAddMembersDetails_validator
 EventDetails._directory_restrictions_remove_members_details_validator = DirectoryRestrictionsRemoveMembersDetails_validator
+EventDetails._email_ingest_policy_changed_details_validator = EmailIngestPolicyChangedDetails_validator
 EventDetails._emm_add_exception_details_validator = EmmAddExceptionDetails_validator
 EventDetails._emm_change_policy_details_validator = EmmChangePolicyDetails_validator
 EventDetails._emm_remove_exception_details_validator = EmmRemoveExceptionDetails_validator
@@ -73816,6 +74212,7 @@ EventDetails._tagmap = {
     'rewind_folder_details': EventDetails._rewind_folder_details_validator,
     'user_tags_added_details': EventDetails._user_tags_added_details_validator,
     'user_tags_removed_details': EventDetails._user_tags_removed_details_validator,
+    'email_ingest_receive_file_details': EventDetails._email_ingest_receive_file_details_validator,
     'file_request_change_details': EventDetails._file_request_change_details_validator,
     'file_request_close_details': EventDetails._file_request_close_details_validator,
     'file_request_create_details': EventDetails._file_request_create_details_validator,
@@ -74085,6 +74482,7 @@ EventDetails._tagmap = {
     'device_approvals_remove_exception_details': EventDetails._device_approvals_remove_exception_details_validator,
     'directory_restrictions_add_members_details': EventDetails._directory_restrictions_add_members_details_validator,
     'directory_restrictions_remove_members_details': EventDetails._directory_restrictions_remove_members_details_validator,
+    'email_ingest_policy_changed_details': EventDetails._email_ingest_policy_changed_details_validator,
     'emm_add_exception_details': EventDetails._emm_add_exception_details_validator,
     'emm_change_policy_details': EventDetails._emm_change_policy_details_validator,
     'emm_remove_exception_details': EventDetails._emm_remove_exception_details_validator,
@@ -74294,6 +74692,7 @@ EventType._organize_folder_with_tidy_validator = OrganizeFolderWithTidyType_vali
 EventType._rewind_folder_validator = RewindFolderType_validator
 EventType._user_tags_added_validator = UserTagsAddedType_validator
 EventType._user_tags_removed_validator = UserTagsRemovedType_validator
+EventType._email_ingest_receive_file_validator = EmailIngestReceiveFileType_validator
 EventType._file_request_change_validator = FileRequestChangeType_validator
 EventType._file_request_close_validator = FileRequestCloseType_validator
 EventType._file_request_create_validator = FileRequestCreateType_validator
@@ -74563,6 +74962,7 @@ EventType._device_approvals_change_unlink_action_validator = DeviceApprovalsChan
 EventType._device_approvals_remove_exception_validator = DeviceApprovalsRemoveExceptionType_validator
 EventType._directory_restrictions_add_members_validator = DirectoryRestrictionsAddMembersType_validator
 EventType._directory_restrictions_remove_members_validator = DirectoryRestrictionsRemoveMembersType_validator
+EventType._email_ingest_policy_changed_validator = EmailIngestPolicyChangedType_validator
 EventType._emm_add_exception_validator = EmmAddExceptionType_validator
 EventType._emm_change_policy_validator = EmmChangePolicyType_validator
 EventType._emm_remove_exception_validator = EmmRemoveExceptionType_validator
@@ -74768,6 +75168,7 @@ EventType._tagmap = {
     'rewind_folder': EventType._rewind_folder_validator,
     'user_tags_added': EventType._user_tags_added_validator,
     'user_tags_removed': EventType._user_tags_removed_validator,
+    'email_ingest_receive_file': EventType._email_ingest_receive_file_validator,
     'file_request_change': EventType._file_request_change_validator,
     'file_request_close': EventType._file_request_close_validator,
     'file_request_create': EventType._file_request_create_validator,
@@ -75037,6 +75438,7 @@ EventType._tagmap = {
     'device_approvals_remove_exception': EventType._device_approvals_remove_exception_validator,
     'directory_restrictions_add_members': EventType._directory_restrictions_add_members_validator,
     'directory_restrictions_remove_members': EventType._directory_restrictions_remove_members_validator,
+    'email_ingest_policy_changed': EventType._email_ingest_policy_changed_validator,
     'emm_add_exception': EventType._emm_add_exception_validator,
     'emm_change_policy': EventType._emm_change_policy_validator,
     'emm_remove_exception': EventType._emm_remove_exception_validator,
@@ -75245,6 +75647,7 @@ EventTypeArg._organize_folder_with_tidy_validator = bv.Void()
 EventTypeArg._rewind_folder_validator = bv.Void()
 EventTypeArg._user_tags_added_validator = bv.Void()
 EventTypeArg._user_tags_removed_validator = bv.Void()
+EventTypeArg._email_ingest_receive_file_validator = bv.Void()
 EventTypeArg._file_request_change_validator = bv.Void()
 EventTypeArg._file_request_close_validator = bv.Void()
 EventTypeArg._file_request_create_validator = bv.Void()
@@ -75514,6 +75917,7 @@ EventTypeArg._device_approvals_change_unlink_action_validator = bv.Void()
 EventTypeArg._device_approvals_remove_exception_validator = bv.Void()
 EventTypeArg._directory_restrictions_add_members_validator = bv.Void()
 EventTypeArg._directory_restrictions_remove_members_validator = bv.Void()
+EventTypeArg._email_ingest_policy_changed_validator = bv.Void()
 EventTypeArg._emm_add_exception_validator = bv.Void()
 EventTypeArg._emm_change_policy_validator = bv.Void()
 EventTypeArg._emm_remove_exception_validator = bv.Void()
@@ -75719,6 +76123,7 @@ EventTypeArg._tagmap = {
     'rewind_folder': EventTypeArg._rewind_folder_validator,
     'user_tags_added': EventTypeArg._user_tags_added_validator,
     'user_tags_removed': EventTypeArg._user_tags_removed_validator,
+    'email_ingest_receive_file': EventTypeArg._email_ingest_receive_file_validator,
     'file_request_change': EventTypeArg._file_request_change_validator,
     'file_request_close': EventTypeArg._file_request_close_validator,
     'file_request_create': EventTypeArg._file_request_create_validator,
@@ -75988,6 +76393,7 @@ EventTypeArg._tagmap = {
     'device_approvals_remove_exception': EventTypeArg._device_approvals_remove_exception_validator,
     'directory_restrictions_add_members': EventTypeArg._directory_restrictions_add_members_validator,
     'directory_restrictions_remove_members': EventTypeArg._directory_restrictions_remove_members_validator,
+    'email_ingest_policy_changed': EventTypeArg._email_ingest_policy_changed_validator,
     'emm_add_exception': EventTypeArg._emm_add_exception_validator,
     'emm_change_policy': EventTypeArg._emm_change_policy_validator,
     'emm_remove_exception': EventTypeArg._emm_remove_exception_validator,
@@ -76194,6 +76600,7 @@ EventTypeArg.organize_folder_with_tidy = EventTypeArg('organize_folder_with_tidy
 EventTypeArg.rewind_folder = EventTypeArg('rewind_folder')
 EventTypeArg.user_tags_added = EventTypeArg('user_tags_added')
 EventTypeArg.user_tags_removed = EventTypeArg('user_tags_removed')
+EventTypeArg.email_ingest_receive_file = EventTypeArg('email_ingest_receive_file')
 EventTypeArg.file_request_change = EventTypeArg('file_request_change')
 EventTypeArg.file_request_close = EventTypeArg('file_request_close')
 EventTypeArg.file_request_create = EventTypeArg('file_request_create')
@@ -76463,6 +76870,7 @@ EventTypeArg.device_approvals_change_unlink_action = EventTypeArg('device_approv
 EventTypeArg.device_approvals_remove_exception = EventTypeArg('device_approvals_remove_exception')
 EventTypeArg.directory_restrictions_add_members = EventTypeArg('directory_restrictions_add_members')
 EventTypeArg.directory_restrictions_remove_members = EventTypeArg('directory_restrictions_remove_members')
+EventTypeArg.email_ingest_policy_changed = EventTypeArg('email_ingest_policy_changed')
 EventTypeArg.emm_add_exception = EventTypeArg('emm_add_exception')
 EventTypeArg.emm_change_policy = EventTypeArg('emm_change_policy')
 EventTypeArg.emm_remove_exception = EventTypeArg('emm_remove_exception')
