@@ -7000,7 +7000,7 @@ DurationLogInfo_validator = bv.Struct(DurationLogInfo)
 
 class EmailIngestPolicy(bb.Union):
     """
-    Email ingest policy
+    Policy for deciding whether a team can use Email to my Dropbox feature
 
     This class acts as a tagged union. Only one of the ``is_*`` methods will
     return true. To get the associated value of a tag (if one exists), use the
@@ -7046,12 +7046,10 @@ EmailIngestPolicy_validator = bv.Union(EmailIngestPolicy)
 
 class EmailIngestPolicyChangedDetails(bb.Struct):
     """
-    Changed email to my dropbox policy for team.
+    Changed email to my Dropbox policy for team.
 
-    :ivar team_log.EmailIngestPolicyChangedDetails.new_value: New email to my
-        dropbox policy.
-    :ivar team_log.EmailIngestPolicyChangedDetails.previous_value: Previous
-        email to my dropbox policy.
+    :ivar team_log.EmailIngestPolicyChangedDetails.new_value: To.
+    :ivar team_log.EmailIngestPolicyChangedDetails.previous_value: From.
     """
 
     __slots__ = [
@@ -22783,7 +22781,7 @@ class EventType(bb.Union):
         EventType.directory_restrictions_remove_members: (team_policies) Removed
         members from directory restrictions list
     :ivar EmailIngestPolicyChangedType EventType.email_ingest_policy_changed:
-        (team_policies) Changed email to my dropbox policy for team
+        (team_policies) Changed email to my Dropbox policy for team
     :ivar EmmAddExceptionType EventType.emm_add_exception: (team_policies) Added
         members to EMM exception list
     :ivar EmmChangePolicyType EventType.emm_change_policy: (team_policies)
@@ -36571,7 +36569,7 @@ class EventType(bb.Union):
 
     def get_email_ingest_policy_changed(self):
         """
-        (team_policies) Changed email to my dropbox policy for team
+        (team_policies) Changed email to my Dropbox policy for team
 
         Only call this if :meth:`is_email_ingest_policy_changed` is true.
 
@@ -38630,7 +38628,7 @@ class EventTypeArg(bb.Union):
     :ivar team_log.EventTypeArg.directory_restrictions_remove_members:
         (team_policies) Removed members from directory restrictions list
     :ivar team_log.EventTypeArg.email_ingest_policy_changed: (team_policies)
-        Changed email to my dropbox policy for team
+        Changed email to my Dropbox policy for team
     :ivar team_log.EventTypeArg.emm_add_exception: (team_policies) Added members
         to EMM exception list
     :ivar team_log.EventTypeArg.emm_change_policy: (team_policies)
