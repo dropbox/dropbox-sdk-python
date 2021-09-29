@@ -13146,6 +13146,17 @@ upload_session_finish_batch = bb.Route(
      'host': u'api',
      'style': u'rpc'},
 )
+upload_session_finish_batch_v2 = bb.Route(
+    'upload_session/finish_batch',
+    2,
+    False,
+    UploadSessionFinishBatchArg_validator,
+    UploadSessionFinishBatchResult_validator,
+    bv.Void(),
+    {'auth': u'user',
+     'host': u'api',
+     'style': u'rpc'},
+)
 upload_session_finish_batch_check = bb.Route(
     'upload_session/finish_batch/check',
     1,
@@ -13232,6 +13243,7 @@ ROUTES = {
     'upload_session/append': upload_session_append,
     'upload_session/finish': upload_session_finish,
     'upload_session/finish_batch': upload_session_finish_batch,
+    'upload_session/finish_batch:2': upload_session_finish_batch_v2,
     'upload_session/finish_batch/check': upload_session_finish_batch_check,
     'upload_session/start': upload_session_start,
 }
