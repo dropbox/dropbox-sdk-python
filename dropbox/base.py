@@ -3015,6 +3015,39 @@ class DropboxBase(object):
         )
         return r
 
+    def files_upload_session_finish_batch_v2(self,
+                                             entries):
+        """
+        This route helps you commit many files at once into a user's Dropbox.
+        Use :meth:`files_upload_session_start` and
+        :meth:`files_upload_session_append_v2` to upload file contents. We
+        recommend uploading many files in parallel to increase throughput. Once
+        the file contents have been uploaded, rather than calling
+        :meth:`files_upload_session_finish`, use this route to finish all your
+        upload sessions in a single request. ``UploadSessionStartArg.close`` or
+        ``UploadSessionAppendArg.close`` needs to be true for the last
+        :meth:`files_upload_session_start` or
+        :meth:`files_upload_session_append_v2` call of each upload session. The
+        maximum size of a file one can upload to an upload session is 350 GB. We
+        allow up to 1000 entries in a single request. Calls to this endpoint
+        will count as data transport calls for any Dropbox Business teams with a
+        limit on the number of data transport calls allowed per month. For more
+        information, see the `Data transport limit page
+        <https://www.dropbox.com/developers/reference/data-transport-limit>`_.
+
+        :param List[:class:`dropbox.files.UploadSessionFinishArg`] entries:
+            Commit information for each file in the batch.
+        :rtype: :class:`dropbox.files.UploadSessionFinishBatchResult`
+        """
+        arg = files.UploadSessionFinishBatchArg(entries)
+        r = self.request(
+            files.upload_session_finish_batch_v2,
+            'files',
+            arg,
+            None,
+        )
+        return r
+
     def files_upload_session_finish_batch_check(self,
                                                 async_job_id):
         """
