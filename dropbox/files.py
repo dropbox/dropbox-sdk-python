@@ -13138,7 +13138,7 @@ upload_session_finish = bb.Route(
 upload_session_finish_batch = bb.Route(
     'upload_session/finish_batch',
     1,
-    False,
+    True,
     UploadSessionFinishBatchArg_validator,
     UploadSessionFinishBatchLaunch_validator,
     bv.Void(),
