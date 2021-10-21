@@ -3006,6 +3006,10 @@ class DropboxBase(object):
             Commit information for each file in the batch.
         :rtype: :class:`dropbox.files.UploadSessionFinishBatchLaunch`
         """
+        warnings.warn(
+            'upload_session/finish_batch is deprecated. Use upload_session/finish_batch.',
+            DeprecationWarning,
+        )
         arg = files.UploadSessionFinishBatchArg(entries)
         r = self.request(
             files.upload_session_finish_batch,

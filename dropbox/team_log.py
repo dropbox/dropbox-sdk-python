@@ -64030,6 +64030,8 @@ class SharingLinkPolicy(bb.Union):
 
     _catch_all = 'other'
     # Attribute is overwritten below the class definition
+    default_no_one = None
+    # Attribute is overwritten below the class definition
     default_private = None
     # Attribute is overwritten below the class definition
     default_public = None
@@ -64037,6 +64039,14 @@ class SharingLinkPolicy(bb.Union):
     only_private = None
     # Attribute is overwritten below the class definition
     other = None
+
+    def is_default_no_one(self):
+        """
+        Check if the union tag is ``default_no_one``.
+
+        :rtype: bool
+        """
+        return self._tag == 'default_no_one'
 
     def is_default_private(self):
         """
@@ -81648,17 +81658,20 @@ SharingFolderJoinPolicy.from_anyone = SharingFolderJoinPolicy('from_anyone')
 SharingFolderJoinPolicy.from_team_only = SharingFolderJoinPolicy('from_team_only')
 SharingFolderJoinPolicy.other = SharingFolderJoinPolicy('other')
 
+SharingLinkPolicy._default_no_one_validator = bv.Void()
 SharingLinkPolicy._default_private_validator = bv.Void()
 SharingLinkPolicy._default_public_validator = bv.Void()
 SharingLinkPolicy._only_private_validator = bv.Void()
 SharingLinkPolicy._other_validator = bv.Void()
 SharingLinkPolicy._tagmap = {
+    'default_no_one': SharingLinkPolicy._default_no_one_validator,
     'default_private': SharingLinkPolicy._default_private_validator,
     'default_public': SharingLinkPolicy._default_public_validator,
     'only_private': SharingLinkPolicy._only_private_validator,
     'other': SharingLinkPolicy._other_validator,
 }
 
+SharingLinkPolicy.default_no_one = SharingLinkPolicy('default_no_one')
 SharingLinkPolicy.default_private = SharingLinkPolicy('default_private')
 SharingLinkPolicy.default_public = SharingLinkPolicy('default_public')
 SharingLinkPolicy.only_private = SharingLinkPolicy('only_private')
