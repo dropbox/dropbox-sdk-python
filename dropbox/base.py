@@ -2775,6 +2775,76 @@ class DropboxBase(object):
         )
         return r
 
+    def files_tags_add(self,
+                       path,
+                       tag_text):
+        """
+        Add a tag to an item. A tag is a string. No more than 20 tags can be
+        added to a given item.
+
+        :param str path: Path to the item to be tagged.
+        :param str tag_text: The value of the tag to add.
+        :rtype: None
+        :raises: :class:`.exceptions.ApiError`
+
+        If this raises, ApiError will contain:
+            :class:`dropbox.files.AddTagError`
+        """
+        arg = files.AddTagArg(path,
+                              tag_text)
+        r = self.request(
+            files.tags_add,
+            'files',
+            arg,
+            None,
+        )
+        return None
+
+    def files_tags_get(self,
+                       paths):
+        """
+        Get list of tags assigned to items.
+
+        :param List[str] paths: Path to the items.
+        :rtype: :class:`dropbox.files.GetTagsResult`
+        :raises: :class:`.exceptions.ApiError`
+
+        If this raises, ApiError will contain:
+            :class:`dropbox.files.BaseTagError`
+        """
+        arg = files.GetTagsArg(paths)
+        r = self.request(
+            files.tags_get,
+            'files',
+            arg,
+            None,
+        )
+        return r
+
+    def files_tags_remove(self,
+                          path,
+                          tag_text):
+        """
+        Remove a tag from an item.
+
+        :param str path: Path to the item to tag.
+        :param str tag_text: The tag to remove.
+        :rtype: None
+        :raises: :class:`.exceptions.ApiError`
+
+        If this raises, ApiError will contain:
+            :class:`dropbox.files.RemoveTagError`
+        """
+        arg = files.RemoveTagArg(path,
+                                 tag_text)
+        r = self.request(
+            files.tags_remove,
+            'files',
+            arg,
+            None,
+        )
+        return None
+
     def files_unlock_file_batch(self,
                                 entries):
         """
