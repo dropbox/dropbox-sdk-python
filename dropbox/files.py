@@ -16,6 +16,171 @@ from dropbox import common
 from dropbox import file_properties
 from dropbox import users_common
 
+class AddTagArg(bb.Struct):
+    """
+    :ivar files.AddTagArg.path: Path to the item to be tagged.
+    :ivar files.AddTagArg.tag_text: The value of the tag to add.
+    """
+
+    __slots__ = [
+        '_path_value',
+        '_tag_text_value',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 path=None,
+                 tag_text=None):
+        self._path_value = bb.NOT_SET
+        self._tag_text_value = bb.NOT_SET
+        if path is not None:
+            self.path = path
+        if tag_text is not None:
+            self.tag_text = tag_text
+
+    # Instance attribute type: str (validator is set below)
+    path = bb.Attribute("path")
+
+    # Instance attribute type: str (validator is set below)
+    tag_text = bb.Attribute("tag_text")
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(AddTagArg, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+AddTagArg_validator = bv.Struct(AddTagArg)
+
+class BaseError(bb.Union):
+    """
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+
+    :ivar files.BaseError.unknown: Action failed.
+    :ivar files.BaseError.transient: Action failed. Try again.
+    :ivar files.BaseError.input_validation: Action failed due to wrong params.
+    :ivar files.BaseError.cancelled: Action cancelled.
+    """
+
+    _catch_all = 'other'
+    # Attribute is overwritten below the class definition
+    unknown = None
+    # Attribute is overwritten below the class definition
+    transient = None
+    # Attribute is overwritten below the class definition
+    input_validation = None
+    # Attribute is overwritten below the class definition
+    cancelled = None
+    # Attribute is overwritten below the class definition
+    other = None
+
+    def is_unknown(self):
+        """
+        Check if the union tag is ``unknown``.
+
+        :rtype: bool
+        """
+        return self._tag == 'unknown'
+
+    def is_transient(self):
+        """
+        Check if the union tag is ``transient``.
+
+        :rtype: bool
+        """
+        return self._tag == 'transient'
+
+    def is_input_validation(self):
+        """
+        Check if the union tag is ``input_validation``.
+
+        :rtype: bool
+        """
+        return self._tag == 'input_validation'
+
+    def is_cancelled(self):
+        """
+        Check if the union tag is ``cancelled``.
+
+        :rtype: bool
+        """
+        return self._tag == 'cancelled'
+
+    def is_other(self):
+        """
+        Check if the union tag is ``other``.
+
+        :rtype: bool
+        """
+        return self._tag == 'other'
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(BaseError, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+BaseError_validator = bv.Union(BaseError)
+
+class BaseTagError(BaseError):
+    """
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+
+    :ivar files.BaseTagError.feature_not_supported: Tags are not turned on for
+        your team. Please turn on the feature.
+    :ivar files.BaseTagError.path_not_found: Path not found.
+    """
+
+    # Attribute is overwritten below the class definition
+    feature_not_supported = None
+    # Attribute is overwritten below the class definition
+    path_not_found = None
+
+    def is_feature_not_supported(self):
+        """
+        Check if the union tag is ``feature_not_supported``.
+
+        :rtype: bool
+        """
+        return self._tag == 'feature_not_supported'
+
+    def is_path_not_found(self):
+        """
+        Check if the union tag is ``path_not_found``.
+
+        :rtype: bool
+        """
+        return self._tag == 'path_not_found'
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(BaseTagError, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+BaseTagError_validator = bv.Union(BaseTagError)
+
+class AddTagError(BaseTagError):
+    """
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+
+    :ivar files.AddTagError.too_many_tags: Item already has max supported tags.
+    """
+
+    # Attribute is overwritten below the class definition
+    too_many_tags = None
+
+    def is_too_many_tags(self):
+        """
+        Check if the union tag is ``too_many_tags``.
+
+        :rtype: bool
+        """
+        return self._tag == 'too_many_tags'
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(AddTagError, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+AddTagError_validator = bv.Union(AddTagError)
+
 class GetMetadataArg(bb.Struct):
     """
     :ivar files.GetMetadataArg.path: The path of a file or folder on Dropbox.
@@ -2873,6 +3038,57 @@ class GetCopyReferenceResult(bb.Struct):
 
 GetCopyReferenceResult_validator = bv.Struct(GetCopyReferenceResult)
 
+class GetTagsArg(bb.Struct):
+    """
+    :ivar files.GetTagsArg.paths: Path to the items.
+    """
+
+    __slots__ = [
+        '_paths_value',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 paths=None):
+        self._paths_value = bb.NOT_SET
+        if paths is not None:
+            self.paths = paths
+
+    # Instance attribute type: list of [str] (validator is set below)
+    paths = bb.Attribute("paths")
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(GetTagsArg, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+GetTagsArg_validator = bv.Struct(GetTagsArg)
+
+class GetTagsResult(bb.Struct):
+    """
+    :ivar files.GetTagsResult.paths_to_tags: List of paths and their
+        corresponding tags.
+    """
+
+    __slots__ = [
+        '_paths_to_tags_value',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 paths_to_tags=None):
+        self._paths_to_tags_value = bb.NOT_SET
+        if paths_to_tags is not None:
+            self.paths_to_tags = paths_to_tags
+
+    # Instance attribute type: list of [PathToTags] (validator is set below)
+    paths_to_tags = bb.Attribute("paths_to_tags")
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(GetTagsResult, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+GetTagsResult_validator = bv.Struct(GetTagsResult)
+
 class GetTemporaryLinkArg(bb.Struct):
     """
     :ivar files.GetTemporaryLinkArg.path: The path to the file you want a
@@ -5508,6 +5724,40 @@ class PathOrLink(bb.Union):
 
 PathOrLink_validator = bv.Union(PathOrLink)
 
+class PathToTags(bb.Struct):
+    """
+    :ivar files.PathToTags.path: Path of the item.
+    :ivar files.PathToTags.tags: Tags assigned to this item.
+    """
+
+    __slots__ = [
+        '_path_value',
+        '_tags_value',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 path=None,
+                 tags=None):
+        self._path_value = bb.NOT_SET
+        self._tags_value = bb.NOT_SET
+        if path is not None:
+            self.path = path
+        if tags is not None:
+            self.tags = tags
+
+    # Instance attribute type: str (validator is set below)
+    path = bb.Attribute("path")
+
+    # Instance attribute type: list of [Tag] (validator is set below)
+    tags = bb.Attribute("tags")
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(PathToTags, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+PathToTags_validator = bv.Struct(PathToTags)
+
 class PhotoMetadata(MediaMetadata):
     """
     Metadata for a photo.
@@ -6597,6 +6847,66 @@ class RelocationResult(FileOpsResult):
         super(RelocationResult, self)._process_custom_annotations(annotation_type, field_path, processor)
 
 RelocationResult_validator = bv.Struct(RelocationResult)
+
+class RemoveTagArg(bb.Struct):
+    """
+    :ivar files.RemoveTagArg.path: Path to the item to tag.
+    :ivar files.RemoveTagArg.tag_text: The tag to remove.
+    """
+
+    __slots__ = [
+        '_path_value',
+        '_tag_text_value',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 path=None,
+                 tag_text=None):
+        self._path_value = bb.NOT_SET
+        self._tag_text_value = bb.NOT_SET
+        if path is not None:
+            self.path = path
+        if tag_text is not None:
+            self.tag_text = tag_text
+
+    # Instance attribute type: str (validator is set below)
+    path = bb.Attribute("path")
+
+    # Instance attribute type: str (validator is set below)
+    tag_text = bb.Attribute("tag_text")
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(RemoveTagArg, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+RemoveTagArg_validator = bv.Struct(RemoveTagArg)
+
+class RemoveTagError(BaseTagError):
+    """
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+
+    :ivar files.RemoveTagError.tag_not_exists_for_this_path: That tag doesn't
+        exist at this path.
+    """
+
+    # Attribute is overwritten below the class definition
+    tag_not_exists_for_this_path = None
+
+    def is_tag_not_exists_for_this_path(self):
+        """
+        Check if the union tag is ``tag_not_exists_for_this_path``.
+
+        :rtype: bool
+        """
+        return self._tag == 'tag_not_exists_for_this_path'
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(RemoveTagError, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+RemoveTagError_validator = bv.Union(RemoveTagError)
 
 class RestoreArg(bb.Struct):
     """
@@ -8262,6 +8572,65 @@ class SyncSettingsError(bb.Union):
 
 SyncSettingsError_validator = bv.Union(SyncSettingsError)
 
+class Tag(bb.Union):
+    """
+    Tag that can be added in multiple ways.
+
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+
+    :ivar UserGeneratedTag Tag.user_generated_tag: Tag generated by the user.
+    """
+
+    _catch_all = 'other'
+    # Attribute is overwritten below the class definition
+    other = None
+
+    @classmethod
+    def user_generated_tag(cls, val):
+        """
+        Create an instance of this class set to the ``user_generated_tag`` tag
+        with value ``val``.
+
+        :param UserGeneratedTag val:
+        :rtype: Tag
+        """
+        return cls('user_generated_tag', val)
+
+    def is_user_generated_tag(self):
+        """
+        Check if the union tag is ``user_generated_tag``.
+
+        :rtype: bool
+        """
+        return self._tag == 'user_generated_tag'
+
+    def is_other(self):
+        """
+        Check if the union tag is ``other``.
+
+        :rtype: bool
+        """
+        return self._tag == 'other'
+
+    def get_user_generated_tag(self):
+        """
+        Tag generated by the user.
+
+        Only call this if :meth:`is_user_generated_tag` is true.
+
+        :rtype: UserGeneratedTag
+        """
+        if not self.is_user_generated_tag():
+            raise AttributeError("tag 'user_generated_tag' not set")
+        return self._value
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(Tag, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+Tag_validator = bv.Union(Tag)
+
 class ThumbnailArg(bb.Struct):
     """
     :ivar files.ThumbnailArg.path: The path to the image file you want to
@@ -9835,6 +10204,28 @@ class UploadWriteFailed(bb.Struct):
 
 UploadWriteFailed_validator = bv.Struct(UploadWriteFailed)
 
+class UserGeneratedTag(bb.Struct):
+
+    __slots__ = [
+        '_tag_text_value',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 tag_text=None):
+        self._tag_text_value = bb.NOT_SET
+        if tag_text is not None:
+            self.tag_text = tag_text
+
+    # Instance attribute type: str (validator is set below)
+    tag_text = bb.Attribute("tag_text")
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(UserGeneratedTag, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+UserGeneratedTag_validator = bv.Struct(UserGeneratedTag)
+
 class VideoMetadata(MediaMetadata):
     """
     Metadata for a video.
@@ -10211,8 +10602,58 @@ Rev_validator = bv.String(min_length=9, pattern=u'[0-9a-f]+')
 SearchV2Cursor_validator = bv.String(min_length=1)
 Sha256HexHash_validator = bv.String(min_length=64, max_length=64)
 SharedLinkUrl_validator = bv.String()
+TagText_validator = bv.String(min_length=1, max_length=32, pattern=u'[A-Za-z0-9_]+')
 WritePath_validator = bv.String(pattern=u'(/(.|[\\r\\n])*)|(ns:[0-9]+(/.*)?)')
 WritePathOrId_validator = bv.String(pattern=u'(/(.|[\\r\\n])*)|(ns:[0-9]+(/.*)?)|(id:.*)')
+AddTagArg.path.validator = Path_validator
+AddTagArg.tag_text.validator = TagText_validator
+AddTagArg._all_field_names_ = set([
+    'path',
+    'tag_text',
+])
+AddTagArg._all_fields_ = [
+    ('path', AddTagArg.path.validator),
+    ('tag_text', AddTagArg.tag_text.validator),
+]
+
+BaseError._unknown_validator = bv.Void()
+BaseError._transient_validator = bv.Void()
+BaseError._input_validation_validator = bv.Void()
+BaseError._cancelled_validator = bv.Void()
+BaseError._other_validator = bv.Void()
+BaseError._tagmap = {
+    'unknown': BaseError._unknown_validator,
+    'transient': BaseError._transient_validator,
+    'input_validation': BaseError._input_validation_validator,
+    'cancelled': BaseError._cancelled_validator,
+    'other': BaseError._other_validator,
+}
+
+BaseError.unknown = BaseError('unknown')
+BaseError.transient = BaseError('transient')
+BaseError.input_validation = BaseError('input_validation')
+BaseError.cancelled = BaseError('cancelled')
+BaseError.other = BaseError('other')
+
+BaseTagError._feature_not_supported_validator = bv.Void()
+BaseTagError._path_not_found_validator = bv.Void()
+BaseTagError._tagmap = {
+    'feature_not_supported': BaseTagError._feature_not_supported_validator,
+    'path_not_found': BaseTagError._path_not_found_validator,
+}
+BaseTagError._tagmap.update(BaseError._tagmap)
+
+BaseTagError.feature_not_supported = BaseTagError('feature_not_supported')
+BaseTagError.path_not_found = BaseTagError('path_not_found')
+
+AddTagError._too_many_tags_validator = bv.Void()
+AddTagError._tagmap = {
+    'too_many_tags': AddTagError._too_many_tags_validator,
+}
+AddTagError._tagmap.update(BaseTagError._tagmap)
+
+AddTagError.too_many_tags = AddTagError('too_many_tags')
+
 GetMetadataArg.path.validator = ReadPath_validator
 GetMetadataArg.include_media_info.validator = bv.Boolean()
 GetMetadataArg.include_deleted.validator = bv.Boolean()
@@ -10846,6 +11287,14 @@ GetCopyReferenceResult._all_fields_ = [
     ('expires', GetCopyReferenceResult.expires.validator),
 ]
 
+GetTagsArg.paths.validator = bv.List(Path_validator)
+GetTagsArg._all_field_names_ = set(['paths'])
+GetTagsArg._all_fields_ = [('paths', GetTagsArg.paths.validator)]
+
+GetTagsResult.paths_to_tags.validator = bv.List(PathToTags_validator)
+GetTagsResult._all_field_names_ = set(['paths_to_tags'])
+GetTagsResult._all_fields_ = [('paths_to_tags', GetTagsResult.paths_to_tags.validator)]
+
 GetTemporaryLinkArg.path.validator = ReadPath_validator
 GetTemporaryLinkArg._all_field_names_ = set(['path'])
 GetTemporaryLinkArg._all_fields_ = [('path', GetTemporaryLinkArg.path.validator)]
@@ -11441,6 +11890,17 @@ PathOrLink._tagmap = {
 
 PathOrLink.other = PathOrLink('other')
 
+PathToTags.path.validator = Path_validator
+PathToTags.tags.validator = bv.List(Tag_validator)
+PathToTags._all_field_names_ = set([
+    'path',
+    'tags',
+])
+PathToTags._all_fields_ = [
+    ('path', PathToTags.path.validator),
+    ('tags', PathToTags.tags.validator),
+]
+
 PhotoMetadata._field_names_ = set([])
 PhotoMetadata._all_field_names_ = MediaMetadata._all_field_names_.union(PhotoMetadata._field_names_)
 PhotoMetadata._fields_ = []
@@ -11640,6 +12100,25 @@ RelocationBatchV2Result._all_fields_ = FileOpsResult._all_fields_ + [('entries',
 RelocationResult.metadata.validator = Metadata_validator
 RelocationResult._all_field_names_ = FileOpsResult._all_field_names_.union(set(['metadata']))
 RelocationResult._all_fields_ = FileOpsResult._all_fields_ + [('metadata', RelocationResult.metadata.validator)]
+
+RemoveTagArg.path.validator = Path_validator
+RemoveTagArg.tag_text.validator = TagText_validator
+RemoveTagArg._all_field_names_ = set([
+    'path',
+    'tag_text',
+])
+RemoveTagArg._all_fields_ = [
+    ('path', RemoveTagArg.path.validator),
+    ('tag_text', RemoveTagArg.tag_text.validator),
+]
+
+RemoveTagError._tag_not_exists_for_this_path_validator = bv.Void()
+RemoveTagError._tagmap = {
+    'tag_not_exists_for_this_path': RemoveTagError._tag_not_exists_for_this_path_validator,
+}
+RemoveTagError._tagmap.update(BaseTagError._tagmap)
+
+RemoveTagError.tag_not_exists_for_this_path = RemoveTagError('tag_not_exists_for_this_path')
 
 RestoreArg.path.validator = WritePath_validator
 RestoreArg.rev.validator = Rev_validator
@@ -12031,6 +12510,15 @@ SyncSettingsError.unsupported_combination = SyncSettingsError('unsupported_combi
 SyncSettingsError.unsupported_configuration = SyncSettingsError('unsupported_configuration')
 SyncSettingsError.other = SyncSettingsError('other')
 
+Tag._user_generated_tag_validator = UserGeneratedTag_validator
+Tag._other_validator = bv.Void()
+Tag._tagmap = {
+    'user_generated_tag': Tag._user_generated_tag_validator,
+    'other': Tag._other_validator,
+}
+
+Tag.other = Tag('other')
+
 ThumbnailArg.path.validator = ReadPath_validator
 ThumbnailArg.format.validator = ThumbnailFormat_validator
 ThumbnailArg.size.validator = ThumbnailSize_validator
@@ -12355,6 +12843,10 @@ UploadWriteFailed._all_fields_ = [
     ('reason', UploadWriteFailed.reason.validator),
     ('upload_session_id', UploadWriteFailed.upload_session_id.validator),
 ]
+
+UserGeneratedTag.tag_text.validator = TagText_validator
+UserGeneratedTag._all_field_names_ = set(['tag_text'])
+UserGeneratedTag._all_fields_ = [('tag_text', UserGeneratedTag.tag_text.validator)]
 
 VideoMetadata.duration.validator = bv.Nullable(bv.UInt64())
 VideoMetadata._field_names_ = set(['duration'])
@@ -12790,7 +13282,7 @@ list_folder = bb.Route(
     ListFolderArg_validator,
     ListFolderResult_validator,
     ListFolderError_validator,
-    {'auth': u'user',
+    {'auth': u'app, user',
      'host': u'api',
      'style': u'rpc'},
 )
@@ -12801,7 +13293,7 @@ list_folder_continue = bb.Route(
     ListFolderContinueArg_validator,
     ListFolderResult_validator,
     ListFolderContinueError_validator,
-    {'auth': u'user',
+    {'auth': u'app, user',
      'host': u'api',
      'style': u'rpc'},
 )
@@ -13080,6 +13572,39 @@ search_continue_v2 = bb.Route(
      'host': u'api',
      'style': u'rpc'},
 )
+tags_add = bb.Route(
+    'tags/add',
+    1,
+    False,
+    AddTagArg_validator,
+    bv.Void(),
+    AddTagError_validator,
+    {'auth': u'user',
+     'host': u'api',
+     'style': u'rpc'},
+)
+tags_get = bb.Route(
+    'tags/get',
+    1,
+    False,
+    GetTagsArg_validator,
+    GetTagsResult_validator,
+    BaseTagError_validator,
+    {'auth': u'user',
+     'host': u'api',
+     'style': u'rpc'},
+)
+tags_remove = bb.Route(
+    'tags/remove',
+    1,
+    False,
+    RemoveTagArg_validator,
+    bv.Void(),
+    RemoveTagError_validator,
+    {'auth': u'user',
+     'host': u'api',
+     'style': u'rpc'},
+)
 unlock_file_batch = bb.Route(
     'unlock_file_batch',
     1,
@@ -13237,6 +13762,9 @@ ROUTES = {
     'search': search,
     'search:2': search_v2,
     'search/continue:2': search_continue_v2,
+    'tags/add': tags_add,
+    'tags/get': tags_get,
+    'tags/remove': tags_remove,
     'unlock_file_batch': unlock_file_batch,
     'upload': upload,
     'upload_session/append:2': upload_session_append_v2,
