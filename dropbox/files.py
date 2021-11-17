@@ -50,61 +50,35 @@ class AddTagArg(bb.Struct):
 
 AddTagArg_validator = bv.Struct(AddTagArg)
 
-class BaseError(bb.Union):
+class BaseTagError(bb.Union):
     """
     This class acts as a tagged union. Only one of the ``is_*`` methods will
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
-
-    :ivar files.BaseError.unknown: Action failed.
-    :ivar files.BaseError.transient: Action failed. Try again.
-    :ivar files.BaseError.input_validation: Action failed due to wrong params.
-    :ivar files.BaseError.cancelled: Action cancelled.
     """
 
     _catch_all = 'other'
     # Attribute is overwritten below the class definition
-    unknown = None
-    # Attribute is overwritten below the class definition
-    transient = None
-    # Attribute is overwritten below the class definition
-    input_validation = None
-    # Attribute is overwritten below the class definition
-    cancelled = None
-    # Attribute is overwritten below the class definition
     other = None
 
-    def is_unknown(self):
+    @classmethod
+    def path(cls, val):
         """
-        Check if the union tag is ``unknown``.
+        Create an instance of this class set to the ``path`` tag with value
+        ``val``.
+
+        :param LookupError val:
+        :rtype: BaseTagError
+        """
+        return cls('path', val)
+
+    def is_path(self):
+        """
+        Check if the union tag is ``path``.
 
         :rtype: bool
         """
-        return self._tag == 'unknown'
-
-    def is_transient(self):
-        """
-        Check if the union tag is ``transient``.
-
-        :rtype: bool
-        """
-        return self._tag == 'transient'
-
-    def is_input_validation(self):
-        """
-        Check if the union tag is ``input_validation``.
-
-        :rtype: bool
-        """
-        return self._tag == 'input_validation'
-
-    def is_cancelled(self):
-        """
-        Check if the union tag is ``cancelled``.
-
-        :rtype: bool
-        """
-        return self._tag == 'cancelled'
+        return self._tag == 'path'
 
     def is_other(self):
         """
@@ -114,42 +88,15 @@ class BaseError(bb.Union):
         """
         return self._tag == 'other'
 
-    def _process_custom_annotations(self, annotation_type, field_path, processor):
-        super(BaseError, self)._process_custom_annotations(annotation_type, field_path, processor)
-
-BaseError_validator = bv.Union(BaseError)
-
-class BaseTagError(BaseError):
-    """
-    This class acts as a tagged union. Only one of the ``is_*`` methods will
-    return true. To get the associated value of a tag (if one exists), use the
-    corresponding ``get_*`` method.
-
-    :ivar files.BaseTagError.feature_not_supported: Tags are not turned on for
-        your team. Please turn on the feature.
-    :ivar files.BaseTagError.path_not_found: Path not found.
-    """
-
-    # Attribute is overwritten below the class definition
-    feature_not_supported = None
-    # Attribute is overwritten below the class definition
-    path_not_found = None
-
-    def is_feature_not_supported(self):
+    def get_path(self):
         """
-        Check if the union tag is ``feature_not_supported``.
+        Only call this if :meth:`is_path` is true.
 
-        :rtype: bool
+        :rtype: LookupError
         """
-        return self._tag == 'feature_not_supported'
-
-    def is_path_not_found(self):
-        """
-        Check if the union tag is ``path_not_found``.
-
-        :rtype: bool
-        """
-        return self._tag == 'path_not_found'
+        if not self.is_path():
+            raise AttributeError("tag 'path' not set")
+        return self._value
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(BaseTagError, self)._process_custom_annotations(annotation_type, field_path, processor)
@@ -162,7 +109,8 @@ class AddTagError(BaseTagError):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar files.AddTagError.too_many_tags: Item already has max supported tags.
+    :ivar files.AddTagError.too_many_tags: The item already has the maximum
+        supported number of tags.
     """
 
     # Attribute is overwritten below the class definition
@@ -6888,20 +6836,20 @@ class RemoveTagError(BaseTagError):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar files.RemoveTagError.tag_not_exists_for_this_path: That tag doesn't
-        exist at this path.
+    :ivar files.RemoveTagError.tag_not_present: That tag doesn't exist at this
+        path.
     """
 
     # Attribute is overwritten below the class definition
-    tag_not_exists_for_this_path = None
+    tag_not_present = None
 
-    def is_tag_not_exists_for_this_path(self):
+    def is_tag_not_present(self):
         """
-        Check if the union tag is ``tag_not_exists_for_this_path``.
+        Check if the union tag is ``tag_not_present``.
 
         :rtype: bool
         """
-        return self._tag == 'tag_not_exists_for_this_path'
+        return self._tag == 'tag_not_present'
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(RemoveTagError, self)._process_custom_annotations(annotation_type, field_path, processor)
@@ -10616,35 +10564,14 @@ AddTagArg._all_fields_ = [
     ('tag_text', AddTagArg.tag_text.validator),
 ]
 
-BaseError._unknown_validator = bv.Void()
-BaseError._transient_validator = bv.Void()
-BaseError._input_validation_validator = bv.Void()
-BaseError._cancelled_validator = bv.Void()
-BaseError._other_validator = bv.Void()
-BaseError._tagmap = {
-    'unknown': BaseError._unknown_validator,
-    'transient': BaseError._transient_validator,
-    'input_validation': BaseError._input_validation_validator,
-    'cancelled': BaseError._cancelled_validator,
-    'other': BaseError._other_validator,
-}
-
-BaseError.unknown = BaseError('unknown')
-BaseError.transient = BaseError('transient')
-BaseError.input_validation = BaseError('input_validation')
-BaseError.cancelled = BaseError('cancelled')
-BaseError.other = BaseError('other')
-
-BaseTagError._feature_not_supported_validator = bv.Void()
-BaseTagError._path_not_found_validator = bv.Void()
+BaseTagError._path_validator = LookupError_validator
+BaseTagError._other_validator = bv.Void()
 BaseTagError._tagmap = {
-    'feature_not_supported': BaseTagError._feature_not_supported_validator,
-    'path_not_found': BaseTagError._path_not_found_validator,
+    'path': BaseTagError._path_validator,
+    'other': BaseTagError._other_validator,
 }
-BaseTagError._tagmap.update(BaseError._tagmap)
 
-BaseTagError.feature_not_supported = BaseTagError('feature_not_supported')
-BaseTagError.path_not_found = BaseTagError('path_not_found')
+BaseTagError.other = BaseTagError('other')
 
 AddTagError._too_many_tags_validator = bv.Void()
 AddTagError._tagmap = {
@@ -12112,13 +12039,13 @@ RemoveTagArg._all_fields_ = [
     ('tag_text', RemoveTagArg.tag_text.validator),
 ]
 
-RemoveTagError._tag_not_exists_for_this_path_validator = bv.Void()
+RemoveTagError._tag_not_present_validator = bv.Void()
 RemoveTagError._tagmap = {
-    'tag_not_exists_for_this_path': RemoveTagError._tag_not_exists_for_this_path_validator,
+    'tag_not_present': RemoveTagError._tag_not_present_validator,
 }
 RemoveTagError._tagmap.update(BaseTagError._tagmap)
 
-RemoveTagError.tag_not_exists_for_this_path = RemoveTagError('tag_not_exists_for_this_path')
+RemoveTagError.tag_not_present = RemoveTagError('tag_not_present')
 
 RestoreArg.path.validator = WritePath_validator
 RestoreArg.rev.validator = Rev_validator
