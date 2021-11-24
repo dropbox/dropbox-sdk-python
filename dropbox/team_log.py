@@ -2501,7 +2501,7 @@ AppUnlinkUserType_validator = bv.Struct(AppUnlinkUserType)
 
 class ApplyNamingConventionDetails(bb.Struct):
     """
-    Applied a Naming Convention rule.
+    Applied naming convention.
     """
 
     __slots__ = [
@@ -9120,6 +9120,28 @@ class EventDetails(bb.Union):
         return cls('rewind_folder_details', val)
 
     @classmethod
+    def undo_naming_convention_details(cls, val):
+        """
+        Create an instance of this class set to the
+        ``undo_naming_convention_details`` tag with value ``val``.
+
+        :param UndoNamingConventionDetails val:
+        :rtype: EventDetails
+        """
+        return cls('undo_naming_convention_details', val)
+
+    @classmethod
+    def undo_organize_folder_with_tidy_details(cls, val):
+        """
+        Create an instance of this class set to the
+        ``undo_organize_folder_with_tidy_details`` tag with value ``val``.
+
+        :param UndoOrganizeFolderWithTidyDetails val:
+        :rtype: EventDetails
+        """
+        return cls('undo_organize_folder_with_tidy_details', val)
+
+    @classmethod
     def user_tags_added_details(cls, val):
         """
         Create an instance of this class set to the ``user_tags_added_details``
@@ -14110,6 +14132,22 @@ class EventDetails(bb.Union):
         """
         return self._tag == 'rewind_folder_details'
 
+    def is_undo_naming_convention_details(self):
+        """
+        Check if the union tag is ``undo_naming_convention_details``.
+
+        :rtype: bool
+        """
+        return self._tag == 'undo_naming_convention_details'
+
+    def is_undo_organize_folder_with_tidy_details(self):
+        """
+        Check if the union tag is ``undo_organize_folder_with_tidy_details``.
+
+        :rtype: bool
+        """
+        return self._tag == 'undo_organize_folder_with_tidy_details'
+
     def is_user_tags_added_details(self):
         """
         Check if the union tag is ``user_tags_added_details``.
@@ -18108,6 +18146,26 @@ class EventDetails(bb.Union):
             raise AttributeError("tag 'rewind_folder_details' not set")
         return self._value
 
+    def get_undo_naming_convention_details(self):
+        """
+        Only call this if :meth:`is_undo_naming_convention_details` is true.
+
+        :rtype: UndoNamingConventionDetails
+        """
+        if not self.is_undo_naming_convention_details():
+            raise AttributeError("tag 'undo_naming_convention_details' not set")
+        return self._value
+
+    def get_undo_organize_folder_with_tidy_details(self):
+        """
+        Only call this if :meth:`is_undo_organize_folder_with_tidy_details` is true.
+
+        :rtype: UndoOrganizeFolderWithTidyDetails
+        """
+        if not self.is_undo_organize_folder_with_tidy_details():
+            raise AttributeError("tag 'undo_organize_folder_with_tidy_details' not set")
+        return self._value
+
     def get_user_tags_added_details(self):
         """
         Only call this if :meth:`is_user_tags_added_details` is true.
@@ -22095,7 +22153,7 @@ class EventType(bb.Union):
     :ivar EnabledDomainInvitesType EventType.enabled_domain_invites: (domains)
         Enabled domain invites (deprecated, no longer logged)
     :ivar ApplyNamingConventionType EventType.apply_naming_convention:
-        (file_operations) Applied a Naming Convention rule
+        (file_operations) Applied naming convention
     :ivar CreateFolderType EventType.create_folder: (file_operations) Created
         folders (deprecated, no longer logged)
     :ivar FileAddType EventType.file_add: (file_operations) Added files and/or
@@ -22143,9 +22201,14 @@ class EventType(bb.Union):
     :ivar ObjectLabelUpdatedValueType EventType.object_label_updated_value:
         (file_operations) Updated a label's value
     :ivar OrganizeFolderWithTidyType EventType.organize_folder_with_tidy:
-        (file_operations) Organized a folder with the Tidy Up action
+        (file_operations) Organized a folder with multi-file organize
     :ivar RewindFolderType EventType.rewind_folder: (file_operations) Rewound a
         folder
+    :ivar UndoNamingConventionType EventType.undo_naming_convention:
+        (file_operations) Reverted naming convention
+    :ivar UndoOrganizeFolderWithTidyType
+        EventType.undo_organize_folder_with_tidy: (file_operations) Removed
+        multi-file organize
     :ivar UserTagsAddedType EventType.user_tags_added: (file_operations) Tagged
         a file
     :ivar UserTagsRemovedType EventType.user_tags_removed: (file_operations)
@@ -24127,6 +24190,28 @@ class EventType(bb.Union):
         :rtype: EventType
         """
         return cls('rewind_folder', val)
+
+    @classmethod
+    def undo_naming_convention(cls, val):
+        """
+        Create an instance of this class set to the ``undo_naming_convention``
+        tag with value ``val``.
+
+        :param UndoNamingConventionType val:
+        :rtype: EventType
+        """
+        return cls('undo_naming_convention', val)
+
+    @classmethod
+    def undo_organize_folder_with_tidy(cls, val):
+        """
+        Create an instance of this class set to the
+        ``undo_organize_folder_with_tidy`` tag with value ``val``.
+
+        :param UndoOrganizeFolderWithTidyType val:
+        :rtype: EventType
+        """
+        return cls('undo_organize_folder_with_tidy', val)
 
     @classmethod
     def user_tags_added(cls, val):
@@ -29073,6 +29158,22 @@ class EventType(bb.Union):
         """
         return self._tag == 'rewind_folder'
 
+    def is_undo_naming_convention(self):
+        """
+        Check if the union tag is ``undo_naming_convention``.
+
+        :rtype: bool
+        """
+        return self._tag == 'undo_naming_convention'
+
+    def is_undo_organize_folder_with_tidy(self):
+        """
+        Check if the union tag is ``undo_organize_folder_with_tidy``.
+
+        :rtype: bool
+        """
+        return self._tag == 'undo_organize_folder_with_tidy'
+
     def is_user_tags_added(self):
         """
         Check if the union tag is ``user_tags_added``.
@@ -32960,7 +33061,7 @@ class EventType(bb.Union):
 
     def get_apply_naming_convention(self):
         """
-        (file_operations) Applied a Naming Convention rule
+        (file_operations) Applied naming convention
 
         Only call this if :meth:`is_apply_naming_convention` is true.
 
@@ -33236,7 +33337,7 @@ class EventType(bb.Union):
 
     def get_organize_folder_with_tidy(self):
         """
-        (file_operations) Organized a folder with the Tidy Up action
+        (file_operations) Organized a folder with multi-file organize
 
         Only call this if :meth:`is_organize_folder_with_tidy` is true.
 
@@ -33256,6 +33357,30 @@ class EventType(bb.Union):
         """
         if not self.is_rewind_folder():
             raise AttributeError("tag 'rewind_folder' not set")
+        return self._value
+
+    def get_undo_naming_convention(self):
+        """
+        (file_operations) Reverted naming convention
+
+        Only call this if :meth:`is_undo_naming_convention` is true.
+
+        :rtype: UndoNamingConventionType
+        """
+        if not self.is_undo_naming_convention():
+            raise AttributeError("tag 'undo_naming_convention' not set")
+        return self._value
+
+    def get_undo_organize_folder_with_tidy(self):
+        """
+        (file_operations) Removed multi-file organize
+
+        Only call this if :meth:`is_undo_organize_folder_with_tidy` is true.
+
+        :rtype: UndoOrganizeFolderWithTidyType
+        """
+        if not self.is_undo_organize_folder_with_tidy():
+            raise AttributeError("tag 'undo_organize_folder_with_tidy' not set")
         return self._value
 
     def get_user_tags_added(self):
@@ -38034,7 +38159,7 @@ class EventTypeArg(bb.Union):
     :ivar team_log.EventTypeArg.enabled_domain_invites: (domains) Enabled domain
         invites (deprecated, no longer logged)
     :ivar team_log.EventTypeArg.apply_naming_convention: (file_operations)
-        Applied a Naming Convention rule
+        Applied naming convention
     :ivar team_log.EventTypeArg.create_folder: (file_operations) Created folders
         (deprecated, no longer logged)
     :ivar team_log.EventTypeArg.file_add: (file_operations) Added files and/or
@@ -38079,9 +38204,13 @@ class EventTypeArg(bb.Union):
     :ivar team_log.EventTypeArg.object_label_updated_value: (file_operations)
         Updated a label's value
     :ivar team_log.EventTypeArg.organize_folder_with_tidy: (file_operations)
-        Organized a folder with the Tidy Up action
+        Organized a folder with multi-file organize
     :ivar team_log.EventTypeArg.rewind_folder: (file_operations) Rewound a
         folder
+    :ivar team_log.EventTypeArg.undo_naming_convention: (file_operations)
+        Reverted naming convention
+    :ivar team_log.EventTypeArg.undo_organize_folder_with_tidy:
+        (file_operations) Removed multi-file organize
     :ivar team_log.EventTypeArg.user_tags_added: (file_operations) Tagged a file
     :ivar team_log.EventTypeArg.user_tags_removed: (file_operations) Removed
         tags
@@ -39070,6 +39199,10 @@ class EventTypeArg(bb.Union):
     organize_folder_with_tidy = None
     # Attribute is overwritten below the class definition
     rewind_folder = None
+    # Attribute is overwritten below the class definition
+    undo_naming_convention = None
+    # Attribute is overwritten below the class definition
+    undo_organize_folder_with_tidy = None
     # Attribute is overwritten below the class definition
     user_tags_added = None
     # Attribute is overwritten below the class definition
@@ -40590,6 +40723,22 @@ class EventTypeArg(bb.Union):
         :rtype: bool
         """
         return self._tag == 'rewind_folder'
+
+    def is_undo_naming_convention(self):
+        """
+        Check if the union tag is ``undo_naming_convention``.
+
+        :rtype: bool
+        """
+        return self._tag == 'undo_naming_convention'
+
+    def is_undo_organize_folder_with_tidy(self):
+        """
+        Check if the union tag is ``undo_organize_folder_with_tidy``.
+
+        :rtype: bool
+        """
+        return self._tag == 'undo_organize_folder_with_tidy'
 
     def is_user_tags_added(self):
         """
@@ -54457,7 +54606,7 @@ OrganizationName_validator = bv.Struct(OrganizationName)
 
 class OrganizeFolderWithTidyDetails(bb.Struct):
     """
-    Organized a folder with the Tidy Up action.
+    Organized a folder with multi-file organize.
     """
 
     __slots__ = [
@@ -71021,6 +71170,86 @@ class TwoAccountPolicy(bb.Union):
 
 TwoAccountPolicy_validator = bv.Union(TwoAccountPolicy)
 
+class UndoNamingConventionDetails(bb.Struct):
+    """
+    Reverted naming convention.
+    """
+
+    __slots__ = [
+    ]
+
+    _has_required_fields = False
+
+    def __init__(self):
+        pass
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(UndoNamingConventionDetails, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+UndoNamingConventionDetails_validator = bv.Struct(UndoNamingConventionDetails)
+
+class UndoNamingConventionType(bb.Struct):
+
+    __slots__ = [
+        '_description_value',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 description=None):
+        self._description_value = bb.NOT_SET
+        if description is not None:
+            self.description = description
+
+    # Instance attribute type: str (validator is set below)
+    description = bb.Attribute("description")
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(UndoNamingConventionType, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+UndoNamingConventionType_validator = bv.Struct(UndoNamingConventionType)
+
+class UndoOrganizeFolderWithTidyDetails(bb.Struct):
+    """
+    Removed multi-file organize.
+    """
+
+    __slots__ = [
+    ]
+
+    _has_required_fields = False
+
+    def __init__(self):
+        pass
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(UndoOrganizeFolderWithTidyDetails, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+UndoOrganizeFolderWithTidyDetails_validator = bv.Struct(UndoOrganizeFolderWithTidyDetails)
+
+class UndoOrganizeFolderWithTidyType(bb.Struct):
+
+    __slots__ = [
+        '_description_value',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 description=None):
+        self._description_value = bb.NOT_SET
+        if description is not None:
+            self.description = description
+
+    # Instance attribute type: str (validator is set below)
+    description = bb.Attribute("description")
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(UndoOrganizeFolderWithTidyType, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+UndoOrganizeFolderWithTidyType_validator = bv.Struct(UndoOrganizeFolderWithTidyType)
+
 class UserLinkedAppLogInfo(AppLogInfo):
     """
     User linked app
@@ -73741,6 +73970,8 @@ EventDetails._object_label_removed_details_validator = ObjectLabelRemovedDetails
 EventDetails._object_label_updated_value_details_validator = ObjectLabelUpdatedValueDetails_validator
 EventDetails._organize_folder_with_tidy_details_validator = OrganizeFolderWithTidyDetails_validator
 EventDetails._rewind_folder_details_validator = RewindFolderDetails_validator
+EventDetails._undo_naming_convention_details_validator = UndoNamingConventionDetails_validator
+EventDetails._undo_organize_folder_with_tidy_details_validator = UndoOrganizeFolderWithTidyDetails_validator
 EventDetails._user_tags_added_details_validator = UserTagsAddedDetails_validator
 EventDetails._user_tags_removed_details_validator = UserTagsRemovedDetails_validator
 EventDetails._email_ingest_receive_file_details_validator = EmailIngestReceiveFileDetails_validator
@@ -74218,6 +74449,8 @@ EventDetails._tagmap = {
     'object_label_updated_value_details': EventDetails._object_label_updated_value_details_validator,
     'organize_folder_with_tidy_details': EventDetails._organize_folder_with_tidy_details_validator,
     'rewind_folder_details': EventDetails._rewind_folder_details_validator,
+    'undo_naming_convention_details': EventDetails._undo_naming_convention_details_validator,
+    'undo_organize_folder_with_tidy_details': EventDetails._undo_organize_folder_with_tidy_details_validator,
     'user_tags_added_details': EventDetails._user_tags_added_details_validator,
     'user_tags_removed_details': EventDetails._user_tags_removed_details_validator,
     'email_ingest_receive_file_details': EventDetails._email_ingest_receive_file_details_validator,
@@ -74698,6 +74931,8 @@ EventType._object_label_removed_validator = ObjectLabelRemovedType_validator
 EventType._object_label_updated_value_validator = ObjectLabelUpdatedValueType_validator
 EventType._organize_folder_with_tidy_validator = OrganizeFolderWithTidyType_validator
 EventType._rewind_folder_validator = RewindFolderType_validator
+EventType._undo_naming_convention_validator = UndoNamingConventionType_validator
+EventType._undo_organize_folder_with_tidy_validator = UndoOrganizeFolderWithTidyType_validator
 EventType._user_tags_added_validator = UserTagsAddedType_validator
 EventType._user_tags_removed_validator = UserTagsRemovedType_validator
 EventType._email_ingest_receive_file_validator = EmailIngestReceiveFileType_validator
@@ -75174,6 +75409,8 @@ EventType._tagmap = {
     'object_label_updated_value': EventType._object_label_updated_value_validator,
     'organize_folder_with_tidy': EventType._organize_folder_with_tidy_validator,
     'rewind_folder': EventType._rewind_folder_validator,
+    'undo_naming_convention': EventType._undo_naming_convention_validator,
+    'undo_organize_folder_with_tidy': EventType._undo_organize_folder_with_tidy_validator,
     'user_tags_added': EventType._user_tags_added_validator,
     'user_tags_removed': EventType._user_tags_removed_validator,
     'email_ingest_receive_file': EventType._email_ingest_receive_file_validator,
@@ -75653,6 +75890,8 @@ EventTypeArg._object_label_removed_validator = bv.Void()
 EventTypeArg._object_label_updated_value_validator = bv.Void()
 EventTypeArg._organize_folder_with_tidy_validator = bv.Void()
 EventTypeArg._rewind_folder_validator = bv.Void()
+EventTypeArg._undo_naming_convention_validator = bv.Void()
+EventTypeArg._undo_organize_folder_with_tidy_validator = bv.Void()
 EventTypeArg._user_tags_added_validator = bv.Void()
 EventTypeArg._user_tags_removed_validator = bv.Void()
 EventTypeArg._email_ingest_receive_file_validator = bv.Void()
@@ -76129,6 +76368,8 @@ EventTypeArg._tagmap = {
     'object_label_updated_value': EventTypeArg._object_label_updated_value_validator,
     'organize_folder_with_tidy': EventTypeArg._organize_folder_with_tidy_validator,
     'rewind_folder': EventTypeArg._rewind_folder_validator,
+    'undo_naming_convention': EventTypeArg._undo_naming_convention_validator,
+    'undo_organize_folder_with_tidy': EventTypeArg._undo_organize_folder_with_tidy_validator,
     'user_tags_added': EventTypeArg._user_tags_added_validator,
     'user_tags_removed': EventTypeArg._user_tags_removed_validator,
     'email_ingest_receive_file': EventTypeArg._email_ingest_receive_file_validator,
@@ -76606,6 +76847,8 @@ EventTypeArg.object_label_removed = EventTypeArg('object_label_removed')
 EventTypeArg.object_label_updated_value = EventTypeArg('object_label_updated_value')
 EventTypeArg.organize_folder_with_tidy = EventTypeArg('organize_folder_with_tidy')
 EventTypeArg.rewind_folder = EventTypeArg('rewind_folder')
+EventTypeArg.undo_naming_convention = EventTypeArg('undo_naming_convention')
+EventTypeArg.undo_organize_folder_with_tidy = EventTypeArg('undo_organize_folder_with_tidy')
 EventTypeArg.user_tags_added = EventTypeArg('user_tags_added')
 EventTypeArg.user_tags_removed = EventTypeArg('user_tags_removed')
 EventTypeArg.email_ingest_receive_file = EventTypeArg('email_ingest_receive_file')
@@ -83159,6 +83402,20 @@ TwoAccountPolicy._tagmap = {
 TwoAccountPolicy.disabled = TwoAccountPolicy('disabled')
 TwoAccountPolicy.enabled = TwoAccountPolicy('enabled')
 TwoAccountPolicy.other = TwoAccountPolicy('other')
+
+UndoNamingConventionDetails._all_field_names_ = set([])
+UndoNamingConventionDetails._all_fields_ = []
+
+UndoNamingConventionType.description.validator = bv.String()
+UndoNamingConventionType._all_field_names_ = set(['description'])
+UndoNamingConventionType._all_fields_ = [('description', UndoNamingConventionType.description.validator)]
+
+UndoOrganizeFolderWithTidyDetails._all_field_names_ = set([])
+UndoOrganizeFolderWithTidyDetails._all_fields_ = []
+
+UndoOrganizeFolderWithTidyType.description.validator = bv.String()
+UndoOrganizeFolderWithTidyType._all_field_names_ = set(['description'])
+UndoOrganizeFolderWithTidyType._all_fields_ = [('description', UndoOrganizeFolderWithTidyType.description.validator)]
 
 UserLinkedAppLogInfo._field_names_ = set([])
 UserLinkedAppLogInfo._all_field_names_ = AppLogInfo._all_field_names_.union(UserLinkedAppLogInfo._field_names_)
