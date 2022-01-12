@@ -591,7 +591,7 @@ class _DropboxTransport(object):
                                timeout=timeout,
                                )
         self.raise_dropbox_error_for_resp(r)
-        request_id = res.headers.get('x-dropbox-request-id')
+        request_id = r.headers.get('x-dropbox-request-id')
         if r.status_code in (403, 404, 409):
             raw_resp = r.content.decode('utf-8')
             return RouteErrorResult(request_id, raw_resp)
