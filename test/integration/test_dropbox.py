@@ -26,7 +26,6 @@ from dropbox.dropbox_client import PATH_ROOT_HEADER, SELECT_USER_HEADER
 from dropbox.exceptions import (
     ApiError,
     AuthError,
-    BadInputError,
     PathRootError,
 )
 from dropbox.files import (
