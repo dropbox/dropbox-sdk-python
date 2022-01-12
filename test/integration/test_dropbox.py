@@ -153,9 +153,9 @@ class TestDropbox:
     def test_bad_auth(self):
         # Test malformed token
         malformed_token_dbx = Dropbox(MALFORMED_TOKEN)
-        with pytest.raises(BadInputError) as cm:
+        with pytest.raises(AuthError) as cm:
             malformed_token_dbx.files_list_folder('')
-        assert 'token is malformed' in cm.value.message
+        assert 'invalid_access_token' in cm.value.message
 
         # Test reasonable-looking invalid token
         invalid_token_dbx = Dropbox(INVALID_TOKEN)
