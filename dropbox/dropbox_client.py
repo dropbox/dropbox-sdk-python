@@ -625,7 +625,7 @@ class _DropboxTransport(object):
                     raise AuthError(request_id, err)
                 else:
                     raise BadInputError(request_id, res.text)
-            except:
+            except ValueError:
                 raise BadInputError(request_id, res.text)
         elif res.status_code == 401:
             assert res.headers.get('content-type') == 'application/json', (
