@@ -57,7 +57,7 @@ def main():
 
     o = subprocess.check_output(
         (['python', '-m', 'stone.cli', 'python_client', dropbox_pkg_path] +
-         specs + ['-a', 'host', '-a', 'style', '-a', 'auth'] +
+         specs + ['-a', 'host', '-a', 'style', '-a', 'auth', '-a', 'scope'] +
          [
              '--',
               '-w', 'user,app,noauth',
@@ -71,7 +71,7 @@ def main():
 
     o = subprocess.check_output(
         (['python', '-m', 'stone.cli', 'python_client', dropbox_pkg_path] +
-         specs + ['-a', 'host', '-a', 'style', '-a', 'auth'] +
+         specs + ['-a', 'host', '-a', 'style', '-a', 'auth', '-a', 'scope'] +
          [
              '--',
              '-w', 'team',
