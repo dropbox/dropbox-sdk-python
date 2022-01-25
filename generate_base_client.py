@@ -57,15 +57,29 @@ def main():
 
     o = subprocess.check_output(
         (['python', '-m', 'stone.cli', 'python_client', dropbox_pkg_path] +
-         specs + ['-a', 'host', '-a', 'style', '-a', 'auth'] +
-         ['--', '-w', 'user,app,noauth', '-m', 'base', '-c', 'DropboxBase', '-t', 'dropbox']))
+         specs + ['-a', 'host', '-a', 'style', '-a', 'auth', '-a', 'scope'] +
+         [
+             '--',
+              '-w', 'user,app,noauth',
+              '-m', 'base',
+              '-c', 'DropboxBase',
+              '-t', 'dropbox',
+              '-a', 'scope'
+         ]))
     if o:
         print('Output:', o)
 
     o = subprocess.check_output(
         (['python', '-m', 'stone.cli', 'python_client', dropbox_pkg_path] +
-         specs + ['-a', 'host', '-a', 'style', '-a', 'auth'] +
-         ['--', '-w', 'team', '-m', 'base_team', '-c', 'DropboxTeamBase', '-t', 'dropbox']))
+         specs + ['-a', 'host', '-a', 'style', '-a', 'auth', '-a', 'scope'] +
+         [
+             '--',
+             '-w', 'team',
+             '-m', 'base_team',
+             '-c', 'DropboxTeamBase',
+             '-t', 'dropbox',
+             '-a', 'scope'
+         ]))
     if o:
         print('Output:', o)
 
