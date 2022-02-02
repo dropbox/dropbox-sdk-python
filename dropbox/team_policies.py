@@ -185,6 +185,8 @@ class ExternalDriveBackupPolicyState(bb.Union):
         Backup feature is disabled.
     :ivar team_policies.ExternalDriveBackupPolicyState.enabled: External Drive
         Backup feature is enabled.
+    :ivar team_policies.ExternalDriveBackupPolicyState.default: External Drive
+        Backup default value based on team tier.
     """
 
     _catch_all = 'other'
@@ -192,6 +194,8 @@ class ExternalDriveBackupPolicyState(bb.Union):
     disabled = None
     # Attribute is overwritten below the class definition
     enabled = None
+    # Attribute is overwritten below the class definition
+    default = None
     # Attribute is overwritten below the class definition
     other = None
 
@@ -210,6 +214,14 @@ class ExternalDriveBackupPolicyState(bb.Union):
         :rtype: bool
         """
         return self._tag == 'enabled'
+
+    def is_default(self):
+        """
+        Check if the union tag is ``default``.
+
+        :rtype: bool
+        """
+        return self._tag == 'default'
 
     def is_other(self):
         """
@@ -1527,15 +1539,18 @@ EmmState.other = EmmState('other')
 
 ExternalDriveBackupPolicyState._disabled_validator = bv.Void()
 ExternalDriveBackupPolicyState._enabled_validator = bv.Void()
+ExternalDriveBackupPolicyState._default_validator = bv.Void()
 ExternalDriveBackupPolicyState._other_validator = bv.Void()
 ExternalDriveBackupPolicyState._tagmap = {
     'disabled': ExternalDriveBackupPolicyState._disabled_validator,
     'enabled': ExternalDriveBackupPolicyState._enabled_validator,
+    'default': ExternalDriveBackupPolicyState._default_validator,
     'other': ExternalDriveBackupPolicyState._other_validator,
 }
 
 ExternalDriveBackupPolicyState.disabled = ExternalDriveBackupPolicyState('disabled')
 ExternalDriveBackupPolicyState.enabled = ExternalDriveBackupPolicyState('enabled')
+ExternalDriveBackupPolicyState.default = ExternalDriveBackupPolicyState('default')
 ExternalDriveBackupPolicyState.other = ExternalDriveBackupPolicyState('other')
 
 FileLockingPolicyState._disabled_validator = bv.Void()
