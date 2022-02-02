@@ -71,8 +71,8 @@ EchoResult.result.validator = bv.String()
 EchoResult._all_field_names_ = set(['result'])
 EchoResult._all_fields_ = [('result', EchoResult.result.validator)]
 
-EchoArg.query.default = u''
-EchoResult.result.default = u''
+EchoArg.query.default = ''
+EchoResult.result.default = ''
 app = bb.Route(
     'app',
     1,
@@ -80,9 +80,9 @@ app = bb.Route(
     EchoArg_validator,
     EchoResult_validator,
     bv.Void(),
-    {'auth': u'app',
-     'host': u'api',
-     'style': u'rpc'},
+    {'auth': 'app',
+     'host': 'api',
+     'style': 'rpc'},
 )
 user = bb.Route(
     'user',
@@ -91,9 +91,9 @@ user = bb.Route(
     EchoArg_validator,
     EchoResult_validator,
     bv.Void(),
-    {'auth': u'user',
-     'host': u'api',
-     'style': u'rpc'},
+    {'auth': 'user',
+     'host': 'api',
+     'style': 'rpc'},
 )
 
 ROUTES = {

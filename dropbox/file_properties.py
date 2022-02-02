@@ -1704,9 +1704,9 @@ class UpdateTemplateResult(bb.Struct):
 UpdateTemplateResult_validator = bv.Struct(UpdateTemplateResult)
 
 Id_validator = bv.String(min_length=1)
-PathOrId_validator = bv.String(pattern=u'/(.|[\\r\\n])*|id:.*|(ns:[0-9]+(/.*)?)')
+PathOrId_validator = bv.String(pattern='/(.|[\\r\\n])*|id:.*|(ns:[0-9]+(/.*)?)')
 PropertiesSearchCursor_validator = bv.String(min_length=1)
-TemplateId_validator = bv.String(min_length=1, pattern=u'(/|ptid:).*')
+TemplateId_validator = bv.String(min_length=1, pattern='(/|ptid:).*')
 AddPropertiesArg.path.validator = PathOrId_validator
 AddPropertiesArg.property_groups.validator = bv.List(PropertyGroup_validator)
 AddPropertiesArg._all_field_names_ = set([
@@ -2106,9 +2106,9 @@ properties_add = bb.Route(
     AddPropertiesArg_validator,
     bv.Void(),
     AddPropertiesError_validator,
-    {'auth': u'user',
-     'host': u'api',
-     'style': u'rpc'},
+    {'auth': 'user',
+     'host': 'api',
+     'style': 'rpc'},
 )
 properties_overwrite = bb.Route(
     'properties/overwrite',
@@ -2117,9 +2117,9 @@ properties_overwrite = bb.Route(
     OverwritePropertyGroupArg_validator,
     bv.Void(),
     InvalidPropertyGroupError_validator,
-    {'auth': u'user',
-     'host': u'api',
-     'style': u'rpc'},
+    {'auth': 'user',
+     'host': 'api',
+     'style': 'rpc'},
 )
 properties_remove = bb.Route(
     'properties/remove',
@@ -2128,9 +2128,9 @@ properties_remove = bb.Route(
     RemovePropertiesArg_validator,
     bv.Void(),
     RemovePropertiesError_validator,
-    {'auth': u'user',
-     'host': u'api',
-     'style': u'rpc'},
+    {'auth': 'user',
+     'host': 'api',
+     'style': 'rpc'},
 )
 properties_search = bb.Route(
     'properties/search',
@@ -2139,9 +2139,9 @@ properties_search = bb.Route(
     PropertiesSearchArg_validator,
     PropertiesSearchResult_validator,
     PropertiesSearchError_validator,
-    {'auth': u'user',
-     'host': u'api',
-     'style': u'rpc'},
+    {'auth': 'user',
+     'host': 'api',
+     'style': 'rpc'},
 )
 properties_search_continue = bb.Route(
     'properties/search/continue',
@@ -2150,9 +2150,9 @@ properties_search_continue = bb.Route(
     PropertiesSearchContinueArg_validator,
     PropertiesSearchResult_validator,
     PropertiesSearchContinueError_validator,
-    {'auth': u'user',
-     'host': u'api',
-     'style': u'rpc'},
+    {'auth': 'user',
+     'host': 'api',
+     'style': 'rpc'},
 )
 properties_update = bb.Route(
     'properties/update',
@@ -2161,9 +2161,9 @@ properties_update = bb.Route(
     UpdatePropertiesArg_validator,
     bv.Void(),
     UpdatePropertiesError_validator,
-    {'auth': u'user',
-     'host': u'api',
-     'style': u'rpc'},
+    {'auth': 'user',
+     'host': 'api',
+     'style': 'rpc'},
 )
 templates_add_for_team = bb.Route(
     'templates/add_for_team',
@@ -2172,9 +2172,9 @@ templates_add_for_team = bb.Route(
     AddTemplateArg_validator,
     AddTemplateResult_validator,
     ModifyTemplateError_validator,
-    {'auth': u'team',
-     'host': u'api',
-     'style': u'rpc'},
+    {'auth': 'team',
+     'host': 'api',
+     'style': 'rpc'},
 )
 templates_add_for_user = bb.Route(
     'templates/add_for_user',
@@ -2183,9 +2183,9 @@ templates_add_for_user = bb.Route(
     AddTemplateArg_validator,
     AddTemplateResult_validator,
     ModifyTemplateError_validator,
-    {'auth': u'user',
-     'host': u'api',
-     'style': u'rpc'},
+    {'auth': 'user',
+     'host': 'api',
+     'style': 'rpc'},
 )
 templates_get_for_team = bb.Route(
     'templates/get_for_team',
@@ -2194,9 +2194,9 @@ templates_get_for_team = bb.Route(
     GetTemplateArg_validator,
     GetTemplateResult_validator,
     TemplateError_validator,
-    {'auth': u'team',
-     'host': u'api',
-     'style': u'rpc'},
+    {'auth': 'team',
+     'host': 'api',
+     'style': 'rpc'},
 )
 templates_get_for_user = bb.Route(
     'templates/get_for_user',
@@ -2205,9 +2205,9 @@ templates_get_for_user = bb.Route(
     GetTemplateArg_validator,
     GetTemplateResult_validator,
     TemplateError_validator,
-    {'auth': u'user',
-     'host': u'api',
-     'style': u'rpc'},
+    {'auth': 'user',
+     'host': 'api',
+     'style': 'rpc'},
 )
 templates_list_for_team = bb.Route(
     'templates/list_for_team',
@@ -2216,9 +2216,9 @@ templates_list_for_team = bb.Route(
     bv.Void(),
     ListTemplateResult_validator,
     TemplateError_validator,
-    {'auth': u'team',
-     'host': u'api',
-     'style': u'rpc'},
+    {'auth': 'team',
+     'host': 'api',
+     'style': 'rpc'},
 )
 templates_list_for_user = bb.Route(
     'templates/list_for_user',
@@ -2227,9 +2227,9 @@ templates_list_for_user = bb.Route(
     bv.Void(),
     ListTemplateResult_validator,
     TemplateError_validator,
-    {'auth': u'user',
-     'host': u'api',
-     'style': u'rpc'},
+    {'auth': 'user',
+     'host': 'api',
+     'style': 'rpc'},
 )
 templates_remove_for_team = bb.Route(
     'templates/remove_for_team',
@@ -2238,9 +2238,9 @@ templates_remove_for_team = bb.Route(
     RemoveTemplateArg_validator,
     bv.Void(),
     TemplateError_validator,
-    {'auth': u'team',
-     'host': u'api',
-     'style': u'rpc'},
+    {'auth': 'team',
+     'host': 'api',
+     'style': 'rpc'},
 )
 templates_remove_for_user = bb.Route(
     'templates/remove_for_user',
@@ -2249,9 +2249,9 @@ templates_remove_for_user = bb.Route(
     RemoveTemplateArg_validator,
     bv.Void(),
     TemplateError_validator,
-    {'auth': u'user',
-     'host': u'api',
-     'style': u'rpc'},
+    {'auth': 'user',
+     'host': 'api',
+     'style': 'rpc'},
 )
 templates_update_for_team = bb.Route(
     'templates/update_for_team',
@@ -2260,9 +2260,9 @@ templates_update_for_team = bb.Route(
     UpdateTemplateArg_validator,
     UpdateTemplateResult_validator,
     ModifyTemplateError_validator,
-    {'auth': u'team',
-     'host': u'api',
-     'style': u'rpc'},
+    {'auth': 'team',
+     'host': 'api',
+     'style': 'rpc'},
 )
 templates_update_for_user = bb.Route(
     'templates/update_for_user',
@@ -2271,9 +2271,9 @@ templates_update_for_user = bb.Route(
     UpdateTemplateArg_validator,
     UpdateTemplateResult_validator,
     ModifyTemplateError_validator,
-    {'auth': u'user',
-     'host': u'api',
-     'style': u'rpc'},
+    {'auth': 'user',
+     'host': 'api',
+     'style': 'rpc'},
 )
 
 ROUTES = {

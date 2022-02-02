@@ -4804,6 +4804,86 @@ class DataPlacementRestrictionSatisfyPolicyType(bb.Struct):
 
 DataPlacementRestrictionSatisfyPolicyType_validator = bv.Struct(DataPlacementRestrictionSatisfyPolicyType)
 
+class DataResidencyMigrationRequestSuccessfulDetails(bb.Struct):
+    """
+    Requested data residency migration for team data.
+    """
+
+    __slots__ = [
+    ]
+
+    _has_required_fields = False
+
+    def __init__(self):
+        pass
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(DataResidencyMigrationRequestSuccessfulDetails, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+DataResidencyMigrationRequestSuccessfulDetails_validator = bv.Struct(DataResidencyMigrationRequestSuccessfulDetails)
+
+class DataResidencyMigrationRequestSuccessfulType(bb.Struct):
+
+    __slots__ = [
+        '_description_value',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 description=None):
+        self._description_value = bb.NOT_SET
+        if description is not None:
+            self.description = description
+
+    # Instance attribute type: str (validator is set below)
+    description = bb.Attribute("description")
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(DataResidencyMigrationRequestSuccessfulType, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+DataResidencyMigrationRequestSuccessfulType_validator = bv.Struct(DataResidencyMigrationRequestSuccessfulType)
+
+class DataResidencyMigrationRequestUnsuccessfulDetails(bb.Struct):
+    """
+    Request for data residency migration for team data has failed.
+    """
+
+    __slots__ = [
+    ]
+
+    _has_required_fields = False
+
+    def __init__(self):
+        pass
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(DataResidencyMigrationRequestUnsuccessfulDetails, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+DataResidencyMigrationRequestUnsuccessfulDetails_validator = bv.Struct(DataResidencyMigrationRequestUnsuccessfulDetails)
+
+class DataResidencyMigrationRequestUnsuccessfulType(bb.Struct):
+
+    __slots__ = [
+        '_description_value',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 description=None):
+        self._description_value = bb.NOT_SET
+        if description is not None:
+            self.description = description
+
+    # Instance attribute type: str (validator is set below)
+    description = bb.Attribute("description")
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(DataResidencyMigrationRequestUnsuccessfulType, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+DataResidencyMigrationRequestUnsuccessfulType_validator = bv.Struct(DataResidencyMigrationRequestUnsuccessfulType)
+
 class DefaultLinkExpirationDaysPolicy(bb.Union):
     """
     Policy for the default number of days until an externally shared link
@@ -12886,6 +12966,30 @@ class EventDetails(bb.Union):
         return cls('web_sessions_change_idle_length_policy_details', val)
 
     @classmethod
+    def data_residency_migration_request_successful_details(cls, val):
+        """
+        Create an instance of this class set to the
+        ``data_residency_migration_request_successful_details`` tag with value
+        ``val``.
+
+        :param DataResidencyMigrationRequestSuccessfulDetails val:
+        :rtype: EventDetails
+        """
+        return cls('data_residency_migration_request_successful_details', val)
+
+    @classmethod
+    def data_residency_migration_request_unsuccessful_details(cls, val):
+        """
+        Create an instance of this class set to the
+        ``data_residency_migration_request_unsuccessful_details`` tag with value
+        ``val``.
+
+        :param DataResidencyMigrationRequestUnsuccessfulDetails val:
+        :rtype: EventDetails
+        """
+        return cls('data_residency_migration_request_unsuccessful_details', val)
+
+    @classmethod
     def team_merge_from_details(cls, val):
         """
         Create an instance of this class set to the ``team_merge_from_details``
@@ -16843,6 +16947,22 @@ class EventDetails(bb.Union):
         :rtype: bool
         """
         return self._tag == 'web_sessions_change_idle_length_policy_details'
+
+    def is_data_residency_migration_request_successful_details(self):
+        """
+        Check if the union tag is ``data_residency_migration_request_successful_details``.
+
+        :rtype: bool
+        """
+        return self._tag == 'data_residency_migration_request_successful_details'
+
+    def is_data_residency_migration_request_unsuccessful_details(self):
+        """
+        Check if the union tag is ``data_residency_migration_request_unsuccessful_details``.
+
+        :rtype: bool
+        """
+        return self._tag == 'data_residency_migration_request_unsuccessful_details'
 
     def is_team_merge_from_details(self):
         """
@@ -21536,6 +21656,26 @@ class EventDetails(bb.Union):
             raise AttributeError("tag 'web_sessions_change_idle_length_policy_details' not set")
         return self._value
 
+    def get_data_residency_migration_request_successful_details(self):
+        """
+        Only call this if :meth:`is_data_residency_migration_request_successful_details` is true.
+
+        :rtype: DataResidencyMigrationRequestSuccessfulDetails
+        """
+        if not self.is_data_residency_migration_request_successful_details():
+            raise AttributeError("tag 'data_residency_migration_request_successful_details' not set")
+        return self._value
+
+    def get_data_residency_migration_request_unsuccessful_details(self):
+        """
+        Only call this if :meth:`is_data_residency_migration_request_unsuccessful_details` is true.
+
+        :rtype: DataResidencyMigrationRequestUnsuccessfulDetails
+        """
+        if not self.is_data_residency_migration_request_unsuccessful_details():
+            raise AttributeError("tag 'data_residency_migration_request_unsuccessful_details' not set")
+        return self._value
+
     def get_team_merge_from_details(self):
         """
         Only call this if :meth:`is_team_merge_from_details` is true.
@@ -23022,6 +23162,12 @@ class EventType(bb.Union):
     :ivar WebSessionsChangeIdleLengthPolicyType
         EventType.web_sessions_change_idle_length_policy: (team_policies)
         Changed how long team members can be idle while signed in to Dropbox.com
+    :ivar DataResidencyMigrationRequestSuccessfulType
+        EventType.data_residency_migration_request_successful: (team_profile)
+        Requested data residency migration for team data
+    :ivar DataResidencyMigrationRequestUnsuccessfulType
+        EventType.data_residency_migration_request_unsuccessful: (team_profile)
+        Request for data residency migration for team data has failed
     :ivar TeamMergeFromType EventType.team_merge_from: (team_profile) Merged
         another team into this team
     :ivar TeamMergeToType EventType.team_merge_to: (team_profile) Merged this
@@ -27925,6 +28071,29 @@ class EventType(bb.Union):
         return cls('web_sessions_change_idle_length_policy', val)
 
     @classmethod
+    def data_residency_migration_request_successful(cls, val):
+        """
+        Create an instance of this class set to the
+        ``data_residency_migration_request_successful`` tag with value ``val``.
+
+        :param DataResidencyMigrationRequestSuccessfulType val:
+        :rtype: EventType
+        """
+        return cls('data_residency_migration_request_successful', val)
+
+    @classmethod
+    def data_residency_migration_request_unsuccessful(cls, val):
+        """
+        Create an instance of this class set to the
+        ``data_residency_migration_request_unsuccessful`` tag with value
+        ``val``.
+
+        :param DataResidencyMigrationRequestUnsuccessfulType val:
+        :rtype: EventType
+        """
+        return cls('data_residency_migration_request_unsuccessful', val)
+
+    @classmethod
     def team_merge_from(cls, val):
         """
         Create an instance of this class set to the ``team_merge_from`` tag with
@@ -31869,6 +32038,22 @@ class EventType(bb.Union):
         :rtype: bool
         """
         return self._tag == 'web_sessions_change_idle_length_policy'
+
+    def is_data_residency_migration_request_successful(self):
+        """
+        Check if the union tag is ``data_residency_migration_request_successful``.
+
+        :rtype: bool
+        """
+        return self._tag == 'data_residency_migration_request_successful'
+
+    def is_data_residency_migration_request_unsuccessful(self):
+        """
+        Check if the union tag is ``data_residency_migration_request_unsuccessful``.
+
+        :rtype: bool
+        """
+        return self._tag == 'data_residency_migration_request_unsuccessful'
 
     def is_team_merge_from(self):
         """
@@ -37494,6 +37679,31 @@ class EventType(bb.Union):
             raise AttributeError("tag 'web_sessions_change_idle_length_policy' not set")
         return self._value
 
+    def get_data_residency_migration_request_successful(self):
+        """
+        (team_profile) Requested data residency migration for team data
+
+        Only call this if :meth:`is_data_residency_migration_request_successful` is true.
+
+        :rtype: DataResidencyMigrationRequestSuccessfulType
+        """
+        if not self.is_data_residency_migration_request_successful():
+            raise AttributeError("tag 'data_residency_migration_request_successful' not set")
+        return self._value
+
+    def get_data_residency_migration_request_unsuccessful(self):
+        """
+        (team_profile) Request for data residency migration for team data has
+        failed
+
+        Only call this if :meth:`is_data_residency_migration_request_unsuccessful` is true.
+
+        :rtype: DataResidencyMigrationRequestUnsuccessfulType
+        """
+        if not self.is_data_residency_migration_request_unsuccessful():
+            raise AttributeError("tag 'data_residency_migration_request_unsuccessful' not set")
+        return self._value
+
     def get_team_merge_from(self):
         """
         (team_profile) Merged another team into this team
@@ -38901,6 +39111,11 @@ class EventTypeArg(bb.Union):
     :ivar team_log.EventTypeArg.web_sessions_change_idle_length_policy:
         (team_policies) Changed how long team members can be idle while signed
         in to Dropbox.com
+    :ivar team_log.EventTypeArg.data_residency_migration_request_successful:
+        (team_profile) Requested data residency migration for team data
+    :ivar team_log.EventTypeArg.data_residency_migration_request_unsuccessful:
+        (team_profile) Request for data residency migration for team data has
+        failed
     :ivar team_log.EventTypeArg.team_merge_from: (team_profile) Merged another
         team into this team
     :ivar team_log.EventTypeArg.team_merge_to: (team_profile) Merged this team
@@ -39877,6 +40092,10 @@ class EventTypeArg(bb.Union):
     web_sessions_change_fixed_length_policy = None
     # Attribute is overwritten below the class definition
     web_sessions_change_idle_length_policy = None
+    # Attribute is overwritten below the class definition
+    data_residency_migration_request_successful = None
+    # Attribute is overwritten below the class definition
+    data_residency_migration_request_unsuccessful = None
     # Attribute is overwritten below the class definition
     team_merge_from = None
     # Attribute is overwritten below the class definition
@@ -43436,6 +43655,22 @@ class EventTypeArg(bb.Union):
         """
         return self._tag == 'web_sessions_change_idle_length_policy'
 
+    def is_data_residency_migration_request_successful(self):
+        """
+        Check if the union tag is ``data_residency_migration_request_successful``.
+
+        :rtype: bool
+        """
+        return self._tag == 'data_residency_migration_request_successful'
+
+    def is_data_residency_migration_request_unsuccessful(self):
+        """
+        Check if the union tag is ``data_residency_migration_request_unsuccessful``.
+
+        :rtype: bool
+        """
+        return self._tag == 'data_residency_migration_request_unsuccessful'
+
     def is_team_merge_from(self):
         """
         Check if the union tag is ``team_merge_from``.
@@ -44011,11 +44246,21 @@ class ExternalDriveBackupPolicy(bb.Union):
 
     _catch_all = 'other'
     # Attribute is overwritten below the class definition
+    default = None
+    # Attribute is overwritten below the class definition
     disabled = None
     # Attribute is overwritten below the class definition
     enabled = None
     # Attribute is overwritten below the class definition
     other = None
+
+    def is_default(self):
+        """
+        Check if the union tag is ``default``.
+
+        :rtype: bool
+        """
+        return self._tag == 'default'
 
     def is_disabled(self):
         """
@@ -72533,14 +72778,14 @@ AppLogInfo._fields_ = [
 AppLogInfo._all_fields_ = AppLogInfo._fields_
 
 AppLogInfo._tag_to_subtype_ = {
-    (u'user_or_team_linked_app',): UserOrTeamLinkedAppLogInfo_validator,
-    (u'user_linked_app',): UserLinkedAppLogInfo_validator,
-    (u'team_linked_app',): TeamLinkedAppLogInfo_validator,
+    ('user_or_team_linked_app',): UserOrTeamLinkedAppLogInfo_validator,
+    ('user_linked_app',): UserLinkedAppLogInfo_validator,
+    ('team_linked_app',): TeamLinkedAppLogInfo_validator,
 }
 AppLogInfo._pytype_to_tag_and_subtype_ = {
-    UserOrTeamLinkedAppLogInfo: ((u'user_or_team_linked_app',), UserOrTeamLinkedAppLogInfo_validator),
-    UserLinkedAppLogInfo: ((u'user_linked_app',), UserLinkedAppLogInfo_validator),
-    TeamLinkedAppLogInfo: ((u'team_linked_app',), TeamLinkedAppLogInfo_validator),
+    UserOrTeamLinkedAppLogInfo: (('user_or_team_linked_app',), UserOrTeamLinkedAppLogInfo_validator),
+    UserLinkedAppLogInfo: (('user_linked_app',), UserLinkedAppLogInfo_validator),
+    TeamLinkedAppLogInfo: (('team_linked_app',), TeamLinkedAppLogInfo_validator),
 }
 AppLogInfo._is_catch_all_ = True
 
@@ -73107,6 +73352,20 @@ DataPlacementRestrictionSatisfyPolicyType.description.validator = bv.String()
 DataPlacementRestrictionSatisfyPolicyType._all_field_names_ = set(['description'])
 DataPlacementRestrictionSatisfyPolicyType._all_fields_ = [('description', DataPlacementRestrictionSatisfyPolicyType.description.validator)]
 
+DataResidencyMigrationRequestSuccessfulDetails._all_field_names_ = set([])
+DataResidencyMigrationRequestSuccessfulDetails._all_fields_ = []
+
+DataResidencyMigrationRequestSuccessfulType.description.validator = bv.String()
+DataResidencyMigrationRequestSuccessfulType._all_field_names_ = set(['description'])
+DataResidencyMigrationRequestSuccessfulType._all_fields_ = [('description', DataResidencyMigrationRequestSuccessfulType.description.validator)]
+
+DataResidencyMigrationRequestUnsuccessfulDetails._all_field_names_ = set([])
+DataResidencyMigrationRequestUnsuccessfulDetails._all_fields_ = []
+
+DataResidencyMigrationRequestUnsuccessfulType.description.validator = bv.String()
+DataResidencyMigrationRequestUnsuccessfulType._all_field_names_ = set(['description'])
+DataResidencyMigrationRequestUnsuccessfulType._all_fields_ = [('description', DataResidencyMigrationRequestUnsuccessfulType.description.validator)]
+
 DefaultLinkExpirationDaysPolicy._day_1_validator = bv.Void()
 DefaultLinkExpirationDaysPolicy._day_180_validator = bv.Void()
 DefaultLinkExpirationDaysPolicy._day_3_validator = bv.Void()
@@ -73163,16 +73422,16 @@ DeviceSessionLogInfo._fields_ = [
 DeviceSessionLogInfo._all_fields_ = DeviceSessionLogInfo._fields_
 
 DeviceSessionLogInfo._tag_to_subtype_ = {
-    (u'desktop_device_session',): DesktopDeviceSessionLogInfo_validator,
-    (u'mobile_device_session',): MobileDeviceSessionLogInfo_validator,
-    (u'web_device_session',): WebDeviceSessionLogInfo_validator,
-    (u'legacy_device_session',): LegacyDeviceSessionLogInfo_validator,
+    ('desktop_device_session',): DesktopDeviceSessionLogInfo_validator,
+    ('mobile_device_session',): MobileDeviceSessionLogInfo_validator,
+    ('web_device_session',): WebDeviceSessionLogInfo_validator,
+    ('legacy_device_session',): LegacyDeviceSessionLogInfo_validator,
 }
 DeviceSessionLogInfo._pytype_to_tag_and_subtype_ = {
-    DesktopDeviceSessionLogInfo: ((u'desktop_device_session',), DesktopDeviceSessionLogInfo_validator),
-    MobileDeviceSessionLogInfo: ((u'mobile_device_session',), MobileDeviceSessionLogInfo_validator),
-    WebDeviceSessionLogInfo: ((u'web_device_session',), WebDeviceSessionLogInfo_validator),
-    LegacyDeviceSessionLogInfo: ((u'legacy_device_session',), LegacyDeviceSessionLogInfo_validator),
+    DesktopDeviceSessionLogInfo: (('desktop_device_session',), DesktopDeviceSessionLogInfo_validator),
+    MobileDeviceSessionLogInfo: (('mobile_device_session',), MobileDeviceSessionLogInfo_validator),
+    WebDeviceSessionLogInfo: (('web_device_session',), WebDeviceSessionLogInfo_validator),
+    LegacyDeviceSessionLogInfo: (('legacy_device_session',), LegacyDeviceSessionLogInfo_validator),
 }
 DeviceSessionLogInfo._is_catch_all_ = True
 
@@ -73208,14 +73467,14 @@ SessionLogInfo._fields_ = [('session_id', SessionLogInfo.session_id.validator)]
 SessionLogInfo._all_fields_ = SessionLogInfo._fields_
 
 SessionLogInfo._tag_to_subtype_ = {
-    (u'web',): WebSessionLogInfo_validator,
-    (u'desktop',): DesktopSessionLogInfo_validator,
-    (u'mobile',): MobileSessionLogInfo_validator,
+    ('web',): WebSessionLogInfo_validator,
+    ('desktop',): DesktopSessionLogInfo_validator,
+    ('mobile',): MobileSessionLogInfo_validator,
 }
 SessionLogInfo._pytype_to_tag_and_subtype_ = {
-    WebSessionLogInfo: ((u'web',), WebSessionLogInfo_validator),
-    DesktopSessionLogInfo: ((u'desktop',), DesktopSessionLogInfo_validator),
-    MobileSessionLogInfo: ((u'mobile',), MobileSessionLogInfo_validator),
+    WebSessionLogInfo: (('web',), WebSessionLogInfo_validator),
+    DesktopSessionLogInfo: (('desktop',), DesktopSessionLogInfo_validator),
+    MobileSessionLogInfo: (('mobile',), MobileSessionLogInfo_validator),
 }
 SessionLogInfo._is_catch_all_ = True
 
@@ -74309,6 +74568,8 @@ EventDetails._watermarking_policy_changed_details_validator = WatermarkingPolicy
 EventDetails._web_sessions_change_active_session_limit_details_validator = WebSessionsChangeActiveSessionLimitDetails_validator
 EventDetails._web_sessions_change_fixed_length_policy_details_validator = WebSessionsChangeFixedLengthPolicyDetails_validator
 EventDetails._web_sessions_change_idle_length_policy_details_validator = WebSessionsChangeIdleLengthPolicyDetails_validator
+EventDetails._data_residency_migration_request_successful_details_validator = DataResidencyMigrationRequestSuccessfulDetails_validator
+EventDetails._data_residency_migration_request_unsuccessful_details_validator = DataResidencyMigrationRequestUnsuccessfulDetails_validator
 EventDetails._team_merge_from_details_validator = TeamMergeFromDetails_validator
 EventDetails._team_merge_to_details_validator = TeamMergeToDetails_validator
 EventDetails._team_profile_add_background_details_validator = TeamProfileAddBackgroundDetails_validator
@@ -74788,6 +75049,8 @@ EventDetails._tagmap = {
     'web_sessions_change_active_session_limit_details': EventDetails._web_sessions_change_active_session_limit_details_validator,
     'web_sessions_change_fixed_length_policy_details': EventDetails._web_sessions_change_fixed_length_policy_details_validator,
     'web_sessions_change_idle_length_policy_details': EventDetails._web_sessions_change_idle_length_policy_details_validator,
+    'data_residency_migration_request_successful_details': EventDetails._data_residency_migration_request_successful_details_validator,
+    'data_residency_migration_request_unsuccessful_details': EventDetails._data_residency_migration_request_unsuccessful_details_validator,
     'team_merge_from_details': EventDetails._team_merge_from_details_validator,
     'team_merge_to_details': EventDetails._team_merge_to_details_validator,
     'team_profile_add_background_details': EventDetails._team_profile_add_background_details_validator,
@@ -75270,6 +75533,8 @@ EventType._watermarking_policy_changed_validator = WatermarkingPolicyChangedType
 EventType._web_sessions_change_active_session_limit_validator = WebSessionsChangeActiveSessionLimitType_validator
 EventType._web_sessions_change_fixed_length_policy_validator = WebSessionsChangeFixedLengthPolicyType_validator
 EventType._web_sessions_change_idle_length_policy_validator = WebSessionsChangeIdleLengthPolicyType_validator
+EventType._data_residency_migration_request_successful_validator = DataResidencyMigrationRequestSuccessfulType_validator
+EventType._data_residency_migration_request_unsuccessful_validator = DataResidencyMigrationRequestUnsuccessfulType_validator
 EventType._team_merge_from_validator = TeamMergeFromType_validator
 EventType._team_merge_to_validator = TeamMergeToType_validator
 EventType._team_profile_add_background_validator = TeamProfileAddBackgroundType_validator
@@ -75748,6 +76013,8 @@ EventType._tagmap = {
     'web_sessions_change_active_session_limit': EventType._web_sessions_change_active_session_limit_validator,
     'web_sessions_change_fixed_length_policy': EventType._web_sessions_change_fixed_length_policy_validator,
     'web_sessions_change_idle_length_policy': EventType._web_sessions_change_idle_length_policy_validator,
+    'data_residency_migration_request_successful': EventType._data_residency_migration_request_successful_validator,
+    'data_residency_migration_request_unsuccessful': EventType._data_residency_migration_request_unsuccessful_validator,
     'team_merge_from': EventType._team_merge_from_validator,
     'team_merge_to': EventType._team_merge_to_validator,
     'team_profile_add_background': EventType._team_profile_add_background_validator,
@@ -76229,6 +76496,8 @@ EventTypeArg._watermarking_policy_changed_validator = bv.Void()
 EventTypeArg._web_sessions_change_active_session_limit_validator = bv.Void()
 EventTypeArg._web_sessions_change_fixed_length_policy_validator = bv.Void()
 EventTypeArg._web_sessions_change_idle_length_policy_validator = bv.Void()
+EventTypeArg._data_residency_migration_request_successful_validator = bv.Void()
+EventTypeArg._data_residency_migration_request_unsuccessful_validator = bv.Void()
 EventTypeArg._team_merge_from_validator = bv.Void()
 EventTypeArg._team_merge_to_validator = bv.Void()
 EventTypeArg._team_profile_add_background_validator = bv.Void()
@@ -76707,6 +76976,8 @@ EventTypeArg._tagmap = {
     'web_sessions_change_active_session_limit': EventTypeArg._web_sessions_change_active_session_limit_validator,
     'web_sessions_change_fixed_length_policy': EventTypeArg._web_sessions_change_fixed_length_policy_validator,
     'web_sessions_change_idle_length_policy': EventTypeArg._web_sessions_change_idle_length_policy_validator,
+    'data_residency_migration_request_successful': EventTypeArg._data_residency_migration_request_successful_validator,
+    'data_residency_migration_request_unsuccessful': EventTypeArg._data_residency_migration_request_unsuccessful_validator,
     'team_merge_from': EventTypeArg._team_merge_from_validator,
     'team_merge_to': EventTypeArg._team_merge_to_validator,
     'team_profile_add_background': EventTypeArg._team_profile_add_background_validator,
@@ -77186,6 +77457,8 @@ EventTypeArg.watermarking_policy_changed = EventTypeArg('watermarking_policy_cha
 EventTypeArg.web_sessions_change_active_session_limit = EventTypeArg('web_sessions_change_active_session_limit')
 EventTypeArg.web_sessions_change_fixed_length_policy = EventTypeArg('web_sessions_change_fixed_length_policy')
 EventTypeArg.web_sessions_change_idle_length_policy = EventTypeArg('web_sessions_change_idle_length_policy')
+EventTypeArg.data_residency_migration_request_successful = EventTypeArg('data_residency_migration_request_successful')
+EventTypeArg.data_residency_migration_request_unsuccessful = EventTypeArg('data_residency_migration_request_unsuccessful')
 EventTypeArg.team_merge_from = EventTypeArg('team_merge_from')
 EventTypeArg.team_merge_to = EventTypeArg('team_merge_to')
 EventTypeArg.team_profile_add_background = EventTypeArg('team_profile_add_background')
@@ -77279,15 +77552,18 @@ ExtendedVersionHistoryPolicy.implicitly_limited = ExtendedVersionHistoryPolicy('
 ExtendedVersionHistoryPolicy.implicitly_unlimited = ExtendedVersionHistoryPolicy('implicitly_unlimited')
 ExtendedVersionHistoryPolicy.other = ExtendedVersionHistoryPolicy('other')
 
+ExternalDriveBackupPolicy._default_validator = bv.Void()
 ExternalDriveBackupPolicy._disabled_validator = bv.Void()
 ExternalDriveBackupPolicy._enabled_validator = bv.Void()
 ExternalDriveBackupPolicy._other_validator = bv.Void()
 ExternalDriveBackupPolicy._tagmap = {
+    'default': ExternalDriveBackupPolicy._default_validator,
     'disabled': ExternalDriveBackupPolicy._disabled_validator,
     'enabled': ExternalDriveBackupPolicy._enabled_validator,
     'other': ExternalDriveBackupPolicy._other_validator,
 }
 
+ExternalDriveBackupPolicy.default = ExternalDriveBackupPolicy('default')
 ExternalDriveBackupPolicy.disabled = ExternalDriveBackupPolicy('disabled')
 ExternalDriveBackupPolicy.enabled = ExternalDriveBackupPolicy('enabled')
 ExternalDriveBackupPolicy.other = ExternalDriveBackupPolicy('other')
@@ -79643,14 +79919,14 @@ UserLogInfo._fields_ = [
 UserLogInfo._all_fields_ = UserLogInfo._fields_
 
 UserLogInfo._tag_to_subtype_ = {
-    (u'team_member',): TeamMemberLogInfo_validator,
-    (u'trusted_non_team_member',): TrustedNonTeamMemberLogInfo_validator,
-    (u'non_team_member',): NonTeamMemberLogInfo_validator,
+    ('team_member',): TeamMemberLogInfo_validator,
+    ('trusted_non_team_member',): TrustedNonTeamMemberLogInfo_validator,
+    ('non_team_member',): NonTeamMemberLogInfo_validator,
 }
 UserLogInfo._pytype_to_tag_and_subtype_ = {
-    TeamMemberLogInfo: ((u'team_member',), TeamMemberLogInfo_validator),
-    TrustedNonTeamMemberLogInfo: ((u'trusted_non_team_member',), TrustedNonTeamMemberLogInfo_validator),
-    NonTeamMemberLogInfo: ((u'non_team_member',), NonTeamMemberLogInfo_validator),
+    TeamMemberLogInfo: (('team_member',), TeamMemberLogInfo_validator),
+    TrustedNonTeamMemberLogInfo: (('trusted_non_team_member',), TrustedNonTeamMemberLogInfo_validator),
+    NonTeamMemberLogInfo: (('non_team_member',), NonTeamMemberLogInfo_validator),
 }
 UserLogInfo._is_catch_all_ = True
 
@@ -83601,9 +83877,9 @@ get_events = bb.Route(
     GetTeamEventsArg_validator,
     GetTeamEventsResult_validator,
     GetTeamEventsError_validator,
-    {'auth': u'team',
-     'host': u'api',
-     'style': u'rpc'},
+    {'auth': 'team',
+     'host': 'api',
+     'style': 'rpc'},
 )
 get_events_continue = bb.Route(
     'get_events/continue',
@@ -83612,9 +83888,9 @@ get_events_continue = bb.Route(
     GetTeamEventsContinueArg_validator,
     GetTeamEventsResult_validator,
     GetTeamEventsContinueError_validator,
-    {'auth': u'team',
-     'host': u'api',
-     'style': u'rpc'},
+    {'auth': 'team',
+     'host': 'api',
+     'style': 'rpc'},
 )
 
 ROUTES = {
