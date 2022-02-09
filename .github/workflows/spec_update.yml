@@ -1,5 +1,5 @@
 name: Spec Update
-on: 
+on:
   workflow_dispatch:
   repository_dispatch:
     types: [spec_update]
@@ -12,16 +12,13 @@ jobs:
       - name: Setup Python environment
         uses: actions/setup-python@v2.2.2
         with:
-          python-version: 2.7
+          python-version: 3.7
       - name: Get current time
         uses: 1466587594/get-current-time@v2
         id: current-time
         with:
           format: YYYY_MM_DD
           utcOffset: "-08:00"
-      - name: Install SDK
-        run: |
-          npm install
       - name: Update Modules
         run: |
           git submodule init
