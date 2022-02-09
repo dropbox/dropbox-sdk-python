@@ -2981,9 +2981,9 @@ docs_archive = bb.Route(
     RefPaperDoc_validator,
     bv.Void(),
     DocLookupError_validator,
-    {'auth': u'user',
-     'host': u'api',
-     'style': u'rpc'},
+    {'auth': 'user',
+     'host': 'api',
+     'style': 'rpc'},
 )
 docs_create = bb.Route(
     'docs/create',
@@ -2992,9 +2992,9 @@ docs_create = bb.Route(
     PaperDocCreateArgs_validator,
     PaperDocCreateUpdateResult_validator,
     PaperDocCreateError_validator,
-    {'auth': u'user',
-     'host': u'api',
-     'style': u'upload'},
+    {'auth': 'user',
+     'host': 'api',
+     'style': 'upload'},
 )
 docs_download = bb.Route(
     'docs/download',
@@ -3003,9 +3003,9 @@ docs_download = bb.Route(
     PaperDocExport_validator,
     PaperDocExportResult_validator,
     DocLookupError_validator,
-    {'auth': u'user',
-     'host': u'api',
-     'style': u'download'},
+    {'auth': 'user',
+     'host': 'api',
+     'style': 'download'},
 )
 docs_folder_users_list = bb.Route(
     'docs/folder_users/list',
@@ -3014,9 +3014,9 @@ docs_folder_users_list = bb.Route(
     ListUsersOnFolderArgs_validator,
     ListUsersOnFolderResponse_validator,
     DocLookupError_validator,
-    {'auth': u'user',
-     'host': u'api',
-     'style': u'rpc'},
+    {'auth': 'user',
+     'host': 'api',
+     'style': 'rpc'},
 )
 docs_folder_users_list_continue = bb.Route(
     'docs/folder_users/list/continue',
@@ -3025,9 +3025,9 @@ docs_folder_users_list_continue = bb.Route(
     ListUsersOnFolderContinueArgs_validator,
     ListUsersOnFolderResponse_validator,
     ListUsersCursorError_validator,
-    {'auth': u'user',
-     'host': u'api',
-     'style': u'rpc'},
+    {'auth': 'user',
+     'host': 'api',
+     'style': 'rpc'},
 )
 docs_get_folder_info = bb.Route(
     'docs/get_folder_info',
@@ -3036,9 +3036,9 @@ docs_get_folder_info = bb.Route(
     RefPaperDoc_validator,
     FoldersContainingPaperDoc_validator,
     DocLookupError_validator,
-    {'auth': u'user',
-     'host': u'api',
-     'style': u'rpc'},
+    {'auth': 'user',
+     'host': 'api',
+     'style': 'rpc'},
 )
 docs_list = bb.Route(
     'docs/list',
@@ -3047,9 +3047,9 @@ docs_list = bb.Route(
     ListPaperDocsArgs_validator,
     ListPaperDocsResponse_validator,
     bv.Void(),
-    {'auth': u'user',
-     'host': u'api',
-     'style': u'rpc'},
+    {'auth': 'user',
+     'host': 'api',
+     'style': 'rpc'},
 )
 docs_list_continue = bb.Route(
     'docs/list/continue',
@@ -3058,9 +3058,9 @@ docs_list_continue = bb.Route(
     ListPaperDocsContinueArgs_validator,
     ListPaperDocsResponse_validator,
     ListDocsCursorError_validator,
-    {'auth': u'user',
-     'host': u'api',
-     'style': u'rpc'},
+    {'auth': 'user',
+     'host': 'api',
+     'style': 'rpc'},
 )
 docs_permanently_delete = bb.Route(
     'docs/permanently_delete',
@@ -3069,9 +3069,9 @@ docs_permanently_delete = bb.Route(
     RefPaperDoc_validator,
     bv.Void(),
     DocLookupError_validator,
-    {'auth': u'user',
-     'host': u'api',
-     'style': u'rpc'},
+    {'auth': 'user',
+     'host': 'api',
+     'style': 'rpc'},
 )
 docs_sharing_policy_get = bb.Route(
     'docs/sharing_policy/get',
@@ -3080,9 +3080,9 @@ docs_sharing_policy_get = bb.Route(
     RefPaperDoc_validator,
     SharingPolicy_validator,
     DocLookupError_validator,
-    {'auth': u'user',
-     'host': u'api',
-     'style': u'rpc'},
+    {'auth': 'user',
+     'host': 'api',
+     'style': 'rpc'},
 )
 docs_sharing_policy_set = bb.Route(
     'docs/sharing_policy/set',
@@ -3091,9 +3091,9 @@ docs_sharing_policy_set = bb.Route(
     PaperDocSharingPolicy_validator,
     bv.Void(),
     DocLookupError_validator,
-    {'auth': u'user',
-     'host': u'api',
-     'style': u'rpc'},
+    {'auth': 'user',
+     'host': 'api',
+     'style': 'rpc'},
 )
 docs_update = bb.Route(
     'docs/update',
@@ -3102,9 +3102,9 @@ docs_update = bb.Route(
     PaperDocUpdateArgs_validator,
     PaperDocCreateUpdateResult_validator,
     PaperDocUpdateError_validator,
-    {'auth': u'user',
-     'host': u'api',
-     'style': u'upload'},
+    {'auth': 'user',
+     'host': 'api',
+     'style': 'upload'},
 )
 docs_users_add = bb.Route(
     'docs/users/add',
@@ -3113,9 +3113,9 @@ docs_users_add = bb.Route(
     AddPaperDocUser_validator,
     bv.List(AddPaperDocUserMemberResult_validator),
     DocLookupError_validator,
-    {'auth': u'user',
-     'host': u'api',
-     'style': u'rpc'},
+    {'auth': 'user',
+     'host': 'api',
+     'style': 'rpc'},
 )
 docs_users_list = bb.Route(
     'docs/users/list',
@@ -3124,9 +3124,9 @@ docs_users_list = bb.Route(
     ListUsersOnPaperDocArgs_validator,
     ListUsersOnPaperDocResponse_validator,
     DocLookupError_validator,
-    {'auth': u'user',
-     'host': u'api',
-     'style': u'rpc'},
+    {'auth': 'user',
+     'host': 'api',
+     'style': 'rpc'},
 )
 docs_users_list_continue = bb.Route(
     'docs/users/list/continue',
@@ -3135,9 +3135,9 @@ docs_users_list_continue = bb.Route(
     ListUsersOnPaperDocContinueArgs_validator,
     ListUsersOnPaperDocResponse_validator,
     ListUsersCursorError_validator,
-    {'auth': u'user',
-     'host': u'api',
-     'style': u'rpc'},
+    {'auth': 'user',
+     'host': 'api',
+     'style': 'rpc'},
 )
 docs_users_remove = bb.Route(
     'docs/users/remove',
@@ -3146,9 +3146,9 @@ docs_users_remove = bb.Route(
     RemovePaperDocUser_validator,
     bv.Void(),
     DocLookupError_validator,
-    {'auth': u'user',
-     'host': u'api',
-     'style': u'rpc'},
+    {'auth': 'user',
+     'host': 'api',
+     'style': 'rpc'},
 )
 folders_create = bb.Route(
     'folders/create',
@@ -3157,9 +3157,9 @@ folders_create = bb.Route(
     PaperFolderCreateArg_validator,
     PaperFolderCreateResult_validator,
     PaperFolderCreateError_validator,
-    {'auth': u'user',
-     'host': u'api',
-     'style': u'rpc'},
+    {'auth': 'user',
+     'host': 'api',
+     'style': 'rpc'},
 )
 
 ROUTES = {
