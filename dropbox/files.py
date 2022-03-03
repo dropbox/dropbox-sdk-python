@@ -412,34 +412,6 @@ class CommitInfo(bb.Struct):
 
 CommitInfo_validator = bv.Struct(CommitInfo)
 
-class CommitInfoWithProperties(CommitInfo):
-
-    __slots__ = [
-    ]
-
-    _has_required_fields = True
-
-    def __init__(self,
-                 path=None,
-                 mode=None,
-                 autorename=None,
-                 client_modified=None,
-                 mute=None,
-                 property_groups=None,
-                 strict_conflict=None):
-        super(CommitInfoWithProperties, self).__init__(path,
-                                                       mode,
-                                                       autorename,
-                                                       client_modified,
-                                                       mute,
-                                                       property_groups,
-                                                       strict_conflict)
-
-    def _process_custom_annotations(self, annotation_type, field_path, processor):
-        super(CommitInfoWithProperties, self)._process_custom_annotations(annotation_type, field_path, processor)
-
-CommitInfoWithProperties_validator = bv.Struct(CommitInfoWithProperties)
-
 class ContentSyncSetting(bb.Struct):
     """
     :ivar files.ContentSyncSetting.id: Id of the item this setting is applied
@@ -9216,6 +9188,48 @@ class UnlockFileBatchArg(bb.Struct):
 
 UnlockFileBatchArg_validator = bv.Struct(UnlockFileBatchArg)
 
+class UploadArg(CommitInfo):
+    """
+    :ivar files.UploadArg.content_hash: A hash of the file content uploaded in
+        this call. If provided and the uploaded content does not match this
+        hash, an error will be returned. For more information see our `Content
+        hash <https://www.dropbox.com/developers/reference/content-hash>`_ page.
+    """
+
+    __slots__ = [
+        '_content_hash_value',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 path=None,
+                 mode=None,
+                 autorename=None,
+                 client_modified=None,
+                 mute=None,
+                 property_groups=None,
+                 strict_conflict=None,
+                 content_hash=None):
+        super(UploadArg, self).__init__(path,
+                                        mode,
+                                        autorename,
+                                        client_modified,
+                                        mute,
+                                        property_groups,
+                                        strict_conflict)
+        self._content_hash_value = bb.NOT_SET
+        if content_hash is not None:
+            self.content_hash = content_hash
+
+    # Instance attribute type: str (validator is set below)
+    content_hash = bb.Attribute("content_hash", nullable=True)
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(UploadArg, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+UploadArg_validator = bv.Struct(UploadArg)
+
 class UploadError(bb.Union):
     """
     This class acts as a tagged union. Only one of the ``is_*`` methods will
@@ -9229,11 +9243,15 @@ class UploadError(bb.Union):
         groups.
     :ivar files.UploadError.payload_too_large: The request payload must be at
         most 150 MB.
+    :ivar files.UploadError.content_hash_mismatch: The content received by the
+        Dropbox server in this call does not match the provided content hash.
     """
 
     _catch_all = 'other'
     # Attribute is overwritten below the class definition
     payload_too_large = None
+    # Attribute is overwritten below the class definition
+    content_hash_mismatch = None
     # Attribute is overwritten below the class definition
     other = None
 
@@ -9283,6 +9301,14 @@ class UploadError(bb.Union):
         """
         return self._tag == 'payload_too_large'
 
+    def is_content_hash_mismatch(self):
+        """
+        Check if the union tag is ``content_hash_mismatch``.
+
+        :rtype: bool
+        """
+        return self._tag == 'content_hash_mismatch'
+
     def is_other(self):
         """
         Check if the union tag is ``other``.
@@ -9321,18 +9347,6 @@ class UploadError(bb.Union):
 
 UploadError_validator = bv.Union(UploadError)
 
-class UploadErrorWithProperties(UploadError):
-    """
-    This class acts as a tagged union. Only one of the ``is_*`` methods will
-    return true. To get the associated value of a tag (if one exists), use the
-    corresponding ``get_*`` method.
-    """
-
-    def _process_custom_annotations(self, annotation_type, field_path, processor):
-        super(UploadErrorWithProperties, self)._process_custom_annotations(annotation_type, field_path, processor)
-
-UploadErrorWithProperties_validator = bv.Union(UploadErrorWithProperties)
-
 class UploadSessionAppendArg(bb.Struct):
     """
     :ivar files.UploadSessionAppendArg.cursor: Contains the upload session ID
@@ -9341,24 +9355,34 @@ class UploadSessionAppendArg(bb.Struct):
         be closed, at which point you won't be able to call
         :meth:`dropbox.dropbox_client.Dropbox.files_upload_session_append`
         anymore with the current session.
+    :ivar files.UploadSessionAppendArg.content_hash: A hash of the file content
+        uploaded in this call. If provided and the uploaded content does not
+        match this hash, an error will be returned. For more information see our
+        `Content hash
+        <https://www.dropbox.com/developers/reference/content-hash>`_ page.
     """
 
     __slots__ = [
         '_cursor_value',
         '_close_value',
+        '_content_hash_value',
     ]
 
     _has_required_fields = True
 
     def __init__(self,
                  cursor=None,
-                 close=None):
+                 close=None,
+                 content_hash=None):
         self._cursor_value = bb.NOT_SET
         self._close_value = bb.NOT_SET
+        self._content_hash_value = bb.NOT_SET
         if cursor is not None:
             self.cursor = cursor
         if close is not None:
             self.close = close
+        if content_hash is not None:
+            self.content_hash = content_hash
 
     # Instance attribute type: UploadSessionCursor (validator is set below)
     cursor = bb.Attribute("cursor", user_defined=True)
@@ -9366,10 +9390,191 @@ class UploadSessionAppendArg(bb.Struct):
     # Instance attribute type: bool (validator is set below)
     close = bb.Attribute("close")
 
+    # Instance attribute type: str (validator is set below)
+    content_hash = bb.Attribute("content_hash", nullable=True)
+
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(UploadSessionAppendArg, self)._process_custom_annotations(annotation_type, field_path, processor)
 
 UploadSessionAppendArg_validator = bv.Struct(UploadSessionAppendArg)
+
+class UploadSessionLookupError(bb.Union):
+    """
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+
+    :ivar files.UploadSessionLookupError.not_found: The upload session ID was
+        not found or has expired. Upload sessions are valid for 7 days.
+    :ivar UploadSessionOffsetError UploadSessionLookupError.incorrect_offset:
+        The specified offset was incorrect. See the value for the correct
+        offset. This error may occur when a previous request was received and
+        processed successfully but the client did not receive the response, e.g.
+        due to a network error.
+    :ivar files.UploadSessionLookupError.closed: You are attempting to append
+        data to an upload session that has already been closed (i.e. committed).
+    :ivar files.UploadSessionLookupError.not_closed: The session must be closed
+        before calling upload_session/finish_batch.
+    :ivar files.UploadSessionLookupError.too_large: You can not append to the
+        upload session because the size of a file should not reach the max file
+        size limit (i.e. 350GB).
+    :ivar files.UploadSessionLookupError.concurrent_session_invalid_offset: For
+        concurrent upload sessions, offset needs to be multiple of 4194304
+        bytes.
+    :ivar files.UploadSessionLookupError.concurrent_session_invalid_data_size:
+        For concurrent upload sessions, only chunks with size multiple of
+        4194304 bytes can be uploaded.
+    :ivar files.UploadSessionLookupError.payload_too_large: The request payload
+        must be at most 150 MB.
+    """
+
+    _catch_all = 'other'
+    # Attribute is overwritten below the class definition
+    not_found = None
+    # Attribute is overwritten below the class definition
+    closed = None
+    # Attribute is overwritten below the class definition
+    not_closed = None
+    # Attribute is overwritten below the class definition
+    too_large = None
+    # Attribute is overwritten below the class definition
+    concurrent_session_invalid_offset = None
+    # Attribute is overwritten below the class definition
+    concurrent_session_invalid_data_size = None
+    # Attribute is overwritten below the class definition
+    payload_too_large = None
+    # Attribute is overwritten below the class definition
+    other = None
+
+    @classmethod
+    def incorrect_offset(cls, val):
+        """
+        Create an instance of this class set to the ``incorrect_offset`` tag
+        with value ``val``.
+
+        :param UploadSessionOffsetError val:
+        :rtype: UploadSessionLookupError
+        """
+        return cls('incorrect_offset', val)
+
+    def is_not_found(self):
+        """
+        Check if the union tag is ``not_found``.
+
+        :rtype: bool
+        """
+        return self._tag == 'not_found'
+
+    def is_incorrect_offset(self):
+        """
+        Check if the union tag is ``incorrect_offset``.
+
+        :rtype: bool
+        """
+        return self._tag == 'incorrect_offset'
+
+    def is_closed(self):
+        """
+        Check if the union tag is ``closed``.
+
+        :rtype: bool
+        """
+        return self._tag == 'closed'
+
+    def is_not_closed(self):
+        """
+        Check if the union tag is ``not_closed``.
+
+        :rtype: bool
+        """
+        return self._tag == 'not_closed'
+
+    def is_too_large(self):
+        """
+        Check if the union tag is ``too_large``.
+
+        :rtype: bool
+        """
+        return self._tag == 'too_large'
+
+    def is_concurrent_session_invalid_offset(self):
+        """
+        Check if the union tag is ``concurrent_session_invalid_offset``.
+
+        :rtype: bool
+        """
+        return self._tag == 'concurrent_session_invalid_offset'
+
+    def is_concurrent_session_invalid_data_size(self):
+        """
+        Check if the union tag is ``concurrent_session_invalid_data_size``.
+
+        :rtype: bool
+        """
+        return self._tag == 'concurrent_session_invalid_data_size'
+
+    def is_payload_too_large(self):
+        """
+        Check if the union tag is ``payload_too_large``.
+
+        :rtype: bool
+        """
+        return self._tag == 'payload_too_large'
+
+    def is_other(self):
+        """
+        Check if the union tag is ``other``.
+
+        :rtype: bool
+        """
+        return self._tag == 'other'
+
+    def get_incorrect_offset(self):
+        """
+        The specified offset was incorrect. See the value for the correct
+        offset. This error may occur when a previous request was received and
+        processed successfully but the client did not receive the response, e.g.
+        due to a network error.
+
+        Only call this if :meth:`is_incorrect_offset` is true.
+
+        :rtype: UploadSessionOffsetError
+        """
+        if not self.is_incorrect_offset():
+            raise AttributeError("tag 'incorrect_offset' not set")
+        return self._value
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(UploadSessionLookupError, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+UploadSessionLookupError_validator = bv.Union(UploadSessionLookupError)
+
+class UploadSessionAppendError(UploadSessionLookupError):
+    """
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+
+    :ivar files.UploadSessionAppendError.content_hash_mismatch: The content
+        received by the Dropbox server in this call does not match the provided
+        content hash.
+    """
+
+    # Attribute is overwritten below the class definition
+    content_hash_mismatch = None
+
+    def is_content_hash_mismatch(self):
+        """
+        Check if the union tag is ``content_hash_mismatch``.
+
+        :rtype: bool
+        """
+        return self._tag == 'content_hash_mismatch'
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(UploadSessionAppendError, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+UploadSessionAppendError_validator = bv.Union(UploadSessionAppendError)
 
 class UploadSessionCursor(bb.Struct):
     """
@@ -9414,30 +9619,43 @@ class UploadSessionFinishArg(bb.Struct):
         and the offset.
     :ivar files.UploadSessionFinishArg.commit: Contains the path and other
         optional modifiers for the commit.
+    :ivar files.UploadSessionFinishArg.content_hash: A hash of the file content
+        uploaded in this call. If provided and the uploaded content does not
+        match this hash, an error will be returned. For more information see our
+        `Content hash
+        <https://www.dropbox.com/developers/reference/content-hash>`_ page.
     """
 
     __slots__ = [
         '_cursor_value',
         '_commit_value',
+        '_content_hash_value',
     ]
 
     _has_required_fields = True
 
     def __init__(self,
                  cursor=None,
-                 commit=None):
+                 commit=None,
+                 content_hash=None):
         self._cursor_value = bb.NOT_SET
         self._commit_value = bb.NOT_SET
+        self._content_hash_value = bb.NOT_SET
         if cursor is not None:
             self.cursor = cursor
         if commit is not None:
             self.commit = commit
+        if content_hash is not None:
+            self.content_hash = content_hash
 
     # Instance attribute type: UploadSessionCursor (validator is set below)
     cursor = bb.Attribute("cursor", user_defined=True)
 
     # Instance attribute type: CommitInfo (validator is set below)
     commit = bb.Attribute("commit", user_defined=True)
+
+    # Instance attribute type: str (validator is set below)
+    content_hash = bb.Attribute("content_hash", nullable=True)
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(UploadSessionFinishArg, self)._process_custom_annotations(annotation_type, field_path, processor)
@@ -9705,6 +9923,9 @@ class UploadSessionFinishError(bb.Union):
         all pieces of data were uploaded before trying to finish the session.
     :ivar files.UploadSessionFinishError.payload_too_large: The request payload
         must be at most 150 MB.
+    :ivar files.UploadSessionFinishError.content_hash_mismatch: The content
+        received by the Dropbox server in this call does not match the provided
+        content hash.
     """
 
     _catch_all = 'other'
@@ -9720,6 +9941,8 @@ class UploadSessionFinishError(bb.Union):
     concurrent_session_missing_data = None
     # Attribute is overwritten below the class definition
     payload_too_large = None
+    # Attribute is overwritten below the class definition
+    content_hash_mismatch = None
     # Attribute is overwritten below the class definition
     other = None
 
@@ -9828,6 +10051,14 @@ class UploadSessionFinishError(bb.Union):
         """
         return self._tag == 'payload_too_large'
 
+    def is_content_hash_mismatch(self):
+        """
+        Check if the union tag is ``content_hash_mismatch``.
+
+        :rtype: bool
+        """
+        return self._tag == 'content_hash_mismatch'
+
     def is_other(self):
         """
         Check if the union tag is ``other``.
@@ -9880,157 +10111,6 @@ class UploadSessionFinishError(bb.Union):
 
 UploadSessionFinishError_validator = bv.Union(UploadSessionFinishError)
 
-class UploadSessionLookupError(bb.Union):
-    """
-    This class acts as a tagged union. Only one of the ``is_*`` methods will
-    return true. To get the associated value of a tag (if one exists), use the
-    corresponding ``get_*`` method.
-
-    :ivar files.UploadSessionLookupError.not_found: The upload session ID was
-        not found or has expired. Upload sessions are valid for 7 days.
-    :ivar UploadSessionOffsetError UploadSessionLookupError.incorrect_offset:
-        The specified offset was incorrect. See the value for the correct
-        offset. This error may occur when a previous request was received and
-        processed successfully but the client did not receive the response, e.g.
-        due to a network error.
-    :ivar files.UploadSessionLookupError.closed: You are attempting to append
-        data to an upload session that has already been closed (i.e. committed).
-    :ivar files.UploadSessionLookupError.not_closed: The session must be closed
-        before calling upload_session/finish_batch.
-    :ivar files.UploadSessionLookupError.too_large: You can not append to the
-        upload session because the size of a file should not reach the max file
-        size limit (i.e. 350GB).
-    :ivar files.UploadSessionLookupError.concurrent_session_invalid_offset: For
-        concurrent upload sessions, offset needs to be multiple of 4194304
-        bytes.
-    :ivar files.UploadSessionLookupError.concurrent_session_invalid_data_size:
-        For concurrent upload sessions, only chunks with size multiple of
-        4194304 bytes can be uploaded.
-    :ivar files.UploadSessionLookupError.payload_too_large: The request payload
-        must be at most 150 MB.
-    """
-
-    _catch_all = 'other'
-    # Attribute is overwritten below the class definition
-    not_found = None
-    # Attribute is overwritten below the class definition
-    closed = None
-    # Attribute is overwritten below the class definition
-    not_closed = None
-    # Attribute is overwritten below the class definition
-    too_large = None
-    # Attribute is overwritten below the class definition
-    concurrent_session_invalid_offset = None
-    # Attribute is overwritten below the class definition
-    concurrent_session_invalid_data_size = None
-    # Attribute is overwritten below the class definition
-    payload_too_large = None
-    # Attribute is overwritten below the class definition
-    other = None
-
-    @classmethod
-    def incorrect_offset(cls, val):
-        """
-        Create an instance of this class set to the ``incorrect_offset`` tag
-        with value ``val``.
-
-        :param UploadSessionOffsetError val:
-        :rtype: UploadSessionLookupError
-        """
-        return cls('incorrect_offset', val)
-
-    def is_not_found(self):
-        """
-        Check if the union tag is ``not_found``.
-
-        :rtype: bool
-        """
-        return self._tag == 'not_found'
-
-    def is_incorrect_offset(self):
-        """
-        Check if the union tag is ``incorrect_offset``.
-
-        :rtype: bool
-        """
-        return self._tag == 'incorrect_offset'
-
-    def is_closed(self):
-        """
-        Check if the union tag is ``closed``.
-
-        :rtype: bool
-        """
-        return self._tag == 'closed'
-
-    def is_not_closed(self):
-        """
-        Check if the union tag is ``not_closed``.
-
-        :rtype: bool
-        """
-        return self._tag == 'not_closed'
-
-    def is_too_large(self):
-        """
-        Check if the union tag is ``too_large``.
-
-        :rtype: bool
-        """
-        return self._tag == 'too_large'
-
-    def is_concurrent_session_invalid_offset(self):
-        """
-        Check if the union tag is ``concurrent_session_invalid_offset``.
-
-        :rtype: bool
-        """
-        return self._tag == 'concurrent_session_invalid_offset'
-
-    def is_concurrent_session_invalid_data_size(self):
-        """
-        Check if the union tag is ``concurrent_session_invalid_data_size``.
-
-        :rtype: bool
-        """
-        return self._tag == 'concurrent_session_invalid_data_size'
-
-    def is_payload_too_large(self):
-        """
-        Check if the union tag is ``payload_too_large``.
-
-        :rtype: bool
-        """
-        return self._tag == 'payload_too_large'
-
-    def is_other(self):
-        """
-        Check if the union tag is ``other``.
-
-        :rtype: bool
-        """
-        return self._tag == 'other'
-
-    def get_incorrect_offset(self):
-        """
-        The specified offset was incorrect. See the value for the correct
-        offset. This error may occur when a previous request was received and
-        processed successfully but the client did not receive the response, e.g.
-        due to a network error.
-
-        Only call this if :meth:`is_incorrect_offset` is true.
-
-        :rtype: UploadSessionOffsetError
-        """
-        if not self.is_incorrect_offset():
-            raise AttributeError("tag 'incorrect_offset' not set")
-        return self._value
-
-    def _process_custom_annotations(self, annotation_type, field_path, processor):
-        super(UploadSessionLookupError, self)._process_custom_annotations(annotation_type, field_path, processor)
-
-UploadSessionLookupError_validator = bv.Union(UploadSessionLookupError)
-
 class UploadSessionOffsetError(bb.Struct):
     """
     :ivar files.UploadSessionOffsetError.correct_offset: The offset up to which
@@ -10066,30 +10146,43 @@ class UploadSessionStartArg(bb.Struct):
     :ivar files.UploadSessionStartArg.session_type: Type of upload session you
         want to start. If not specified, default is
         ``UploadSessionType.sequential``.
+    :ivar files.UploadSessionStartArg.content_hash: A hash of the file content
+        uploaded in this call. If provided and the uploaded content does not
+        match this hash, an error will be returned. For more information see our
+        `Content hash
+        <https://www.dropbox.com/developers/reference/content-hash>`_ page.
     """
 
     __slots__ = [
         '_close_value',
         '_session_type_value',
+        '_content_hash_value',
     ]
 
     _has_required_fields = False
 
     def __init__(self,
                  close=None,
-                 session_type=None):
+                 session_type=None,
+                 content_hash=None):
         self._close_value = bb.NOT_SET
         self._session_type_value = bb.NOT_SET
+        self._content_hash_value = bb.NOT_SET
         if close is not None:
             self.close = close
         if session_type is not None:
             self.session_type = session_type
+        if content_hash is not None:
+            self.content_hash = content_hash
 
     # Instance attribute type: bool (validator is set below)
     close = bb.Attribute("close")
 
     # Instance attribute type: UploadSessionType (validator is set below)
     session_type = bb.Attribute("session_type", nullable=True, user_defined=True)
+
+    # Instance attribute type: str (validator is set below)
+    content_hash = bb.Attribute("content_hash", nullable=True)
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(UploadSessionStartArg, self)._process_custom_annotations(annotation_type, field_path, processor)
@@ -10108,6 +10201,9 @@ class UploadSessionStartError(bb.Union):
         Can not start a closed concurrent upload session.
     :ivar files.UploadSessionStartError.payload_too_large: The request payload
         must be at most 150 MB.
+    :ivar files.UploadSessionStartError.content_hash_mismatch: The content
+        received by the Dropbox server in this call does not match the provided
+        content hash.
     """
 
     _catch_all = 'other'
@@ -10117,6 +10213,8 @@ class UploadSessionStartError(bb.Union):
     concurrent_session_close_not_allowed = None
     # Attribute is overwritten below the class definition
     payload_too_large = None
+    # Attribute is overwritten below the class definition
+    content_hash_mismatch = None
     # Attribute is overwritten below the class definition
     other = None
 
@@ -10143,6 +10241,14 @@ class UploadSessionStartError(bb.Union):
         :rtype: bool
         """
         return self._tag == 'payload_too_large'
+
+    def is_content_hash_mismatch(self):
+        """
+        Check if the union tag is ``content_hash_mismatch``.
+
+        :rtype: bool
+        """
+        return self._tag == 'content_hash_mismatch'
 
     def is_other(self):
         """
@@ -10761,9 +10867,6 @@ CommitInfo._all_fields_ = [
     ('property_groups', CommitInfo.property_groups.validator),
     ('strict_conflict', CommitInfo.strict_conflict.validator),
 ]
-
-CommitInfoWithProperties._all_field_names_ = CommitInfo._all_field_names_.union(set([]))
-CommitInfoWithProperties._all_fields_ = CommitInfo._all_fields_ + []
 
 ContentSyncSetting.id.validator = FileId_validator
 ContentSyncSetting.sync_setting.validator = SyncSetting_validator
@@ -12713,34 +12816,78 @@ UnlockFileBatchArg.entries.validator = bv.List(UnlockFileArg_validator)
 UnlockFileBatchArg._all_field_names_ = set(['entries'])
 UnlockFileBatchArg._all_fields_ = [('entries', UnlockFileBatchArg.entries.validator)]
 
+UploadArg.content_hash.validator = bv.Nullable(Sha256HexHash_validator)
+UploadArg._all_field_names_ = CommitInfo._all_field_names_.union(set(['content_hash']))
+UploadArg._all_fields_ = CommitInfo._all_fields_ + [('content_hash', UploadArg.content_hash.validator)]
+
 UploadError._path_validator = UploadWriteFailed_validator
 UploadError._properties_error_validator = file_properties.InvalidPropertyGroupError_validator
 UploadError._payload_too_large_validator = bv.Void()
+UploadError._content_hash_mismatch_validator = bv.Void()
 UploadError._other_validator = bv.Void()
 UploadError._tagmap = {
     'path': UploadError._path_validator,
     'properties_error': UploadError._properties_error_validator,
     'payload_too_large': UploadError._payload_too_large_validator,
+    'content_hash_mismatch': UploadError._content_hash_mismatch_validator,
     'other': UploadError._other_validator,
 }
 
 UploadError.payload_too_large = UploadError('payload_too_large')
+UploadError.content_hash_mismatch = UploadError('content_hash_mismatch')
 UploadError.other = UploadError('other')
-
-UploadErrorWithProperties._tagmap = {
-}
-UploadErrorWithProperties._tagmap.update(UploadError._tagmap)
 
 UploadSessionAppendArg.cursor.validator = UploadSessionCursor_validator
 UploadSessionAppendArg.close.validator = bv.Boolean()
+UploadSessionAppendArg.content_hash.validator = bv.Nullable(Sha256HexHash_validator)
 UploadSessionAppendArg._all_field_names_ = set([
     'cursor',
     'close',
+    'content_hash',
 ])
 UploadSessionAppendArg._all_fields_ = [
     ('cursor', UploadSessionAppendArg.cursor.validator),
     ('close', UploadSessionAppendArg.close.validator),
+    ('content_hash', UploadSessionAppendArg.content_hash.validator),
 ]
+
+UploadSessionLookupError._not_found_validator = bv.Void()
+UploadSessionLookupError._incorrect_offset_validator = UploadSessionOffsetError_validator
+UploadSessionLookupError._closed_validator = bv.Void()
+UploadSessionLookupError._not_closed_validator = bv.Void()
+UploadSessionLookupError._too_large_validator = bv.Void()
+UploadSessionLookupError._concurrent_session_invalid_offset_validator = bv.Void()
+UploadSessionLookupError._concurrent_session_invalid_data_size_validator = bv.Void()
+UploadSessionLookupError._payload_too_large_validator = bv.Void()
+UploadSessionLookupError._other_validator = bv.Void()
+UploadSessionLookupError._tagmap = {
+    'not_found': UploadSessionLookupError._not_found_validator,
+    'incorrect_offset': UploadSessionLookupError._incorrect_offset_validator,
+    'closed': UploadSessionLookupError._closed_validator,
+    'not_closed': UploadSessionLookupError._not_closed_validator,
+    'too_large': UploadSessionLookupError._too_large_validator,
+    'concurrent_session_invalid_offset': UploadSessionLookupError._concurrent_session_invalid_offset_validator,
+    'concurrent_session_invalid_data_size': UploadSessionLookupError._concurrent_session_invalid_data_size_validator,
+    'payload_too_large': UploadSessionLookupError._payload_too_large_validator,
+    'other': UploadSessionLookupError._other_validator,
+}
+
+UploadSessionLookupError.not_found = UploadSessionLookupError('not_found')
+UploadSessionLookupError.closed = UploadSessionLookupError('closed')
+UploadSessionLookupError.not_closed = UploadSessionLookupError('not_closed')
+UploadSessionLookupError.too_large = UploadSessionLookupError('too_large')
+UploadSessionLookupError.concurrent_session_invalid_offset = UploadSessionLookupError('concurrent_session_invalid_offset')
+UploadSessionLookupError.concurrent_session_invalid_data_size = UploadSessionLookupError('concurrent_session_invalid_data_size')
+UploadSessionLookupError.payload_too_large = UploadSessionLookupError('payload_too_large')
+UploadSessionLookupError.other = UploadSessionLookupError('other')
+
+UploadSessionAppendError._content_hash_mismatch_validator = bv.Void()
+UploadSessionAppendError._tagmap = {
+    'content_hash_mismatch': UploadSessionAppendError._content_hash_mismatch_validator,
+}
+UploadSessionAppendError._tagmap.update(UploadSessionLookupError._tagmap)
+
+UploadSessionAppendError.content_hash_mismatch = UploadSessionAppendError('content_hash_mismatch')
 
 UploadSessionCursor.session_id.validator = bv.String()
 UploadSessionCursor.offset.validator = bv.UInt64()
@@ -12755,13 +12902,16 @@ UploadSessionCursor._all_fields_ = [
 
 UploadSessionFinishArg.cursor.validator = UploadSessionCursor_validator
 UploadSessionFinishArg.commit.validator = CommitInfo_validator
+UploadSessionFinishArg.content_hash.validator = bv.Nullable(Sha256HexHash_validator)
 UploadSessionFinishArg._all_field_names_ = set([
     'cursor',
     'commit',
+    'content_hash',
 ])
 UploadSessionFinishArg._all_fields_ = [
     ('cursor', UploadSessionFinishArg.cursor.validator),
     ('commit', UploadSessionFinishArg.commit.validator),
+    ('content_hash', UploadSessionFinishArg.content_hash.validator),
 ]
 
 UploadSessionFinishBatchArg.entries.validator = bv.List(UploadSessionFinishArg_validator, max_items=1000)
@@ -12804,6 +12954,7 @@ UploadSessionFinishError._concurrent_session_data_not_allowed_validator = bv.Voi
 UploadSessionFinishError._concurrent_session_not_closed_validator = bv.Void()
 UploadSessionFinishError._concurrent_session_missing_data_validator = bv.Void()
 UploadSessionFinishError._payload_too_large_validator = bv.Void()
+UploadSessionFinishError._content_hash_mismatch_validator = bv.Void()
 UploadSessionFinishError._other_validator = bv.Void()
 UploadSessionFinishError._tagmap = {
     'lookup_failed': UploadSessionFinishError._lookup_failed_validator,
@@ -12815,6 +12966,7 @@ UploadSessionFinishError._tagmap = {
     'concurrent_session_not_closed': UploadSessionFinishError._concurrent_session_not_closed_validator,
     'concurrent_session_missing_data': UploadSessionFinishError._concurrent_session_missing_data_validator,
     'payload_too_large': UploadSessionFinishError._payload_too_large_validator,
+    'content_hash_mismatch': UploadSessionFinishError._content_hash_mismatch_validator,
     'other': UploadSessionFinishError._other_validator,
 }
 
@@ -12824,37 +12976,8 @@ UploadSessionFinishError.concurrent_session_data_not_allowed = UploadSessionFini
 UploadSessionFinishError.concurrent_session_not_closed = UploadSessionFinishError('concurrent_session_not_closed')
 UploadSessionFinishError.concurrent_session_missing_data = UploadSessionFinishError('concurrent_session_missing_data')
 UploadSessionFinishError.payload_too_large = UploadSessionFinishError('payload_too_large')
+UploadSessionFinishError.content_hash_mismatch = UploadSessionFinishError('content_hash_mismatch')
 UploadSessionFinishError.other = UploadSessionFinishError('other')
-
-UploadSessionLookupError._not_found_validator = bv.Void()
-UploadSessionLookupError._incorrect_offset_validator = UploadSessionOffsetError_validator
-UploadSessionLookupError._closed_validator = bv.Void()
-UploadSessionLookupError._not_closed_validator = bv.Void()
-UploadSessionLookupError._too_large_validator = bv.Void()
-UploadSessionLookupError._concurrent_session_invalid_offset_validator = bv.Void()
-UploadSessionLookupError._concurrent_session_invalid_data_size_validator = bv.Void()
-UploadSessionLookupError._payload_too_large_validator = bv.Void()
-UploadSessionLookupError._other_validator = bv.Void()
-UploadSessionLookupError._tagmap = {
-    'not_found': UploadSessionLookupError._not_found_validator,
-    'incorrect_offset': UploadSessionLookupError._incorrect_offset_validator,
-    'closed': UploadSessionLookupError._closed_validator,
-    'not_closed': UploadSessionLookupError._not_closed_validator,
-    'too_large': UploadSessionLookupError._too_large_validator,
-    'concurrent_session_invalid_offset': UploadSessionLookupError._concurrent_session_invalid_offset_validator,
-    'concurrent_session_invalid_data_size': UploadSessionLookupError._concurrent_session_invalid_data_size_validator,
-    'payload_too_large': UploadSessionLookupError._payload_too_large_validator,
-    'other': UploadSessionLookupError._other_validator,
-}
-
-UploadSessionLookupError.not_found = UploadSessionLookupError('not_found')
-UploadSessionLookupError.closed = UploadSessionLookupError('closed')
-UploadSessionLookupError.not_closed = UploadSessionLookupError('not_closed')
-UploadSessionLookupError.too_large = UploadSessionLookupError('too_large')
-UploadSessionLookupError.concurrent_session_invalid_offset = UploadSessionLookupError('concurrent_session_invalid_offset')
-UploadSessionLookupError.concurrent_session_invalid_data_size = UploadSessionLookupError('concurrent_session_invalid_data_size')
-UploadSessionLookupError.payload_too_large = UploadSessionLookupError('payload_too_large')
-UploadSessionLookupError.other = UploadSessionLookupError('other')
 
 UploadSessionOffsetError.correct_offset.validator = bv.UInt64()
 UploadSessionOffsetError._all_field_names_ = set(['correct_offset'])
@@ -12862,29 +12985,35 @@ UploadSessionOffsetError._all_fields_ = [('correct_offset', UploadSessionOffsetE
 
 UploadSessionStartArg.close.validator = bv.Boolean()
 UploadSessionStartArg.session_type.validator = bv.Nullable(UploadSessionType_validator)
+UploadSessionStartArg.content_hash.validator = bv.Nullable(Sha256HexHash_validator)
 UploadSessionStartArg._all_field_names_ = set([
     'close',
     'session_type',
+    'content_hash',
 ])
 UploadSessionStartArg._all_fields_ = [
     ('close', UploadSessionStartArg.close.validator),
     ('session_type', UploadSessionStartArg.session_type.validator),
+    ('content_hash', UploadSessionStartArg.content_hash.validator),
 ]
 
 UploadSessionStartError._concurrent_session_data_not_allowed_validator = bv.Void()
 UploadSessionStartError._concurrent_session_close_not_allowed_validator = bv.Void()
 UploadSessionStartError._payload_too_large_validator = bv.Void()
+UploadSessionStartError._content_hash_mismatch_validator = bv.Void()
 UploadSessionStartError._other_validator = bv.Void()
 UploadSessionStartError._tagmap = {
     'concurrent_session_data_not_allowed': UploadSessionStartError._concurrent_session_data_not_allowed_validator,
     'concurrent_session_close_not_allowed': UploadSessionStartError._concurrent_session_close_not_allowed_validator,
     'payload_too_large': UploadSessionStartError._payload_too_large_validator,
+    'content_hash_mismatch': UploadSessionStartError._content_hash_mismatch_validator,
     'other': UploadSessionStartError._other_validator,
 }
 
 UploadSessionStartError.concurrent_session_data_not_allowed = UploadSessionStartError('concurrent_session_data_not_allowed')
 UploadSessionStartError.concurrent_session_close_not_allowed = UploadSessionStartError('concurrent_session_close_not_allowed')
 UploadSessionStartError.payload_too_large = UploadSessionStartError('payload_too_large')
+UploadSessionStartError.content_hash_mismatch = UploadSessionStartError('content_hash_mismatch')
 UploadSessionStartError.other = UploadSessionStartError('other')
 
 UploadSessionStartResult.session_id.validator = bv.String()
@@ -13042,9 +13171,9 @@ alpha_upload = bb.Route(
     'alpha/upload',
     1,
     True,
-    CommitInfoWithProperties_validator,
+    UploadArg_validator,
     FileMetadata_validator,
-    UploadErrorWithProperties_validator,
+    UploadError_validator,
     {'auth': 'user',
      'host': 'content',
      'style': 'upload'},
@@ -13691,7 +13820,7 @@ upload = bb.Route(
     'upload',
     1,
     False,
-    CommitInfo_validator,
+    UploadArg_validator,
     FileMetadata_validator,
     UploadError_validator,
     {'auth': 'user',
@@ -13704,7 +13833,7 @@ upload_session_append_v2 = bb.Route(
     False,
     UploadSessionAppendArg_validator,
     bv.Void(),
-    UploadSessionLookupError_validator,
+    UploadSessionAppendError_validator,
     {'auth': 'user',
      'host': 'content',
      'style': 'upload'},
@@ -13715,7 +13844,7 @@ upload_session_append = bb.Route(
     True,
     UploadSessionCursor_validator,
     bv.Void(),
-    UploadSessionLookupError_validator,
+    UploadSessionAppendError_validator,
     {'auth': 'user',
      'host': 'content',
      'style': 'upload'},
