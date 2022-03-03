@@ -848,31 +848,41 @@ class DropboxBase(object):
                            client_modified=None,
                            mute=False,
                            property_groups=None,
-                           strict_conflict=False):
+                           strict_conflict=False,
+                           content_hash=None):
         """
         Create a new file with the contents provided in the request. Note that
-        this endpoint is part of the properties API alpha and is slightly
-        different from :meth:`files_upload`. Do not use this to upload a file
-        larger than 150 MB. Instead, create an upload session with
-        :meth:`files_upload_session_start`.
+        the behavior of this alpha endpoint is unstable and subject to change.
+        Do not use this to upload a file larger than 150 MB. Instead, create an
+        upload session with :meth:`files_upload_session_start`.
 
         Route attributes:
             scope: files.content.write
 
         :param bytes f: Contents to upload.
+        :param Nullable[str] content_hash: A hash of the file content uploaded
+            in this call. If provided and the uploaded content does not match
+            this hash, an error will be returned. For more information see our
+            `Content hash
+            <https://www.dropbox.com/developers/reference/content-hash>`_ page.
         :rtype: :class:`dropbox.files.FileMetadata`
+        :raises: :class:`.exceptions.ApiError`
+
+        If this raises, ApiError will contain:
+            :class:`dropbox.files.UploadError`
         """
         warnings.warn(
-            'alpha/upload is deprecated. Use alpha/upload.',
+            'alpha/upload is deprecated. Use upload.',
             DeprecationWarning,
         )
-        arg = files.CommitInfoWithProperties(path,
-                                             mode,
-                                             autorename,
-                                             client_modified,
-                                             mute,
-                                             property_groups,
-                                             strict_conflict)
+        arg = files.UploadArg(path,
+                              mode,
+                              autorename,
+                              client_modified,
+                              mute,
+                              property_groups,
+                              strict_conflict,
+                              content_hash)
         r = self.request(
             files.alpha_upload,
             'files',
@@ -3157,7 +3167,8 @@ class DropboxBase(object):
                      client_modified=None,
                      mute=False,
                      property_groups=None,
-                     strict_conflict=False):
+                     strict_conflict=False,
+                     content_hash=None):
         """
         Create a new file with the contents provided in the request. Do not use
         this to upload a file larger than 150 MB. Instead, create an upload
@@ -3171,43 +3182,25 @@ class DropboxBase(object):
             scope: files.content.write
 
         :param bytes f: Contents to upload.
-        :param str path: Path in the user's Dropbox to save the file.
-        :param mode: Selects what to do if the file already exists.
-        :type mode: :class:`dropbox.files.WriteMode`
-        :param bool autorename: If there's a conflict, as determined by
-            ``mode``, have the Dropbox server try to autorename the file to
-            avoid conflict.
-        :param Nullable[datetime] client_modified: The value to store as the
-            ``client_modified`` timestamp. Dropbox automatically records the
-            time at which the file was written to the Dropbox servers. It can
-            also record an additional timestamp, provided by Dropbox desktop
-            clients, mobile clients, and API apps of when the file was actually
-            created or modified.
-        :param bool mute: Normally, users are made aware of any file
-            modifications in their Dropbox account via notifications in the
-            client software. If ``True``, this tells the clients that this
-            modification shouldn't result in a user notification.
-        :param Nullable[List[:class:`dropbox.files.PropertyGroup`]]
-            property_groups: List of custom properties to add to file.
-        :param bool strict_conflict: Be more strict about how each
-            :class:`dropbox.files.WriteMode` detects conflict. For example,
-            always return a conflict error when ``mode`` = ``WriteMode.update``
-            and the given "rev" doesn't match the existing file's "rev", even if
-            the existing file has been deleted. This also forces a conflict even
-            when the target path refers to a file with identical contents.
+        :param Nullable[str] content_hash: A hash of the file content uploaded
+            in this call. If provided and the uploaded content does not match
+            this hash, an error will be returned. For more information see our
+            `Content hash
+            <https://www.dropbox.com/developers/reference/content-hash>`_ page.
         :rtype: :class:`dropbox.files.FileMetadata`
         :raises: :class:`.exceptions.ApiError`
 
         If this raises, ApiError will contain:
             :class:`dropbox.files.UploadError`
         """
-        arg = files.CommitInfo(path,
-                               mode,
-                               autorename,
-                               client_modified,
-                               mute,
-                               property_groups,
-                               strict_conflict)
+        arg = files.UploadArg(path,
+                              mode,
+                              autorename,
+                              client_modified,
+                              mute,
+                              property_groups,
+                              strict_conflict,
+                              content_hash)
         r = self.request(
             files.upload,
             'files',
@@ -3219,7 +3212,8 @@ class DropboxBase(object):
     def files_upload_session_append_v2(self,
                                        f,
                                        cursor,
-                                       close=False):
+                                       close=False,
+                                       content_hash=None):
         """
         Append more data to an upload session. When the parameter close is set,
         this call will close the session. A single request should not upload
@@ -3240,14 +3234,20 @@ class DropboxBase(object):
             point you won't be able to call
             :meth:`files_upload_session_append_v2` anymore with the current
             session.
+        :param Nullable[str] content_hash: A hash of the file content uploaded
+            in this call. If provided and the uploaded content does not match
+            this hash, an error will be returned. For more information see our
+            `Content hash
+            <https://www.dropbox.com/developers/reference/content-hash>`_ page.
         :rtype: None
         :raises: :class:`.exceptions.ApiError`
 
         If this raises, ApiError will contain:
-            :class:`dropbox.files.UploadSessionLookupError`
+            :class:`dropbox.files.UploadSessionAppendError`
         """
         arg = files.UploadSessionAppendArg(cursor,
-                                           close)
+                                           close,
+                                           content_hash)
         r = self.request(
             files.upload_session_append_v2,
             'files',
@@ -3282,7 +3282,7 @@ class DropboxBase(object):
         :raises: :class:`.exceptions.ApiError`
 
         If this raises, ApiError will contain:
-            :class:`dropbox.files.UploadSessionLookupError`
+            :class:`dropbox.files.UploadSessionAppendError`
         """
         warnings.warn(
             'upload_session/append is deprecated. Use upload_session/append.',
@@ -3301,7 +3301,8 @@ class DropboxBase(object):
     def files_upload_session_finish(self,
                                     f,
                                     cursor,
-                                    commit):
+                                    commit,
+                                    content_hash=None):
         """
         Finish an upload session and save the uploaded data to the given file
         path. A single request should not upload more than 150 MB. The maximum
@@ -3321,6 +3322,11 @@ class DropboxBase(object):
         :param commit: Contains the path and other optional modifiers for the
             commit.
         :type commit: :class:`dropbox.files.CommitInfo`
+        :param Nullable[str] content_hash: A hash of the file content uploaded
+            in this call. If provided and the uploaded content does not match
+            this hash, an error will be returned. For more information see our
+            `Content hash
+            <https://www.dropbox.com/developers/reference/content-hash>`_ page.
         :rtype: :class:`dropbox.files.FileMetadata`
         :raises: :class:`.exceptions.ApiError`
 
@@ -3328,7 +3334,8 @@ class DropboxBase(object):
             :class:`dropbox.files.UploadSessionFinishError`
         """
         arg = files.UploadSessionFinishArg(cursor,
-                                           commit)
+                                           commit,
+                                           content_hash)
         r = self.request(
             files.upload_session_finish,
             'files',
@@ -3447,7 +3454,8 @@ class DropboxBase(object):
     def files_upload_session_start(self,
                                    f,
                                    close=False,
-                                   session_type=None):
+                                   session_type=None,
+                                   content_hash=None):
         """
         Upload sessions allow you to upload a single file in one or more
         requests, for example where the size of the file is greater than 150 MB.
@@ -3495,6 +3503,11 @@ class DropboxBase(object):
         :param Nullable[:class:`dropbox.files.UploadSessionType`] session_type:
             Type of upload session you want to start. If not specified, default
             is ``UploadSessionType.sequential``.
+        :param Nullable[str] content_hash: A hash of the file content uploaded
+            in this call. If provided and the uploaded content does not match
+            this hash, an error will be returned. For more information see our
+            `Content hash
+            <https://www.dropbox.com/developers/reference/content-hash>`_ page.
         :rtype: :class:`dropbox.files.UploadSessionStartResult`
         :raises: :class:`.exceptions.ApiError`
 
@@ -3502,7 +3515,8 @@ class DropboxBase(object):
             :class:`dropbox.files.UploadSessionStartError`
         """
         arg = files.UploadSessionStartArg(close,
-                                          session_type)
+                                          session_type,
+                                          content_hash)
         r = self.request(
             files.upload_session_start,
             'files',
