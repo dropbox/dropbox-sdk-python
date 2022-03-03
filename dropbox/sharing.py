@@ -88,6 +88,8 @@ class AccessLevel(bb.Union):
         folder.
     :ivar sharing.AccessLevel.viewer_no_comment: The collaborator can only view
         the shared folder and does not have any access to comments.
+    :ivar sharing.AccessLevel.traverse: The collaborator can only view the
+        shared folder that they have access to.
     """
 
     _catch_all = 'other'
@@ -99,6 +101,8 @@ class AccessLevel(bb.Union):
     viewer = None
     # Attribute is overwritten below the class definition
     viewer_no_comment = None
+    # Attribute is overwritten below the class definition
+    traverse = None
     # Attribute is overwritten below the class definition
     other = None
 
@@ -133,6 +137,14 @@ class AccessLevel(bb.Union):
         :rtype: bool
         """
         return self._tag == 'viewer_no_comment'
+
+    def is_traverse(self):
+        """
+        Check if the union tag is ``traverse``.
+
+        :rtype: bool
+        """
+        return self._tag == 'traverse'
 
     def is_other(self):
         """
@@ -11040,12 +11052,14 @@ AccessLevel._owner_validator = bv.Void()
 AccessLevel._editor_validator = bv.Void()
 AccessLevel._viewer_validator = bv.Void()
 AccessLevel._viewer_no_comment_validator = bv.Void()
+AccessLevel._traverse_validator = bv.Void()
 AccessLevel._other_validator = bv.Void()
 AccessLevel._tagmap = {
     'owner': AccessLevel._owner_validator,
     'editor': AccessLevel._editor_validator,
     'viewer': AccessLevel._viewer_validator,
     'viewer_no_comment': AccessLevel._viewer_no_comment_validator,
+    'traverse': AccessLevel._traverse_validator,
     'other': AccessLevel._other_validator,
 }
 
@@ -11053,6 +11067,7 @@ AccessLevel.owner = AccessLevel('owner')
 AccessLevel.editor = AccessLevel('editor')
 AccessLevel.viewer = AccessLevel('viewer')
 AccessLevel.viewer_no_comment = AccessLevel('viewer_no_comment')
+AccessLevel.traverse = AccessLevel('traverse')
 AccessLevel.other = AccessLevel('other')
 
 AclUpdatePolicy._owner_validator = bv.Void()
