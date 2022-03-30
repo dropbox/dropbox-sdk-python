@@ -6,7 +6,7 @@ __all__ = [
 
 # This should always be 0.0.0 in main. Only update this after tagging
 # before release.
-__version__ = '0.0.0'
+__version__ = '11.29.0'
 
 import base64
 import contextlib
