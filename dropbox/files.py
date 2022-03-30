@@ -1533,6 +1533,7 @@ class Metadata(bb.Struct):
     :ivar files.Metadata.parent_shared_folder_id: Please use
         ``FileSharingInfo.parent_shared_folder_id`` or
         ``FolderSharingInfo.parent_shared_folder_id`` instead.
+    :ivar files.Metadata.preview_url: The preview URL of the file.
     """
 
     __slots__ = [
@@ -1540,6 +1541,7 @@ class Metadata(bb.Struct):
         '_path_lower_value',
         '_path_display_value',
         '_parent_shared_folder_id_value',
+        '_preview_url_value',
     ]
 
     _has_required_fields = True
@@ -1548,11 +1550,13 @@ class Metadata(bb.Struct):
                  name=None,
                  path_lower=None,
                  path_display=None,
-                 parent_shared_folder_id=None):
+                 parent_shared_folder_id=None,
+                 preview_url=None):
         self._name_value = bb.NOT_SET
         self._path_lower_value = bb.NOT_SET
         self._path_display_value = bb.NOT_SET
         self._parent_shared_folder_id_value = bb.NOT_SET
+        self._preview_url_value = bb.NOT_SET
         if name is not None:
             self.name = name
         if path_lower is not None:
@@ -1561,6 +1565,8 @@ class Metadata(bb.Struct):
             self.path_display = path_display
         if parent_shared_folder_id is not None:
             self.parent_shared_folder_id = parent_shared_folder_id
+        if preview_url is not None:
+            self.preview_url = preview_url
 
     # Instance attribute type: str (validator is set below)
     name = bb.Attribute("name")
@@ -1573,6 +1579,9 @@ class Metadata(bb.Struct):
 
     # Instance attribute type: str (validator is set below)
     parent_shared_folder_id = bb.Attribute("parent_shared_folder_id", nullable=True)
+
+    # Instance attribute type: str (validator is set below)
+    preview_url = bb.Attribute("preview_url", nullable=True)
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(Metadata, self)._process_custom_annotations(annotation_type, field_path, processor)
@@ -1594,11 +1603,13 @@ class DeletedMetadata(Metadata):
                  name=None,
                  path_lower=None,
                  path_display=None,
-                 parent_shared_folder_id=None):
+                 parent_shared_folder_id=None,
+                 preview_url=None):
         super(DeletedMetadata, self).__init__(name,
                                               path_lower,
                                               path_display,
-                                              parent_shared_folder_id)
+                                              parent_shared_folder_id,
+                                              preview_url)
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(DeletedMetadata, self)._process_custom_annotations(annotation_type, field_path, processor)
@@ -2489,6 +2500,7 @@ class FileMetadata(Metadata):
                  path_lower=None,
                  path_display=None,
                  parent_shared_folder_id=None,
+                 preview_url=None,
                  media_info=None,
                  symlink_info=None,
                  sharing_info=None,
@@ -2501,7 +2513,8 @@ class FileMetadata(Metadata):
         super(FileMetadata, self).__init__(name,
                                            path_lower,
                                            path_display,
-                                           parent_shared_folder_id)
+                                           parent_shared_folder_id,
+                                           preview_url)
         self._id_value = bb.NOT_SET
         self._client_modified_value = bb.NOT_SET
         self._server_modified_value = bb.NOT_SET
@@ -2732,13 +2745,15 @@ class FolderMetadata(Metadata):
                  path_lower=None,
                  path_display=None,
                  parent_shared_folder_id=None,
+                 preview_url=None,
                  shared_folder_id=None,
                  sharing_info=None,
                  property_groups=None):
         super(FolderMetadata, self).__init__(name,
                                              path_lower,
                                              path_display,
-                                             parent_shared_folder_id)
+                                             parent_shared_folder_id,
+                                             preview_url)
         self._id_value = bb.NOT_SET
         self._shared_folder_id_value = bb.NOT_SET
         self._sharing_info_value = bb.NOT_SET
@@ -4662,8 +4677,8 @@ class LookupError(bb.Union):
     :ivar files.LookupError.not_folder: We were expecting a folder, but the
         given path refers to something that isn't a folder.
     :ivar files.LookupError.restricted_content: The file cannot be transferred
-        because the content is restricted.  For example, sometimes there are
-        legal restrictions due to copyright claims.
+        because the content is restricted. For example, we might restrict a file
+        due to legal requirements.
     :ivar files.LookupError.unsupported_content_type: This operation is not
         supported for this content type.
     :ivar files.LookupError.locked: The given path is locked.
@@ -11070,11 +11085,13 @@ Metadata.name.validator = bv.String()
 Metadata.path_lower.validator = bv.Nullable(bv.String())
 Metadata.path_display.validator = bv.Nullable(bv.String())
 Metadata.parent_shared_folder_id.validator = bv.Nullable(common.SharedFolderId_validator)
+Metadata.preview_url.validator = bv.Nullable(bv.String())
 Metadata._field_names_ = set([
     'name',
     'path_lower',
     'path_display',
     'parent_shared_folder_id',
+    'preview_url',
 ])
 Metadata._all_field_names_ = Metadata._field_names_
 Metadata._fields_ = [
@@ -11082,6 +11099,7 @@ Metadata._fields_ = [
     ('path_lower', Metadata.path_lower.validator),
     ('path_display', Metadata.path_display.validator),
     ('parent_shared_folder_id', Metadata.parent_shared_folder_id.validator),
+    ('preview_url', Metadata.preview_url.validator),
 ]
 Metadata._all_fields_ = Metadata._fields_
 

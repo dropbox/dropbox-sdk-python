@@ -7042,6 +7042,120 @@ class DropboxPasswordsNewDeviceEnrolledType(bb.Struct):
 
 DropboxPasswordsNewDeviceEnrolledType_validator = bv.Struct(DropboxPasswordsNewDeviceEnrolledType)
 
+class DropboxPasswordsPolicy(bb.Union):
+    """
+    Policy for deciding whether team users can use Dropbox Passwords
+
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+    """
+
+    _catch_all = 'other'
+    # Attribute is overwritten below the class definition
+    default = None
+    # Attribute is overwritten below the class definition
+    disabled = None
+    # Attribute is overwritten below the class definition
+    enabled = None
+    # Attribute is overwritten below the class definition
+    other = None
+
+    def is_default(self):
+        """
+        Check if the union tag is ``default``.
+
+        :rtype: bool
+        """
+        return self._tag == 'default'
+
+    def is_disabled(self):
+        """
+        Check if the union tag is ``disabled``.
+
+        :rtype: bool
+        """
+        return self._tag == 'disabled'
+
+    def is_enabled(self):
+        """
+        Check if the union tag is ``enabled``.
+
+        :rtype: bool
+        """
+        return self._tag == 'enabled'
+
+    def is_other(self):
+        """
+        Check if the union tag is ``other``.
+
+        :rtype: bool
+        """
+        return self._tag == 'other'
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(DropboxPasswordsPolicy, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+DropboxPasswordsPolicy_validator = bv.Union(DropboxPasswordsPolicy)
+
+class DropboxPasswordsPolicyChangedDetails(bb.Struct):
+    """
+    Changed Dropbox Passwords policy for team.
+
+    :ivar team_log.DropboxPasswordsPolicyChangedDetails.new_value: To.
+    :ivar team_log.DropboxPasswordsPolicyChangedDetails.previous_value: From.
+    """
+
+    __slots__ = [
+        '_new_value_value',
+        '_previous_value_value',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 new_value=None,
+                 previous_value=None):
+        self._new_value_value = bb.NOT_SET
+        self._previous_value_value = bb.NOT_SET
+        if new_value is not None:
+            self.new_value = new_value
+        if previous_value is not None:
+            self.previous_value = previous_value
+
+    # Instance attribute type: DropboxPasswordsPolicy (validator is set below)
+    new_value = bb.Attribute("new_value", user_defined=True)
+
+    # Instance attribute type: DropboxPasswordsPolicy (validator is set below)
+    previous_value = bb.Attribute("previous_value", user_defined=True)
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(DropboxPasswordsPolicyChangedDetails, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+DropboxPasswordsPolicyChangedDetails_validator = bv.Struct(DropboxPasswordsPolicyChangedDetails)
+
+class DropboxPasswordsPolicyChangedType(bb.Struct):
+
+    __slots__ = [
+        '_description_value',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 description=None):
+        self._description_value = bb.NOT_SET
+        if description is not None:
+            self.description = description
+
+    # Instance attribute type: str (validator is set below)
+    description = bb.Attribute("description")
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(DropboxPasswordsPolicyChangedType, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+DropboxPasswordsPolicyChangedType_validator = bv.Struct(DropboxPasswordsPolicyChangedType)
+
 class DurationLogInfo(bb.Struct):
     """
     Represents a time duration: unit and amount
@@ -12238,6 +12352,17 @@ class EventDetails(bb.Union):
         return cls('directory_restrictions_remove_members_details', val)
 
     @classmethod
+    def dropbox_passwords_policy_changed_details(cls, val):
+        """
+        Create an instance of this class set to the
+        ``dropbox_passwords_policy_changed_details`` tag with value ``val``.
+
+        :param DropboxPasswordsPolicyChangedDetails val:
+        :rtype: EventDetails
+        """
+        return cls('dropbox_passwords_policy_changed_details', val)
+
+    @classmethod
     def email_ingest_policy_changed_details(cls, val):
         """
         Create an instance of this class set to the
@@ -16427,6 +16552,14 @@ class EventDetails(bb.Union):
         :rtype: bool
         """
         return self._tag == 'directory_restrictions_remove_members_details'
+
+    def is_dropbox_passwords_policy_changed_details(self):
+        """
+        Check if the union tag is ``dropbox_passwords_policy_changed_details``.
+
+        :rtype: bool
+        """
+        return self._tag == 'dropbox_passwords_policy_changed_details'
 
     def is_email_ingest_policy_changed_details(self):
         """
@@ -21006,6 +21139,16 @@ class EventDetails(bb.Union):
             raise AttributeError("tag 'directory_restrictions_remove_members_details' not set")
         return self._value
 
+    def get_dropbox_passwords_policy_changed_details(self):
+        """
+        Only call this if :meth:`is_dropbox_passwords_policy_changed_details` is true.
+
+        :rtype: DropboxPasswordsPolicyChangedDetails
+        """
+        if not self.is_dropbox_passwords_policy_changed_details():
+            raise AttributeError("tag 'dropbox_passwords_policy_changed_details' not set")
+        return self._value
+
     def get_email_ingest_policy_changed_details(self):
         """
         Only call this if :meth:`is_email_ingest_policy_changed_details` is true.
@@ -22983,6 +23126,9 @@ class EventType(bb.Union):
     :ivar DirectoryRestrictionsRemoveMembersType
         EventType.directory_restrictions_remove_members: (team_policies) Removed
         members from directory restrictions list
+    :ivar DropboxPasswordsPolicyChangedType
+        EventType.dropbox_passwords_policy_changed: (team_policies) Changed
+        Dropbox Passwords policy for team
     :ivar EmailIngestPolicyChangedType EventType.email_ingest_policy_changed:
         (team_policies) Changed email to Dropbox policy for team
     :ivar EmmAddExceptionType EventType.emm_add_exception: (team_policies) Added
@@ -27354,6 +27500,17 @@ class EventType(bb.Union):
         return cls('directory_restrictions_remove_members', val)
 
     @classmethod
+    def dropbox_passwords_policy_changed(cls, val):
+        """
+        Create an instance of this class set to the
+        ``dropbox_passwords_policy_changed`` tag with value ``val``.
+
+        :param DropboxPasswordsPolicyChangedType val:
+        :rtype: EventType
+        """
+        return cls('dropbox_passwords_policy_changed', val)
+
+    @classmethod
     def email_ingest_policy_changed(cls, val):
         """
         Create an instance of this class set to the
@@ -31518,6 +31675,14 @@ class EventType(bb.Union):
         :rtype: bool
         """
         return self._tag == 'directory_restrictions_remove_members'
+
+    def is_dropbox_passwords_policy_changed(self):
+        """
+        Check if the union tag is ``dropbox_passwords_policy_changed``.
+
+        :rtype: bool
+        """
+        return self._tag == 'dropbox_passwords_policy_changed'
 
     def is_email_ingest_policy_changed(self):
         """
@@ -36877,6 +37042,18 @@ class EventType(bb.Union):
             raise AttributeError("tag 'directory_restrictions_remove_members' not set")
         return self._value
 
+    def get_dropbox_passwords_policy_changed(self):
+        """
+        (team_policies) Changed Dropbox Passwords policy for team
+
+        Only call this if :meth:`is_dropbox_passwords_policy_changed` is true.
+
+        :rtype: DropboxPasswordsPolicyChangedType
+        """
+        if not self.is_dropbox_passwords_policy_changed():
+            raise AttributeError("tag 'dropbox_passwords_policy_changed' not set")
+        return self._value
+
     def get_email_ingest_policy_changed(self):
         """
         (team_policies) Changed email to Dropbox policy for team
@@ -38966,6 +39143,8 @@ class EventTypeArg(bb.Union):
         (team_policies) Added members to directory restrictions list
     :ivar team_log.EventTypeArg.directory_restrictions_remove_members:
         (team_policies) Removed members from directory restrictions list
+    :ivar team_log.EventTypeArg.dropbox_passwords_policy_changed:
+        (team_policies) Changed Dropbox Passwords policy for team
     :ivar team_log.EventTypeArg.email_ingest_policy_changed: (team_policies)
         Changed email to Dropbox policy for team
     :ivar team_log.EventTypeArg.emm_add_exception: (team_policies) Added members
@@ -39962,6 +40141,8 @@ class EventTypeArg(bb.Union):
     directory_restrictions_add_members = None
     # Attribute is overwritten below the class definition
     directory_restrictions_remove_members = None
+    # Attribute is overwritten below the class definition
+    dropbox_passwords_policy_changed = None
     # Attribute is overwritten below the class definition
     email_ingest_policy_changed = None
     # Attribute is overwritten below the class definition
@@ -43134,6 +43315,14 @@ class EventTypeArg(bb.Union):
         :rtype: bool
         """
         return self._tag == 'directory_restrictions_remove_members'
+
+    def is_dropbox_passwords_policy_changed(self):
+        """
+        Check if the union tag is ``dropbox_passwords_policy_changed``.
+
+        :rtype: bool
+        """
+        return self._tag == 'dropbox_passwords_policy_changed'
 
     def is_email_ingest_policy_changed(self):
         """
@@ -73884,6 +74073,37 @@ DropboxPasswordsNewDeviceEnrolledType.description.validator = bv.String()
 DropboxPasswordsNewDeviceEnrolledType._all_field_names_ = set(['description'])
 DropboxPasswordsNewDeviceEnrolledType._all_fields_ = [('description', DropboxPasswordsNewDeviceEnrolledType.description.validator)]
 
+DropboxPasswordsPolicy._default_validator = bv.Void()
+DropboxPasswordsPolicy._disabled_validator = bv.Void()
+DropboxPasswordsPolicy._enabled_validator = bv.Void()
+DropboxPasswordsPolicy._other_validator = bv.Void()
+DropboxPasswordsPolicy._tagmap = {
+    'default': DropboxPasswordsPolicy._default_validator,
+    'disabled': DropboxPasswordsPolicy._disabled_validator,
+    'enabled': DropboxPasswordsPolicy._enabled_validator,
+    'other': DropboxPasswordsPolicy._other_validator,
+}
+
+DropboxPasswordsPolicy.default = DropboxPasswordsPolicy('default')
+DropboxPasswordsPolicy.disabled = DropboxPasswordsPolicy('disabled')
+DropboxPasswordsPolicy.enabled = DropboxPasswordsPolicy('enabled')
+DropboxPasswordsPolicy.other = DropboxPasswordsPolicy('other')
+
+DropboxPasswordsPolicyChangedDetails.new_value.validator = DropboxPasswordsPolicy_validator
+DropboxPasswordsPolicyChangedDetails.previous_value.validator = DropboxPasswordsPolicy_validator
+DropboxPasswordsPolicyChangedDetails._all_field_names_ = set([
+    'new_value',
+    'previous_value',
+])
+DropboxPasswordsPolicyChangedDetails._all_fields_ = [
+    ('new_value', DropboxPasswordsPolicyChangedDetails.new_value.validator),
+    ('previous_value', DropboxPasswordsPolicyChangedDetails.previous_value.validator),
+]
+
+DropboxPasswordsPolicyChangedType.description.validator = bv.String()
+DropboxPasswordsPolicyChangedType._all_field_names_ = set(['description'])
+DropboxPasswordsPolicyChangedType._all_fields_ = [('description', DropboxPasswordsPolicyChangedType.description.validator)]
+
 DurationLogInfo.unit.validator = TimeUnit_validator
 DurationLogInfo.amount.validator = bv.UInt64()
 DurationLogInfo._all_field_names_ = set([
@@ -74503,6 +74723,7 @@ EventDetails._device_approvals_change_unlink_action_details_validator = DeviceAp
 EventDetails._device_approvals_remove_exception_details_validator = DeviceApprovalsRemoveExceptionDetails_validator
 EventDetails._directory_restrictions_add_members_details_validator = DirectoryRestrictionsAddMembersDetails_validator
 EventDetails._directory_restrictions_remove_members_details_validator = DirectoryRestrictionsRemoveMembersDetails_validator
+EventDetails._dropbox_passwords_policy_changed_details_validator = DropboxPasswordsPolicyChangedDetails_validator
 EventDetails._email_ingest_policy_changed_details_validator = EmailIngestPolicyChangedDetails_validator
 EventDetails._emm_add_exception_details_validator = EmmAddExceptionDetails_validator
 EventDetails._emm_change_policy_details_validator = EmmChangePolicyDetails_validator
@@ -74984,6 +75205,7 @@ EventDetails._tagmap = {
     'device_approvals_remove_exception_details': EventDetails._device_approvals_remove_exception_details_validator,
     'directory_restrictions_add_members_details': EventDetails._directory_restrictions_add_members_details_validator,
     'directory_restrictions_remove_members_details': EventDetails._directory_restrictions_remove_members_details_validator,
+    'dropbox_passwords_policy_changed_details': EventDetails._dropbox_passwords_policy_changed_details_validator,
     'email_ingest_policy_changed_details': EventDetails._email_ingest_policy_changed_details_validator,
     'emm_add_exception_details': EventDetails._emm_add_exception_details_validator,
     'emm_change_policy_details': EventDetails._emm_change_policy_details_validator,
@@ -75468,6 +75690,7 @@ EventType._device_approvals_change_unlink_action_validator = DeviceApprovalsChan
 EventType._device_approvals_remove_exception_validator = DeviceApprovalsRemoveExceptionType_validator
 EventType._directory_restrictions_add_members_validator = DirectoryRestrictionsAddMembersType_validator
 EventType._directory_restrictions_remove_members_validator = DirectoryRestrictionsRemoveMembersType_validator
+EventType._dropbox_passwords_policy_changed_validator = DropboxPasswordsPolicyChangedType_validator
 EventType._email_ingest_policy_changed_validator = EmailIngestPolicyChangedType_validator
 EventType._emm_add_exception_validator = EmmAddExceptionType_validator
 EventType._emm_change_policy_validator = EmmChangePolicyType_validator
@@ -75948,6 +76171,7 @@ EventType._tagmap = {
     'device_approvals_remove_exception': EventType._device_approvals_remove_exception_validator,
     'directory_restrictions_add_members': EventType._directory_restrictions_add_members_validator,
     'directory_restrictions_remove_members': EventType._directory_restrictions_remove_members_validator,
+    'dropbox_passwords_policy_changed': EventType._dropbox_passwords_policy_changed_validator,
     'email_ingest_policy_changed': EventType._email_ingest_policy_changed_validator,
     'emm_add_exception': EventType._emm_add_exception_validator,
     'emm_change_policy': EventType._emm_change_policy_validator,
@@ -76431,6 +76655,7 @@ EventTypeArg._device_approvals_change_unlink_action_validator = bv.Void()
 EventTypeArg._device_approvals_remove_exception_validator = bv.Void()
 EventTypeArg._directory_restrictions_add_members_validator = bv.Void()
 EventTypeArg._directory_restrictions_remove_members_validator = bv.Void()
+EventTypeArg._dropbox_passwords_policy_changed_validator = bv.Void()
 EventTypeArg._email_ingest_policy_changed_validator = bv.Void()
 EventTypeArg._emm_add_exception_validator = bv.Void()
 EventTypeArg._emm_change_policy_validator = bv.Void()
@@ -76911,6 +77136,7 @@ EventTypeArg._tagmap = {
     'device_approvals_remove_exception': EventTypeArg._device_approvals_remove_exception_validator,
     'directory_restrictions_add_members': EventTypeArg._directory_restrictions_add_members_validator,
     'directory_restrictions_remove_members': EventTypeArg._directory_restrictions_remove_members_validator,
+    'dropbox_passwords_policy_changed': EventTypeArg._dropbox_passwords_policy_changed_validator,
     'email_ingest_policy_changed': EventTypeArg._email_ingest_policy_changed_validator,
     'emm_add_exception': EventTypeArg._emm_add_exception_validator,
     'emm_change_policy': EventTypeArg._emm_change_policy_validator,
@@ -77392,6 +77618,7 @@ EventTypeArg.device_approvals_change_unlink_action = EventTypeArg('device_approv
 EventTypeArg.device_approvals_remove_exception = EventTypeArg('device_approvals_remove_exception')
 EventTypeArg.directory_restrictions_add_members = EventTypeArg('directory_restrictions_add_members')
 EventTypeArg.directory_restrictions_remove_members = EventTypeArg('directory_restrictions_remove_members')
+EventTypeArg.dropbox_passwords_policy_changed = EventTypeArg('dropbox_passwords_policy_changed')
 EventTypeArg.email_ingest_policy_changed = EventTypeArg('email_ingest_policy_changed')
 EventTypeArg.emm_add_exception = EventTypeArg('emm_add_exception')
 EventTypeArg.emm_change_policy = EventTypeArg('emm_change_policy')
