@@ -3054,8 +3054,9 @@ class DropboxBase(object):
                        path,
                        tag_text):
         """
-        Add a tag to an item. A tag is a string. No more than 20 tags can be
-        added to a given item.
+        Add a tag to an item. A tag is a string. The strings are automatically
+        converted to lowercase letters. No more than 20 tags can be added to a
+        given item.
 
         Route attributes:
             scope: files.metadata.write

@@ -532,8 +532,8 @@ class LookupError(bb.Union):
     :ivar file_properties.LookupError.not_folder: We were expecting a folder,
         but the given path refers to something that isn't a folder.
     :ivar file_properties.LookupError.restricted_content: The file cannot be
-        transferred because the content is restricted.  For example, sometimes
-        there are legal restrictions due to copyright claims.
+        transferred because the content is restricted. For example, we might
+        restrict a file due to legal requirements.
     """
 
     _catch_all = 'other'
