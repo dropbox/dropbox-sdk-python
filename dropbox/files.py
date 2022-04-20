@@ -10204,6 +10204,71 @@ class UploadSessionStartArg(bb.Struct):
 
 UploadSessionStartArg_validator = bv.Struct(UploadSessionStartArg)
 
+class UploadSessionStartBatchArg(bb.Struct):
+    """
+    :ivar files.UploadSessionStartBatchArg.session_type: Type of upload session
+        you want to start. If not specified, default is
+        ``UploadSessionType.sequential``.
+    :ivar files.UploadSessionStartBatchArg.num_sessions: The number of upload
+        sessions to start.
+    """
+
+    __slots__ = [
+        '_session_type_value',
+        '_num_sessions_value',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 num_sessions=None,
+                 session_type=None):
+        self._session_type_value = bb.NOT_SET
+        self._num_sessions_value = bb.NOT_SET
+        if session_type is not None:
+            self.session_type = session_type
+        if num_sessions is not None:
+            self.num_sessions = num_sessions
+
+    # Instance attribute type: UploadSessionType (validator is set below)
+    session_type = bb.Attribute("session_type", nullable=True, user_defined=True)
+
+    # Instance attribute type: int (validator is set below)
+    num_sessions = bb.Attribute("num_sessions")
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(UploadSessionStartBatchArg, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+UploadSessionStartBatchArg_validator = bv.Struct(UploadSessionStartBatchArg)
+
+class UploadSessionStartBatchResult(bb.Struct):
+    """
+    :ivar files.UploadSessionStartBatchResult.session_ids: A List of unique
+        identifiers for the upload session. Pass each session_id to
+        :meth:`dropbox.dropbox_client.Dropbox.files_upload_session_append` and
+        :meth:`dropbox.dropbox_client.Dropbox.files_upload_session_finish`.
+    """
+
+    __slots__ = [
+        '_session_ids_value',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 session_ids=None):
+        self._session_ids_value = bb.NOT_SET
+        if session_ids is not None:
+            self.session_ids = session_ids
+
+    # Instance attribute type: list of [str] (validator is set below)
+    session_ids = bb.Attribute("session_ids")
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(UploadSessionStartBatchResult, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+UploadSessionStartBatchResult_validator = bv.Struct(UploadSessionStartBatchResult)
+
 class UploadSessionStartError(bb.Union):
     """
     This class acts as a tagged union. Only one of the ``is_*`` methods will
@@ -13015,6 +13080,21 @@ UploadSessionStartArg._all_fields_ = [
     ('content_hash', UploadSessionStartArg.content_hash.validator),
 ]
 
+UploadSessionStartBatchArg.session_type.validator = bv.Nullable(UploadSessionType_validator)
+UploadSessionStartBatchArg.num_sessions.validator = bv.UInt64(min_value=1, max_value=1000)
+UploadSessionStartBatchArg._all_field_names_ = set([
+    'session_type',
+    'num_sessions',
+])
+UploadSessionStartBatchArg._all_fields_ = [
+    ('session_type', UploadSessionStartBatchArg.session_type.validator),
+    ('num_sessions', UploadSessionStartBatchArg.num_sessions.validator),
+]
+
+UploadSessionStartBatchResult.session_ids.validator = bv.List(bv.String())
+UploadSessionStartBatchResult._all_field_names_ = set(['session_ids'])
+UploadSessionStartBatchResult._all_fields_ = [('session_ids', UploadSessionStartBatchResult.session_ids.validator)]
+
 UploadSessionStartError._concurrent_session_data_not_allowed_validator = bv.Void()
 UploadSessionStartError._concurrent_session_close_not_allowed_validator = bv.Void()
 UploadSessionStartError._payload_too_large_validator = bv.Void()
@@ -13922,6 +14002,17 @@ upload_session_start = bb.Route(
      'host': 'content',
      'style': 'upload'},
 )
+upload_session_start_batch = bb.Route(
+    'upload_session/start_batch',
+    1,
+    False,
+    UploadSessionStartBatchArg_validator,
+    UploadSessionStartBatchResult_validator,
+    bv.Void(),
+    {'auth': 'user',
+     'host': 'api',
+     'style': 'rpc'},
+)
 
 ROUTES = {
     'alpha/get_metadata': alpha_get_metadata,
@@ -13992,5 +14083,6 @@ ROUTES = {
     'upload_session/finish_batch:2': upload_session_finish_batch_v2,
     'upload_session/finish_batch/check': upload_session_finish_batch_check,
     'upload_session/start': upload_session_start,
+    'upload_session/start_batch': upload_session_start_batch,
 }
 
