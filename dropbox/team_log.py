@@ -8868,6 +8868,29 @@ class EventDetails(bb.Union):
         return cls('emm_refresh_auth_token_details', val)
 
     @classmethod
+    def external_drive_backup_eligibility_status_checked_details(cls, val):
+        """
+        Create an instance of this class set to the
+        ``external_drive_backup_eligibility_status_checked_details`` tag with
+        value ``val``.
+
+        :param ExternalDriveBackupEligibilityStatusCheckedDetails val:
+        :rtype: EventDetails
+        """
+        return cls('external_drive_backup_eligibility_status_checked_details', val)
+
+    @classmethod
+    def external_drive_backup_status_changed_details(cls, val):
+        """
+        Create an instance of this class set to the
+        ``external_drive_backup_status_changed_details`` tag with value ``val``.
+
+        :param ExternalDriveBackupStatusChangedDetails val:
+        :rtype: EventDetails
+        """
+        return cls('external_drive_backup_status_changed_details', val)
+
+    @classmethod
     def account_capture_change_availability_details(cls, val):
         """
         Create an instance of this class set to the
@@ -14041,6 +14064,22 @@ class EventDetails(bb.Union):
         """
         return self._tag == 'emm_refresh_auth_token_details'
 
+    def is_external_drive_backup_eligibility_status_checked_details(self):
+        """
+        Check if the union tag is ``external_drive_backup_eligibility_status_checked_details``.
+
+        :rtype: bool
+        """
+        return self._tag == 'external_drive_backup_eligibility_status_checked_details'
+
+    def is_external_drive_backup_status_changed_details(self):
+        """
+        Check if the union tag is ``external_drive_backup_status_changed_details``.
+
+        :rtype: bool
+        """
+        return self._tag == 'external_drive_backup_status_changed_details'
+
     def is_account_capture_change_availability_details(self):
         """
         Check if the union tag is ``account_capture_change_availability_details``.
@@ -17997,6 +18036,26 @@ class EventDetails(bb.Union):
         """
         if not self.is_emm_refresh_auth_token_details():
             raise AttributeError("tag 'emm_refresh_auth_token_details' not set")
+        return self._value
+
+    def get_external_drive_backup_eligibility_status_checked_details(self):
+        """
+        Only call this if :meth:`is_external_drive_backup_eligibility_status_checked_details` is true.
+
+        :rtype: ExternalDriveBackupEligibilityStatusCheckedDetails
+        """
+        if not self.is_external_drive_backup_eligibility_status_checked_details():
+            raise AttributeError("tag 'external_drive_backup_eligibility_status_checked_details' not set")
+        return self._value
+
+    def get_external_drive_backup_status_changed_details(self):
+        """
+        Only call this if :meth:`is_external_drive_backup_status_changed_details` is true.
+
+        :rtype: ExternalDriveBackupStatusChangedDetails
+        """
+        if not self.is_external_drive_backup_status_changed_details():
+            raise AttributeError("tag 'external_drive_backup_status_changed_details' not set")
         return self._value
 
     def get_account_capture_change_availability_details(self):
@@ -22392,6 +22451,12 @@ class EventType(bb.Union):
         Dropbox Passwords device
     :ivar EmmRefreshAuthTokenType EventType.emm_refresh_auth_token: (devices)
         Refreshed auth token used for setting up EMM
+    :ivar ExternalDriveBackupEligibilityStatusCheckedType
+        EventType.external_drive_backup_eligibility_status_checked: (devices)
+        Checked external drive backup eligibility status
+    :ivar ExternalDriveBackupStatusChangedType
+        EventType.external_drive_backup_status_changed: (devices) Modified
+        external drive backup
     :ivar AccountCaptureChangeAvailabilityType
         EventType.account_capture_change_availability: (domains) Granted/revoked
         option to enable account capture on team domains
@@ -24040,6 +24105,29 @@ class EventType(bb.Union):
         :rtype: EventType
         """
         return cls('emm_refresh_auth_token', val)
+
+    @classmethod
+    def external_drive_backup_eligibility_status_checked(cls, val):
+        """
+        Create an instance of this class set to the
+        ``external_drive_backup_eligibility_status_checked`` tag with value
+        ``val``.
+
+        :param ExternalDriveBackupEligibilityStatusCheckedType val:
+        :rtype: EventType
+        """
+        return cls('external_drive_backup_eligibility_status_checked', val)
+
+    @classmethod
+    def external_drive_backup_status_changed(cls, val):
+        """
+        Create an instance of this class set to the
+        ``external_drive_backup_status_changed`` tag with value ``val``.
+
+        :param ExternalDriveBackupStatusChangedType val:
+        :rtype: EventType
+        """
+        return cls('external_drive_backup_status_changed', val)
 
     @classmethod
     def account_capture_change_availability(cls, val):
@@ -29164,6 +29252,22 @@ class EventType(bb.Union):
         """
         return self._tag == 'emm_refresh_auth_token'
 
+    def is_external_drive_backup_eligibility_status_checked(self):
+        """
+        Check if the union tag is ``external_drive_backup_eligibility_status_checked``.
+
+        :rtype: bool
+        """
+        return self._tag == 'external_drive_backup_eligibility_status_checked'
+
+    def is_external_drive_backup_status_changed(self):
+        """
+        Check if the union tag is ``external_drive_backup_status_changed``.
+
+        :rtype: bool
+        """
+        return self._tag == 'external_drive_backup_status_changed'
+
     def is_account_capture_change_availability(self):
         """
         Check if the union tag is ``account_capture_change_availability``.
@@ -33223,6 +33327,30 @@ class EventType(bb.Union):
         """
         if not self.is_emm_refresh_auth_token():
             raise AttributeError("tag 'emm_refresh_auth_token' not set")
+        return self._value
+
+    def get_external_drive_backup_eligibility_status_checked(self):
+        """
+        (devices) Checked external drive backup eligibility status
+
+        Only call this if :meth:`is_external_drive_backup_eligibility_status_checked` is true.
+
+        :rtype: ExternalDriveBackupEligibilityStatusCheckedType
+        """
+        if not self.is_external_drive_backup_eligibility_status_checked():
+            raise AttributeError("tag 'external_drive_backup_eligibility_status_checked' not set")
+        return self._value
+
+    def get_external_drive_backup_status_changed(self):
+        """
+        (devices) Modified external drive backup
+
+        Only call this if :meth:`is_external_drive_backup_status_changed` is true.
+
+        :rtype: ExternalDriveBackupStatusChangedType
+        """
+        if not self.is_external_drive_backup_status_changed():
+            raise AttributeError("tag 'external_drive_backup_status_changed' not set")
         return self._value
 
     def get_account_capture_change_availability(self):
@@ -38512,6 +38640,11 @@ class EventTypeArg(bb.Union):
         Enrolled new Dropbox Passwords device
     :ivar team_log.EventTypeArg.emm_refresh_auth_token: (devices) Refreshed auth
         token used for setting up EMM
+    :ivar
+        team_log.EventTypeArg.external_drive_backup_eligibility_status_checked:
+        (devices) Checked external drive backup eligibility status
+    :ivar team_log.EventTypeArg.external_drive_backup_status_changed: (devices)
+        Modified external drive backup
     :ivar team_log.EventTypeArg.account_capture_change_availability: (domains)
         Granted/revoked option to enable account capture on team domains
     :ivar team_log.EventTypeArg.account_capture_migrate_account: (domains)
@@ -39513,6 +39646,10 @@ class EventTypeArg(bb.Union):
     dropbox_passwords_new_device_enrolled = None
     # Attribute is overwritten below the class definition
     emm_refresh_auth_token = None
+    # Attribute is overwritten below the class definition
+    external_drive_backup_eligibility_status_checked = None
+    # Attribute is overwritten below the class definition
+    external_drive_backup_status_changed = None
     # Attribute is overwritten below the class definition
     account_capture_change_availability = None
     # Attribute is overwritten below the class definition
@@ -40803,6 +40940,22 @@ class EventTypeArg(bb.Union):
         :rtype: bool
         """
         return self._tag == 'emm_refresh_auth_token'
+
+    def is_external_drive_backup_eligibility_status_checked(self):
+        """
+        Check if the union tag is ``external_drive_backup_eligibility_status_checked``.
+
+        :rtype: bool
+        """
+        return self._tag == 'external_drive_backup_eligibility_status_checked'
+
+    def is_external_drive_backup_status_changed(self):
+        """
+        Check if the union tag is ``external_drive_backup_status_changed``.
+
+        :rtype: bool
+        """
+        return self._tag == 'external_drive_backup_status_changed'
 
     def is_account_capture_change_availability(self):
         """
@@ -44424,6 +44577,124 @@ class ExtendedVersionHistoryPolicy(bb.Union):
 
 ExtendedVersionHistoryPolicy_validator = bv.Union(ExtendedVersionHistoryPolicy)
 
+class ExternalDriveBackupEligibilityStatus(bb.Union):
+    """
+    External Drive Backup eligibility status
+
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+    """
+
+    _catch_all = 'other'
+    # Attribute is overwritten below the class definition
+    exceed_license_cap = None
+    # Attribute is overwritten below the class definition
+    success = None
+    # Attribute is overwritten below the class definition
+    other = None
+
+    def is_exceed_license_cap(self):
+        """
+        Check if the union tag is ``exceed_license_cap``.
+
+        :rtype: bool
+        """
+        return self._tag == 'exceed_license_cap'
+
+    def is_success(self):
+        """
+        Check if the union tag is ``success``.
+
+        :rtype: bool
+        """
+        return self._tag == 'success'
+
+    def is_other(self):
+        """
+        Check if the union tag is ``other``.
+
+        :rtype: bool
+        """
+        return self._tag == 'other'
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(ExternalDriveBackupEligibilityStatus, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+ExternalDriveBackupEligibilityStatus_validator = bv.Union(ExternalDriveBackupEligibilityStatus)
+
+class ExternalDriveBackupEligibilityStatusCheckedDetails(bb.Struct):
+    """
+    Checked external drive backup eligibility status.
+
+    :ivar
+        team_log.ExternalDriveBackupEligibilityStatusCheckedDetails.desktop_device_session_info:
+        Device's session logged information.
+    :ivar team_log.ExternalDriveBackupEligibilityStatusCheckedDetails.status:
+        Current eligibility status of external drive backup.
+    :ivar
+        team_log.ExternalDriveBackupEligibilityStatusCheckedDetails.number_of_external_drive_backup:
+        Total number of valid external drive backup for all the team members.
+    """
+
+    __slots__ = [
+        '_desktop_device_session_info_value',
+        '_status_value',
+        '_number_of_external_drive_backup_value',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 desktop_device_session_info=None,
+                 status=None,
+                 number_of_external_drive_backup=None):
+        self._desktop_device_session_info_value = bb.NOT_SET
+        self._status_value = bb.NOT_SET
+        self._number_of_external_drive_backup_value = bb.NOT_SET
+        if desktop_device_session_info is not None:
+            self.desktop_device_session_info = desktop_device_session_info
+        if status is not None:
+            self.status = status
+        if number_of_external_drive_backup is not None:
+            self.number_of_external_drive_backup = number_of_external_drive_backup
+
+    # Instance attribute type: DesktopDeviceSessionLogInfo (validator is set below)
+    desktop_device_session_info = bb.Attribute("desktop_device_session_info", user_defined=True)
+
+    # Instance attribute type: ExternalDriveBackupEligibilityStatus (validator is set below)
+    status = bb.Attribute("status", user_defined=True)
+
+    # Instance attribute type: int (validator is set below)
+    number_of_external_drive_backup = bb.Attribute("number_of_external_drive_backup")
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(ExternalDriveBackupEligibilityStatusCheckedDetails, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+ExternalDriveBackupEligibilityStatusCheckedDetails_validator = bv.Struct(ExternalDriveBackupEligibilityStatusCheckedDetails)
+
+class ExternalDriveBackupEligibilityStatusCheckedType(bb.Struct):
+
+    __slots__ = [
+        '_description_value',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 description=None):
+        self._description_value = bb.NOT_SET
+        if description is not None:
+            self.description = description
+
+    # Instance attribute type: str (validator is set below)
+    description = bb.Attribute("description")
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(ExternalDriveBackupEligibilityStatusCheckedType, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+ExternalDriveBackupEligibilityStatusCheckedType_validator = bv.Struct(ExternalDriveBackupEligibilityStatusCheckedType)
+
 class ExternalDriveBackupPolicy(bb.Union):
     """
     Policy for controlling team access to external drive backup feature
@@ -44539,6 +44810,163 @@ class ExternalDriveBackupPolicyChangedType(bb.Struct):
         super(ExternalDriveBackupPolicyChangedType, self)._process_custom_annotations(annotation_type, field_path, processor)
 
 ExternalDriveBackupPolicyChangedType_validator = bv.Struct(ExternalDriveBackupPolicyChangedType)
+
+class ExternalDriveBackupStatus(bb.Union):
+    """
+    External Drive Backup status
+
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+    """
+
+    _catch_all = 'other'
+    # Attribute is overwritten below the class definition
+    broken = None
+    # Attribute is overwritten below the class definition
+    created = None
+    # Attribute is overwritten below the class definition
+    created_or_broken = None
+    # Attribute is overwritten below the class definition
+    deleted = None
+    # Attribute is overwritten below the class definition
+    empty = None
+    # Attribute is overwritten below the class definition
+    unknown = None
+    # Attribute is overwritten below the class definition
+    other = None
+
+    def is_broken(self):
+        """
+        Check if the union tag is ``broken``.
+
+        :rtype: bool
+        """
+        return self._tag == 'broken'
+
+    def is_created(self):
+        """
+        Check if the union tag is ``created``.
+
+        :rtype: bool
+        """
+        return self._tag == 'created'
+
+    def is_created_or_broken(self):
+        """
+        Check if the union tag is ``created_or_broken``.
+
+        :rtype: bool
+        """
+        return self._tag == 'created_or_broken'
+
+    def is_deleted(self):
+        """
+        Check if the union tag is ``deleted``.
+
+        :rtype: bool
+        """
+        return self._tag == 'deleted'
+
+    def is_empty(self):
+        """
+        Check if the union tag is ``empty``.
+
+        :rtype: bool
+        """
+        return self._tag == 'empty'
+
+    def is_unknown(self):
+        """
+        Check if the union tag is ``unknown``.
+
+        :rtype: bool
+        """
+        return self._tag == 'unknown'
+
+    def is_other(self):
+        """
+        Check if the union tag is ``other``.
+
+        :rtype: bool
+        """
+        return self._tag == 'other'
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(ExternalDriveBackupStatus, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+ExternalDriveBackupStatus_validator = bv.Union(ExternalDriveBackupStatus)
+
+class ExternalDriveBackupStatusChangedDetails(bb.Struct):
+    """
+    Modified external drive backup.
+
+    :ivar
+        team_log.ExternalDriveBackupStatusChangedDetails.desktop_device_session_info:
+        Device's session logged information.
+    :ivar team_log.ExternalDriveBackupStatusChangedDetails.previous_value:
+        Previous status of this external drive backup.
+    :ivar team_log.ExternalDriveBackupStatusChangedDetails.new_value: Next
+        status of this external drive backup.
+    """
+
+    __slots__ = [
+        '_desktop_device_session_info_value',
+        '_previous_value_value',
+        '_new_value_value',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 desktop_device_session_info=None,
+                 previous_value=None,
+                 new_value=None):
+        self._desktop_device_session_info_value = bb.NOT_SET
+        self._previous_value_value = bb.NOT_SET
+        self._new_value_value = bb.NOT_SET
+        if desktop_device_session_info is not None:
+            self.desktop_device_session_info = desktop_device_session_info
+        if previous_value is not None:
+            self.previous_value = previous_value
+        if new_value is not None:
+            self.new_value = new_value
+
+    # Instance attribute type: DesktopDeviceSessionLogInfo (validator is set below)
+    desktop_device_session_info = bb.Attribute("desktop_device_session_info", user_defined=True)
+
+    # Instance attribute type: ExternalDriveBackupStatus (validator is set below)
+    previous_value = bb.Attribute("previous_value", user_defined=True)
+
+    # Instance attribute type: ExternalDriveBackupStatus (validator is set below)
+    new_value = bb.Attribute("new_value", user_defined=True)
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(ExternalDriveBackupStatusChangedDetails, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+ExternalDriveBackupStatusChangedDetails_validator = bv.Struct(ExternalDriveBackupStatusChangedDetails)
+
+class ExternalDriveBackupStatusChangedType(bb.Struct):
+
+    __slots__ = [
+        '_description_value',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 description=None):
+        self._description_value = bb.NOT_SET
+        if description is not None:
+            self.description = description
+
+    # Instance attribute type: str (validator is set below)
+    description = bb.Attribute("description")
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(ExternalDriveBackupStatusChangedType, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+ExternalDriveBackupStatusChangedType_validator = bv.Struct(ExternalDriveBackupStatusChangedType)
 
 class ExternalSharingCreateReportDetails(bb.Struct):
     """
@@ -74409,6 +74837,8 @@ EventDetails._device_unlink_details_validator = DeviceUnlinkDetails_validator
 EventDetails._dropbox_passwords_exported_details_validator = DropboxPasswordsExportedDetails_validator
 EventDetails._dropbox_passwords_new_device_enrolled_details_validator = DropboxPasswordsNewDeviceEnrolledDetails_validator
 EventDetails._emm_refresh_auth_token_details_validator = EmmRefreshAuthTokenDetails_validator
+EventDetails._external_drive_backup_eligibility_status_checked_details_validator = ExternalDriveBackupEligibilityStatusCheckedDetails_validator
+EventDetails._external_drive_backup_status_changed_details_validator = ExternalDriveBackupStatusChangedDetails_validator
 EventDetails._account_capture_change_availability_details_validator = AccountCaptureChangeAvailabilityDetails_validator
 EventDetails._account_capture_migrate_account_details_validator = AccountCaptureMigrateAccountDetails_validator
 EventDetails._account_capture_notification_emails_sent_details_validator = AccountCaptureNotificationEmailsSentDetails_validator
@@ -74891,6 +75321,8 @@ EventDetails._tagmap = {
     'dropbox_passwords_exported_details': EventDetails._dropbox_passwords_exported_details_validator,
     'dropbox_passwords_new_device_enrolled_details': EventDetails._dropbox_passwords_new_device_enrolled_details_validator,
     'emm_refresh_auth_token_details': EventDetails._emm_refresh_auth_token_details_validator,
+    'external_drive_backup_eligibility_status_checked_details': EventDetails._external_drive_backup_eligibility_status_checked_details_validator,
+    'external_drive_backup_status_changed_details': EventDetails._external_drive_backup_status_changed_details_validator,
     'account_capture_change_availability_details': EventDetails._account_capture_change_availability_details_validator,
     'account_capture_migrate_account_details': EventDetails._account_capture_migrate_account_details_validator,
     'account_capture_notification_emails_sent_details': EventDetails._account_capture_notification_emails_sent_details_validator,
@@ -75376,6 +75808,8 @@ EventType._device_unlink_validator = DeviceUnlinkType_validator
 EventType._dropbox_passwords_exported_validator = DropboxPasswordsExportedType_validator
 EventType._dropbox_passwords_new_device_enrolled_validator = DropboxPasswordsNewDeviceEnrolledType_validator
 EventType._emm_refresh_auth_token_validator = EmmRefreshAuthTokenType_validator
+EventType._external_drive_backup_eligibility_status_checked_validator = ExternalDriveBackupEligibilityStatusCheckedType_validator
+EventType._external_drive_backup_status_changed_validator = ExternalDriveBackupStatusChangedType_validator
 EventType._account_capture_change_availability_validator = AccountCaptureChangeAvailabilityType_validator
 EventType._account_capture_migrate_account_validator = AccountCaptureMigrateAccountType_validator
 EventType._account_capture_notification_emails_sent_validator = AccountCaptureNotificationEmailsSentType_validator
@@ -75857,6 +76291,8 @@ EventType._tagmap = {
     'dropbox_passwords_exported': EventType._dropbox_passwords_exported_validator,
     'dropbox_passwords_new_device_enrolled': EventType._dropbox_passwords_new_device_enrolled_validator,
     'emm_refresh_auth_token': EventType._emm_refresh_auth_token_validator,
+    'external_drive_backup_eligibility_status_checked': EventType._external_drive_backup_eligibility_status_checked_validator,
+    'external_drive_backup_status_changed': EventType._external_drive_backup_status_changed_validator,
     'account_capture_change_availability': EventType._account_capture_change_availability_validator,
     'account_capture_migrate_account': EventType._account_capture_migrate_account_validator,
     'account_capture_notification_emails_sent': EventType._account_capture_notification_emails_sent_validator,
@@ -76341,6 +76777,8 @@ EventTypeArg._device_unlink_validator = bv.Void()
 EventTypeArg._dropbox_passwords_exported_validator = bv.Void()
 EventTypeArg._dropbox_passwords_new_device_enrolled_validator = bv.Void()
 EventTypeArg._emm_refresh_auth_token_validator = bv.Void()
+EventTypeArg._external_drive_backup_eligibility_status_checked_validator = bv.Void()
+EventTypeArg._external_drive_backup_status_changed_validator = bv.Void()
 EventTypeArg._account_capture_change_availability_validator = bv.Void()
 EventTypeArg._account_capture_migrate_account_validator = bv.Void()
 EventTypeArg._account_capture_notification_emails_sent_validator = bv.Void()
@@ -76822,6 +77260,8 @@ EventTypeArg._tagmap = {
     'dropbox_passwords_exported': EventTypeArg._dropbox_passwords_exported_validator,
     'dropbox_passwords_new_device_enrolled': EventTypeArg._dropbox_passwords_new_device_enrolled_validator,
     'emm_refresh_auth_token': EventTypeArg._emm_refresh_auth_token_validator,
+    'external_drive_backup_eligibility_status_checked': EventTypeArg._external_drive_backup_eligibility_status_checked_validator,
+    'external_drive_backup_status_changed': EventTypeArg._external_drive_backup_status_changed_validator,
     'account_capture_change_availability': EventTypeArg._account_capture_change_availability_validator,
     'account_capture_migrate_account': EventTypeArg._account_capture_migrate_account_validator,
     'account_capture_notification_emails_sent': EventTypeArg._account_capture_notification_emails_sent_validator,
@@ -77304,6 +77744,8 @@ EventTypeArg.device_unlink = EventTypeArg('device_unlink')
 EventTypeArg.dropbox_passwords_exported = EventTypeArg('dropbox_passwords_exported')
 EventTypeArg.dropbox_passwords_new_device_enrolled = EventTypeArg('dropbox_passwords_new_device_enrolled')
 EventTypeArg.emm_refresh_auth_token = EventTypeArg('emm_refresh_auth_token')
+EventTypeArg.external_drive_backup_eligibility_status_checked = EventTypeArg('external_drive_backup_eligibility_status_checked')
+EventTypeArg.external_drive_backup_status_changed = EventTypeArg('external_drive_backup_status_changed')
 EventTypeArg.account_capture_change_availability = EventTypeArg('account_capture_change_availability')
 EventTypeArg.account_capture_migrate_account = EventTypeArg('account_capture_migrate_account')
 EventTypeArg.account_capture_notification_emails_sent = EventTypeArg('account_capture_notification_emails_sent')
@@ -77779,6 +78221,37 @@ ExtendedVersionHistoryPolicy.implicitly_limited = ExtendedVersionHistoryPolicy('
 ExtendedVersionHistoryPolicy.implicitly_unlimited = ExtendedVersionHistoryPolicy('implicitly_unlimited')
 ExtendedVersionHistoryPolicy.other = ExtendedVersionHistoryPolicy('other')
 
+ExternalDriveBackupEligibilityStatus._exceed_license_cap_validator = bv.Void()
+ExternalDriveBackupEligibilityStatus._success_validator = bv.Void()
+ExternalDriveBackupEligibilityStatus._other_validator = bv.Void()
+ExternalDriveBackupEligibilityStatus._tagmap = {
+    'exceed_license_cap': ExternalDriveBackupEligibilityStatus._exceed_license_cap_validator,
+    'success': ExternalDriveBackupEligibilityStatus._success_validator,
+    'other': ExternalDriveBackupEligibilityStatus._other_validator,
+}
+
+ExternalDriveBackupEligibilityStatus.exceed_license_cap = ExternalDriveBackupEligibilityStatus('exceed_license_cap')
+ExternalDriveBackupEligibilityStatus.success = ExternalDriveBackupEligibilityStatus('success')
+ExternalDriveBackupEligibilityStatus.other = ExternalDriveBackupEligibilityStatus('other')
+
+ExternalDriveBackupEligibilityStatusCheckedDetails.desktop_device_session_info.validator = DesktopDeviceSessionLogInfo_validator
+ExternalDriveBackupEligibilityStatusCheckedDetails.status.validator = ExternalDriveBackupEligibilityStatus_validator
+ExternalDriveBackupEligibilityStatusCheckedDetails.number_of_external_drive_backup.validator = bv.UInt64()
+ExternalDriveBackupEligibilityStatusCheckedDetails._all_field_names_ = set([
+    'desktop_device_session_info',
+    'status',
+    'number_of_external_drive_backup',
+])
+ExternalDriveBackupEligibilityStatusCheckedDetails._all_fields_ = [
+    ('desktop_device_session_info', ExternalDriveBackupEligibilityStatusCheckedDetails.desktop_device_session_info.validator),
+    ('status', ExternalDriveBackupEligibilityStatusCheckedDetails.status.validator),
+    ('number_of_external_drive_backup', ExternalDriveBackupEligibilityStatusCheckedDetails.number_of_external_drive_backup.validator),
+]
+
+ExternalDriveBackupEligibilityStatusCheckedType.description.validator = bv.String()
+ExternalDriveBackupEligibilityStatusCheckedType._all_field_names_ = set(['description'])
+ExternalDriveBackupEligibilityStatusCheckedType._all_fields_ = [('description', ExternalDriveBackupEligibilityStatusCheckedType.description.validator)]
+
 ExternalDriveBackupPolicy._default_validator = bv.Void()
 ExternalDriveBackupPolicy._disabled_validator = bv.Void()
 ExternalDriveBackupPolicy._enabled_validator = bv.Void()
@@ -77809,6 +78282,49 @@ ExternalDriveBackupPolicyChangedDetails._all_fields_ = [
 ExternalDriveBackupPolicyChangedType.description.validator = bv.String()
 ExternalDriveBackupPolicyChangedType._all_field_names_ = set(['description'])
 ExternalDriveBackupPolicyChangedType._all_fields_ = [('description', ExternalDriveBackupPolicyChangedType.description.validator)]
+
+ExternalDriveBackupStatus._broken_validator = bv.Void()
+ExternalDriveBackupStatus._created_validator = bv.Void()
+ExternalDriveBackupStatus._created_or_broken_validator = bv.Void()
+ExternalDriveBackupStatus._deleted_validator = bv.Void()
+ExternalDriveBackupStatus._empty_validator = bv.Void()
+ExternalDriveBackupStatus._unknown_validator = bv.Void()
+ExternalDriveBackupStatus._other_validator = bv.Void()
+ExternalDriveBackupStatus._tagmap = {
+    'broken': ExternalDriveBackupStatus._broken_validator,
+    'created': ExternalDriveBackupStatus._created_validator,
+    'created_or_broken': ExternalDriveBackupStatus._created_or_broken_validator,
+    'deleted': ExternalDriveBackupStatus._deleted_validator,
+    'empty': ExternalDriveBackupStatus._empty_validator,
+    'unknown': ExternalDriveBackupStatus._unknown_validator,
+    'other': ExternalDriveBackupStatus._other_validator,
+}
+
+ExternalDriveBackupStatus.broken = ExternalDriveBackupStatus('broken')
+ExternalDriveBackupStatus.created = ExternalDriveBackupStatus('created')
+ExternalDriveBackupStatus.created_or_broken = ExternalDriveBackupStatus('created_or_broken')
+ExternalDriveBackupStatus.deleted = ExternalDriveBackupStatus('deleted')
+ExternalDriveBackupStatus.empty = ExternalDriveBackupStatus('empty')
+ExternalDriveBackupStatus.unknown = ExternalDriveBackupStatus('unknown')
+ExternalDriveBackupStatus.other = ExternalDriveBackupStatus('other')
+
+ExternalDriveBackupStatusChangedDetails.desktop_device_session_info.validator = DesktopDeviceSessionLogInfo_validator
+ExternalDriveBackupStatusChangedDetails.previous_value.validator = ExternalDriveBackupStatus_validator
+ExternalDriveBackupStatusChangedDetails.new_value.validator = ExternalDriveBackupStatus_validator
+ExternalDriveBackupStatusChangedDetails._all_field_names_ = set([
+    'desktop_device_session_info',
+    'previous_value',
+    'new_value',
+])
+ExternalDriveBackupStatusChangedDetails._all_fields_ = [
+    ('desktop_device_session_info', ExternalDriveBackupStatusChangedDetails.desktop_device_session_info.validator),
+    ('previous_value', ExternalDriveBackupStatusChangedDetails.previous_value.validator),
+    ('new_value', ExternalDriveBackupStatusChangedDetails.new_value.validator),
+]
+
+ExternalDriveBackupStatusChangedType.description.validator = bv.String()
+ExternalDriveBackupStatusChangedType._all_field_names_ = set(['description'])
+ExternalDriveBackupStatusChangedType._all_fields_ = [('description', ExternalDriveBackupStatusChangedType.description.validator)]
 
 ExternalSharingCreateReportDetails._all_field_names_ = set([])
 ExternalSharingCreateReportDetails._all_fields_ = []

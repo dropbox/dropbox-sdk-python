@@ -3526,6 +3526,32 @@ class DropboxBase(object):
         )
         return r
 
+    def files_upload_session_start_batch(self,
+                                         num_sessions,
+                                         session_type=None):
+        """
+        This route starts batch of upload_sessions. Please refer to
+        `upload_session/start` usage.
+
+        Route attributes:
+            scope: files.content.write
+
+        :param Nullable[:class:`dropbox.files.UploadSessionType`] session_type:
+            Type of upload session you want to start. If not specified, default
+            is ``UploadSessionType.sequential``.
+        :param int num_sessions: The number of upload sessions to start.
+        :rtype: :class:`dropbox.files.UploadSessionStartBatchResult`
+        """
+        arg = files.UploadSessionStartBatchArg(num_sessions,
+                                               session_type)
+        r = self.request(
+            files.upload_session_start_batch,
+            'files',
+            arg,
+            None,
+        )
+        return r
+
     # ------------------------------------------
     # Routes in paper namespace
 
