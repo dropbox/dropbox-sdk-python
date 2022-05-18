@@ -13606,7 +13606,7 @@ get_shared_link_metadata = bb.Route(
     GetSharedLinkMetadataArg_validator,
     SharedLinkMetadata_validator,
     SharedLinkError_validator,
-    {'auth': 'user',
+    {'auth': 'app, user',
      'host': 'api',
      'style': 'rpc'},
 )

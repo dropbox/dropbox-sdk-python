@@ -1327,12 +1327,17 @@ class AdminAlertingAlertConfiguration(bb.Struct):
         Sensitivity level.
     :ivar team_log.AdminAlertingAlertConfiguration.recipients_settings:
         Recipient settings.
+    :ivar team_log.AdminAlertingAlertConfiguration.text: Text.
+    :ivar team_log.AdminAlertingAlertConfiguration.excluded_file_extensions:
+        Excluded file extensions.
     """
 
     __slots__ = [
         '_alert_state_value',
         '_sensitivity_level_value',
         '_recipients_settings_value',
+        '_text_value',
+        '_excluded_file_extensions_value',
     ]
 
     _has_required_fields = False
@@ -1340,16 +1345,24 @@ class AdminAlertingAlertConfiguration(bb.Struct):
     def __init__(self,
                  alert_state=None,
                  sensitivity_level=None,
-                 recipients_settings=None):
+                 recipients_settings=None,
+                 text=None,
+                 excluded_file_extensions=None):
         self._alert_state_value = bb.NOT_SET
         self._sensitivity_level_value = bb.NOT_SET
         self._recipients_settings_value = bb.NOT_SET
+        self._text_value = bb.NOT_SET
+        self._excluded_file_extensions_value = bb.NOT_SET
         if alert_state is not None:
             self.alert_state = alert_state
         if sensitivity_level is not None:
             self.sensitivity_level = sensitivity_level
         if recipients_settings is not None:
             self.recipients_settings = recipients_settings
+        if text is not None:
+            self.text = text
+        if excluded_file_extensions is not None:
+            self.excluded_file_extensions = excluded_file_extensions
 
     # Instance attribute type: AdminAlertingAlertStatePolicy (validator is set below)
     alert_state = bb.Attribute("alert_state", nullable=True, user_defined=True)
@@ -1359,6 +1372,12 @@ class AdminAlertingAlertConfiguration(bb.Struct):
 
     # Instance attribute type: RecipientsConfiguration (validator is set below)
     recipients_settings = bb.Attribute("recipients_settings", nullable=True, user_defined=True)
+
+    # Instance attribute type: str (validator is set below)
+    text = bb.Attribute("text", nullable=True)
+
+    # Instance attribute type: str (validator is set below)
+    excluded_file_extensions = bb.Attribute("excluded_file_extensions", nullable=True)
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(AdminAlertingAlertConfiguration, self)._process_custom_annotations(annotation_type, field_path, processor)
@@ -59209,6 +59228,8 @@ class PlacementRestriction(bb.Union):
     # Attribute is overwritten below the class definition
     uk_only = None
     # Attribute is overwritten below the class definition
+    us_s3_only = None
+    # Attribute is overwritten below the class definition
     other = None
 
     def is_australia_only(self):
@@ -59250,6 +59271,14 @@ class PlacementRestriction(bb.Union):
         :rtype: bool
         """
         return self._tag == 'uk_only'
+
+    def is_us_s3_only(self):
+        """
+        Check if the union tag is ``us_s3_only``.
+
+        :rtype: bool
+        """
+        return self._tag == 'us_s3_only'
 
     def is_other(self):
         """
@@ -73139,15 +73168,21 @@ AdminAlertSeverityEnum.other = AdminAlertSeverityEnum('other')
 AdminAlertingAlertConfiguration.alert_state.validator = bv.Nullable(AdminAlertingAlertStatePolicy_validator)
 AdminAlertingAlertConfiguration.sensitivity_level.validator = bv.Nullable(AdminAlertingAlertSensitivity_validator)
 AdminAlertingAlertConfiguration.recipients_settings.validator = bv.Nullable(RecipientsConfiguration_validator)
+AdminAlertingAlertConfiguration.text.validator = bv.Nullable(bv.String())
+AdminAlertingAlertConfiguration.excluded_file_extensions.validator = bv.Nullable(bv.String())
 AdminAlertingAlertConfiguration._all_field_names_ = set([
     'alert_state',
     'sensitivity_level',
     'recipients_settings',
+    'text',
+    'excluded_file_extensions',
 ])
 AdminAlertingAlertConfiguration._all_fields_ = [
     ('alert_state', AdminAlertingAlertConfiguration.alert_state.validator),
     ('sensitivity_level', AdminAlertingAlertConfiguration.sensitivity_level.validator),
     ('recipients_settings', AdminAlertingAlertConfiguration.recipients_settings.validator),
+    ('text', AdminAlertingAlertConfiguration.text.validator),
+    ('excluded_file_extensions', AdminAlertingAlertConfiguration.excluded_file_extensions.validator),
 ]
 
 AdminAlertingAlertSensitivity._high_validator = bv.Void()
@@ -81549,6 +81584,7 @@ PlacementRestriction._europe_only_validator = bv.Void()
 PlacementRestriction._japan_only_validator = bv.Void()
 PlacementRestriction._none_validator = bv.Void()
 PlacementRestriction._uk_only_validator = bv.Void()
+PlacementRestriction._us_s3_only_validator = bv.Void()
 PlacementRestriction._other_validator = bv.Void()
 PlacementRestriction._tagmap = {
     'australia_only': PlacementRestriction._australia_only_validator,
@@ -81556,6 +81592,7 @@ PlacementRestriction._tagmap = {
     'japan_only': PlacementRestriction._japan_only_validator,
     'none': PlacementRestriction._none_validator,
     'uk_only': PlacementRestriction._uk_only_validator,
+    'us_s3_only': PlacementRestriction._us_s3_only_validator,
     'other': PlacementRestriction._other_validator,
 }
 
@@ -81564,6 +81601,7 @@ PlacementRestriction.europe_only = PlacementRestriction('europe_only')
 PlacementRestriction.japan_only = PlacementRestriction('japan_only')
 PlacementRestriction.none = PlacementRestriction('none')
 PlacementRestriction.uk_only = PlacementRestriction('uk_only')
+PlacementRestriction.us_s3_only = PlacementRestriction('us_s3_only')
 PlacementRestriction.other = PlacementRestriction('other')
 
 PolicyType._disposition_validator = bv.Void()
