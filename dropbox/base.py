@@ -1465,7 +1465,8 @@ class DropboxBase(object):
         must be less than 20 GB in size and any single file within must be less
         than 4 GB in size. The resulting zip must have fewer than 10,000 total
         file and folder entries, including the top level folder. The input
-        cannot be a single file.
+        cannot be a single file. Note: this endpoint does not support HTTP range
+        requests.
 
         Route attributes:
             scope: files.content.read
@@ -1501,7 +1502,8 @@ class DropboxBase(object):
         must be less than 20 GB in size and any single file within must be less
         than 4 GB in size. The resulting zip must have fewer than 10,000 total
         file and folder entries, including the top level folder. The input
-        cannot be a single file.
+        cannot be a single file. Note: this endpoint does not support HTTP range
+        requests.
 
         Route attributes:
             scope: files.content.read

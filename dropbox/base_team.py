@@ -810,7 +810,7 @@ class DropboxTeamBase(object):
         all teams have the feature. Permission : Team member file access.
 
         Route attributes:
-            scope: team_data.member
+            scope: team_data.governance.write
 
         :param str name: Policy name.
         :param Nullable[str] description: A description of the legal hold
@@ -845,7 +845,7 @@ class DropboxTeamBase(object):
         teams have the feature. Permission : Team member file access.
 
         Route attributes:
-            scope: team_data.member
+            scope: team_data.governance.write
 
         :param str id: The legal hold Id.
         :rtype: :class:`dropbox.team.LegalHoldPolicy`
@@ -871,7 +871,7 @@ class DropboxTeamBase(object):
         file access.
 
         Route attributes:
-            scope: team_data.member
+            scope: team_data.governance.write
 
         :param str id: The legal hold Id.
         :rtype: :class:`dropbox.team.LegalHoldsListHeldRevisionResult`
@@ -898,7 +898,7 @@ class DropboxTeamBase(object):
         Team member file access.
 
         Route attributes:
-            scope: team_data.member
+            scope: team_data.governance.write
 
         :param str id: The legal hold Id.
         :param Nullable[str] cursor: The cursor idicates where to continue
@@ -927,7 +927,7 @@ class DropboxTeamBase(object):
         teams have the feature. Permission : Team member file access.
 
         Route attributes:
-            scope: team_data.member
+            scope: team_data.governance.write
 
         :param bool include_released: Whether to return holds that were
             released.
@@ -953,7 +953,7 @@ class DropboxTeamBase(object):
         teams have the feature. Permission : Team member file access.
 
         Route attributes:
-            scope: team_data.member
+            scope: team_data.governance.write
 
         :param str id: The legal hold Id.
         :rtype: None
@@ -981,7 +981,7 @@ class DropboxTeamBase(object):
         have the feature. Permission : Team member file access.
 
         Route attributes:
-            scope: team_data.member
+            scope: team_data.governance.write
 
         :param str id: The legal hold Id.
         :param Nullable[str] name: Policy new name.
@@ -2565,7 +2565,7 @@ class DropboxTeamBase(object):
         member file access.
 
         Route attributes:
-            scope: team_data.team_space
+            scope: team_data.content.write
 
         :param str team_folder_id: The ID of the team folder.
         :rtype: :class:`dropbox.team.TeamFolderMetadata`
@@ -2588,7 +2588,7 @@ class DropboxTeamBase(object):
         shared team space. Permission : Team member file access.
 
         Route attributes:
-            scope: team_data.team_space
+            scope: team_data.content.write
 
         :param bool force_async_off: Whether to force the archive to happen
             synchronously.
@@ -2611,7 +2611,7 @@ class DropboxTeamBase(object):
         Permission : Team member file access.
 
         Route attributes:
-            scope: team_data.team_space
+            scope: team_data.content.write
 
         :param str async_job_id: Id of the asynchronous job. This is the value
             of a response returned from the method that launched the job.
@@ -2639,7 +2639,7 @@ class DropboxTeamBase(object):
         Permission : Team member file access.
 
         Route attributes:
-            scope: team_data.team_space
+            scope: team_data.content.write
 
         :param str name: Name for the new team folder.
         :param Nullable[:class:`dropbox.team.SyncSettingArg`] sync_setting: The
@@ -2668,7 +2668,7 @@ class DropboxTeamBase(object):
         access.
 
         Route attributes:
-            scope: team_data.team_space
+            scope: team_data.content.read
 
         :param List[str] team_folder_ids: The list of team folder IDs.
         :rtype: List[:class:`dropbox.team.TeamFolderGetInfoItem`]
@@ -2688,7 +2688,7 @@ class DropboxTeamBase(object):
         Lists all team folders. Permission : Team member file access.
 
         Route attributes:
-            scope: team_data.team_space
+            scope: team_data.content.read
 
         :param int limit: The maximum number of results to return per request.
         :rtype: :class:`dropbox.team.TeamFolderListResult`
@@ -2714,7 +2714,7 @@ class DropboxTeamBase(object):
         access.
 
         Route attributes:
-            scope: team_data.team_space
+            scope: team_data.content.read
 
         :param str cursor: Indicates from what point to get the next set of team
             folders.
@@ -2741,7 +2741,7 @@ class DropboxTeamBase(object):
         file access.
 
         Route attributes:
-            scope: team_data.team_space
+            scope: team_data.content.write
 
         :param str team_folder_id: The ID of the team folder.
         :rtype: None
@@ -2763,7 +2763,7 @@ class DropboxTeamBase(object):
         access.
 
         Route attributes:
-            scope: team_data.team_space
+            scope: team_data.content.write
 
         :param str name: New team folder name.
         :rtype: :class:`dropbox.team.TeamFolderMetadata`
@@ -2791,7 +2791,7 @@ class DropboxTeamBase(object):
         endpoint requires that the team has team selective sync enabled.
 
         Route attributes:
-            scope: team_data.team_space
+            scope: team_data.content.write
 
         :param Nullable[:class:`dropbox.team.SyncSettingArg`] sync_setting: Sync
             setting to apply to the team folder itself. Only meaningful if the
