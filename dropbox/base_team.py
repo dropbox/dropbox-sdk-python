@@ -6,24 +6,25 @@
 from abc import ABCMeta, abstractmethod
 import warnings
 
-from . import (
-    async_,
-    auth,
-    common,
-    contacts,
-    file_properties,
-    file_requests,
-    files,
-    paper,
-    seen_state,
-    sharing,
-    team,
-    team_common,
-    team_log,
-    team_policies,
-    users,
-    users_common,
-)
+from dropbox import account
+from dropbox import async_
+from dropbox import auth
+from dropbox import check
+from dropbox import common
+from dropbox import contacts
+from dropbox import file_properties
+from dropbox import file_requests
+from dropbox import files
+from dropbox import paper
+from dropbox import secondary_emails
+from dropbox import seen_state
+from dropbox import sharing
+from dropbox import team
+from dropbox import team_common
+from dropbox import team_log
+from dropbox import team_policies
+from dropbox import users
+from dropbox import users_common
 
 
 class DropboxTeamBase(object):
@@ -34,7 +35,13 @@ class DropboxTeamBase(object):
         pass
 
     # ------------------------------------------
+    # Routes in account namespace
+
+    # ------------------------------------------
     # Routes in auth namespace
+
+    # ------------------------------------------
+    # Routes in check namespace
 
     # ------------------------------------------
     # Routes in contacts namespace
@@ -50,6 +57,9 @@ class DropboxTeamBase(object):
         Add a template associated with a team. See
         :meth:`file_properties_properties_add` to add properties to a file or
         folder. Note: this endpoint will create team-owned templates.
+
+        Route attributes:
+            scope: files.team_metadata.write
 
         :rtype: :class:`dropbox.file_properties.AddTemplateResult`
         :raises: :class:`.exceptions.ApiError`
@@ -72,6 +82,9 @@ class DropboxTeamBase(object):
                                                template_id):
         """
         Get the schema for a specified template.
+
+        Route attributes:
+            scope: files.team_metadata.write
 
         :param str template_id: An identifier for template added by route  See
             :meth:`file_properties_templates_add_for_user` or
@@ -96,6 +109,9 @@ class DropboxTeamBase(object):
         Get the template identifiers for a team. To get the schema of each
         template use :meth:`file_properties_templates_get_for_team`.
 
+        Route attributes:
+            scope: files.team_metadata.write
+
         :rtype: :class:`dropbox.file_properties.ListTemplateResult`
         :raises: :class:`.exceptions.ApiError`
 
@@ -118,6 +134,9 @@ class DropboxTeamBase(object):
         :meth:`file_properties_templates_add_for_user`. All properties
         associated with the template will also be removed. This action cannot be
         undone.
+
+        Route attributes:
+            scope: files.team_metadata.write
 
         :param str template_id: An identifier for a template created by
             :meth:`file_properties_templates_add_for_user` or
@@ -147,16 +166,20 @@ class DropboxTeamBase(object):
         template name, the template description and add optional properties to
         templates.
 
+        Route attributes:
+            scope: files.team_metadata.write
+
         :param str template_id: An identifier for template added by  See
             :meth:`file_properties_templates_add_for_user` or
             :meth:`file_properties_templates_add_for_team`.
-        :param Nullable name: A display name for the template. template names
-            can be up to 256 bytes.
-        :param Nullable description: Description for the new template. Template
-            descriptions can be up to 1024 bytes.
-        :param Nullable add_fields: Property field templates to be added to the
-            group template. There can be up to 32 properties in a single
-            template.
+        :param Nullable[str] name: A display name for the template. template
+            names can be up to 256 bytes.
+        :param Nullable[str] description: Description for the new template.
+            Template descriptions can be up to 1024 bytes.
+        :param
+            Nullable[List[:class:`dropbox.file_properties.PropertyFieldTemplate`]]
+            add_fields: Property field templates to be added to the group
+            template. There can be up to 32 properties in a single template.
         :rtype: :class:`dropbox.file_properties.UpdateTemplateResult`
         :raises: :class:`.exceptions.ApiError`
 
@@ -198,6 +221,9 @@ class DropboxTeamBase(object):
         """
         List all device sessions of a team's member.
 
+        Route attributes:
+            scope: sessions.list
+
         :param str team_member_id: The team's member id.
         :param bool include_web_sessions: Whether to list web sessions of the
             team's member.
@@ -232,7 +258,10 @@ class DropboxTeamBase(object):
         List all device sessions of a team. Permission : Team member file
         access.
 
-        :param Nullable cursor: At the first call to the
+        Route attributes:
+            scope: sessions.list
+
+        :param Nullable[str] cursor: At the first call to the
             :meth:`team_devices_list_members_devices` the cursor shouldn't be
             passed. Then, if the result of the call includes a cursor, the
             following requests should include the received cursors in order to
@@ -270,7 +299,10 @@ class DropboxTeamBase(object):
         List all device sessions of a team. Permission : Team member file
         access.
 
-        :param Nullable cursor: At the first call to the
+        Route attributes:
+            scope: sessions.list
+
+        :param Nullable[str] cursor: At the first call to the
             :meth:`team_devices_list_team_devices` the cursor shouldn't be
             passed. Then, if the result of the call includes a cursor, the
             following requests should include the received cursors in order to
@@ -308,6 +340,9 @@ class DropboxTeamBase(object):
         """
         Revoke a device session of a team's member.
 
+        Route attributes:
+            scope: sessions.modify
+
         :type arg: :class:`dropbox.team.RevokeDeviceSessionArg`
         :rtype: None
         :raises: :class:`.exceptions.ApiError`
@@ -328,7 +363,10 @@ class DropboxTeamBase(object):
         """
         Revoke a list of device sessions of team members.
 
-        :type revoke_devices: list
+        Route attributes:
+            scope: sessions.modify
+
+        :type revoke_devices: List[:class:`dropbox.team.RevokeDeviceSessionArg`]
         :rtype: :class:`dropbox.team.RevokeDeviceSessionBatchResult`
         :raises: :class:`.exceptions.ApiError`
 
@@ -351,9 +389,12 @@ class DropboxTeamBase(object):
         your account's capability for what feature you can access or what value
         you have for certain features. Permission : Team information.
 
-        :param list features: A list of features in
-            :class:`dropbox.team.Feature`. If the list is empty, this route will
-            return :class:`dropbox.team.FeaturesGetValuesBatchError`.
+        Route attributes:
+            scope: team_info.read
+
+        :param List[:class:`dropbox.team.Feature`] features: A list of features
+            in :class:`dropbox.team.Feature`. If the list is empty, this route
+            will return :class:`dropbox.team.FeaturesGetValuesBatchError`.
         :rtype: :class:`dropbox.team.FeaturesGetValuesBatchResult`
         :raises: :class:`.exceptions.ApiError`
 
@@ -373,6 +414,9 @@ class DropboxTeamBase(object):
         """
         Retrieves information about a team.
 
+        Route attributes:
+            scope: team_info.read
+
         :rtype: :class:`dropbox.team.TeamGetInfoResult`
         """
         arg = None
@@ -386,17 +430,24 @@ class DropboxTeamBase(object):
 
     def team_groups_create(self,
                            group_name,
+                           add_creator_as_owner=False,
                            group_external_id=None,
                            group_management_type=None):
         """
         Creates a new, empty group, with a requested name. Permission : Team
         member management.
 
+        Route attributes:
+            scope: groups.write
+
         :param str group_name: Group name.
-        :param Nullable group_external_id: The creator of a team can associate
-            an arbitrary external ID to the group.
-        :param Nullable group_management_type: Whether the team can be managed
-            by selected users, or only by team admins.
+        :param bool add_creator_as_owner: Automatically add the creator of the
+            group.
+        :param Nullable[str] group_external_id: The creator of a team can
+            associate an arbitrary external ID to the group.
+        :param Nullable[:class:`dropbox.team.GroupManagementType`]
+            group_management_type: Whether the team can be managed by selected
+            users, or only by team admins.
         :rtype: :class:`dropbox.team.GroupFullInfo`
         :raises: :class:`.exceptions.ApiError`
 
@@ -404,6 +455,7 @@ class DropboxTeamBase(object):
             :class:`dropbox.team.GroupCreateError`
         """
         arg = team.GroupCreateArg(group_name,
+                                  add_creator_as_owner,
                                   group_external_id,
                                   group_management_type)
         r = self.request(
@@ -421,6 +473,9 @@ class DropboxTeamBase(object):
         of group-owned resources may take additional time. Use the
         :meth:`team_groups_job_status_get` to determine whether this process has
         completed. Permission : Team member management.
+
+        Route attributes:
+            scope: groups.write
 
         :param arg: Argument for selecting a single group, either by group_id or
             by external group ID.
@@ -446,10 +501,13 @@ class DropboxTeamBase(object):
         field  ``GroupFullInfo.members`` is not returned for system-managed
         groups. Permission : Team Information.
 
+        Route attributes:
+            scope: groups.read
+
         :param arg: Argument for selecting a list of groups, either by
             group_ids, or external group IDs.
         :type arg: :class:`dropbox.team.GroupsSelector`
-        :rtype: list
+        :rtype: List[:class:`dropbox.team.GroupsGetInfoItem`]
         :raises: :class:`.exceptions.ApiError`
 
         If this raises, ApiError will contain:
@@ -470,6 +528,9 @@ class DropboxTeamBase(object):
         :meth:`team_groups_members_add` , or :meth:`team_groups_members_remove`
         use this method to poll the status of granting/revoking group members'
         access to group-owned resources. Permission : Team member management.
+
+        Route attributes:
+            scope: groups.write
 
         :param str async_job_id: Id of the asynchronous job. This is the value
             of a response returned from the method that launched the job.
@@ -493,6 +554,9 @@ class DropboxTeamBase(object):
         """
         Lists groups on a team. Permission : Team Information.
 
+        Route attributes:
+            scope: groups.read
+
         :param int limit: Number of results to return per call.
         :rtype: :class:`dropbox.team.GroupsListResult`
         """
@@ -510,6 +574,9 @@ class DropboxTeamBase(object):
         """
         Once a cursor has been retrieved from :meth:`team_groups_list`, use this
         to paginate through all groups. Permission : Team Information.
+
+        Route attributes:
+            scope: groups.read
 
         :param str cursor: Indicates from what point to get the next set of
             groups.
@@ -538,9 +605,13 @@ class DropboxTeamBase(object):
         :meth:`team_groups_job_status_get` to determine whether this process has
         completed. Permission : Team member management.
 
+        Route attributes:
+            scope: groups.write
+
         :param group: Group to which users will be added.
         :type group: :class:`dropbox.team.GroupSelector`
-        :param list members: List of users to be added to the group.
+        :param List[:class:`dropbox.team.MemberAccess`] members: List of users
+            to be added to the group.
         :rtype: :class:`dropbox.team.GroupMembersChangeResult`
         :raises: :class:`.exceptions.ApiError`
 
@@ -563,6 +634,9 @@ class DropboxTeamBase(object):
                                  limit=1000):
         """
         Lists members of a group. Permission : Team Information.
+
+        Route attributes:
+            scope: groups.read
 
         :param group: The group whose members are to be listed.
         :type group: :class:`dropbox.team.GroupSelector`
@@ -589,6 +663,9 @@ class DropboxTeamBase(object):
         Once a cursor has been retrieved from :meth:`team_groups_members_list`,
         use this to paginate through all members of the group. Permission : Team
         information.
+
+        Route attributes:
+            scope: groups.read
 
         :param str cursor: Indicates from what point to get the next set of
             groups.
@@ -619,9 +696,13 @@ class DropboxTeamBase(object):
         group, even in cases where this is not possible via the web client.
         Permission : Team member management.
 
+        Route attributes:
+            scope: groups.write
+
         :param group: Group from which users will be removed.
         :type group: :class:`dropbox.team.GroupSelector`
-        :param list users: List of users to be removed from the group.
+        :param List[:class:`dropbox.team.UserSelectorArg`] users: List of users
+            to be removed from the group.
         :rtype: :class:`dropbox.team.GroupMembersChangeResult`
         :raises: :class:`.exceptions.ApiError`
 
@@ -648,13 +729,16 @@ class DropboxTeamBase(object):
         Sets a member's access type in a group. Permission : Team member
         management.
 
+        Route attributes:
+            scope: groups.write
+
         :param access_type: New group access type the user will have.
         :type access_type: :class:`dropbox.team.GroupAccessType`
         :param bool return_members: Whether to return the list of members in the
             group.  Note that the default value will cause all the group members
             to be returned in the response. This may take a long time for large
             groups.
-        :rtype: list
+        :rtype: List[:class:`dropbox.team.GroupsGetInfoItem`]
         :raises: :class:`.exceptions.ApiError`
 
         If this raises, ApiError will contain:
@@ -682,16 +766,20 @@ class DropboxTeamBase(object):
         Updates a group's name and/or external ID. Permission : Team member
         management.
 
+        Route attributes:
+            scope: groups.write
+
         :param group: Specify a group.
         :type group: :class:`dropbox.team.GroupSelector`
-        :param Nullable new_group_name: Optional argument. Set group name to
-            this if provided.
-        :param Nullable new_group_external_id: Optional argument. New group
+        :param Nullable[str] new_group_name: Optional argument. Set group name
+            to this if provided.
+        :param Nullable[str] new_group_external_id: Optional argument. New group
             external ID. If the argument is None, the group's external_id won't
             be updated. If the argument is empty string, the group's external id
             will be cleared.
-        :param Nullable new_group_management_type: Set new group management
-            type, if provided.
+        :param Nullable[:class:`dropbox.team.GroupManagementType`]
+            new_group_management_type: Set new group management type, if
+            provided.
         :rtype: :class:`dropbox.team.GroupFullInfo`
         :raises: :class:`.exceptions.ApiError`
 
@@ -711,11 +799,221 @@ class DropboxTeamBase(object):
         )
         return r
 
+    def team_legal_holds_create_policy(self,
+                                       name,
+                                       members,
+                                       description=None,
+                                       start_date=None,
+                                       end_date=None):
+        """
+        Creates new legal hold policy. Note: Legal Holds is a paid add-on. Not
+        all teams have the feature. Permission : Team member file access.
+
+        Route attributes:
+            scope: team_data.governance.write
+
+        :param str name: Policy name.
+        :param Nullable[str] description: A description of the legal hold
+            policy.
+        :param List[str] members: List of team member IDs added to the hold.
+        :param Nullable[datetime] start_date: start date of the legal hold
+            policy.
+        :param Nullable[datetime] end_date: end date of the legal hold policy.
+        :rtype: :class:`dropbox.team.LegalHoldPolicy`
+        :raises: :class:`.exceptions.ApiError`
+
+        If this raises, ApiError will contain:
+            :class:`dropbox.team.LegalHoldsPolicyCreateError`
+        """
+        arg = team.LegalHoldsPolicyCreateArg(name,
+                                             members,
+                                             description,
+                                             start_date,
+                                             end_date)
+        r = self.request(
+            team.legal_holds_create_policy,
+            'team',
+            arg,
+            None,
+        )
+        return r
+
+    def team_legal_holds_get_policy(self,
+                                    id):
+        """
+        Gets a legal hold by Id. Note: Legal Holds is a paid add-on. Not all
+        teams have the feature. Permission : Team member file access.
+
+        Route attributes:
+            scope: team_data.governance.write
+
+        :param str id: The legal hold Id.
+        :rtype: :class:`dropbox.team.LegalHoldPolicy`
+        :raises: :class:`.exceptions.ApiError`
+
+        If this raises, ApiError will contain:
+            :class:`dropbox.team.LegalHoldsGetPolicyError`
+        """
+        arg = team.LegalHoldsGetPolicyArg(id)
+        r = self.request(
+            team.legal_holds_get_policy,
+            'team',
+            arg,
+            None,
+        )
+        return r
+
+    def team_legal_holds_list_held_revisions(self,
+                                             id):
+        """
+        List the file metadata that's under the hold. Note: Legal Holds is a
+        paid add-on. Not all teams have the feature. Permission : Team member
+        file access.
+
+        Route attributes:
+            scope: team_data.governance.write
+
+        :param str id: The legal hold Id.
+        :rtype: :class:`dropbox.team.LegalHoldsListHeldRevisionResult`
+        :raises: :class:`.exceptions.ApiError`
+
+        If this raises, ApiError will contain:
+            :class:`dropbox.team.LegalHoldsListHeldRevisionsError`
+        """
+        arg = team.LegalHoldsListHeldRevisionsArg(id)
+        r = self.request(
+            team.legal_holds_list_held_revisions,
+            'team',
+            arg,
+            None,
+        )
+        return r
+
+    def team_legal_holds_list_held_revisions_continue(self,
+                                                      id,
+                                                      cursor=None):
+        """
+        Continue listing the file metadata that's under the hold. Note: Legal
+        Holds is a paid add-on. Not all teams have the feature. Permission :
+        Team member file access.
+
+        Route attributes:
+            scope: team_data.governance.write
+
+        :param str id: The legal hold Id.
+        :param Nullable[str] cursor: The cursor idicates where to continue
+            reading file metadata entries for the next API call. When there are
+            no more entries, the cursor will return none.
+        :rtype: :class:`dropbox.team.LegalHoldsListHeldRevisionResult`
+        :raises: :class:`.exceptions.ApiError`
+
+        If this raises, ApiError will contain:
+            :class:`dropbox.team.LegalHoldsListHeldRevisionsError`
+        """
+        arg = team.LegalHoldsListHeldRevisionsContinueArg(id,
+                                                          cursor)
+        r = self.request(
+            team.legal_holds_list_held_revisions_continue,
+            'team',
+            arg,
+            None,
+        )
+        return r
+
+    def team_legal_holds_list_policies(self,
+                                       include_released=False):
+        """
+        Lists legal holds on a team. Note: Legal Holds is a paid add-on. Not all
+        teams have the feature. Permission : Team member file access.
+
+        Route attributes:
+            scope: team_data.governance.write
+
+        :param bool include_released: Whether to return holds that were
+            released.
+        :rtype: :class:`dropbox.team.LegalHoldsListPoliciesResult`
+        :raises: :class:`.exceptions.ApiError`
+
+        If this raises, ApiError will contain:
+            :class:`dropbox.team.LegalHoldsListPoliciesError`
+        """
+        arg = team.LegalHoldsListPoliciesArg(include_released)
+        r = self.request(
+            team.legal_holds_list_policies,
+            'team',
+            arg,
+            None,
+        )
+        return r
+
+    def team_legal_holds_release_policy(self,
+                                        id):
+        """
+        Releases a legal hold by Id. Note: Legal Holds is a paid add-on. Not all
+        teams have the feature. Permission : Team member file access.
+
+        Route attributes:
+            scope: team_data.governance.write
+
+        :param str id: The legal hold Id.
+        :rtype: None
+        :raises: :class:`.exceptions.ApiError`
+
+        If this raises, ApiError will contain:
+            :class:`dropbox.team.LegalHoldsPolicyReleaseError`
+        """
+        arg = team.LegalHoldsPolicyReleaseArg(id)
+        r = self.request(
+            team.legal_holds_release_policy,
+            'team',
+            arg,
+            None,
+        )
+        return None
+
+    def team_legal_holds_update_policy(self,
+                                       id,
+                                       name=None,
+                                       description=None,
+                                       members=None):
+        """
+        Updates a legal hold. Note: Legal Holds is a paid add-on. Not all teams
+        have the feature. Permission : Team member file access.
+
+        Route attributes:
+            scope: team_data.governance.write
+
+        :param str id: The legal hold Id.
+        :param Nullable[str] name: Policy new name.
+        :param Nullable[str] description: Policy new description.
+        :param Nullable[List[str]] members: List of team member IDs to apply the
+            policy on.
+        :rtype: :class:`dropbox.team.LegalHoldPolicy`
+        :raises: :class:`.exceptions.ApiError`
+
+        If this raises, ApiError will contain:
+            :class:`dropbox.team.LegalHoldsPolicyUpdateError`
+        """
+        arg = team.LegalHoldsPolicyUpdateArg(id,
+                                             name,
+                                             description,
+                                             members)
+        r = self.request(
+            team.legal_holds_update_policy,
+            'team',
+            arg,
+            None,
+        )
+        return r
+
     def team_linked_apps_list_member_linked_apps(self,
                                                  team_member_id):
         """
         List all linked applications of the team member. Note, this endpoint
         does not list any team-linked applications.
+
+        Route attributes:
+            scope: sessions.list
 
         :param str team_member_id: The team member id.
         :rtype: :class:`dropbox.team.ListMemberAppsResult`
@@ -739,7 +1037,10 @@ class DropboxTeamBase(object):
         List all applications linked to the team members' accounts. Note, this
         endpoint does not list any team-linked applications.
 
-        :param Nullable cursor: At the first call to the
+        Route attributes:
+            scope: sessions.list
+
+        :param Nullable[str] cursor: At the first call to the
             :meth:`team_linked_apps_list_members_linked_apps` the cursor
             shouldn't be passed. Then, if the result of the call includes a
             cursor, the following requests should include the received cursors
@@ -765,7 +1066,10 @@ class DropboxTeamBase(object):
         List all applications linked to the team members' accounts. Note, this
         endpoint doesn't list any team-linked applications.
 
-        :param Nullable cursor: At the first call to the
+        Route attributes:
+            scope: sessions.list
+
+        :param Nullable[str] cursor: At the first call to the
             :meth:`team_linked_apps_list_team_linked_apps` the cursor shouldn't
             be passed. Then, if the result of the call includes a cursor, the
             following requests should include the received cursors in order to
@@ -796,11 +1100,15 @@ class DropboxTeamBase(object):
         """
         Revoke a linked application of the team member.
 
+        Route attributes:
+            scope: sessions.modify
+
         :param str app_id: The application's unique id.
         :param str team_member_id: The unique id of the member owning the
             device.
-        :param bool keep_app_folder: Whether to keep the application dedicated
-            folder (in case the application uses  one).
+        :param bool keep_app_folder: This flag is not longer supported, the
+            application dedicated folder (in case the application uses  one)
+            will be kept.
         :rtype: None
         :raises: :class:`.exceptions.ApiError`
 
@@ -823,7 +1131,11 @@ class DropboxTeamBase(object):
         """
         Revoke a list of linked applications of the team members.
 
-        :type revoke_linked_app: list
+        Route attributes:
+            scope: sessions.modify
+
+        :type revoke_linked_app:
+        List[:class:`dropbox.team.RevokeLinkedApiAppArg`]
         :rtype: :class:`dropbox.team.RevokeLinkedAppBatchResult`
         :raises: :class:`.exceptions.ApiError`
 
@@ -844,7 +1156,11 @@ class DropboxTeamBase(object):
         """
         Add users to member space limits excluded users list.
 
-        :param Nullable users: List of users to be added/removed.
+        Route attributes:
+            scope: members.write
+
+        :param Nullable[List[:class:`dropbox.team.UserSelectorArg`]] users: List
+            of users to be added/removed.
         :rtype: :class:`dropbox.team.ExcludedUsersUpdateResult`
         :raises: :class:`.exceptions.ApiError`
 
@@ -864,6 +1180,9 @@ class DropboxTeamBase(object):
                                                      limit=1000):
         """
         List member space limits excluded users.
+
+        Route attributes:
+            scope: members.read
 
         :param int limit: Number of results to return per call.
         :rtype: :class:`dropbox.team.ExcludedUsersListResult`
@@ -885,6 +1204,9 @@ class DropboxTeamBase(object):
                                                               cursor):
         """
         Continue listing member space limits excluded users.
+
+        Route attributes:
+            scope: members.read
 
         :param str cursor: Indicates from what point to get the next set of
             users.
@@ -908,7 +1230,11 @@ class DropboxTeamBase(object):
         """
         Remove users from member space limits excluded users list.
 
-        :param Nullable users: List of users to be added/removed.
+        Route attributes:
+            scope: members.write
+
+        :param Nullable[List[:class:`dropbox.team.UserSelectorArg`]] users: List
+            of users to be added/removed.
         :rtype: :class:`dropbox.team.ExcludedUsersUpdateResult`
         :raises: :class:`.exceptions.ApiError`
 
@@ -930,8 +1256,11 @@ class DropboxTeamBase(object):
         Get users custom quota. Returns none as the custom quota if none was
         set. A maximum of 1000 members can be specified in a single call.
 
-        :param list users: List of users.
-        :rtype: list
+        Route attributes:
+            scope: members.read
+
+        :param List[:class:`dropbox.team.UserSelectorArg`] users: List of users.
+        :rtype: List[:class:`dropbox.team.CustomQuotaResult`]
         :raises: :class:`.exceptions.ApiError`
 
         If this raises, ApiError will contain:
@@ -952,8 +1281,11 @@ class DropboxTeamBase(object):
         Remove users custom quota. A maximum of 1000 members can be specified in
         a single call.
 
-        :param list users: List of users.
-        :rtype: list
+        Route attributes:
+            scope: members.write
+
+        :param List[:class:`dropbox.team.UserSelectorArg`] users: List of users.
+        :rtype: List[:class:`dropbox.team.RemoveCustomQuotaResult`]
         :raises: :class:`.exceptions.ApiError`
 
         If this raises, ApiError will contain:
@@ -974,8 +1306,12 @@ class DropboxTeamBase(object):
         Set users custom quota. Custom quota has to be at least 15GB. A maximum
         of 1000 members can be specified in a single call.
 
-        :param list users_and_quotas: List of users and their custom quotas.
-        :rtype: list
+        Route attributes:
+            scope: members.read
+
+        :param List[:class:`dropbox.team.UserCustomQuotaArg`] users_and_quotas:
+            List of users and their custom quotas.
+        :rtype: List[:class:`dropbox.team.CustomQuotaResult`]
         :raises: :class:`.exceptions.ApiError`
 
         If this raises, ApiError will contain:
@@ -984,6 +1320,39 @@ class DropboxTeamBase(object):
         arg = team.SetCustomQuotaArg(users_and_quotas)
         r = self.request(
             team.member_space_limits_set_custom_quota,
+            'team',
+            arg,
+            None,
+        )
+        return r
+
+    def team_members_add_v2(self,
+                            new_members,
+                            force_async=False):
+        """
+        Adds members to a team. Permission : Team member management A maximum of
+        20 members can be specified in a single call. If no Dropbox account
+        exists with the email address specified, a new Dropbox account will be
+        created with the given email address, and that account will be invited
+        to the team. If a personal Dropbox account exists with the email address
+        specified in the call, this call will create a placeholder Dropbox
+        account for the user on the team and send an email inviting the user to
+        migrate their existing personal account onto the team. Team member
+        management apps are required to set an initial given_name and surname
+        for a user to use in the team invitation and for 'Perform as team
+        member' actions taken on the user before they become 'active'.
+
+        Route attributes:
+            scope: members.write
+
+        :param List[:class:`dropbox.team.MemberAddV2Arg`] new_members: Details
+            of new members to be added to the team.
+        :rtype: :class:`dropbox.team.MembersAddLaunchV2Result`
+        """
+        arg = team.MembersAddV2Arg(new_members,
+                                   force_async)
+        r = self.request(
+            team.members_add_v2,
             'team',
             arg,
             None,
@@ -1006,9 +1375,11 @@ class DropboxTeamBase(object):
         for a user to use in the team invitation and for 'Perform as team
         member' actions taken on the user before they become 'active'.
 
-        :param list new_members: Details of new members to be added to the team.
-        :param bool force_async: Whether to force the add to happen
-            asynchronously.
+        Route attributes:
+            scope: members.write
+
+        :param List[:class:`dropbox.team.MemberAddArg`] new_members: Details of
+            new members to be added to the team.
         :rtype: :class:`dropbox.team.MembersAddLaunch`
         """
         arg = team.MembersAddArg(new_members,
@@ -1021,12 +1392,42 @@ class DropboxTeamBase(object):
         )
         return r
 
+    def team_members_add_job_status_get_v2(self,
+                                           async_job_id):
+        """
+        Once an async_job_id is returned from :meth:`team_members_add_v2` , use
+        this to poll the status of the asynchronous request. Permission : Team
+        member management.
+
+        Route attributes:
+            scope: members.write
+
+        :param str async_job_id: Id of the asynchronous job. This is the value
+            of a response returned from the method that launched the job.
+        :rtype: :class:`dropbox.team.MembersAddJobStatusV2Result`
+        :raises: :class:`.exceptions.ApiError`
+
+        If this raises, ApiError will contain:
+            :class:`dropbox.team.PollError`
+        """
+        arg = async_.PollArg(async_job_id)
+        r = self.request(
+            team.members_add_job_status_get_v2,
+            'team',
+            arg,
+            None,
+        )
+        return r
+
     def team_members_add_job_status_get(self,
                                         async_job_id):
         """
         Once an async_job_id is returned from :meth:`team_members_add` , use
         this to poll the status of the asynchronous request. Permission : Team
         member management.
+
+        Route attributes:
+            scope: members.write
 
         :param str async_job_id: Id of the asynchronous job. This is the value
             of a response returned from the method that launched the job.
@@ -1045,6 +1446,106 @@ class DropboxTeamBase(object):
         )
         return r
 
+    def team_members_delete_profile_photo_v2(self,
+                                             user):
+        """
+        Deletes a team member's profile photo. Permission : Team member
+        management.
+
+        Route attributes:
+            scope: members.write
+
+        :param user: Identity of the user whose profile photo will be deleted.
+        :type user: :class:`dropbox.team.UserSelectorArg`
+        :rtype: :class:`dropbox.team.TeamMemberInfoV2Result`
+        :raises: :class:`.exceptions.ApiError`
+
+        If this raises, ApiError will contain:
+            :class:`dropbox.team.MembersDeleteProfilePhotoError`
+        """
+        arg = team.MembersDeleteProfilePhotoArg(user)
+        r = self.request(
+            team.members_delete_profile_photo_v2,
+            'team',
+            arg,
+            None,
+        )
+        return r
+
+    def team_members_delete_profile_photo(self,
+                                          user):
+        """
+        Deletes a team member's profile photo. Permission : Team member
+        management.
+
+        Route attributes:
+            scope: members.write
+
+        :param user: Identity of the user whose profile photo will be deleted.
+        :type user: :class:`dropbox.team.UserSelectorArg`
+        :rtype: :class:`dropbox.team.TeamMemberInfo`
+        :raises: :class:`.exceptions.ApiError`
+
+        If this raises, ApiError will contain:
+            :class:`dropbox.team.MembersDeleteProfilePhotoError`
+        """
+        arg = team.MembersDeleteProfilePhotoArg(user)
+        r = self.request(
+            team.members_delete_profile_photo,
+            'team',
+            arg,
+            None,
+        )
+        return r
+
+    def team_members_get_available_team_member_roles(self):
+        """
+        Get available TeamMemberRoles for the connected team. To be used with
+        :meth:`team_members_set_admin_permissions_v2`. Permission : Team member
+        management.
+
+        Route attributes:
+            scope: members.read
+
+        :rtype: :class:`dropbox.team.MembersGetAvailableTeamMemberRolesResult`
+        """
+        arg = None
+        r = self.request(
+            team.members_get_available_team_member_roles,
+            'team',
+            arg,
+            None,
+        )
+        return r
+
+    def team_members_get_info_v2(self,
+                                 members):
+        """
+        Returns information about multiple team members. Permission : Team
+        information This endpoint will return
+        ``MembersGetInfoItem.id_not_found``, for IDs (or emails) that cannot be
+        matched to a valid team member.
+
+        Route attributes:
+            scope: members.read
+
+        :param List[:class:`dropbox.team.UserSelectorArg`] members: List of team
+            members.
+        :rtype: :class:`dropbox.team.MembersGetInfoV2Result`
+        :raises: :class:`.exceptions.ApiError`
+
+        If this raises, ApiError will contain:
+            :class:`dropbox.team.MembersGetInfoError`
+        """
+        arg = team.MembersGetInfoV2Arg(members)
+        r = self.request(
+            team.members_get_info_v2,
+            'team',
+            arg,
+            None,
+        )
+        return r
+
     def team_members_get_info(self,
                               members):
         """
@@ -1053,8 +1554,12 @@ class DropboxTeamBase(object):
         ``MembersGetInfoItem.id_not_found``, for IDs (or emails) that cannot be
         matched to a valid team member.
 
-        :param list members: List of team members.
-        :rtype: list
+        Route attributes:
+            scope: members.read
+
+        :param List[:class:`dropbox.team.UserSelectorArg`] members: List of team
+            members.
+        :rtype: List[:class:`dropbox.team.MembersGetInfoItem`]
         :raises: :class:`.exceptions.ApiError`
 
         If this raises, ApiError will contain:
@@ -1069,11 +1574,41 @@ class DropboxTeamBase(object):
         )
         return r
 
+    def team_members_list_v2(self,
+                             limit=1000,
+                             include_removed=False):
+        """
+        Lists members of a team. Permission : Team information.
+
+        Route attributes:
+            scope: members.read
+
+        :param int limit: Number of results to return per call.
+        :param bool include_removed: Whether to return removed members.
+        :rtype: :class:`dropbox.team.MembersListV2Result`
+        :raises: :class:`.exceptions.ApiError`
+
+        If this raises, ApiError will contain:
+            :class:`dropbox.team.MembersListError`
+        """
+        arg = team.MembersListArg(limit,
+                                  include_removed)
+        r = self.request(
+            team.members_list_v2,
+            'team',
+            arg,
+            None,
+        )
+        return r
+
     def team_members_list(self,
                           limit=1000,
                           include_removed=False):
         """
         Lists members of a team. Permission : Team information.
+
+        Route attributes:
+            scope: members.read
 
         :param int limit: Number of results to return per call.
         :param bool include_removed: Whether to return removed members.
@@ -1093,12 +1628,42 @@ class DropboxTeamBase(object):
         )
         return r
 
+    def team_members_list_continue_v2(self,
+                                      cursor):
+        """
+        Once a cursor has been retrieved from :meth:`team_members_list_v2`, use
+        this to paginate through all team members. Permission : Team
+        information.
+
+        Route attributes:
+            scope: members.read
+
+        :param str cursor: Indicates from what point to get the next set of
+            members.
+        :rtype: :class:`dropbox.team.MembersListV2Result`
+        :raises: :class:`.exceptions.ApiError`
+
+        If this raises, ApiError will contain:
+            :class:`dropbox.team.MembersListContinueError`
+        """
+        arg = team.MembersListContinueArg(cursor)
+        r = self.request(
+            team.members_list_continue_v2,
+            'team',
+            arg,
+            None,
+        )
+        return r
+
     def team_members_list_continue(self,
                                    cursor):
         """
         Once a cursor has been retrieved from :meth:`team_members_list`, use
         this to paginate through all team members. Permission : Team
         information.
+
+        Route attributes:
+            scope: members.read
 
         :param str cursor: Indicates from what point to get the next set of
             members.
@@ -1127,6 +1692,9 @@ class DropboxTeamBase(object):
         the client should periodically poll
         :meth:`team_members_move_former_member_files_job_status_check`.
         Permission : Team member management.
+
+        Route attributes:
+            scope: members.write
 
         :param transfer_dest_id: Files from the deleted member account will be
             transferred to this user.
@@ -1158,6 +1726,9 @@ class DropboxTeamBase(object):
         :meth:`team_members_move_former_member_files` , use this to poll the
         status of the asynchronous request. Permission : Team member management.
 
+        Route attributes:
+            scope: members.write
+
         :param str async_job_id: Id of the asynchronous job. This is the value
             of a response returned from the method that launched the job.
         :rtype: :class:`dropbox.team.PollEmptyResult`
@@ -1182,6 +1753,9 @@ class DropboxTeamBase(object):
         one of team_member_id, email, or external_id must be provided to
         identify the user account.
 
+        Route attributes:
+            scope: members.delete
+
         :param user: Identity of user to recover.
         :type user: :class:`dropbox.team.UserSelectorArg`
         :rtype: None
@@ -1204,7 +1778,8 @@ class DropboxTeamBase(object):
                             wipe_data=True,
                             transfer_dest_id=None,
                             transfer_admin_id=None,
-                            keep_account=False):
+                            keep_account=False,
+                            retain_team_shares=False):
         """
         Removes a member from a team. Permission : Team member management
         Exactly one of team_member_id, email, or external_id must be provided to
@@ -1215,22 +1790,33 @@ class DropboxTeamBase(object):
         recoverable on your team will return with
         ``MemberAddResult.user_already_on_team``. Accounts can have their files
         transferred via the admin console for a limited time, based on the
-        version history length associated with the team (120 days for most
+        version history length associated with the team (180 days for most
         teams). This endpoint may initiate an asynchronous job. To obtain the
         final result of the job, the client should periodically poll
         :meth:`team_members_remove_job_status_get`.
 
-        :param Nullable transfer_dest_id: If provided, files from the deleted
-            member account will be transferred to this user.
-        :param Nullable transfer_admin_id: If provided, errors during the
-            transfer process will be sent via email to this user. If the
-            transfer_dest_id argument was provided, then this argument must be
-            provided as well.
+        Route attributes:
+            scope: members.delete
+
+        :param Nullable[:class:`dropbox.team.UserSelectorArg`] transfer_dest_id:
+            If provided, files from the deleted member account will be
+            transferred to this user.
+        :param Nullable[:class:`dropbox.team.UserSelectorArg`]
+            transfer_admin_id: If provided, errors during the transfer process
+            will be sent via email to this user. If the transfer_dest_id
+            argument was provided, then this argument must be provided as well.
         :param bool keep_account: Downgrade the member to a Basic account. The
             user will retain the email address associated with their Dropbox
             account and data in their account that is not restricted to team
-            members. In order to keep the account the argument wipe_data should
-            be set to False.
+            members. In order to keep the account the argument ``wipe_data``
+            should be set to ``False``.
+        :param bool retain_team_shares: If provided, allows removed users to
+            keep access to Dropbox folders (not Dropbox Paper folders) already
+            explicitly shared with them (not via a group) when they are
+            downgraded to a Basic account. Users will not retain access to
+            folders that do not allow external sharing. In order to keep the
+            sharing relationships, the arguments ``wipe_data`` should be set to
+            ``False`` and ``keep_account`` should be set to ``True``.
         :rtype: :class:`dropbox.team.LaunchEmptyResult`
         :raises: :class:`.exceptions.ApiError`
 
@@ -1241,7 +1827,8 @@ class DropboxTeamBase(object):
                                     wipe_data,
                                     transfer_dest_id,
                                     transfer_admin_id,
-                                    keep_account)
+                                    keep_account,
+                                    retain_team_shares)
         r = self.request(
             team.members_remove,
             'team',
@@ -1256,6 +1843,9 @@ class DropboxTeamBase(object):
         Once an async_job_id is returned from :meth:`team_members_remove` , use
         this to poll the status of the asynchronous request. Permission : Team
         member management.
+
+        Route attributes:
+            scope: members.delete
 
         :param str async_job_id: Id of the asynchronous job. This is the value
             of a response returned from the method that launched the job.
@@ -1274,6 +1864,81 @@ class DropboxTeamBase(object):
         )
         return r
 
+    def team_members_secondary_emails_add(self,
+                                          new_secondary_emails):
+        """
+        Add secondary emails to users. Permission : Team member management.
+        Emails that are on verified domains will be verified automatically. For
+        each email address not on a verified domain a verification email will be
+        sent.
+
+        Route attributes:
+            scope: members.write
+
+        :param List[:class:`dropbox.team.UserSecondaryEmailsArg`]
+            new_secondary_emails: List of users and secondary emails to add.
+        :rtype: :class:`dropbox.team.AddSecondaryEmailsResult`
+        :raises: :class:`.exceptions.ApiError`
+
+        If this raises, ApiError will contain:
+            :class:`dropbox.team.AddSecondaryEmailsError`
+        """
+        arg = team.AddSecondaryEmailsArg(new_secondary_emails)
+        r = self.request(
+            team.members_secondary_emails_add,
+            'team',
+            arg,
+            None,
+        )
+        return r
+
+    def team_members_secondary_emails_delete(self,
+                                             emails_to_delete):
+        """
+        Delete secondary emails from users Permission : Team member management.
+        Users will be notified of deletions of verified secondary emails at both
+        the secondary email and their primary email.
+
+        Route attributes:
+            scope: members.write
+
+        :param List[:class:`dropbox.team.UserSecondaryEmailsArg`]
+            emails_to_delete: List of users and their secondary emails to
+            delete.
+        :rtype: :class:`dropbox.team.DeleteSecondaryEmailsResult`
+        """
+        arg = team.DeleteSecondaryEmailsArg(emails_to_delete)
+        r = self.request(
+            team.members_secondary_emails_delete,
+            'team',
+            arg,
+            None,
+        )
+        return r
+
+    def team_members_secondary_emails_resend_verification_emails(self,
+                                                                 emails_to_resend):
+        """
+        Resend secondary email verification emails. Permission : Team member
+        management.
+
+        Route attributes:
+            scope: members.write
+
+        :param List[:class:`dropbox.team.UserSecondaryEmailsArg`]
+            emails_to_resend: List of users and secondary emails to resend
+            verification emails to.
+        :rtype: :class:`dropbox.team.ResendVerificationEmailResult`
+        """
+        arg = team.ResendVerificationEmailArg(emails_to_resend)
+        r = self.request(
+            team.members_secondary_emails_resend_verification_emails,
+            'team',
+            arg,
+            None,
+        )
+        return r
+
     def team_members_send_welcome_email(self,
                                         arg):
         """
@@ -1281,6 +1946,9 @@ class DropboxTeamBase(object):
         management Exactly one of team_member_id, email, or external_id must be
         provided to identify the user account. No-op if team member is not
         pending.
+
+        Route attributes:
+            scope: members.write
 
         :param arg: Argument for selecting a single user, either by
             team_member_id, external_id or email.
@@ -1299,12 +1967,46 @@ class DropboxTeamBase(object):
         )
         return None
 
+    def team_members_set_admin_permissions_v2(self,
+                                              user,
+                                              new_roles=None):
+        """
+        Updates a team member's permissions. Permission : Team member
+        management.
+
+        Route attributes:
+            scope: members.write
+
+        :param user: Identity of user whose role will be set.
+        :type user: :class:`dropbox.team.UserSelectorArg`
+        :param Nullable[List[str]] new_roles: The new roles for the member. Send
+            empty list to make user member only. For now, only up to one role is
+            allowed.
+        :rtype: :class:`dropbox.team.MembersSetPermissions2Result`
+        :raises: :class:`.exceptions.ApiError`
+
+        If this raises, ApiError will contain:
+            :class:`dropbox.team.MembersSetPermissions2Error`
+        """
+        arg = team.MembersSetPermissions2Arg(user,
+                                             new_roles)
+        r = self.request(
+            team.members_set_admin_permissions_v2,
+            'team',
+            arg,
+            None,
+        )
+        return r
+
     def team_members_set_admin_permissions(self,
                                            user,
                                            new_role):
         """
         Updates a team member's permissions. Permission : Team member
         management.
+
+        Route attributes:
+            scope: members.write
 
         :param user: Identity of user whose role will be set.
         :type user: :class:`dropbox.team.UserSelectorArg`
@@ -1326,6 +2028,51 @@ class DropboxTeamBase(object):
         )
         return r
 
+    def team_members_set_profile_v2(self,
+                                    user,
+                                    new_email=None,
+                                    new_external_id=None,
+                                    new_given_name=None,
+                                    new_surname=None,
+                                    new_persistent_id=None,
+                                    new_is_directory_restricted=None):
+        """
+        Updates a team member's profile. Permission : Team member management.
+
+        Route attributes:
+            scope: members.write
+
+        :param user: Identity of user whose profile will be set.
+        :type user: :class:`dropbox.team.UserSelectorArg`
+        :param Nullable[str] new_email: New email for member.
+        :param Nullable[str] new_external_id: New external ID for member.
+        :param Nullable[str] new_given_name: New given name for member.
+        :param Nullable[str] new_surname: New surname for member.
+        :param Nullable[str] new_persistent_id: New persistent ID. This field
+            only available to teams using persistent ID SAML configuration.
+        :param Nullable[bool] new_is_directory_restricted: New value for whether
+            the user is a directory restricted user.
+        :rtype: :class:`dropbox.team.TeamMemberInfoV2Result`
+        :raises: :class:`.exceptions.ApiError`
+
+        If this raises, ApiError will contain:
+            :class:`dropbox.team.MembersSetProfileError`
+        """
+        arg = team.MembersSetProfileArg(user,
+                                        new_email,
+                                        new_external_id,
+                                        new_given_name,
+                                        new_surname,
+                                        new_persistent_id,
+                                        new_is_directory_restricted)
+        r = self.request(
+            team.members_set_profile_v2,
+            'team',
+            arg,
+            None,
+        )
+        return r
+
     def team_members_set_profile(self,
                                  user,
                                  new_email=None,
@@ -1337,16 +2084,19 @@ class DropboxTeamBase(object):
         """
         Updates a team member's profile. Permission : Team member management.
 
+        Route attributes:
+            scope: members.write
+
         :param user: Identity of user whose profile will be set.
         :type user: :class:`dropbox.team.UserSelectorArg`
-        :param Nullable new_email: New email for member.
-        :param Nullable new_external_id: New external ID for member.
-        :param Nullable new_given_name: New given name for member.
-        :param Nullable new_surname: New surname for member.
-        :param Nullable new_persistent_id: New persistent ID. This field only
-            available to teams using persistent ID SAML configuration.
-        :param Nullable new_is_directory_restricted: New value for whether the
-            user is a directory restricted user.
+        :param Nullable[str] new_email: New email for member.
+        :param Nullable[str] new_external_id: New external ID for member.
+        :param Nullable[str] new_given_name: New given name for member.
+        :param Nullable[str] new_surname: New surname for member.
+        :param Nullable[str] new_persistent_id: New persistent ID. This field
+            only available to teams using persistent ID SAML configuration.
+        :param Nullable[bool] new_is_directory_restricted: New value for whether
+            the user is a directory restricted user.
         :rtype: :class:`dropbox.team.TeamMemberInfo`
         :raises: :class:`.exceptions.ApiError`
 
@@ -1368,6 +2118,66 @@ class DropboxTeamBase(object):
         )
         return r
 
+    def team_members_set_profile_photo_v2(self,
+                                          user,
+                                          photo):
+        """
+        Updates a team member's profile photo. Permission : Team member
+        management.
+
+        Route attributes:
+            scope: members.write
+
+        :param user: Identity of the user whose profile photo will be set.
+        :type user: :class:`dropbox.team.UserSelectorArg`
+        :param photo: Image to set as the member's new profile photo.
+        :type photo: :class:`dropbox.team.PhotoSourceArg`
+        :rtype: :class:`dropbox.team.TeamMemberInfoV2Result`
+        :raises: :class:`.exceptions.ApiError`
+
+        If this raises, ApiError will contain:
+            :class:`dropbox.team.MembersSetProfilePhotoError`
+        """
+        arg = team.MembersSetProfilePhotoArg(user,
+                                             photo)
+        r = self.request(
+            team.members_set_profile_photo_v2,
+            'team',
+            arg,
+            None,
+        )
+        return r
+
+    def team_members_set_profile_photo(self,
+                                       user,
+                                       photo):
+        """
+        Updates a team member's profile photo. Permission : Team member
+        management.
+
+        Route attributes:
+            scope: members.write
+
+        :param user: Identity of the user whose profile photo will be set.
+        :type user: :class:`dropbox.team.UserSelectorArg`
+        :param photo: Image to set as the member's new profile photo.
+        :type photo: :class:`dropbox.team.PhotoSourceArg`
+        :rtype: :class:`dropbox.team.TeamMemberInfo`
+        :raises: :class:`.exceptions.ApiError`
+
+        If this raises, ApiError will contain:
+            :class:`dropbox.team.MembersSetProfilePhotoError`
+        """
+        arg = team.MembersSetProfilePhotoArg(user,
+                                             photo)
+        r = self.request(
+            team.members_set_profile_photo,
+            'team',
+            arg,
+            None,
+        )
+        return r
+
     def team_members_suspend(self,
                              user,
                              wipe_data=True):
@@ -1375,6 +2185,9 @@ class DropboxTeamBase(object):
         Suspend a member from a team. Permission : Team member management
         Exactly one of team_member_id, email, or external_id must be provided to
         identify the user account.
+
+        Route attributes:
+            scope: members.write
 
         :param bool wipe_data: If provided, controls if the user's data will be
             deleted on their linked devices.
@@ -1400,6 +2213,9 @@ class DropboxTeamBase(object):
         Unsuspend a member from a team. Permission : Team member management
         Exactly one of team_member_id, email, or external_id must be provided to
         identify the user account.
+
+        Route attributes:
+            scope: members.write
 
         :param user: Identity of user to unsuspend.
         :type user: :class:`dropbox.team.UserSelectorArg`
@@ -1428,6 +2244,9 @@ class DropboxTeamBase(object):
         folders may be owned by other users or other teams. Duplicates may occur
         in the list.
 
+        Route attributes:
+            scope: team_data.member
+
         :param int limit: Specifying a value here has no effect.
         :rtype: :class:`dropbox.team.TeamNamespacesListResult`
         :raises: :class:`.exceptions.ApiError`
@@ -1450,6 +2269,9 @@ class DropboxTeamBase(object):
         Once a cursor has been retrieved from :meth:`team_namespaces_list`, use
         this to paginate through all team-accessible namespaces. Duplicates may
         occur in the list.
+
+        Route attributes:
+            scope: team_data.member
 
         :param str cursor: Indicates from what point to get the next set of
             team-accessible namespaces.
@@ -1475,6 +2297,9 @@ class DropboxTeamBase(object):
         """
         Permission : Team member file access.
 
+        Route attributes:
+            scope: files.team_metadata.write
+
         :rtype: :class:`dropbox.team.AddTemplateResult`
         :raises: :class:`.exceptions.ApiError`
 
@@ -1499,7 +2324,11 @@ class DropboxTeamBase(object):
     def team_properties_template_get(self,
                                      template_id):
         """
-        Permission : Team member file access.
+        Permission : Team member file access. The scope for the route is
+        files.team_metadata.write.
+
+        Route attributes:
+            scope: files.team_metadata.write
 
         :param str template_id: An identifier for template added by route  See
             :meth:`team_templates_add_for_user` or
@@ -1525,7 +2354,11 @@ class DropboxTeamBase(object):
 
     def team_properties_template_list(self):
         """
-        Permission : Team member file access.
+        Permission : Team member file access. The scope for the route is
+        files.team_metadata.write.
+
+        Route attributes:
+            scope: files.team_metadata.write
 
         :rtype: :class:`dropbox.team.ListTemplateResult`
         :raises: :class:`.exceptions.ApiError`
@@ -1554,16 +2387,19 @@ class DropboxTeamBase(object):
         """
         Permission : Team member file access.
 
+        Route attributes:
+            scope: files.team_metadata.write
+
         :param str template_id: An identifier for template added by  See
             :meth:`team_templates_add_for_user` or
             :meth:`team_templates_add_for_team`.
-        :param Nullable name: A display name for the template. template names
-            can be up to 256 bytes.
-        :param Nullable description: Description for the new template. Template
-            descriptions can be up to 1024 bytes.
-        :param Nullable add_fields: Property field templates to be added to the
-            group template. There can be up to 32 properties in a single
-            template.
+        :param Nullable[str] name: A display name for the template. template
+            names can be up to 256 bytes.
+        :param Nullable[str] description: Description for the new template.
+            Template descriptions can be up to 1024 bytes.
+        :param Nullable[List[:class:`dropbox.team.PropertyFieldTemplate`]]
+            add_fields: Property field templates to be added to the group
+            template. There can be up to 32 properties in a single template.
         :rtype: :class:`dropbox.team.UpdateTemplateResult`
         :raises: :class:`.exceptions.ApiError`
 
@@ -1590,16 +2426,26 @@ class DropboxTeamBase(object):
                                   start_date=None,
                                   end_date=None):
         """
-        Retrieves reporting data about a team's user activity.
+        Retrieves reporting data about a team's user activity. Deprecated: Will
+        be removed on July 1st 2021.
 
-        :param Nullable start_date: Optional starting date (inclusive).
-        :param Nullable end_date: Optional ending date (exclusive).
+        Route attributes:
+            scope: team_info.read
+
+        :param Nullable[datetime] start_date: Optional starting date
+            (inclusive). If start_date is None or too long ago, this field will
+            be set to 6 months ago.
+        :param Nullable[datetime] end_date: Optional ending date (exclusive).
         :rtype: :class:`dropbox.team.GetActivityReport`
         :raises: :class:`.exceptions.ApiError`
 
         If this raises, ApiError will contain:
             :class:`dropbox.team.DateRangeError`
         """
+        warnings.warn(
+            'reports/get_activity is deprecated.',
+            DeprecationWarning,
+        )
         arg = team.DateRange(start_date,
                              end_date)
         r = self.request(
@@ -1614,16 +2460,26 @@ class DropboxTeamBase(object):
                                  start_date=None,
                                  end_date=None):
         """
-        Retrieves reporting data about a team's linked devices.
+        Retrieves reporting data about a team's linked devices. Deprecated: Will
+        be removed on July 1st 2021.
 
-        :param Nullable start_date: Optional starting date (inclusive).
-        :param Nullable end_date: Optional ending date (exclusive).
+        Route attributes:
+            scope: team_info.read
+
+        :param Nullable[datetime] start_date: Optional starting date
+            (inclusive). If start_date is None or too long ago, this field will
+            be set to 6 months ago.
+        :param Nullable[datetime] end_date: Optional ending date (exclusive).
         :rtype: :class:`dropbox.team.GetDevicesReport`
         :raises: :class:`.exceptions.ApiError`
 
         If this raises, ApiError will contain:
             :class:`dropbox.team.DateRangeError`
         """
+        warnings.warn(
+            'reports/get_devices is deprecated.',
+            DeprecationWarning,
+        )
         arg = team.DateRange(start_date,
                              end_date)
         r = self.request(
@@ -1638,16 +2494,26 @@ class DropboxTeamBase(object):
                                     start_date=None,
                                     end_date=None):
         """
-        Retrieves reporting data about a team's membership.
+        Retrieves reporting data about a team's membership. Deprecated: Will be
+        removed on July 1st 2021.
 
-        :param Nullable start_date: Optional starting date (inclusive).
-        :param Nullable end_date: Optional ending date (exclusive).
+        Route attributes:
+            scope: team_info.read
+
+        :param Nullable[datetime] start_date: Optional starting date
+            (inclusive). If start_date is None or too long ago, this field will
+            be set to 6 months ago.
+        :param Nullable[datetime] end_date: Optional ending date (exclusive).
         :rtype: :class:`dropbox.team.GetMembershipReport`
         :raises: :class:`.exceptions.ApiError`
 
         If this raises, ApiError will contain:
             :class:`dropbox.team.DateRangeError`
         """
+        warnings.warn(
+            'reports/get_membership is deprecated.',
+            DeprecationWarning,
+        )
         arg = team.DateRange(start_date,
                              end_date)
         r = self.request(
@@ -1662,16 +2528,26 @@ class DropboxTeamBase(object):
                                  start_date=None,
                                  end_date=None):
         """
-        Retrieves reporting data about a team's storage usage.
+        Retrieves reporting data about a team's storage usage. Deprecated: Will
+        be removed on July 1st 2021.
 
-        :param Nullable start_date: Optional starting date (inclusive).
-        :param Nullable end_date: Optional ending date (exclusive).
+        Route attributes:
+            scope: team_info.read
+
+        :param Nullable[datetime] start_date: Optional starting date
+            (inclusive). If start_date is None or too long ago, this field will
+            be set to 6 months ago.
+        :param Nullable[datetime] end_date: Optional ending date (exclusive).
         :rtype: :class:`dropbox.team.GetStorageReport`
         :raises: :class:`.exceptions.ApiError`
 
         If this raises, ApiError will contain:
             :class:`dropbox.team.DateRangeError`
         """
+        warnings.warn(
+            'reports/get_storage is deprecated.',
+            DeprecationWarning,
+        )
         arg = team.DateRange(start_date,
                              end_date)
         r = self.request(
@@ -1687,6 +2563,9 @@ class DropboxTeamBase(object):
         """
         Sets an archived team folder's status to active. Permission : Team
         member file access.
+
+        Route attributes:
+            scope: team_data.content.write
 
         :param str team_folder_id: The ID of the team folder.
         :rtype: :class:`dropbox.team.TeamFolderMetadata`
@@ -1705,7 +2584,11 @@ class DropboxTeamBase(object):
                                  force_async_off=False):
         """
         Sets an active team folder's status to archived and removes all folder
-        and file members. Permission : Team member file access.
+        and file members. This endpoint cannot be used for teams that have a
+        shared team space. Permission : Team member file access.
+
+        Route attributes:
+            scope: team_data.content.write
 
         :param bool force_async_off: Whether to force the archive to happen
             synchronously.
@@ -1726,6 +2609,9 @@ class DropboxTeamBase(object):
         """
         Returns the status of an asynchronous job for archiving a team folder.
         Permission : Team member file access.
+
+        Route attributes:
+            scope: team_data.content.write
 
         :param str async_job_id: Id of the asynchronous job. This is the value
             of a response returned from the method that launched the job.
@@ -1748,12 +2634,17 @@ class DropboxTeamBase(object):
                                 name,
                                 sync_setting=None):
         """
-        Creates a new, active, team folder with no members. Permission : Team
-        member file access.
+        Creates a new, active, team folder with no members. This endpoint can
+        only be used for teams that do not already have a shared team space.
+        Permission : Team member file access.
+
+        Route attributes:
+            scope: team_data.content.write
 
         :param str name: Name for the new team folder.
-        :param Nullable sync_setting: The sync setting to apply to this team
-            folder. Only permitted if the team has team selective sync enabled.
+        :param Nullable[:class:`dropbox.team.SyncSettingArg`] sync_setting: The
+            sync setting to apply to this team folder. Only permitted if the
+            team has team selective sync enabled.
         :rtype: :class:`dropbox.team.TeamFolderMetadata`
         :raises: :class:`.exceptions.ApiError`
 
@@ -1776,8 +2667,11 @@ class DropboxTeamBase(object):
         Retrieves metadata for team folders. Permission : Team member file
         access.
 
-        :param list team_folder_ids: The list of team folder IDs.
-        :rtype: list
+        Route attributes:
+            scope: team_data.content.read
+
+        :param List[str] team_folder_ids: The list of team folder IDs.
+        :rtype: List[:class:`dropbox.team.TeamFolderGetInfoItem`]
         """
         arg = team.TeamFolderIdListArg(team_folder_ids)
         r = self.request(
@@ -1792,6 +2686,9 @@ class DropboxTeamBase(object):
                               limit=1000):
         """
         Lists all team folders. Permission : Team member file access.
+
+        Route attributes:
+            scope: team_data.content.read
 
         :param int limit: The maximum number of results to return per request.
         :rtype: :class:`dropbox.team.TeamFolderListResult`
@@ -1816,6 +2713,9 @@ class DropboxTeamBase(object):
         this to paginate through all team folders. Permission : Team member file
         access.
 
+        Route attributes:
+            scope: team_data.content.read
+
         :param str cursor: Indicates from what point to get the next set of team
             folders.
         :rtype: :class:`dropbox.team.TeamFolderListResult`
@@ -1836,8 +2736,12 @@ class DropboxTeamBase(object):
     def team_team_folder_permanently_delete(self,
                                             team_folder_id):
         """
-        Permanently deletes an archived team folder. Permission : Team member
+        Permanently deletes an archived team folder. This endpoint cannot be
+        used for teams that have a shared team space. Permission : Team member
         file access.
+
+        Route attributes:
+            scope: team_data.content.write
 
         :param str team_folder_id: The ID of the team folder.
         :rtype: None
@@ -1857,6 +2761,9 @@ class DropboxTeamBase(object):
         """
         Changes an active team folder's name. Permission : Team member file
         access.
+
+        Route attributes:
+            scope: team_data.content.write
 
         :param str name: New team folder name.
         :rtype: :class:`dropbox.team.TeamFolderMetadata`
@@ -1883,11 +2790,15 @@ class DropboxTeamBase(object):
         Updates the sync settings on a team folder or its contents.  Use of this
         endpoint requires that the team has team selective sync enabled.
 
-        :param Nullable sync_setting: Sync setting to apply to the team folder
-            itself. Only meaningful if the team folder is not a shared team
-            root.
-        :param Nullable content_sync_settings: Sync settings to apply to
-            contents of this team folder.
+        Route attributes:
+            scope: team_data.content.write
+
+        :param Nullable[:class:`dropbox.team.SyncSettingArg`] sync_setting: Sync
+            setting to apply to the team folder itself. Only meaningful if the
+            team folder is not a shared team root.
+        :param Nullable[List[:class:`dropbox.team.ContentSyncSettingArg`]]
+            content_sync_settings: Sync settings to apply to contents of this
+            team folder.
         :rtype: :class:`dropbox.team.TeamFolderMetadata`
         :raises: :class:`.exceptions.ApiError`
 
@@ -1909,6 +2820,9 @@ class DropboxTeamBase(object):
         """
         Returns the member profile of the admin who generated the team access
         token used to make the call.
+
+        Route attributes:
+            scope: team_info.read
 
         :rtype: :class:`dropbox.team.TokenGetAuthenticatedAdminResult`
         :raises: :class:`.exceptions.ApiError`
@@ -1932,27 +2846,40 @@ class DropboxTeamBase(object):
                             limit=1000,
                             account_id=None,
                             time=None,
-                            category=None):
+                            category=None,
+                            event_type=None):
         """
-        Retrieves team events. Events have a lifespan of two years. Events older
-        than two years will not be returned. Many attributes note 'may be
-        missing due to historical data gap'. Note that the file_operations
-        category and & analogous paper events are not available on all Dropbox
-        Business `plans </business/plans-comparison>`_. Use `features/get_values
+        Retrieves team events. If the result's ``GetTeamEventsResult.has_more``
+        field is ``True``, call :meth:`team_log_get_events_continue` with the
+        returned cursor to retrieve more entries. If end_time is not specified
+        in your request, you may use the returned cursor to poll
+        :meth:`team_log_get_events_continue` for new events. Many attributes
+        note 'may be missing due to historical data gap'. Note that the
+        file_operations category and & analogous paper events are not available
+        on all Dropbox Business `plans </business/plans-comparison>`_. Use
+        `features/get_values
         </developers/documentation/http/teams#team-features-get_values>`_ to
         check for this feature. Permission : Team Auditing.
+
+        Route attributes:
+            scope: events.read
 
         :param int limit: The maximal number of results to return per call. Note
             that some calls may not return ``limit`` number of events, and may
             even return no events, even with `has_more` set to true. In this
             case, callers should fetch again using
             :meth:`team_log_get_events_continue`.
-        :param Nullable account_id: Filter the events by account ID. Return ony
-            events with this account_id as either Actor, Context, or
+        :param Nullable[str] account_id: Filter the events by account ID. Return
+            only events with this account_id as either Actor, Context, or
             Participants.
-        :param Nullable time: Filter by time range.
-        :param Nullable category: Filter the returned events to a single
-            category.
+        :param Nullable[:class:`dropbox.team_log.TimeRange`] time: Filter by
+            time range.
+        :param Nullable[:class:`dropbox.team_log.EventCategory`] category:
+            Filter the returned events to a single category. Note that category
+            shouldn't be provided together with event_type.
+        :param Nullable[:class:`dropbox.team_log.EventTypeArg`] event_type:
+            Filter the returned events to a single event type. Note that
+            event_type shouldn't be provided together with category.
         :rtype: :class:`dropbox.team_log.GetTeamEventsResult`
         :raises: :class:`.exceptions.ApiError`
 
@@ -1962,7 +2889,8 @@ class DropboxTeamBase(object):
         arg = team_log.GetTeamEventsArg(limit,
                                         account_id,
                                         time,
-                                        category)
+                                        category,
+                                        event_type)
         r = self.request(
             team_log.get_events,
             'team_log',
@@ -1976,6 +2904,9 @@ class DropboxTeamBase(object):
         """
         Once a cursor has been retrieved from :meth:`team_log_get_events`, use
         this to paginate through all events. Permission : Team Auditing.
+
+        Route attributes:
+            scope: events.read
 
         :param str cursor: Indicates from what point to get the next set of
             events.

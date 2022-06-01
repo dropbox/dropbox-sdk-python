@@ -3,14 +3,9 @@
 # @generated
 # flake8: noqa
 # pylint: skip-file
-try:
-    from . import stone_validators as bv
-    from . import stone_base as bb
-except (ImportError, SystemError, ValueError):
-    # Catch errors raised when importing a relative module when not in a package.
-    # This makes testing this file directly (outside of a package) easier.
-    import stone_validators as bv
-    import stone_base as bb
+from __future__ import unicode_literals
+from stone.backends.python_rsrc import stone_base as bb
+from stone.backends.python_rsrc import stone_validators as bv
 
 class CameraUploadsPolicyState(bb.Union):
     """
@@ -56,13 +51,71 @@ class CameraUploadsPolicyState(bb.Union):
         """
         return self._tag == 'other'
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(CameraUploadsPolicyState, self)._process_custom_annotations(annotation_type, processor)
-
-    def __repr__(self):
-        return 'CameraUploadsPolicyState(%r, %r)' % (self._tag, self._value)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(CameraUploadsPolicyState, self)._process_custom_annotations(annotation_type, field_path, processor)
 
 CameraUploadsPolicyState_validator = bv.Union(CameraUploadsPolicyState)
+
+class ComputerBackupPolicyState(bb.Union):
+    """
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+
+    :ivar team_policies.ComputerBackupPolicyState.disabled: Computer Backup
+        feature is disabled.
+    :ivar team_policies.ComputerBackupPolicyState.enabled: Computer Backup
+        feature is enabled.
+    :ivar team_policies.ComputerBackupPolicyState.default: Computer Backup
+        defaults to ON for SSB teams, and OFF for Enterprise teams.
+    """
+
+    _catch_all = 'other'
+    # Attribute is overwritten below the class definition
+    disabled = None
+    # Attribute is overwritten below the class definition
+    enabled = None
+    # Attribute is overwritten below the class definition
+    default = None
+    # Attribute is overwritten below the class definition
+    other = None
+
+    def is_disabled(self):
+        """
+        Check if the union tag is ``disabled``.
+
+        :rtype: bool
+        """
+        return self._tag == 'disabled'
+
+    def is_enabled(self):
+        """
+        Check if the union tag is ``enabled``.
+
+        :rtype: bool
+        """
+        return self._tag == 'enabled'
+
+    def is_default(self):
+        """
+        Check if the union tag is ``default``.
+
+        :rtype: bool
+        """
+        return self._tag == 'default'
+
+    def is_other(self):
+        """
+        Check if the union tag is ``other``.
+
+        :rtype: bool
+        """
+        return self._tag == 'other'
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(ComputerBackupPolicyState, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+ComputerBackupPolicyState_validator = bv.Union(ComputerBackupPolicyState)
 
 class EmmState(bb.Union):
     """
@@ -117,13 +170,120 @@ class EmmState(bb.Union):
         """
         return self._tag == 'other'
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(EmmState, self)._process_custom_annotations(annotation_type, processor)
-
-    def __repr__(self):
-        return 'EmmState(%r, %r)' % (self._tag, self._value)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(EmmState, self)._process_custom_annotations(annotation_type, field_path, processor)
 
 EmmState_validator = bv.Union(EmmState)
+
+class ExternalDriveBackupPolicyState(bb.Union):
+    """
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+
+    :ivar team_policies.ExternalDriveBackupPolicyState.disabled: External Drive
+        Backup feature is disabled.
+    :ivar team_policies.ExternalDriveBackupPolicyState.enabled: External Drive
+        Backup feature is enabled.
+    :ivar team_policies.ExternalDriveBackupPolicyState.default: External Drive
+        Backup default value based on team tier.
+    """
+
+    _catch_all = 'other'
+    # Attribute is overwritten below the class definition
+    disabled = None
+    # Attribute is overwritten below the class definition
+    enabled = None
+    # Attribute is overwritten below the class definition
+    default = None
+    # Attribute is overwritten below the class definition
+    other = None
+
+    def is_disabled(self):
+        """
+        Check if the union tag is ``disabled``.
+
+        :rtype: bool
+        """
+        return self._tag == 'disabled'
+
+    def is_enabled(self):
+        """
+        Check if the union tag is ``enabled``.
+
+        :rtype: bool
+        """
+        return self._tag == 'enabled'
+
+    def is_default(self):
+        """
+        Check if the union tag is ``default``.
+
+        :rtype: bool
+        """
+        return self._tag == 'default'
+
+    def is_other(self):
+        """
+        Check if the union tag is ``other``.
+
+        :rtype: bool
+        """
+        return self._tag == 'other'
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(ExternalDriveBackupPolicyState, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+ExternalDriveBackupPolicyState_validator = bv.Union(ExternalDriveBackupPolicyState)
+
+class FileLockingPolicyState(bb.Union):
+    """
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+
+    :ivar team_policies.FileLockingPolicyState.disabled: File locking feature is
+        disabled.
+    :ivar team_policies.FileLockingPolicyState.enabled: File locking feature is
+        allowed.
+    """
+
+    _catch_all = 'other'
+    # Attribute is overwritten below the class definition
+    disabled = None
+    # Attribute is overwritten below the class definition
+    enabled = None
+    # Attribute is overwritten below the class definition
+    other = None
+
+    def is_disabled(self):
+        """
+        Check if the union tag is ``disabled``.
+
+        :rtype: bool
+        """
+        return self._tag == 'disabled'
+
+    def is_enabled(self):
+        """
+        Check if the union tag is ``enabled``.
+
+        :rtype: bool
+        """
+        return self._tag == 'enabled'
+
+    def is_other(self):
+        """
+        Check if the union tag is ``other``.
+
+        :rtype: bool
+        """
+        return self._tag == 'other'
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(FileLockingPolicyState, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+FileLockingPolicyState_validator = bv.Union(FileLockingPolicyState)
 
 class GroupCreation(bb.Union):
     """
@@ -159,11 +319,8 @@ class GroupCreation(bb.Union):
         """
         return self._tag == 'admins_only'
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(GroupCreation, self)._process_custom_annotations(annotation_type, processor)
-
-    def __repr__(self):
-        return 'GroupCreation(%r, %r)' % (self._tag, self._value)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(GroupCreation, self)._process_custom_annotations(annotation_type, field_path, processor)
 
 GroupCreation_validator = bv.Union(GroupCreation)
 
@@ -209,13 +366,59 @@ class OfficeAddInPolicy(bb.Union):
         """
         return self._tag == 'other'
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(OfficeAddInPolicy, self)._process_custom_annotations(annotation_type, processor)
-
-    def __repr__(self):
-        return 'OfficeAddInPolicy(%r, %r)' % (self._tag, self._value)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(OfficeAddInPolicy, self)._process_custom_annotations(annotation_type, field_path, processor)
 
 OfficeAddInPolicy_validator = bv.Union(OfficeAddInPolicy)
+
+class PaperDefaultFolderPolicy(bb.Union):
+    """
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+
+    :ivar team_policies.PaperDefaultFolderPolicy.everyone_in_team: Everyone in
+        team will be the default option when creating a folder in Paper.
+    :ivar team_policies.PaperDefaultFolderPolicy.invite_only: Invite only will
+        be the default option when creating a folder in Paper.
+    """
+
+    _catch_all = 'other'
+    # Attribute is overwritten below the class definition
+    everyone_in_team = None
+    # Attribute is overwritten below the class definition
+    invite_only = None
+    # Attribute is overwritten below the class definition
+    other = None
+
+    def is_everyone_in_team(self):
+        """
+        Check if the union tag is ``everyone_in_team``.
+
+        :rtype: bool
+        """
+        return self._tag == 'everyone_in_team'
+
+    def is_invite_only(self):
+        """
+        Check if the union tag is ``invite_only``.
+
+        :rtype: bool
+        """
+        return self._tag == 'invite_only'
+
+    def is_other(self):
+        """
+        Check if the union tag is ``other``.
+
+        :rtype: bool
+        """
+        return self._tag == 'other'
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(PaperDefaultFolderPolicy, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+PaperDefaultFolderPolicy_validator = bv.Union(PaperDefaultFolderPolicy)
 
 class PaperDeploymentPolicy(bb.Union):
     """
@@ -262,13 +465,59 @@ class PaperDeploymentPolicy(bb.Union):
         """
         return self._tag == 'other'
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(PaperDeploymentPolicy, self)._process_custom_annotations(annotation_type, processor)
-
-    def __repr__(self):
-        return 'PaperDeploymentPolicy(%r, %r)' % (self._tag, self._value)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(PaperDeploymentPolicy, self)._process_custom_annotations(annotation_type, field_path, processor)
 
 PaperDeploymentPolicy_validator = bv.Union(PaperDeploymentPolicy)
+
+class PaperDesktopPolicy(bb.Union):
+    """
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+
+    :ivar team_policies.PaperDesktopPolicy.disabled: Do not allow team members
+        to use Paper Desktop.
+    :ivar team_policies.PaperDesktopPolicy.enabled: Allow team members to use
+        Paper Desktop.
+    """
+
+    _catch_all = 'other'
+    # Attribute is overwritten below the class definition
+    disabled = None
+    # Attribute is overwritten below the class definition
+    enabled = None
+    # Attribute is overwritten below the class definition
+    other = None
+
+    def is_disabled(self):
+        """
+        Check if the union tag is ``disabled``.
+
+        :rtype: bool
+        """
+        return self._tag == 'disabled'
+
+    def is_enabled(self):
+        """
+        Check if the union tag is ``enabled``.
+
+        :rtype: bool
+        """
+        return self._tag == 'enabled'
+
+    def is_other(self):
+        """
+        Check if the union tag is ``other``.
+
+        :rtype: bool
+        """
+        return self._tag == 'other'
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(PaperDesktopPolicy, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+PaperDesktopPolicy_validator = bv.Union(PaperDesktopPolicy)
 
 class PaperEnabledPolicy(bb.Union):
     """
@@ -323,13 +572,57 @@ class PaperEnabledPolicy(bb.Union):
         """
         return self._tag == 'other'
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(PaperEnabledPolicy, self)._process_custom_annotations(annotation_type, processor)
-
-    def __repr__(self):
-        return 'PaperEnabledPolicy(%r, %r)' % (self._tag, self._value)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(PaperEnabledPolicy, self)._process_custom_annotations(annotation_type, field_path, processor)
 
 PaperEnabledPolicy_validator = bv.Union(PaperEnabledPolicy)
+
+class PasswordControlMode(bb.Union):
+    """
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+
+    :ivar team_policies.PasswordControlMode.disabled: Password is disabled.
+    :ivar team_policies.PasswordControlMode.enabled: Password is enabled.
+    """
+
+    _catch_all = 'other'
+    # Attribute is overwritten below the class definition
+    disabled = None
+    # Attribute is overwritten below the class definition
+    enabled = None
+    # Attribute is overwritten below the class definition
+    other = None
+
+    def is_disabled(self):
+        """
+        Check if the union tag is ``disabled``.
+
+        :rtype: bool
+        """
+        return self._tag == 'disabled'
+
+    def is_enabled(self):
+        """
+        Check if the union tag is ``enabled``.
+
+        :rtype: bool
+        """
+        return self._tag == 'enabled'
+
+    def is_other(self):
+        """
+        Check if the union tag is ``other``.
+
+        :rtype: bool
+        """
+        return self._tag == 'other'
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(PasswordControlMode, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+PasswordControlMode_validator = bv.Union(PasswordControlMode)
 
 class PasswordStrengthPolicy(bb.Union):
     """
@@ -387,11 +680,8 @@ class PasswordStrengthPolicy(bb.Union):
         """
         return self._tag == 'other'
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(PasswordStrengthPolicy, self)._process_custom_annotations(annotation_type, processor)
-
-    def __repr__(self):
-        return 'PasswordStrengthPolicy(%r, %r)' % (self._tag, self._value)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(PasswordStrengthPolicy, self)._process_custom_annotations(annotation_type, field_path, processor)
 
 PasswordStrengthPolicy_validator = bv.Union(PasswordStrengthPolicy)
 
@@ -440,11 +730,8 @@ class RolloutMethod(bb.Union):
         """
         return self._tag == 'add_member_to_exceptions'
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(RolloutMethod, self)._process_custom_annotations(annotation_type, processor)
-
-    def __repr__(self):
-        return 'RolloutMethod(%r, %r)' % (self._tag, self._value)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(RolloutMethod, self)._process_custom_annotations(annotation_type, field_path, processor)
 
 RolloutMethod_validator = bv.Union(RolloutMethod)
 
@@ -495,11 +782,8 @@ class SharedFolderJoinPolicy(bb.Union):
         """
         return self._tag == 'other'
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(SharedFolderJoinPolicy, self)._process_custom_annotations(annotation_type, processor)
-
-    def __repr__(self):
-        return 'SharedFolderJoinPolicy(%r, %r)' % (self._tag, self._value)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(SharedFolderJoinPolicy, self)._process_custom_annotations(annotation_type, field_path, processor)
 
 SharedFolderJoinPolicy_validator = bv.Union(SharedFolderJoinPolicy)
 
@@ -549,11 +833,8 @@ class SharedFolderMemberPolicy(bb.Union):
         """
         return self._tag == 'other'
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(SharedFolderMemberPolicy, self)._process_custom_annotations(annotation_type, processor)
-
-    def __repr__(self):
-        return 'SharedFolderMemberPolicy(%r, %r)' % (self._tag, self._value)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(SharedFolderMemberPolicy, self)._process_custom_annotations(annotation_type, field_path, processor)
 
 SharedFolderMemberPolicy_validator = bv.Union(SharedFolderMemberPolicy)
 
@@ -575,6 +856,9 @@ class SharedLinkCreatePolicy(bb.Union):
     :ivar team_policies.SharedLinkCreatePolicy.team_only: Only members of the
         same team can access all shared links. Login will be required to access
         all shared links.
+    :ivar team_policies.SharedLinkCreatePolicy.default_no_one: Only people
+        invited can access newly created links. Login will be required to access
+        the shared links unless overridden.
     """
 
     _catch_all = 'other'
@@ -584,6 +868,8 @@ class SharedLinkCreatePolicy(bb.Union):
     default_team_only = None
     # Attribute is overwritten below the class definition
     team_only = None
+    # Attribute is overwritten below the class definition
+    default_no_one = None
     # Attribute is overwritten below the class definition
     other = None
 
@@ -611,6 +897,14 @@ class SharedLinkCreatePolicy(bb.Union):
         """
         return self._tag == 'team_only'
 
+    def is_default_no_one(self):
+        """
+        Check if the union tag is ``default_no_one``.
+
+        :rtype: bool
+        """
+        return self._tag == 'default_no_one'
+
     def is_other(self):
         """
         Check if the union tag is ``other``.
@@ -619,11 +913,8 @@ class SharedLinkCreatePolicy(bb.Union):
         """
         return self._tag == 'other'
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(SharedLinkCreatePolicy, self)._process_custom_annotations(annotation_type, processor)
-
-    def __repr__(self):
-        return 'SharedLinkCreatePolicy(%r, %r)' % (self._tag, self._value)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(SharedLinkCreatePolicy, self)._process_custom_annotations(annotation_type, field_path, processor)
 
 SharedLinkCreatePolicy_validator = bv.Union(SharedLinkCreatePolicy)
 
@@ -671,11 +962,8 @@ class ShowcaseDownloadPolicy(bb.Union):
         """
         return self._tag == 'other'
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(ShowcaseDownloadPolicy, self)._process_custom_annotations(annotation_type, processor)
-
-    def __repr__(self):
-        return 'ShowcaseDownloadPolicy(%r, %r)' % (self._tag, self._value)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(ShowcaseDownloadPolicy, self)._process_custom_annotations(annotation_type, field_path, processor)
 
 ShowcaseDownloadPolicy_validator = bv.Union(ShowcaseDownloadPolicy)
 
@@ -721,11 +1009,8 @@ class ShowcaseEnabledPolicy(bb.Union):
         """
         return self._tag == 'other'
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(ShowcaseEnabledPolicy, self)._process_custom_annotations(annotation_type, processor)
-
-    def __repr__(self):
-        return 'ShowcaseEnabledPolicy(%r, %r)' % (self._tag, self._value)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(ShowcaseEnabledPolicy, self)._process_custom_annotations(annotation_type, field_path, processor)
 
 ShowcaseEnabledPolicy_validator = bv.Union(ShowcaseEnabledPolicy)
 
@@ -773,11 +1058,8 @@ class ShowcaseExternalSharingPolicy(bb.Union):
         """
         return self._tag == 'other'
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(ShowcaseExternalSharingPolicy, self)._process_custom_annotations(annotation_type, processor)
-
-    def __repr__(self):
-        return 'ShowcaseExternalSharingPolicy(%r, %r)' % (self._tag, self._value)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(ShowcaseExternalSharingPolicy, self)._process_custom_annotations(annotation_type, field_path, processor)
 
 ShowcaseExternalSharingPolicy_validator = bv.Union(ShowcaseExternalSharingPolicy)
 
@@ -825,13 +1107,59 @@ class SmartSyncPolicy(bb.Union):
         """
         return self._tag == 'other'
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(SmartSyncPolicy, self)._process_custom_annotations(annotation_type, processor)
-
-    def __repr__(self):
-        return 'SmartSyncPolicy(%r, %r)' % (self._tag, self._value)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(SmartSyncPolicy, self)._process_custom_annotations(annotation_type, field_path, processor)
 
 SmartSyncPolicy_validator = bv.Union(SmartSyncPolicy)
+
+class SmarterSmartSyncPolicyState(bb.Union):
+    """
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+
+    :ivar team_policies.SmarterSmartSyncPolicyState.disabled: Smarter Smart Sync
+        feature is disabled.
+    :ivar team_policies.SmarterSmartSyncPolicyState.enabled: Smarter Smart Sync
+        feature is enabled.
+    """
+
+    _catch_all = 'other'
+    # Attribute is overwritten below the class definition
+    disabled = None
+    # Attribute is overwritten below the class definition
+    enabled = None
+    # Attribute is overwritten below the class definition
+    other = None
+
+    def is_disabled(self):
+        """
+        Check if the union tag is ``disabled``.
+
+        :rtype: bool
+        """
+        return self._tag == 'disabled'
+
+    def is_enabled(self):
+        """
+        Check if the union tag is ``enabled``.
+
+        :rtype: bool
+        """
+        return self._tag == 'enabled'
+
+    def is_other(self):
+        """
+        Check if the union tag is ``other``.
+
+        :rtype: bool
+        """
+        return self._tag == 'other'
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(SmarterSmartSyncPolicyState, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+SmarterSmartSyncPolicyState_validator = bv.Union(SmarterSmartSyncPolicyState)
 
 class SsoPolicy(bb.Union):
     """
@@ -889,13 +1217,59 @@ class SsoPolicy(bb.Union):
         """
         return self._tag == 'other'
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(SsoPolicy, self)._process_custom_annotations(annotation_type, processor)
-
-    def __repr__(self):
-        return 'SsoPolicy(%r, %r)' % (self._tag, self._value)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(SsoPolicy, self)._process_custom_annotations(annotation_type, field_path, processor)
 
 SsoPolicy_validator = bv.Union(SsoPolicy)
+
+class SuggestMembersPolicy(bb.Union):
+    """
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+
+    :ivar team_policies.SuggestMembersPolicy.disabled: Suggest members is
+        disabled.
+    :ivar team_policies.SuggestMembersPolicy.enabled: Suggest members is
+        enabled.
+    """
+
+    _catch_all = 'other'
+    # Attribute is overwritten below the class definition
+    disabled = None
+    # Attribute is overwritten below the class definition
+    enabled = None
+    # Attribute is overwritten below the class definition
+    other = None
+
+    def is_disabled(self):
+        """
+        Check if the union tag is ``disabled``.
+
+        :rtype: bool
+        """
+        return self._tag == 'disabled'
+
+    def is_enabled(self):
+        """
+        Check if the union tag is ``enabled``.
+
+        :rtype: bool
+        """
+        return self._tag == 'enabled'
+
+    def is_other(self):
+        """
+        Check if the union tag is ``other``.
+
+        :rtype: bool
+        """
+        return self._tag == 'other'
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(SuggestMembersPolicy, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+SuggestMembersPolicy_validator = bv.Union(SuggestMembersPolicy)
 
 class TeamMemberPolicies(bb.Struct):
     """
@@ -911,15 +1285,16 @@ class TeamMemberPolicies(bb.Struct):
         documentation.
     :ivar team_policies.TeamMemberPolicies.office_addin: The admin policy around
         the Dropbox Office Add-In for this team.
+    :ivar team_policies.TeamMemberPolicies.suggest_members_policy: The team
+        policy on if teammembers are allowed to suggest users for admins to
+        invite to the team.
     """
 
     __slots__ = [
         '_sharing_value',
-        '_sharing_present',
         '_emm_state_value',
-        '_emm_state_present',
         '_office_addin_value',
-        '_office_addin_present',
+        '_suggest_members_policy_value',
     ]
 
     _has_required_fields = True
@@ -927,103 +1302,35 @@ class TeamMemberPolicies(bb.Struct):
     def __init__(self,
                  sharing=None,
                  emm_state=None,
-                 office_addin=None):
-        self._sharing_value = None
-        self._sharing_present = False
-        self._emm_state_value = None
-        self._emm_state_present = False
-        self._office_addin_value = None
-        self._office_addin_present = False
+                 office_addin=None,
+                 suggest_members_policy=None):
+        self._sharing_value = bb.NOT_SET
+        self._emm_state_value = bb.NOT_SET
+        self._office_addin_value = bb.NOT_SET
+        self._suggest_members_policy_value = bb.NOT_SET
         if sharing is not None:
             self.sharing = sharing
         if emm_state is not None:
             self.emm_state = emm_state
         if office_addin is not None:
             self.office_addin = office_addin
+        if suggest_members_policy is not None:
+            self.suggest_members_policy = suggest_members_policy
 
-    @property
-    def sharing(self):
-        """
-        Policies governing sharing.
+    # Instance attribute type: TeamSharingPolicies (validator is set below)
+    sharing = bb.Attribute("sharing", user_defined=True)
 
-        :rtype: team_policies.TeamSharingPolicies
-        """
-        if self._sharing_present:
-            return self._sharing_value
-        else:
-            raise AttributeError("missing required field 'sharing'")
+    # Instance attribute type: EmmState (validator is set below)
+    emm_state = bb.Attribute("emm_state", user_defined=True)
 
-    @sharing.setter
-    def sharing(self, val):
-        self._sharing_validator.validate_type_only(val)
-        self._sharing_value = val
-        self._sharing_present = True
+    # Instance attribute type: OfficeAddInPolicy (validator is set below)
+    office_addin = bb.Attribute("office_addin", user_defined=True)
 
-    @sharing.deleter
-    def sharing(self):
-        self._sharing_value = None
-        self._sharing_present = False
+    # Instance attribute type: SuggestMembersPolicy (validator is set below)
+    suggest_members_policy = bb.Attribute("suggest_members_policy", user_defined=True)
 
-    @property
-    def emm_state(self):
-        """
-        This describes the Enterprise Mobility Management (EMM) state for this
-        team. This information can be used to understand if an organization is
-        integrating with a third-party EMM vendor to further manage and apply
-        restrictions upon the team's Dropbox usage on mobile devices. This is a
-        new feature and in the future we'll be adding more new fields and
-        additional documentation.
-
-        :rtype: team_policies.EmmState
-        """
-        if self._emm_state_present:
-            return self._emm_state_value
-        else:
-            raise AttributeError("missing required field 'emm_state'")
-
-    @emm_state.setter
-    def emm_state(self, val):
-        self._emm_state_validator.validate_type_only(val)
-        self._emm_state_value = val
-        self._emm_state_present = True
-
-    @emm_state.deleter
-    def emm_state(self):
-        self._emm_state_value = None
-        self._emm_state_present = False
-
-    @property
-    def office_addin(self):
-        """
-        The admin policy around the Dropbox Office Add-In for this team.
-
-        :rtype: team_policies.OfficeAddInPolicy
-        """
-        if self._office_addin_present:
-            return self._office_addin_value
-        else:
-            raise AttributeError("missing required field 'office_addin'")
-
-    @office_addin.setter
-    def office_addin(self, val):
-        self._office_addin_validator.validate_type_only(val)
-        self._office_addin_value = val
-        self._office_addin_present = True
-
-    @office_addin.deleter
-    def office_addin(self):
-        self._office_addin_value = None
-        self._office_addin_present = False
-
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(TeamMemberPolicies, self)._process_custom_annotations(annotation_type, processor)
-
-    def __repr__(self):
-        return 'TeamMemberPolicies(sharing={!r}, emm_state={!r}, office_addin={!r})'.format(
-            self._sharing_value,
-            self._emm_state_value,
-            self._office_addin_value,
-        )
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(TeamMemberPolicies, self)._process_custom_annotations(annotation_type, field_path, processor)
 
 TeamMemberPolicies_validator = bv.Struct(TeamMemberPolicies)
 
@@ -1041,11 +1348,8 @@ class TeamSharingPolicies(bb.Struct):
 
     __slots__ = [
         '_shared_folder_member_policy_value',
-        '_shared_folder_member_policy_present',
         '_shared_folder_join_policy_value',
-        '_shared_folder_join_policy_present',
         '_shared_link_create_policy_value',
-        '_shared_link_create_policy_present',
     ]
 
     _has_required_fields = True
@@ -1054,12 +1358,9 @@ class TeamSharingPolicies(bb.Struct):
                  shared_folder_member_policy=None,
                  shared_folder_join_policy=None,
                  shared_link_create_policy=None):
-        self._shared_folder_member_policy_value = None
-        self._shared_folder_member_policy_present = False
-        self._shared_folder_join_policy_value = None
-        self._shared_folder_join_policy_present = False
-        self._shared_link_create_policy_value = None
-        self._shared_link_create_policy_present = False
+        self._shared_folder_member_policy_value = bb.NOT_SET
+        self._shared_folder_join_policy_value = bb.NOT_SET
+        self._shared_link_create_policy_value = bb.NOT_SET
         if shared_folder_member_policy is not None:
             self.shared_folder_member_policy = shared_folder_member_policy
         if shared_folder_join_policy is not None:
@@ -1067,84 +1368,17 @@ class TeamSharingPolicies(bb.Struct):
         if shared_link_create_policy is not None:
             self.shared_link_create_policy = shared_link_create_policy
 
-    @property
-    def shared_folder_member_policy(self):
-        """
-        Who can join folders shared by team members.
+    # Instance attribute type: SharedFolderMemberPolicy (validator is set below)
+    shared_folder_member_policy = bb.Attribute("shared_folder_member_policy", user_defined=True)
 
-        :rtype: team_policies.SharedFolderMemberPolicy
-        """
-        if self._shared_folder_member_policy_present:
-            return self._shared_folder_member_policy_value
-        else:
-            raise AttributeError("missing required field 'shared_folder_member_policy'")
+    # Instance attribute type: SharedFolderJoinPolicy (validator is set below)
+    shared_folder_join_policy = bb.Attribute("shared_folder_join_policy", user_defined=True)
 
-    @shared_folder_member_policy.setter
-    def shared_folder_member_policy(self, val):
-        self._shared_folder_member_policy_validator.validate_type_only(val)
-        self._shared_folder_member_policy_value = val
-        self._shared_folder_member_policy_present = True
+    # Instance attribute type: SharedLinkCreatePolicy (validator is set below)
+    shared_link_create_policy = bb.Attribute("shared_link_create_policy", user_defined=True)
 
-    @shared_folder_member_policy.deleter
-    def shared_folder_member_policy(self):
-        self._shared_folder_member_policy_value = None
-        self._shared_folder_member_policy_present = False
-
-    @property
-    def shared_folder_join_policy(self):
-        """
-        Which shared folders team members can join.
-
-        :rtype: team_policies.SharedFolderJoinPolicy
-        """
-        if self._shared_folder_join_policy_present:
-            return self._shared_folder_join_policy_value
-        else:
-            raise AttributeError("missing required field 'shared_folder_join_policy'")
-
-    @shared_folder_join_policy.setter
-    def shared_folder_join_policy(self, val):
-        self._shared_folder_join_policy_validator.validate_type_only(val)
-        self._shared_folder_join_policy_value = val
-        self._shared_folder_join_policy_present = True
-
-    @shared_folder_join_policy.deleter
-    def shared_folder_join_policy(self):
-        self._shared_folder_join_policy_value = None
-        self._shared_folder_join_policy_present = False
-
-    @property
-    def shared_link_create_policy(self):
-        """
-        Who can view shared links owned by team members.
-
-        :rtype: team_policies.SharedLinkCreatePolicy
-        """
-        if self._shared_link_create_policy_present:
-            return self._shared_link_create_policy_value
-        else:
-            raise AttributeError("missing required field 'shared_link_create_policy'")
-
-    @shared_link_create_policy.setter
-    def shared_link_create_policy(self, val):
-        self._shared_link_create_policy_validator.validate_type_only(val)
-        self._shared_link_create_policy_value = val
-        self._shared_link_create_policy_present = True
-
-    @shared_link_create_policy.deleter
-    def shared_link_create_policy(self):
-        self._shared_link_create_policy_value = None
-        self._shared_link_create_policy_present = False
-
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(TeamSharingPolicies, self)._process_custom_annotations(annotation_type, processor)
-
-    def __repr__(self):
-        return 'TeamSharingPolicies(shared_folder_member_policy={!r}, shared_folder_join_policy={!r}, shared_link_create_policy={!r})'.format(
-            self._shared_folder_member_policy_value,
-            self._shared_folder_join_policy_value,
-            self._shared_link_create_policy_value,
-        )
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(TeamSharingPolicies, self)._process_custom_annotations(annotation_type, field_path, processor)
 
 TeamSharingPolicies_validator = bv.Struct(TeamSharingPolicies)
 
@@ -1192,13 +1426,71 @@ class TwoStepVerificationPolicy(bb.Union):
         """
         return self._tag == 'other'
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(TwoStepVerificationPolicy, self)._process_custom_annotations(annotation_type, processor)
-
-    def __repr__(self):
-        return 'TwoStepVerificationPolicy(%r, %r)' % (self._tag, self._value)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(TwoStepVerificationPolicy, self)._process_custom_annotations(annotation_type, field_path, processor)
 
 TwoStepVerificationPolicy_validator = bv.Union(TwoStepVerificationPolicy)
+
+class TwoStepVerificationState(bb.Union):
+    """
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+
+    :ivar team_policies.TwoStepVerificationState.required: Enabled require two
+        factor authorization.
+    :ivar team_policies.TwoStepVerificationState.optional: Optional require two
+        factor authorization.
+    :ivar team_policies.TwoStepVerificationState.disabled: Disabled require two
+        factor authorization.
+    """
+
+    _catch_all = 'other'
+    # Attribute is overwritten below the class definition
+    required = None
+    # Attribute is overwritten below the class definition
+    optional = None
+    # Attribute is overwritten below the class definition
+    disabled = None
+    # Attribute is overwritten below the class definition
+    other = None
+
+    def is_required(self):
+        """
+        Check if the union tag is ``required``.
+
+        :rtype: bool
+        """
+        return self._tag == 'required'
+
+    def is_optional(self):
+        """
+        Check if the union tag is ``optional``.
+
+        :rtype: bool
+        """
+        return self._tag == 'optional'
+
+    def is_disabled(self):
+        """
+        Check if the union tag is ``disabled``.
+
+        :rtype: bool
+        """
+        return self._tag == 'disabled'
+
+    def is_other(self):
+        """
+        Check if the union tag is ``other``.
+
+        :rtype: bool
+        """
+        return self._tag == 'other'
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(TwoStepVerificationState, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+TwoStepVerificationState_validator = bv.Union(TwoStepVerificationState)
 
 CameraUploadsPolicyState._disabled_validator = bv.Void()
 CameraUploadsPolicyState._enabled_validator = bv.Void()
@@ -1212,6 +1504,22 @@ CameraUploadsPolicyState._tagmap = {
 CameraUploadsPolicyState.disabled = CameraUploadsPolicyState('disabled')
 CameraUploadsPolicyState.enabled = CameraUploadsPolicyState('enabled')
 CameraUploadsPolicyState.other = CameraUploadsPolicyState('other')
+
+ComputerBackupPolicyState._disabled_validator = bv.Void()
+ComputerBackupPolicyState._enabled_validator = bv.Void()
+ComputerBackupPolicyState._default_validator = bv.Void()
+ComputerBackupPolicyState._other_validator = bv.Void()
+ComputerBackupPolicyState._tagmap = {
+    'disabled': ComputerBackupPolicyState._disabled_validator,
+    'enabled': ComputerBackupPolicyState._enabled_validator,
+    'default': ComputerBackupPolicyState._default_validator,
+    'other': ComputerBackupPolicyState._other_validator,
+}
+
+ComputerBackupPolicyState.disabled = ComputerBackupPolicyState('disabled')
+ComputerBackupPolicyState.enabled = ComputerBackupPolicyState('enabled')
+ComputerBackupPolicyState.default = ComputerBackupPolicyState('default')
+ComputerBackupPolicyState.other = ComputerBackupPolicyState('other')
 
 EmmState._disabled_validator = bv.Void()
 EmmState._optional_validator = bv.Void()
@@ -1228,6 +1536,35 @@ EmmState.disabled = EmmState('disabled')
 EmmState.optional = EmmState('optional')
 EmmState.required = EmmState('required')
 EmmState.other = EmmState('other')
+
+ExternalDriveBackupPolicyState._disabled_validator = bv.Void()
+ExternalDriveBackupPolicyState._enabled_validator = bv.Void()
+ExternalDriveBackupPolicyState._default_validator = bv.Void()
+ExternalDriveBackupPolicyState._other_validator = bv.Void()
+ExternalDriveBackupPolicyState._tagmap = {
+    'disabled': ExternalDriveBackupPolicyState._disabled_validator,
+    'enabled': ExternalDriveBackupPolicyState._enabled_validator,
+    'default': ExternalDriveBackupPolicyState._default_validator,
+    'other': ExternalDriveBackupPolicyState._other_validator,
+}
+
+ExternalDriveBackupPolicyState.disabled = ExternalDriveBackupPolicyState('disabled')
+ExternalDriveBackupPolicyState.enabled = ExternalDriveBackupPolicyState('enabled')
+ExternalDriveBackupPolicyState.default = ExternalDriveBackupPolicyState('default')
+ExternalDriveBackupPolicyState.other = ExternalDriveBackupPolicyState('other')
+
+FileLockingPolicyState._disabled_validator = bv.Void()
+FileLockingPolicyState._enabled_validator = bv.Void()
+FileLockingPolicyState._other_validator = bv.Void()
+FileLockingPolicyState._tagmap = {
+    'disabled': FileLockingPolicyState._disabled_validator,
+    'enabled': FileLockingPolicyState._enabled_validator,
+    'other': FileLockingPolicyState._other_validator,
+}
+
+FileLockingPolicyState.disabled = FileLockingPolicyState('disabled')
+FileLockingPolicyState.enabled = FileLockingPolicyState('enabled')
+FileLockingPolicyState.other = FileLockingPolicyState('other')
 
 GroupCreation._admins_and_members_validator = bv.Void()
 GroupCreation._admins_only_validator = bv.Void()
@@ -1252,6 +1589,19 @@ OfficeAddInPolicy.disabled = OfficeAddInPolicy('disabled')
 OfficeAddInPolicy.enabled = OfficeAddInPolicy('enabled')
 OfficeAddInPolicy.other = OfficeAddInPolicy('other')
 
+PaperDefaultFolderPolicy._everyone_in_team_validator = bv.Void()
+PaperDefaultFolderPolicy._invite_only_validator = bv.Void()
+PaperDefaultFolderPolicy._other_validator = bv.Void()
+PaperDefaultFolderPolicy._tagmap = {
+    'everyone_in_team': PaperDefaultFolderPolicy._everyone_in_team_validator,
+    'invite_only': PaperDefaultFolderPolicy._invite_only_validator,
+    'other': PaperDefaultFolderPolicy._other_validator,
+}
+
+PaperDefaultFolderPolicy.everyone_in_team = PaperDefaultFolderPolicy('everyone_in_team')
+PaperDefaultFolderPolicy.invite_only = PaperDefaultFolderPolicy('invite_only')
+PaperDefaultFolderPolicy.other = PaperDefaultFolderPolicy('other')
+
 PaperDeploymentPolicy._full_validator = bv.Void()
 PaperDeploymentPolicy._partial_validator = bv.Void()
 PaperDeploymentPolicy._other_validator = bv.Void()
@@ -1264,6 +1614,19 @@ PaperDeploymentPolicy._tagmap = {
 PaperDeploymentPolicy.full = PaperDeploymentPolicy('full')
 PaperDeploymentPolicy.partial = PaperDeploymentPolicy('partial')
 PaperDeploymentPolicy.other = PaperDeploymentPolicy('other')
+
+PaperDesktopPolicy._disabled_validator = bv.Void()
+PaperDesktopPolicy._enabled_validator = bv.Void()
+PaperDesktopPolicy._other_validator = bv.Void()
+PaperDesktopPolicy._tagmap = {
+    'disabled': PaperDesktopPolicy._disabled_validator,
+    'enabled': PaperDesktopPolicy._enabled_validator,
+    'other': PaperDesktopPolicy._other_validator,
+}
+
+PaperDesktopPolicy.disabled = PaperDesktopPolicy('disabled')
+PaperDesktopPolicy.enabled = PaperDesktopPolicy('enabled')
+PaperDesktopPolicy.other = PaperDesktopPolicy('other')
 
 PaperEnabledPolicy._disabled_validator = bv.Void()
 PaperEnabledPolicy._enabled_validator = bv.Void()
@@ -1280,6 +1643,19 @@ PaperEnabledPolicy.disabled = PaperEnabledPolicy('disabled')
 PaperEnabledPolicy.enabled = PaperEnabledPolicy('enabled')
 PaperEnabledPolicy.unspecified = PaperEnabledPolicy('unspecified')
 PaperEnabledPolicy.other = PaperEnabledPolicy('other')
+
+PasswordControlMode._disabled_validator = bv.Void()
+PasswordControlMode._enabled_validator = bv.Void()
+PasswordControlMode._other_validator = bv.Void()
+PasswordControlMode._tagmap = {
+    'disabled': PasswordControlMode._disabled_validator,
+    'enabled': PasswordControlMode._enabled_validator,
+    'other': PasswordControlMode._other_validator,
+}
+
+PasswordControlMode.disabled = PasswordControlMode('disabled')
+PasswordControlMode.enabled = PasswordControlMode('enabled')
+PasswordControlMode.other = PasswordControlMode('other')
 
 PasswordStrengthPolicy._minimal_requirements_validator = bv.Void()
 PasswordStrengthPolicy._moderate_password_validator = bv.Void()
@@ -1339,17 +1715,20 @@ SharedFolderMemberPolicy.other = SharedFolderMemberPolicy('other')
 SharedLinkCreatePolicy._default_public_validator = bv.Void()
 SharedLinkCreatePolicy._default_team_only_validator = bv.Void()
 SharedLinkCreatePolicy._team_only_validator = bv.Void()
+SharedLinkCreatePolicy._default_no_one_validator = bv.Void()
 SharedLinkCreatePolicy._other_validator = bv.Void()
 SharedLinkCreatePolicy._tagmap = {
     'default_public': SharedLinkCreatePolicy._default_public_validator,
     'default_team_only': SharedLinkCreatePolicy._default_team_only_validator,
     'team_only': SharedLinkCreatePolicy._team_only_validator,
+    'default_no_one': SharedLinkCreatePolicy._default_no_one_validator,
     'other': SharedLinkCreatePolicy._other_validator,
 }
 
 SharedLinkCreatePolicy.default_public = SharedLinkCreatePolicy('default_public')
 SharedLinkCreatePolicy.default_team_only = SharedLinkCreatePolicy('default_team_only')
 SharedLinkCreatePolicy.team_only = SharedLinkCreatePolicy('team_only')
+SharedLinkCreatePolicy.default_no_one = SharedLinkCreatePolicy('default_no_one')
 SharedLinkCreatePolicy.other = SharedLinkCreatePolicy('other')
 
 ShowcaseDownloadPolicy._disabled_validator = bv.Void()
@@ -1404,6 +1783,19 @@ SmartSyncPolicy.local = SmartSyncPolicy('local')
 SmartSyncPolicy.on_demand = SmartSyncPolicy('on_demand')
 SmartSyncPolicy.other = SmartSyncPolicy('other')
 
+SmarterSmartSyncPolicyState._disabled_validator = bv.Void()
+SmarterSmartSyncPolicyState._enabled_validator = bv.Void()
+SmarterSmartSyncPolicyState._other_validator = bv.Void()
+SmarterSmartSyncPolicyState._tagmap = {
+    'disabled': SmarterSmartSyncPolicyState._disabled_validator,
+    'enabled': SmarterSmartSyncPolicyState._enabled_validator,
+    'other': SmarterSmartSyncPolicyState._other_validator,
+}
+
+SmarterSmartSyncPolicyState.disabled = SmarterSmartSyncPolicyState('disabled')
+SmarterSmartSyncPolicyState.enabled = SmarterSmartSyncPolicyState('enabled')
+SmarterSmartSyncPolicyState.other = SmarterSmartSyncPolicyState('other')
+
 SsoPolicy._disabled_validator = bv.Void()
 SsoPolicy._optional_validator = bv.Void()
 SsoPolicy._required_validator = bv.Void()
@@ -1420,32 +1812,48 @@ SsoPolicy.optional = SsoPolicy('optional')
 SsoPolicy.required = SsoPolicy('required')
 SsoPolicy.other = SsoPolicy('other')
 
-TeamMemberPolicies._sharing_validator = TeamSharingPolicies_validator
-TeamMemberPolicies._emm_state_validator = EmmState_validator
-TeamMemberPolicies._office_addin_validator = OfficeAddInPolicy_validator
+SuggestMembersPolicy._disabled_validator = bv.Void()
+SuggestMembersPolicy._enabled_validator = bv.Void()
+SuggestMembersPolicy._other_validator = bv.Void()
+SuggestMembersPolicy._tagmap = {
+    'disabled': SuggestMembersPolicy._disabled_validator,
+    'enabled': SuggestMembersPolicy._enabled_validator,
+    'other': SuggestMembersPolicy._other_validator,
+}
+
+SuggestMembersPolicy.disabled = SuggestMembersPolicy('disabled')
+SuggestMembersPolicy.enabled = SuggestMembersPolicy('enabled')
+SuggestMembersPolicy.other = SuggestMembersPolicy('other')
+
+TeamMemberPolicies.sharing.validator = TeamSharingPolicies_validator
+TeamMemberPolicies.emm_state.validator = EmmState_validator
+TeamMemberPolicies.office_addin.validator = OfficeAddInPolicy_validator
+TeamMemberPolicies.suggest_members_policy.validator = SuggestMembersPolicy_validator
 TeamMemberPolicies._all_field_names_ = set([
     'sharing',
     'emm_state',
     'office_addin',
+    'suggest_members_policy',
 ])
 TeamMemberPolicies._all_fields_ = [
-    ('sharing', TeamMemberPolicies._sharing_validator),
-    ('emm_state', TeamMemberPolicies._emm_state_validator),
-    ('office_addin', TeamMemberPolicies._office_addin_validator),
+    ('sharing', TeamMemberPolicies.sharing.validator),
+    ('emm_state', TeamMemberPolicies.emm_state.validator),
+    ('office_addin', TeamMemberPolicies.office_addin.validator),
+    ('suggest_members_policy', TeamMemberPolicies.suggest_members_policy.validator),
 ]
 
-TeamSharingPolicies._shared_folder_member_policy_validator = SharedFolderMemberPolicy_validator
-TeamSharingPolicies._shared_folder_join_policy_validator = SharedFolderJoinPolicy_validator
-TeamSharingPolicies._shared_link_create_policy_validator = SharedLinkCreatePolicy_validator
+TeamSharingPolicies.shared_folder_member_policy.validator = SharedFolderMemberPolicy_validator
+TeamSharingPolicies.shared_folder_join_policy.validator = SharedFolderJoinPolicy_validator
+TeamSharingPolicies.shared_link_create_policy.validator = SharedLinkCreatePolicy_validator
 TeamSharingPolicies._all_field_names_ = set([
     'shared_folder_member_policy',
     'shared_folder_join_policy',
     'shared_link_create_policy',
 ])
 TeamSharingPolicies._all_fields_ = [
-    ('shared_folder_member_policy', TeamSharingPolicies._shared_folder_member_policy_validator),
-    ('shared_folder_join_policy', TeamSharingPolicies._shared_folder_join_policy_validator),
-    ('shared_link_create_policy', TeamSharingPolicies._shared_link_create_policy_validator),
+    ('shared_folder_member_policy', TeamSharingPolicies.shared_folder_member_policy.validator),
+    ('shared_folder_join_policy', TeamSharingPolicies.shared_folder_join_policy.validator),
+    ('shared_link_create_policy', TeamSharingPolicies.shared_link_create_policy.validator),
 ]
 
 TwoStepVerificationPolicy._require_tfa_enable_validator = bv.Void()
@@ -1460,6 +1868,22 @@ TwoStepVerificationPolicy._tagmap = {
 TwoStepVerificationPolicy.require_tfa_enable = TwoStepVerificationPolicy('require_tfa_enable')
 TwoStepVerificationPolicy.require_tfa_disable = TwoStepVerificationPolicy('require_tfa_disable')
 TwoStepVerificationPolicy.other = TwoStepVerificationPolicy('other')
+
+TwoStepVerificationState._required_validator = bv.Void()
+TwoStepVerificationState._optional_validator = bv.Void()
+TwoStepVerificationState._disabled_validator = bv.Void()
+TwoStepVerificationState._other_validator = bv.Void()
+TwoStepVerificationState._tagmap = {
+    'required': TwoStepVerificationState._required_validator,
+    'optional': TwoStepVerificationState._optional_validator,
+    'disabled': TwoStepVerificationState._disabled_validator,
+    'other': TwoStepVerificationState._other_validator,
+}
+
+TwoStepVerificationState.required = TwoStepVerificationState('required')
+TwoStepVerificationState.optional = TwoStepVerificationState('optional')
+TwoStepVerificationState.disabled = TwoStepVerificationState('disabled')
+TwoStepVerificationState.other = TwoStepVerificationState('other')
 
 ROUTES = {
 }

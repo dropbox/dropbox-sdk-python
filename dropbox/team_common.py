@@ -3,21 +3,11 @@
 # @generated
 # flake8: noqa
 # pylint: skip-file
-try:
-    from . import stone_validators as bv
-    from . import stone_base as bb
-except (ImportError, SystemError, ValueError):
-    # Catch errors raised when importing a relative module when not in a package.
-    # This makes testing this file directly (outside of a package) easier.
-    import stone_validators as bv
-    import stone_base as bb
+from __future__ import unicode_literals
+from stone.backends.python_rsrc import stone_base as bb
+from stone.backends.python_rsrc import stone_validators as bv
 
-try:
-    from . import (
-        common,
-    )
-except (ImportError, SystemError, ValueError):
-    import common
+from dropbox import common
 
 class GroupManagementType(bb.Union):
     """
@@ -77,11 +67,8 @@ class GroupManagementType(bb.Union):
         """
         return self._tag == 'other'
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(GroupManagementType, self)._process_custom_annotations(annotation_type, processor)
-
-    def __repr__(self):
-        return 'GroupManagementType(%r, %r)' % (self._tag, self._value)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(GroupManagementType, self)._process_custom_annotations(annotation_type, field_path, processor)
 
 GroupManagementType_validator = bv.Union(GroupManagementType)
 
@@ -99,15 +86,10 @@ class GroupSummary(bb.Struct):
 
     __slots__ = [
         '_group_name_value',
-        '_group_name_present',
         '_group_id_value',
-        '_group_id_present',
         '_group_external_id_value',
-        '_group_external_id_present',
         '_member_count_value',
-        '_member_count_present',
         '_group_management_type_value',
-        '_group_management_type_present',
     ]
 
     _has_required_fields = True
@@ -118,16 +100,11 @@ class GroupSummary(bb.Struct):
                  group_management_type=None,
                  group_external_id=None,
                  member_count=None):
-        self._group_name_value = None
-        self._group_name_present = False
-        self._group_id_value = None
-        self._group_id_present = False
-        self._group_external_id_value = None
-        self._group_external_id_present = False
-        self._member_count_value = None
-        self._member_count_present = False
-        self._group_management_type_value = None
-        self._group_management_type_present = False
+        self._group_name_value = bb.NOT_SET
+        self._group_id_value = bb.NOT_SET
+        self._group_external_id_value = bb.NOT_SET
+        self._member_count_value = bb.NOT_SET
+        self._group_management_type_value = bb.NOT_SET
         if group_name is not None:
             self.group_name = group_name
         if group_id is not None:
@@ -139,135 +116,23 @@ class GroupSummary(bb.Struct):
         if group_management_type is not None:
             self.group_management_type = group_management_type
 
-    @property
-    def group_name(self):
-        """
-        :rtype: str
-        """
-        if self._group_name_present:
-            return self._group_name_value
-        else:
-            raise AttributeError("missing required field 'group_name'")
+    # Instance attribute type: str (validator is set below)
+    group_name = bb.Attribute("group_name")
 
-    @group_name.setter
-    def group_name(self, val):
-        val = self._group_name_validator.validate(val)
-        self._group_name_value = val
-        self._group_name_present = True
+    # Instance attribute type: str (validator is set below)
+    group_id = bb.Attribute("group_id")
 
-    @group_name.deleter
-    def group_name(self):
-        self._group_name_value = None
-        self._group_name_present = False
+    # Instance attribute type: str (validator is set below)
+    group_external_id = bb.Attribute("group_external_id", nullable=True)
 
-    @property
-    def group_id(self):
-        """
-        :rtype: str
-        """
-        if self._group_id_present:
-            return self._group_id_value
-        else:
-            raise AttributeError("missing required field 'group_id'")
+    # Instance attribute type: int (validator is set below)
+    member_count = bb.Attribute("member_count", nullable=True)
 
-    @group_id.setter
-    def group_id(self, val):
-        val = self._group_id_validator.validate(val)
-        self._group_id_value = val
-        self._group_id_present = True
+    # Instance attribute type: GroupManagementType (validator is set below)
+    group_management_type = bb.Attribute("group_management_type", user_defined=True)
 
-    @group_id.deleter
-    def group_id(self):
-        self._group_id_value = None
-        self._group_id_present = False
-
-    @property
-    def group_external_id(self):
-        """
-        External ID of group. This is an arbitrary ID that an admin can attach
-        to a group.
-
-        :rtype: str
-        """
-        if self._group_external_id_present:
-            return self._group_external_id_value
-        else:
-            return None
-
-    @group_external_id.setter
-    def group_external_id(self, val):
-        if val is None:
-            del self.group_external_id
-            return
-        val = self._group_external_id_validator.validate(val)
-        self._group_external_id_value = val
-        self._group_external_id_present = True
-
-    @group_external_id.deleter
-    def group_external_id(self):
-        self._group_external_id_value = None
-        self._group_external_id_present = False
-
-    @property
-    def member_count(self):
-        """
-        The number of members in the group.
-
-        :rtype: int
-        """
-        if self._member_count_present:
-            return self._member_count_value
-        else:
-            return None
-
-    @member_count.setter
-    def member_count(self, val):
-        if val is None:
-            del self.member_count
-            return
-        val = self._member_count_validator.validate(val)
-        self._member_count_value = val
-        self._member_count_present = True
-
-    @member_count.deleter
-    def member_count(self):
-        self._member_count_value = None
-        self._member_count_present = False
-
-    @property
-    def group_management_type(self):
-        """
-        Who is allowed to manage the group.
-
-        :rtype: team_common.GroupManagementType
-        """
-        if self._group_management_type_present:
-            return self._group_management_type_value
-        else:
-            raise AttributeError("missing required field 'group_management_type'")
-
-    @group_management_type.setter
-    def group_management_type(self, val):
-        self._group_management_type_validator.validate_type_only(val)
-        self._group_management_type_value = val
-        self._group_management_type_present = True
-
-    @group_management_type.deleter
-    def group_management_type(self):
-        self._group_management_type_value = None
-        self._group_management_type_present = False
-
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(GroupSummary, self)._process_custom_annotations(annotation_type, processor)
-
-    def __repr__(self):
-        return 'GroupSummary(group_name={!r}, group_id={!r}, group_management_type={!r}, group_external_id={!r}, member_count={!r})'.format(
-            self._group_name_value,
-            self._group_id_value,
-            self._group_management_type_value,
-            self._group_external_id_value,
-            self._member_count_value,
-        )
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(GroupSummary, self)._process_custom_annotations(annotation_type, field_path, processor)
 
 GroupSummary_validator = bv.Struct(GroupSummary)
 
@@ -318,11 +183,8 @@ class GroupType(bb.Union):
         """
         return self._tag == 'other'
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(GroupType, self)._process_custom_annotations(annotation_type, processor)
-
-    def __repr__(self):
-        return 'GroupType(%r, %r)' % (self._tag, self._value)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(GroupType, self)._process_custom_annotations(annotation_type, field_path, processor)
 
 GroupType_validator = bv.Union(GroupType)
 
@@ -386,11 +248,8 @@ class MemberSpaceLimitType(bb.Union):
         """
         return self._tag == 'other'
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(MemberSpaceLimitType, self)._process_custom_annotations(annotation_type, processor)
-
-    def __repr__(self):
-        return 'MemberSpaceLimitType(%r, %r)' % (self._tag, self._value)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(MemberSpaceLimitType, self)._process_custom_annotations(annotation_type, field_path, processor)
 
 MemberSpaceLimitType_validator = bv.Union(MemberSpaceLimitType)
 
@@ -404,9 +263,7 @@ class TimeRange(bb.Struct):
 
     __slots__ = [
         '_start_time_value',
-        '_start_time_present',
         '_end_time_value',
-        '_end_time_present',
     ]
 
     _has_required_fields = False
@@ -414,75 +271,21 @@ class TimeRange(bb.Struct):
     def __init__(self,
                  start_time=None,
                  end_time=None):
-        self._start_time_value = None
-        self._start_time_present = False
-        self._end_time_value = None
-        self._end_time_present = False
+        self._start_time_value = bb.NOT_SET
+        self._end_time_value = bb.NOT_SET
         if start_time is not None:
             self.start_time = start_time
         if end_time is not None:
             self.end_time = end_time
 
-    @property
-    def start_time(self):
-        """
-        Optional starting time (inclusive).
+    # Instance attribute type: datetime.datetime (validator is set below)
+    start_time = bb.Attribute("start_time", nullable=True)
 
-        :rtype: datetime.datetime
-        """
-        if self._start_time_present:
-            return self._start_time_value
-        else:
-            return None
+    # Instance attribute type: datetime.datetime (validator is set below)
+    end_time = bb.Attribute("end_time", nullable=True)
 
-    @start_time.setter
-    def start_time(self, val):
-        if val is None:
-            del self.start_time
-            return
-        val = self._start_time_validator.validate(val)
-        self._start_time_value = val
-        self._start_time_present = True
-
-    @start_time.deleter
-    def start_time(self):
-        self._start_time_value = None
-        self._start_time_present = False
-
-    @property
-    def end_time(self):
-        """
-        Optional ending time (exclusive).
-
-        :rtype: datetime.datetime
-        """
-        if self._end_time_present:
-            return self._end_time_value
-        else:
-            return None
-
-    @end_time.setter
-    def end_time(self, val):
-        if val is None:
-            del self.end_time
-            return
-        val = self._end_time_validator.validate(val)
-        self._end_time_value = val
-        self._end_time_present = True
-
-    @end_time.deleter
-    def end_time(self):
-        self._end_time_value = None
-        self._end_time_present = False
-
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(TimeRange, self)._process_custom_annotations(annotation_type, processor)
-
-    def __repr__(self):
-        return 'TimeRange(start_time={!r}, end_time={!r})'.format(
-            self._start_time_value,
-            self._end_time_value,
-        )
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(TimeRange, self)._process_custom_annotations(annotation_type, field_path, processor)
 
 TimeRange_validator = bv.Struct(TimeRange)
 
@@ -490,6 +293,7 @@ GroupExternalId_validator = bv.String()
 GroupId_validator = bv.String()
 MemberExternalId_validator = bv.String(max_length=64)
 ResellerId_validator = bv.String()
+TeamId_validator = bv.String()
 TeamMemberId_validator = bv.String()
 GroupManagementType._user_managed_validator = bv.Void()
 GroupManagementType._company_managed_validator = bv.Void()
@@ -507,11 +311,11 @@ GroupManagementType.company_managed = GroupManagementType('company_managed')
 GroupManagementType.system_managed = GroupManagementType('system_managed')
 GroupManagementType.other = GroupManagementType('other')
 
-GroupSummary._group_name_validator = bv.String()
-GroupSummary._group_id_validator = GroupId_validator
-GroupSummary._group_external_id_validator = bv.Nullable(GroupExternalId_validator)
-GroupSummary._member_count_validator = bv.Nullable(bv.UInt32())
-GroupSummary._group_management_type_validator = GroupManagementType_validator
+GroupSummary.group_name.validator = bv.String()
+GroupSummary.group_id.validator = GroupId_validator
+GroupSummary.group_external_id.validator = bv.Nullable(GroupExternalId_validator)
+GroupSummary.member_count.validator = bv.Nullable(bv.UInt32())
+GroupSummary.group_management_type.validator = GroupManagementType_validator
 GroupSummary._all_field_names_ = set([
     'group_name',
     'group_id',
@@ -520,11 +324,11 @@ GroupSummary._all_field_names_ = set([
     'group_management_type',
 ])
 GroupSummary._all_fields_ = [
-    ('group_name', GroupSummary._group_name_validator),
-    ('group_id', GroupSummary._group_id_validator),
-    ('group_external_id', GroupSummary._group_external_id_validator),
-    ('member_count', GroupSummary._member_count_validator),
-    ('group_management_type', GroupSummary._group_management_type_validator),
+    ('group_name', GroupSummary.group_name.validator),
+    ('group_id', GroupSummary.group_id.validator),
+    ('group_external_id', GroupSummary.group_external_id.validator),
+    ('member_count', GroupSummary.member_count.validator),
+    ('group_management_type', GroupSummary.group_management_type.validator),
 ]
 
 GroupType._team_validator = bv.Void()
@@ -556,15 +360,15 @@ MemberSpaceLimitType.alert_only = MemberSpaceLimitType('alert_only')
 MemberSpaceLimitType.stop_sync = MemberSpaceLimitType('stop_sync')
 MemberSpaceLimitType.other = MemberSpaceLimitType('other')
 
-TimeRange._start_time_validator = bv.Nullable(common.DropboxTimestamp_validator)
-TimeRange._end_time_validator = bv.Nullable(common.DropboxTimestamp_validator)
+TimeRange.start_time.validator = bv.Nullable(common.DropboxTimestamp_validator)
+TimeRange.end_time.validator = bv.Nullable(common.DropboxTimestamp_validator)
 TimeRange._all_field_names_ = set([
     'start_time',
     'end_time',
 ])
 TimeRange._all_fields_ = [
-    ('start_time', TimeRange._start_time_validator),
-    ('end_time', TimeRange._end_time_validator),
+    ('start_time', TimeRange.start_time.validator),
+    ('end_time', TimeRange.end_time.validator),
 ]
 
 ROUTES = {

@@ -1,0 +1,15 @@
+coverage:
+  status:
+    project:
+      default:
+        target: auto
+        threshold: 1%
+        base: auto
+        flags:
+          - unittest
+        paths:
+          - "dropbox"
+        if_not_found: success
+        if_ci_failed: error
+        informational: true
+        only_pulls: false

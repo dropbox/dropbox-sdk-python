@@ -5,25 +5,15 @@
 # pylint: skip-file
 """
 This namespace contains endpoints and data types for managing docs and folders in Dropbox Paper.
+New Paper users will see docs they create in their filesystem as '.paper' files alongside their other Dropbox content. The /paper endpoints are being deprecated and you'll need to use /files and /sharing endpoints to interact with their Paper content. Read more in the `Paper Migration Guide <https://www.dropbox.com/lp/developers/reference/paper-migration-guide>`_.
 """
 
-try:
-    from . import stone_validators as bv
-    from . import stone_base as bb
-except (ImportError, SystemError, ValueError):
-    # Catch errors raised when importing a relative module when not in a package.
-    # This makes testing this file directly (outside of a package) easier.
-    import stone_validators as bv
-    import stone_base as bb
+from __future__ import unicode_literals
+from stone.backends.python_rsrc import stone_base as bb
+from stone.backends.python_rsrc import stone_validators as bv
 
-try:
-    from . import (
-        common,
-        sharing,
-    )
-except (ImportError, SystemError, ValueError):
-    import common
-    import sharing
+from dropbox import common
+from dropbox import sharing
 
 class AddMember(bb.Struct):
     """
@@ -34,9 +24,7 @@ class AddMember(bb.Struct):
 
     __slots__ = [
         '_permission_level_value',
-        '_permission_level_present',
         '_member_value',
-        '_member_present',
     ]
 
     _has_required_fields = True
@@ -44,70 +32,21 @@ class AddMember(bb.Struct):
     def __init__(self,
                  member=None,
                  permission_level=None):
-        self._permission_level_value = None
-        self._permission_level_present = False
-        self._member_value = None
-        self._member_present = False
+        self._permission_level_value = bb.NOT_SET
+        self._member_value = bb.NOT_SET
         if permission_level is not None:
             self.permission_level = permission_level
         if member is not None:
             self.member = member
 
-    @property
-    def permission_level(self):
-        """
-        Permission for the user.
+    # Instance attribute type: PaperDocPermissionLevel (validator is set below)
+    permission_level = bb.Attribute("permission_level", user_defined=True)
 
-        :rtype: paper.PaperDocPermissionLevel
-        """
-        if self._permission_level_present:
-            return self._permission_level_value
-        else:
-            return PaperDocPermissionLevel.edit
+    # Instance attribute type: sharing.MemberSelector (validator is set below)
+    member = bb.Attribute("member", user_defined=True)
 
-    @permission_level.setter
-    def permission_level(self, val):
-        self._permission_level_validator.validate_type_only(val)
-        self._permission_level_value = val
-        self._permission_level_present = True
-
-    @permission_level.deleter
-    def permission_level(self):
-        self._permission_level_value = None
-        self._permission_level_present = False
-
-    @property
-    def member(self):
-        """
-        User which should be added to the Paper doc. Specify only email address
-        or Dropbox account ID.
-
-        :rtype: sharing.MemberSelector
-        """
-        if self._member_present:
-            return self._member_value
-        else:
-            raise AttributeError("missing required field 'member'")
-
-    @member.setter
-    def member(self, val):
-        self._member_validator.validate_type_only(val)
-        self._member_value = val
-        self._member_present = True
-
-    @member.deleter
-    def member(self):
-        self._member_value = None
-        self._member_present = False
-
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(AddMember, self)._process_custom_annotations(annotation_type, processor)
-
-    def __repr__(self):
-        return 'AddMember(member={!r}, permission_level={!r})'.format(
-            self._member_value,
-            self._permission_level_value,
-        )
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(AddMember, self)._process_custom_annotations(annotation_type, field_path, processor)
 
 AddMember_validator = bv.Struct(AddMember)
 
@@ -118,48 +57,21 @@ class RefPaperDoc(bb.Struct):
 
     __slots__ = [
         '_doc_id_value',
-        '_doc_id_present',
     ]
 
     _has_required_fields = True
 
     def __init__(self,
                  doc_id=None):
-        self._doc_id_value = None
-        self._doc_id_present = False
+        self._doc_id_value = bb.NOT_SET
         if doc_id is not None:
             self.doc_id = doc_id
 
-    @property
-    def doc_id(self):
-        """
-        The Paper doc ID.
+    # Instance attribute type: str (validator is set below)
+    doc_id = bb.Attribute("doc_id")
 
-        :rtype: str
-        """
-        if self._doc_id_present:
-            return self._doc_id_value
-        else:
-            raise AttributeError("missing required field 'doc_id'")
-
-    @doc_id.setter
-    def doc_id(self, val):
-        val = self._doc_id_validator.validate(val)
-        self._doc_id_value = val
-        self._doc_id_present = True
-
-    @doc_id.deleter
-    def doc_id(self):
-        self._doc_id_value = None
-        self._doc_id_present = False
-
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(RefPaperDoc, self)._process_custom_annotations(annotation_type, processor)
-
-    def __repr__(self):
-        return 'RefPaperDoc(doc_id={!r})'.format(
-            self._doc_id_value,
-        )
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(RefPaperDoc, self)._process_custom_annotations(annotation_type, field_path, processor)
 
 RefPaperDoc_validator = bv.Struct(RefPaperDoc)
 
@@ -175,11 +87,8 @@ class AddPaperDocUser(RefPaperDoc):
 
     __slots__ = [
         '_members_value',
-        '_members_present',
         '_custom_message_value',
-        '_custom_message_present',
         '_quiet_value',
-        '_quiet_present',
     ]
 
     _has_required_fields = True
@@ -190,12 +99,9 @@ class AddPaperDocUser(RefPaperDoc):
                  custom_message=None,
                  quiet=None):
         super(AddPaperDocUser, self).__init__(doc_id)
-        self._members_value = None
-        self._members_present = False
-        self._custom_message_value = None
-        self._custom_message_present = False
-        self._quiet_value = None
-        self._quiet_present = False
+        self._members_value = bb.NOT_SET
+        self._custom_message_value = bb.NOT_SET
+        self._quiet_value = bb.NOT_SET
         if members is not None:
             self.members = members
         if custom_message is not None:
@@ -203,97 +109,24 @@ class AddPaperDocUser(RefPaperDoc):
         if quiet is not None:
             self.quiet = quiet
 
-    @property
-    def members(self):
-        """
-        User which should be added to the Paper doc. Specify only email address
-        or Dropbox account ID.
+    # Instance attribute type: list of [AddMember] (validator is set below)
+    members = bb.Attribute("members")
 
-        :rtype: list of [paper.AddMember]
-        """
-        if self._members_present:
-            return self._members_value
-        else:
-            raise AttributeError("missing required field 'members'")
+    # Instance attribute type: str (validator is set below)
+    custom_message = bb.Attribute("custom_message", nullable=True)
 
-    @members.setter
-    def members(self, val):
-        val = self._members_validator.validate(val)
-        self._members_value = val
-        self._members_present = True
+    # Instance attribute type: bool (validator is set below)
+    quiet = bb.Attribute("quiet")
 
-    @members.deleter
-    def members(self):
-        self._members_value = None
-        self._members_present = False
-
-    @property
-    def custom_message(self):
-        """
-        A personal message that will be emailed to each successfully added
-        member.
-
-        :rtype: str
-        """
-        if self._custom_message_present:
-            return self._custom_message_value
-        else:
-            return None
-
-    @custom_message.setter
-    def custom_message(self, val):
-        if val is None:
-            del self.custom_message
-            return
-        val = self._custom_message_validator.validate(val)
-        self._custom_message_value = val
-        self._custom_message_present = True
-
-    @custom_message.deleter
-    def custom_message(self):
-        self._custom_message_value = None
-        self._custom_message_present = False
-
-    @property
-    def quiet(self):
-        """
-        Clients should set this to true if no email message shall be sent to
-        added users.
-
-        :rtype: bool
-        """
-        if self._quiet_present:
-            return self._quiet_value
-        else:
-            return False
-
-    @quiet.setter
-    def quiet(self, val):
-        val = self._quiet_validator.validate(val)
-        self._quiet_value = val
-        self._quiet_present = True
-
-    @quiet.deleter
-    def quiet(self):
-        self._quiet_value = None
-        self._quiet_present = False
-
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(AddPaperDocUser, self)._process_custom_annotations(annotation_type, processor)
-
-    def __repr__(self):
-        return 'AddPaperDocUser(doc_id={!r}, members={!r}, custom_message={!r}, quiet={!r})'.format(
-            self._doc_id_value,
-            self._members_value,
-            self._custom_message_value,
-            self._quiet_value,
-        )
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(AddPaperDocUser, self)._process_custom_annotations(annotation_type, field_path, processor)
 
 AddPaperDocUser_validator = bv.Struct(AddPaperDocUser)
 
 class AddPaperDocUserMemberResult(bb.Struct):
     """
-    Per-member result for :meth:`dropbox.dropbox.Dropbox.paper_docs_users_add`.
+    Per-member result for
+    :meth:`dropbox.dropbox_client.Dropbox.paper_docs_users_add`.
 
     :ivar paper.AddPaperDocUserMemberResult.member: One of specified input
         members.
@@ -303,9 +136,7 @@ class AddPaperDocUserMemberResult(bb.Struct):
 
     __slots__ = [
         '_member_value',
-        '_member_present',
         '_result_value',
-        '_result_present',
     ]
 
     _has_required_fields = True
@@ -313,69 +144,21 @@ class AddPaperDocUserMemberResult(bb.Struct):
     def __init__(self,
                  member=None,
                  result=None):
-        self._member_value = None
-        self._member_present = False
-        self._result_value = None
-        self._result_present = False
+        self._member_value = bb.NOT_SET
+        self._result_value = bb.NOT_SET
         if member is not None:
             self.member = member
         if result is not None:
             self.result = result
 
-    @property
-    def member(self):
-        """
-        One of specified input members.
+    # Instance attribute type: sharing.MemberSelector (validator is set below)
+    member = bb.Attribute("member", user_defined=True)
 
-        :rtype: sharing.MemberSelector
-        """
-        if self._member_present:
-            return self._member_value
-        else:
-            raise AttributeError("missing required field 'member'")
+    # Instance attribute type: AddPaperDocUserResult (validator is set below)
+    result = bb.Attribute("result", user_defined=True)
 
-    @member.setter
-    def member(self, val):
-        self._member_validator.validate_type_only(val)
-        self._member_value = val
-        self._member_present = True
-
-    @member.deleter
-    def member(self):
-        self._member_value = None
-        self._member_present = False
-
-    @property
-    def result(self):
-        """
-        The outcome of the action on this member.
-
-        :rtype: paper.AddPaperDocUserResult
-        """
-        if self._result_present:
-            return self._result_value
-        else:
-            raise AttributeError("missing required field 'result'")
-
-    @result.setter
-    def result(self, val):
-        self._result_validator.validate_type_only(val)
-        self._result_value = val
-        self._result_present = True
-
-    @result.deleter
-    def result(self):
-        self._result_value = None
-        self._result_present = False
-
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(AddPaperDocUserMemberResult, self)._process_custom_annotations(annotation_type, processor)
-
-    def __repr__(self):
-        return 'AddPaperDocUserMemberResult(member={!r}, result={!r})'.format(
-            self._member_value,
-            self._result_value,
-        )
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(AddPaperDocUserMemberResult, self)._process_custom_annotations(annotation_type, field_path, processor)
 
 AddPaperDocUserMemberResult_validator = bv.Struct(AddPaperDocUserMemberResult)
 
@@ -483,11 +266,8 @@ class AddPaperDocUserResult(bb.Union):
         """
         return self._tag == 'other'
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(AddPaperDocUserResult, self)._process_custom_annotations(annotation_type, processor)
-
-    def __repr__(self):
-        return 'AddPaperDocUserResult(%r, %r)' % (self._tag, self._value)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(AddPaperDocUserResult, self)._process_custom_annotations(annotation_type, field_path, processor)
 
 AddPaperDocUserResult_validator = bv.Union(AddPaperDocUserResult)
 
@@ -511,9 +291,7 @@ class Cursor(bb.Struct):
 
     __slots__ = [
         '_value_value',
-        '_value_present',
         '_expiration_value',
-        '_expiration_present',
     ]
 
     _has_required_fields = True
@@ -521,84 +299,21 @@ class Cursor(bb.Struct):
     def __init__(self,
                  value=None,
                  expiration=None):
-        self._value_value = None
-        self._value_present = False
-        self._expiration_value = None
-        self._expiration_present = False
+        self._value_value = bb.NOT_SET
+        self._expiration_value = bb.NOT_SET
         if value is not None:
             self.value = value
         if expiration is not None:
             self.expiration = expiration
 
-    @property
-    def value(self):
-        """
-        The actual cursor value.
+    # Instance attribute type: str (validator is set below)
+    value = bb.Attribute("value")
 
-        :rtype: str
-        """
-        if self._value_present:
-            return self._value_value
-        else:
-            raise AttributeError("missing required field 'value'")
+    # Instance attribute type: datetime.datetime (validator is set below)
+    expiration = bb.Attribute("expiration", nullable=True)
 
-    @value.setter
-    def value(self, val):
-        val = self._value_validator.validate(val)
-        self._value_value = val
-        self._value_present = True
-
-    @value.deleter
-    def value(self):
-        self._value_value = None
-        self._value_present = False
-
-    @property
-    def expiration(self):
-        """
-        Expiration time of ``value``. Some cursors might have expiration time
-        assigned. This is a UTC value after which the cursor is no longer valid
-        and the API starts returning an error. If cursor expires a new one needs
-        to be obtained and pagination needs to be restarted. Some cursors might
-        be short-lived some cursors might be long-lived. This really depends on
-        the sorting type and order, e.g.: 1. on one hand, listing docs created
-        by the user, sorted by the created time ascending will have undefinite
-        expiration because the results cannot change while the iteration is
-        happening. This cursor would be suitable for long term polling. 2. on
-        the other hand, listing docs sorted by the last modified time will have
-        a very short expiration as docs do get modified very often and the
-        modified time can be changed while the iteration is happening thus
-        altering the results.
-
-        :rtype: datetime.datetime
-        """
-        if self._expiration_present:
-            return self._expiration_value
-        else:
-            return None
-
-    @expiration.setter
-    def expiration(self, val):
-        if val is None:
-            del self.expiration
-            return
-        val = self._expiration_validator.validate(val)
-        self._expiration_value = val
-        self._expiration_present = True
-
-    @expiration.deleter
-    def expiration(self):
-        self._expiration_value = None
-        self._expiration_present = False
-
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(Cursor, self)._process_custom_annotations(annotation_type, processor)
-
-    def __repr__(self):
-        return 'Cursor(value={!r}, expiration={!r})'.format(
-            self._value_value,
-            self._expiration_value,
-        )
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(Cursor, self)._process_custom_annotations(annotation_type, field_path, processor)
 
 Cursor_validator = bv.Struct(Cursor)
 
@@ -609,7 +324,10 @@ class PaperApiBaseError(bb.Union):
     corresponding ``get_*`` method.
 
     :ivar paper.PaperApiBaseError.insufficient_permissions: Your account does
-        not have permissions to perform this action.
+        not have permissions to perform this action. This may be due to it only
+        having access to Paper as files in the Dropbox filesystem. For more
+        information, refer to the `Paper Migration Guide
+        <https://www.dropbox.com/lp/developers/reference/paper-migration-guide>`_.
     """
 
     _catch_all = 'other'
@@ -634,11 +352,8 @@ class PaperApiBaseError(bb.Union):
         """
         return self._tag == 'other'
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(PaperApiBaseError, self)._process_custom_annotations(annotation_type, processor)
-
-    def __repr__(self):
-        return 'PaperApiBaseError(%r, %r)' % (self._tag, self._value)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(PaperApiBaseError, self)._process_custom_annotations(annotation_type, field_path, processor)
 
 PaperApiBaseError_validator = bv.Union(PaperApiBaseError)
 
@@ -662,11 +377,8 @@ class DocLookupError(PaperApiBaseError):
         """
         return self._tag == 'doc_not_found'
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(DocLookupError, self)._process_custom_annotations(annotation_type, processor)
-
-    def __repr__(self):
-        return 'DocLookupError(%r, %r)' % (self._tag, self._value)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(DocLookupError, self)._process_custom_annotations(annotation_type, field_path, processor)
 
 DocLookupError_validator = bv.Union(DocLookupError)
 
@@ -730,11 +442,8 @@ class DocSubscriptionLevel(bb.Union):
         """
         return self._tag == 'no_email'
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(DocSubscriptionLevel, self)._process_custom_annotations(annotation_type, processor)
-
-    def __repr__(self):
-        return 'DocSubscriptionLevel(%r, %r)' % (self._tag, self._value)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(DocSubscriptionLevel, self)._process_custom_annotations(annotation_type, field_path, processor)
 
 DocSubscriptionLevel_validator = bv.Union(DocSubscriptionLevel)
 
@@ -782,11 +491,8 @@ class ExportFormat(bb.Union):
         """
         return self._tag == 'other'
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(ExportFormat, self)._process_custom_annotations(annotation_type, processor)
-
-    def __repr__(self):
-        return 'ExportFormat(%r, %r)' % (self._tag, self._value)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(ExportFormat, self)._process_custom_annotations(annotation_type, field_path, processor)
 
 ExportFormat_validator = bv.Union(ExportFormat)
 
@@ -801,9 +507,7 @@ class Folder(bb.Struct):
 
     __slots__ = [
         '_id_value',
-        '_id_present',
         '_name_value',
-        '_name_present',
     ]
 
     _has_required_fields = True
@@ -811,76 +515,28 @@ class Folder(bb.Struct):
     def __init__(self,
                  id=None,
                  name=None):
-        self._id_value = None
-        self._id_present = False
-        self._name_value = None
-        self._name_present = False
+        self._id_value = bb.NOT_SET
+        self._name_value = bb.NOT_SET
         if id is not None:
             self.id = id
         if name is not None:
             self.name = name
 
-    @property
-    def id(self):
-        """
-        Paper folder ID. This ID uniquely identifies the folder.
+    # Instance attribute type: str (validator is set below)
+    id = bb.Attribute("id")
 
-        :rtype: str
-        """
-        if self._id_present:
-            return self._id_value
-        else:
-            raise AttributeError("missing required field 'id'")
+    # Instance attribute type: str (validator is set below)
+    name = bb.Attribute("name")
 
-    @id.setter
-    def id(self, val):
-        val = self._id_validator.validate(val)
-        self._id_value = val
-        self._id_present = True
-
-    @id.deleter
-    def id(self):
-        self._id_value = None
-        self._id_present = False
-
-    @property
-    def name(self):
-        """
-        Paper folder name.
-
-        :rtype: str
-        """
-        if self._name_present:
-            return self._name_value
-        else:
-            raise AttributeError("missing required field 'name'")
-
-    @name.setter
-    def name(self, val):
-        val = self._name_validator.validate(val)
-        self._name_value = val
-        self._name_present = True
-
-    @name.deleter
-    def name(self):
-        self._name_value = None
-        self._name_present = False
-
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(Folder, self)._process_custom_annotations(annotation_type, processor)
-
-    def __repr__(self):
-        return 'Folder(id={!r}, name={!r})'.format(
-            self._id_value,
-            self._name_value,
-        )
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(Folder, self)._process_custom_annotations(annotation_type, field_path, processor)
 
 Folder_validator = bv.Struct(Folder)
 
 class FolderSharingPolicyType(bb.Union):
     """
-    The sharing policy of a Paper folder.  Note: The sharing policy of
-    subfolders is inherited from the root folder.
+    The sharing policy of a Paper folder. The sharing policy of subfolders is
+    inherited from the root folder.
 
     This class acts as a tagged union. Only one of the ``is_*`` methods will
     return true. To get the associated value of a tag (if one exists), use the
@@ -914,11 +570,8 @@ class FolderSharingPolicyType(bb.Union):
         """
         return self._tag == 'invite_only'
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(FolderSharingPolicyType, self)._process_custom_annotations(annotation_type, processor)
-
-    def __repr__(self):
-        return 'FolderSharingPolicyType(%r, %r)' % (self._tag, self._value)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(FolderSharingPolicyType, self)._process_custom_annotations(annotation_type, field_path, processor)
 
 FolderSharingPolicyType_validator = bv.Union(FolderSharingPolicyType)
 
@@ -982,11 +635,8 @@ class FolderSubscriptionLevel(bb.Union):
         """
         return self._tag == 'weekly_emails'
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(FolderSubscriptionLevel, self)._process_custom_annotations(annotation_type, processor)
-
-    def __repr__(self):
-        return 'FolderSubscriptionLevel(%r, %r)' % (self._tag, self._value)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(FolderSubscriptionLevel, self)._process_custom_annotations(annotation_type, field_path, processor)
 
 FolderSubscriptionLevel_validator = bv.Union(FolderSubscriptionLevel)
 
@@ -1002,9 +652,7 @@ class FoldersContainingPaperDoc(bb.Struct):
 
     __slots__ = [
         '_folder_sharing_policy_type_value',
-        '_folder_sharing_policy_type_present',
         '_folders_value',
-        '_folders_present',
     ]
 
     _has_required_fields = False
@@ -1012,75 +660,21 @@ class FoldersContainingPaperDoc(bb.Struct):
     def __init__(self,
                  folder_sharing_policy_type=None,
                  folders=None):
-        self._folder_sharing_policy_type_value = None
-        self._folder_sharing_policy_type_present = False
-        self._folders_value = None
-        self._folders_present = False
+        self._folder_sharing_policy_type_value = bb.NOT_SET
+        self._folders_value = bb.NOT_SET
         if folder_sharing_policy_type is not None:
             self.folder_sharing_policy_type = folder_sharing_policy_type
         if folders is not None:
             self.folders = folders
 
-    @property
-    def folder_sharing_policy_type(self):
-        """
-        The sharing policy of the folder containing the Paper doc.
+    # Instance attribute type: FolderSharingPolicyType (validator is set below)
+    folder_sharing_policy_type = bb.Attribute("folder_sharing_policy_type", nullable=True, user_defined=True)
 
-        :rtype: paper.FolderSharingPolicyType
-        """
-        if self._folder_sharing_policy_type_present:
-            return self._folder_sharing_policy_type_value
-        else:
-            return None
+    # Instance attribute type: list of [Folder] (validator is set below)
+    folders = bb.Attribute("folders", nullable=True)
 
-    @folder_sharing_policy_type.setter
-    def folder_sharing_policy_type(self, val):
-        if val is None:
-            del self.folder_sharing_policy_type
-            return
-        self._folder_sharing_policy_type_validator.validate_type_only(val)
-        self._folder_sharing_policy_type_value = val
-        self._folder_sharing_policy_type_present = True
-
-    @folder_sharing_policy_type.deleter
-    def folder_sharing_policy_type(self):
-        self._folder_sharing_policy_type_value = None
-        self._folder_sharing_policy_type_present = False
-
-    @property
-    def folders(self):
-        """
-        The folder path. If present the first folder is the root folder.
-
-        :rtype: list of [paper.Folder]
-        """
-        if self._folders_present:
-            return self._folders_value
-        else:
-            return None
-
-    @folders.setter
-    def folders(self, val):
-        if val is None:
-            del self.folders
-            return
-        val = self._folders_validator.validate(val)
-        self._folders_value = val
-        self._folders_present = True
-
-    @folders.deleter
-    def folders(self):
-        self._folders_value = None
-        self._folders_present = False
-
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(FoldersContainingPaperDoc, self)._process_custom_annotations(annotation_type, processor)
-
-    def __repr__(self):
-        return 'FoldersContainingPaperDoc(folder_sharing_policy_type={!r}, folders={!r})'.format(
-            self._folder_sharing_policy_type_value,
-            self._folders_value,
-        )
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(FoldersContainingPaperDoc, self)._process_custom_annotations(annotation_type, field_path, processor)
 
 FoldersContainingPaperDoc_validator = bv.Struct(FoldersContainingPaperDoc)
 
@@ -1095,11 +689,11 @@ class ImportFormat(bb.Union):
     :ivar paper.ImportFormat.html: The provided data is interpreted as standard
         HTML.
     :ivar paper.ImportFormat.markdown: The provided data is interpreted as
-        markdown. Note: The first line of the provided document will be used as
-        the doc title.
+        markdown. The first line of the provided document will be used as the
+        doc title.
     :ivar paper.ImportFormat.plain_text: The provided data is interpreted as
-        plain text. Note: The first line of the provided document will be used
-        as the doc title.
+        plain text. The first line of the provided document will be used as the
+        doc title.
     """
 
     _catch_all = 'other'
@@ -1144,11 +738,8 @@ class ImportFormat(bb.Union):
         """
         return self._tag == 'other'
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(ImportFormat, self)._process_custom_annotations(annotation_type, processor)
-
-    def __repr__(self):
-        return 'ImportFormat(%r, %r)' % (self._tag, self._value)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(ImportFormat, self)._process_custom_annotations(annotation_type, field_path, processor)
 
 ImportFormat_validator = bv.Union(ImportFormat)
 
@@ -1162,9 +753,7 @@ class InviteeInfoWithPermissionLevel(bb.Struct):
 
     __slots__ = [
         '_invitee_value',
-        '_invitee_present',
         '_permission_level_value',
-        '_permission_level_present',
     ]
 
     _has_required_fields = True
@@ -1172,69 +761,21 @@ class InviteeInfoWithPermissionLevel(bb.Struct):
     def __init__(self,
                  invitee=None,
                  permission_level=None):
-        self._invitee_value = None
-        self._invitee_present = False
-        self._permission_level_value = None
-        self._permission_level_present = False
+        self._invitee_value = bb.NOT_SET
+        self._permission_level_value = bb.NOT_SET
         if invitee is not None:
             self.invitee = invitee
         if permission_level is not None:
             self.permission_level = permission_level
 
-    @property
-    def invitee(self):
-        """
-        Email address invited to the Paper doc.
+    # Instance attribute type: sharing.InviteeInfo (validator is set below)
+    invitee = bb.Attribute("invitee", user_defined=True)
 
-        :rtype: sharing.InviteeInfo
-        """
-        if self._invitee_present:
-            return self._invitee_value
-        else:
-            raise AttributeError("missing required field 'invitee'")
+    # Instance attribute type: PaperDocPermissionLevel (validator is set below)
+    permission_level = bb.Attribute("permission_level", user_defined=True)
 
-    @invitee.setter
-    def invitee(self, val):
-        self._invitee_validator.validate_type_only(val)
-        self._invitee_value = val
-        self._invitee_present = True
-
-    @invitee.deleter
-    def invitee(self):
-        self._invitee_value = None
-        self._invitee_present = False
-
-    @property
-    def permission_level(self):
-        """
-        Permission level for the invitee.
-
-        :rtype: paper.PaperDocPermissionLevel
-        """
-        if self._permission_level_present:
-            return self._permission_level_value
-        else:
-            raise AttributeError("missing required field 'permission_level'")
-
-    @permission_level.setter
-    def permission_level(self, val):
-        self._permission_level_validator.validate_type_only(val)
-        self._permission_level_value = val
-        self._permission_level_present = True
-
-    @permission_level.deleter
-    def permission_level(self):
-        self._permission_level_value = None
-        self._permission_level_present = False
-
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(InviteeInfoWithPermissionLevel, self)._process_custom_annotations(annotation_type, processor)
-
-    def __repr__(self):
-        return 'InviteeInfoWithPermissionLevel(invitee={!r}, permission_level={!r})'.format(
-            self._invitee_value,
-            self._permission_level_value,
-        )
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(InviteeInfoWithPermissionLevel, self)._process_custom_annotations(annotation_type, field_path, processor)
 
 InviteeInfoWithPermissionLevel_validator = bv.Struct(InviteeInfoWithPermissionLevel)
 
@@ -1255,8 +796,8 @@ class ListDocsCursorError(bb.Union):
         Create an instance of this class set to the ``cursor_error`` tag with
         value ``val``.
 
-        :param paper.PaperApiCursorError val:
-        :rtype: paper.ListDocsCursorError
+        :param PaperApiCursorError val:
+        :rtype: ListDocsCursorError
         """
         return cls('cursor_error', val)
 
@@ -1280,17 +821,14 @@ class ListDocsCursorError(bb.Union):
         """
         Only call this if :meth:`is_cursor_error` is true.
 
-        :rtype: paper.PaperApiCursorError
+        :rtype: PaperApiCursorError
         """
         if not self.is_cursor_error():
             raise AttributeError("tag 'cursor_error' not set")
         return self._value
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(ListDocsCursorError, self)._process_custom_annotations(annotation_type, processor)
-
-    def __repr__(self):
-        return 'ListDocsCursorError(%r, %r)' % (self._tag, self._value)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(ListDocsCursorError, self)._process_custom_annotations(annotation_type, field_path, processor)
 
 ListDocsCursorError_validator = bv.Union(ListDocsCursorError)
 
@@ -1309,13 +847,9 @@ class ListPaperDocsArgs(bb.Struct):
 
     __slots__ = [
         '_filter_by_value',
-        '_filter_by_present',
         '_sort_by_value',
-        '_sort_by_present',
         '_sort_order_value',
-        '_sort_order_present',
         '_limit_value',
-        '_limit_present',
     ]
 
     _has_required_fields = False
@@ -1325,14 +859,10 @@ class ListPaperDocsArgs(bb.Struct):
                  sort_by=None,
                  sort_order=None,
                  limit=None):
-        self._filter_by_value = None
-        self._filter_by_present = False
-        self._sort_by_value = None
-        self._sort_by_present = False
-        self._sort_order_value = None
-        self._sort_order_present = False
-        self._limit_value = None
-        self._limit_present = False
+        self._filter_by_value = bb.NOT_SET
+        self._sort_by_value = bb.NOT_SET
+        self._sort_order_value = bb.NOT_SET
+        self._limit_value = bb.NOT_SET
         if filter_by is not None:
             self.filter_by = filter_by
         if sort_by is not None:
@@ -1342,166 +872,48 @@ class ListPaperDocsArgs(bb.Struct):
         if limit is not None:
             self.limit = limit
 
-    @property
-    def filter_by(self):
-        """
-        Allows user to specify how the Paper docs should be filtered.
+    # Instance attribute type: ListPaperDocsFilterBy (validator is set below)
+    filter_by = bb.Attribute("filter_by", user_defined=True)
 
-        :rtype: paper.ListPaperDocsFilterBy
-        """
-        if self._filter_by_present:
-            return self._filter_by_value
-        else:
-            return ListPaperDocsFilterBy.docs_accessed
+    # Instance attribute type: ListPaperDocsSortBy (validator is set below)
+    sort_by = bb.Attribute("sort_by", user_defined=True)
 
-    @filter_by.setter
-    def filter_by(self, val):
-        self._filter_by_validator.validate_type_only(val)
-        self._filter_by_value = val
-        self._filter_by_present = True
+    # Instance attribute type: ListPaperDocsSortOrder (validator is set below)
+    sort_order = bb.Attribute("sort_order", user_defined=True)
 
-    @filter_by.deleter
-    def filter_by(self):
-        self._filter_by_value = None
-        self._filter_by_present = False
+    # Instance attribute type: int (validator is set below)
+    limit = bb.Attribute("limit")
 
-    @property
-    def sort_by(self):
-        """
-        Allows user to specify how the Paper docs should be sorted.
-
-        :rtype: paper.ListPaperDocsSortBy
-        """
-        if self._sort_by_present:
-            return self._sort_by_value
-        else:
-            return ListPaperDocsSortBy.accessed
-
-    @sort_by.setter
-    def sort_by(self, val):
-        self._sort_by_validator.validate_type_only(val)
-        self._sort_by_value = val
-        self._sort_by_present = True
-
-    @sort_by.deleter
-    def sort_by(self):
-        self._sort_by_value = None
-        self._sort_by_present = False
-
-    @property
-    def sort_order(self):
-        """
-        Allows user to specify the sort order of the result.
-
-        :rtype: paper.ListPaperDocsSortOrder
-        """
-        if self._sort_order_present:
-            return self._sort_order_value
-        else:
-            return ListPaperDocsSortOrder.ascending
-
-    @sort_order.setter
-    def sort_order(self, val):
-        self._sort_order_validator.validate_type_only(val)
-        self._sort_order_value = val
-        self._sort_order_present = True
-
-    @sort_order.deleter
-    def sort_order(self):
-        self._sort_order_value = None
-        self._sort_order_present = False
-
-    @property
-    def limit(self):
-        """
-        Size limit per batch. The maximum number of docs that can be retrieved
-        per batch is 1000. Higher value results in invalid arguments error.
-
-        :rtype: int
-        """
-        if self._limit_present:
-            return self._limit_value
-        else:
-            return 1000
-
-    @limit.setter
-    def limit(self, val):
-        val = self._limit_validator.validate(val)
-        self._limit_value = val
-        self._limit_present = True
-
-    @limit.deleter
-    def limit(self):
-        self._limit_value = None
-        self._limit_present = False
-
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(ListPaperDocsArgs, self)._process_custom_annotations(annotation_type, processor)
-
-    def __repr__(self):
-        return 'ListPaperDocsArgs(filter_by={!r}, sort_by={!r}, sort_order={!r}, limit={!r})'.format(
-            self._filter_by_value,
-            self._sort_by_value,
-            self._sort_order_value,
-            self._limit_value,
-        )
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(ListPaperDocsArgs, self)._process_custom_annotations(annotation_type, field_path, processor)
 
 ListPaperDocsArgs_validator = bv.Struct(ListPaperDocsArgs)
 
 class ListPaperDocsContinueArgs(bb.Struct):
     """
     :ivar paper.ListPaperDocsContinueArgs.cursor: The cursor obtained from
-        :meth:`dropbox.dropbox.Dropbox.paper_docs_list` or
-        :meth:`dropbox.dropbox.Dropbox.paper_docs_list_continue`. Allows for
-        pagination.
+        :meth:`dropbox.dropbox_client.Dropbox.paper_docs_list` or
+        :meth:`dropbox.dropbox_client.Dropbox.paper_docs_list_continue`. Allows
+        for pagination.
     """
 
     __slots__ = [
         '_cursor_value',
-        '_cursor_present',
     ]
 
     _has_required_fields = True
 
     def __init__(self,
                  cursor=None):
-        self._cursor_value = None
-        self._cursor_present = False
+        self._cursor_value = bb.NOT_SET
         if cursor is not None:
             self.cursor = cursor
 
-    @property
-    def cursor(self):
-        """
-        The cursor obtained from :meth:`dropbox.dropbox.Dropbox.paper_docs_list`
-        or :meth:`dropbox.dropbox.Dropbox.paper_docs_list_continue`. Allows for
-        pagination.
+    # Instance attribute type: str (validator is set below)
+    cursor = bb.Attribute("cursor")
 
-        :rtype: str
-        """
-        if self._cursor_present:
-            return self._cursor_value
-        else:
-            raise AttributeError("missing required field 'cursor'")
-
-    @cursor.setter
-    def cursor(self, val):
-        val = self._cursor_validator.validate(val)
-        self._cursor_value = val
-        self._cursor_present = True
-
-    @cursor.deleter
-    def cursor(self):
-        self._cursor_value = None
-        self._cursor_present = False
-
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(ListPaperDocsContinueArgs, self)._process_custom_annotations(annotation_type, processor)
-
-    def __repr__(self):
-        return 'ListPaperDocsContinueArgs(cursor={!r})'.format(
-            self._cursor_value,
-        )
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(ListPaperDocsContinueArgs, self)._process_custom_annotations(annotation_type, field_path, processor)
 
 ListPaperDocsContinueArgs_validator = bv.Struct(ListPaperDocsContinueArgs)
 
@@ -1549,11 +961,8 @@ class ListPaperDocsFilterBy(bb.Union):
         """
         return self._tag == 'other'
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(ListPaperDocsFilterBy, self)._process_custom_annotations(annotation_type, processor)
-
-    def __repr__(self):
-        return 'ListPaperDocsFilterBy(%r, %r)' % (self._tag, self._value)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(ListPaperDocsFilterBy, self)._process_custom_annotations(annotation_type, field_path, processor)
 
 ListPaperDocsFilterBy_validator = bv.Union(ListPaperDocsFilterBy)
 
@@ -1562,26 +971,24 @@ class ListPaperDocsResponse(bb.Struct):
     :ivar paper.ListPaperDocsResponse.doc_ids: The list of Paper doc IDs that
         can be used to access the given Paper docs or supplied to other API
         methods. The list is sorted in the order specified by the initial call
-        to :meth:`dropbox.dropbox.Dropbox.paper_docs_list`.
+        to :meth:`dropbox.dropbox_client.Dropbox.paper_docs_list`.
     :ivar paper.ListPaperDocsResponse.cursor: Pass the cursor into
-        :meth:`dropbox.dropbox.Dropbox.paper_docs_list_continue` to paginate
-        through all files. The cursor preserves all properties as specified in
-        the original call to :meth:`dropbox.dropbox.Dropbox.paper_docs_list`.
+        :meth:`dropbox.dropbox_client.Dropbox.paper_docs_list_continue` to
+        paginate through all files. The cursor preserves all properties as
+        specified in the original call to
+        :meth:`dropbox.dropbox_client.Dropbox.paper_docs_list`.
     :ivar paper.ListPaperDocsResponse.has_more: Will be set to True if a
         subsequent call with the provided cursor to
-        :meth:`dropbox.dropbox.Dropbox.paper_docs_list_continue` returns
+        :meth:`dropbox.dropbox_client.Dropbox.paper_docs_list_continue` returns
         immediately with some results. If set to False please allow some delay
         before making another call to
-        :meth:`dropbox.dropbox.Dropbox.paper_docs_list_continue`.
+        :meth:`dropbox.dropbox_client.Dropbox.paper_docs_list_continue`.
     """
 
     __slots__ = [
         '_doc_ids_value',
-        '_doc_ids_present',
         '_cursor_value',
-        '_cursor_present',
         '_has_more_value',
-        '_has_more_present',
     ]
 
     _has_required_fields = True
@@ -1590,12 +997,9 @@ class ListPaperDocsResponse(bb.Struct):
                  doc_ids=None,
                  cursor=None,
                  has_more=None):
-        self._doc_ids_value = None
-        self._doc_ids_present = False
-        self._cursor_value = None
-        self._cursor_present = False
-        self._has_more_value = None
-        self._has_more_present = False
+        self._doc_ids_value = bb.NOT_SET
+        self._cursor_value = bb.NOT_SET
+        self._has_more_value = bb.NOT_SET
         if doc_ids is not None:
             self.doc_ids = doc_ids
         if cursor is not None:
@@ -1603,94 +1007,17 @@ class ListPaperDocsResponse(bb.Struct):
         if has_more is not None:
             self.has_more = has_more
 
-    @property
-    def doc_ids(self):
-        """
-        The list of Paper doc IDs that can be used to access the given Paper
-        docs or supplied to other API methods. The list is sorted in the order
-        specified by the initial call to
-        :meth:`dropbox.dropbox.Dropbox.paper_docs_list`.
+    # Instance attribute type: list of [str] (validator is set below)
+    doc_ids = bb.Attribute("doc_ids")
 
-        :rtype: list of [str]
-        """
-        if self._doc_ids_present:
-            return self._doc_ids_value
-        else:
-            raise AttributeError("missing required field 'doc_ids'")
+    # Instance attribute type: Cursor (validator is set below)
+    cursor = bb.Attribute("cursor", user_defined=True)
 
-    @doc_ids.setter
-    def doc_ids(self, val):
-        val = self._doc_ids_validator.validate(val)
-        self._doc_ids_value = val
-        self._doc_ids_present = True
+    # Instance attribute type: bool (validator is set below)
+    has_more = bb.Attribute("has_more")
 
-    @doc_ids.deleter
-    def doc_ids(self):
-        self._doc_ids_value = None
-        self._doc_ids_present = False
-
-    @property
-    def cursor(self):
-        """
-        Pass the cursor into
-        :meth:`dropbox.dropbox.Dropbox.paper_docs_list_continue` to paginate
-        through all files. The cursor preserves all properties as specified in
-        the original call to :meth:`dropbox.dropbox.Dropbox.paper_docs_list`.
-
-        :rtype: paper.Cursor
-        """
-        if self._cursor_present:
-            return self._cursor_value
-        else:
-            raise AttributeError("missing required field 'cursor'")
-
-    @cursor.setter
-    def cursor(self, val):
-        self._cursor_validator.validate_type_only(val)
-        self._cursor_value = val
-        self._cursor_present = True
-
-    @cursor.deleter
-    def cursor(self):
-        self._cursor_value = None
-        self._cursor_present = False
-
-    @property
-    def has_more(self):
-        """
-        Will be set to True if a subsequent call with the provided cursor to
-        :meth:`dropbox.dropbox.Dropbox.paper_docs_list_continue` returns
-        immediately with some results. If set to False please allow some delay
-        before making another call to
-        :meth:`dropbox.dropbox.Dropbox.paper_docs_list_continue`.
-
-        :rtype: bool
-        """
-        if self._has_more_present:
-            return self._has_more_value
-        else:
-            raise AttributeError("missing required field 'has_more'")
-
-    @has_more.setter
-    def has_more(self, val):
-        val = self._has_more_validator.validate(val)
-        self._has_more_value = val
-        self._has_more_present = True
-
-    @has_more.deleter
-    def has_more(self):
-        self._has_more_value = None
-        self._has_more_present = False
-
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(ListPaperDocsResponse, self)._process_custom_annotations(annotation_type, processor)
-
-    def __repr__(self):
-        return 'ListPaperDocsResponse(doc_ids={!r}, cursor={!r}, has_more={!r})'.format(
-            self._doc_ids_value,
-            self._cursor_value,
-            self._has_more_value,
-        )
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(ListPaperDocsResponse, self)._process_custom_annotations(annotation_type, field_path, processor)
 
 ListPaperDocsResponse_validator = bv.Struct(ListPaperDocsResponse)
 
@@ -1750,11 +1077,8 @@ class ListPaperDocsSortBy(bb.Union):
         """
         return self._tag == 'other'
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(ListPaperDocsSortBy, self)._process_custom_annotations(annotation_type, processor)
-
-    def __repr__(self):
-        return 'ListPaperDocsSortBy(%r, %r)' % (self._tag, self._value)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(ListPaperDocsSortBy, self)._process_custom_annotations(annotation_type, field_path, processor)
 
 ListPaperDocsSortBy_validator = bv.Union(ListPaperDocsSortBy)
 
@@ -1802,11 +1126,8 @@ class ListPaperDocsSortOrder(bb.Union):
         """
         return self._tag == 'other'
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(ListPaperDocsSortOrder, self)._process_custom_annotations(annotation_type, processor)
-
-    def __repr__(self):
-        return 'ListPaperDocsSortOrder(%r, %r)' % (self._tag, self._value)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(ListPaperDocsSortOrder, self)._process_custom_annotations(annotation_type, field_path, processor)
 
 ListPaperDocsSortOrder_validator = bv.Union(ListPaperDocsSortOrder)
 
@@ -1829,8 +1150,8 @@ class ListUsersCursorError(PaperApiBaseError):
         Create an instance of this class set to the ``cursor_error`` tag with
         value ``val``.
 
-        :param paper.PaperApiCursorError val:
-        :rtype: paper.ListUsersCursorError
+        :param PaperApiCursorError val:
+        :rtype: ListUsersCursorError
         """
         return cls('cursor_error', val)
 
@@ -1854,17 +1175,14 @@ class ListUsersCursorError(PaperApiBaseError):
         """
         Only call this if :meth:`is_cursor_error` is true.
 
-        :rtype: paper.PaperApiCursorError
+        :rtype: PaperApiCursorError
         """
         if not self.is_cursor_error():
             raise AttributeError("tag 'cursor_error' not set")
         return self._value
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(ListUsersCursorError, self)._process_custom_annotations(annotation_type, processor)
-
-    def __repr__(self):
-        return 'ListUsersCursorError(%r, %r)' % (self._tag, self._value)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(ListUsersCursorError, self)._process_custom_annotations(annotation_type, field_path, processor)
 
 ListUsersCursorError_validator = bv.Union(ListUsersCursorError)
 
@@ -1877,7 +1195,6 @@ class ListUsersOnFolderArgs(RefPaperDoc):
 
     __slots__ = [
         '_limit_value',
-        '_limit_present',
     ]
 
     _has_required_fields = True
@@ -1886,57 +1203,28 @@ class ListUsersOnFolderArgs(RefPaperDoc):
                  doc_id=None,
                  limit=None):
         super(ListUsersOnFolderArgs, self).__init__(doc_id)
-        self._limit_value = None
-        self._limit_present = False
+        self._limit_value = bb.NOT_SET
         if limit is not None:
             self.limit = limit
 
-    @property
-    def limit(self):
-        """
-        Size limit per batch. The maximum number of users that can be retrieved
-        per batch is 1000. Higher value results in invalid arguments error.
+    # Instance attribute type: int (validator is set below)
+    limit = bb.Attribute("limit")
 
-        :rtype: int
-        """
-        if self._limit_present:
-            return self._limit_value
-        else:
-            return 1000
-
-    @limit.setter
-    def limit(self, val):
-        val = self._limit_validator.validate(val)
-        self._limit_value = val
-        self._limit_present = True
-
-    @limit.deleter
-    def limit(self):
-        self._limit_value = None
-        self._limit_present = False
-
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(ListUsersOnFolderArgs, self)._process_custom_annotations(annotation_type, processor)
-
-    def __repr__(self):
-        return 'ListUsersOnFolderArgs(doc_id={!r}, limit={!r})'.format(
-            self._doc_id_value,
-            self._limit_value,
-        )
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(ListUsersOnFolderArgs, self)._process_custom_annotations(annotation_type, field_path, processor)
 
 ListUsersOnFolderArgs_validator = bv.Struct(ListUsersOnFolderArgs)
 
 class ListUsersOnFolderContinueArgs(RefPaperDoc):
     """
     :ivar paper.ListUsersOnFolderContinueArgs.cursor: The cursor obtained from
-        :meth:`dropbox.dropbox.Dropbox.paper_docs_folder_users_list` or
-        :meth:`dropbox.dropbox.Dropbox.paper_docs_folder_users_list_continue`.
+        :meth:`dropbox.dropbox_client.Dropbox.paper_docs_folder_users_list` or
+        :meth:`dropbox.dropbox_client.Dropbox.paper_docs_folder_users_list_continue`.
         Allows for pagination.
     """
 
     __slots__ = [
         '_cursor_value',
-        '_cursor_present',
     ]
 
     _has_required_fields = True
@@ -1945,45 +1233,15 @@ class ListUsersOnFolderContinueArgs(RefPaperDoc):
                  doc_id=None,
                  cursor=None):
         super(ListUsersOnFolderContinueArgs, self).__init__(doc_id)
-        self._cursor_value = None
-        self._cursor_present = False
+        self._cursor_value = bb.NOT_SET
         if cursor is not None:
             self.cursor = cursor
 
-    @property
-    def cursor(self):
-        """
-        The cursor obtained from
-        :meth:`dropbox.dropbox.Dropbox.paper_docs_folder_users_list` or
-        :meth:`dropbox.dropbox.Dropbox.paper_docs_folder_users_list_continue`.
-        Allows for pagination.
+    # Instance attribute type: str (validator is set below)
+    cursor = bb.Attribute("cursor")
 
-        :rtype: str
-        """
-        if self._cursor_present:
-            return self._cursor_value
-        else:
-            raise AttributeError("missing required field 'cursor'")
-
-    @cursor.setter
-    def cursor(self, val):
-        val = self._cursor_validator.validate(val)
-        self._cursor_value = val
-        self._cursor_present = True
-
-    @cursor.deleter
-    def cursor(self):
-        self._cursor_value = None
-        self._cursor_present = False
-
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(ListUsersOnFolderContinueArgs, self)._process_custom_annotations(annotation_type, processor)
-
-    def __repr__(self):
-        return 'ListUsersOnFolderContinueArgs(doc_id={!r}, cursor={!r})'.format(
-            self._doc_id_value,
-            self._cursor_value,
-        )
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(ListUsersOnFolderContinueArgs, self)._process_custom_annotations(annotation_type, field_path, processor)
 
 ListUsersOnFolderContinueArgs_validator = bv.Struct(ListUsersOnFolderContinueArgs)
 
@@ -1994,27 +1252,23 @@ class ListUsersOnFolderResponse(bb.Struct):
     :ivar paper.ListUsersOnFolderResponse.users: List of users that are invited
         on the Paper folder.
     :ivar paper.ListUsersOnFolderResponse.cursor: Pass the cursor into
-        :meth:`dropbox.dropbox.Dropbox.paper_docs_folder_users_list_continue` to
-        paginate through all users. The cursor preserves all properties as
+        :meth:`dropbox.dropbox_client.Dropbox.paper_docs_folder_users_list_continue`
+        to paginate through all users. The cursor preserves all properties as
         specified in the original call to
-        :meth:`dropbox.dropbox.Dropbox.paper_docs_folder_users_list`.
+        :meth:`dropbox.dropbox_client.Dropbox.paper_docs_folder_users_list`.
     :ivar paper.ListUsersOnFolderResponse.has_more: Will be set to True if a
         subsequent call with the provided cursor to
-        :meth:`dropbox.dropbox.Dropbox.paper_docs_folder_users_list_continue`
+        :meth:`dropbox.dropbox_client.Dropbox.paper_docs_folder_users_list_continue`
         returns immediately with some results. If set to False please allow some
         delay before making another call to
-        :meth:`dropbox.dropbox.Dropbox.paper_docs_folder_users_list_continue`.
+        :meth:`dropbox.dropbox_client.Dropbox.paper_docs_folder_users_list_continue`.
     """
 
     __slots__ = [
         '_invitees_value',
-        '_invitees_present',
         '_users_value',
-        '_users_present',
         '_cursor_value',
-        '_cursor_present',
         '_has_more_value',
-        '_has_more_present',
     ]
 
     _has_required_fields = True
@@ -2024,14 +1278,10 @@ class ListUsersOnFolderResponse(bb.Struct):
                  users=None,
                  cursor=None,
                  has_more=None):
-        self._invitees_value = None
-        self._invitees_present = False
-        self._users_value = None
-        self._users_present = False
-        self._cursor_value = None
-        self._cursor_present = False
-        self._has_more_value = None
-        self._has_more_present = False
+        self._invitees_value = bb.NOT_SET
+        self._users_value = bb.NOT_SET
+        self._cursor_value = bb.NOT_SET
+        self._has_more_value = bb.NOT_SET
         if invitees is not None:
             self.invitees = invitees
         if users is not None:
@@ -2041,116 +1291,20 @@ class ListUsersOnFolderResponse(bb.Struct):
         if has_more is not None:
             self.has_more = has_more
 
-    @property
-    def invitees(self):
-        """
-        List of email addresses that are invited on the Paper folder.
+    # Instance attribute type: list of [sharing.InviteeInfo] (validator is set below)
+    invitees = bb.Attribute("invitees")
 
-        :rtype: list of [sharing.InviteeInfo]
-        """
-        if self._invitees_present:
-            return self._invitees_value
-        else:
-            raise AttributeError("missing required field 'invitees'")
+    # Instance attribute type: list of [sharing.UserInfo] (validator is set below)
+    users = bb.Attribute("users")
 
-    @invitees.setter
-    def invitees(self, val):
-        val = self._invitees_validator.validate(val)
-        self._invitees_value = val
-        self._invitees_present = True
+    # Instance attribute type: Cursor (validator is set below)
+    cursor = bb.Attribute("cursor", user_defined=True)
 
-    @invitees.deleter
-    def invitees(self):
-        self._invitees_value = None
-        self._invitees_present = False
+    # Instance attribute type: bool (validator is set below)
+    has_more = bb.Attribute("has_more")
 
-    @property
-    def users(self):
-        """
-        List of users that are invited on the Paper folder.
-
-        :rtype: list of [sharing.UserInfo]
-        """
-        if self._users_present:
-            return self._users_value
-        else:
-            raise AttributeError("missing required field 'users'")
-
-    @users.setter
-    def users(self, val):
-        val = self._users_validator.validate(val)
-        self._users_value = val
-        self._users_present = True
-
-    @users.deleter
-    def users(self):
-        self._users_value = None
-        self._users_present = False
-
-    @property
-    def cursor(self):
-        """
-        Pass the cursor into
-        :meth:`dropbox.dropbox.Dropbox.paper_docs_folder_users_list_continue` to
-        paginate through all users. The cursor preserves all properties as
-        specified in the original call to
-        :meth:`dropbox.dropbox.Dropbox.paper_docs_folder_users_list`.
-
-        :rtype: paper.Cursor
-        """
-        if self._cursor_present:
-            return self._cursor_value
-        else:
-            raise AttributeError("missing required field 'cursor'")
-
-    @cursor.setter
-    def cursor(self, val):
-        self._cursor_validator.validate_type_only(val)
-        self._cursor_value = val
-        self._cursor_present = True
-
-    @cursor.deleter
-    def cursor(self):
-        self._cursor_value = None
-        self._cursor_present = False
-
-    @property
-    def has_more(self):
-        """
-        Will be set to True if a subsequent call with the provided cursor to
-        :meth:`dropbox.dropbox.Dropbox.paper_docs_folder_users_list_continue`
-        returns immediately with some results. If set to False please allow some
-        delay before making another call to
-        :meth:`dropbox.dropbox.Dropbox.paper_docs_folder_users_list_continue`.
-
-        :rtype: bool
-        """
-        if self._has_more_present:
-            return self._has_more_value
-        else:
-            raise AttributeError("missing required field 'has_more'")
-
-    @has_more.setter
-    def has_more(self, val):
-        val = self._has_more_validator.validate(val)
-        self._has_more_value = val
-        self._has_more_present = True
-
-    @has_more.deleter
-    def has_more(self):
-        self._has_more_value = None
-        self._has_more_present = False
-
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(ListUsersOnFolderResponse, self)._process_custom_annotations(annotation_type, processor)
-
-    def __repr__(self):
-        return 'ListUsersOnFolderResponse(invitees={!r}, users={!r}, cursor={!r}, has_more={!r})'.format(
-            self._invitees_value,
-            self._users_value,
-            self._cursor_value,
-            self._has_more_value,
-        )
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(ListUsersOnFolderResponse, self)._process_custom_annotations(annotation_type, field_path, processor)
 
 ListUsersOnFolderResponse_validator = bv.Struct(ListUsersOnFolderResponse)
 
@@ -2165,9 +1319,7 @@ class ListUsersOnPaperDocArgs(RefPaperDoc):
 
     __slots__ = [
         '_limit_value',
-        '_limit_present',
         '_filter_by_value',
-        '_filter_by_present',
     ]
 
     _has_required_fields = True
@@ -2177,86 +1329,34 @@ class ListUsersOnPaperDocArgs(RefPaperDoc):
                  limit=None,
                  filter_by=None):
         super(ListUsersOnPaperDocArgs, self).__init__(doc_id)
-        self._limit_value = None
-        self._limit_present = False
-        self._filter_by_value = None
-        self._filter_by_present = False
+        self._limit_value = bb.NOT_SET
+        self._filter_by_value = bb.NOT_SET
         if limit is not None:
             self.limit = limit
         if filter_by is not None:
             self.filter_by = filter_by
 
-    @property
-    def limit(self):
-        """
-        Size limit per batch. The maximum number of users that can be retrieved
-        per batch is 1000. Higher value results in invalid arguments error.
+    # Instance attribute type: int (validator is set below)
+    limit = bb.Attribute("limit")
 
-        :rtype: int
-        """
-        if self._limit_present:
-            return self._limit_value
-        else:
-            return 1000
+    # Instance attribute type: UserOnPaperDocFilter (validator is set below)
+    filter_by = bb.Attribute("filter_by", user_defined=True)
 
-    @limit.setter
-    def limit(self, val):
-        val = self._limit_validator.validate(val)
-        self._limit_value = val
-        self._limit_present = True
-
-    @limit.deleter
-    def limit(self):
-        self._limit_value = None
-        self._limit_present = False
-
-    @property
-    def filter_by(self):
-        """
-        Specify this attribute if you want to obtain users that have already
-        accessed the Paper doc.
-
-        :rtype: paper.UserOnPaperDocFilter
-        """
-        if self._filter_by_present:
-            return self._filter_by_value
-        else:
-            return UserOnPaperDocFilter.shared
-
-    @filter_by.setter
-    def filter_by(self, val):
-        self._filter_by_validator.validate_type_only(val)
-        self._filter_by_value = val
-        self._filter_by_present = True
-
-    @filter_by.deleter
-    def filter_by(self):
-        self._filter_by_value = None
-        self._filter_by_present = False
-
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(ListUsersOnPaperDocArgs, self)._process_custom_annotations(annotation_type, processor)
-
-    def __repr__(self):
-        return 'ListUsersOnPaperDocArgs(doc_id={!r}, limit={!r}, filter_by={!r})'.format(
-            self._doc_id_value,
-            self._limit_value,
-            self._filter_by_value,
-        )
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(ListUsersOnPaperDocArgs, self)._process_custom_annotations(annotation_type, field_path, processor)
 
 ListUsersOnPaperDocArgs_validator = bv.Struct(ListUsersOnPaperDocArgs)
 
 class ListUsersOnPaperDocContinueArgs(RefPaperDoc):
     """
     :ivar paper.ListUsersOnPaperDocContinueArgs.cursor: The cursor obtained from
-        :meth:`dropbox.dropbox.Dropbox.paper_docs_users_list` or
-        :meth:`dropbox.dropbox.Dropbox.paper_docs_users_list_continue`. Allows
-        for pagination.
+        :meth:`dropbox.dropbox_client.Dropbox.paper_docs_users_list` or
+        :meth:`dropbox.dropbox_client.Dropbox.paper_docs_users_list_continue`.
+        Allows for pagination.
     """
 
     __slots__ = [
         '_cursor_value',
-        '_cursor_present',
     ]
 
     _has_required_fields = True
@@ -2265,45 +1365,15 @@ class ListUsersOnPaperDocContinueArgs(RefPaperDoc):
                  doc_id=None,
                  cursor=None):
         super(ListUsersOnPaperDocContinueArgs, self).__init__(doc_id)
-        self._cursor_value = None
-        self._cursor_present = False
+        self._cursor_value = bb.NOT_SET
         if cursor is not None:
             self.cursor = cursor
 
-    @property
-    def cursor(self):
-        """
-        The cursor obtained from
-        :meth:`dropbox.dropbox.Dropbox.paper_docs_users_list` or
-        :meth:`dropbox.dropbox.Dropbox.paper_docs_users_list_continue`. Allows
-        for pagination.
+    # Instance attribute type: str (validator is set below)
+    cursor = bb.Attribute("cursor")
 
-        :rtype: str
-        """
-        if self._cursor_present:
-            return self._cursor_value
-        else:
-            raise AttributeError("missing required field 'cursor'")
-
-    @cursor.setter
-    def cursor(self, val):
-        val = self._cursor_validator.validate(val)
-        self._cursor_value = val
-        self._cursor_present = True
-
-    @cursor.deleter
-    def cursor(self):
-        self._cursor_value = None
-        self._cursor_present = False
-
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(ListUsersOnPaperDocContinueArgs, self)._process_custom_annotations(annotation_type, processor)
-
-    def __repr__(self):
-        return 'ListUsersOnPaperDocContinueArgs(doc_id={!r}, cursor={!r})'.format(
-            self._doc_id_value,
-            self._cursor_value,
-        )
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(ListUsersOnPaperDocContinueArgs, self)._process_custom_annotations(annotation_type, field_path, processor)
 
 ListUsersOnPaperDocContinueArgs_validator = bv.Struct(ListUsersOnPaperDocContinueArgs)
 
@@ -2317,29 +1387,24 @@ class ListUsersOnPaperDocResponse(bb.Struct):
     :ivar paper.ListUsersOnPaperDocResponse.doc_owner: The Paper doc owner. This
         field is populated on every single response.
     :ivar paper.ListUsersOnPaperDocResponse.cursor: Pass the cursor into
-        :meth:`dropbox.dropbox.Dropbox.paper_docs_users_list_continue` to
+        :meth:`dropbox.dropbox_client.Dropbox.paper_docs_users_list_continue` to
         paginate through all users. The cursor preserves all properties as
         specified in the original call to
-        :meth:`dropbox.dropbox.Dropbox.paper_docs_users_list`.
+        :meth:`dropbox.dropbox_client.Dropbox.paper_docs_users_list`.
     :ivar paper.ListUsersOnPaperDocResponse.has_more: Will be set to True if a
         subsequent call with the provided cursor to
-        :meth:`dropbox.dropbox.Dropbox.paper_docs_users_list_continue` returns
-        immediately with some results. If set to False please allow some delay
-        before making another call to
-        :meth:`dropbox.dropbox.Dropbox.paper_docs_users_list_continue`.
+        :meth:`dropbox.dropbox_client.Dropbox.paper_docs_users_list_continue`
+        returns immediately with some results. If set to False please allow some
+        delay before making another call to
+        :meth:`dropbox.dropbox_client.Dropbox.paper_docs_users_list_continue`.
     """
 
     __slots__ = [
         '_invitees_value',
-        '_invitees_present',
         '_users_value',
-        '_users_present',
         '_doc_owner_value',
-        '_doc_owner_present',
         '_cursor_value',
-        '_cursor_present',
         '_has_more_value',
-        '_has_more_present',
     ]
 
     _has_required_fields = True
@@ -2350,16 +1415,11 @@ class ListUsersOnPaperDocResponse(bb.Struct):
                  doc_owner=None,
                  cursor=None,
                  has_more=None):
-        self._invitees_value = None
-        self._invitees_present = False
-        self._users_value = None
-        self._users_present = False
-        self._doc_owner_value = None
-        self._doc_owner_present = False
-        self._cursor_value = None
-        self._cursor_present = False
-        self._has_more_value = None
-        self._has_more_present = False
+        self._invitees_value = bb.NOT_SET
+        self._users_value = bb.NOT_SET
+        self._doc_owner_value = bb.NOT_SET
+        self._cursor_value = bb.NOT_SET
+        self._has_more_value = bb.NOT_SET
         if invitees is not None:
             self.invitees = invitees
         if users is not None:
@@ -2371,142 +1431,23 @@ class ListUsersOnPaperDocResponse(bb.Struct):
         if has_more is not None:
             self.has_more = has_more
 
-    @property
-    def invitees(self):
-        """
-        List of email addresses with their respective permission levels that are
-        invited on the Paper doc.
+    # Instance attribute type: list of [InviteeInfoWithPermissionLevel] (validator is set below)
+    invitees = bb.Attribute("invitees")
 
-        :rtype: list of [paper.InviteeInfoWithPermissionLevel]
-        """
-        if self._invitees_present:
-            return self._invitees_value
-        else:
-            raise AttributeError("missing required field 'invitees'")
+    # Instance attribute type: list of [UserInfoWithPermissionLevel] (validator is set below)
+    users = bb.Attribute("users")
 
-    @invitees.setter
-    def invitees(self, val):
-        val = self._invitees_validator.validate(val)
-        self._invitees_value = val
-        self._invitees_present = True
+    # Instance attribute type: sharing.UserInfo (validator is set below)
+    doc_owner = bb.Attribute("doc_owner", user_defined=True)
 
-    @invitees.deleter
-    def invitees(self):
-        self._invitees_value = None
-        self._invitees_present = False
+    # Instance attribute type: Cursor (validator is set below)
+    cursor = bb.Attribute("cursor", user_defined=True)
 
-    @property
-    def users(self):
-        """
-        List of users with their respective permission levels that are invited
-        on the Paper folder.
+    # Instance attribute type: bool (validator is set below)
+    has_more = bb.Attribute("has_more")
 
-        :rtype: list of [paper.UserInfoWithPermissionLevel]
-        """
-        if self._users_present:
-            return self._users_value
-        else:
-            raise AttributeError("missing required field 'users'")
-
-    @users.setter
-    def users(self, val):
-        val = self._users_validator.validate(val)
-        self._users_value = val
-        self._users_present = True
-
-    @users.deleter
-    def users(self):
-        self._users_value = None
-        self._users_present = False
-
-    @property
-    def doc_owner(self):
-        """
-        The Paper doc owner. This field is populated on every single response.
-
-        :rtype: sharing.UserInfo
-        """
-        if self._doc_owner_present:
-            return self._doc_owner_value
-        else:
-            raise AttributeError("missing required field 'doc_owner'")
-
-    @doc_owner.setter
-    def doc_owner(self, val):
-        self._doc_owner_validator.validate_type_only(val)
-        self._doc_owner_value = val
-        self._doc_owner_present = True
-
-    @doc_owner.deleter
-    def doc_owner(self):
-        self._doc_owner_value = None
-        self._doc_owner_present = False
-
-    @property
-    def cursor(self):
-        """
-        Pass the cursor into
-        :meth:`dropbox.dropbox.Dropbox.paper_docs_users_list_continue` to
-        paginate through all users. The cursor preserves all properties as
-        specified in the original call to
-        :meth:`dropbox.dropbox.Dropbox.paper_docs_users_list`.
-
-        :rtype: paper.Cursor
-        """
-        if self._cursor_present:
-            return self._cursor_value
-        else:
-            raise AttributeError("missing required field 'cursor'")
-
-    @cursor.setter
-    def cursor(self, val):
-        self._cursor_validator.validate_type_only(val)
-        self._cursor_value = val
-        self._cursor_present = True
-
-    @cursor.deleter
-    def cursor(self):
-        self._cursor_value = None
-        self._cursor_present = False
-
-    @property
-    def has_more(self):
-        """
-        Will be set to True if a subsequent call with the provided cursor to
-        :meth:`dropbox.dropbox.Dropbox.paper_docs_users_list_continue` returns
-        immediately with some results. If set to False please allow some delay
-        before making another call to
-        :meth:`dropbox.dropbox.Dropbox.paper_docs_users_list_continue`.
-
-        :rtype: bool
-        """
-        if self._has_more_present:
-            return self._has_more_value
-        else:
-            raise AttributeError("missing required field 'has_more'")
-
-    @has_more.setter
-    def has_more(self, val):
-        val = self._has_more_validator.validate(val)
-        self._has_more_value = val
-        self._has_more_present = True
-
-    @has_more.deleter
-    def has_more(self):
-        self._has_more_value = None
-        self._has_more_present = False
-
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(ListUsersOnPaperDocResponse, self)._process_custom_annotations(annotation_type, processor)
-
-    def __repr__(self):
-        return 'ListUsersOnPaperDocResponse(invitees={!r}, users={!r}, doc_owner={!r}, cursor={!r}, has_more={!r})'.format(
-            self._invitees_value,
-            self._users_value,
-            self._doc_owner_value,
-            self._cursor_value,
-            self._has_more_value,
-        )
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(ListUsersOnPaperDocResponse, self)._process_custom_annotations(annotation_type, field_path, processor)
 
 ListUsersOnPaperDocResponse_validator = bv.Struct(ListUsersOnPaperDocResponse)
 
@@ -2579,11 +1520,8 @@ class PaperApiCursorError(bb.Union):
         """
         return self._tag == 'other'
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(PaperApiCursorError, self)._process_custom_annotations(annotation_type, processor)
-
-    def __repr__(self):
-        return 'PaperApiCursorError(%r, %r)' % (self._tag, self._value)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(PaperApiCursorError, self)._process_custom_annotations(annotation_type, field_path, processor)
 
 PaperApiCursorError_validator = bv.Union(PaperApiCursorError)
 
@@ -2597,9 +1535,7 @@ class PaperDocCreateArgs(bb.Struct):
 
     __slots__ = [
         '_parent_folder_id_value',
-        '_parent_folder_id_present',
         '_import_format_value',
-        '_import_format_present',
     ]
 
     _has_required_fields = True
@@ -2607,73 +1543,21 @@ class PaperDocCreateArgs(bb.Struct):
     def __init__(self,
                  import_format=None,
                  parent_folder_id=None):
-        self._parent_folder_id_value = None
-        self._parent_folder_id_present = False
-        self._import_format_value = None
-        self._import_format_present = False
+        self._parent_folder_id_value = bb.NOT_SET
+        self._import_format_value = bb.NOT_SET
         if parent_folder_id is not None:
             self.parent_folder_id = parent_folder_id
         if import_format is not None:
             self.import_format = import_format
 
-    @property
-    def parent_folder_id(self):
-        """
-        The Paper folder ID where the Paper document should be created. The API
-        user has to have write access to this folder or error is thrown.
+    # Instance attribute type: str (validator is set below)
+    parent_folder_id = bb.Attribute("parent_folder_id", nullable=True)
 
-        :rtype: str
-        """
-        if self._parent_folder_id_present:
-            return self._parent_folder_id_value
-        else:
-            return None
+    # Instance attribute type: ImportFormat (validator is set below)
+    import_format = bb.Attribute("import_format", user_defined=True)
 
-    @parent_folder_id.setter
-    def parent_folder_id(self, val):
-        if val is None:
-            del self.parent_folder_id
-            return
-        val = self._parent_folder_id_validator.validate(val)
-        self._parent_folder_id_value = val
-        self._parent_folder_id_present = True
-
-    @parent_folder_id.deleter
-    def parent_folder_id(self):
-        self._parent_folder_id_value = None
-        self._parent_folder_id_present = False
-
-    @property
-    def import_format(self):
-        """
-        The format of provided data.
-
-        :rtype: paper.ImportFormat
-        """
-        if self._import_format_present:
-            return self._import_format_value
-        else:
-            raise AttributeError("missing required field 'import_format'")
-
-    @import_format.setter
-    def import_format(self, val):
-        self._import_format_validator.validate_type_only(val)
-        self._import_format_value = val
-        self._import_format_present = True
-
-    @import_format.deleter
-    def import_format(self):
-        self._import_format_value = None
-        self._import_format_present = False
-
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(PaperDocCreateArgs, self)._process_custom_annotations(annotation_type, processor)
-
-    def __repr__(self):
-        return 'PaperDocCreateArgs(import_format={!r}, parent_folder_id={!r})'.format(
-            self._import_format_value,
-            self._parent_folder_id_value,
-        )
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(PaperDocCreateArgs, self)._process_custom_annotations(annotation_type, field_path, processor)
 
 PaperDocCreateArgs_validator = bv.Struct(PaperDocCreateArgs)
 
@@ -2690,8 +1574,8 @@ class PaperDocCreateError(PaperApiBaseError):
     :ivar paper.PaperDocCreateError.doc_length_exceeded: The newly created Paper
         doc would be too large. Please split the content into multiple docs.
     :ivar paper.PaperDocCreateError.image_size_exceeded: The imported document
-        contains an image that is too large. The current limit is 1MB. Note:
-        This only applies to HTML with data uri.
+        contains an image that is too large. The current limit is 1MB. This only
+        applies to HTML with data URI.
     """
 
     # Attribute is overwritten below the class definition
@@ -2735,11 +1619,8 @@ class PaperDocCreateError(PaperApiBaseError):
         """
         return self._tag == 'image_size_exceeded'
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(PaperDocCreateError, self)._process_custom_annotations(annotation_type, processor)
-
-    def __repr__(self):
-        return 'PaperDocCreateError(%r, %r)' % (self._tag, self._value)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(PaperDocCreateError, self)._process_custom_annotations(annotation_type, field_path, processor)
 
 PaperDocCreateError_validator = bv.Union(PaperDocCreateError)
 
@@ -2754,11 +1635,8 @@ class PaperDocCreateUpdateResult(bb.Struct):
 
     __slots__ = [
         '_doc_id_value',
-        '_doc_id_present',
         '_revision_value',
-        '_revision_present',
         '_title_value',
-        '_title_present',
     ]
 
     _has_required_fields = True
@@ -2767,12 +1645,9 @@ class PaperDocCreateUpdateResult(bb.Struct):
                  doc_id=None,
                  revision=None,
                  title=None):
-        self._doc_id_value = None
-        self._doc_id_present = False
-        self._revision_value = None
-        self._revision_present = False
-        self._title_value = None
-        self._title_present = False
+        self._doc_id_value = bb.NOT_SET
+        self._revision_value = bb.NOT_SET
+        self._title_value = bb.NOT_SET
         if doc_id is not None:
             self.doc_id = doc_id
         if revision is not None:
@@ -2780,84 +1655,17 @@ class PaperDocCreateUpdateResult(bb.Struct):
         if title is not None:
             self.title = title
 
-    @property
-    def doc_id(self):
-        """
-        Doc ID of the newly created doc.
+    # Instance attribute type: str (validator is set below)
+    doc_id = bb.Attribute("doc_id")
 
-        :rtype: str
-        """
-        if self._doc_id_present:
-            return self._doc_id_value
-        else:
-            raise AttributeError("missing required field 'doc_id'")
+    # Instance attribute type: int (validator is set below)
+    revision = bb.Attribute("revision")
 
-    @doc_id.setter
-    def doc_id(self, val):
-        val = self._doc_id_validator.validate(val)
-        self._doc_id_value = val
-        self._doc_id_present = True
+    # Instance attribute type: str (validator is set below)
+    title = bb.Attribute("title")
 
-    @doc_id.deleter
-    def doc_id(self):
-        self._doc_id_value = None
-        self._doc_id_present = False
-
-    @property
-    def revision(self):
-        """
-        The Paper doc revision. Simply an ever increasing number.
-
-        :rtype: int
-        """
-        if self._revision_present:
-            return self._revision_value
-        else:
-            raise AttributeError("missing required field 'revision'")
-
-    @revision.setter
-    def revision(self, val):
-        val = self._revision_validator.validate(val)
-        self._revision_value = val
-        self._revision_present = True
-
-    @revision.deleter
-    def revision(self):
-        self._revision_value = None
-        self._revision_present = False
-
-    @property
-    def title(self):
-        """
-        The Paper doc title.
-
-        :rtype: str
-        """
-        if self._title_present:
-            return self._title_value
-        else:
-            raise AttributeError("missing required field 'title'")
-
-    @title.setter
-    def title(self, val):
-        val = self._title_validator.validate(val)
-        self._title_value = val
-        self._title_present = True
-
-    @title.deleter
-    def title(self):
-        self._title_value = None
-        self._title_present = False
-
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(PaperDocCreateUpdateResult, self)._process_custom_annotations(annotation_type, processor)
-
-    def __repr__(self):
-        return 'PaperDocCreateUpdateResult(doc_id={!r}, revision={!r}, title={!r})'.format(
-            self._doc_id_value,
-            self._revision_value,
-            self._title_value,
-        )
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(PaperDocCreateUpdateResult, self)._process_custom_annotations(annotation_type, field_path, processor)
 
 PaperDocCreateUpdateResult_validator = bv.Struct(PaperDocCreateUpdateResult)
 
@@ -2865,7 +1673,6 @@ class PaperDocExport(RefPaperDoc):
 
     __slots__ = [
         '_export_format_value',
-        '_export_format_present',
     ]
 
     _has_required_fields = True
@@ -2874,40 +1681,15 @@ class PaperDocExport(RefPaperDoc):
                  doc_id=None,
                  export_format=None):
         super(PaperDocExport, self).__init__(doc_id)
-        self._export_format_value = None
-        self._export_format_present = False
+        self._export_format_value = bb.NOT_SET
         if export_format is not None:
             self.export_format = export_format
 
-    @property
-    def export_format(self):
-        """
-        :rtype: paper.ExportFormat
-        """
-        if self._export_format_present:
-            return self._export_format_value
-        else:
-            raise AttributeError("missing required field 'export_format'")
+    # Instance attribute type: ExportFormat (validator is set below)
+    export_format = bb.Attribute("export_format", user_defined=True)
 
-    @export_format.setter
-    def export_format(self, val):
-        self._export_format_validator.validate_type_only(val)
-        self._export_format_value = val
-        self._export_format_present = True
-
-    @export_format.deleter
-    def export_format(self):
-        self._export_format_value = None
-        self._export_format_present = False
-
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(PaperDocExport, self)._process_custom_annotations(annotation_type, processor)
-
-    def __repr__(self):
-        return 'PaperDocExport(doc_id={!r}, export_format={!r})'.format(
-            self._doc_id_value,
-            self._export_format_value,
-        )
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(PaperDocExport, self)._process_custom_annotations(annotation_type, field_path, processor)
 
 PaperDocExport_validator = bv.Struct(PaperDocExport)
 
@@ -2923,13 +1705,9 @@ class PaperDocExportResult(bb.Struct):
 
     __slots__ = [
         '_owner_value',
-        '_owner_present',
         '_title_value',
-        '_title_present',
         '_revision_value',
-        '_revision_present',
         '_mime_type_value',
-        '_mime_type_present',
     ]
 
     _has_required_fields = True
@@ -2939,14 +1717,10 @@ class PaperDocExportResult(bb.Struct):
                  title=None,
                  revision=None,
                  mime_type=None):
-        self._owner_value = None
-        self._owner_present = False
-        self._title_value = None
-        self._title_present = False
-        self._revision_value = None
-        self._revision_present = False
-        self._mime_type_value = None
-        self._mime_type_present = False
+        self._owner_value = bb.NOT_SET
+        self._title_value = bb.NOT_SET
+        self._revision_value = bb.NOT_SET
+        self._mime_type_value = bb.NOT_SET
         if owner is not None:
             self.owner = owner
         if title is not None:
@@ -2956,109 +1730,20 @@ class PaperDocExportResult(bb.Struct):
         if mime_type is not None:
             self.mime_type = mime_type
 
-    @property
-    def owner(self):
-        """
-        The Paper doc owner's email address.
+    # Instance attribute type: str (validator is set below)
+    owner = bb.Attribute("owner")
 
-        :rtype: str
-        """
-        if self._owner_present:
-            return self._owner_value
-        else:
-            raise AttributeError("missing required field 'owner'")
+    # Instance attribute type: str (validator is set below)
+    title = bb.Attribute("title")
 
-    @owner.setter
-    def owner(self, val):
-        val = self._owner_validator.validate(val)
-        self._owner_value = val
-        self._owner_present = True
+    # Instance attribute type: int (validator is set below)
+    revision = bb.Attribute("revision")
 
-    @owner.deleter
-    def owner(self):
-        self._owner_value = None
-        self._owner_present = False
+    # Instance attribute type: str (validator is set below)
+    mime_type = bb.Attribute("mime_type")
 
-    @property
-    def title(self):
-        """
-        The Paper doc title.
-
-        :rtype: str
-        """
-        if self._title_present:
-            return self._title_value
-        else:
-            raise AttributeError("missing required field 'title'")
-
-    @title.setter
-    def title(self, val):
-        val = self._title_validator.validate(val)
-        self._title_value = val
-        self._title_present = True
-
-    @title.deleter
-    def title(self):
-        self._title_value = None
-        self._title_present = False
-
-    @property
-    def revision(self):
-        """
-        The Paper doc revision. Simply an ever increasing number.
-
-        :rtype: int
-        """
-        if self._revision_present:
-            return self._revision_value
-        else:
-            raise AttributeError("missing required field 'revision'")
-
-    @revision.setter
-    def revision(self, val):
-        val = self._revision_validator.validate(val)
-        self._revision_value = val
-        self._revision_present = True
-
-    @revision.deleter
-    def revision(self):
-        self._revision_value = None
-        self._revision_present = False
-
-    @property
-    def mime_type(self):
-        """
-        MIME type of the export. This corresponds to :class:`ExportFormat`
-        specified in the request.
-
-        :rtype: str
-        """
-        if self._mime_type_present:
-            return self._mime_type_value
-        else:
-            raise AttributeError("missing required field 'mime_type'")
-
-    @mime_type.setter
-    def mime_type(self, val):
-        val = self._mime_type_validator.validate(val)
-        self._mime_type_value = val
-        self._mime_type_present = True
-
-    @mime_type.deleter
-    def mime_type(self):
-        self._mime_type_value = None
-        self._mime_type_present = False
-
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(PaperDocExportResult, self)._process_custom_annotations(annotation_type, processor)
-
-    def __repr__(self):
-        return 'PaperDocExportResult(owner={!r}, title={!r}, revision={!r}, mime_type={!r})'.format(
-            self._owner_value,
-            self._title_value,
-            self._revision_value,
-            self._mime_type_value,
-        )
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(PaperDocExportResult, self)._process_custom_annotations(annotation_type, field_path, processor)
 
 PaperDocExportResult_validator = bv.Struct(PaperDocExportResult)
 
@@ -3106,11 +1791,8 @@ class PaperDocPermissionLevel(bb.Union):
         """
         return self._tag == 'other'
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(PaperDocPermissionLevel, self)._process_custom_annotations(annotation_type, processor)
-
-    def __repr__(self):
-        return 'PaperDocPermissionLevel(%r, %r)' % (self._tag, self._value)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(PaperDocPermissionLevel, self)._process_custom_annotations(annotation_type, field_path, processor)
 
 PaperDocPermissionLevel_validator = bv.Union(PaperDocPermissionLevel)
 
@@ -3122,7 +1804,6 @@ class PaperDocSharingPolicy(RefPaperDoc):
 
     __slots__ = [
         '_sharing_policy_value',
-        '_sharing_policy_present',
     ]
 
     _has_required_fields = True
@@ -3131,42 +1812,15 @@ class PaperDocSharingPolicy(RefPaperDoc):
                  doc_id=None,
                  sharing_policy=None):
         super(PaperDocSharingPolicy, self).__init__(doc_id)
-        self._sharing_policy_value = None
-        self._sharing_policy_present = False
+        self._sharing_policy_value = bb.NOT_SET
         if sharing_policy is not None:
             self.sharing_policy = sharing_policy
 
-    @property
-    def sharing_policy(self):
-        """
-        The default sharing policy to be set for the Paper doc.
+    # Instance attribute type: SharingPolicy (validator is set below)
+    sharing_policy = bb.Attribute("sharing_policy", user_defined=True)
 
-        :rtype: paper.SharingPolicy
-        """
-        if self._sharing_policy_present:
-            return self._sharing_policy_value
-        else:
-            raise AttributeError("missing required field 'sharing_policy'")
-
-    @sharing_policy.setter
-    def sharing_policy(self, val):
-        self._sharing_policy_validator.validate_type_only(val)
-        self._sharing_policy_value = val
-        self._sharing_policy_present = True
-
-    @sharing_policy.deleter
-    def sharing_policy(self):
-        self._sharing_policy_value = None
-        self._sharing_policy_present = False
-
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(PaperDocSharingPolicy, self)._process_custom_annotations(annotation_type, processor)
-
-    def __repr__(self):
-        return 'PaperDocSharingPolicy(doc_id={!r}, sharing_policy={!r})'.format(
-            self._doc_id_value,
-            self._sharing_policy_value,
-        )
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(PaperDocSharingPolicy, self)._process_custom_annotations(annotation_type, field_path, processor)
 
 PaperDocSharingPolicy_validator = bv.Struct(PaperDocSharingPolicy)
 
@@ -3182,11 +1836,8 @@ class PaperDocUpdateArgs(RefPaperDoc):
 
     __slots__ = [
         '_doc_update_policy_value',
-        '_doc_update_policy_present',
         '_revision_value',
-        '_revision_present',
         '_import_format_value',
-        '_import_format_present',
     ]
 
     _has_required_fields = True
@@ -3197,12 +1848,9 @@ class PaperDocUpdateArgs(RefPaperDoc):
                  revision=None,
                  import_format=None):
         super(PaperDocUpdateArgs, self).__init__(doc_id)
-        self._doc_update_policy_value = None
-        self._doc_update_policy_present = False
-        self._revision_value = None
-        self._revision_present = False
-        self._import_format_value = None
-        self._import_format_present = False
+        self._doc_update_policy_value = bb.NOT_SET
+        self._revision_value = bb.NOT_SET
+        self._import_format_value = bb.NOT_SET
         if doc_update_policy is not None:
             self.doc_update_policy = doc_update_policy
         if revision is not None:
@@ -3210,86 +1858,17 @@ class PaperDocUpdateArgs(RefPaperDoc):
         if import_format is not None:
             self.import_format = import_format
 
-    @property
-    def doc_update_policy(self):
-        """
-        The policy used for the current update call.
+    # Instance attribute type: PaperDocUpdatePolicy (validator is set below)
+    doc_update_policy = bb.Attribute("doc_update_policy", user_defined=True)
 
-        :rtype: paper.PaperDocUpdatePolicy
-        """
-        if self._doc_update_policy_present:
-            return self._doc_update_policy_value
-        else:
-            raise AttributeError("missing required field 'doc_update_policy'")
+    # Instance attribute type: int (validator is set below)
+    revision = bb.Attribute("revision")
 
-    @doc_update_policy.setter
-    def doc_update_policy(self, val):
-        self._doc_update_policy_validator.validate_type_only(val)
-        self._doc_update_policy_value = val
-        self._doc_update_policy_present = True
+    # Instance attribute type: ImportFormat (validator is set below)
+    import_format = bb.Attribute("import_format", user_defined=True)
 
-    @doc_update_policy.deleter
-    def doc_update_policy(self):
-        self._doc_update_policy_value = None
-        self._doc_update_policy_present = False
-
-    @property
-    def revision(self):
-        """
-        The latest doc revision. This value must match the head revision or an
-        error code will be returned. This is to prevent colliding writes.
-
-        :rtype: int
-        """
-        if self._revision_present:
-            return self._revision_value
-        else:
-            raise AttributeError("missing required field 'revision'")
-
-    @revision.setter
-    def revision(self, val):
-        val = self._revision_validator.validate(val)
-        self._revision_value = val
-        self._revision_present = True
-
-    @revision.deleter
-    def revision(self):
-        self._revision_value = None
-        self._revision_present = False
-
-    @property
-    def import_format(self):
-        """
-        The format of provided data.
-
-        :rtype: paper.ImportFormat
-        """
-        if self._import_format_present:
-            return self._import_format_value
-        else:
-            raise AttributeError("missing required field 'import_format'")
-
-    @import_format.setter
-    def import_format(self, val):
-        self._import_format_validator.validate_type_only(val)
-        self._import_format_value = val
-        self._import_format_present = True
-
-    @import_format.deleter
-    def import_format(self):
-        self._import_format_value = None
-        self._import_format_present = False
-
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(PaperDocUpdateArgs, self)._process_custom_annotations(annotation_type, processor)
-
-    def __repr__(self):
-        return 'PaperDocUpdateArgs(doc_id={!r}, doc_update_policy={!r}, revision={!r}, import_format={!r})'.format(
-            self._doc_id_value,
-            self._doc_update_policy_value,
-            self._revision_value,
-            self._import_format_value,
-        )
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(PaperDocUpdateArgs, self)._process_custom_annotations(annotation_type, field_path, processor)
 
 PaperDocUpdateArgs_validator = bv.Struct(PaperDocUpdateArgs)
 
@@ -3306,8 +1885,8 @@ class PaperDocUpdateError(DocLookupError):
     :ivar paper.PaperDocUpdateError.doc_length_exceeded: The newly created Paper
         doc would be too large, split the content into multiple docs.
     :ivar paper.PaperDocUpdateError.image_size_exceeded: The imported document
-        contains an image that is too large. The current limit is 1MB. Note:
-        This only applies to HTML with data uri.
+        contains an image that is too large. The current limit is 1MB. This only
+        applies to HTML with data URI.
     :ivar paper.PaperDocUpdateError.doc_archived: This operation is not allowed
         on archived Paper docs.
     :ivar paper.PaperDocUpdateError.doc_deleted: This operation is not allowed
@@ -3375,11 +1954,8 @@ class PaperDocUpdateError(DocLookupError):
         """
         return self._tag == 'doc_deleted'
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(PaperDocUpdateError, self)._process_custom_annotations(annotation_type, processor)
-
-    def __repr__(self):
-        return 'PaperDocUpdateError(%r, %r)' % (self._tag, self._value)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(PaperDocUpdateError, self)._process_custom_annotations(annotation_type, field_path, processor)
 
 PaperDocUpdateError_validator = bv.Union(PaperDocUpdateError)
 
@@ -3392,7 +1968,7 @@ class PaperDocUpdatePolicy(bb.Union):
     :ivar paper.PaperDocUpdatePolicy.append: The content will be appended to the
         doc.
     :ivar paper.PaperDocUpdatePolicy.prepend: The content will be prepended to
-        the doc. Note: the doc title will not be affected.
+        the doc. The doc title will not be affected.
     :ivar paper.PaperDocUpdatePolicy.overwrite_all: The document will be
         overwitten at the head with the provided content.
     """
@@ -3439,13 +2015,125 @@ class PaperDocUpdatePolicy(bb.Union):
         """
         return self._tag == 'other'
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(PaperDocUpdatePolicy, self)._process_custom_annotations(annotation_type, processor)
-
-    def __repr__(self):
-        return 'PaperDocUpdatePolicy(%r, %r)' % (self._tag, self._value)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(PaperDocUpdatePolicy, self)._process_custom_annotations(annotation_type, field_path, processor)
 
 PaperDocUpdatePolicy_validator = bv.Union(PaperDocUpdatePolicy)
+
+class PaperFolderCreateArg(bb.Struct):
+    """
+    :ivar paper.PaperFolderCreateArg.name: The name of the new Paper folder.
+    :ivar paper.PaperFolderCreateArg.parent_folder_id: The encrypted Paper
+        folder Id where the new Paper folder should be created. The API user has
+        to have write access to this folder or error is thrown. If not supplied,
+        the new folder will be created at top level.
+    :ivar paper.PaperFolderCreateArg.is_team_folder: Whether the folder to be
+        created should be a team folder. This value will be ignored if
+        parent_folder_id is supplied, as the new folder will inherit the type
+        (private or team folder) from its parent. We will by default create a
+        top-level private folder if both parent_folder_id and is_team_folder are
+        not supplied.
+    """
+
+    __slots__ = [
+        '_name_value',
+        '_parent_folder_id_value',
+        '_is_team_folder_value',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 name=None,
+                 parent_folder_id=None,
+                 is_team_folder=None):
+        self._name_value = bb.NOT_SET
+        self._parent_folder_id_value = bb.NOT_SET
+        self._is_team_folder_value = bb.NOT_SET
+        if name is not None:
+            self.name = name
+        if parent_folder_id is not None:
+            self.parent_folder_id = parent_folder_id
+        if is_team_folder is not None:
+            self.is_team_folder = is_team_folder
+
+    # Instance attribute type: str (validator is set below)
+    name = bb.Attribute("name")
+
+    # Instance attribute type: str (validator is set below)
+    parent_folder_id = bb.Attribute("parent_folder_id", nullable=True)
+
+    # Instance attribute type: bool (validator is set below)
+    is_team_folder = bb.Attribute("is_team_folder", nullable=True)
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(PaperFolderCreateArg, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+PaperFolderCreateArg_validator = bv.Struct(PaperFolderCreateArg)
+
+class PaperFolderCreateError(PaperApiBaseError):
+    """
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+
+    :ivar paper.PaperFolderCreateError.folder_not_found: The specified parent
+        Paper folder cannot be found.
+    :ivar paper.PaperFolderCreateError.invalid_folder_id: The folder id cannot
+        be decrypted to valid folder id.
+    """
+
+    # Attribute is overwritten below the class definition
+    folder_not_found = None
+    # Attribute is overwritten below the class definition
+    invalid_folder_id = None
+
+    def is_folder_not_found(self):
+        """
+        Check if the union tag is ``folder_not_found``.
+
+        :rtype: bool
+        """
+        return self._tag == 'folder_not_found'
+
+    def is_invalid_folder_id(self):
+        """
+        Check if the union tag is ``invalid_folder_id``.
+
+        :rtype: bool
+        """
+        return self._tag == 'invalid_folder_id'
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(PaperFolderCreateError, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+PaperFolderCreateError_validator = bv.Union(PaperFolderCreateError)
+
+class PaperFolderCreateResult(bb.Struct):
+    """
+    :ivar paper.PaperFolderCreateResult.folder_id: Folder ID of the newly
+        created folder.
+    """
+
+    __slots__ = [
+        '_folder_id_value',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 folder_id=None):
+        self._folder_id_value = bb.NOT_SET
+        if folder_id is not None:
+            self.folder_id = folder_id
+
+    # Instance attribute type: str (validator is set below)
+    folder_id = bb.Attribute("folder_id")
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(PaperFolderCreateResult, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+PaperFolderCreateResult_validator = bv.Struct(PaperFolderCreateResult)
 
 class RemovePaperDocUser(RefPaperDoc):
     """
@@ -3455,7 +2143,6 @@ class RemovePaperDocUser(RefPaperDoc):
 
     __slots__ = [
         '_member_value',
-        '_member_present',
     ]
 
     _has_required_fields = True
@@ -3464,43 +2151,15 @@ class RemovePaperDocUser(RefPaperDoc):
                  doc_id=None,
                  member=None):
         super(RemovePaperDocUser, self).__init__(doc_id)
-        self._member_value = None
-        self._member_present = False
+        self._member_value = bb.NOT_SET
         if member is not None:
             self.member = member
 
-    @property
-    def member(self):
-        """
-        User which should be removed from the Paper doc. Specify only email
-        address or Dropbox account ID.
+    # Instance attribute type: sharing.MemberSelector (validator is set below)
+    member = bb.Attribute("member", user_defined=True)
 
-        :rtype: sharing.MemberSelector
-        """
-        if self._member_present:
-            return self._member_value
-        else:
-            raise AttributeError("missing required field 'member'")
-
-    @member.setter
-    def member(self, val):
-        self._member_validator.validate_type_only(val)
-        self._member_value = val
-        self._member_present = True
-
-    @member.deleter
-    def member(self):
-        self._member_value = None
-        self._member_present = False
-
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(RemovePaperDocUser, self)._process_custom_annotations(annotation_type, processor)
-
-    def __repr__(self):
-        return 'RemovePaperDocUser(doc_id={!r}, member={!r})'.format(
-            self._doc_id_value,
-            self._member_value,
-        )
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(RemovePaperDocUser, self)._process_custom_annotations(annotation_type, field_path, processor)
 
 RemovePaperDocUser_validator = bv.Struct(RemovePaperDocUser)
 
@@ -3516,9 +2175,7 @@ class SharingPolicy(bb.Struct):
 
     __slots__ = [
         '_public_sharing_policy_value',
-        '_public_sharing_policy_present',
         '_team_sharing_policy_value',
-        '_team_sharing_policy_present',
     ]
 
     _has_required_fields = False
@@ -3526,76 +2183,21 @@ class SharingPolicy(bb.Struct):
     def __init__(self,
                  public_sharing_policy=None,
                  team_sharing_policy=None):
-        self._public_sharing_policy_value = None
-        self._public_sharing_policy_present = False
-        self._team_sharing_policy_value = None
-        self._team_sharing_policy_present = False
+        self._public_sharing_policy_value = bb.NOT_SET
+        self._team_sharing_policy_value = bb.NOT_SET
         if public_sharing_policy is not None:
             self.public_sharing_policy = public_sharing_policy
         if team_sharing_policy is not None:
             self.team_sharing_policy = team_sharing_policy
 
-    @property
-    def public_sharing_policy(self):
-        """
-        This value applies to the non-team members.
+    # Instance attribute type: SharingPublicPolicyType (validator is set below)
+    public_sharing_policy = bb.Attribute("public_sharing_policy", nullable=True, user_defined=True)
 
-        :rtype: paper.SharingPublicPolicyType
-        """
-        if self._public_sharing_policy_present:
-            return self._public_sharing_policy_value
-        else:
-            return None
+    # Instance attribute type: SharingTeamPolicyType (validator is set below)
+    team_sharing_policy = bb.Attribute("team_sharing_policy", nullable=True, user_defined=True)
 
-    @public_sharing_policy.setter
-    def public_sharing_policy(self, val):
-        if val is None:
-            del self.public_sharing_policy
-            return
-        self._public_sharing_policy_validator.validate_type_only(val)
-        self._public_sharing_policy_value = val
-        self._public_sharing_policy_present = True
-
-    @public_sharing_policy.deleter
-    def public_sharing_policy(self):
-        self._public_sharing_policy_value = None
-        self._public_sharing_policy_present = False
-
-    @property
-    def team_sharing_policy(self):
-        """
-        This value applies to the team members only. The value is null for all
-        personal accounts.
-
-        :rtype: paper.SharingTeamPolicyType
-        """
-        if self._team_sharing_policy_present:
-            return self._team_sharing_policy_value
-        else:
-            return None
-
-    @team_sharing_policy.setter
-    def team_sharing_policy(self, val):
-        if val is None:
-            del self.team_sharing_policy
-            return
-        self._team_sharing_policy_validator.validate_type_only(val)
-        self._team_sharing_policy_value = val
-        self._team_sharing_policy_present = True
-
-    @team_sharing_policy.deleter
-    def team_sharing_policy(self):
-        self._team_sharing_policy_value = None
-        self._team_sharing_policy_present = False
-
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(SharingPolicy, self)._process_custom_annotations(annotation_type, processor)
-
-    def __repr__(self):
-        return 'SharingPolicy(public_sharing_policy={!r}, team_sharing_policy={!r})'.format(
-            self._public_sharing_policy_value,
-            self._team_sharing_policy_value,
-        )
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(SharingPolicy, self)._process_custom_annotations(annotation_type, field_path, processor)
 
 SharingPolicy_validator = bv.Struct(SharingPolicy)
 
@@ -3647,11 +2249,8 @@ class SharingTeamPolicyType(bb.Union):
         """
         return self._tag == 'invite_only'
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(SharingTeamPolicyType, self)._process_custom_annotations(annotation_type, processor)
-
-    def __repr__(self):
-        return 'SharingTeamPolicyType(%r, %r)' % (self._tag, self._value)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(SharingTeamPolicyType, self)._process_custom_annotations(annotation_type, field_path, processor)
 
 SharingTeamPolicyType_validator = bv.Union(SharingTeamPolicyType)
 
@@ -3676,11 +2275,8 @@ class SharingPublicPolicyType(SharingTeamPolicyType):
         """
         return self._tag == 'disabled'
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(SharingPublicPolicyType, self)._process_custom_annotations(annotation_type, processor)
-
-    def __repr__(self):
-        return 'SharingPublicPolicyType(%r, %r)' % (self._tag, self._value)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(SharingPublicPolicyType, self)._process_custom_annotations(annotation_type, field_path, processor)
 
 SharingPublicPolicyType_validator = bv.Union(SharingPublicPolicyType)
 
@@ -3693,9 +2289,7 @@ class UserInfoWithPermissionLevel(bb.Struct):
 
     __slots__ = [
         '_user_value',
-        '_user_present',
         '_permission_level_value',
-        '_permission_level_present',
     ]
 
     _has_required_fields = True
@@ -3703,69 +2297,21 @@ class UserInfoWithPermissionLevel(bb.Struct):
     def __init__(self,
                  user=None,
                  permission_level=None):
-        self._user_value = None
-        self._user_present = False
-        self._permission_level_value = None
-        self._permission_level_present = False
+        self._user_value = bb.NOT_SET
+        self._permission_level_value = bb.NOT_SET
         if user is not None:
             self.user = user
         if permission_level is not None:
             self.permission_level = permission_level
 
-    @property
-    def user(self):
-        """
-        User shared on the Paper doc.
+    # Instance attribute type: sharing.UserInfo (validator is set below)
+    user = bb.Attribute("user", user_defined=True)
 
-        :rtype: sharing.UserInfo
-        """
-        if self._user_present:
-            return self._user_value
-        else:
-            raise AttributeError("missing required field 'user'")
+    # Instance attribute type: PaperDocPermissionLevel (validator is set below)
+    permission_level = bb.Attribute("permission_level", user_defined=True)
 
-    @user.setter
-    def user(self, val):
-        self._user_validator.validate_type_only(val)
-        self._user_value = val
-        self._user_present = True
-
-    @user.deleter
-    def user(self):
-        self._user_value = None
-        self._user_present = False
-
-    @property
-    def permission_level(self):
-        """
-        Permission level for the user.
-
-        :rtype: paper.PaperDocPermissionLevel
-        """
-        if self._permission_level_present:
-            return self._permission_level_value
-        else:
-            raise AttributeError("missing required field 'permission_level'")
-
-    @permission_level.setter
-    def permission_level(self, val):
-        self._permission_level_validator.validate_type_only(val)
-        self._permission_level_value = val
-        self._permission_level_present = True
-
-    @permission_level.deleter
-    def permission_level(self):
-        self._permission_level_value = None
-        self._permission_level_present = False
-
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(UserInfoWithPermissionLevel, self)._process_custom_annotations(annotation_type, processor)
-
-    def __repr__(self):
-        return 'UserInfoWithPermissionLevel(user={!r}, permission_level={!r})'.format(
-            self._user_value,
-            self._permission_level_value,
-        )
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(UserInfoWithPermissionLevel, self)._process_custom_annotations(annotation_type, field_path, processor)
 
 UserInfoWithPermissionLevel_validator = bv.Struct(UserInfoWithPermissionLevel)
 
@@ -3814,54 +2360,51 @@ class UserOnPaperDocFilter(bb.Union):
         """
         return self._tag == 'other'
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(UserOnPaperDocFilter, self)._process_custom_annotations(annotation_type, processor)
-
-    def __repr__(self):
-        return 'UserOnPaperDocFilter(%r, %r)' % (self._tag, self._value)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(UserOnPaperDocFilter, self)._process_custom_annotations(annotation_type, field_path, processor)
 
 UserOnPaperDocFilter_validator = bv.Union(UserOnPaperDocFilter)
 
 # Paper doc ID.
 PaperDocId_validator = bv.String()
-AddMember._permission_level_validator = PaperDocPermissionLevel_validator
-AddMember._member_validator = sharing.MemberSelector_validator
+AddMember.permission_level.validator = PaperDocPermissionLevel_validator
+AddMember.member.validator = sharing.MemberSelector_validator
 AddMember._all_field_names_ = set([
     'permission_level',
     'member',
 ])
 AddMember._all_fields_ = [
-    ('permission_level', AddMember._permission_level_validator),
-    ('member', AddMember._member_validator),
+    ('permission_level', AddMember.permission_level.validator),
+    ('member', AddMember.member.validator),
 ]
 
-RefPaperDoc._doc_id_validator = PaperDocId_validator
+RefPaperDoc.doc_id.validator = PaperDocId_validator
 RefPaperDoc._all_field_names_ = set(['doc_id'])
-RefPaperDoc._all_fields_ = [('doc_id', RefPaperDoc._doc_id_validator)]
+RefPaperDoc._all_fields_ = [('doc_id', RefPaperDoc.doc_id.validator)]
 
-AddPaperDocUser._members_validator = bv.List(AddMember_validator, max_items=20)
-AddPaperDocUser._custom_message_validator = bv.Nullable(bv.String())
-AddPaperDocUser._quiet_validator = bv.Boolean()
+AddPaperDocUser.members.validator = bv.List(AddMember_validator, max_items=20)
+AddPaperDocUser.custom_message.validator = bv.Nullable(bv.String())
+AddPaperDocUser.quiet.validator = bv.Boolean()
 AddPaperDocUser._all_field_names_ = RefPaperDoc._all_field_names_.union(set([
     'members',
     'custom_message',
     'quiet',
 ]))
 AddPaperDocUser._all_fields_ = RefPaperDoc._all_fields_ + [
-    ('members', AddPaperDocUser._members_validator),
-    ('custom_message', AddPaperDocUser._custom_message_validator),
-    ('quiet', AddPaperDocUser._quiet_validator),
+    ('members', AddPaperDocUser.members.validator),
+    ('custom_message', AddPaperDocUser.custom_message.validator),
+    ('quiet', AddPaperDocUser.quiet.validator),
 ]
 
-AddPaperDocUserMemberResult._member_validator = sharing.MemberSelector_validator
-AddPaperDocUserMemberResult._result_validator = AddPaperDocUserResult_validator
+AddPaperDocUserMemberResult.member.validator = sharing.MemberSelector_validator
+AddPaperDocUserMemberResult.result.validator = AddPaperDocUserResult_validator
 AddPaperDocUserMemberResult._all_field_names_ = set([
     'member',
     'result',
 ])
 AddPaperDocUserMemberResult._all_fields_ = [
-    ('member', AddPaperDocUserMemberResult._member_validator),
-    ('result', AddPaperDocUserMemberResult._result_validator),
+    ('member', AddPaperDocUserMemberResult.member.validator),
+    ('result', AddPaperDocUserMemberResult.result.validator),
 ]
 
 AddPaperDocUserResult._success_validator = bv.Void()
@@ -3892,15 +2435,15 @@ AddPaperDocUserResult.failed_user_data_retrieval = AddPaperDocUserResult('failed
 AddPaperDocUserResult.permission_already_granted = AddPaperDocUserResult('permission_already_granted')
 AddPaperDocUserResult.other = AddPaperDocUserResult('other')
 
-Cursor._value_validator = bv.String()
-Cursor._expiration_validator = bv.Nullable(common.DropboxTimestamp_validator)
+Cursor.value.validator = bv.String()
+Cursor.expiration.validator = bv.Nullable(common.DropboxTimestamp_validator)
 Cursor._all_field_names_ = set([
     'value',
     'expiration',
 ])
 Cursor._all_fields_ = [
-    ('value', Cursor._value_validator),
-    ('expiration', Cursor._expiration_validator),
+    ('value', Cursor.value.validator),
+    ('expiration', Cursor.expiration.validator),
 ]
 
 PaperApiBaseError._insufficient_permissions_validator = bv.Void()
@@ -3950,15 +2493,15 @@ ExportFormat.html = ExportFormat('html')
 ExportFormat.markdown = ExportFormat('markdown')
 ExportFormat.other = ExportFormat('other')
 
-Folder._id_validator = bv.String()
-Folder._name_validator = bv.String()
+Folder.id.validator = bv.String()
+Folder.name.validator = bv.String()
 Folder._all_field_names_ = set([
     'id',
     'name',
 ])
 Folder._all_fields_ = [
-    ('id', Folder._id_validator),
-    ('name', Folder._name_validator),
+    ('id', Folder.id.validator),
+    ('name', Folder.name.validator),
 ]
 
 FolderSharingPolicyType._team_validator = bv.Void()
@@ -3987,15 +2530,15 @@ FolderSubscriptionLevel.activity_only = FolderSubscriptionLevel('activity_only')
 FolderSubscriptionLevel.daily_emails = FolderSubscriptionLevel('daily_emails')
 FolderSubscriptionLevel.weekly_emails = FolderSubscriptionLevel('weekly_emails')
 
-FoldersContainingPaperDoc._folder_sharing_policy_type_validator = bv.Nullable(FolderSharingPolicyType_validator)
-FoldersContainingPaperDoc._folders_validator = bv.Nullable(bv.List(Folder_validator))
+FoldersContainingPaperDoc.folder_sharing_policy_type.validator = bv.Nullable(FolderSharingPolicyType_validator)
+FoldersContainingPaperDoc.folders.validator = bv.Nullable(bv.List(Folder_validator))
 FoldersContainingPaperDoc._all_field_names_ = set([
     'folder_sharing_policy_type',
     'folders',
 ])
 FoldersContainingPaperDoc._all_fields_ = [
-    ('folder_sharing_policy_type', FoldersContainingPaperDoc._folder_sharing_policy_type_validator),
-    ('folders', FoldersContainingPaperDoc._folders_validator),
+    ('folder_sharing_policy_type', FoldersContainingPaperDoc.folder_sharing_policy_type.validator),
+    ('folders', FoldersContainingPaperDoc.folders.validator),
 ]
 
 ImportFormat._html_validator = bv.Void()
@@ -4014,15 +2557,15 @@ ImportFormat.markdown = ImportFormat('markdown')
 ImportFormat.plain_text = ImportFormat('plain_text')
 ImportFormat.other = ImportFormat('other')
 
-InviteeInfoWithPermissionLevel._invitee_validator = sharing.InviteeInfo_validator
-InviteeInfoWithPermissionLevel._permission_level_validator = PaperDocPermissionLevel_validator
+InviteeInfoWithPermissionLevel.invitee.validator = sharing.InviteeInfo_validator
+InviteeInfoWithPermissionLevel.permission_level.validator = PaperDocPermissionLevel_validator
 InviteeInfoWithPermissionLevel._all_field_names_ = set([
     'invitee',
     'permission_level',
 ])
 InviteeInfoWithPermissionLevel._all_fields_ = [
-    ('invitee', InviteeInfoWithPermissionLevel._invitee_validator),
-    ('permission_level', InviteeInfoWithPermissionLevel._permission_level_validator),
+    ('invitee', InviteeInfoWithPermissionLevel.invitee.validator),
+    ('permission_level', InviteeInfoWithPermissionLevel.permission_level.validator),
 ]
 
 ListDocsCursorError._cursor_error_validator = PaperApiCursorError_validator
@@ -4034,10 +2577,10 @@ ListDocsCursorError._tagmap = {
 
 ListDocsCursorError.other = ListDocsCursorError('other')
 
-ListPaperDocsArgs._filter_by_validator = ListPaperDocsFilterBy_validator
-ListPaperDocsArgs._sort_by_validator = ListPaperDocsSortBy_validator
-ListPaperDocsArgs._sort_order_validator = ListPaperDocsSortOrder_validator
-ListPaperDocsArgs._limit_validator = bv.Int32(min_value=1, max_value=1000)
+ListPaperDocsArgs.filter_by.validator = ListPaperDocsFilterBy_validator
+ListPaperDocsArgs.sort_by.validator = ListPaperDocsSortBy_validator
+ListPaperDocsArgs.sort_order.validator = ListPaperDocsSortOrder_validator
+ListPaperDocsArgs.limit.validator = bv.Int32(min_value=1, max_value=1000)
 ListPaperDocsArgs._all_field_names_ = set([
     'filter_by',
     'sort_by',
@@ -4045,15 +2588,15 @@ ListPaperDocsArgs._all_field_names_ = set([
     'limit',
 ])
 ListPaperDocsArgs._all_fields_ = [
-    ('filter_by', ListPaperDocsArgs._filter_by_validator),
-    ('sort_by', ListPaperDocsArgs._sort_by_validator),
-    ('sort_order', ListPaperDocsArgs._sort_order_validator),
-    ('limit', ListPaperDocsArgs._limit_validator),
+    ('filter_by', ListPaperDocsArgs.filter_by.validator),
+    ('sort_by', ListPaperDocsArgs.sort_by.validator),
+    ('sort_order', ListPaperDocsArgs.sort_order.validator),
+    ('limit', ListPaperDocsArgs.limit.validator),
 ]
 
-ListPaperDocsContinueArgs._cursor_validator = bv.String()
+ListPaperDocsContinueArgs.cursor.validator = bv.String()
 ListPaperDocsContinueArgs._all_field_names_ = set(['cursor'])
-ListPaperDocsContinueArgs._all_fields_ = [('cursor', ListPaperDocsContinueArgs._cursor_validator)]
+ListPaperDocsContinueArgs._all_fields_ = [('cursor', ListPaperDocsContinueArgs.cursor.validator)]
 
 ListPaperDocsFilterBy._docs_accessed_validator = bv.Void()
 ListPaperDocsFilterBy._docs_created_validator = bv.Void()
@@ -4068,18 +2611,18 @@ ListPaperDocsFilterBy.docs_accessed = ListPaperDocsFilterBy('docs_accessed')
 ListPaperDocsFilterBy.docs_created = ListPaperDocsFilterBy('docs_created')
 ListPaperDocsFilterBy.other = ListPaperDocsFilterBy('other')
 
-ListPaperDocsResponse._doc_ids_validator = bv.List(PaperDocId_validator)
-ListPaperDocsResponse._cursor_validator = Cursor_validator
-ListPaperDocsResponse._has_more_validator = bv.Boolean()
+ListPaperDocsResponse.doc_ids.validator = bv.List(PaperDocId_validator)
+ListPaperDocsResponse.cursor.validator = Cursor_validator
+ListPaperDocsResponse.has_more.validator = bv.Boolean()
 ListPaperDocsResponse._all_field_names_ = set([
     'doc_ids',
     'cursor',
     'has_more',
 ])
 ListPaperDocsResponse._all_fields_ = [
-    ('doc_ids', ListPaperDocsResponse._doc_ids_validator),
-    ('cursor', ListPaperDocsResponse._cursor_validator),
-    ('has_more', ListPaperDocsResponse._has_more_validator),
+    ('doc_ids', ListPaperDocsResponse.doc_ids.validator),
+    ('cursor', ListPaperDocsResponse.cursor.validator),
+    ('has_more', ListPaperDocsResponse.has_more.validator),
 ]
 
 ListPaperDocsSortBy._accessed_validator = bv.Void()
@@ -4121,18 +2664,18 @@ ListUsersCursorError._tagmap.update(PaperApiBaseError._tagmap)
 
 ListUsersCursorError.doc_not_found = ListUsersCursorError('doc_not_found')
 
-ListUsersOnFolderArgs._limit_validator = bv.Int32(min_value=1, max_value=1000)
+ListUsersOnFolderArgs.limit.validator = bv.Int32(min_value=1, max_value=1000)
 ListUsersOnFolderArgs._all_field_names_ = RefPaperDoc._all_field_names_.union(set(['limit']))
-ListUsersOnFolderArgs._all_fields_ = RefPaperDoc._all_fields_ + [('limit', ListUsersOnFolderArgs._limit_validator)]
+ListUsersOnFolderArgs._all_fields_ = RefPaperDoc._all_fields_ + [('limit', ListUsersOnFolderArgs.limit.validator)]
 
-ListUsersOnFolderContinueArgs._cursor_validator = bv.String()
+ListUsersOnFolderContinueArgs.cursor.validator = bv.String()
 ListUsersOnFolderContinueArgs._all_field_names_ = RefPaperDoc._all_field_names_.union(set(['cursor']))
-ListUsersOnFolderContinueArgs._all_fields_ = RefPaperDoc._all_fields_ + [('cursor', ListUsersOnFolderContinueArgs._cursor_validator)]
+ListUsersOnFolderContinueArgs._all_fields_ = RefPaperDoc._all_fields_ + [('cursor', ListUsersOnFolderContinueArgs.cursor.validator)]
 
-ListUsersOnFolderResponse._invitees_validator = bv.List(sharing.InviteeInfo_validator)
-ListUsersOnFolderResponse._users_validator = bv.List(sharing.UserInfo_validator)
-ListUsersOnFolderResponse._cursor_validator = Cursor_validator
-ListUsersOnFolderResponse._has_more_validator = bv.Boolean()
+ListUsersOnFolderResponse.invitees.validator = bv.List(sharing.InviteeInfo_validator)
+ListUsersOnFolderResponse.users.validator = bv.List(sharing.UserInfo_validator)
+ListUsersOnFolderResponse.cursor.validator = Cursor_validator
+ListUsersOnFolderResponse.has_more.validator = bv.Boolean()
 ListUsersOnFolderResponse._all_field_names_ = set([
     'invitees',
     'users',
@@ -4140,32 +2683,32 @@ ListUsersOnFolderResponse._all_field_names_ = set([
     'has_more',
 ])
 ListUsersOnFolderResponse._all_fields_ = [
-    ('invitees', ListUsersOnFolderResponse._invitees_validator),
-    ('users', ListUsersOnFolderResponse._users_validator),
-    ('cursor', ListUsersOnFolderResponse._cursor_validator),
-    ('has_more', ListUsersOnFolderResponse._has_more_validator),
+    ('invitees', ListUsersOnFolderResponse.invitees.validator),
+    ('users', ListUsersOnFolderResponse.users.validator),
+    ('cursor', ListUsersOnFolderResponse.cursor.validator),
+    ('has_more', ListUsersOnFolderResponse.has_more.validator),
 ]
 
-ListUsersOnPaperDocArgs._limit_validator = bv.Int32(min_value=1, max_value=1000)
-ListUsersOnPaperDocArgs._filter_by_validator = UserOnPaperDocFilter_validator
+ListUsersOnPaperDocArgs.limit.validator = bv.Int32(min_value=1, max_value=1000)
+ListUsersOnPaperDocArgs.filter_by.validator = UserOnPaperDocFilter_validator
 ListUsersOnPaperDocArgs._all_field_names_ = RefPaperDoc._all_field_names_.union(set([
     'limit',
     'filter_by',
 ]))
 ListUsersOnPaperDocArgs._all_fields_ = RefPaperDoc._all_fields_ + [
-    ('limit', ListUsersOnPaperDocArgs._limit_validator),
-    ('filter_by', ListUsersOnPaperDocArgs._filter_by_validator),
+    ('limit', ListUsersOnPaperDocArgs.limit.validator),
+    ('filter_by', ListUsersOnPaperDocArgs.filter_by.validator),
 ]
 
-ListUsersOnPaperDocContinueArgs._cursor_validator = bv.String()
+ListUsersOnPaperDocContinueArgs.cursor.validator = bv.String()
 ListUsersOnPaperDocContinueArgs._all_field_names_ = RefPaperDoc._all_field_names_.union(set(['cursor']))
-ListUsersOnPaperDocContinueArgs._all_fields_ = RefPaperDoc._all_fields_ + [('cursor', ListUsersOnPaperDocContinueArgs._cursor_validator)]
+ListUsersOnPaperDocContinueArgs._all_fields_ = RefPaperDoc._all_fields_ + [('cursor', ListUsersOnPaperDocContinueArgs.cursor.validator)]
 
-ListUsersOnPaperDocResponse._invitees_validator = bv.List(InviteeInfoWithPermissionLevel_validator)
-ListUsersOnPaperDocResponse._users_validator = bv.List(UserInfoWithPermissionLevel_validator)
-ListUsersOnPaperDocResponse._doc_owner_validator = sharing.UserInfo_validator
-ListUsersOnPaperDocResponse._cursor_validator = Cursor_validator
-ListUsersOnPaperDocResponse._has_more_validator = bv.Boolean()
+ListUsersOnPaperDocResponse.invitees.validator = bv.List(InviteeInfoWithPermissionLevel_validator)
+ListUsersOnPaperDocResponse.users.validator = bv.List(UserInfoWithPermissionLevel_validator)
+ListUsersOnPaperDocResponse.doc_owner.validator = sharing.UserInfo_validator
+ListUsersOnPaperDocResponse.cursor.validator = Cursor_validator
+ListUsersOnPaperDocResponse.has_more.validator = bv.Boolean()
 ListUsersOnPaperDocResponse._all_field_names_ = set([
     'invitees',
     'users',
@@ -4174,11 +2717,11 @@ ListUsersOnPaperDocResponse._all_field_names_ = set([
     'has_more',
 ])
 ListUsersOnPaperDocResponse._all_fields_ = [
-    ('invitees', ListUsersOnPaperDocResponse._invitees_validator),
-    ('users', ListUsersOnPaperDocResponse._users_validator),
-    ('doc_owner', ListUsersOnPaperDocResponse._doc_owner_validator),
-    ('cursor', ListUsersOnPaperDocResponse._cursor_validator),
-    ('has_more', ListUsersOnPaperDocResponse._has_more_validator),
+    ('invitees', ListUsersOnPaperDocResponse.invitees.validator),
+    ('users', ListUsersOnPaperDocResponse.users.validator),
+    ('doc_owner', ListUsersOnPaperDocResponse.doc_owner.validator),
+    ('cursor', ListUsersOnPaperDocResponse.cursor.validator),
+    ('has_more', ListUsersOnPaperDocResponse.has_more.validator),
 ]
 
 PaperApiCursorError._expired_cursor_validator = bv.Void()
@@ -4200,15 +2743,15 @@ PaperApiCursorError.wrong_user_in_cursor = PaperApiCursorError('wrong_user_in_cu
 PaperApiCursorError.reset = PaperApiCursorError('reset')
 PaperApiCursorError.other = PaperApiCursorError('other')
 
-PaperDocCreateArgs._parent_folder_id_validator = bv.Nullable(bv.String())
-PaperDocCreateArgs._import_format_validator = ImportFormat_validator
+PaperDocCreateArgs.parent_folder_id.validator = bv.Nullable(bv.String())
+PaperDocCreateArgs.import_format.validator = ImportFormat_validator
 PaperDocCreateArgs._all_field_names_ = set([
     'parent_folder_id',
     'import_format',
 ])
 PaperDocCreateArgs._all_fields_ = [
-    ('parent_folder_id', PaperDocCreateArgs._parent_folder_id_validator),
-    ('import_format', PaperDocCreateArgs._import_format_validator),
+    ('parent_folder_id', PaperDocCreateArgs.parent_folder_id.validator),
+    ('import_format', PaperDocCreateArgs.import_format.validator),
 ]
 
 PaperDocCreateError._content_malformed_validator = bv.Void()
@@ -4228,28 +2771,28 @@ PaperDocCreateError.folder_not_found = PaperDocCreateError('folder_not_found')
 PaperDocCreateError.doc_length_exceeded = PaperDocCreateError('doc_length_exceeded')
 PaperDocCreateError.image_size_exceeded = PaperDocCreateError('image_size_exceeded')
 
-PaperDocCreateUpdateResult._doc_id_validator = bv.String()
-PaperDocCreateUpdateResult._revision_validator = bv.Int64()
-PaperDocCreateUpdateResult._title_validator = bv.String()
+PaperDocCreateUpdateResult.doc_id.validator = bv.String()
+PaperDocCreateUpdateResult.revision.validator = bv.Int64()
+PaperDocCreateUpdateResult.title.validator = bv.String()
 PaperDocCreateUpdateResult._all_field_names_ = set([
     'doc_id',
     'revision',
     'title',
 ])
 PaperDocCreateUpdateResult._all_fields_ = [
-    ('doc_id', PaperDocCreateUpdateResult._doc_id_validator),
-    ('revision', PaperDocCreateUpdateResult._revision_validator),
-    ('title', PaperDocCreateUpdateResult._title_validator),
+    ('doc_id', PaperDocCreateUpdateResult.doc_id.validator),
+    ('revision', PaperDocCreateUpdateResult.revision.validator),
+    ('title', PaperDocCreateUpdateResult.title.validator),
 ]
 
-PaperDocExport._export_format_validator = ExportFormat_validator
+PaperDocExport.export_format.validator = ExportFormat_validator
 PaperDocExport._all_field_names_ = RefPaperDoc._all_field_names_.union(set(['export_format']))
-PaperDocExport._all_fields_ = RefPaperDoc._all_fields_ + [('export_format', PaperDocExport._export_format_validator)]
+PaperDocExport._all_fields_ = RefPaperDoc._all_fields_ + [('export_format', PaperDocExport.export_format.validator)]
 
-PaperDocExportResult._owner_validator = bv.String()
-PaperDocExportResult._title_validator = bv.String()
-PaperDocExportResult._revision_validator = bv.Int64()
-PaperDocExportResult._mime_type_validator = bv.String()
+PaperDocExportResult.owner.validator = bv.String()
+PaperDocExportResult.title.validator = bv.String()
+PaperDocExportResult.revision.validator = bv.Int64()
+PaperDocExportResult.mime_type.validator = bv.String()
 PaperDocExportResult._all_field_names_ = set([
     'owner',
     'title',
@@ -4257,10 +2800,10 @@ PaperDocExportResult._all_field_names_ = set([
     'mime_type',
 ])
 PaperDocExportResult._all_fields_ = [
-    ('owner', PaperDocExportResult._owner_validator),
-    ('title', PaperDocExportResult._title_validator),
-    ('revision', PaperDocExportResult._revision_validator),
-    ('mime_type', PaperDocExportResult._mime_type_validator),
+    ('owner', PaperDocExportResult.owner.validator),
+    ('title', PaperDocExportResult.title.validator),
+    ('revision', PaperDocExportResult.revision.validator),
+    ('mime_type', PaperDocExportResult.mime_type.validator),
 ]
 
 PaperDocPermissionLevel._edit_validator = bv.Void()
@@ -4276,22 +2819,22 @@ PaperDocPermissionLevel.edit = PaperDocPermissionLevel('edit')
 PaperDocPermissionLevel.view_and_comment = PaperDocPermissionLevel('view_and_comment')
 PaperDocPermissionLevel.other = PaperDocPermissionLevel('other')
 
-PaperDocSharingPolicy._sharing_policy_validator = SharingPolicy_validator
+PaperDocSharingPolicy.sharing_policy.validator = SharingPolicy_validator
 PaperDocSharingPolicy._all_field_names_ = RefPaperDoc._all_field_names_.union(set(['sharing_policy']))
-PaperDocSharingPolicy._all_fields_ = RefPaperDoc._all_fields_ + [('sharing_policy', PaperDocSharingPolicy._sharing_policy_validator)]
+PaperDocSharingPolicy._all_fields_ = RefPaperDoc._all_fields_ + [('sharing_policy', PaperDocSharingPolicy.sharing_policy.validator)]
 
-PaperDocUpdateArgs._doc_update_policy_validator = PaperDocUpdatePolicy_validator
-PaperDocUpdateArgs._revision_validator = bv.Int64()
-PaperDocUpdateArgs._import_format_validator = ImportFormat_validator
+PaperDocUpdateArgs.doc_update_policy.validator = PaperDocUpdatePolicy_validator
+PaperDocUpdateArgs.revision.validator = bv.Int64()
+PaperDocUpdateArgs.import_format.validator = ImportFormat_validator
 PaperDocUpdateArgs._all_field_names_ = RefPaperDoc._all_field_names_.union(set([
     'doc_update_policy',
     'revision',
     'import_format',
 ]))
 PaperDocUpdateArgs._all_fields_ = RefPaperDoc._all_fields_ + [
-    ('doc_update_policy', PaperDocUpdateArgs._doc_update_policy_validator),
-    ('revision', PaperDocUpdateArgs._revision_validator),
-    ('import_format', PaperDocUpdateArgs._import_format_validator),
+    ('doc_update_policy', PaperDocUpdateArgs.doc_update_policy.validator),
+    ('revision', PaperDocUpdateArgs.revision.validator),
+    ('import_format', PaperDocUpdateArgs.import_format.validator),
 ]
 
 PaperDocUpdateError._content_malformed_validator = bv.Void()
@@ -4333,19 +2876,48 @@ PaperDocUpdatePolicy.prepend = PaperDocUpdatePolicy('prepend')
 PaperDocUpdatePolicy.overwrite_all = PaperDocUpdatePolicy('overwrite_all')
 PaperDocUpdatePolicy.other = PaperDocUpdatePolicy('other')
 
-RemovePaperDocUser._member_validator = sharing.MemberSelector_validator
-RemovePaperDocUser._all_field_names_ = RefPaperDoc._all_field_names_.union(set(['member']))
-RemovePaperDocUser._all_fields_ = RefPaperDoc._all_fields_ + [('member', RemovePaperDocUser._member_validator)]
+PaperFolderCreateArg.name.validator = bv.String()
+PaperFolderCreateArg.parent_folder_id.validator = bv.Nullable(bv.String())
+PaperFolderCreateArg.is_team_folder.validator = bv.Nullable(bv.Boolean())
+PaperFolderCreateArg._all_field_names_ = set([
+    'name',
+    'parent_folder_id',
+    'is_team_folder',
+])
+PaperFolderCreateArg._all_fields_ = [
+    ('name', PaperFolderCreateArg.name.validator),
+    ('parent_folder_id', PaperFolderCreateArg.parent_folder_id.validator),
+    ('is_team_folder', PaperFolderCreateArg.is_team_folder.validator),
+]
 
-SharingPolicy._public_sharing_policy_validator = bv.Nullable(SharingPublicPolicyType_validator)
-SharingPolicy._team_sharing_policy_validator = bv.Nullable(SharingTeamPolicyType_validator)
+PaperFolderCreateError._folder_not_found_validator = bv.Void()
+PaperFolderCreateError._invalid_folder_id_validator = bv.Void()
+PaperFolderCreateError._tagmap = {
+    'folder_not_found': PaperFolderCreateError._folder_not_found_validator,
+    'invalid_folder_id': PaperFolderCreateError._invalid_folder_id_validator,
+}
+PaperFolderCreateError._tagmap.update(PaperApiBaseError._tagmap)
+
+PaperFolderCreateError.folder_not_found = PaperFolderCreateError('folder_not_found')
+PaperFolderCreateError.invalid_folder_id = PaperFolderCreateError('invalid_folder_id')
+
+PaperFolderCreateResult.folder_id.validator = bv.String()
+PaperFolderCreateResult._all_field_names_ = set(['folder_id'])
+PaperFolderCreateResult._all_fields_ = [('folder_id', PaperFolderCreateResult.folder_id.validator)]
+
+RemovePaperDocUser.member.validator = sharing.MemberSelector_validator
+RemovePaperDocUser._all_field_names_ = RefPaperDoc._all_field_names_.union(set(['member']))
+RemovePaperDocUser._all_fields_ = RefPaperDoc._all_fields_ + [('member', RemovePaperDocUser.member.validator)]
+
+SharingPolicy.public_sharing_policy.validator = bv.Nullable(SharingPublicPolicyType_validator)
+SharingPolicy.team_sharing_policy.validator = bv.Nullable(SharingTeamPolicyType_validator)
 SharingPolicy._all_field_names_ = set([
     'public_sharing_policy',
     'team_sharing_policy',
 ])
 SharingPolicy._all_fields_ = [
-    ('public_sharing_policy', SharingPolicy._public_sharing_policy_validator),
-    ('team_sharing_policy', SharingPolicy._team_sharing_policy_validator),
+    ('public_sharing_policy', SharingPolicy.public_sharing_policy.validator),
+    ('team_sharing_policy', SharingPolicy.team_sharing_policy.validator),
 ]
 
 SharingTeamPolicyType._people_with_link_can_edit_validator = bv.Void()
@@ -4369,15 +2941,15 @@ SharingPublicPolicyType._tagmap.update(SharingTeamPolicyType._tagmap)
 
 SharingPublicPolicyType.disabled = SharingPublicPolicyType('disabled')
 
-UserInfoWithPermissionLevel._user_validator = sharing.UserInfo_validator
-UserInfoWithPermissionLevel._permission_level_validator = PaperDocPermissionLevel_validator
+UserInfoWithPermissionLevel.user.validator = sharing.UserInfo_validator
+UserInfoWithPermissionLevel.permission_level.validator = PaperDocPermissionLevel_validator
 UserInfoWithPermissionLevel._all_field_names_ = set([
     'user',
     'permission_level',
 ])
 UserInfoWithPermissionLevel._all_fields_ = [
-    ('user', UserInfoWithPermissionLevel._user_validator),
-    ('permission_level', UserInfoWithPermissionLevel._permission_level_validator),
+    ('user', UserInfoWithPermissionLevel.user.validator),
+    ('permission_level', UserInfoWithPermissionLevel.permission_level.validator),
 ]
 
 UserOnPaperDocFilter._visited_validator = bv.Void()
@@ -4393,165 +2965,201 @@ UserOnPaperDocFilter.visited = UserOnPaperDocFilter('visited')
 UserOnPaperDocFilter.shared = UserOnPaperDocFilter('shared')
 UserOnPaperDocFilter.other = UserOnPaperDocFilter('other')
 
+AddMember.permission_level.default = PaperDocPermissionLevel.edit
+AddPaperDocUser.quiet.default = False
+ListPaperDocsArgs.filter_by.default = ListPaperDocsFilterBy.docs_accessed
+ListPaperDocsArgs.sort_by.default = ListPaperDocsSortBy.accessed
+ListPaperDocsArgs.sort_order.default = ListPaperDocsSortOrder.ascending
+ListPaperDocsArgs.limit.default = 1000
+ListUsersOnFolderArgs.limit.default = 1000
+ListUsersOnPaperDocArgs.limit.default = 1000
+ListUsersOnPaperDocArgs.filter_by.default = UserOnPaperDocFilter.shared
 docs_archive = bb.Route(
     'docs/archive',
     1,
-    False,
+    True,
     RefPaperDoc_validator,
     bv.Void(),
     DocLookupError_validator,
-    {'host': u'api',
-     'style': u'rpc'},
+    {'auth': 'user',
+     'host': 'api',
+     'style': 'rpc'},
 )
 docs_create = bb.Route(
     'docs/create',
     1,
-    False,
+    True,
     PaperDocCreateArgs_validator,
     PaperDocCreateUpdateResult_validator,
     PaperDocCreateError_validator,
-    {'host': u'api',
-     'style': u'upload'},
+    {'auth': 'user',
+     'host': 'api',
+     'style': 'upload'},
 )
 docs_download = bb.Route(
     'docs/download',
     1,
-    False,
+    True,
     PaperDocExport_validator,
     PaperDocExportResult_validator,
     DocLookupError_validator,
-    {'host': u'api',
-     'style': u'download'},
+    {'auth': 'user',
+     'host': 'api',
+     'style': 'download'},
 )
 docs_folder_users_list = bb.Route(
     'docs/folder_users/list',
     1,
-    False,
+    True,
     ListUsersOnFolderArgs_validator,
     ListUsersOnFolderResponse_validator,
     DocLookupError_validator,
-    {'host': u'api',
-     'style': u'rpc'},
+    {'auth': 'user',
+     'host': 'api',
+     'style': 'rpc'},
 )
 docs_folder_users_list_continue = bb.Route(
     'docs/folder_users/list/continue',
     1,
-    False,
+    True,
     ListUsersOnFolderContinueArgs_validator,
     ListUsersOnFolderResponse_validator,
     ListUsersCursorError_validator,
-    {'host': u'api',
-     'style': u'rpc'},
+    {'auth': 'user',
+     'host': 'api',
+     'style': 'rpc'},
 )
 docs_get_folder_info = bb.Route(
     'docs/get_folder_info',
     1,
-    False,
+    True,
     RefPaperDoc_validator,
     FoldersContainingPaperDoc_validator,
     DocLookupError_validator,
-    {'host': u'api',
-     'style': u'rpc'},
+    {'auth': 'user',
+     'host': 'api',
+     'style': 'rpc'},
 )
 docs_list = bb.Route(
     'docs/list',
     1,
-    False,
+    True,
     ListPaperDocsArgs_validator,
     ListPaperDocsResponse_validator,
     bv.Void(),
-    {'host': u'api',
-     'style': u'rpc'},
+    {'auth': 'user',
+     'host': 'api',
+     'style': 'rpc'},
 )
 docs_list_continue = bb.Route(
     'docs/list/continue',
     1,
-    False,
+    True,
     ListPaperDocsContinueArgs_validator,
     ListPaperDocsResponse_validator,
     ListDocsCursorError_validator,
-    {'host': u'api',
-     'style': u'rpc'},
+    {'auth': 'user',
+     'host': 'api',
+     'style': 'rpc'},
 )
 docs_permanently_delete = bb.Route(
     'docs/permanently_delete',
     1,
-    False,
+    True,
     RefPaperDoc_validator,
     bv.Void(),
     DocLookupError_validator,
-    {'host': u'api',
-     'style': u'rpc'},
+    {'auth': 'user',
+     'host': 'api',
+     'style': 'rpc'},
 )
 docs_sharing_policy_get = bb.Route(
     'docs/sharing_policy/get',
     1,
-    False,
+    True,
     RefPaperDoc_validator,
     SharingPolicy_validator,
     DocLookupError_validator,
-    {'host': u'api',
-     'style': u'rpc'},
+    {'auth': 'user',
+     'host': 'api',
+     'style': 'rpc'},
 )
 docs_sharing_policy_set = bb.Route(
     'docs/sharing_policy/set',
     1,
-    False,
+    True,
     PaperDocSharingPolicy_validator,
     bv.Void(),
     DocLookupError_validator,
-    {'host': u'api',
-     'style': u'rpc'},
+    {'auth': 'user',
+     'host': 'api',
+     'style': 'rpc'},
 )
 docs_update = bb.Route(
     'docs/update',
     1,
-    False,
+    True,
     PaperDocUpdateArgs_validator,
     PaperDocCreateUpdateResult_validator,
     PaperDocUpdateError_validator,
-    {'host': u'api',
-     'style': u'upload'},
+    {'auth': 'user',
+     'host': 'api',
+     'style': 'upload'},
 )
 docs_users_add = bb.Route(
     'docs/users/add',
     1,
-    False,
+    True,
     AddPaperDocUser_validator,
     bv.List(AddPaperDocUserMemberResult_validator),
     DocLookupError_validator,
-    {'host': u'api',
-     'style': u'rpc'},
+    {'auth': 'user',
+     'host': 'api',
+     'style': 'rpc'},
 )
 docs_users_list = bb.Route(
     'docs/users/list',
     1,
-    False,
+    True,
     ListUsersOnPaperDocArgs_validator,
     ListUsersOnPaperDocResponse_validator,
     DocLookupError_validator,
-    {'host': u'api',
-     'style': u'rpc'},
+    {'auth': 'user',
+     'host': 'api',
+     'style': 'rpc'},
 )
 docs_users_list_continue = bb.Route(
     'docs/users/list/continue',
     1,
-    False,
+    True,
     ListUsersOnPaperDocContinueArgs_validator,
     ListUsersOnPaperDocResponse_validator,
     ListUsersCursorError_validator,
-    {'host': u'api',
-     'style': u'rpc'},
+    {'auth': 'user',
+     'host': 'api',
+     'style': 'rpc'},
 )
 docs_users_remove = bb.Route(
     'docs/users/remove',
     1,
-    False,
+    True,
     RemovePaperDocUser_validator,
     bv.Void(),
     DocLookupError_validator,
-    {'host': u'api',
-     'style': u'rpc'},
+    {'auth': 'user',
+     'host': 'api',
+     'style': 'rpc'},
+)
+folders_create = bb.Route(
+    'folders/create',
+    1,
+    True,
+    PaperFolderCreateArg_validator,
+    PaperFolderCreateResult_validator,
+    PaperFolderCreateError_validator,
+    {'auth': 'user',
+     'host': 'api',
+     'style': 'rpc'},
 )
 
 ROUTES = {
@@ -4571,5 +3179,6 @@ ROUTES = {
     'docs/users/list': docs_users_list,
     'docs/users/list/continue': docs_users_list_continue,
     'docs/users/remove': docs_users_remove,
+    'folders/create': folders_create,
 }
 

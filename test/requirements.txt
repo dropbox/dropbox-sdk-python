@@ -1,0 +1,5 @@
+pytest
+mock
+pytest-mock
+coverage
+stone>=2.*

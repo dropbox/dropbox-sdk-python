@@ -1,6 +1,6 @@
 :mod:`dropbox.dropbox` -- Dropbox
 =================================
-.. automodule:: dropbox.dropbox
+.. automodule:: dropbox.dropbox_client
    :members:
    :show-inheritance:
    :inherited-members:

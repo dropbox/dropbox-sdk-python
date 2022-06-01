@@ -76,24 +76,24 @@ if __name__ == '__main__':
 
     # Create an instance of a Dropbox class, which can make requests to the API.
     print("Creating a Dropbox object...")
-    dbx = dropbox.Dropbox(TOKEN)
+    with dropbox.Dropbox(TOKEN) as dbx:
 
-    # Check that the access token is valid
-    try:
-        dbx.users_get_current_account()
-    except AuthError:
-        sys.exit("ERROR: Invalid access token; try re-generating an "
-            "access token from the app console on the web.")
+        # Check that the access token is valid
+        try:
+            dbx.users_get_current_account()
+        except AuthError:
+            sys.exit("ERROR: Invalid access token; try re-generating an "
+                "access token from the app console on the web.")
 
-    # Create a backup of the current settings file
-    backup()
+        # Create a backup of the current settings file
+        backup()
 
-    # Change the user's file, create another backup
-    change_local_file("updated")
-    backup()
+        # Change the user's file, create another backup
+        change_local_file(b"updated")
+        backup()
 
-    # Restore the local and Dropbox files to a certain revision
-    to_rev = select_revision()
-    restore(to_rev)
+        # Restore the local and Dropbox files to a certain revision
+        to_rev = select_revision()
+        restore(to_rev)
 
-    print("Done!")
+        print("Done!")

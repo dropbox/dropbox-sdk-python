@@ -1,41 +1,25 @@
-Dropbox for Python
-==================
-
-.. image:: https://travis-ci.org/dropbox/dropbox-sdk-python.svg?branch=master
-    :target: https://travis-ci.org/dropbox/dropbox-sdk-python
-
-.. image:: https://readthedocs.org/projects/dropbox-sdk-python/badge/?version=stable
-    :target: https://dropbox-sdk-python.readthedocs.org/en/stable/
-    :alt: [Latest Release Documentation]
-
-.. image:: https://img.shields.io/pypi/v/dropbox.svg
-    :target: https://pypi.python.org/pypi/dropbox
-    :alt: [Latest Release Version]
-
-.. image:: https://img.shields.io/pypi/l/dropbox.svg
-    :target: http://opensource.org/licenses/MIT
-    :alt: [Latest Release License]
+.. image:: https://cfl.dropboxstatic.com/static/images/sdk/python_banner.png
+    :target: https://github.com/dropbox/dropbox-sdk-python
 
 .. image:: https://img.shields.io/pypi/pyversions/dropbox.svg
     :target: https://pypi.python.org/pypi/dropbox
-    :alt: [Latest Release Supported Python Versions]
 
-.. image:: https://img.shields.io/pypi/implementation/dropbox.svg
+.. image:: https://img.shields.io/pypi/v/dropbox.svg
     :target: https://pypi.python.org/pypi/dropbox
-    :alt: [Latest Release Supported Python Implementations]
 
-.. image:: https://img.shields.io/pypi/status/dropbox.svg
-    :target: https://pypi.python.org/pypi/dropbox
-    :alt: [Latest Release Development Stage]
+.. image:: https://codecov.io/gh/dropbox/dropbox-sdk-python/branch/main/graph/badge.svg
+    :target: https://codecov.io/gh/dropbox/dropbox-sdk-python
 
-A Python SDK for integrating with the Dropbox API v2. Compatible with Python
-2.7 and 3.4+. Documentation is available on `Read the Docs
-<http://dropbox-sdk-python.readthedocs.org/>`_.
+The offical Dropbox SDK for Python.
+
+Documentation can be found on `Read The Docs`_.
 
 Installation
-------------
+============
 
-Install via ``pip``:
+Create an app via the `Developer Console`_.
+
+Install via `pip <https://pip.pypa.io/>`_:
 
 .. code-block:: console
 
@@ -49,81 +33,41 @@ Install from source:
     $ cd dropbox-sdk-python
     $ python setup.py install
 
-After installation, to get started, open a Python console:
+After installation, follow one of our `Examples`_ or read the documentation on `Read The Docs`_.
 
-.. code-block:: pycon
-
-    >>> import dropbox
-    >>> dbx = dropbox.Dropbox("YOUR_ACCESS_TOKEN")
-    >>> dbx.users_get_current_account()
-
-Creating an Application
------------------------
-
-You need to create an Dropbox Application to make API requests.
-
-- Go to https://dropbox.com/developers/apps.
-
-Obtaining an Access Token
--------------------------
-
-All requests need to be made with an OAuth 2 access token. To get started, once
-you've created an app, you can go to the app's console and generate an access
-token for your own Dropbox account.
+You can also view our `OAuth Guide`_.
 
 Examples
---------
+========
 
-``example/updown.py`` demonstrates how to sync a local directory with a Dropbox.
+We provide `Examples`_ to help get you started with a lot of the basic functionality in the SDK.
 
-Documentation
--------------
+- **OAuth**
+    - `Commandline OAuth Basic <https://github.com/dropbox/dropbox-sdk-python/blob/main/example/oauth/commandline-oauth.py>`_ - Shows a simple example of commandline oauth (no redirect).
+    - `Commandline OAuth Scopes <https://github.com/dropbox/dropbox-sdk-python/blob/main/example/oauth/commandline-oauth-scopes.py>`_ - Shows a simple example of commandline oauth using scopes.
+    - `Commandline OAuth PKCE <https://github.com/dropbox/dropbox-sdk-python/blob/main/example/oauth/commandline-oauth-pkce.py>`_ - Shows a simple example of commandline oauth using PKCE.
+- **Other Examples**
+    - `Updown <https://github.com/dropbox/dropbox-sdk-python/blob/main/example/updown.py>`_ - Sample application that uploads the contents of your ``Downloads`` folder to Dropbox.
+    - `Backup and Restore <https://github.com/dropbox/dropbox-sdk-python/tree/main/example/back-up-and-restore>`_ - Sample application that shows how you can backup a file and restore previous versions if the file was modified/corrupted in any way.
 
-Documentation can be compiled by running ``make html`` from the ``docs``
-folder. After compilation, open ``docs/_build/html/index.html``. Alternatively,
-you can read a hosted version from `Read the Docs`_.
+Getting Help
+============
 
-Updating API specification
---------------------------
+If you find a bug, please see `CONTRIBUTING.md`_ for information on how to report it.
 
-A good amount of this SDK is generated using `Stone
-<https://www.github.com/dropbox/stone>`_. We use git submodules to pin to a
-specific version of `Stone` since it's under active development, and we also
-pin to a version of our `API spec
-<https://www.github.com/dropbox/dropbox-api-spec>`_.
+If you need help that is not specific to this SDK, please reach out to `Dropbox Support`_.
 
-To prepare the repo for generation, run these commands after cloning:
+License
+=======
 
-.. code-block:: console
+This SDK is distributed under the MIT license, please see `LICENSE`_ for more information.
 
-    $ git submodule init
-    $ git submodule update
-
-You can run ``git pull`` within these sub repositories to update the pinned
-version.
-
-Now, run the included script:
-
-.. code-block:: console
-
-    $ ./generate_base_client.py
-
-Testing
--------
-
-We use the `tox <https://tox.readthedocs.org/>`_ package to run tests in Python
-2 and 3. To install, use :code:`pip install tox`. Once installed, run `tox` from the
-root directory. You'll need to specify a working Dropbox OAuth2 token:
-
-.. code-block:: console
-
-    $ DROPBOX_TOKEN=YOUR_TOKEN tox -- -k "'not test_team'"
-
-Note that we skip ``test_team`` which requires a team token with `Member File Access
-<https://www.dropbox.com/developers/documentation/http/teams#teams-member-file-access>`_.
-To test this functionality, specify a ``DROPBOX_TEAM_TOKEN`` environment
-variable.
-
-.. code-block:: console
-
-    $ DROPBOX_TOKEN=... DROPBOX_TEAM_TOKEN=... tox
+.. _logo: {logo_link}
+.. _repo: https://github.com/dropbox/dropbox-sdk-python
+.. _`Read The Docs`: http://dropbox-sdk-python.readthedocs.org
+.. _`Examples`: https://github.com/dropbox/dropbox-sdk-python/tree/main/example
+.. _LICENSE: https://github.com/dropbox/dropbox-sdk-python/blob/main/LICENSE
+.. _CONTRIBUTING.md: https://github.com/dropbox/dropbox-sdk-python/blob/main/CONTRIBUTING.md
+.. _Developer Console: https://dropbox.com/developers/apps
+.. _OAuth Guide: https://www.dropbox.com/lp/developers/reference/oauth-guide
+.. _`Dropbox Support`: https://www.dropbox.com/developers/contact

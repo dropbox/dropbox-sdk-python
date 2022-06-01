@@ -3,14 +3,9 @@
 # @generated
 # flake8: noqa
 # pylint: skip-file
-try:
-    from . import stone_validators as bv
-    from . import stone_base as bb
-except (ImportError, SystemError, ValueError):
-    # Catch errors raised when importing a relative module when not in a package.
-    # This makes testing this file directly (outside of a package) easier.
-    import stone_validators as bv
-    import stone_base as bb
+from __future__ import unicode_literals
+from stone.backends.python_rsrc import stone_base as bb
+from stone.backends.python_rsrc import stone_validators as bv
 
 class PlatformType(bb.Union):
     """
@@ -21,23 +16,35 @@ class PlatformType(bb.Union):
     corresponding ``get_*`` method.
 
     :ivar seen_state.PlatformType.web: The content was viewed on the web.
-    :ivar seen_state.PlatformType.mobile: The content was viewed on a mobile
-        client.
     :ivar seen_state.PlatformType.desktop: The content was viewed on a desktop
+        client.
+    :ivar seen_state.PlatformType.mobile_ios: The content was viewed on a mobile
+        iOS client.
+    :ivar seen_state.PlatformType.mobile_android: The content was viewed on a
+        mobile android client.
+    :ivar seen_state.PlatformType.api: The content was viewed from an API
         client.
     :ivar seen_state.PlatformType.unknown: The content was viewed on an unknown
         platform.
+    :ivar seen_state.PlatformType.mobile: The content was viewed on a mobile
+        client. DEPRECATED: Use mobile_ios or mobile_android instead.
     """
 
     _catch_all = 'other'
     # Attribute is overwritten below the class definition
     web = None
     # Attribute is overwritten below the class definition
-    mobile = None
-    # Attribute is overwritten below the class definition
     desktop = None
     # Attribute is overwritten below the class definition
+    mobile_ios = None
+    # Attribute is overwritten below the class definition
+    mobile_android = None
+    # Attribute is overwritten below the class definition
+    api = None
+    # Attribute is overwritten below the class definition
     unknown = None
+    # Attribute is overwritten below the class definition
+    mobile = None
     # Attribute is overwritten below the class definition
     other = None
 
@@ -49,14 +56,6 @@ class PlatformType(bb.Union):
         """
         return self._tag == 'web'
 
-    def is_mobile(self):
-        """
-        Check if the union tag is ``mobile``.
-
-        :rtype: bool
-        """
-        return self._tag == 'mobile'
-
     def is_desktop(self):
         """
         Check if the union tag is ``desktop``.
@@ -64,6 +63,30 @@ class PlatformType(bb.Union):
         :rtype: bool
         """
         return self._tag == 'desktop'
+
+    def is_mobile_ios(self):
+        """
+        Check if the union tag is ``mobile_ios``.
+
+        :rtype: bool
+        """
+        return self._tag == 'mobile_ios'
+
+    def is_mobile_android(self):
+        """
+        Check if the union tag is ``mobile_android``.
+
+        :rtype: bool
+        """
+        return self._tag == 'mobile_android'
+
+    def is_api(self):
+        """
+        Check if the union tag is ``api``.
+
+        :rtype: bool
+        """
+        return self._tag == 'api'
 
     def is_unknown(self):
         """
@@ -73,6 +96,14 @@ class PlatformType(bb.Union):
         """
         return self._tag == 'unknown'
 
+    def is_mobile(self):
+        """
+        Check if the union tag is ``mobile``.
+
+        :rtype: bool
+        """
+        return self._tag == 'mobile'
+
     def is_other(self):
         """
         Check if the union tag is ``other``.
@@ -81,31 +112,37 @@ class PlatformType(bb.Union):
         """
         return self._tag == 'other'
 
-    def _process_custom_annotations(self, annotation_type, processor):
-        super(PlatformType, self)._process_custom_annotations(annotation_type, processor)
-
-    def __repr__(self):
-        return 'PlatformType(%r, %r)' % (self._tag, self._value)
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(PlatformType, self)._process_custom_annotations(annotation_type, field_path, processor)
 
 PlatformType_validator = bv.Union(PlatformType)
 
 PlatformType._web_validator = bv.Void()
-PlatformType._mobile_validator = bv.Void()
 PlatformType._desktop_validator = bv.Void()
+PlatformType._mobile_ios_validator = bv.Void()
+PlatformType._mobile_android_validator = bv.Void()
+PlatformType._api_validator = bv.Void()
 PlatformType._unknown_validator = bv.Void()
+PlatformType._mobile_validator = bv.Void()
 PlatformType._other_validator = bv.Void()
 PlatformType._tagmap = {
     'web': PlatformType._web_validator,
-    'mobile': PlatformType._mobile_validator,
     'desktop': PlatformType._desktop_validator,
+    'mobile_ios': PlatformType._mobile_ios_validator,
+    'mobile_android': PlatformType._mobile_android_validator,
+    'api': PlatformType._api_validator,
     'unknown': PlatformType._unknown_validator,
+    'mobile': PlatformType._mobile_validator,
     'other': PlatformType._other_validator,
 }
 
 PlatformType.web = PlatformType('web')
-PlatformType.mobile = PlatformType('mobile')
 PlatformType.desktop = PlatformType('desktop')
+PlatformType.mobile_ios = PlatformType('mobile_ios')
+PlatformType.mobile_android = PlatformType('mobile_android')
+PlatformType.api = PlatformType('api')
 PlatformType.unknown = PlatformType('unknown')
+PlatformType.mobile = PlatformType('mobile')
 PlatformType.other = PlatformType('other')
 
 ROUTES = {

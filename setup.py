@@ -17,7 +17,7 @@ except ImportError:
 
 from setuptools import setup
 
-dbx_mod_path = os.path.join(os.path.dirname(__file__), 'dropbox/dropbox.py')
+dbx_mod_path = os.path.join(os.path.dirname(__file__), 'dropbox/dropbox_client.py')
 line = '= "UNKNOWN"'
 for line in open(dbx_mod_path):
     if line.startswith('__version__'):
@@ -26,20 +26,20 @@ version = eval(line.split('=', 1)[1].strip())  # pylint: disable=eval-used
 
 install_reqs = [
     'requests >= 2.16.2',
-    'six >= 1.3.0',
+    'six >= 1.12.0',
+    'stone >= 2.*',
 ]
 
 setup_requires = [
-    'pytest-runner',
-]
-
-test_reqs = [
-    'pytest',
+    # Pin pytest-runner to 5.2.0, since 5.3.0 uses `find_namespaces` directive, not supported in
+    # Python 2.7
+    'pytest-runner == 5.2.0',
 ]
 
 # WARNING: This imposes limitations on test/requirements.txt such that the
 # full Pip syntax is not supported. See also
 # <http://stackoverflow.com/questions/14399534/>.
+test_reqs = []
 with open('test/requirements.txt') as f:
     test_reqs += f.read().splitlines()
 
@@ -61,9 +61,12 @@ dist = setup(
     license='MIT License',
     long_description=README,
     url='http://www.dropbox.com/developers',
+    project_urls={
+        'Source': 'https://github.com/dropbox/dropbox-sdk-python',
+    },
     # From <https://pypi.python.org/pypi?%3Aaction=list_classifiers>
     classifiers=[
-        'Development Status :: 4 - Beta',
+        'Development Status :: 5 - Production/Stable',
         'Intended Audience :: Developers',
         'License :: OSI Approved :: MIT License',
         'Operating System :: OS Independent',
@@ -72,6 +75,8 @@ dist = setup(
         'Programming Language :: Python :: 3.4',
         'Programming Language :: Python :: 3.5',
         'Programming Language :: Python :: 3.6',
+        'Programming Language :: Python :: 3.7',
+        'Programming Language :: Python :: 3.8',
         'Programming Language :: Python :: Implementation :: CPython',
         'Programming Language :: Python :: Implementation :: PyPy',
         'Topic :: Software Development :: Libraries :: Python Modules',
