@@ -7941,6 +7941,8 @@ class SearchOptions(bb.Struct):
         extensions specified. Only supported for active file search.
     :ivar files.SearchOptions.file_categories: Restricts search to only the file
         categories specified. Only supported for active file search.
+    :ivar files.SearchOptions.account_id: Restricts results to the given account
+        id.
     """
 
     __slots__ = [
@@ -7951,6 +7953,7 @@ class SearchOptions(bb.Struct):
         '_filename_only_value',
         '_file_extensions_value',
         '_file_categories_value',
+        '_account_id_value',
     ]
 
     _has_required_fields = False
@@ -7962,7 +7965,8 @@ class SearchOptions(bb.Struct):
                  file_status=None,
                  filename_only=None,
                  file_extensions=None,
-                 file_categories=None):
+                 file_categories=None,
+                 account_id=None):
         self._path_value = bb.NOT_SET
         self._max_results_value = bb.NOT_SET
         self._order_by_value = bb.NOT_SET
@@ -7970,6 +7974,7 @@ class SearchOptions(bb.Struct):
         self._filename_only_value = bb.NOT_SET
         self._file_extensions_value = bb.NOT_SET
         self._file_categories_value = bb.NOT_SET
+        self._account_id_value = bb.NOT_SET
         if path is not None:
             self.path = path
         if max_results is not None:
@@ -7984,6 +7989,8 @@ class SearchOptions(bb.Struct):
             self.file_extensions = file_extensions
         if file_categories is not None:
             self.file_categories = file_categories
+        if account_id is not None:
+            self.account_id = account_id
 
     # Instance attribute type: str (validator is set below)
     path = bb.Attribute("path", nullable=True)
@@ -8005,6 +8012,9 @@ class SearchOptions(bb.Struct):
 
     # Instance attribute type: list of [FileCategory] (validator is set below)
     file_categories = bb.Attribute("file_categories", nullable=True)
+
+    # Instance attribute type: str (validator is set below)
+    account_id = bb.Attribute("account_id", nullable=True)
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(SearchOptions, self)._process_custom_annotations(annotation_type, field_path, processor)
@@ -12587,6 +12597,7 @@ SearchOptions.file_status.validator = FileStatus_validator
 SearchOptions.filename_only.validator = bv.Boolean()
 SearchOptions.file_extensions.validator = bv.Nullable(bv.List(bv.String()))
 SearchOptions.file_categories.validator = bv.Nullable(bv.List(FileCategory_validator))
+SearchOptions.account_id.validator = bv.Nullable(users_common.AccountId_validator)
 SearchOptions._all_field_names_ = set([
     'path',
     'max_results',
@@ -12595,6 +12606,7 @@ SearchOptions._all_field_names_ = set([
     'filename_only',
     'file_extensions',
     'file_categories',
+    'account_id',
 ])
 SearchOptions._all_fields_ = [
     ('path', SearchOptions.path.validator),
@@ -12604,6 +12616,7 @@ SearchOptions._all_fields_ = [
     ('filename_only', SearchOptions.filename_only.validator),
     ('file_extensions', SearchOptions.file_extensions.validator),
     ('file_categories', SearchOptions.file_categories.validator),
+    ('account_id', SearchOptions.account_id.validator),
 ]
 
 SearchOrderBy._relevance_validator = bv.Void()
