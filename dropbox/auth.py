@@ -679,9 +679,9 @@ token_from_oauth1 = bb.Route(
     TokenFromOAuth1Arg_validator,
     TokenFromOAuth1Result_validator,
     TokenFromOAuth1Error_validator,
-    {'auth': u'app',
-     'host': u'api',
-     'style': u'rpc'},
+    {'auth': 'app',
+     'host': 'api',
+     'style': 'rpc'},
 )
 token_revoke = bb.Route(
     'token/revoke',
@@ -690,9 +690,9 @@ token_revoke = bb.Route(
     bv.Void(),
     bv.Void(),
     bv.Void(),
-    {'auth': u'user',
-     'host': u'api',
-     'style': u'rpc'},
+    {'auth': 'user',
+     'host': 'api',
+     'style': 'rpc'},
 )
 
 ROUTES = {

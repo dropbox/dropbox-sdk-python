@@ -88,6 +88,8 @@ class AccessLevel(bb.Union):
         folder.
     :ivar sharing.AccessLevel.viewer_no_comment: The collaborator can only view
         the shared folder and does not have any access to comments.
+    :ivar sharing.AccessLevel.traverse: The collaborator can only view the
+        shared folder that they have access to.
     """
 
     _catch_all = 'other'
@@ -99,6 +101,8 @@ class AccessLevel(bb.Union):
     viewer = None
     # Attribute is overwritten below the class definition
     viewer_no_comment = None
+    # Attribute is overwritten below the class definition
+    traverse = None
     # Attribute is overwritten below the class definition
     other = None
 
@@ -133,6 +137,14 @@ class AccessLevel(bb.Union):
         :rtype: bool
         """
         return self._tag == 'viewer_no_comment'
+
+    def is_traverse(self):
+        """
+        Check if the union tag is ``traverse``.
+
+        :rtype: bool
+        """
+        return self._tag == 'traverse'
 
     def is_other(self):
         """
@@ -210,7 +222,7 @@ class AddFileMemberArgs(bb.Struct):
     :ivar sharing.AddFileMemberArgs.custom_message: Message to send to added
         members in their invitation.
     :ivar sharing.AddFileMemberArgs.quiet: Whether added members should be
-        notified via device notifications of their invitation.
+        notified via email and device notifications of their invitation.
     :ivar sharing.AddFileMemberArgs.access_level: AccessLevel union object,
         describing what access level we want to give new members.
     :ivar sharing.AddFileMemberArgs.add_message_as_comment: If the custom
@@ -8260,6 +8272,8 @@ class SharePathError(bb.Union):
         folder inside a Mac OS X package.
     :ivar sharing.SharePathError.is_vault: We do not support sharing the Vault
         folder.
+    :ivar sharing.SharePathError.is_vault_locked: We do not support sharing a
+        folder inside a locked Vault.
     :ivar sharing.SharePathError.is_family: We do not support sharing the Family
         folder.
     """
@@ -8291,6 +8305,8 @@ class SharePathError(bb.Union):
     inside_osx_package = None
     # Attribute is overwritten below the class definition
     is_vault = None
+    # Attribute is overwritten below the class definition
+    is_vault_locked = None
     # Attribute is overwritten below the class definition
     is_family = None
     # Attribute is overwritten below the class definition
@@ -8418,6 +8434,14 @@ class SharePathError(bb.Union):
         :rtype: bool
         """
         return self._tag == 'is_vault'
+
+    def is_is_vault_locked(self):
+        """
+        Check if the union tag is ``is_vault_locked``.
+
+        :rtype: bool
+        """
+        return self._tag == 'is_vault_locked'
 
     def is_is_family(self):
         """
@@ -11006,7 +11030,7 @@ GetSharedLinkFileArg_validator = GetSharedLinkMetadataArg_validator
 GetSharedLinkFileArg = GetSharedLinkMetadataArg
 Id_validator = files.Id_validator
 Path_validator = files.Path_validator
-PathOrId_validator = bv.String(min_length=1, pattern=u'((/|id:).*|nspath:[0-9]+:.*)|ns:[0-9]+(/.*)?')
+PathOrId_validator = bv.String(min_length=1, pattern='((/|id:).*|nspath:[0-9]+:.*)|ns:[0-9]+(/.*)?')
 ReadPath_validator = files.ReadPath_validator
 Rev_validator = files.Rev_validator
 TeamInfo_validator = users.Team_validator
@@ -11028,12 +11052,14 @@ AccessLevel._owner_validator = bv.Void()
 AccessLevel._editor_validator = bv.Void()
 AccessLevel._viewer_validator = bv.Void()
 AccessLevel._viewer_no_comment_validator = bv.Void()
+AccessLevel._traverse_validator = bv.Void()
 AccessLevel._other_validator = bv.Void()
 AccessLevel._tagmap = {
     'owner': AccessLevel._owner_validator,
     'editor': AccessLevel._editor_validator,
     'viewer': AccessLevel._viewer_validator,
     'viewer_no_comment': AccessLevel._viewer_no_comment_validator,
+    'traverse': AccessLevel._traverse_validator,
     'other': AccessLevel._other_validator,
 }
 
@@ -11041,6 +11067,7 @@ AccessLevel.owner = AccessLevel('owner')
 AccessLevel.editor = AccessLevel('editor')
 AccessLevel.viewer = AccessLevel('viewer')
 AccessLevel.viewer_no_comment = AccessLevel('viewer_no_comment')
+AccessLevel.traverse = AccessLevel('traverse')
 AccessLevel.other = AccessLevel('other')
 
 AclUpdatePolicy._owner_validator = bv.Void()
@@ -11271,12 +11298,12 @@ LinkMetadata._fields_ = [
 LinkMetadata._all_fields_ = LinkMetadata._fields_
 
 LinkMetadata._tag_to_subtype_ = {
-    (u'path',): PathLinkMetadata_validator,
-    (u'collection',): CollectionLinkMetadata_validator,
+    ('path',): PathLinkMetadata_validator,
+    ('collection',): CollectionLinkMetadata_validator,
 }
 LinkMetadata._pytype_to_tag_and_subtype_ = {
-    PathLinkMetadata: ((u'path',), PathLinkMetadata_validator),
-    CollectionLinkMetadata: ((u'collection',), CollectionLinkMetadata_validator),
+    PathLinkMetadata: (('path',), PathLinkMetadata_validator),
+    CollectionLinkMetadata: (('collection',), CollectionLinkMetadata_validator),
 }
 LinkMetadata._is_catch_all_ = True
 
@@ -11452,12 +11479,12 @@ SharedLinkMetadata._fields_ = [
 SharedLinkMetadata._all_fields_ = SharedLinkMetadata._fields_
 
 SharedLinkMetadata._tag_to_subtype_ = {
-    (u'file',): FileLinkMetadata_validator,
-    (u'folder',): FolderLinkMetadata_validator,
+    ('file',): FileLinkMetadata_validator,
+    ('folder',): FolderLinkMetadata_validator,
 }
 SharedLinkMetadata._pytype_to_tag_and_subtype_ = {
-    FileLinkMetadata: ((u'file',), FileLinkMetadata_validator),
-    FolderLinkMetadata: ((u'folder',), FolderLinkMetadata_validator),
+    FileLinkMetadata: (('file',), FileLinkMetadata_validator),
+    FolderLinkMetadata: (('folder',), FolderLinkMetadata_validator),
 }
 SharedLinkMetadata._is_catch_all_ = True
 
@@ -12793,6 +12820,7 @@ SharePathError._invalid_path_validator = bv.Void()
 SharePathError._is_osx_package_validator = bv.Void()
 SharePathError._inside_osx_package_validator = bv.Void()
 SharePathError._is_vault_validator = bv.Void()
+SharePathError._is_vault_locked_validator = bv.Void()
 SharePathError._is_family_validator = bv.Void()
 SharePathError._other_validator = bv.Void()
 SharePathError._tagmap = {
@@ -12810,6 +12838,7 @@ SharePathError._tagmap = {
     'is_osx_package': SharePathError._is_osx_package_validator,
     'inside_osx_package': SharePathError._inside_osx_package_validator,
     'is_vault': SharePathError._is_vault_validator,
+    'is_vault_locked': SharePathError._is_vault_locked_validator,
     'is_family': SharePathError._is_family_validator,
     'other': SharePathError._other_validator,
 }
@@ -12827,6 +12856,7 @@ SharePathError.invalid_path = SharePathError('invalid_path')
 SharePathError.is_osx_package = SharePathError('is_osx_package')
 SharePathError.inside_osx_package = SharePathError('inside_osx_package')
 SharePathError.is_vault = SharePathError('is_vault')
+SharePathError.is_vault_locked = SharePathError('is_vault_locked')
 SharePathError.is_family = SharePathError('is_family')
 SharePathError.other = SharePathError('other')
 
@@ -13455,9 +13485,9 @@ add_file_member = bb.Route(
     AddFileMemberArgs_validator,
     bv.List(FileMemberActionResult_validator),
     AddFileMemberError_validator,
-    {'auth': u'user',
-     'host': u'api',
-     'style': u'rpc'},
+    {'auth': 'user',
+     'host': 'api',
+     'style': 'rpc'},
 )
 add_folder_member = bb.Route(
     'add_folder_member',
@@ -13466,9 +13496,9 @@ add_folder_member = bb.Route(
     AddFolderMemberArg_validator,
     bv.Void(),
     AddFolderMemberError_validator,
-    {'auth': u'user',
-     'host': u'api',
-     'style': u'rpc'},
+    {'auth': 'user',
+     'host': 'api',
+     'style': 'rpc'},
 )
 check_job_status = bb.Route(
     'check_job_status',
@@ -13477,9 +13507,9 @@ check_job_status = bb.Route(
     async_.PollArg_validator,
     JobStatus_validator,
     async_.PollError_validator,
-    {'auth': u'user',
-     'host': u'api',
-     'style': u'rpc'},
+    {'auth': 'user',
+     'host': 'api',
+     'style': 'rpc'},
 )
 check_remove_member_job_status = bb.Route(
     'check_remove_member_job_status',
@@ -13488,9 +13518,9 @@ check_remove_member_job_status = bb.Route(
     async_.PollArg_validator,
     RemoveMemberJobStatus_validator,
     async_.PollError_validator,
-    {'auth': u'user',
-     'host': u'api',
-     'style': u'rpc'},
+    {'auth': 'user',
+     'host': 'api',
+     'style': 'rpc'},
 )
 check_share_job_status = bb.Route(
     'check_share_job_status',
@@ -13499,9 +13529,9 @@ check_share_job_status = bb.Route(
     async_.PollArg_validator,
     ShareFolderJobStatus_validator,
     async_.PollError_validator,
-    {'auth': u'user',
-     'host': u'api',
-     'style': u'rpc'},
+    {'auth': 'user',
+     'host': 'api',
+     'style': 'rpc'},
 )
 create_shared_link = bb.Route(
     'create_shared_link',
@@ -13510,9 +13540,9 @@ create_shared_link = bb.Route(
     CreateSharedLinkArg_validator,
     PathLinkMetadata_validator,
     CreateSharedLinkError_validator,
-    {'auth': u'user',
-     'host': u'api',
-     'style': u'rpc'},
+    {'auth': 'user',
+     'host': 'api',
+     'style': 'rpc'},
 )
 create_shared_link_with_settings = bb.Route(
     'create_shared_link_with_settings',
@@ -13521,9 +13551,9 @@ create_shared_link_with_settings = bb.Route(
     CreateSharedLinkWithSettingsArg_validator,
     SharedLinkMetadata_validator,
     CreateSharedLinkWithSettingsError_validator,
-    {'auth': u'user',
-     'host': u'api',
-     'style': u'rpc'},
+    {'auth': 'user',
+     'host': 'api',
+     'style': 'rpc'},
 )
 get_file_metadata = bb.Route(
     'get_file_metadata',
@@ -13532,9 +13562,9 @@ get_file_metadata = bb.Route(
     GetFileMetadataArg_validator,
     SharedFileMetadata_validator,
     GetFileMetadataError_validator,
-    {'auth': u'user',
-     'host': u'api',
-     'style': u'rpc'},
+    {'auth': 'user',
+     'host': 'api',
+     'style': 'rpc'},
 )
 get_file_metadata_batch = bb.Route(
     'get_file_metadata/batch',
@@ -13543,9 +13573,9 @@ get_file_metadata_batch = bb.Route(
     GetFileMetadataBatchArg_validator,
     bv.List(GetFileMetadataBatchResult_validator),
     SharingUserError_validator,
-    {'auth': u'user',
-     'host': u'api',
-     'style': u'rpc'},
+    {'auth': 'user',
+     'host': 'api',
+     'style': 'rpc'},
 )
 get_folder_metadata = bb.Route(
     'get_folder_metadata',
@@ -13554,9 +13584,9 @@ get_folder_metadata = bb.Route(
     GetMetadataArgs_validator,
     SharedFolderMetadata_validator,
     SharedFolderAccessError_validator,
-    {'auth': u'user',
-     'host': u'api',
-     'style': u'rpc'},
+    {'auth': 'user',
+     'host': 'api',
+     'style': 'rpc'},
 )
 get_shared_link_file = bb.Route(
     'get_shared_link_file',
@@ -13565,9 +13595,9 @@ get_shared_link_file = bb.Route(
     GetSharedLinkFileArg_validator,
     SharedLinkMetadata_validator,
     GetSharedLinkFileError_validator,
-    {'auth': u'user',
-     'host': u'content',
-     'style': u'download'},
+    {'auth': 'user',
+     'host': 'content',
+     'style': 'download'},
 )
 get_shared_link_metadata = bb.Route(
     'get_shared_link_metadata',
@@ -13576,9 +13606,9 @@ get_shared_link_metadata = bb.Route(
     GetSharedLinkMetadataArg_validator,
     SharedLinkMetadata_validator,
     SharedLinkError_validator,
-    {'auth': u'user',
-     'host': u'api',
-     'style': u'rpc'},
+    {'auth': 'app, user',
+     'host': 'api',
+     'style': 'rpc'},
 )
 get_shared_links = bb.Route(
     'get_shared_links',
@@ -13587,9 +13617,9 @@ get_shared_links = bb.Route(
     GetSharedLinksArg_validator,
     GetSharedLinksResult_validator,
     GetSharedLinksError_validator,
-    {'auth': u'user',
-     'host': u'api',
-     'style': u'rpc'},
+    {'auth': 'user',
+     'host': 'api',
+     'style': 'rpc'},
 )
 list_file_members = bb.Route(
     'list_file_members',
@@ -13598,9 +13628,9 @@ list_file_members = bb.Route(
     ListFileMembersArg_validator,
     SharedFileMembers_validator,
     ListFileMembersError_validator,
-    {'auth': u'user',
-     'host': u'api',
-     'style': u'rpc'},
+    {'auth': 'user',
+     'host': 'api',
+     'style': 'rpc'},
 )
 list_file_members_batch = bb.Route(
     'list_file_members/batch',
@@ -13609,9 +13639,9 @@ list_file_members_batch = bb.Route(
     ListFileMembersBatchArg_validator,
     bv.List(ListFileMembersBatchResult_validator),
     SharingUserError_validator,
-    {'auth': u'user',
-     'host': u'api',
-     'style': u'rpc'},
+    {'auth': 'user',
+     'host': 'api',
+     'style': 'rpc'},
 )
 list_file_members_continue = bb.Route(
     'list_file_members/continue',
@@ -13620,9 +13650,9 @@ list_file_members_continue = bb.Route(
     ListFileMembersContinueArg_validator,
     SharedFileMembers_validator,
     ListFileMembersContinueError_validator,
-    {'auth': u'user',
-     'host': u'api',
-     'style': u'rpc'},
+    {'auth': 'user',
+     'host': 'api',
+     'style': 'rpc'},
 )
 list_folder_members = bb.Route(
     'list_folder_members',
@@ -13631,9 +13661,9 @@ list_folder_members = bb.Route(
     ListFolderMembersArgs_validator,
     SharedFolderMembers_validator,
     SharedFolderAccessError_validator,
-    {'auth': u'user',
-     'host': u'api',
-     'style': u'rpc'},
+    {'auth': 'user',
+     'host': 'api',
+     'style': 'rpc'},
 )
 list_folder_members_continue = bb.Route(
     'list_folder_members/continue',
@@ -13642,9 +13672,9 @@ list_folder_members_continue = bb.Route(
     ListFolderMembersContinueArg_validator,
     SharedFolderMembers_validator,
     ListFolderMembersContinueError_validator,
-    {'auth': u'user',
-     'host': u'api',
-     'style': u'rpc'},
+    {'auth': 'user',
+     'host': 'api',
+     'style': 'rpc'},
 )
 list_folders = bb.Route(
     'list_folders',
@@ -13653,9 +13683,9 @@ list_folders = bb.Route(
     ListFoldersArgs_validator,
     ListFoldersResult_validator,
     bv.Void(),
-    {'auth': u'user',
-     'host': u'api',
-     'style': u'rpc'},
+    {'auth': 'user',
+     'host': 'api',
+     'style': 'rpc'},
 )
 list_folders_continue = bb.Route(
     'list_folders/continue',
@@ -13664,9 +13694,9 @@ list_folders_continue = bb.Route(
     ListFoldersContinueArg_validator,
     ListFoldersResult_validator,
     ListFoldersContinueError_validator,
-    {'auth': u'user',
-     'host': u'api',
-     'style': u'rpc'},
+    {'auth': 'user',
+     'host': 'api',
+     'style': 'rpc'},
 )
 list_mountable_folders = bb.Route(
     'list_mountable_folders',
@@ -13675,9 +13705,9 @@ list_mountable_folders = bb.Route(
     ListFoldersArgs_validator,
     ListFoldersResult_validator,
     bv.Void(),
-    {'auth': u'user',
-     'host': u'api',
-     'style': u'rpc'},
+    {'auth': 'user',
+     'host': 'api',
+     'style': 'rpc'},
 )
 list_mountable_folders_continue = bb.Route(
     'list_mountable_folders/continue',
@@ -13686,9 +13716,9 @@ list_mountable_folders_continue = bb.Route(
     ListFoldersContinueArg_validator,
     ListFoldersResult_validator,
     ListFoldersContinueError_validator,
-    {'auth': u'user',
-     'host': u'api',
-     'style': u'rpc'},
+    {'auth': 'user',
+     'host': 'api',
+     'style': 'rpc'},
 )
 list_received_files = bb.Route(
     'list_received_files',
@@ -13697,9 +13727,9 @@ list_received_files = bb.Route(
     ListFilesArg_validator,
     ListFilesResult_validator,
     SharingUserError_validator,
-    {'auth': u'user',
-     'host': u'api',
-     'style': u'rpc'},
+    {'auth': 'user',
+     'host': 'api',
+     'style': 'rpc'},
 )
 list_received_files_continue = bb.Route(
     'list_received_files/continue',
@@ -13708,9 +13738,9 @@ list_received_files_continue = bb.Route(
     ListFilesContinueArg_validator,
     ListFilesResult_validator,
     ListFilesContinueError_validator,
-    {'auth': u'user',
-     'host': u'api',
-     'style': u'rpc'},
+    {'auth': 'user',
+     'host': 'api',
+     'style': 'rpc'},
 )
 list_shared_links = bb.Route(
     'list_shared_links',
@@ -13719,9 +13749,9 @@ list_shared_links = bb.Route(
     ListSharedLinksArg_validator,
     ListSharedLinksResult_validator,
     ListSharedLinksError_validator,
-    {'auth': u'user',
-     'host': u'api',
-     'style': u'rpc'},
+    {'auth': 'user',
+     'host': 'api',
+     'style': 'rpc'},
 )
 modify_shared_link_settings = bb.Route(
     'modify_shared_link_settings',
@@ -13730,9 +13760,9 @@ modify_shared_link_settings = bb.Route(
     ModifySharedLinkSettingsArgs_validator,
     SharedLinkMetadata_validator,
     ModifySharedLinkSettingsError_validator,
-    {'auth': u'user',
-     'host': u'api',
-     'style': u'rpc'},
+    {'auth': 'user',
+     'host': 'api',
+     'style': 'rpc'},
 )
 mount_folder = bb.Route(
     'mount_folder',
@@ -13741,9 +13771,9 @@ mount_folder = bb.Route(
     MountFolderArg_validator,
     SharedFolderMetadata_validator,
     MountFolderError_validator,
-    {'auth': u'user',
-     'host': u'api',
-     'style': u'rpc'},
+    {'auth': 'user',
+     'host': 'api',
+     'style': 'rpc'},
 )
 relinquish_file_membership = bb.Route(
     'relinquish_file_membership',
@@ -13752,9 +13782,9 @@ relinquish_file_membership = bb.Route(
     RelinquishFileMembershipArg_validator,
     bv.Void(),
     RelinquishFileMembershipError_validator,
-    {'auth': u'user',
-     'host': u'api',
-     'style': u'rpc'},
+    {'auth': 'user',
+     'host': 'api',
+     'style': 'rpc'},
 )
 relinquish_folder_membership = bb.Route(
     'relinquish_folder_membership',
@@ -13763,9 +13793,9 @@ relinquish_folder_membership = bb.Route(
     RelinquishFolderMembershipArg_validator,
     async_.LaunchEmptyResult_validator,
     RelinquishFolderMembershipError_validator,
-    {'auth': u'user',
-     'host': u'api',
-     'style': u'rpc'},
+    {'auth': 'user',
+     'host': 'api',
+     'style': 'rpc'},
 )
 remove_file_member = bb.Route(
     'remove_file_member',
@@ -13774,9 +13804,9 @@ remove_file_member = bb.Route(
     RemoveFileMemberArg_validator,
     FileMemberActionIndividualResult_validator,
     RemoveFileMemberError_validator,
-    {'auth': u'user',
-     'host': u'api',
-     'style': u'rpc'},
+    {'auth': 'user',
+     'host': 'api',
+     'style': 'rpc'},
 )
 remove_file_member_2 = bb.Route(
     'remove_file_member_2',
@@ -13785,9 +13815,9 @@ remove_file_member_2 = bb.Route(
     RemoveFileMemberArg_validator,
     FileMemberRemoveActionResult_validator,
     RemoveFileMemberError_validator,
-    {'auth': u'user',
-     'host': u'api',
-     'style': u'rpc'},
+    {'auth': 'user',
+     'host': 'api',
+     'style': 'rpc'},
 )
 remove_folder_member = bb.Route(
     'remove_folder_member',
@@ -13796,9 +13826,9 @@ remove_folder_member = bb.Route(
     RemoveFolderMemberArg_validator,
     async_.LaunchResultBase_validator,
     RemoveFolderMemberError_validator,
-    {'auth': u'user',
-     'host': u'api',
-     'style': u'rpc'},
+    {'auth': 'user',
+     'host': 'api',
+     'style': 'rpc'},
 )
 revoke_shared_link = bb.Route(
     'revoke_shared_link',
@@ -13807,9 +13837,9 @@ revoke_shared_link = bb.Route(
     RevokeSharedLinkArg_validator,
     bv.Void(),
     RevokeSharedLinkError_validator,
-    {'auth': u'user',
-     'host': u'api',
-     'style': u'rpc'},
+    {'auth': 'user',
+     'host': 'api',
+     'style': 'rpc'},
 )
 set_access_inheritance = bb.Route(
     'set_access_inheritance',
@@ -13818,9 +13848,9 @@ set_access_inheritance = bb.Route(
     SetAccessInheritanceArg_validator,
     ShareFolderLaunch_validator,
     SetAccessInheritanceError_validator,
-    {'auth': u'user',
-     'host': u'api',
-     'style': u'rpc'},
+    {'auth': 'user',
+     'host': 'api',
+     'style': 'rpc'},
 )
 share_folder = bb.Route(
     'share_folder',
@@ -13829,9 +13859,9 @@ share_folder = bb.Route(
     ShareFolderArg_validator,
     ShareFolderLaunch_validator,
     ShareFolderError_validator,
-    {'auth': u'user',
-     'host': u'api',
-     'style': u'rpc'},
+    {'auth': 'user',
+     'host': 'api',
+     'style': 'rpc'},
 )
 transfer_folder = bb.Route(
     'transfer_folder',
@@ -13840,9 +13870,9 @@ transfer_folder = bb.Route(
     TransferFolderArg_validator,
     bv.Void(),
     TransferFolderError_validator,
-    {'auth': u'user',
-     'host': u'api',
-     'style': u'rpc'},
+    {'auth': 'user',
+     'host': 'api',
+     'style': 'rpc'},
 )
 unmount_folder = bb.Route(
     'unmount_folder',
@@ -13851,9 +13881,9 @@ unmount_folder = bb.Route(
     UnmountFolderArg_validator,
     bv.Void(),
     UnmountFolderError_validator,
-    {'auth': u'user',
-     'host': u'api',
-     'style': u'rpc'},
+    {'auth': 'user',
+     'host': 'api',
+     'style': 'rpc'},
 )
 unshare_file = bb.Route(
     'unshare_file',
@@ -13862,9 +13892,9 @@ unshare_file = bb.Route(
     UnshareFileArg_validator,
     bv.Void(),
     UnshareFileError_validator,
-    {'auth': u'user',
-     'host': u'api',
-     'style': u'rpc'},
+    {'auth': 'user',
+     'host': 'api',
+     'style': 'rpc'},
 )
 unshare_folder = bb.Route(
     'unshare_folder',
@@ -13873,9 +13903,9 @@ unshare_folder = bb.Route(
     UnshareFolderArg_validator,
     async_.LaunchEmptyResult_validator,
     UnshareFolderError_validator,
-    {'auth': u'user',
-     'host': u'api',
-     'style': u'rpc'},
+    {'auth': 'user',
+     'host': 'api',
+     'style': 'rpc'},
 )
 update_file_member = bb.Route(
     'update_file_member',
@@ -13884,9 +13914,9 @@ update_file_member = bb.Route(
     UpdateFileMemberArgs_validator,
     MemberAccessLevelResult_validator,
     FileMemberActionError_validator,
-    {'auth': u'user',
-     'host': u'api',
-     'style': u'rpc'},
+    {'auth': 'user',
+     'host': 'api',
+     'style': 'rpc'},
 )
 update_folder_member = bb.Route(
     'update_folder_member',
@@ -13895,9 +13925,9 @@ update_folder_member = bb.Route(
     UpdateFolderMemberArg_validator,
     MemberAccessLevelResult_validator,
     UpdateFolderMemberError_validator,
-    {'auth': u'user',
-     'host': u'api',
-     'style': u'rpc'},
+    {'auth': 'user',
+     'host': 'api',
+     'style': 'rpc'},
 )
 update_folder_policy = bb.Route(
     'update_folder_policy',
@@ -13906,9 +13936,9 @@ update_folder_policy = bb.Route(
     UpdateFolderPolicyArg_validator,
     SharedFolderMetadata_validator,
     UpdateFolderPolicyError_validator,
-    {'auth': u'user',
-     'host': u'api',
-     'style': u'rpc'},
+    {'auth': 'user',
+     'host': 'api',
+     'style': 'rpc'},
 )
 
 ROUTES = {

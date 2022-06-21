@@ -1029,7 +1029,7 @@ class UpdateFileRequestError(FileRequestError):
 
 UpdateFileRequestError_validator = bv.Union(UpdateFileRequestError)
 
-FileRequestId_validator = bv.String(min_length=1, pattern=u'[-_0-9a-zA-Z]+')
+FileRequestId_validator = bv.String(min_length=1, pattern='[-_0-9a-zA-Z]+')
 FileRequestValidationError_validator = bv.Nullable(bv.String())
 GeneralFileRequestsError._disabled_for_team_validator = bv.Void()
 GeneralFileRequestsError._other_validator = bv.Void()
@@ -1287,9 +1287,9 @@ count = bb.Route(
     bv.Void(),
     CountFileRequestsResult_validator,
     CountFileRequestsError_validator,
-    {'auth': u'user',
-     'host': u'api',
-     'style': u'rpc'},
+    {'auth': 'user',
+     'host': 'api',
+     'style': 'rpc'},
 )
 create = bb.Route(
     'create',
@@ -1298,9 +1298,9 @@ create = bb.Route(
     CreateFileRequestArgs_validator,
     FileRequest_validator,
     CreateFileRequestError_validator,
-    {'auth': u'user',
-     'host': u'api',
-     'style': u'rpc'},
+    {'auth': 'user',
+     'host': 'api',
+     'style': 'rpc'},
 )
 delete = bb.Route(
     'delete',
@@ -1309,9 +1309,9 @@ delete = bb.Route(
     DeleteFileRequestArgs_validator,
     DeleteFileRequestsResult_validator,
     DeleteFileRequestError_validator,
-    {'auth': u'user',
-     'host': u'api',
-     'style': u'rpc'},
+    {'auth': 'user',
+     'host': 'api',
+     'style': 'rpc'},
 )
 delete_all_closed = bb.Route(
     'delete_all_closed',
@@ -1320,9 +1320,9 @@ delete_all_closed = bb.Route(
     bv.Void(),
     DeleteAllClosedFileRequestsResult_validator,
     DeleteAllClosedFileRequestsError_validator,
-    {'auth': u'user',
-     'host': u'api',
-     'style': u'rpc'},
+    {'auth': 'user',
+     'host': 'api',
+     'style': 'rpc'},
 )
 get = bb.Route(
     'get',
@@ -1331,9 +1331,9 @@ get = bb.Route(
     GetFileRequestArgs_validator,
     FileRequest_validator,
     GetFileRequestError_validator,
-    {'auth': u'user',
-     'host': u'api',
-     'style': u'rpc'},
+    {'auth': 'user',
+     'host': 'api',
+     'style': 'rpc'},
 )
 list_v2 = bb.Route(
     'list',
@@ -1342,9 +1342,9 @@ list_v2 = bb.Route(
     ListFileRequestsArg_validator,
     ListFileRequestsV2Result_validator,
     ListFileRequestsError_validator,
-    {'auth': u'user',
-     'host': u'api',
-     'style': u'rpc'},
+    {'auth': 'user',
+     'host': 'api',
+     'style': 'rpc'},
 )
 list = bb.Route(
     'list',
@@ -1353,9 +1353,9 @@ list = bb.Route(
     bv.Void(),
     ListFileRequestsResult_validator,
     ListFileRequestsError_validator,
-    {'auth': u'user',
-     'host': u'api',
-     'style': u'rpc'},
+    {'auth': 'user',
+     'host': 'api',
+     'style': 'rpc'},
 )
 list_continue = bb.Route(
     'list/continue',
@@ -1364,9 +1364,9 @@ list_continue = bb.Route(
     ListFileRequestsContinueArg_validator,
     ListFileRequestsV2Result_validator,
     ListFileRequestsContinueError_validator,
-    {'auth': u'user',
-     'host': u'api',
-     'style': u'rpc'},
+    {'auth': 'user',
+     'host': 'api',
+     'style': 'rpc'},
 )
 update = bb.Route(
     'update',
@@ -1375,9 +1375,9 @@ update = bb.Route(
     UpdateFileRequestArgs_validator,
     FileRequest_validator,
     UpdateFileRequestError_validator,
-    {'auth': u'user',
-     'host': u'api',
-     'style': u'rpc'},
+    {'auth': 'user',
+     'host': 'api',
+     'style': 'rpc'},
 )
 
 ROUTES = {

@@ -379,7 +379,6 @@ class _DropboxTransport(object):
         :param scope: list of permission scopes for access token
         :return:
         """
-
         if scope is not None and (len(scope) == 0 or not isinstance(scope, list)):
             raise BadInputException("Scope list must be of type list")
 
@@ -404,12 +403,7 @@ class _DropboxTransport(object):
         if self._timeout:
             timeout = self._timeout
         res = self._session.post(url, data=body, timeout=timeout)
-        if res.status_code == 400 and res.json()['error'] == 'invalid_grant':
-            request_id = res.headers.get('x-dropbox-request-id')
-            err = stone_serializers.json_compat_obj_decode(
-                AuthError_validator, 'invalid_access_token')
-            raise AuthError(request_id, err)
-        res.raise_for_status()
+        self.raise_dropbox_error_for_resp(res)
 
         token_content = res.json()
         self._oauth2_access_token = token_content["access_token"]
@@ -599,53 +593,72 @@ class _DropboxTransport(object):
                                verify=True,
                                timeout=timeout,
                                )
-
+        self.raise_dropbox_error_for_resp(r)
         request_id = r.headers.get('x-dropbox-request-id')
-        if r.status_code >= 500:
-            raise InternalServerError(request_id, r.status_code, r.text)
-        elif r.status_code == 400:
-            raise BadInputError(request_id, r.text)
-        elif r.status_code == 401:
+        if r.status_code in (403, 404, 409):
+            raw_resp = r.content.decode('utf-8')
+            return RouteErrorResult(request_id, raw_resp)
+
+        if route_style == self._ROUTE_STYLE_DOWNLOAD:
+            raw_resp = r.headers['dropbox-api-result']
+        else:
             assert r.headers.get('content-type') == 'application/json', (
                 'Expected content-type to be application/json, got %r' %
                 r.headers.get('content-type'))
+            raw_resp = r.content.decode('utf-8')
+        if route_style == self._ROUTE_STYLE_DOWNLOAD:
+            return RouteResult(raw_resp, r)
+        else:
+            return RouteResult(raw_resp)
+
+    def raise_dropbox_error_for_resp(self, res):
+        """Checks for errors from a res and handles appropiately.
+
+        :param res: Response of an api request.
+        """
+        request_id = res.headers.get('x-dropbox-request-id')
+        if res.status_code >= 500:
+            raise InternalServerError(request_id, res.status_code, res.text)
+        elif res.status_code == 400:
+            try:
+                if res.json()['error'] == 'invalid_grant':
+                    request_id = res.headers.get('x-dropbox-request-id')
+                    err = stone_serializers.json_compat_obj_decode(
+                        AuthError_validator, 'invalid_access_token')
+                    raise AuthError(request_id, err)
+                else:
+                    raise BadInputError(request_id, res.text)
+            except ValueError:
+                raise BadInputError(request_id, res.text)
+        elif res.status_code == 401:
+            assert res.headers.get('content-type') == 'application/json', (
+                'Expected content-type to be application/json, got %r' %
+                res.headers.get('content-type'))
             err = stone_serializers.json_compat_obj_decode(
-                AuthError_validator, r.json()['error'])
+                AuthError_validator, res.json()['error'])
             raise AuthError(request_id, err)
-        elif r.status_code == HTTP_STATUS_INVALID_PATH_ROOT:
+        elif res.status_code == HTTP_STATUS_INVALID_PATH_ROOT:
             err = stone_serializers.json_compat_obj_decode(
-                PathRootError_validator, r.json()['error'])
+                PathRootError_validator, res.json()['error'])
             raise PathRootError(request_id, err)
-        elif r.status_code == 429:
+        elif res.status_code == 429:
             err = None
-            if r.headers.get('content-type') == 'application/json':
+            if res.headers.get('content-type') == 'application/json':
                 err = stone_serializers.json_compat_obj_decode(
-                    RateLimitError_validator, r.json()['error'])
+                    RateLimitError_validator, res.json()['error'])
                 retry_after = err.retry_after
             else:
-                retry_after_str = r.headers.get('retry-after')
+                retry_after_str = res.headers.get('retry-after')
                 if retry_after_str is not None:
                     retry_after = int(retry_after_str)
                 else:
                     retry_after = None
             raise RateLimitError(request_id, err, retry_after)
-        elif 200 <= r.status_code <= 299:
-            if route_style == self._ROUTE_STYLE_DOWNLOAD:
-                raw_resp = r.headers['dropbox-api-result']
-            else:
-                assert r.headers.get('content-type') == 'application/json', (
-                    'Expected content-type to be application/json, got %r' %
-                    r.headers.get('content-type'))
-                raw_resp = r.content.decode('utf-8')
-            if route_style == self._ROUTE_STYLE_DOWNLOAD:
-                return RouteResult(raw_resp, r)
-            else:
-                return RouteResult(raw_resp)
-        elif r.status_code in (403, 404, 409):
-            raw_resp = r.content.decode('utf-8')
-            return RouteErrorResult(request_id, raw_resp)
-        else:
-            raise HttpError(request_id, r.status_code, r.text)
+        elif res.status_code in (403, 404, 409):
+            # special case handled by requester
+            return
+        elif not (200 <= res.status_code <= 299):
+            raise HttpError(request_id, res.status_code, res.text)
 
     def _get_route_url(self, hostname, route_name):
         """Returns the URL of the route.

@@ -1327,12 +1327,17 @@ class AdminAlertingAlertConfiguration(bb.Struct):
         Sensitivity level.
     :ivar team_log.AdminAlertingAlertConfiguration.recipients_settings:
         Recipient settings.
+    :ivar team_log.AdminAlertingAlertConfiguration.text: Text.
+    :ivar team_log.AdminAlertingAlertConfiguration.excluded_file_extensions:
+        Excluded file extensions.
     """
 
     __slots__ = [
         '_alert_state_value',
         '_sensitivity_level_value',
         '_recipients_settings_value',
+        '_text_value',
+        '_excluded_file_extensions_value',
     ]
 
     _has_required_fields = False
@@ -1340,16 +1345,24 @@ class AdminAlertingAlertConfiguration(bb.Struct):
     def __init__(self,
                  alert_state=None,
                  sensitivity_level=None,
-                 recipients_settings=None):
+                 recipients_settings=None,
+                 text=None,
+                 excluded_file_extensions=None):
         self._alert_state_value = bb.NOT_SET
         self._sensitivity_level_value = bb.NOT_SET
         self._recipients_settings_value = bb.NOT_SET
+        self._text_value = bb.NOT_SET
+        self._excluded_file_extensions_value = bb.NOT_SET
         if alert_state is not None:
             self.alert_state = alert_state
         if sensitivity_level is not None:
             self.sensitivity_level = sensitivity_level
         if recipients_settings is not None:
             self.recipients_settings = recipients_settings
+        if text is not None:
+            self.text = text
+        if excluded_file_extensions is not None:
+            self.excluded_file_extensions = excluded_file_extensions
 
     # Instance attribute type: AdminAlertingAlertStatePolicy (validator is set below)
     alert_state = bb.Attribute("alert_state", nullable=True, user_defined=True)
@@ -1359,6 +1372,12 @@ class AdminAlertingAlertConfiguration(bb.Struct):
 
     # Instance attribute type: RecipientsConfiguration (validator is set below)
     recipients_settings = bb.Attribute("recipients_settings", nullable=True, user_defined=True)
+
+    # Instance attribute type: str (validator is set below)
+    text = bb.Attribute("text", nullable=True)
+
+    # Instance attribute type: str (validator is set below)
+    excluded_file_extensions = bb.Attribute("excluded_file_extensions", nullable=True)
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(AdminAlertingAlertConfiguration, self)._process_custom_annotations(annotation_type, field_path, processor)
@@ -2501,7 +2520,7 @@ AppUnlinkUserType_validator = bv.Struct(AppUnlinkUserType)
 
 class ApplyNamingConventionDetails(bb.Struct):
     """
-    Applied a Naming Convention rule.
+    Applied naming convention.
     """
 
     __slots__ = [
@@ -4804,6 +4823,86 @@ class DataPlacementRestrictionSatisfyPolicyType(bb.Struct):
 
 DataPlacementRestrictionSatisfyPolicyType_validator = bv.Struct(DataPlacementRestrictionSatisfyPolicyType)
 
+class DataResidencyMigrationRequestSuccessfulDetails(bb.Struct):
+    """
+    Requested data residency migration for team data.
+    """
+
+    __slots__ = [
+    ]
+
+    _has_required_fields = False
+
+    def __init__(self):
+        pass
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(DataResidencyMigrationRequestSuccessfulDetails, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+DataResidencyMigrationRequestSuccessfulDetails_validator = bv.Struct(DataResidencyMigrationRequestSuccessfulDetails)
+
+class DataResidencyMigrationRequestSuccessfulType(bb.Struct):
+
+    __slots__ = [
+        '_description_value',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 description=None):
+        self._description_value = bb.NOT_SET
+        if description is not None:
+            self.description = description
+
+    # Instance attribute type: str (validator is set below)
+    description = bb.Attribute("description")
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(DataResidencyMigrationRequestSuccessfulType, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+DataResidencyMigrationRequestSuccessfulType_validator = bv.Struct(DataResidencyMigrationRequestSuccessfulType)
+
+class DataResidencyMigrationRequestUnsuccessfulDetails(bb.Struct):
+    """
+    Request for data residency migration for team data has failed.
+    """
+
+    __slots__ = [
+    ]
+
+    _has_required_fields = False
+
+    def __init__(self):
+        pass
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(DataResidencyMigrationRequestUnsuccessfulDetails, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+DataResidencyMigrationRequestUnsuccessfulDetails_validator = bv.Struct(DataResidencyMigrationRequestUnsuccessfulDetails)
+
+class DataResidencyMigrationRequestUnsuccessfulType(bb.Struct):
+
+    __slots__ = [
+        '_description_value',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 description=None):
+        self._description_value = bb.NOT_SET
+        if description is not None:
+            self.description = description
+
+    # Instance attribute type: str (validator is set below)
+    description = bb.Attribute("description")
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(DataResidencyMigrationRequestUnsuccessfulType, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+DataResidencyMigrationRequestUnsuccessfulType_validator = bv.Struct(DataResidencyMigrationRequestUnsuccessfulType)
+
 class DefaultLinkExpirationDaysPolicy(bb.Union):
     """
     Policy for the default number of days until an externally shared link
@@ -6962,6 +7061,120 @@ class DropboxPasswordsNewDeviceEnrolledType(bb.Struct):
 
 DropboxPasswordsNewDeviceEnrolledType_validator = bv.Struct(DropboxPasswordsNewDeviceEnrolledType)
 
+class DropboxPasswordsPolicy(bb.Union):
+    """
+    Policy for deciding whether team users can use Dropbox Passwords
+
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+    """
+
+    _catch_all = 'other'
+    # Attribute is overwritten below the class definition
+    default = None
+    # Attribute is overwritten below the class definition
+    disabled = None
+    # Attribute is overwritten below the class definition
+    enabled = None
+    # Attribute is overwritten below the class definition
+    other = None
+
+    def is_default(self):
+        """
+        Check if the union tag is ``default``.
+
+        :rtype: bool
+        """
+        return self._tag == 'default'
+
+    def is_disabled(self):
+        """
+        Check if the union tag is ``disabled``.
+
+        :rtype: bool
+        """
+        return self._tag == 'disabled'
+
+    def is_enabled(self):
+        """
+        Check if the union tag is ``enabled``.
+
+        :rtype: bool
+        """
+        return self._tag == 'enabled'
+
+    def is_other(self):
+        """
+        Check if the union tag is ``other``.
+
+        :rtype: bool
+        """
+        return self._tag == 'other'
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(DropboxPasswordsPolicy, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+DropboxPasswordsPolicy_validator = bv.Union(DropboxPasswordsPolicy)
+
+class DropboxPasswordsPolicyChangedDetails(bb.Struct):
+    """
+    Changed Dropbox Passwords policy for team.
+
+    :ivar team_log.DropboxPasswordsPolicyChangedDetails.new_value: To.
+    :ivar team_log.DropboxPasswordsPolicyChangedDetails.previous_value: From.
+    """
+
+    __slots__ = [
+        '_new_value_value',
+        '_previous_value_value',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 new_value=None,
+                 previous_value=None):
+        self._new_value_value = bb.NOT_SET
+        self._previous_value_value = bb.NOT_SET
+        if new_value is not None:
+            self.new_value = new_value
+        if previous_value is not None:
+            self.previous_value = previous_value
+
+    # Instance attribute type: DropboxPasswordsPolicy (validator is set below)
+    new_value = bb.Attribute("new_value", user_defined=True)
+
+    # Instance attribute type: DropboxPasswordsPolicy (validator is set below)
+    previous_value = bb.Attribute("previous_value", user_defined=True)
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(DropboxPasswordsPolicyChangedDetails, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+DropboxPasswordsPolicyChangedDetails_validator = bv.Struct(DropboxPasswordsPolicyChangedDetails)
+
+class DropboxPasswordsPolicyChangedType(bb.Struct):
+
+    __slots__ = [
+        '_description_value',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 description=None):
+        self._description_value = bb.NOT_SET
+        if description is not None:
+            self.description = description
+
+    # Instance attribute type: str (validator is set below)
+    description = bb.Attribute("description")
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(DropboxPasswordsPolicyChangedType, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+DropboxPasswordsPolicyChangedType_validator = bv.Struct(DropboxPasswordsPolicyChangedType)
+
 class DurationLogInfo(bb.Struct):
     """
     Represents a time duration: unit and amount
@@ -7000,7 +7213,7 @@ DurationLogInfo_validator = bv.Struct(DurationLogInfo)
 
 class EmailIngestPolicy(bb.Union):
     """
-    Email ingest policy
+    Policy for deciding whether a team can use Email to Dropbox feature
 
     This class acts as a tagged union. Only one of the ``is_*`` methods will
     return true. To get the associated value of a tag (if one exists), use the
@@ -7046,12 +7259,10 @@ EmailIngestPolicy_validator = bv.Union(EmailIngestPolicy)
 
 class EmailIngestPolicyChangedDetails(bb.Struct):
     """
-    Changed email to my dropbox policy for team.
+    Changed email to Dropbox policy for team.
 
-    :ivar team_log.EmailIngestPolicyChangedDetails.new_value: New email to my
-        dropbox policy.
-    :ivar team_log.EmailIngestPolicyChangedDetails.previous_value: Previous
-        email to my dropbox policy.
+    :ivar team_log.EmailIngestPolicyChangedDetails.new_value: To.
+    :ivar team_log.EmailIngestPolicyChangedDetails.previous_value: From.
     """
 
     __slots__ = [
@@ -7106,7 +7317,7 @@ EmailIngestPolicyChangedType_validator = bv.Struct(EmailIngestPolicyChangedType)
 
 class EmailIngestReceiveFileDetails(bb.Struct):
     """
-    Received files via Email to my Dropbox.
+    Received files via Email to Dropbox.
 
     :ivar team_log.EmailIngestReceiveFileDetails.inbox_name: Inbox name.
     :ivar team_log.EmailIngestReceiveFileDetails.attachment_names: Submitted
@@ -8676,6 +8887,29 @@ class EventDetails(bb.Union):
         return cls('emm_refresh_auth_token_details', val)
 
     @classmethod
+    def external_drive_backup_eligibility_status_checked_details(cls, val):
+        """
+        Create an instance of this class set to the
+        ``external_drive_backup_eligibility_status_checked_details`` tag with
+        value ``val``.
+
+        :param ExternalDriveBackupEligibilityStatusCheckedDetails val:
+        :rtype: EventDetails
+        """
+        return cls('external_drive_backup_eligibility_status_checked_details', val)
+
+    @classmethod
+    def external_drive_backup_status_changed_details(cls, val):
+        """
+        Create an instance of this class set to the
+        ``external_drive_backup_status_changed_details`` tag with value ``val``.
+
+        :param ExternalDriveBackupStatusChangedDetails val:
+        :rtype: EventDetails
+        """
+        return cls('external_drive_backup_status_changed_details', val)
+
+    @classmethod
     def account_capture_change_availability_details(cls, val):
         """
         Create an instance of this class set to the
@@ -9120,6 +9354,28 @@ class EventDetails(bb.Union):
         :rtype: EventDetails
         """
         return cls('rewind_folder_details', val)
+
+    @classmethod
+    def undo_naming_convention_details(cls, val):
+        """
+        Create an instance of this class set to the
+        ``undo_naming_convention_details`` tag with value ``val``.
+
+        :param UndoNamingConventionDetails val:
+        :rtype: EventDetails
+        """
+        return cls('undo_naming_convention_details', val)
+
+    @classmethod
+    def undo_organize_folder_with_tidy_details(cls, val):
+        """
+        Create an instance of this class set to the
+        ``undo_organize_folder_with_tidy_details`` tag with value ``val``.
+
+        :param UndoOrganizeFolderWithTidyDetails val:
+        :rtype: EventDetails
+        """
+        return cls('undo_organize_folder_with_tidy_details', val)
 
     @classmethod
     def user_tags_added_details(cls, val):
@@ -12138,6 +12394,17 @@ class EventDetails(bb.Union):
         return cls('directory_restrictions_remove_members_details', val)
 
     @classmethod
+    def dropbox_passwords_policy_changed_details(cls, val):
+        """
+        Create an instance of this class set to the
+        ``dropbox_passwords_policy_changed_details`` tag with value ``val``.
+
+        :param DropboxPasswordsPolicyChangedDetails val:
+        :rtype: EventDetails
+        """
+        return cls('dropbox_passwords_policy_changed_details', val)
+
+    @classmethod
     def email_ingest_policy_changed_details(cls, val):
         """
         Create an instance of this class set to the
@@ -12864,6 +13131,30 @@ class EventDetails(bb.Union):
         :rtype: EventDetails
         """
         return cls('web_sessions_change_idle_length_policy_details', val)
+
+    @classmethod
+    def data_residency_migration_request_successful_details(cls, val):
+        """
+        Create an instance of this class set to the
+        ``data_residency_migration_request_successful_details`` tag with value
+        ``val``.
+
+        :param DataResidencyMigrationRequestSuccessfulDetails val:
+        :rtype: EventDetails
+        """
+        return cls('data_residency_migration_request_successful_details', val)
+
+    @classmethod
+    def data_residency_migration_request_unsuccessful_details(cls, val):
+        """
+        Create an instance of this class set to the
+        ``data_residency_migration_request_unsuccessful_details`` tag with value
+        ``val``.
+
+        :param DataResidencyMigrationRequestUnsuccessfulDetails val:
+        :rtype: EventDetails
+        """
+        return cls('data_residency_migration_request_unsuccessful_details', val)
 
     @classmethod
     def team_merge_from_details(cls, val):
@@ -13792,6 +14083,22 @@ class EventDetails(bb.Union):
         """
         return self._tag == 'emm_refresh_auth_token_details'
 
+    def is_external_drive_backup_eligibility_status_checked_details(self):
+        """
+        Check if the union tag is ``external_drive_backup_eligibility_status_checked_details``.
+
+        :rtype: bool
+        """
+        return self._tag == 'external_drive_backup_eligibility_status_checked_details'
+
+    def is_external_drive_backup_status_changed_details(self):
+        """
+        Check if the union tag is ``external_drive_backup_status_changed_details``.
+
+        :rtype: bool
+        """
+        return self._tag == 'external_drive_backup_status_changed_details'
+
     def is_account_capture_change_availability_details(self):
         """
         Check if the union tag is ``account_capture_change_availability_details``.
@@ -14111,6 +14418,22 @@ class EventDetails(bb.Union):
         :rtype: bool
         """
         return self._tag == 'rewind_folder_details'
+
+    def is_undo_naming_convention_details(self):
+        """
+        Check if the union tag is ``undo_naming_convention_details``.
+
+        :rtype: bool
+        """
+        return self._tag == 'undo_naming_convention_details'
+
+    def is_undo_organize_folder_with_tidy_details(self):
+        """
+        Check if the union tag is ``undo_organize_folder_with_tidy_details``.
+
+        :rtype: bool
+        """
+        return self._tag == 'undo_organize_folder_with_tidy_details'
 
     def is_user_tags_added_details(self):
         """
@@ -16288,6 +16611,14 @@ class EventDetails(bb.Union):
         """
         return self._tag == 'directory_restrictions_remove_members_details'
 
+    def is_dropbox_passwords_policy_changed_details(self):
+        """
+        Check if the union tag is ``dropbox_passwords_policy_changed_details``.
+
+        :rtype: bool
+        """
+        return self._tag == 'dropbox_passwords_policy_changed_details'
+
     def is_email_ingest_policy_changed_details(self):
         """
         Check if the union tag is ``email_ingest_policy_changed_details``.
@@ -16807,6 +17138,22 @@ class EventDetails(bb.Union):
         :rtype: bool
         """
         return self._tag == 'web_sessions_change_idle_length_policy_details'
+
+    def is_data_residency_migration_request_successful_details(self):
+        """
+        Check if the union tag is ``data_residency_migration_request_successful_details``.
+
+        :rtype: bool
+        """
+        return self._tag == 'data_residency_migration_request_successful_details'
+
+    def is_data_residency_migration_request_unsuccessful_details(self):
+        """
+        Check if the union tag is ``data_residency_migration_request_unsuccessful_details``.
+
+        :rtype: bool
+        """
+        return self._tag == 'data_residency_migration_request_unsuccessful_details'
 
     def is_team_merge_from_details(self):
         """
@@ -17710,6 +18057,26 @@ class EventDetails(bb.Union):
             raise AttributeError("tag 'emm_refresh_auth_token_details' not set")
         return self._value
 
+    def get_external_drive_backup_eligibility_status_checked_details(self):
+        """
+        Only call this if :meth:`is_external_drive_backup_eligibility_status_checked_details` is true.
+
+        :rtype: ExternalDriveBackupEligibilityStatusCheckedDetails
+        """
+        if not self.is_external_drive_backup_eligibility_status_checked_details():
+            raise AttributeError("tag 'external_drive_backup_eligibility_status_checked_details' not set")
+        return self._value
+
+    def get_external_drive_backup_status_changed_details(self):
+        """
+        Only call this if :meth:`is_external_drive_backup_status_changed_details` is true.
+
+        :rtype: ExternalDriveBackupStatusChangedDetails
+        """
+        if not self.is_external_drive_backup_status_changed_details():
+            raise AttributeError("tag 'external_drive_backup_status_changed_details' not set")
+        return self._value
+
     def get_account_capture_change_availability_details(self):
         """
         Only call this if :meth:`is_account_capture_change_availability_details` is true.
@@ -18108,6 +18475,26 @@ class EventDetails(bb.Union):
         """
         if not self.is_rewind_folder_details():
             raise AttributeError("tag 'rewind_folder_details' not set")
+        return self._value
+
+    def get_undo_naming_convention_details(self):
+        """
+        Only call this if :meth:`is_undo_naming_convention_details` is true.
+
+        :rtype: UndoNamingConventionDetails
+        """
+        if not self.is_undo_naming_convention_details():
+            raise AttributeError("tag 'undo_naming_convention_details' not set")
+        return self._value
+
+    def get_undo_organize_folder_with_tidy_details(self):
+        """
+        Only call this if :meth:`is_undo_organize_folder_with_tidy_details` is true.
+
+        :rtype: UndoOrganizeFolderWithTidyDetails
+        """
+        if not self.is_undo_organize_folder_with_tidy_details():
+            raise AttributeError("tag 'undo_organize_folder_with_tidy_details' not set")
         return self._value
 
     def get_user_tags_added_details(self):
@@ -20830,6 +21217,16 @@ class EventDetails(bb.Union):
             raise AttributeError("tag 'directory_restrictions_remove_members_details' not set")
         return self._value
 
+    def get_dropbox_passwords_policy_changed_details(self):
+        """
+        Only call this if :meth:`is_dropbox_passwords_policy_changed_details` is true.
+
+        :rtype: DropboxPasswordsPolicyChangedDetails
+        """
+        if not self.is_dropbox_passwords_policy_changed_details():
+            raise AttributeError("tag 'dropbox_passwords_policy_changed_details' not set")
+        return self._value
+
     def get_email_ingest_policy_changed_details(self):
         """
         Only call this if :meth:`is_email_ingest_policy_changed_details` is true.
@@ -21480,6 +21877,26 @@ class EventDetails(bb.Union):
             raise AttributeError("tag 'web_sessions_change_idle_length_policy_details' not set")
         return self._value
 
+    def get_data_residency_migration_request_successful_details(self):
+        """
+        Only call this if :meth:`is_data_residency_migration_request_successful_details` is true.
+
+        :rtype: DataResidencyMigrationRequestSuccessfulDetails
+        """
+        if not self.is_data_residency_migration_request_successful_details():
+            raise AttributeError("tag 'data_residency_migration_request_successful_details' not set")
+        return self._value
+
+    def get_data_residency_migration_request_unsuccessful_details(self):
+        """
+        Only call this if :meth:`is_data_residency_migration_request_unsuccessful_details` is true.
+
+        :rtype: DataResidencyMigrationRequestUnsuccessfulDetails
+        """
+        if not self.is_data_residency_migration_request_unsuccessful_details():
+            raise AttributeError("tag 'data_residency_migration_request_unsuccessful_details' not set")
+        return self._value
+
     def get_team_merge_from_details(self):
         """
         Only call this if :meth:`is_team_merge_from_details` is true.
@@ -22053,6 +22470,12 @@ class EventType(bb.Union):
         Dropbox Passwords device
     :ivar EmmRefreshAuthTokenType EventType.emm_refresh_auth_token: (devices)
         Refreshed auth token used for setting up EMM
+    :ivar ExternalDriveBackupEligibilityStatusCheckedType
+        EventType.external_drive_backup_eligibility_status_checked: (devices)
+        Checked external drive backup eligibility status
+    :ivar ExternalDriveBackupStatusChangedType
+        EventType.external_drive_backup_status_changed: (devices) Modified
+        external drive backup
     :ivar AccountCaptureChangeAvailabilityType
         EventType.account_capture_change_availability: (domains) Granted/revoked
         option to enable account capture on team domains
@@ -22097,7 +22520,7 @@ class EventType(bb.Union):
     :ivar EnabledDomainInvitesType EventType.enabled_domain_invites: (domains)
         Enabled domain invites (deprecated, no longer logged)
     :ivar ApplyNamingConventionType EventType.apply_naming_convention:
-        (file_operations) Applied a Naming Convention rule
+        (file_operations) Applied naming convention
     :ivar CreateFolderType EventType.create_folder: (file_operations) Created
         folders (deprecated, no longer logged)
     :ivar FileAddType EventType.file_add: (file_operations) Added files and/or
@@ -22145,15 +22568,20 @@ class EventType(bb.Union):
     :ivar ObjectLabelUpdatedValueType EventType.object_label_updated_value:
         (file_operations) Updated a label's value
     :ivar OrganizeFolderWithTidyType EventType.organize_folder_with_tidy:
-        (file_operations) Organized a folder with the Tidy Up action
+        (file_operations) Organized a folder with multi-file organize
     :ivar RewindFolderType EventType.rewind_folder: (file_operations) Rewound a
         folder
+    :ivar UndoNamingConventionType EventType.undo_naming_convention:
+        (file_operations) Reverted naming convention
+    :ivar UndoOrganizeFolderWithTidyType
+        EventType.undo_organize_folder_with_tidy: (file_operations) Removed
+        multi-file organize
     :ivar UserTagsAddedType EventType.user_tags_added: (file_operations) Tagged
         a file
     :ivar UserTagsRemovedType EventType.user_tags_removed: (file_operations)
         Removed tags
     :ivar EmailIngestReceiveFileType EventType.email_ingest_receive_file:
-        (file_requests) Received files via Email to my Dropbox
+        (file_requests) Received files via Email to Dropbox
     :ivar FileRequestChangeType EventType.file_request_change: (file_requests)
         Changed file request
     :ivar FileRequestCloseType EventType.file_request_close: (file_requests)
@@ -22782,8 +23210,11 @@ class EventType(bb.Union):
     :ivar DirectoryRestrictionsRemoveMembersType
         EventType.directory_restrictions_remove_members: (team_policies) Removed
         members from directory restrictions list
+    :ivar DropboxPasswordsPolicyChangedType
+        EventType.dropbox_passwords_policy_changed: (team_policies) Changed
+        Dropbox Passwords policy for team
     :ivar EmailIngestPolicyChangedType EventType.email_ingest_policy_changed:
-        (team_policies) Changed email to my dropbox policy for team
+        (team_policies) Changed email to Dropbox policy for team
     :ivar EmmAddExceptionType EventType.emm_add_exception: (team_policies) Added
         members to EMM exception list
     :ivar EmmChangePolicyType EventType.emm_change_policy: (team_policies)
@@ -22961,6 +23392,12 @@ class EventType(bb.Union):
     :ivar WebSessionsChangeIdleLengthPolicyType
         EventType.web_sessions_change_idle_length_policy: (team_policies)
         Changed how long team members can be idle while signed in to Dropbox.com
+    :ivar DataResidencyMigrationRequestSuccessfulType
+        EventType.data_residency_migration_request_successful: (team_profile)
+        Requested data residency migration for team data
+    :ivar DataResidencyMigrationRequestUnsuccessfulType
+        EventType.data_residency_migration_request_unsuccessful: (team_profile)
+        Request for data residency migration for team data has failed
     :ivar TeamMergeFromType EventType.team_merge_from: (team_profile) Merged
         another team into this team
     :ivar TeamMergeToType EventType.team_merge_to: (team_profile) Merged this
@@ -23689,6 +24126,29 @@ class EventType(bb.Union):
         return cls('emm_refresh_auth_token', val)
 
     @classmethod
+    def external_drive_backup_eligibility_status_checked(cls, val):
+        """
+        Create an instance of this class set to the
+        ``external_drive_backup_eligibility_status_checked`` tag with value
+        ``val``.
+
+        :param ExternalDriveBackupEligibilityStatusCheckedType val:
+        :rtype: EventType
+        """
+        return cls('external_drive_backup_eligibility_status_checked', val)
+
+    @classmethod
+    def external_drive_backup_status_changed(cls, val):
+        """
+        Create an instance of this class set to the
+        ``external_drive_backup_status_changed`` tag with value ``val``.
+
+        :param ExternalDriveBackupStatusChangedType val:
+        :rtype: EventType
+        """
+        return cls('external_drive_backup_status_changed', val)
+
+    @classmethod
     def account_capture_change_availability(cls, val):
         """
         Create an instance of this class set to the
@@ -24129,6 +24589,28 @@ class EventType(bb.Union):
         :rtype: EventType
         """
         return cls('rewind_folder', val)
+
+    @classmethod
+    def undo_naming_convention(cls, val):
+        """
+        Create an instance of this class set to the ``undo_naming_convention``
+        tag with value ``val``.
+
+        :param UndoNamingConventionType val:
+        :rtype: EventType
+        """
+        return cls('undo_naming_convention', val)
+
+    @classmethod
+    def undo_organize_folder_with_tidy(cls, val):
+        """
+        Create an instance of this class set to the
+        ``undo_organize_folder_with_tidy`` tag with value ``val``.
+
+        :param UndoOrganizeFolderWithTidyType val:
+        :rtype: EventType
+        """
+        return cls('undo_organize_folder_with_tidy', val)
 
     @classmethod
     def user_tags_added(cls, val):
@@ -27125,6 +27607,17 @@ class EventType(bb.Union):
         return cls('directory_restrictions_remove_members', val)
 
     @classmethod
+    def dropbox_passwords_policy_changed(cls, val):
+        """
+        Create an instance of this class set to the
+        ``dropbox_passwords_policy_changed`` tag with value ``val``.
+
+        :param DropboxPasswordsPolicyChangedType val:
+        :rtype: EventType
+        """
+        return cls('dropbox_passwords_policy_changed', val)
+
+    @classmethod
     def email_ingest_policy_changed(cls, val):
         """
         Create an instance of this class set to the
@@ -27840,6 +28333,29 @@ class EventType(bb.Union):
         :rtype: EventType
         """
         return cls('web_sessions_change_idle_length_policy', val)
+
+    @classmethod
+    def data_residency_migration_request_successful(cls, val):
+        """
+        Create an instance of this class set to the
+        ``data_residency_migration_request_successful`` tag with value ``val``.
+
+        :param DataResidencyMigrationRequestSuccessfulType val:
+        :rtype: EventType
+        """
+        return cls('data_residency_migration_request_successful', val)
+
+    @classmethod
+    def data_residency_migration_request_unsuccessful(cls, val):
+        """
+        Create an instance of this class set to the
+        ``data_residency_migration_request_unsuccessful`` tag with value
+        ``val``.
+
+        :param DataResidencyMigrationRequestUnsuccessfulType val:
+        :rtype: EventType
+        """
+        return cls('data_residency_migration_request_unsuccessful', val)
 
     @classmethod
     def team_merge_from(cls, val):
@@ -28755,6 +29271,22 @@ class EventType(bb.Union):
         """
         return self._tag == 'emm_refresh_auth_token'
 
+    def is_external_drive_backup_eligibility_status_checked(self):
+        """
+        Check if the union tag is ``external_drive_backup_eligibility_status_checked``.
+
+        :rtype: bool
+        """
+        return self._tag == 'external_drive_backup_eligibility_status_checked'
+
+    def is_external_drive_backup_status_changed(self):
+        """
+        Check if the union tag is ``external_drive_backup_status_changed``.
+
+        :rtype: bool
+        """
+        return self._tag == 'external_drive_backup_status_changed'
+
     def is_account_capture_change_availability(self):
         """
         Check if the union tag is ``account_capture_change_availability``.
@@ -29074,6 +29606,22 @@ class EventType(bb.Union):
         :rtype: bool
         """
         return self._tag == 'rewind_folder'
+
+    def is_undo_naming_convention(self):
+        """
+        Check if the union tag is ``undo_naming_convention``.
+
+        :rtype: bool
+        """
+        return self._tag == 'undo_naming_convention'
+
+    def is_undo_organize_folder_with_tidy(self):
+        """
+        Check if the union tag is ``undo_organize_folder_with_tidy``.
+
+        :rtype: bool
+        """
+        return self._tag == 'undo_organize_folder_with_tidy'
 
     def is_user_tags_added(self):
         """
@@ -31251,6 +31799,14 @@ class EventType(bb.Union):
         """
         return self._tag == 'directory_restrictions_remove_members'
 
+    def is_dropbox_passwords_policy_changed(self):
+        """
+        Check if the union tag is ``dropbox_passwords_policy_changed``.
+
+        :rtype: bool
+        """
+        return self._tag == 'dropbox_passwords_policy_changed'
+
     def is_email_ingest_policy_changed(self):
         """
         Check if the union tag is ``email_ingest_policy_changed``.
@@ -31770,6 +32326,22 @@ class EventType(bb.Union):
         :rtype: bool
         """
         return self._tag == 'web_sessions_change_idle_length_policy'
+
+    def is_data_residency_migration_request_successful(self):
+        """
+        Check if the union tag is ``data_residency_migration_request_successful``.
+
+        :rtype: bool
+        """
+        return self._tag == 'data_residency_migration_request_successful'
+
+    def is_data_residency_migration_request_unsuccessful(self):
+        """
+        Check if the union tag is ``data_residency_migration_request_unsuccessful``.
+
+        :rtype: bool
+        """
+        return self._tag == 'data_residency_migration_request_unsuccessful'
 
     def is_team_merge_from(self):
         """
@@ -32776,6 +33348,30 @@ class EventType(bb.Union):
             raise AttributeError("tag 'emm_refresh_auth_token' not set")
         return self._value
 
+    def get_external_drive_backup_eligibility_status_checked(self):
+        """
+        (devices) Checked external drive backup eligibility status
+
+        Only call this if :meth:`is_external_drive_backup_eligibility_status_checked` is true.
+
+        :rtype: ExternalDriveBackupEligibilityStatusCheckedType
+        """
+        if not self.is_external_drive_backup_eligibility_status_checked():
+            raise AttributeError("tag 'external_drive_backup_eligibility_status_checked' not set")
+        return self._value
+
+    def get_external_drive_backup_status_changed(self):
+        """
+        (devices) Modified external drive backup
+
+        Only call this if :meth:`is_external_drive_backup_status_changed` is true.
+
+        :rtype: ExternalDriveBackupStatusChangedType
+        """
+        if not self.is_external_drive_backup_status_changed():
+            raise AttributeError("tag 'external_drive_backup_status_changed' not set")
+        return self._value
+
     def get_account_capture_change_availability(self):
         """
         (domains) Granted/revoked option to enable account capture on team
@@ -32962,7 +33558,7 @@ class EventType(bb.Union):
 
     def get_apply_naming_convention(self):
         """
-        (file_operations) Applied a Naming Convention rule
+        (file_operations) Applied naming convention
 
         Only call this if :meth:`is_apply_naming_convention` is true.
 
@@ -33238,7 +33834,7 @@ class EventType(bb.Union):
 
     def get_organize_folder_with_tidy(self):
         """
-        (file_operations) Organized a folder with the Tidy Up action
+        (file_operations) Organized a folder with multi-file organize
 
         Only call this if :meth:`is_organize_folder_with_tidy` is true.
 
@@ -33258,6 +33854,30 @@ class EventType(bb.Union):
         """
         if not self.is_rewind_folder():
             raise AttributeError("tag 'rewind_folder' not set")
+        return self._value
+
+    def get_undo_naming_convention(self):
+        """
+        (file_operations) Reverted naming convention
+
+        Only call this if :meth:`is_undo_naming_convention` is true.
+
+        :rtype: UndoNamingConventionType
+        """
+        if not self.is_undo_naming_convention():
+            raise AttributeError("tag 'undo_naming_convention' not set")
+        return self._value
+
+    def get_undo_organize_folder_with_tidy(self):
+        """
+        (file_operations) Removed multi-file organize
+
+        Only call this if :meth:`is_undo_organize_folder_with_tidy` is true.
+
+        :rtype: UndoOrganizeFolderWithTidyType
+        """
+        if not self.is_undo_organize_folder_with_tidy():
+            raise AttributeError("tag 'undo_organize_folder_with_tidy' not set")
         return self._value
 
     def get_user_tags_added(self):
@@ -33286,7 +33906,7 @@ class EventType(bb.Union):
 
     def get_email_ingest_receive_file(self):
         """
-        (file_requests) Received files via Email to my Dropbox
+        (file_requests) Received files via Email to Dropbox
 
         Only call this if :meth:`is_email_ingest_receive_file` is true.
 
@@ -36569,9 +37189,21 @@ class EventType(bb.Union):
             raise AttributeError("tag 'directory_restrictions_remove_members' not set")
         return self._value
 
+    def get_dropbox_passwords_policy_changed(self):
+        """
+        (team_policies) Changed Dropbox Passwords policy for team
+
+        Only call this if :meth:`is_dropbox_passwords_policy_changed` is true.
+
+        :rtype: DropboxPasswordsPolicyChangedType
+        """
+        if not self.is_dropbox_passwords_policy_changed():
+            raise AttributeError("tag 'dropbox_passwords_policy_changed' not set")
+        return self._value
+
     def get_email_ingest_policy_changed(self):
         """
-        (team_policies) Changed email to my dropbox policy for team
+        (team_policies) Changed email to Dropbox policy for team
 
         Only call this if :meth:`is_email_ingest_policy_changed` is true.
 
@@ -37371,6 +38003,31 @@ class EventType(bb.Union):
             raise AttributeError("tag 'web_sessions_change_idle_length_policy' not set")
         return self._value
 
+    def get_data_residency_migration_request_successful(self):
+        """
+        (team_profile) Requested data residency migration for team data
+
+        Only call this if :meth:`is_data_residency_migration_request_successful` is true.
+
+        :rtype: DataResidencyMigrationRequestSuccessfulType
+        """
+        if not self.is_data_residency_migration_request_successful():
+            raise AttributeError("tag 'data_residency_migration_request_successful' not set")
+        return self._value
+
+    def get_data_residency_migration_request_unsuccessful(self):
+        """
+        (team_profile) Request for data residency migration for team data has
+        failed
+
+        Only call this if :meth:`is_data_residency_migration_request_unsuccessful` is true.
+
+        :rtype: DataResidencyMigrationRequestUnsuccessfulType
+        """
+        if not self.is_data_residency_migration_request_unsuccessful():
+            raise AttributeError("tag 'data_residency_migration_request_unsuccessful' not set")
+        return self._value
+
     def get_team_merge_from(self):
         """
         (team_profile) Merged another team into this team
@@ -38002,6 +38659,11 @@ class EventTypeArg(bb.Union):
         Enrolled new Dropbox Passwords device
     :ivar team_log.EventTypeArg.emm_refresh_auth_token: (devices) Refreshed auth
         token used for setting up EMM
+    :ivar
+        team_log.EventTypeArg.external_drive_backup_eligibility_status_checked:
+        (devices) Checked external drive backup eligibility status
+    :ivar team_log.EventTypeArg.external_drive_backup_status_changed: (devices)
+        Modified external drive backup
     :ivar team_log.EventTypeArg.account_capture_change_availability: (domains)
         Granted/revoked option to enable account capture on team domains
     :ivar team_log.EventTypeArg.account_capture_migrate_account: (domains)
@@ -38036,7 +38698,7 @@ class EventTypeArg(bb.Union):
     :ivar team_log.EventTypeArg.enabled_domain_invites: (domains) Enabled domain
         invites (deprecated, no longer logged)
     :ivar team_log.EventTypeArg.apply_naming_convention: (file_operations)
-        Applied a Naming Convention rule
+        Applied naming convention
     :ivar team_log.EventTypeArg.create_folder: (file_operations) Created folders
         (deprecated, no longer logged)
     :ivar team_log.EventTypeArg.file_add: (file_operations) Added files and/or
@@ -38081,14 +38743,18 @@ class EventTypeArg(bb.Union):
     :ivar team_log.EventTypeArg.object_label_updated_value: (file_operations)
         Updated a label's value
     :ivar team_log.EventTypeArg.organize_folder_with_tidy: (file_operations)
-        Organized a folder with the Tidy Up action
+        Organized a folder with multi-file organize
     :ivar team_log.EventTypeArg.rewind_folder: (file_operations) Rewound a
         folder
+    :ivar team_log.EventTypeArg.undo_naming_convention: (file_operations)
+        Reverted naming convention
+    :ivar team_log.EventTypeArg.undo_organize_folder_with_tidy:
+        (file_operations) Removed multi-file organize
     :ivar team_log.EventTypeArg.user_tags_added: (file_operations) Tagged a file
     :ivar team_log.EventTypeArg.user_tags_removed: (file_operations) Removed
         tags
     :ivar team_log.EventTypeArg.email_ingest_receive_file: (file_requests)
-        Received files via Email to my Dropbox
+        Received files via Email to Dropbox
     :ivar team_log.EventTypeArg.file_request_change: (file_requests) Changed
         file request
     :ivar team_log.EventTypeArg.file_request_close: (file_requests) Closed file
@@ -38629,8 +39295,10 @@ class EventTypeArg(bb.Union):
         (team_policies) Added members to directory restrictions list
     :ivar team_log.EventTypeArg.directory_restrictions_remove_members:
         (team_policies) Removed members from directory restrictions list
+    :ivar team_log.EventTypeArg.dropbox_passwords_policy_changed:
+        (team_policies) Changed Dropbox Passwords policy for team
     :ivar team_log.EventTypeArg.email_ingest_policy_changed: (team_policies)
-        Changed email to my dropbox policy for team
+        Changed email to Dropbox policy for team
     :ivar team_log.EventTypeArg.emm_add_exception: (team_policies) Added members
         to EMM exception list
     :ivar team_log.EventTypeArg.emm_change_policy: (team_policies)
@@ -38774,6 +39442,11 @@ class EventTypeArg(bb.Union):
     :ivar team_log.EventTypeArg.web_sessions_change_idle_length_policy:
         (team_policies) Changed how long team members can be idle while signed
         in to Dropbox.com
+    :ivar team_log.EventTypeArg.data_residency_migration_request_successful:
+        (team_profile) Requested data residency migration for team data
+    :ivar team_log.EventTypeArg.data_residency_migration_request_unsuccessful:
+        (team_profile) Request for data residency migration for team data has
+        failed
     :ivar team_log.EventTypeArg.team_merge_from: (team_profile) Merged another
         team into this team
     :ivar team_log.EventTypeArg.team_merge_to: (team_profile) Merged this team
@@ -38993,6 +39666,10 @@ class EventTypeArg(bb.Union):
     # Attribute is overwritten below the class definition
     emm_refresh_auth_token = None
     # Attribute is overwritten below the class definition
+    external_drive_backup_eligibility_status_checked = None
+    # Attribute is overwritten below the class definition
+    external_drive_backup_status_changed = None
+    # Attribute is overwritten below the class definition
     account_capture_change_availability = None
     # Attribute is overwritten below the class definition
     account_capture_migrate_account = None
@@ -39072,6 +39749,10 @@ class EventTypeArg(bb.Union):
     organize_folder_with_tidy = None
     # Attribute is overwritten below the class definition
     rewind_folder = None
+    # Attribute is overwritten below the class definition
+    undo_naming_convention = None
+    # Attribute is overwritten below the class definition
+    undo_organize_folder_with_tidy = None
     # Attribute is overwritten below the class definition
     user_tags_added = None
     # Attribute is overwritten below the class definition
@@ -39617,6 +40298,8 @@ class EventTypeArg(bb.Union):
     # Attribute is overwritten below the class definition
     directory_restrictions_remove_members = None
     # Attribute is overwritten below the class definition
+    dropbox_passwords_policy_changed = None
+    # Attribute is overwritten below the class definition
     email_ingest_policy_changed = None
     # Attribute is overwritten below the class definition
     emm_add_exception = None
@@ -39746,6 +40429,10 @@ class EventTypeArg(bb.Union):
     web_sessions_change_fixed_length_policy = None
     # Attribute is overwritten below the class definition
     web_sessions_change_idle_length_policy = None
+    # Attribute is overwritten below the class definition
+    data_residency_migration_request_successful = None
+    # Attribute is overwritten below the class definition
+    data_residency_migration_request_unsuccessful = None
     # Attribute is overwritten below the class definition
     team_merge_from = None
     # Attribute is overwritten below the class definition
@@ -40273,6 +40960,22 @@ class EventTypeArg(bb.Union):
         """
         return self._tag == 'emm_refresh_auth_token'
 
+    def is_external_drive_backup_eligibility_status_checked(self):
+        """
+        Check if the union tag is ``external_drive_backup_eligibility_status_checked``.
+
+        :rtype: bool
+        """
+        return self._tag == 'external_drive_backup_eligibility_status_checked'
+
+    def is_external_drive_backup_status_changed(self):
+        """
+        Check if the union tag is ``external_drive_backup_status_changed``.
+
+        :rtype: bool
+        """
+        return self._tag == 'external_drive_backup_status_changed'
+
     def is_account_capture_change_availability(self):
         """
         Check if the union tag is ``account_capture_change_availability``.
@@ -40592,6 +41295,22 @@ class EventTypeArg(bb.Union):
         :rtype: bool
         """
         return self._tag == 'rewind_folder'
+
+    def is_undo_naming_convention(self):
+        """
+        Check if the union tag is ``undo_naming_convention``.
+
+        :rtype: bool
+        """
+        return self._tag == 'undo_naming_convention'
+
+    def is_undo_organize_folder_with_tidy(self):
+        """
+        Check if the union tag is ``undo_organize_folder_with_tidy``.
+
+        :rtype: bool
+        """
+        return self._tag == 'undo_organize_folder_with_tidy'
 
     def is_user_tags_added(self):
         """
@@ -42769,6 +43488,14 @@ class EventTypeArg(bb.Union):
         """
         return self._tag == 'directory_restrictions_remove_members'
 
+    def is_dropbox_passwords_policy_changed(self):
+        """
+        Check if the union tag is ``dropbox_passwords_policy_changed``.
+
+        :rtype: bool
+        """
+        return self._tag == 'dropbox_passwords_policy_changed'
+
     def is_email_ingest_policy_changed(self):
         """
         Check if the union tag is ``email_ingest_policy_changed``.
@@ -43288,6 +44015,22 @@ class EventTypeArg(bb.Union):
         :rtype: bool
         """
         return self._tag == 'web_sessions_change_idle_length_policy'
+
+    def is_data_residency_migration_request_successful(self):
+        """
+        Check if the union tag is ``data_residency_migration_request_successful``.
+
+        :rtype: bool
+        """
+        return self._tag == 'data_residency_migration_request_successful'
+
+    def is_data_residency_migration_request_unsuccessful(self):
+        """
+        Check if the union tag is ``data_residency_migration_request_unsuccessful``.
+
+        :rtype: bool
+        """
+        return self._tag == 'data_residency_migration_request_unsuccessful'
 
     def is_team_merge_from(self):
         """
@@ -43853,6 +44596,124 @@ class ExtendedVersionHistoryPolicy(bb.Union):
 
 ExtendedVersionHistoryPolicy_validator = bv.Union(ExtendedVersionHistoryPolicy)
 
+class ExternalDriveBackupEligibilityStatus(bb.Union):
+    """
+    External Drive Backup eligibility status
+
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+    """
+
+    _catch_all = 'other'
+    # Attribute is overwritten below the class definition
+    exceed_license_cap = None
+    # Attribute is overwritten below the class definition
+    success = None
+    # Attribute is overwritten below the class definition
+    other = None
+
+    def is_exceed_license_cap(self):
+        """
+        Check if the union tag is ``exceed_license_cap``.
+
+        :rtype: bool
+        """
+        return self._tag == 'exceed_license_cap'
+
+    def is_success(self):
+        """
+        Check if the union tag is ``success``.
+
+        :rtype: bool
+        """
+        return self._tag == 'success'
+
+    def is_other(self):
+        """
+        Check if the union tag is ``other``.
+
+        :rtype: bool
+        """
+        return self._tag == 'other'
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(ExternalDriveBackupEligibilityStatus, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+ExternalDriveBackupEligibilityStatus_validator = bv.Union(ExternalDriveBackupEligibilityStatus)
+
+class ExternalDriveBackupEligibilityStatusCheckedDetails(bb.Struct):
+    """
+    Checked external drive backup eligibility status.
+
+    :ivar
+        team_log.ExternalDriveBackupEligibilityStatusCheckedDetails.desktop_device_session_info:
+        Device's session logged information.
+    :ivar team_log.ExternalDriveBackupEligibilityStatusCheckedDetails.status:
+        Current eligibility status of external drive backup.
+    :ivar
+        team_log.ExternalDriveBackupEligibilityStatusCheckedDetails.number_of_external_drive_backup:
+        Total number of valid external drive backup for all the team members.
+    """
+
+    __slots__ = [
+        '_desktop_device_session_info_value',
+        '_status_value',
+        '_number_of_external_drive_backup_value',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 desktop_device_session_info=None,
+                 status=None,
+                 number_of_external_drive_backup=None):
+        self._desktop_device_session_info_value = bb.NOT_SET
+        self._status_value = bb.NOT_SET
+        self._number_of_external_drive_backup_value = bb.NOT_SET
+        if desktop_device_session_info is not None:
+            self.desktop_device_session_info = desktop_device_session_info
+        if status is not None:
+            self.status = status
+        if number_of_external_drive_backup is not None:
+            self.number_of_external_drive_backup = number_of_external_drive_backup
+
+    # Instance attribute type: DesktopDeviceSessionLogInfo (validator is set below)
+    desktop_device_session_info = bb.Attribute("desktop_device_session_info", user_defined=True)
+
+    # Instance attribute type: ExternalDriveBackupEligibilityStatus (validator is set below)
+    status = bb.Attribute("status", user_defined=True)
+
+    # Instance attribute type: int (validator is set below)
+    number_of_external_drive_backup = bb.Attribute("number_of_external_drive_backup")
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(ExternalDriveBackupEligibilityStatusCheckedDetails, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+ExternalDriveBackupEligibilityStatusCheckedDetails_validator = bv.Struct(ExternalDriveBackupEligibilityStatusCheckedDetails)
+
+class ExternalDriveBackupEligibilityStatusCheckedType(bb.Struct):
+
+    __slots__ = [
+        '_description_value',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 description=None):
+        self._description_value = bb.NOT_SET
+        if description is not None:
+            self.description = description
+
+    # Instance attribute type: str (validator is set below)
+    description = bb.Attribute("description")
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(ExternalDriveBackupEligibilityStatusCheckedType, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+ExternalDriveBackupEligibilityStatusCheckedType_validator = bv.Struct(ExternalDriveBackupEligibilityStatusCheckedType)
+
 class ExternalDriveBackupPolicy(bb.Union):
     """
     Policy for controlling team access to external drive backup feature
@@ -43864,11 +44725,21 @@ class ExternalDriveBackupPolicy(bb.Union):
 
     _catch_all = 'other'
     # Attribute is overwritten below the class definition
+    default = None
+    # Attribute is overwritten below the class definition
     disabled = None
     # Attribute is overwritten below the class definition
     enabled = None
     # Attribute is overwritten below the class definition
     other = None
+
+    def is_default(self):
+        """
+        Check if the union tag is ``default``.
+
+        :rtype: bool
+        """
+        return self._tag == 'default'
 
     def is_disabled(self):
         """
@@ -43958,6 +44829,163 @@ class ExternalDriveBackupPolicyChangedType(bb.Struct):
         super(ExternalDriveBackupPolicyChangedType, self)._process_custom_annotations(annotation_type, field_path, processor)
 
 ExternalDriveBackupPolicyChangedType_validator = bv.Struct(ExternalDriveBackupPolicyChangedType)
+
+class ExternalDriveBackupStatus(bb.Union):
+    """
+    External Drive Backup status
+
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+    """
+
+    _catch_all = 'other'
+    # Attribute is overwritten below the class definition
+    broken = None
+    # Attribute is overwritten below the class definition
+    created = None
+    # Attribute is overwritten below the class definition
+    created_or_broken = None
+    # Attribute is overwritten below the class definition
+    deleted = None
+    # Attribute is overwritten below the class definition
+    empty = None
+    # Attribute is overwritten below the class definition
+    unknown = None
+    # Attribute is overwritten below the class definition
+    other = None
+
+    def is_broken(self):
+        """
+        Check if the union tag is ``broken``.
+
+        :rtype: bool
+        """
+        return self._tag == 'broken'
+
+    def is_created(self):
+        """
+        Check if the union tag is ``created``.
+
+        :rtype: bool
+        """
+        return self._tag == 'created'
+
+    def is_created_or_broken(self):
+        """
+        Check if the union tag is ``created_or_broken``.
+
+        :rtype: bool
+        """
+        return self._tag == 'created_or_broken'
+
+    def is_deleted(self):
+        """
+        Check if the union tag is ``deleted``.
+
+        :rtype: bool
+        """
+        return self._tag == 'deleted'
+
+    def is_empty(self):
+        """
+        Check if the union tag is ``empty``.
+
+        :rtype: bool
+        """
+        return self._tag == 'empty'
+
+    def is_unknown(self):
+        """
+        Check if the union tag is ``unknown``.
+
+        :rtype: bool
+        """
+        return self._tag == 'unknown'
+
+    def is_other(self):
+        """
+        Check if the union tag is ``other``.
+
+        :rtype: bool
+        """
+        return self._tag == 'other'
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(ExternalDriveBackupStatus, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+ExternalDriveBackupStatus_validator = bv.Union(ExternalDriveBackupStatus)
+
+class ExternalDriveBackupStatusChangedDetails(bb.Struct):
+    """
+    Modified external drive backup.
+
+    :ivar
+        team_log.ExternalDriveBackupStatusChangedDetails.desktop_device_session_info:
+        Device's session logged information.
+    :ivar team_log.ExternalDriveBackupStatusChangedDetails.previous_value:
+        Previous status of this external drive backup.
+    :ivar team_log.ExternalDriveBackupStatusChangedDetails.new_value: Next
+        status of this external drive backup.
+    """
+
+    __slots__ = [
+        '_desktop_device_session_info_value',
+        '_previous_value_value',
+        '_new_value_value',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 desktop_device_session_info=None,
+                 previous_value=None,
+                 new_value=None):
+        self._desktop_device_session_info_value = bb.NOT_SET
+        self._previous_value_value = bb.NOT_SET
+        self._new_value_value = bb.NOT_SET
+        if desktop_device_session_info is not None:
+            self.desktop_device_session_info = desktop_device_session_info
+        if previous_value is not None:
+            self.previous_value = previous_value
+        if new_value is not None:
+            self.new_value = new_value
+
+    # Instance attribute type: DesktopDeviceSessionLogInfo (validator is set below)
+    desktop_device_session_info = bb.Attribute("desktop_device_session_info", user_defined=True)
+
+    # Instance attribute type: ExternalDriveBackupStatus (validator is set below)
+    previous_value = bb.Attribute("previous_value", user_defined=True)
+
+    # Instance attribute type: ExternalDriveBackupStatus (validator is set below)
+    new_value = bb.Attribute("new_value", user_defined=True)
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(ExternalDriveBackupStatusChangedDetails, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+ExternalDriveBackupStatusChangedDetails_validator = bv.Struct(ExternalDriveBackupStatusChangedDetails)
+
+class ExternalDriveBackupStatusChangedType(bb.Struct):
+
+    __slots__ = [
+        '_description_value',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 description=None):
+        self._description_value = bb.NOT_SET
+        if description is not None:
+            self.description = description
+
+    # Instance attribute type: str (validator is set below)
+    description = bb.Attribute("description")
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(ExternalDriveBackupStatusChangedType, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+ExternalDriveBackupStatusChangedType_validator = bv.Struct(ExternalDriveBackupStatusChangedType)
 
 class ExternalSharingCreateReportDetails(bb.Struct):
     """
@@ -54459,7 +55487,7 @@ OrganizationName_validator = bv.Struct(OrganizationName)
 
 class OrganizeFolderWithTidyDetails(bb.Struct):
     """
-    Organized a folder with the Tidy Up action.
+    Organized a folder with multi-file organize.
     """
 
     __slots__ = [
@@ -58200,6 +59228,8 @@ class PlacementRestriction(bb.Union):
     # Attribute is overwritten below the class definition
     uk_only = None
     # Attribute is overwritten below the class definition
+    us_s3_only = None
+    # Attribute is overwritten below the class definition
     other = None
 
     def is_australia_only(self):
@@ -58241,6 +59271,14 @@ class PlacementRestriction(bb.Union):
         :rtype: bool
         """
         return self._tag == 'uk_only'
+
+    def is_us_s3_only(self):
+        """
+        Check if the union tag is ``us_s3_only``.
+
+        :rtype: bool
+        """
+        return self._tag == 'us_s3_only'
 
     def is_other(self):
         """
@@ -64032,6 +65070,8 @@ class SharingLinkPolicy(bb.Union):
 
     _catch_all = 'other'
     # Attribute is overwritten below the class definition
+    default_no_one = None
+    # Attribute is overwritten below the class definition
     default_private = None
     # Attribute is overwritten below the class definition
     default_public = None
@@ -64039,6 +65079,14 @@ class SharingLinkPolicy(bb.Union):
     only_private = None
     # Attribute is overwritten below the class definition
     other = None
+
+    def is_default_no_one(self):
+        """
+        Check if the union tag is ``default_no_one``.
+
+        :rtype: bool
+        """
+        return self._tag == 'default_no_one'
 
     def is_default_private(self):
         """
@@ -71013,6 +72061,86 @@ class TwoAccountPolicy(bb.Union):
 
 TwoAccountPolicy_validator = bv.Union(TwoAccountPolicy)
 
+class UndoNamingConventionDetails(bb.Struct):
+    """
+    Reverted naming convention.
+    """
+
+    __slots__ = [
+    ]
+
+    _has_required_fields = False
+
+    def __init__(self):
+        pass
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(UndoNamingConventionDetails, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+UndoNamingConventionDetails_validator = bv.Struct(UndoNamingConventionDetails)
+
+class UndoNamingConventionType(bb.Struct):
+
+    __slots__ = [
+        '_description_value',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 description=None):
+        self._description_value = bb.NOT_SET
+        if description is not None:
+            self.description = description
+
+    # Instance attribute type: str (validator is set below)
+    description = bb.Attribute("description")
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(UndoNamingConventionType, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+UndoNamingConventionType_validator = bv.Struct(UndoNamingConventionType)
+
+class UndoOrganizeFolderWithTidyDetails(bb.Struct):
+    """
+    Removed multi-file organize.
+    """
+
+    __slots__ = [
+    ]
+
+    _has_required_fields = False
+
+    def __init__(self):
+        pass
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(UndoOrganizeFolderWithTidyDetails, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+UndoOrganizeFolderWithTidyDetails_validator = bv.Struct(UndoOrganizeFolderWithTidyDetails)
+
+class UndoOrganizeFolderWithTidyType(bb.Struct):
+
+    __slots__ = [
+        '_description_value',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 description=None):
+        self._description_value = bb.NOT_SET
+        if description is not None:
+            self.description = description
+
+    # Instance attribute type: str (validator is set below)
+    description = bb.Attribute("description")
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(UndoOrganizeFolderWithTidyType, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+UndoOrganizeFolderWithTidyType_validator = bv.Struct(UndoOrganizeFolderWithTidyType)
+
 class UserLinkedAppLogInfo(AppLogInfo):
     """
     User linked app
@@ -72040,15 +73168,21 @@ AdminAlertSeverityEnum.other = AdminAlertSeverityEnum('other')
 AdminAlertingAlertConfiguration.alert_state.validator = bv.Nullable(AdminAlertingAlertStatePolicy_validator)
 AdminAlertingAlertConfiguration.sensitivity_level.validator = bv.Nullable(AdminAlertingAlertSensitivity_validator)
 AdminAlertingAlertConfiguration.recipients_settings.validator = bv.Nullable(RecipientsConfiguration_validator)
+AdminAlertingAlertConfiguration.text.validator = bv.Nullable(bv.String())
+AdminAlertingAlertConfiguration.excluded_file_extensions.validator = bv.Nullable(bv.String())
 AdminAlertingAlertConfiguration._all_field_names_ = set([
     'alert_state',
     'sensitivity_level',
     'recipients_settings',
+    'text',
+    'excluded_file_extensions',
 ])
 AdminAlertingAlertConfiguration._all_fields_ = [
     ('alert_state', AdminAlertingAlertConfiguration.alert_state.validator),
     ('sensitivity_level', AdminAlertingAlertConfiguration.sensitivity_level.validator),
     ('recipients_settings', AdminAlertingAlertConfiguration.recipients_settings.validator),
+    ('text', AdminAlertingAlertConfiguration.text.validator),
+    ('excluded_file_extensions', AdminAlertingAlertConfiguration.excluded_file_extensions.validator),
 ]
 
 AdminAlertingAlertSensitivity._high_validator = bv.Void()
@@ -72296,14 +73430,14 @@ AppLogInfo._fields_ = [
 AppLogInfo._all_fields_ = AppLogInfo._fields_
 
 AppLogInfo._tag_to_subtype_ = {
-    (u'user_or_team_linked_app',): UserOrTeamLinkedAppLogInfo_validator,
-    (u'user_linked_app',): UserLinkedAppLogInfo_validator,
-    (u'team_linked_app',): TeamLinkedAppLogInfo_validator,
+    ('user_or_team_linked_app',): UserOrTeamLinkedAppLogInfo_validator,
+    ('user_linked_app',): UserLinkedAppLogInfo_validator,
+    ('team_linked_app',): TeamLinkedAppLogInfo_validator,
 }
 AppLogInfo._pytype_to_tag_and_subtype_ = {
-    UserOrTeamLinkedAppLogInfo: ((u'user_or_team_linked_app',), UserOrTeamLinkedAppLogInfo_validator),
-    UserLinkedAppLogInfo: ((u'user_linked_app',), UserLinkedAppLogInfo_validator),
-    TeamLinkedAppLogInfo: ((u'team_linked_app',), TeamLinkedAppLogInfo_validator),
+    UserOrTeamLinkedAppLogInfo: (('user_or_team_linked_app',), UserOrTeamLinkedAppLogInfo_validator),
+    UserLinkedAppLogInfo: (('user_linked_app',), UserLinkedAppLogInfo_validator),
+    TeamLinkedAppLogInfo: (('team_linked_app',), TeamLinkedAppLogInfo_validator),
 }
 AppLogInfo._is_catch_all_ = True
 
@@ -72870,6 +74004,20 @@ DataPlacementRestrictionSatisfyPolicyType.description.validator = bv.String()
 DataPlacementRestrictionSatisfyPolicyType._all_field_names_ = set(['description'])
 DataPlacementRestrictionSatisfyPolicyType._all_fields_ = [('description', DataPlacementRestrictionSatisfyPolicyType.description.validator)]
 
+DataResidencyMigrationRequestSuccessfulDetails._all_field_names_ = set([])
+DataResidencyMigrationRequestSuccessfulDetails._all_fields_ = []
+
+DataResidencyMigrationRequestSuccessfulType.description.validator = bv.String()
+DataResidencyMigrationRequestSuccessfulType._all_field_names_ = set(['description'])
+DataResidencyMigrationRequestSuccessfulType._all_fields_ = [('description', DataResidencyMigrationRequestSuccessfulType.description.validator)]
+
+DataResidencyMigrationRequestUnsuccessfulDetails._all_field_names_ = set([])
+DataResidencyMigrationRequestUnsuccessfulDetails._all_fields_ = []
+
+DataResidencyMigrationRequestUnsuccessfulType.description.validator = bv.String()
+DataResidencyMigrationRequestUnsuccessfulType._all_field_names_ = set(['description'])
+DataResidencyMigrationRequestUnsuccessfulType._all_fields_ = [('description', DataResidencyMigrationRequestUnsuccessfulType.description.validator)]
+
 DefaultLinkExpirationDaysPolicy._day_1_validator = bv.Void()
 DefaultLinkExpirationDaysPolicy._day_180_validator = bv.Void()
 DefaultLinkExpirationDaysPolicy._day_3_validator = bv.Void()
@@ -72926,16 +74074,16 @@ DeviceSessionLogInfo._fields_ = [
 DeviceSessionLogInfo._all_fields_ = DeviceSessionLogInfo._fields_
 
 DeviceSessionLogInfo._tag_to_subtype_ = {
-    (u'desktop_device_session',): DesktopDeviceSessionLogInfo_validator,
-    (u'mobile_device_session',): MobileDeviceSessionLogInfo_validator,
-    (u'web_device_session',): WebDeviceSessionLogInfo_validator,
-    (u'legacy_device_session',): LegacyDeviceSessionLogInfo_validator,
+    ('desktop_device_session',): DesktopDeviceSessionLogInfo_validator,
+    ('mobile_device_session',): MobileDeviceSessionLogInfo_validator,
+    ('web_device_session',): WebDeviceSessionLogInfo_validator,
+    ('legacy_device_session',): LegacyDeviceSessionLogInfo_validator,
 }
 DeviceSessionLogInfo._pytype_to_tag_and_subtype_ = {
-    DesktopDeviceSessionLogInfo: ((u'desktop_device_session',), DesktopDeviceSessionLogInfo_validator),
-    MobileDeviceSessionLogInfo: ((u'mobile_device_session',), MobileDeviceSessionLogInfo_validator),
-    WebDeviceSessionLogInfo: ((u'web_device_session',), WebDeviceSessionLogInfo_validator),
-    LegacyDeviceSessionLogInfo: ((u'legacy_device_session',), LegacyDeviceSessionLogInfo_validator),
+    DesktopDeviceSessionLogInfo: (('desktop_device_session',), DesktopDeviceSessionLogInfo_validator),
+    MobileDeviceSessionLogInfo: (('mobile_device_session',), MobileDeviceSessionLogInfo_validator),
+    WebDeviceSessionLogInfo: (('web_device_session',), WebDeviceSessionLogInfo_validator),
+    LegacyDeviceSessionLogInfo: (('legacy_device_session',), LegacyDeviceSessionLogInfo_validator),
 }
 DeviceSessionLogInfo._is_catch_all_ = True
 
@@ -72971,14 +74119,14 @@ SessionLogInfo._fields_ = [('session_id', SessionLogInfo.session_id.validator)]
 SessionLogInfo._all_fields_ = SessionLogInfo._fields_
 
 SessionLogInfo._tag_to_subtype_ = {
-    (u'web',): WebSessionLogInfo_validator,
-    (u'desktop',): DesktopSessionLogInfo_validator,
-    (u'mobile',): MobileSessionLogInfo_validator,
+    ('web',): WebSessionLogInfo_validator,
+    ('desktop',): DesktopSessionLogInfo_validator,
+    ('mobile',): MobileSessionLogInfo_validator,
 }
 SessionLogInfo._pytype_to_tag_and_subtype_ = {
-    WebSessionLogInfo: ((u'web',), WebSessionLogInfo_validator),
-    DesktopSessionLogInfo: ((u'desktop',), DesktopSessionLogInfo_validator),
-    MobileSessionLogInfo: ((u'mobile',), MobileSessionLogInfo_validator),
+    WebSessionLogInfo: (('web',), WebSessionLogInfo_validator),
+    DesktopSessionLogInfo: (('desktop',), DesktopSessionLogInfo_validator),
+    MobileSessionLogInfo: (('mobile',), MobileSessionLogInfo_validator),
 }
 SessionLogInfo._is_catch_all_ = True
 
@@ -73388,6 +74536,37 @@ DropboxPasswordsNewDeviceEnrolledType.description.validator = bv.String()
 DropboxPasswordsNewDeviceEnrolledType._all_field_names_ = set(['description'])
 DropboxPasswordsNewDeviceEnrolledType._all_fields_ = [('description', DropboxPasswordsNewDeviceEnrolledType.description.validator)]
 
+DropboxPasswordsPolicy._default_validator = bv.Void()
+DropboxPasswordsPolicy._disabled_validator = bv.Void()
+DropboxPasswordsPolicy._enabled_validator = bv.Void()
+DropboxPasswordsPolicy._other_validator = bv.Void()
+DropboxPasswordsPolicy._tagmap = {
+    'default': DropboxPasswordsPolicy._default_validator,
+    'disabled': DropboxPasswordsPolicy._disabled_validator,
+    'enabled': DropboxPasswordsPolicy._enabled_validator,
+    'other': DropboxPasswordsPolicy._other_validator,
+}
+
+DropboxPasswordsPolicy.default = DropboxPasswordsPolicy('default')
+DropboxPasswordsPolicy.disabled = DropboxPasswordsPolicy('disabled')
+DropboxPasswordsPolicy.enabled = DropboxPasswordsPolicy('enabled')
+DropboxPasswordsPolicy.other = DropboxPasswordsPolicy('other')
+
+DropboxPasswordsPolicyChangedDetails.new_value.validator = DropboxPasswordsPolicy_validator
+DropboxPasswordsPolicyChangedDetails.previous_value.validator = DropboxPasswordsPolicy_validator
+DropboxPasswordsPolicyChangedDetails._all_field_names_ = set([
+    'new_value',
+    'previous_value',
+])
+DropboxPasswordsPolicyChangedDetails._all_fields_ = [
+    ('new_value', DropboxPasswordsPolicyChangedDetails.new_value.validator),
+    ('previous_value', DropboxPasswordsPolicyChangedDetails.previous_value.validator),
+]
+
+DropboxPasswordsPolicyChangedType.description.validator = bv.String()
+DropboxPasswordsPolicyChangedType._all_field_names_ = set(['description'])
+DropboxPasswordsPolicyChangedType._all_fields_ = [('description', DropboxPasswordsPolicyChangedType.description.validator)]
+
 DurationLogInfo.unit.validator = TimeUnit_validator
 DurationLogInfo.amount.validator = bv.UInt64()
 DurationLogInfo._all_field_names_ = set([
@@ -73693,6 +74872,8 @@ EventDetails._device_unlink_details_validator = DeviceUnlinkDetails_validator
 EventDetails._dropbox_passwords_exported_details_validator = DropboxPasswordsExportedDetails_validator
 EventDetails._dropbox_passwords_new_device_enrolled_details_validator = DropboxPasswordsNewDeviceEnrolledDetails_validator
 EventDetails._emm_refresh_auth_token_details_validator = EmmRefreshAuthTokenDetails_validator
+EventDetails._external_drive_backup_eligibility_status_checked_details_validator = ExternalDriveBackupEligibilityStatusCheckedDetails_validator
+EventDetails._external_drive_backup_status_changed_details_validator = ExternalDriveBackupStatusChangedDetails_validator
 EventDetails._account_capture_change_availability_details_validator = AccountCaptureChangeAvailabilityDetails_validator
 EventDetails._account_capture_migrate_account_details_validator = AccountCaptureMigrateAccountDetails_validator
 EventDetails._account_capture_notification_emails_sent_details_validator = AccountCaptureNotificationEmailsSentDetails_validator
@@ -73733,6 +74914,8 @@ EventDetails._object_label_removed_details_validator = ObjectLabelRemovedDetails
 EventDetails._object_label_updated_value_details_validator = ObjectLabelUpdatedValueDetails_validator
 EventDetails._organize_folder_with_tidy_details_validator = OrganizeFolderWithTidyDetails_validator
 EventDetails._rewind_folder_details_validator = RewindFolderDetails_validator
+EventDetails._undo_naming_convention_details_validator = UndoNamingConventionDetails_validator
+EventDetails._undo_organize_folder_with_tidy_details_validator = UndoOrganizeFolderWithTidyDetails_validator
 EventDetails._user_tags_added_details_validator = UserTagsAddedDetails_validator
 EventDetails._user_tags_removed_details_validator = UserTagsRemovedDetails_validator
 EventDetails._email_ingest_receive_file_details_validator = EmailIngestReceiveFileDetails_validator
@@ -74005,6 +75188,7 @@ EventDetails._device_approvals_change_unlink_action_details_validator = DeviceAp
 EventDetails._device_approvals_remove_exception_details_validator = DeviceApprovalsRemoveExceptionDetails_validator
 EventDetails._directory_restrictions_add_members_details_validator = DirectoryRestrictionsAddMembersDetails_validator
 EventDetails._directory_restrictions_remove_members_details_validator = DirectoryRestrictionsRemoveMembersDetails_validator
+EventDetails._dropbox_passwords_policy_changed_details_validator = DropboxPasswordsPolicyChangedDetails_validator
 EventDetails._email_ingest_policy_changed_details_validator = EmailIngestPolicyChangedDetails_validator
 EventDetails._emm_add_exception_details_validator = EmmAddExceptionDetails_validator
 EventDetails._emm_change_policy_details_validator = EmmChangePolicyDetails_validator
@@ -74070,6 +75254,8 @@ EventDetails._watermarking_policy_changed_details_validator = WatermarkingPolicy
 EventDetails._web_sessions_change_active_session_limit_details_validator = WebSessionsChangeActiveSessionLimitDetails_validator
 EventDetails._web_sessions_change_fixed_length_policy_details_validator = WebSessionsChangeFixedLengthPolicyDetails_validator
 EventDetails._web_sessions_change_idle_length_policy_details_validator = WebSessionsChangeIdleLengthPolicyDetails_validator
+EventDetails._data_residency_migration_request_successful_details_validator = DataResidencyMigrationRequestSuccessfulDetails_validator
+EventDetails._data_residency_migration_request_unsuccessful_details_validator = DataResidencyMigrationRequestUnsuccessfulDetails_validator
 EventDetails._team_merge_from_details_validator = TeamMergeFromDetails_validator
 EventDetails._team_merge_to_details_validator = TeamMergeToDetails_validator
 EventDetails._team_profile_add_background_details_validator = TeamProfileAddBackgroundDetails_validator
@@ -74170,6 +75356,8 @@ EventDetails._tagmap = {
     'dropbox_passwords_exported_details': EventDetails._dropbox_passwords_exported_details_validator,
     'dropbox_passwords_new_device_enrolled_details': EventDetails._dropbox_passwords_new_device_enrolled_details_validator,
     'emm_refresh_auth_token_details': EventDetails._emm_refresh_auth_token_details_validator,
+    'external_drive_backup_eligibility_status_checked_details': EventDetails._external_drive_backup_eligibility_status_checked_details_validator,
+    'external_drive_backup_status_changed_details': EventDetails._external_drive_backup_status_changed_details_validator,
     'account_capture_change_availability_details': EventDetails._account_capture_change_availability_details_validator,
     'account_capture_migrate_account_details': EventDetails._account_capture_migrate_account_details_validator,
     'account_capture_notification_emails_sent_details': EventDetails._account_capture_notification_emails_sent_details_validator,
@@ -74210,6 +75398,8 @@ EventDetails._tagmap = {
     'object_label_updated_value_details': EventDetails._object_label_updated_value_details_validator,
     'organize_folder_with_tidy_details': EventDetails._organize_folder_with_tidy_details_validator,
     'rewind_folder_details': EventDetails._rewind_folder_details_validator,
+    'undo_naming_convention_details': EventDetails._undo_naming_convention_details_validator,
+    'undo_organize_folder_with_tidy_details': EventDetails._undo_organize_folder_with_tidy_details_validator,
     'user_tags_added_details': EventDetails._user_tags_added_details_validator,
     'user_tags_removed_details': EventDetails._user_tags_removed_details_validator,
     'email_ingest_receive_file_details': EventDetails._email_ingest_receive_file_details_validator,
@@ -74482,6 +75672,7 @@ EventDetails._tagmap = {
     'device_approvals_remove_exception_details': EventDetails._device_approvals_remove_exception_details_validator,
     'directory_restrictions_add_members_details': EventDetails._directory_restrictions_add_members_details_validator,
     'directory_restrictions_remove_members_details': EventDetails._directory_restrictions_remove_members_details_validator,
+    'dropbox_passwords_policy_changed_details': EventDetails._dropbox_passwords_policy_changed_details_validator,
     'email_ingest_policy_changed_details': EventDetails._email_ingest_policy_changed_details_validator,
     'emm_add_exception_details': EventDetails._emm_add_exception_details_validator,
     'emm_change_policy_details': EventDetails._emm_change_policy_details_validator,
@@ -74547,6 +75738,8 @@ EventDetails._tagmap = {
     'web_sessions_change_active_session_limit_details': EventDetails._web_sessions_change_active_session_limit_details_validator,
     'web_sessions_change_fixed_length_policy_details': EventDetails._web_sessions_change_fixed_length_policy_details_validator,
     'web_sessions_change_idle_length_policy_details': EventDetails._web_sessions_change_idle_length_policy_details_validator,
+    'data_residency_migration_request_successful_details': EventDetails._data_residency_migration_request_successful_details_validator,
+    'data_residency_migration_request_unsuccessful_details': EventDetails._data_residency_migration_request_unsuccessful_details_validator,
     'team_merge_from_details': EventDetails._team_merge_from_details_validator,
     'team_merge_to_details': EventDetails._team_merge_to_details_validator,
     'team_profile_add_background_details': EventDetails._team_profile_add_background_details_validator,
@@ -74650,6 +75843,8 @@ EventType._device_unlink_validator = DeviceUnlinkType_validator
 EventType._dropbox_passwords_exported_validator = DropboxPasswordsExportedType_validator
 EventType._dropbox_passwords_new_device_enrolled_validator = DropboxPasswordsNewDeviceEnrolledType_validator
 EventType._emm_refresh_auth_token_validator = EmmRefreshAuthTokenType_validator
+EventType._external_drive_backup_eligibility_status_checked_validator = ExternalDriveBackupEligibilityStatusCheckedType_validator
+EventType._external_drive_backup_status_changed_validator = ExternalDriveBackupStatusChangedType_validator
 EventType._account_capture_change_availability_validator = AccountCaptureChangeAvailabilityType_validator
 EventType._account_capture_migrate_account_validator = AccountCaptureMigrateAccountType_validator
 EventType._account_capture_notification_emails_sent_validator = AccountCaptureNotificationEmailsSentType_validator
@@ -74690,6 +75885,8 @@ EventType._object_label_removed_validator = ObjectLabelRemovedType_validator
 EventType._object_label_updated_value_validator = ObjectLabelUpdatedValueType_validator
 EventType._organize_folder_with_tidy_validator = OrganizeFolderWithTidyType_validator
 EventType._rewind_folder_validator = RewindFolderType_validator
+EventType._undo_naming_convention_validator = UndoNamingConventionType_validator
+EventType._undo_organize_folder_with_tidy_validator = UndoOrganizeFolderWithTidyType_validator
 EventType._user_tags_added_validator = UserTagsAddedType_validator
 EventType._user_tags_removed_validator = UserTagsRemovedType_validator
 EventType._email_ingest_receive_file_validator = EmailIngestReceiveFileType_validator
@@ -74962,6 +76159,7 @@ EventType._device_approvals_change_unlink_action_validator = DeviceApprovalsChan
 EventType._device_approvals_remove_exception_validator = DeviceApprovalsRemoveExceptionType_validator
 EventType._directory_restrictions_add_members_validator = DirectoryRestrictionsAddMembersType_validator
 EventType._directory_restrictions_remove_members_validator = DirectoryRestrictionsRemoveMembersType_validator
+EventType._dropbox_passwords_policy_changed_validator = DropboxPasswordsPolicyChangedType_validator
 EventType._email_ingest_policy_changed_validator = EmailIngestPolicyChangedType_validator
 EventType._emm_add_exception_validator = EmmAddExceptionType_validator
 EventType._emm_change_policy_validator = EmmChangePolicyType_validator
@@ -75027,6 +76225,8 @@ EventType._watermarking_policy_changed_validator = WatermarkingPolicyChangedType
 EventType._web_sessions_change_active_session_limit_validator = WebSessionsChangeActiveSessionLimitType_validator
 EventType._web_sessions_change_fixed_length_policy_validator = WebSessionsChangeFixedLengthPolicyType_validator
 EventType._web_sessions_change_idle_length_policy_validator = WebSessionsChangeIdleLengthPolicyType_validator
+EventType._data_residency_migration_request_successful_validator = DataResidencyMigrationRequestSuccessfulType_validator
+EventType._data_residency_migration_request_unsuccessful_validator = DataResidencyMigrationRequestUnsuccessfulType_validator
 EventType._team_merge_from_validator = TeamMergeFromType_validator
 EventType._team_merge_to_validator = TeamMergeToType_validator
 EventType._team_profile_add_background_validator = TeamProfileAddBackgroundType_validator
@@ -75126,6 +76326,8 @@ EventType._tagmap = {
     'dropbox_passwords_exported': EventType._dropbox_passwords_exported_validator,
     'dropbox_passwords_new_device_enrolled': EventType._dropbox_passwords_new_device_enrolled_validator,
     'emm_refresh_auth_token': EventType._emm_refresh_auth_token_validator,
+    'external_drive_backup_eligibility_status_checked': EventType._external_drive_backup_eligibility_status_checked_validator,
+    'external_drive_backup_status_changed': EventType._external_drive_backup_status_changed_validator,
     'account_capture_change_availability': EventType._account_capture_change_availability_validator,
     'account_capture_migrate_account': EventType._account_capture_migrate_account_validator,
     'account_capture_notification_emails_sent': EventType._account_capture_notification_emails_sent_validator,
@@ -75166,6 +76368,8 @@ EventType._tagmap = {
     'object_label_updated_value': EventType._object_label_updated_value_validator,
     'organize_folder_with_tidy': EventType._organize_folder_with_tidy_validator,
     'rewind_folder': EventType._rewind_folder_validator,
+    'undo_naming_convention': EventType._undo_naming_convention_validator,
+    'undo_organize_folder_with_tidy': EventType._undo_organize_folder_with_tidy_validator,
     'user_tags_added': EventType._user_tags_added_validator,
     'user_tags_removed': EventType._user_tags_removed_validator,
     'email_ingest_receive_file': EventType._email_ingest_receive_file_validator,
@@ -75438,6 +76642,7 @@ EventType._tagmap = {
     'device_approvals_remove_exception': EventType._device_approvals_remove_exception_validator,
     'directory_restrictions_add_members': EventType._directory_restrictions_add_members_validator,
     'directory_restrictions_remove_members': EventType._directory_restrictions_remove_members_validator,
+    'dropbox_passwords_policy_changed': EventType._dropbox_passwords_policy_changed_validator,
     'email_ingest_policy_changed': EventType._email_ingest_policy_changed_validator,
     'emm_add_exception': EventType._emm_add_exception_validator,
     'emm_change_policy': EventType._emm_change_policy_validator,
@@ -75503,6 +76708,8 @@ EventType._tagmap = {
     'web_sessions_change_active_session_limit': EventType._web_sessions_change_active_session_limit_validator,
     'web_sessions_change_fixed_length_policy': EventType._web_sessions_change_fixed_length_policy_validator,
     'web_sessions_change_idle_length_policy': EventType._web_sessions_change_idle_length_policy_validator,
+    'data_residency_migration_request_successful': EventType._data_residency_migration_request_successful_validator,
+    'data_residency_migration_request_unsuccessful': EventType._data_residency_migration_request_unsuccessful_validator,
     'team_merge_from': EventType._team_merge_from_validator,
     'team_merge_to': EventType._team_merge_to_validator,
     'team_profile_add_background': EventType._team_profile_add_background_validator,
@@ -75605,6 +76812,8 @@ EventTypeArg._device_unlink_validator = bv.Void()
 EventTypeArg._dropbox_passwords_exported_validator = bv.Void()
 EventTypeArg._dropbox_passwords_new_device_enrolled_validator = bv.Void()
 EventTypeArg._emm_refresh_auth_token_validator = bv.Void()
+EventTypeArg._external_drive_backup_eligibility_status_checked_validator = bv.Void()
+EventTypeArg._external_drive_backup_status_changed_validator = bv.Void()
 EventTypeArg._account_capture_change_availability_validator = bv.Void()
 EventTypeArg._account_capture_migrate_account_validator = bv.Void()
 EventTypeArg._account_capture_notification_emails_sent_validator = bv.Void()
@@ -75645,6 +76854,8 @@ EventTypeArg._object_label_removed_validator = bv.Void()
 EventTypeArg._object_label_updated_value_validator = bv.Void()
 EventTypeArg._organize_folder_with_tidy_validator = bv.Void()
 EventTypeArg._rewind_folder_validator = bv.Void()
+EventTypeArg._undo_naming_convention_validator = bv.Void()
+EventTypeArg._undo_organize_folder_with_tidy_validator = bv.Void()
 EventTypeArg._user_tags_added_validator = bv.Void()
 EventTypeArg._user_tags_removed_validator = bv.Void()
 EventTypeArg._email_ingest_receive_file_validator = bv.Void()
@@ -75917,6 +77128,7 @@ EventTypeArg._device_approvals_change_unlink_action_validator = bv.Void()
 EventTypeArg._device_approvals_remove_exception_validator = bv.Void()
 EventTypeArg._directory_restrictions_add_members_validator = bv.Void()
 EventTypeArg._directory_restrictions_remove_members_validator = bv.Void()
+EventTypeArg._dropbox_passwords_policy_changed_validator = bv.Void()
 EventTypeArg._email_ingest_policy_changed_validator = bv.Void()
 EventTypeArg._emm_add_exception_validator = bv.Void()
 EventTypeArg._emm_change_policy_validator = bv.Void()
@@ -75982,6 +77194,8 @@ EventTypeArg._watermarking_policy_changed_validator = bv.Void()
 EventTypeArg._web_sessions_change_active_session_limit_validator = bv.Void()
 EventTypeArg._web_sessions_change_fixed_length_policy_validator = bv.Void()
 EventTypeArg._web_sessions_change_idle_length_policy_validator = bv.Void()
+EventTypeArg._data_residency_migration_request_successful_validator = bv.Void()
+EventTypeArg._data_residency_migration_request_unsuccessful_validator = bv.Void()
 EventTypeArg._team_merge_from_validator = bv.Void()
 EventTypeArg._team_merge_to_validator = bv.Void()
 EventTypeArg._team_profile_add_background_validator = bv.Void()
@@ -76081,6 +77295,8 @@ EventTypeArg._tagmap = {
     'dropbox_passwords_exported': EventTypeArg._dropbox_passwords_exported_validator,
     'dropbox_passwords_new_device_enrolled': EventTypeArg._dropbox_passwords_new_device_enrolled_validator,
     'emm_refresh_auth_token': EventTypeArg._emm_refresh_auth_token_validator,
+    'external_drive_backup_eligibility_status_checked': EventTypeArg._external_drive_backup_eligibility_status_checked_validator,
+    'external_drive_backup_status_changed': EventTypeArg._external_drive_backup_status_changed_validator,
     'account_capture_change_availability': EventTypeArg._account_capture_change_availability_validator,
     'account_capture_migrate_account': EventTypeArg._account_capture_migrate_account_validator,
     'account_capture_notification_emails_sent': EventTypeArg._account_capture_notification_emails_sent_validator,
@@ -76121,6 +77337,8 @@ EventTypeArg._tagmap = {
     'object_label_updated_value': EventTypeArg._object_label_updated_value_validator,
     'organize_folder_with_tidy': EventTypeArg._organize_folder_with_tidy_validator,
     'rewind_folder': EventTypeArg._rewind_folder_validator,
+    'undo_naming_convention': EventTypeArg._undo_naming_convention_validator,
+    'undo_organize_folder_with_tidy': EventTypeArg._undo_organize_folder_with_tidy_validator,
     'user_tags_added': EventTypeArg._user_tags_added_validator,
     'user_tags_removed': EventTypeArg._user_tags_removed_validator,
     'email_ingest_receive_file': EventTypeArg._email_ingest_receive_file_validator,
@@ -76393,6 +77611,7 @@ EventTypeArg._tagmap = {
     'device_approvals_remove_exception': EventTypeArg._device_approvals_remove_exception_validator,
     'directory_restrictions_add_members': EventTypeArg._directory_restrictions_add_members_validator,
     'directory_restrictions_remove_members': EventTypeArg._directory_restrictions_remove_members_validator,
+    'dropbox_passwords_policy_changed': EventTypeArg._dropbox_passwords_policy_changed_validator,
     'email_ingest_policy_changed': EventTypeArg._email_ingest_policy_changed_validator,
     'emm_add_exception': EventTypeArg._emm_add_exception_validator,
     'emm_change_policy': EventTypeArg._emm_change_policy_validator,
@@ -76458,6 +77677,8 @@ EventTypeArg._tagmap = {
     'web_sessions_change_active_session_limit': EventTypeArg._web_sessions_change_active_session_limit_validator,
     'web_sessions_change_fixed_length_policy': EventTypeArg._web_sessions_change_fixed_length_policy_validator,
     'web_sessions_change_idle_length_policy': EventTypeArg._web_sessions_change_idle_length_policy_validator,
+    'data_residency_migration_request_successful': EventTypeArg._data_residency_migration_request_successful_validator,
+    'data_residency_migration_request_unsuccessful': EventTypeArg._data_residency_migration_request_unsuccessful_validator,
     'team_merge_from': EventTypeArg._team_merge_from_validator,
     'team_merge_to': EventTypeArg._team_merge_to_validator,
     'team_profile_add_background': EventTypeArg._team_profile_add_background_validator,
@@ -76558,6 +77779,8 @@ EventTypeArg.device_unlink = EventTypeArg('device_unlink')
 EventTypeArg.dropbox_passwords_exported = EventTypeArg('dropbox_passwords_exported')
 EventTypeArg.dropbox_passwords_new_device_enrolled = EventTypeArg('dropbox_passwords_new_device_enrolled')
 EventTypeArg.emm_refresh_auth_token = EventTypeArg('emm_refresh_auth_token')
+EventTypeArg.external_drive_backup_eligibility_status_checked = EventTypeArg('external_drive_backup_eligibility_status_checked')
+EventTypeArg.external_drive_backup_status_changed = EventTypeArg('external_drive_backup_status_changed')
 EventTypeArg.account_capture_change_availability = EventTypeArg('account_capture_change_availability')
 EventTypeArg.account_capture_migrate_account = EventTypeArg('account_capture_migrate_account')
 EventTypeArg.account_capture_notification_emails_sent = EventTypeArg('account_capture_notification_emails_sent')
@@ -76598,6 +77821,8 @@ EventTypeArg.object_label_removed = EventTypeArg('object_label_removed')
 EventTypeArg.object_label_updated_value = EventTypeArg('object_label_updated_value')
 EventTypeArg.organize_folder_with_tidy = EventTypeArg('organize_folder_with_tidy')
 EventTypeArg.rewind_folder = EventTypeArg('rewind_folder')
+EventTypeArg.undo_naming_convention = EventTypeArg('undo_naming_convention')
+EventTypeArg.undo_organize_folder_with_tidy = EventTypeArg('undo_organize_folder_with_tidy')
 EventTypeArg.user_tags_added = EventTypeArg('user_tags_added')
 EventTypeArg.user_tags_removed = EventTypeArg('user_tags_removed')
 EventTypeArg.email_ingest_receive_file = EventTypeArg('email_ingest_receive_file')
@@ -76870,6 +78095,7 @@ EventTypeArg.device_approvals_change_unlink_action = EventTypeArg('device_approv
 EventTypeArg.device_approvals_remove_exception = EventTypeArg('device_approvals_remove_exception')
 EventTypeArg.directory_restrictions_add_members = EventTypeArg('directory_restrictions_add_members')
 EventTypeArg.directory_restrictions_remove_members = EventTypeArg('directory_restrictions_remove_members')
+EventTypeArg.dropbox_passwords_policy_changed = EventTypeArg('dropbox_passwords_policy_changed')
 EventTypeArg.email_ingest_policy_changed = EventTypeArg('email_ingest_policy_changed')
 EventTypeArg.emm_add_exception = EventTypeArg('emm_add_exception')
 EventTypeArg.emm_change_policy = EventTypeArg('emm_change_policy')
@@ -76935,6 +78161,8 @@ EventTypeArg.watermarking_policy_changed = EventTypeArg('watermarking_policy_cha
 EventTypeArg.web_sessions_change_active_session_limit = EventTypeArg('web_sessions_change_active_session_limit')
 EventTypeArg.web_sessions_change_fixed_length_policy = EventTypeArg('web_sessions_change_fixed_length_policy')
 EventTypeArg.web_sessions_change_idle_length_policy = EventTypeArg('web_sessions_change_idle_length_policy')
+EventTypeArg.data_residency_migration_request_successful = EventTypeArg('data_residency_migration_request_successful')
+EventTypeArg.data_residency_migration_request_unsuccessful = EventTypeArg('data_residency_migration_request_unsuccessful')
 EventTypeArg.team_merge_from = EventTypeArg('team_merge_from')
 EventTypeArg.team_merge_to = EventTypeArg('team_merge_to')
 EventTypeArg.team_profile_add_background = EventTypeArg('team_profile_add_background')
@@ -77028,15 +78256,49 @@ ExtendedVersionHistoryPolicy.implicitly_limited = ExtendedVersionHistoryPolicy('
 ExtendedVersionHistoryPolicy.implicitly_unlimited = ExtendedVersionHistoryPolicy('implicitly_unlimited')
 ExtendedVersionHistoryPolicy.other = ExtendedVersionHistoryPolicy('other')
 
+ExternalDriveBackupEligibilityStatus._exceed_license_cap_validator = bv.Void()
+ExternalDriveBackupEligibilityStatus._success_validator = bv.Void()
+ExternalDriveBackupEligibilityStatus._other_validator = bv.Void()
+ExternalDriveBackupEligibilityStatus._tagmap = {
+    'exceed_license_cap': ExternalDriveBackupEligibilityStatus._exceed_license_cap_validator,
+    'success': ExternalDriveBackupEligibilityStatus._success_validator,
+    'other': ExternalDriveBackupEligibilityStatus._other_validator,
+}
+
+ExternalDriveBackupEligibilityStatus.exceed_license_cap = ExternalDriveBackupEligibilityStatus('exceed_license_cap')
+ExternalDriveBackupEligibilityStatus.success = ExternalDriveBackupEligibilityStatus('success')
+ExternalDriveBackupEligibilityStatus.other = ExternalDriveBackupEligibilityStatus('other')
+
+ExternalDriveBackupEligibilityStatusCheckedDetails.desktop_device_session_info.validator = DesktopDeviceSessionLogInfo_validator
+ExternalDriveBackupEligibilityStatusCheckedDetails.status.validator = ExternalDriveBackupEligibilityStatus_validator
+ExternalDriveBackupEligibilityStatusCheckedDetails.number_of_external_drive_backup.validator = bv.UInt64()
+ExternalDriveBackupEligibilityStatusCheckedDetails._all_field_names_ = set([
+    'desktop_device_session_info',
+    'status',
+    'number_of_external_drive_backup',
+])
+ExternalDriveBackupEligibilityStatusCheckedDetails._all_fields_ = [
+    ('desktop_device_session_info', ExternalDriveBackupEligibilityStatusCheckedDetails.desktop_device_session_info.validator),
+    ('status', ExternalDriveBackupEligibilityStatusCheckedDetails.status.validator),
+    ('number_of_external_drive_backup', ExternalDriveBackupEligibilityStatusCheckedDetails.number_of_external_drive_backup.validator),
+]
+
+ExternalDriveBackupEligibilityStatusCheckedType.description.validator = bv.String()
+ExternalDriveBackupEligibilityStatusCheckedType._all_field_names_ = set(['description'])
+ExternalDriveBackupEligibilityStatusCheckedType._all_fields_ = [('description', ExternalDriveBackupEligibilityStatusCheckedType.description.validator)]
+
+ExternalDriveBackupPolicy._default_validator = bv.Void()
 ExternalDriveBackupPolicy._disabled_validator = bv.Void()
 ExternalDriveBackupPolicy._enabled_validator = bv.Void()
 ExternalDriveBackupPolicy._other_validator = bv.Void()
 ExternalDriveBackupPolicy._tagmap = {
+    'default': ExternalDriveBackupPolicy._default_validator,
     'disabled': ExternalDriveBackupPolicy._disabled_validator,
     'enabled': ExternalDriveBackupPolicy._enabled_validator,
     'other': ExternalDriveBackupPolicy._other_validator,
 }
 
+ExternalDriveBackupPolicy.default = ExternalDriveBackupPolicy('default')
 ExternalDriveBackupPolicy.disabled = ExternalDriveBackupPolicy('disabled')
 ExternalDriveBackupPolicy.enabled = ExternalDriveBackupPolicy('enabled')
 ExternalDriveBackupPolicy.other = ExternalDriveBackupPolicy('other')
@@ -77055,6 +78317,49 @@ ExternalDriveBackupPolicyChangedDetails._all_fields_ = [
 ExternalDriveBackupPolicyChangedType.description.validator = bv.String()
 ExternalDriveBackupPolicyChangedType._all_field_names_ = set(['description'])
 ExternalDriveBackupPolicyChangedType._all_fields_ = [('description', ExternalDriveBackupPolicyChangedType.description.validator)]
+
+ExternalDriveBackupStatus._broken_validator = bv.Void()
+ExternalDriveBackupStatus._created_validator = bv.Void()
+ExternalDriveBackupStatus._created_or_broken_validator = bv.Void()
+ExternalDriveBackupStatus._deleted_validator = bv.Void()
+ExternalDriveBackupStatus._empty_validator = bv.Void()
+ExternalDriveBackupStatus._unknown_validator = bv.Void()
+ExternalDriveBackupStatus._other_validator = bv.Void()
+ExternalDriveBackupStatus._tagmap = {
+    'broken': ExternalDriveBackupStatus._broken_validator,
+    'created': ExternalDriveBackupStatus._created_validator,
+    'created_or_broken': ExternalDriveBackupStatus._created_or_broken_validator,
+    'deleted': ExternalDriveBackupStatus._deleted_validator,
+    'empty': ExternalDriveBackupStatus._empty_validator,
+    'unknown': ExternalDriveBackupStatus._unknown_validator,
+    'other': ExternalDriveBackupStatus._other_validator,
+}
+
+ExternalDriveBackupStatus.broken = ExternalDriveBackupStatus('broken')
+ExternalDriveBackupStatus.created = ExternalDriveBackupStatus('created')
+ExternalDriveBackupStatus.created_or_broken = ExternalDriveBackupStatus('created_or_broken')
+ExternalDriveBackupStatus.deleted = ExternalDriveBackupStatus('deleted')
+ExternalDriveBackupStatus.empty = ExternalDriveBackupStatus('empty')
+ExternalDriveBackupStatus.unknown = ExternalDriveBackupStatus('unknown')
+ExternalDriveBackupStatus.other = ExternalDriveBackupStatus('other')
+
+ExternalDriveBackupStatusChangedDetails.desktop_device_session_info.validator = DesktopDeviceSessionLogInfo_validator
+ExternalDriveBackupStatusChangedDetails.previous_value.validator = ExternalDriveBackupStatus_validator
+ExternalDriveBackupStatusChangedDetails.new_value.validator = ExternalDriveBackupStatus_validator
+ExternalDriveBackupStatusChangedDetails._all_field_names_ = set([
+    'desktop_device_session_info',
+    'previous_value',
+    'new_value',
+])
+ExternalDriveBackupStatusChangedDetails._all_fields_ = [
+    ('desktop_device_session_info', ExternalDriveBackupStatusChangedDetails.desktop_device_session_info.validator),
+    ('previous_value', ExternalDriveBackupStatusChangedDetails.previous_value.validator),
+    ('new_value', ExternalDriveBackupStatusChangedDetails.new_value.validator),
+]
+
+ExternalDriveBackupStatusChangedType.description.validator = bv.String()
+ExternalDriveBackupStatusChangedType._all_field_names_ = set(['description'])
+ExternalDriveBackupStatusChangedType._all_fields_ = [('description', ExternalDriveBackupStatusChangedType.description.validator)]
 
 ExternalSharingCreateReportDetails._all_field_names_ = set([])
 ExternalSharingCreateReportDetails._all_fields_ = []
@@ -79392,14 +80697,14 @@ UserLogInfo._fields_ = [
 UserLogInfo._all_fields_ = UserLogInfo._fields_
 
 UserLogInfo._tag_to_subtype_ = {
-    (u'team_member',): TeamMemberLogInfo_validator,
-    (u'trusted_non_team_member',): TrustedNonTeamMemberLogInfo_validator,
-    (u'non_team_member',): NonTeamMemberLogInfo_validator,
+    ('team_member',): TeamMemberLogInfo_validator,
+    ('trusted_non_team_member',): TrustedNonTeamMemberLogInfo_validator,
+    ('non_team_member',): NonTeamMemberLogInfo_validator,
 }
 UserLogInfo._pytype_to_tag_and_subtype_ = {
-    TeamMemberLogInfo: ((u'team_member',), TeamMemberLogInfo_validator),
-    TrustedNonTeamMemberLogInfo: ((u'trusted_non_team_member',), TrustedNonTeamMemberLogInfo_validator),
-    NonTeamMemberLogInfo: ((u'non_team_member',), NonTeamMemberLogInfo_validator),
+    TeamMemberLogInfo: (('team_member',), TeamMemberLogInfo_validator),
+    TrustedNonTeamMemberLogInfo: (('trusted_non_team_member',), TrustedNonTeamMemberLogInfo_validator),
+    NonTeamMemberLogInfo: (('non_team_member',), NonTeamMemberLogInfo_validator),
 }
 UserLogInfo._is_catch_all_ = True
 
@@ -80279,6 +81584,7 @@ PlacementRestriction._europe_only_validator = bv.Void()
 PlacementRestriction._japan_only_validator = bv.Void()
 PlacementRestriction._none_validator = bv.Void()
 PlacementRestriction._uk_only_validator = bv.Void()
+PlacementRestriction._us_s3_only_validator = bv.Void()
 PlacementRestriction._other_validator = bv.Void()
 PlacementRestriction._tagmap = {
     'australia_only': PlacementRestriction._australia_only_validator,
@@ -80286,6 +81592,7 @@ PlacementRestriction._tagmap = {
     'japan_only': PlacementRestriction._japan_only_validator,
     'none': PlacementRestriction._none_validator,
     'uk_only': PlacementRestriction._uk_only_validator,
+    'us_s3_only': PlacementRestriction._us_s3_only_validator,
     'other': PlacementRestriction._other_validator,
 }
 
@@ -80294,6 +81601,7 @@ PlacementRestriction.europe_only = PlacementRestriction('europe_only')
 PlacementRestriction.japan_only = PlacementRestriction('japan_only')
 PlacementRestriction.none = PlacementRestriction('none')
 PlacementRestriction.uk_only = PlacementRestriction('uk_only')
+PlacementRestriction.us_s3_only = PlacementRestriction('us_s3_only')
 PlacementRestriction.other = PlacementRestriction('other')
 
 PolicyType._disposition_validator = bv.Void()
@@ -81650,17 +82958,20 @@ SharingFolderJoinPolicy.from_anyone = SharingFolderJoinPolicy('from_anyone')
 SharingFolderJoinPolicy.from_team_only = SharingFolderJoinPolicy('from_team_only')
 SharingFolderJoinPolicy.other = SharingFolderJoinPolicy('other')
 
+SharingLinkPolicy._default_no_one_validator = bv.Void()
 SharingLinkPolicy._default_private_validator = bv.Void()
 SharingLinkPolicy._default_public_validator = bv.Void()
 SharingLinkPolicy._only_private_validator = bv.Void()
 SharingLinkPolicy._other_validator = bv.Void()
 SharingLinkPolicy._tagmap = {
+    'default_no_one': SharingLinkPolicy._default_no_one_validator,
     'default_private': SharingLinkPolicy._default_private_validator,
     'default_public': SharingLinkPolicy._default_public_validator,
     'only_private': SharingLinkPolicy._only_private_validator,
     'other': SharingLinkPolicy._other_validator,
 }
 
+SharingLinkPolicy.default_no_one = SharingLinkPolicy('default_no_one')
 SharingLinkPolicy.default_private = SharingLinkPolicy('default_private')
 SharingLinkPolicy.default_public = SharingLinkPolicy('default_public')
 SharingLinkPolicy.only_private = SharingLinkPolicy('only_private')
@@ -83149,6 +84460,20 @@ TwoAccountPolicy.disabled = TwoAccountPolicy('disabled')
 TwoAccountPolicy.enabled = TwoAccountPolicy('enabled')
 TwoAccountPolicy.other = TwoAccountPolicy('other')
 
+UndoNamingConventionDetails._all_field_names_ = set([])
+UndoNamingConventionDetails._all_fields_ = []
+
+UndoNamingConventionType.description.validator = bv.String()
+UndoNamingConventionType._all_field_names_ = set(['description'])
+UndoNamingConventionType._all_fields_ = [('description', UndoNamingConventionType.description.validator)]
+
+UndoOrganizeFolderWithTidyDetails._all_field_names_ = set([])
+UndoOrganizeFolderWithTidyDetails._all_fields_ = []
+
+UndoOrganizeFolderWithTidyType.description.validator = bv.String()
+UndoOrganizeFolderWithTidyType._all_field_names_ = set(['description'])
+UndoOrganizeFolderWithTidyType._all_fields_ = [('description', UndoOrganizeFolderWithTidyType.description.validator)]
+
 UserLinkedAppLogInfo._field_names_ = set([])
 UserLinkedAppLogInfo._all_field_names_ = AppLogInfo._all_field_names_.union(UserLinkedAppLogInfo._field_names_)
 UserLinkedAppLogInfo._fields_ = []
@@ -83333,9 +84658,9 @@ get_events = bb.Route(
     GetTeamEventsArg_validator,
     GetTeamEventsResult_validator,
     GetTeamEventsError_validator,
-    {'auth': u'team',
-     'host': u'api',
-     'style': u'rpc'},
+    {'auth': 'team',
+     'host': 'api',
+     'style': 'rpc'},
 )
 get_events_continue = bb.Route(
     'get_events/continue',
@@ -83344,9 +84669,9 @@ get_events_continue = bb.Route(
     GetTeamEventsContinueArg_validator,
     GetTeamEventsResult_validator,
     GetTeamEventsContinueError_validator,
-    {'auth': u'team',
-     'host': u'api',
-     'style': u'rpc'},
+    {'auth': 'team',
+     'host': 'api',
+     'style': 'rpc'},
 )
 
 ROUTES = {

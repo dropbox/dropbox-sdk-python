@@ -185,6 +185,8 @@ class ExternalDriveBackupPolicyState(bb.Union):
         Backup feature is disabled.
     :ivar team_policies.ExternalDriveBackupPolicyState.enabled: External Drive
         Backup feature is enabled.
+    :ivar team_policies.ExternalDriveBackupPolicyState.default: External Drive
+        Backup default value based on team tier.
     """
 
     _catch_all = 'other'
@@ -192,6 +194,8 @@ class ExternalDriveBackupPolicyState(bb.Union):
     disabled = None
     # Attribute is overwritten below the class definition
     enabled = None
+    # Attribute is overwritten below the class definition
+    default = None
     # Attribute is overwritten below the class definition
     other = None
 
@@ -210,6 +214,14 @@ class ExternalDriveBackupPolicyState(bb.Union):
         :rtype: bool
         """
         return self._tag == 'enabled'
+
+    def is_default(self):
+        """
+        Check if the union tag is ``default``.
+
+        :rtype: bool
+        """
+        return self._tag == 'default'
 
     def is_other(self):
         """
@@ -844,6 +856,9 @@ class SharedLinkCreatePolicy(bb.Union):
     :ivar team_policies.SharedLinkCreatePolicy.team_only: Only members of the
         same team can access all shared links. Login will be required to access
         all shared links.
+    :ivar team_policies.SharedLinkCreatePolicy.default_no_one: Only people
+        invited can access newly created links. Login will be required to access
+        the shared links unless overridden.
     """
 
     _catch_all = 'other'
@@ -853,6 +868,8 @@ class SharedLinkCreatePolicy(bb.Union):
     default_team_only = None
     # Attribute is overwritten below the class definition
     team_only = None
+    # Attribute is overwritten below the class definition
+    default_no_one = None
     # Attribute is overwritten below the class definition
     other = None
 
@@ -879,6 +896,14 @@ class SharedLinkCreatePolicy(bb.Union):
         :rtype: bool
         """
         return self._tag == 'team_only'
+
+    def is_default_no_one(self):
+        """
+        Check if the union tag is ``default_no_one``.
+
+        :rtype: bool
+        """
+        return self._tag == 'default_no_one'
 
     def is_other(self):
         """
@@ -1514,15 +1539,18 @@ EmmState.other = EmmState('other')
 
 ExternalDriveBackupPolicyState._disabled_validator = bv.Void()
 ExternalDriveBackupPolicyState._enabled_validator = bv.Void()
+ExternalDriveBackupPolicyState._default_validator = bv.Void()
 ExternalDriveBackupPolicyState._other_validator = bv.Void()
 ExternalDriveBackupPolicyState._tagmap = {
     'disabled': ExternalDriveBackupPolicyState._disabled_validator,
     'enabled': ExternalDriveBackupPolicyState._enabled_validator,
+    'default': ExternalDriveBackupPolicyState._default_validator,
     'other': ExternalDriveBackupPolicyState._other_validator,
 }
 
 ExternalDriveBackupPolicyState.disabled = ExternalDriveBackupPolicyState('disabled')
 ExternalDriveBackupPolicyState.enabled = ExternalDriveBackupPolicyState('enabled')
+ExternalDriveBackupPolicyState.default = ExternalDriveBackupPolicyState('default')
 ExternalDriveBackupPolicyState.other = ExternalDriveBackupPolicyState('other')
 
 FileLockingPolicyState._disabled_validator = bv.Void()
@@ -1687,17 +1715,20 @@ SharedFolderMemberPolicy.other = SharedFolderMemberPolicy('other')
 SharedLinkCreatePolicy._default_public_validator = bv.Void()
 SharedLinkCreatePolicy._default_team_only_validator = bv.Void()
 SharedLinkCreatePolicy._team_only_validator = bv.Void()
+SharedLinkCreatePolicy._default_no_one_validator = bv.Void()
 SharedLinkCreatePolicy._other_validator = bv.Void()
 SharedLinkCreatePolicy._tagmap = {
     'default_public': SharedLinkCreatePolicy._default_public_validator,
     'default_team_only': SharedLinkCreatePolicy._default_team_only_validator,
     'team_only': SharedLinkCreatePolicy._team_only_validator,
+    'default_no_one': SharedLinkCreatePolicy._default_no_one_validator,
     'other': SharedLinkCreatePolicy._other_validator,
 }
 
 SharedLinkCreatePolicy.default_public = SharedLinkCreatePolicy('default_public')
 SharedLinkCreatePolicy.default_team_only = SharedLinkCreatePolicy('default_team_only')
 SharedLinkCreatePolicy.team_only = SharedLinkCreatePolicy('team_only')
+SharedLinkCreatePolicy.default_no_one = SharedLinkCreatePolicy('default_no_one')
 SharedLinkCreatePolicy.other = SharedLinkCreatePolicy('other')
 
 ShowcaseDownloadPolicy._disabled_validator = bv.Void()

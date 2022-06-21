@@ -61,6 +61,9 @@ dist = setup(
     license='MIT License',
     long_description=README,
     url='http://www.dropbox.com/developers',
+    project_urls={
+        'Source': 'https://github.com/dropbox/dropbox-sdk-python',
+    },
     # From <https://pypi.python.org/pypi?%3Aaction=list_classifiers>
     classifiers=[
         'Development Status :: 5 - Production/Stable',
