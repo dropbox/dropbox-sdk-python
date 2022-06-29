@@ -45,7 +45,7 @@ class _SSLAdapter(HTTPAdapter):
     def __init__(self, *args, **kwargs):
         self._ca_certs = kwargs.pop("ca_certs", None) or _TRUSTED_CERT_FILE
         if not self._ca_certs:
-            raise FileNotFoundError("CA certificate not found")
+            raise AttributeError("CA certificate not set")
         super(_SSLAdapter, self).__init__(*args, **kwargs)
 
     def init_poolmanager(self, connections, maxsize, block=False, **_):
