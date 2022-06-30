@@ -22,6 +22,7 @@ ADMIN_ID = 'dummy_admin_id'
 TEAM_MEMBER_ID = 'dummy_team_member_id'
 SCOPE_LIST = ['files.metadata.read', 'files.metadata.write']
 EXPIRATION = datetime.utcnow() + timedelta(seconds=EXPIRES_IN)
+CA_CERTS = "/dummy/path/ca.crt"
 
 EXPIRATION_BUFFER = timedelta(minutes=5)
 
@@ -84,6 +85,10 @@ class TestOAuth:
                                 else:
                                     assert 'code_challenge_method' not in authorization_url
                                     assert 'code_challenge' not in authorization_url
+
+    def test_authorization_with_ca_certs(self):
+        DropboxOAuth2Flow(APP_KEY, APP_SECRET, 'http://localhost/dummy', 'dummy_session',
+                          'dbx-auth-csrf-token', ca_certs=CA_CERTS)
 
     def test_authorization_url_legacy_default(self):
         flow_obj = DropboxOAuth2Flow(APP_KEY, APP_SECRET, 'http://localhost/dummy',
@@ -234,6 +239,14 @@ class TestClient:
         return session_obj
 
     @pytest.fixture(scope='function')
+    def session_instance_with_ca_certs(self, mocker):
+        session_obj = create_session(ca_certs=CA_CERTS)
+        post_response = mock.MagicMock(status_code=200)
+        post_response.json.return_value = {"access_token": ACCESS_TOKEN, "expires_in": EXPIRES_IN}
+        mocker.patch.object(session_obj, 'post', return_value=post_response)
+        return session_obj
+
+    @pytest.fixture(scope='function')
     def invalid_grant_session_instance(self, mocker):
         session_obj = create_session()
         post_response = mock.MagicMock(status_code=400)
@@ -365,6 +378,10 @@ class TestClient:
             dbx.check_and_refresh_access_token()
             assert invalid_grant_session_instance.post.call_count == 1
             assert e.error.is_invalid_access_token()
+
+    def test_check_Dropbox_with_ca_certs(self, session_instance_with_ca_certs):
+        Dropbox(oauth2_access_token=ACCESS_TOKEN, oauth2_access_token_expiration=EXPIRATION,
+                session=session_instance_with_ca_certs)
 
     def test_team_client_refresh(self, session_instance):
         dbx = DropboxTeam(oauth2_refresh_token=REFRESH_TOKEN,

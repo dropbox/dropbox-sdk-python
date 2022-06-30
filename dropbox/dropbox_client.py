@@ -97,7 +97,7 @@ class RouteErrorResult(object):
         self.request_id = request_id
         self.obj_result = obj_result
 
-def create_session(max_connections=8, proxies=None):
+def create_session(max_connections=8, proxies=None, ca_certs=None):
     """
     Creates a session object that can be used by multiple :class:`Dropbox` and
     :class:`DropboxTeam` instances. This lets you share a connection pool
@@ -112,7 +112,7 @@ def create_session(max_connections=8, proxies=None):
         for more details.
     """
     # We only need as many pool_connections as we have unique hostnames.
-    session = pinned_session(pool_maxsize=max_connections)
+    session = pinned_session(pool_maxsize=max_connections, ca_certs=ca_certs)
     if proxies:
         session.proxies = proxies
     return session
@@ -151,7 +151,8 @@ class _DropboxTransport(object):
                  oauth2_access_token_expiration=None,
                  app_key=None,
                  app_secret=None,
-                 scope=None,):
+                 scope=None,
+                 ca_certs=None):
         """
         :param str oauth2_access_token: OAuth2 access token for making client
             requests.
@@ -180,6 +181,8 @@ class _DropboxTransport(object):
             Not required if PKCE was used to authorize the token
         :param list scope: list of scopes to request on refresh.  If left blank,
             refresh will request all available scopes for application
+        :param str ca_certs: path to CA certificate. If left blank, default certificate location \
+            will be used
         """
 
         if not (oauth2_access_token or oauth2_refresh_token or (app_key and app_secret)):
@@ -212,7 +215,7 @@ class _DropboxTransport(object):
                                         .format(session))
             self._session = session
         else:
-            self._session = create_session()
+            self._session = create_session(ca_certs=ca_certs)
         self._headers = headers
 
         base_user_agent = 'OfficialDropboxPythonSDKv2/' + __version__

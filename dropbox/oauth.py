@@ -119,7 +119,8 @@ class OAuth2FlowResult(OAuth2FlowNoRedirectResult):
 class DropboxOAuth2FlowBase(object):
 
     def __init__(self, consumer_key, consumer_secret=None, locale=None, token_access_type=None,
-                 scope=None, include_granted_scopes=None, use_pkce=False, timeout=DEFAULT_TIMEOUT):
+                 scope=None, include_granted_scopes=None, use_pkce=False, timeout=DEFAULT_TIMEOUT,
+                 ca_certs=None):
         if scope is not None and (len(scope) == 0 or not isinstance(scope, list)):
             raise BadInputException("Scope list must be of type list")
         if token_access_type is not None and token_access_type not in TOKEN_ACCESS_TYPES:
@@ -134,7 +135,7 @@ class DropboxOAuth2FlowBase(object):
         self.consumer_secret = consumer_secret
         self.locale = locale
         self.token_access_type = token_access_type
-        self.requests_session = pinned_session()
+        self.requests_session = pinned_session(ca_certs=ca_certs)
         self.scope = scope
         self.include_granted_scopes = include_granted_scopes
         self._timeout = timeout
@@ -273,7 +274,8 @@ class DropboxOAuth2FlowNoRedirect(DropboxOAuth2FlowBase):
     """
 
     def __init__(self, consumer_key, consumer_secret=None, locale=None, token_access_type=None,
-                 scope=None, include_granted_scopes=None, use_pkce=False, timeout=DEFAULT_TIMEOUT):  # noqa: E501;
+                 scope=None, include_granted_scopes=None, use_pkce=False, timeout=DEFAULT_TIMEOUT,
+                 ca_certs=None):  # noqa: E501;
         """
         Construct an instance.
 
@@ -306,6 +308,8 @@ class DropboxOAuth2FlowNoRedirect(DropboxOAuth2FlowBase):
             client will wait for any single packet from the server. After the timeout the client
             will give up on connection. If `None`, client will wait forever. Defaults
             to 100 seconds.
+        :param str ca_cert: path to CA certificate. If left blank, default certificate location \
+            will be used
         """
         super(DropboxOAuth2FlowNoRedirect, self).__init__(
             consumer_key=consumer_key,
@@ -315,7 +319,8 @@ class DropboxOAuth2FlowNoRedirect(DropboxOAuth2FlowBase):
             scope=scope,
             include_granted_scopes=include_granted_scopes,
             use_pkce=use_pkce,
-            timeout=timeout
+            timeout=timeout,
+            ca_certs=ca_certs
         )
 
     def start(self):
@@ -360,7 +365,8 @@ class DropboxOAuth2Flow(DropboxOAuth2FlowBase):
     def __init__(self, consumer_key, redirect_uri, session,
                  csrf_token_session_key, consumer_secret=None, locale=None,
                  token_access_type=None, scope=None,
-                 include_granted_scopes=None, use_pkce=False, timeout=DEFAULT_TIMEOUT):
+                 include_granted_scopes=None, use_pkce=False, timeout=DEFAULT_TIMEOUT,
+                 ca_certs=None):
         """
         Construct an instance.
 
@@ -399,6 +405,8 @@ class DropboxOAuth2Flow(DropboxOAuth2FlowBase):
         :param Optional[float] timeout: Maximum duration in seconds that client will wait for any
             single packet from the server. After the timeout the client will give up on connection.
             If `None`, client will wait forever. Defaults to 100 seconds.
+        :param str ca_cert: path to CA certificate. If left blank, default certificate location \
+            will be used
         """
 
         super(DropboxOAuth2Flow, self).__init__(
@@ -409,7 +417,8 @@ class DropboxOAuth2Flow(DropboxOAuth2FlowBase):
             scope=scope,
             include_granted_scopes=include_granted_scopes,
             use_pkce=use_pkce,
-            timeout=timeout
+            timeout=timeout,
+            ca_certs=ca_certs
         )
         self.redirect_uri = redirect_uri
         self.session = session
