@@ -2349,30 +2349,52 @@ class FileMemberActionResult(bb.Struct):
     :ivar sharing.FileMemberActionResult.member: One of specified input members.
     :ivar sharing.FileMemberActionResult.result: The outcome of the action on
         this member.
+    :ivar sharing.FileMemberActionResult.sckey_sha1: The SHA-1 encrypted shared
+        content key.
+    :ivar sharing.FileMemberActionResult.invitation_signature: The sharing
+        sender-recipient invitation signatures for the input member_id. A
+        member_id can be a group and thus have multiple users and multiple
+        invitation signatures.
     """
 
     __slots__ = [
         '_member_value',
         '_result_value',
+        '_sckey_sha1_value',
+        '_invitation_signature_value',
     ]
 
     _has_required_fields = True
 
     def __init__(self,
                  member=None,
-                 result=None):
+                 result=None,
+                 sckey_sha1=None,
+                 invitation_signature=None):
         self._member_value = bb.NOT_SET
         self._result_value = bb.NOT_SET
+        self._sckey_sha1_value = bb.NOT_SET
+        self._invitation_signature_value = bb.NOT_SET
         if member is not None:
             self.member = member
         if result is not None:
             self.result = result
+        if sckey_sha1 is not None:
+            self.sckey_sha1 = sckey_sha1
+        if invitation_signature is not None:
+            self.invitation_signature = invitation_signature
 
     # Instance attribute type: MemberSelector (validator is set below)
     member = bb.Attribute("member", user_defined=True)
 
     # Instance attribute type: FileMemberActionIndividualResult (validator is set below)
     result = bb.Attribute("result", user_defined=True)
+
+    # Instance attribute type: str (validator is set below)
+    sckey_sha1 = bb.Attribute("sckey_sha1", nullable=True)
+
+    # Instance attribute type: list of [str] (validator is set below)
+    invitation_signature = bb.Attribute("invitation_signature", nullable=True)
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(FileMemberActionResult, self)._process_custom_annotations(annotation_type, field_path, processor)
@@ -11533,13 +11555,19 @@ FileMemberActionIndividualResult._tagmap = {
 
 FileMemberActionResult.member.validator = MemberSelector_validator
 FileMemberActionResult.result.validator = FileMemberActionIndividualResult_validator
+FileMemberActionResult.sckey_sha1.validator = bv.Nullable(bv.String())
+FileMemberActionResult.invitation_signature.validator = bv.Nullable(bv.List(bv.String()))
 FileMemberActionResult._all_field_names_ = set([
     'member',
     'result',
+    'sckey_sha1',
+    'invitation_signature',
 ])
 FileMemberActionResult._all_fields_ = [
     ('member', FileMemberActionResult.member.validator),
     ('result', FileMemberActionResult.result.validator),
+    ('sckey_sha1', FileMemberActionResult.sckey_sha1.validator),
+    ('invitation_signature', FileMemberActionResult.invitation_signature.validator),
 ]
 
 FileMemberRemoveActionResult._success_validator = MemberAccessLevelResult_validator

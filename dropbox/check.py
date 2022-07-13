@@ -63,7 +63,7 @@ class EchoResult(bb.Struct):
 
 EchoResult_validator = bv.Struct(EchoResult)
 
-EchoArg.query.validator = bv.String()
+EchoArg.query.validator = bv.String(max_length=500)
 EchoArg._all_field_names_ = set(['query'])
 EchoArg._all_fields_ = [('query', EchoArg.query.validator)]
 

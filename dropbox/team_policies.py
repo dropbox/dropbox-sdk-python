@@ -285,6 +285,67 @@ class FileLockingPolicyState(bb.Union):
 
 FileLockingPolicyState_validator = bv.Union(FileLockingPolicyState)
 
+class FileProviderMigrationPolicyState(bb.Union):
+    """
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+
+    :ivar team_policies.FileProviderMigrationPolicyState.disabled: Team admin
+        has opted out of File Provider Migration for team members.
+    :ivar team_policies.FileProviderMigrationPolicyState.enabled: Team admin has
+        not opted out of File Provider Migration for team members.
+    :ivar team_policies.FileProviderMigrationPolicyState.default: Team admin has
+        default value based on team tier.
+    """
+
+    _catch_all = 'other'
+    # Attribute is overwritten below the class definition
+    disabled = None
+    # Attribute is overwritten below the class definition
+    enabled = None
+    # Attribute is overwritten below the class definition
+    default = None
+    # Attribute is overwritten below the class definition
+    other = None
+
+    def is_disabled(self):
+        """
+        Check if the union tag is ``disabled``.
+
+        :rtype: bool
+        """
+        return self._tag == 'disabled'
+
+    def is_enabled(self):
+        """
+        Check if the union tag is ``enabled``.
+
+        :rtype: bool
+        """
+        return self._tag == 'enabled'
+
+    def is_default(self):
+        """
+        Check if the union tag is ``default``.
+
+        :rtype: bool
+        """
+        return self._tag == 'default'
+
+    def is_other(self):
+        """
+        Check if the union tag is ``other``.
+
+        :rtype: bool
+        """
+        return self._tag == 'other'
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(FileProviderMigrationPolicyState, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+FileProviderMigrationPolicyState_validator = bv.Union(FileProviderMigrationPolicyState)
+
 class GroupCreation(bb.Union):
     """
     This class acts as a tagged union. Only one of the ``is_*`` methods will
@@ -1565,6 +1626,22 @@ FileLockingPolicyState._tagmap = {
 FileLockingPolicyState.disabled = FileLockingPolicyState('disabled')
 FileLockingPolicyState.enabled = FileLockingPolicyState('enabled')
 FileLockingPolicyState.other = FileLockingPolicyState('other')
+
+FileProviderMigrationPolicyState._disabled_validator = bv.Void()
+FileProviderMigrationPolicyState._enabled_validator = bv.Void()
+FileProviderMigrationPolicyState._default_validator = bv.Void()
+FileProviderMigrationPolicyState._other_validator = bv.Void()
+FileProviderMigrationPolicyState._tagmap = {
+    'disabled': FileProviderMigrationPolicyState._disabled_validator,
+    'enabled': FileProviderMigrationPolicyState._enabled_validator,
+    'default': FileProviderMigrationPolicyState._default_validator,
+    'other': FileProviderMigrationPolicyState._other_validator,
+}
+
+FileProviderMigrationPolicyState.disabled = FileProviderMigrationPolicyState('disabled')
+FileProviderMigrationPolicyState.enabled = FileProviderMigrationPolicyState('enabled')
+FileProviderMigrationPolicyState.default = FileProviderMigrationPolicyState('default')
+FileProviderMigrationPolicyState.other = FileProviderMigrationPolicyState('other')
 
 GroupCreation._admins_and_members_validator = bv.Void()
 GroupCreation._admins_only_validator = bv.Void()
