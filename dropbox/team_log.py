@@ -1862,6 +1862,121 @@ class AdminConsoleAppPolicy(bb.Union):
 
 AdminConsoleAppPolicy_validator = bv.Union(AdminConsoleAppPolicy)
 
+class AdminEmailRemindersChangedDetails(bb.Struct):
+    """
+    Changed admin email reminder policy for team requests to join.
+
+    :ivar team_log.AdminEmailRemindersChangedDetails.new_value: To.
+    :ivar team_log.AdminEmailRemindersChangedDetails.previous_value: From.
+    """
+
+    __slots__ = [
+        '_new_value_value',
+        '_previous_value_value',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 new_value=None,
+                 previous_value=None):
+        self._new_value_value = bb.NOT_SET
+        self._previous_value_value = bb.NOT_SET
+        if new_value is not None:
+            self.new_value = new_value
+        if previous_value is not None:
+            self.previous_value = previous_value
+
+    # Instance attribute type: AdminEmailRemindersPolicy (validator is set below)
+    new_value = bb.Attribute("new_value", user_defined=True)
+
+    # Instance attribute type: AdminEmailRemindersPolicy (validator is set below)
+    previous_value = bb.Attribute("previous_value", user_defined=True)
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(AdminEmailRemindersChangedDetails, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+AdminEmailRemindersChangedDetails_validator = bv.Struct(AdminEmailRemindersChangedDetails)
+
+class AdminEmailRemindersChangedType(bb.Struct):
+
+    __slots__ = [
+        '_description_value',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 description=None):
+        self._description_value = bb.NOT_SET
+        if description is not None:
+            self.description = description
+
+    # Instance attribute type: str (validator is set below)
+    description = bb.Attribute("description")
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(AdminEmailRemindersChangedType, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+AdminEmailRemindersChangedType_validator = bv.Struct(AdminEmailRemindersChangedType)
+
+class AdminEmailRemindersPolicy(bb.Union):
+    """
+    Policy for deciding whether team admins receive reminder emails for requests
+    to join the team
+
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+    """
+
+    _catch_all = 'other'
+    # Attribute is overwritten below the class definition
+    default = None
+    # Attribute is overwritten below the class definition
+    disabled = None
+    # Attribute is overwritten below the class definition
+    enabled = None
+    # Attribute is overwritten below the class definition
+    other = None
+
+    def is_default(self):
+        """
+        Check if the union tag is ``default``.
+
+        :rtype: bool
+        """
+        return self._tag == 'default'
+
+    def is_disabled(self):
+        """
+        Check if the union tag is ``disabled``.
+
+        :rtype: bool
+        """
+        return self._tag == 'disabled'
+
+    def is_enabled(self):
+        """
+        Check if the union tag is ``enabled``.
+
+        :rtype: bool
+        """
+        return self._tag == 'enabled'
+
+    def is_other(self):
+        """
+        Check if the union tag is ``other``.
+
+        :rtype: bool
+        """
+        return self._tag == 'other'
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(AdminEmailRemindersPolicy, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+AdminEmailRemindersPolicy_validator = bv.Union(AdminEmailRemindersPolicy)
+
 class AdminRole(bb.Union):
     """
     This class acts as a tagged union. Only one of the ``is_*`` methods will
@@ -12188,6 +12303,17 @@ class EventDetails(bb.Union):
         return cls('account_capture_change_policy_details', val)
 
     @classmethod
+    def admin_email_reminders_changed_details(cls, val):
+        """
+        Create an instance of this class set to the
+        ``admin_email_reminders_changed_details`` tag with value ``val``.
+
+        :param AdminEmailRemindersChangedDetails val:
+        :rtype: EventDetails
+        """
+        return cls('admin_email_reminders_changed_details', val)
+
+    @classmethod
     def allow_download_disabled_details(cls, val):
         """
         Create an instance of this class set to the
@@ -16466,6 +16592,14 @@ class EventDetails(bb.Union):
         :rtype: bool
         """
         return self._tag == 'account_capture_change_policy_details'
+
+    def is_admin_email_reminders_changed_details(self):
+        """
+        Check if the union tag is ``admin_email_reminders_changed_details``.
+
+        :rtype: bool
+        """
+        return self._tag == 'admin_email_reminders_changed_details'
 
     def is_allow_download_disabled_details(self):
         """
@@ -21037,6 +21171,16 @@ class EventDetails(bb.Union):
             raise AttributeError("tag 'account_capture_change_policy_details' not set")
         return self._value
 
+    def get_admin_email_reminders_changed_details(self):
+        """
+        Only call this if :meth:`is_admin_email_reminders_changed_details` is true.
+
+        :rtype: AdminEmailRemindersChangedDetails
+        """
+        if not self.is_admin_email_reminders_changed_details():
+            raise AttributeError("tag 'admin_email_reminders_changed_details' not set")
+        return self._value
+
     def get_allow_download_disabled_details(self):
         """
         Only call this if :meth:`is_allow_download_disabled_details` is true.
@@ -23158,6 +23302,9 @@ class EventType(bb.Union):
     :ivar AccountCaptureChangePolicyType
         EventType.account_capture_change_policy: (team_policies) Changed account
         capture setting on team domain
+    :ivar AdminEmailRemindersChangedType
+        EventType.admin_email_reminders_changed: (team_policies) Changed admin
+        email reminder policy for team requests to join
     :ivar AllowDownloadDisabledType EventType.allow_download_disabled:
         (team_policies) Disabled downloads (deprecated, no longer logged)
     :ivar AllowDownloadEnabledType EventType.allow_download_enabled:
@@ -27409,6 +27556,17 @@ class EventType(bb.Union):
         return cls('account_capture_change_policy', val)
 
     @classmethod
+    def admin_email_reminders_changed(cls, val):
+        """
+        Create an instance of this class set to the
+        ``admin_email_reminders_changed`` tag with value ``val``.
+
+        :param AdminEmailRemindersChangedType val:
+        :rtype: EventType
+        """
+        return cls('admin_email_reminders_changed', val)
+
+    @classmethod
     def allow_download_disabled(cls, val):
         """
         Create an instance of this class set to the ``allow_download_disabled``
@@ -31654,6 +31812,14 @@ class EventType(bb.Union):
         :rtype: bool
         """
         return self._tag == 'account_capture_change_policy'
+
+    def is_admin_email_reminders_changed(self):
+        """
+        Check if the union tag is ``admin_email_reminders_changed``.
+
+        :rtype: bool
+        """
+        return self._tag == 'admin_email_reminders_changed'
 
     def is_allow_download_disabled(self):
         """
@@ -36967,6 +37133,19 @@ class EventType(bb.Union):
             raise AttributeError("tag 'account_capture_change_policy' not set")
         return self._value
 
+    def get_admin_email_reminders_changed(self):
+        """
+        (team_policies) Changed admin email reminder policy for team requests to
+        join
+
+        Only call this if :meth:`is_admin_email_reminders_changed` is true.
+
+        :rtype: AdminEmailRemindersChangedType
+        """
+        if not self.is_admin_email_reminders_changed():
+            raise AttributeError("tag 'admin_email_reminders_changed' not set")
+        return self._value
+
     def get_allow_download_disabled(self):
         """
         (team_policies) Disabled downloads (deprecated, no longer logged)
@@ -39253,6 +39432,8 @@ class EventTypeArg(bb.Union):
         (team_folders) Changed sync default
     :ivar team_log.EventTypeArg.account_capture_change_policy: (team_policies)
         Changed account capture setting on team domain
+    :ivar team_log.EventTypeArg.admin_email_reminders_changed: (team_policies)
+        Changed admin email reminder policy for team requests to join
     :ivar team_log.EventTypeArg.allow_download_disabled: (team_policies)
         Disabled downloads (deprecated, no longer logged)
     :ivar team_log.EventTypeArg.allow_download_enabled: (team_policies) Enabled
@@ -40261,6 +40442,8 @@ class EventTypeArg(bb.Union):
     team_selective_sync_settings_changed = None
     # Attribute is overwritten below the class definition
     account_capture_change_policy = None
+    # Attribute is overwritten below the class definition
+    admin_email_reminders_changed = None
     # Attribute is overwritten below the class definition
     allow_download_disabled = None
     # Attribute is overwritten below the class definition
@@ -43343,6 +43526,14 @@ class EventTypeArg(bb.Union):
         :rtype: bool
         """
         return self._tag == 'account_capture_change_policy'
+
+    def is_admin_email_reminders_changed(self):
+        """
+        Check if the union tag is ``admin_email_reminders_changed``.
+
+        :rtype: bool
+        """
+        return self._tag == 'admin_email_reminders_changed'
 
     def is_allow_download_disabled(self):
         """
@@ -73318,6 +73509,37 @@ AdminConsoleAppPolicy.block = AdminConsoleAppPolicy('block')
 AdminConsoleAppPolicy.default = AdminConsoleAppPolicy('default')
 AdminConsoleAppPolicy.other = AdminConsoleAppPolicy('other')
 
+AdminEmailRemindersChangedDetails.new_value.validator = AdminEmailRemindersPolicy_validator
+AdminEmailRemindersChangedDetails.previous_value.validator = AdminEmailRemindersPolicy_validator
+AdminEmailRemindersChangedDetails._all_field_names_ = set([
+    'new_value',
+    'previous_value',
+])
+AdminEmailRemindersChangedDetails._all_fields_ = [
+    ('new_value', AdminEmailRemindersChangedDetails.new_value.validator),
+    ('previous_value', AdminEmailRemindersChangedDetails.previous_value.validator),
+]
+
+AdminEmailRemindersChangedType.description.validator = bv.String()
+AdminEmailRemindersChangedType._all_field_names_ = set(['description'])
+AdminEmailRemindersChangedType._all_fields_ = [('description', AdminEmailRemindersChangedType.description.validator)]
+
+AdminEmailRemindersPolicy._default_validator = bv.Void()
+AdminEmailRemindersPolicy._disabled_validator = bv.Void()
+AdminEmailRemindersPolicy._enabled_validator = bv.Void()
+AdminEmailRemindersPolicy._other_validator = bv.Void()
+AdminEmailRemindersPolicy._tagmap = {
+    'default': AdminEmailRemindersPolicy._default_validator,
+    'disabled': AdminEmailRemindersPolicy._disabled_validator,
+    'enabled': AdminEmailRemindersPolicy._enabled_validator,
+    'other': AdminEmailRemindersPolicy._other_validator,
+}
+
+AdminEmailRemindersPolicy.default = AdminEmailRemindersPolicy('default')
+AdminEmailRemindersPolicy.disabled = AdminEmailRemindersPolicy('disabled')
+AdminEmailRemindersPolicy.enabled = AdminEmailRemindersPolicy('enabled')
+AdminEmailRemindersPolicy.other = AdminEmailRemindersPolicy('other')
+
 AdminRole._billing_admin_validator = bv.Void()
 AdminRole._compliance_admin_validator = bv.Void()
 AdminRole._content_admin_validator = bv.Void()
@@ -75170,6 +75392,7 @@ EventDetails._team_folder_permanently_delete_details_validator = TeamFolderPerma
 EventDetails._team_folder_rename_details_validator = TeamFolderRenameDetails_validator
 EventDetails._team_selective_sync_settings_changed_details_validator = TeamSelectiveSyncSettingsChangedDetails_validator
 EventDetails._account_capture_change_policy_details_validator = AccountCaptureChangePolicyDetails_validator
+EventDetails._admin_email_reminders_changed_details_validator = AdminEmailRemindersChangedDetails_validator
 EventDetails._allow_download_disabled_details_validator = AllowDownloadDisabledDetails_validator
 EventDetails._allow_download_enabled_details_validator = AllowDownloadEnabledDetails_validator
 EventDetails._app_permissions_changed_details_validator = AppPermissionsChangedDetails_validator
@@ -75654,6 +75877,7 @@ EventDetails._tagmap = {
     'team_folder_rename_details': EventDetails._team_folder_rename_details_validator,
     'team_selective_sync_settings_changed_details': EventDetails._team_selective_sync_settings_changed_details_validator,
     'account_capture_change_policy_details': EventDetails._account_capture_change_policy_details_validator,
+    'admin_email_reminders_changed_details': EventDetails._admin_email_reminders_changed_details_validator,
     'allow_download_disabled_details': EventDetails._allow_download_disabled_details_validator,
     'allow_download_enabled_details': EventDetails._allow_download_enabled_details_validator,
     'app_permissions_changed_details': EventDetails._app_permissions_changed_details_validator,
@@ -76141,6 +76365,7 @@ EventType._team_folder_permanently_delete_validator = TeamFolderPermanentlyDelet
 EventType._team_folder_rename_validator = TeamFolderRenameType_validator
 EventType._team_selective_sync_settings_changed_validator = TeamSelectiveSyncSettingsChangedType_validator
 EventType._account_capture_change_policy_validator = AccountCaptureChangePolicyType_validator
+EventType._admin_email_reminders_changed_validator = AdminEmailRemindersChangedType_validator
 EventType._allow_download_disabled_validator = AllowDownloadDisabledType_validator
 EventType._allow_download_enabled_validator = AllowDownloadEnabledType_validator
 EventType._app_permissions_changed_validator = AppPermissionsChangedType_validator
@@ -76624,6 +76849,7 @@ EventType._tagmap = {
     'team_folder_rename': EventType._team_folder_rename_validator,
     'team_selective_sync_settings_changed': EventType._team_selective_sync_settings_changed_validator,
     'account_capture_change_policy': EventType._account_capture_change_policy_validator,
+    'admin_email_reminders_changed': EventType._admin_email_reminders_changed_validator,
     'allow_download_disabled': EventType._allow_download_disabled_validator,
     'allow_download_enabled': EventType._allow_download_enabled_validator,
     'app_permissions_changed': EventType._app_permissions_changed_validator,
@@ -77110,6 +77336,7 @@ EventTypeArg._team_folder_permanently_delete_validator = bv.Void()
 EventTypeArg._team_folder_rename_validator = bv.Void()
 EventTypeArg._team_selective_sync_settings_changed_validator = bv.Void()
 EventTypeArg._account_capture_change_policy_validator = bv.Void()
+EventTypeArg._admin_email_reminders_changed_validator = bv.Void()
 EventTypeArg._allow_download_disabled_validator = bv.Void()
 EventTypeArg._allow_download_enabled_validator = bv.Void()
 EventTypeArg._app_permissions_changed_validator = bv.Void()
@@ -77593,6 +77820,7 @@ EventTypeArg._tagmap = {
     'team_folder_rename': EventTypeArg._team_folder_rename_validator,
     'team_selective_sync_settings_changed': EventTypeArg._team_selective_sync_settings_changed_validator,
     'account_capture_change_policy': EventTypeArg._account_capture_change_policy_validator,
+    'admin_email_reminders_changed': EventTypeArg._admin_email_reminders_changed_validator,
     'allow_download_disabled': EventTypeArg._allow_download_disabled_validator,
     'allow_download_enabled': EventTypeArg._allow_download_enabled_validator,
     'app_permissions_changed': EventTypeArg._app_permissions_changed_validator,
@@ -78077,6 +78305,7 @@ EventTypeArg.team_folder_permanently_delete = EventTypeArg('team_folder_permanen
 EventTypeArg.team_folder_rename = EventTypeArg('team_folder_rename')
 EventTypeArg.team_selective_sync_settings_changed = EventTypeArg('team_selective_sync_settings_changed')
 EventTypeArg.account_capture_change_policy = EventTypeArg('account_capture_change_policy')
+EventTypeArg.admin_email_reminders_changed = EventTypeArg('admin_email_reminders_changed')
 EventTypeArg.allow_download_disabled = EventTypeArg('allow_download_disabled')
 EventTypeArg.allow_download_enabled = EventTypeArg('allow_download_enabled')
 EventTypeArg.app_permissions_changed = EventTypeArg('app_permissions_changed')

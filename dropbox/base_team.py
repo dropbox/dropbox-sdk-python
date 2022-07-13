@@ -15,6 +15,7 @@ from dropbox import contacts
 from dropbox import file_properties
 from dropbox import file_requests
 from dropbox import files
+from dropbox import openid
 from dropbox import paper
 from dropbox import secondary_emails
 from dropbox import seen_state
