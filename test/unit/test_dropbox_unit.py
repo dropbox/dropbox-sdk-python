@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 import mock
+import pickle
 
 import pytest
 
@@ -404,3 +405,10 @@ class TestClient:
                       app_secret=APP_SECRET,
                       session=session_instance)
         dbx.as_user(TEAM_MEMBER_ID)
+
+
+class TestSession:
+    def test_pickle_session(self):
+        session_obj = create_session()
+        pickled_session = pickle.dumps(session_obj)
+        pickle.loads(pickled_session)
