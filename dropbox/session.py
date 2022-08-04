@@ -41,6 +41,7 @@ except NotImplementedError:  # Package is used inside python archive
 # TODO(kelkabany): We probably only want to instantiate this once so that even
 # if multiple Dropbox objects are instantiated, they all share the same pool.
 class _SSLAdapter(HTTPAdapter):
+    _ca_certs = None
 
     def __init__(self, *args, **kwargs):
         self._ca_certs = kwargs.pop("ca_certs", None) or _TRUSTED_CERT_FILE
