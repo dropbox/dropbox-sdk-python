@@ -206,6 +206,9 @@ class DropboxTeamBase(object):
     # Routes in files namespace
 
     # ------------------------------------------
+    # Routes in openid namespace
+
+    # ------------------------------------------
     # Routes in paper namespace
 
     # ------------------------------------------

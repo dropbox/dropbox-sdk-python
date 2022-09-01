@@ -1864,7 +1864,7 @@ AdminConsoleAppPolicy_validator = bv.Union(AdminConsoleAppPolicy)
 
 class AdminEmailRemindersChangedDetails(bb.Struct):
     """
-    Changed admin email reminder policy for team requests to join.
+    Changed admin reminder settings for requests to join the team.
 
     :ivar team_log.AdminEmailRemindersChangedDetails.new_value: To.
     :ivar team_log.AdminEmailRemindersChangedDetails.previous_value: From.
@@ -12620,6 +12620,18 @@ class EventDetails(bb.Union):
         return cls('file_locking_policy_changed_details', val)
 
     @classmethod
+    def file_provider_migration_policy_changed_details(cls, val):
+        """
+        Create an instance of this class set to the
+        ``file_provider_migration_policy_changed_details`` tag with value
+        ``val``.
+
+        :param FileProviderMigrationPolicyChangedDetails val:
+        :rtype: EventDetails
+        """
+        return cls('file_provider_migration_policy_changed_details', val)
+
+    @classmethod
     def file_requests_change_policy_details(cls, val):
         """
         Create an instance of this class set to the
@@ -16816,6 +16828,14 @@ class EventDetails(bb.Union):
         :rtype: bool
         """
         return self._tag == 'file_locking_policy_changed_details'
+
+    def is_file_provider_migration_policy_changed_details(self):
+        """
+        Check if the union tag is ``file_provider_migration_policy_changed_details``.
+
+        :rtype: bool
+        """
+        return self._tag == 'file_provider_migration_policy_changed_details'
 
     def is_file_requests_change_policy_details(self):
         """
@@ -21451,6 +21471,16 @@ class EventDetails(bb.Union):
             raise AttributeError("tag 'file_locking_policy_changed_details' not set")
         return self._value
 
+    def get_file_provider_migration_policy_changed_details(self):
+        """
+        Only call this if :meth:`is_file_provider_migration_policy_changed_details` is true.
+
+        :rtype: FileProviderMigrationPolicyChangedDetails
+        """
+        if not self.is_file_provider_migration_policy_changed_details():
+            raise AttributeError("tag 'file_provider_migration_policy_changed_details' not set")
+        return self._value
+
     def get_file_requests_change_policy_details(self):
         """
         Only call this if :meth:`is_file_requests_change_policy_details` is true.
@@ -23304,7 +23334,7 @@ class EventType(bb.Union):
         capture setting on team domain
     :ivar AdminEmailRemindersChangedType
         EventType.admin_email_reminders_changed: (team_policies) Changed admin
-        email reminder policy for team requests to join
+        reminder settings for requests to join the team
     :ivar AllowDownloadDisabledType EventType.allow_download_disabled:
         (team_policies) Disabled downloads (deprecated, no longer logged)
     :ivar AllowDownloadEnabledType EventType.allow_download_enabled:
@@ -23378,6 +23408,9 @@ class EventType(bb.Union):
         (team_policies) Enabled/disabled commenting on team files
     :ivar FileLockingPolicyChangedType EventType.file_locking_policy_changed:
         (team_policies) Changed file locking policy for team
+    :ivar FileProviderMigrationPolicyChangedType
+        EventType.file_provider_migration_policy_changed: (team_policies)
+        Changed File Provider Migration policy for team
     :ivar FileRequestsChangePolicyType EventType.file_requests_change_policy:
         (team_policies) Enabled/disabled file requests
     :ivar FileRequestsEmailsEnabledType EventType.file_requests_emails_enabled:
@@ -27864,6 +27897,17 @@ class EventType(bb.Union):
         return cls('file_locking_policy_changed', val)
 
     @classmethod
+    def file_provider_migration_policy_changed(cls, val):
+        """
+        Create an instance of this class set to the
+        ``file_provider_migration_policy_changed`` tag with value ``val``.
+
+        :param FileProviderMigrationPolicyChangedType val:
+        :rtype: EventType
+        """
+        return cls('file_provider_migration_policy_changed', val)
+
+    @classmethod
     def file_requests_change_policy(cls, val):
         """
         Create an instance of this class set to the
@@ -32036,6 +32080,14 @@ class EventType(bb.Union):
         :rtype: bool
         """
         return self._tag == 'file_locking_policy_changed'
+
+    def is_file_provider_migration_policy_changed(self):
+        """
+        Check if the union tag is ``file_provider_migration_policy_changed``.
+
+        :rtype: bool
+        """
+        return self._tag == 'file_provider_migration_policy_changed'
 
     def is_file_requests_change_policy(self):
         """
@@ -37135,8 +37187,8 @@ class EventType(bb.Union):
 
     def get_admin_email_reminders_changed(self):
         """
-        (team_policies) Changed admin email reminder policy for team requests to
-        join
+        (team_policies) Changed admin reminder settings for requests to join the
+        team
 
         Only call this if :meth:`is_admin_email_reminders_changed` is true.
 
@@ -37475,6 +37527,18 @@ class EventType(bb.Union):
         """
         if not self.is_file_locking_policy_changed():
             raise AttributeError("tag 'file_locking_policy_changed' not set")
+        return self._value
+
+    def get_file_provider_migration_policy_changed(self):
+        """
+        (team_policies) Changed File Provider Migration policy for team
+
+        Only call this if :meth:`is_file_provider_migration_policy_changed` is true.
+
+        :rtype: FileProviderMigrationPolicyChangedType
+        """
+        if not self.is_file_provider_migration_policy_changed():
+            raise AttributeError("tag 'file_provider_migration_policy_changed' not set")
         return self._value
 
     def get_file_requests_change_policy(self):
@@ -39433,7 +39497,7 @@ class EventTypeArg(bb.Union):
     :ivar team_log.EventTypeArg.account_capture_change_policy: (team_policies)
         Changed account capture setting on team domain
     :ivar team_log.EventTypeArg.admin_email_reminders_changed: (team_policies)
-        Changed admin email reminder policy for team requests to join
+        Changed admin reminder settings for requests to join the team
     :ivar team_log.EventTypeArg.allow_download_disabled: (team_policies)
         Disabled downloads (deprecated, no longer logged)
     :ivar team_log.EventTypeArg.allow_download_enabled: (team_policies) Enabled
@@ -39494,6 +39558,8 @@ class EventTypeArg(bb.Union):
         Enabled/disabled commenting on team files
     :ivar team_log.EventTypeArg.file_locking_policy_changed: (team_policies)
         Changed file locking policy for team
+    :ivar team_log.EventTypeArg.file_provider_migration_policy_changed:
+        (team_policies) Changed File Provider Migration policy for team
     :ivar team_log.EventTypeArg.file_requests_change_policy: (team_policies)
         Enabled/disabled file requests
     :ivar team_log.EventTypeArg.file_requests_emails_enabled: (team_policies)
@@ -40498,6 +40564,8 @@ class EventTypeArg(bb.Union):
     file_comments_change_policy = None
     # Attribute is overwritten below the class definition
     file_locking_policy_changed = None
+    # Attribute is overwritten below the class definition
+    file_provider_migration_policy_changed = None
     # Attribute is overwritten below the class definition
     file_requests_change_policy = None
     # Attribute is overwritten below the class definition
@@ -43751,6 +43819,14 @@ class EventTypeArg(bb.Union):
         """
         return self._tag == 'file_locking_policy_changed'
 
+    def is_file_provider_migration_policy_changed(self):
+        """
+        Check if the union tag is ``file_provider_migration_policy_changed``.
+
+        :rtype: bool
+        """
+        return self._tag == 'file_provider_migration_policy_changed'
+
     def is_file_requests_change_policy(self):
         """
         Check if the union tag is ``file_requests_change_policy``.
@@ -46689,6 +46765,65 @@ class FilePreviewType(bb.Struct):
         super(FilePreviewType, self)._process_custom_annotations(annotation_type, field_path, processor)
 
 FilePreviewType_validator = bv.Struct(FilePreviewType)
+
+class FileProviderMigrationPolicyChangedDetails(bb.Struct):
+    """
+    Changed File Provider Migration policy for team.
+
+    :ivar team_log.FileProviderMigrationPolicyChangedDetails.new_value: To.
+    :ivar team_log.FileProviderMigrationPolicyChangedDetails.previous_value:
+        From.
+    """
+
+    __slots__ = [
+        '_new_value_value',
+        '_previous_value_value',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 new_value=None,
+                 previous_value=None):
+        self._new_value_value = bb.NOT_SET
+        self._previous_value_value = bb.NOT_SET
+        if new_value is not None:
+            self.new_value = new_value
+        if previous_value is not None:
+            self.previous_value = previous_value
+
+    # Instance attribute type: team_policies.FileProviderMigrationPolicyState (validator is set below)
+    new_value = bb.Attribute("new_value", user_defined=True)
+
+    # Instance attribute type: team_policies.FileProviderMigrationPolicyState (validator is set below)
+    previous_value = bb.Attribute("previous_value", user_defined=True)
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(FileProviderMigrationPolicyChangedDetails, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+FileProviderMigrationPolicyChangedDetails_validator = bv.Struct(FileProviderMigrationPolicyChangedDetails)
+
+class FileProviderMigrationPolicyChangedType(bb.Struct):
+
+    __slots__ = [
+        '_description_value',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 description=None):
+        self._description_value = bb.NOT_SET
+        if description is not None:
+            self.description = description
+
+    # Instance attribute type: str (validator is set below)
+    description = bb.Attribute("description")
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(FileProviderMigrationPolicyChangedType, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+FileProviderMigrationPolicyChangedType_validator = bv.Struct(FileProviderMigrationPolicyChangedType)
 
 class FileRenameDetails(bb.Struct):
     """
@@ -69188,6 +69323,8 @@ class TeamMembershipType(bb.Union):
     # Attribute is overwritten below the class definition
     full = None
     # Attribute is overwritten below the class definition
+    guest = None
+    # Attribute is overwritten below the class definition
     other = None
 
     def is_free(self):
@@ -69205,6 +69342,14 @@ class TeamMembershipType(bb.Union):
         :rtype: bool
         """
         return self._tag == 'full'
+
+    def is_guest(self):
+        """
+        Check if the union tag is ``guest``.
+
+        :rtype: bool
+        """
+        return self._tag == 'guest'
 
     def is_other(self):
         """
@@ -75420,6 +75565,7 @@ EventDetails._extended_version_history_change_policy_details_validator = Extende
 EventDetails._external_drive_backup_policy_changed_details_validator = ExternalDriveBackupPolicyChangedDetails_validator
 EventDetails._file_comments_change_policy_details_validator = FileCommentsChangePolicyDetails_validator
 EventDetails._file_locking_policy_changed_details_validator = FileLockingPolicyChangedDetails_validator
+EventDetails._file_provider_migration_policy_changed_details_validator = FileProviderMigrationPolicyChangedDetails_validator
 EventDetails._file_requests_change_policy_details_validator = FileRequestsChangePolicyDetails_validator
 EventDetails._file_requests_emails_enabled_details_validator = FileRequestsEmailsEnabledDetails_validator
 EventDetails._file_requests_emails_restricted_to_team_only_details_validator = FileRequestsEmailsRestrictedToTeamOnlyDetails_validator
@@ -75905,6 +76051,7 @@ EventDetails._tagmap = {
     'external_drive_backup_policy_changed_details': EventDetails._external_drive_backup_policy_changed_details_validator,
     'file_comments_change_policy_details': EventDetails._file_comments_change_policy_details_validator,
     'file_locking_policy_changed_details': EventDetails._file_locking_policy_changed_details_validator,
+    'file_provider_migration_policy_changed_details': EventDetails._file_provider_migration_policy_changed_details_validator,
     'file_requests_change_policy_details': EventDetails._file_requests_change_policy_details_validator,
     'file_requests_emails_enabled_details': EventDetails._file_requests_emails_enabled_details_validator,
     'file_requests_emails_restricted_to_team_only_details': EventDetails._file_requests_emails_restricted_to_team_only_details_validator,
@@ -76393,6 +76540,7 @@ EventType._extended_version_history_change_policy_validator = ExtendedVersionHis
 EventType._external_drive_backup_policy_changed_validator = ExternalDriveBackupPolicyChangedType_validator
 EventType._file_comments_change_policy_validator = FileCommentsChangePolicyType_validator
 EventType._file_locking_policy_changed_validator = FileLockingPolicyChangedType_validator
+EventType._file_provider_migration_policy_changed_validator = FileProviderMigrationPolicyChangedType_validator
 EventType._file_requests_change_policy_validator = FileRequestsChangePolicyType_validator
 EventType._file_requests_emails_enabled_validator = FileRequestsEmailsEnabledType_validator
 EventType._file_requests_emails_restricted_to_team_only_validator = FileRequestsEmailsRestrictedToTeamOnlyType_validator
@@ -76877,6 +77025,7 @@ EventType._tagmap = {
     'external_drive_backup_policy_changed': EventType._external_drive_backup_policy_changed_validator,
     'file_comments_change_policy': EventType._file_comments_change_policy_validator,
     'file_locking_policy_changed': EventType._file_locking_policy_changed_validator,
+    'file_provider_migration_policy_changed': EventType._file_provider_migration_policy_changed_validator,
     'file_requests_change_policy': EventType._file_requests_change_policy_validator,
     'file_requests_emails_enabled': EventType._file_requests_emails_enabled_validator,
     'file_requests_emails_restricted_to_team_only': EventType._file_requests_emails_restricted_to_team_only_validator,
@@ -77364,6 +77513,7 @@ EventTypeArg._extended_version_history_change_policy_validator = bv.Void()
 EventTypeArg._external_drive_backup_policy_changed_validator = bv.Void()
 EventTypeArg._file_comments_change_policy_validator = bv.Void()
 EventTypeArg._file_locking_policy_changed_validator = bv.Void()
+EventTypeArg._file_provider_migration_policy_changed_validator = bv.Void()
 EventTypeArg._file_requests_change_policy_validator = bv.Void()
 EventTypeArg._file_requests_emails_enabled_validator = bv.Void()
 EventTypeArg._file_requests_emails_restricted_to_team_only_validator = bv.Void()
@@ -77848,6 +77998,7 @@ EventTypeArg._tagmap = {
     'external_drive_backup_policy_changed': EventTypeArg._external_drive_backup_policy_changed_validator,
     'file_comments_change_policy': EventTypeArg._file_comments_change_policy_validator,
     'file_locking_policy_changed': EventTypeArg._file_locking_policy_changed_validator,
+    'file_provider_migration_policy_changed': EventTypeArg._file_provider_migration_policy_changed_validator,
     'file_requests_change_policy': EventTypeArg._file_requests_change_policy_validator,
     'file_requests_emails_enabled': EventTypeArg._file_requests_emails_enabled_validator,
     'file_requests_emails_restricted_to_team_only': EventTypeArg._file_requests_emails_restricted_to_team_only_validator,
@@ -78333,6 +78484,7 @@ EventTypeArg.extended_version_history_change_policy = EventTypeArg('extended_ver
 EventTypeArg.external_drive_backup_policy_changed = EventTypeArg('external_drive_backup_policy_changed')
 EventTypeArg.file_comments_change_policy = EventTypeArg('file_comments_change_policy')
 EventTypeArg.file_locking_policy_changed = EventTypeArg('file_locking_policy_changed')
+EventTypeArg.file_provider_migration_policy_changed = EventTypeArg('file_provider_migration_policy_changed')
 EventTypeArg.file_requests_change_policy = EventTypeArg('file_requests_change_policy')
 EventTypeArg.file_requests_emails_enabled = EventTypeArg('file_requests_emails_enabled')
 EventTypeArg.file_requests_emails_restricted_to_team_only = EventTypeArg('file_requests_emails_restricted_to_team_only')
@@ -78898,6 +79050,21 @@ FilePreviewDetails._all_fields_ = []
 FilePreviewType.description.validator = bv.String()
 FilePreviewType._all_field_names_ = set(['description'])
 FilePreviewType._all_fields_ = [('description', FilePreviewType.description.validator)]
+
+FileProviderMigrationPolicyChangedDetails.new_value.validator = team_policies.FileProviderMigrationPolicyState_validator
+FileProviderMigrationPolicyChangedDetails.previous_value.validator = team_policies.FileProviderMigrationPolicyState_validator
+FileProviderMigrationPolicyChangedDetails._all_field_names_ = set([
+    'new_value',
+    'previous_value',
+])
+FileProviderMigrationPolicyChangedDetails._all_fields_ = [
+    ('new_value', FileProviderMigrationPolicyChangedDetails.new_value.validator),
+    ('previous_value', FileProviderMigrationPolicyChangedDetails.previous_value.validator),
+]
+
+FileProviderMigrationPolicyChangedType.description.validator = bv.String()
+FileProviderMigrationPolicyChangedType._all_field_names_ = set(['description'])
+FileProviderMigrationPolicyChangedType._all_fields_ = [('description', FileProviderMigrationPolicyChangedType.description.validator)]
 
 FileRenameDetails.relocate_action_details.validator = bv.List(RelocateAssetReferencesLogInfo_validator)
 FileRenameDetails._all_field_names_ = set(['relocate_action_details'])
@@ -84046,15 +84213,18 @@ TeamMemberLogInfo._all_fields_ = UserLogInfo._all_fields_ + TeamMemberLogInfo._f
 
 TeamMembershipType._free_validator = bv.Void()
 TeamMembershipType._full_validator = bv.Void()
+TeamMembershipType._guest_validator = bv.Void()
 TeamMembershipType._other_validator = bv.Void()
 TeamMembershipType._tagmap = {
     'free': TeamMembershipType._free_validator,
     'full': TeamMembershipType._full_validator,
+    'guest': TeamMembershipType._guest_validator,
     'other': TeamMembershipType._other_validator,
 }
 
 TeamMembershipType.free = TeamMembershipType('free')
 TeamMembershipType.full = TeamMembershipType('full')
+TeamMembershipType.guest = TeamMembershipType('guest')
 TeamMembershipType.other = TeamMembershipType('other')
 
 TeamMergeFromDetails.team_name.validator = bv.String()

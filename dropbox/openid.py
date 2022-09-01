@@ -71,6 +71,9 @@ class UserInfoArgs(bb.Struct):
 UserInfoArgs_validator = bv.Struct(UserInfoArgs)
 
 class UserInfoError(bb.Struct):
+    """
+    :ivar openid.UserInfoError.error_message: Brief explanation of the error.
+    """
 
     __slots__ = [
         '_err_value',
@@ -101,6 +104,16 @@ class UserInfoError(bb.Struct):
 UserInfoError_validator = bv.Struct(UserInfoError)
 
 class UserInfoResult(bb.Struct):
+    """
+    :ivar openid.UserInfoResult.family_name: Last name of user.
+    :ivar openid.UserInfoResult.given_name: First name of user.
+    :ivar openid.UserInfoResult.email: Email address of user.
+    :ivar openid.UserInfoResult.email_verified: If user is email verified.
+    :ivar openid.UserInfoResult.iss: Issuer of token (in this case Dropbox).
+    :ivar openid.UserInfoResult.sub: An identifier for the user. This is the
+        Dropbox account_id, a string value such as
+        dbid:AAH4f99T0taONIb-OurWxbNQ6ywGRopQngc.
+    """
 
     __slots__ = [
         '_family_name_value',
@@ -277,6 +290,19 @@ ErrUnion.other = ErrUnion('other')
 UserInfoError.error_message.default = ''
 UserInfoResult.iss.default = ''
 UserInfoResult.sub.default = ''
+userinfo = bb.Route(
+    'userinfo',
+    1,
+    False,
+    UserInfoArgs_validator,
+    UserInfoResult_validator,
+    UserInfoError_validator,
+    {'auth': 'user',
+     'host': 'api',
+     'style': 'rpc'},
+)
+
 ROUTES = {
+    'userinfo': userinfo,
 }
 

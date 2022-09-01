@@ -2264,8 +2264,11 @@ class FileMemberActionIndividualResult(bb.Union):
     corresponding ``get_*`` method.
 
     :ivar Optional[AccessLevel]
-        sharing.FileMemberActionIndividualResult.success: Member was
-        successfully removed from this file. If AccessLevel is given, the member
+        sharing.FileMemberActionIndividualResult.success: Part of the response
+        for both add_file_member and remove_file_member_v1 (deprecated). For
+        add_file_member, indicates giving access was successful and at what
+        AccessLevel. For remove_file_member_v1, indicates member was
+        successfully removed from the file. If AccessLevel is given, the member
         still has access via a parent shared folder.
     :ivar FileMemberActionError FileMemberActionIndividualResult.member_error:
         User was not able to perform this action.
@@ -2313,7 +2316,10 @@ class FileMemberActionIndividualResult(bb.Union):
 
     def get_success(self):
         """
-        Member was successfully removed from this file. If AccessLevel is given,
+        Part of the response for both add_file_member and remove_file_member_v1
+        (deprecated). For add_file_member, indicates giving access was
+        successful and at what AccessLevel. For remove_file_member_v1, indicates
+        member was successfully removed from the file. If AccessLevel is given,
         the member still has access via a parent shared folder.
 
         Only call this if :meth:`is_success` is true.
