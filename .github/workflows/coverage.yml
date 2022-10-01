@@ -28,7 +28,7 @@ jobs:
           coverage run --rcfile=.coveragerc -m pytest test/unit/test_dropbox_unit.py
           coverage xml
       - name: Publish Coverage
-        uses: codecov/codecov-action@v1.3.2
+        uses: codecov/codecov-action@v3.1.1
         with:
           flags: unit
           fail_ci_if_error: true
@@ -66,7 +66,7 @@ jobs:
           coverage run --rcfile=.coveragerc -m pytest test/integration/test_dropbox.py
           coverage xml
       - name: Publish Coverage
-        uses: codecov/codecov-action@v1.3.2
+        uses: codecov/codecov-action@v3.1.1
         with:
           flags: integration
           fail_ci_if_error: true
