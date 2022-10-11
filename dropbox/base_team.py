@@ -206,6 +206,9 @@ class DropboxTeamBase(object):
     # Routes in files namespace
 
     # ------------------------------------------
+    # Routes in openid namespace
+
+    # ------------------------------------------
     # Routes in paper namespace
 
     # ------------------------------------------
@@ -2553,6 +2556,123 @@ class DropboxTeamBase(object):
                              end_date)
         r = self.request(
             team.reports_get_storage,
+            'team',
+            arg,
+            None,
+        )
+        return r
+
+    def team_sharing_allowlist_add(self,
+                                   domains=None,
+                                   emails=None):
+        """
+        Endpoint adds Approve List entries. Changes are effective immediately.
+        Changes are committed in transaction. In case of single validation error
+        - all entries are rejected. Valid domains (RFC-1034/5) and emails
+        (RFC-5322/822) are accepted. Added entries cannot overflow limit of
+        10000 entries per team. Maximum 100 entries per call is allowed.
+
+        Route attributes:
+            scope: team_info.write
+
+        :param Nullable[List[str]] domains: List of domains represented by valid
+            string representation (RFC-1034/5).
+        :param Nullable[List[str]] emails: List of emails represented by valid
+            string representation (RFC-5322/822).
+        :rtype: :class:`dropbox.team.SharingAllowlistAddResponse`
+        :raises: :class:`.exceptions.ApiError`
+
+        If this raises, ApiError will contain:
+            :class:`dropbox.team.SharingAllowlistAddError`
+        """
+        arg = team.SharingAllowlistAddArgs(domains,
+                                           emails)
+        r = self.request(
+            team.sharing_allowlist_add,
+            'team',
+            arg,
+            None,
+        )
+        return r
+
+    def team_sharing_allowlist_list(self,
+                                    limit=1000):
+        """
+        Lists Approve List entries for given team, from newest to oldest,
+        returning up to `limit` entries at a time. If there are more than
+        `limit` entries associated with the current team, more can be fetched by
+        passing the returned `cursor` to
+        :meth:`team_sharing_allowlist_list_continue`.
+
+        Route attributes:
+            scope: team_info.read
+
+        :param int limit: The number of entries to fetch at one time.
+        :rtype: :class:`dropbox.team.SharingAllowlistListResponse`
+        """
+        arg = team.SharingAllowlistListArg(limit)
+        r = self.request(
+            team.sharing_allowlist_list,
+            'team',
+            arg,
+            None,
+        )
+        return r
+
+    def team_sharing_allowlist_list_continue(self,
+                                             cursor):
+        """
+        Lists entries associated with given team, starting from a the cursor.
+        See :meth:`team_sharing_allowlist_list`.
+
+        Route attributes:
+            scope: team_info.read
+
+        :param str cursor: The cursor returned from a previous call to
+            :meth:`team_sharing_allowlist_list` or
+            :meth:`team_sharing_allowlist_list_continue`.
+        :rtype: :class:`dropbox.team.SharingAllowlistListResponse`
+        :raises: :class:`.exceptions.ApiError`
+
+        If this raises, ApiError will contain:
+            :class:`dropbox.team.SharingAllowlistListContinueError`
+        """
+        arg = team.SharingAllowlistListContinueArg(cursor)
+        r = self.request(
+            team.sharing_allowlist_list_continue,
+            'team',
+            arg,
+            None,
+        )
+        return r
+
+    def team_sharing_allowlist_remove(self,
+                                      domains=None,
+                                      emails=None):
+        """
+        Endpoint removes Approve List entries. Changes are effective
+        immediately. Changes are committed in transaction. In case of single
+        validation error - all entries are rejected. Valid domains (RFC-1034/5)
+        and emails (RFC-5322/822) are accepted. Entries being removed have to be
+        present on the list. Maximum 1000 entries per call is allowed.
+
+        Route attributes:
+            scope: team_info.write
+
+        :param Nullable[List[str]] domains: List of domains represented by valid
+            string representation (RFC-1034/5).
+        :param Nullable[List[str]] emails: List of emails represented by valid
+            string representation (RFC-5322/822).
+        :rtype: :class:`dropbox.team.SharingAllowlistRemoveResponse`
+        :raises: :class:`.exceptions.ApiError`
+
+        If this raises, ApiError will contain:
+            :class:`dropbox.team.SharingAllowlistRemoveError`
+        """
+        arg = team.SharingAllowlistRemoveArgs(domains,
+                                              emails)
+        r = self.request(
+            team.sharing_allowlist_remove,
             'team',
             arg,
             None,

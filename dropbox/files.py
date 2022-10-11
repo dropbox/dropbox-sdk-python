@@ -19,7 +19,8 @@ from dropbox import users_common
 class AddTagArg(bb.Struct):
     """
     :ivar files.AddTagArg.path: Path to the item to be tagged.
-    :ivar files.AddTagArg.tag_text: The value of the tag to add.
+    :ivar files.AddTagArg.tag_text: The value of the tag to add. Will be
+        automatically converted to lowercase letters.
     """
 
     __slots__ = [
@@ -6858,7 +6859,8 @@ RelocationResult_validator = bv.Struct(RelocationResult)
 class RemoveTagArg(bb.Struct):
     """
     :ivar files.RemoveTagArg.path: Path to the item to tag.
-    :ivar files.RemoveTagArg.tag_text: The tag to remove.
+    :ivar files.RemoveTagArg.tag_text: The tag to remove. Will be automatically
+        converted to lowercase letters.
     """
 
     __slots__ = [

@@ -10724,6 +10724,551 @@ class SetCustomQuotaError(CustomQuotaError):
 
 SetCustomQuotaError_validator = bv.Union(SetCustomQuotaError)
 
+class SharingAllowlistAddArgs(bb.Struct):
+    """
+    Structure representing Approve List entries. Domain and emails are
+    supported. At least one entry of any supported type is required.
+
+    :ivar team.SharingAllowlistAddArgs.domains: List of domains represented by
+        valid string representation (RFC-1034/5).
+    :ivar team.SharingAllowlistAddArgs.emails: List of emails represented by
+        valid string representation (RFC-5322/822).
+    """
+
+    __slots__ = [
+        '_domains_value',
+        '_emails_value',
+    ]
+
+    _has_required_fields = False
+
+    def __init__(self,
+                 domains=None,
+                 emails=None):
+        self._domains_value = bb.NOT_SET
+        self._emails_value = bb.NOT_SET
+        if domains is not None:
+            self.domains = domains
+        if emails is not None:
+            self.emails = emails
+
+    # Instance attribute type: list of [str] (validator is set below)
+    domains = bb.Attribute("domains", nullable=True)
+
+    # Instance attribute type: list of [str] (validator is set below)
+    emails = bb.Attribute("emails", nullable=True)
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(SharingAllowlistAddArgs, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+SharingAllowlistAddArgs_validator = bv.Struct(SharingAllowlistAddArgs)
+
+class SharingAllowlistAddError(bb.Union):
+    """
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+
+    :ivar str team.SharingAllowlistAddError.malformed_entry: One of provided
+        values is not valid.
+    :ivar team.SharingAllowlistAddError.no_entries_provided: Neither single
+        domain nor email provided.
+    :ivar team.SharingAllowlistAddError.too_many_entries_provided: Too many
+        entries provided within one call.
+    :ivar team.SharingAllowlistAddError.team_limit_reached: Team entries limit
+        reached.
+    :ivar team.SharingAllowlistAddError.unknown_error: Unknown error.
+    :ivar str team.SharingAllowlistAddError.entries_already_exist: Entries
+        already exists.
+    """
+
+    _catch_all = 'other'
+    # Attribute is overwritten below the class definition
+    no_entries_provided = None
+    # Attribute is overwritten below the class definition
+    too_many_entries_provided = None
+    # Attribute is overwritten below the class definition
+    team_limit_reached = None
+    # Attribute is overwritten below the class definition
+    unknown_error = None
+    # Attribute is overwritten below the class definition
+    other = None
+
+    @classmethod
+    def malformed_entry(cls, val):
+        """
+        Create an instance of this class set to the ``malformed_entry`` tag with
+        value ``val``.
+
+        :param str val:
+        :rtype: SharingAllowlistAddError
+        """
+        return cls('malformed_entry', val)
+
+    @classmethod
+    def entries_already_exist(cls, val):
+        """
+        Create an instance of this class set to the ``entries_already_exist``
+        tag with value ``val``.
+
+        :param str val:
+        :rtype: SharingAllowlistAddError
+        """
+        return cls('entries_already_exist', val)
+
+    def is_malformed_entry(self):
+        """
+        Check if the union tag is ``malformed_entry``.
+
+        :rtype: bool
+        """
+        return self._tag == 'malformed_entry'
+
+    def is_no_entries_provided(self):
+        """
+        Check if the union tag is ``no_entries_provided``.
+
+        :rtype: bool
+        """
+        return self._tag == 'no_entries_provided'
+
+    def is_too_many_entries_provided(self):
+        """
+        Check if the union tag is ``too_many_entries_provided``.
+
+        :rtype: bool
+        """
+        return self._tag == 'too_many_entries_provided'
+
+    def is_team_limit_reached(self):
+        """
+        Check if the union tag is ``team_limit_reached``.
+
+        :rtype: bool
+        """
+        return self._tag == 'team_limit_reached'
+
+    def is_unknown_error(self):
+        """
+        Check if the union tag is ``unknown_error``.
+
+        :rtype: bool
+        """
+        return self._tag == 'unknown_error'
+
+    def is_entries_already_exist(self):
+        """
+        Check if the union tag is ``entries_already_exist``.
+
+        :rtype: bool
+        """
+        return self._tag == 'entries_already_exist'
+
+    def is_other(self):
+        """
+        Check if the union tag is ``other``.
+
+        :rtype: bool
+        """
+        return self._tag == 'other'
+
+    def get_malformed_entry(self):
+        """
+        One of provided values is not valid.
+
+        Only call this if :meth:`is_malformed_entry` is true.
+
+        :rtype: str
+        """
+        if not self.is_malformed_entry():
+            raise AttributeError("tag 'malformed_entry' not set")
+        return self._value
+
+    def get_entries_already_exist(self):
+        """
+        Entries already exists.
+
+        Only call this if :meth:`is_entries_already_exist` is true.
+
+        :rtype: str
+        """
+        if not self.is_entries_already_exist():
+            raise AttributeError("tag 'entries_already_exist' not set")
+        return self._value
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(SharingAllowlistAddError, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+SharingAllowlistAddError_validator = bv.Union(SharingAllowlistAddError)
+
+class SharingAllowlistAddResponse(bb.Struct):
+    """
+    This struct is empty. The comment here is intentionally emitted to avoid
+    indentation issues with Stone.
+    """
+
+    __slots__ = [
+    ]
+
+    _has_required_fields = False
+
+    def __init__(self):
+        pass
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(SharingAllowlistAddResponse, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+SharingAllowlistAddResponse_validator = bv.Struct(SharingAllowlistAddResponse)
+
+class SharingAllowlistListArg(bb.Struct):
+    """
+    :ivar team.SharingAllowlistListArg.limit: The number of entries to fetch at
+        one time.
+    """
+
+    __slots__ = [
+        '_limit_value',
+    ]
+
+    _has_required_fields = False
+
+    def __init__(self,
+                 limit=None):
+        self._limit_value = bb.NOT_SET
+        if limit is not None:
+            self.limit = limit
+
+    # Instance attribute type: int (validator is set below)
+    limit = bb.Attribute("limit")
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(SharingAllowlistListArg, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+SharingAllowlistListArg_validator = bv.Struct(SharingAllowlistListArg)
+
+class SharingAllowlistListContinueArg(bb.Struct):
+    """
+    :ivar team.SharingAllowlistListContinueArg.cursor: The cursor returned from
+        a previous call to
+        :meth:`dropbox.dropbox_client.Dropbox.team_sharing_allowlist_list` or
+        :meth:`dropbox.dropbox_client.Dropbox.team_sharing_allowlist_list_continue`.
+    """
+
+    __slots__ = [
+        '_cursor_value',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 cursor=None):
+        self._cursor_value = bb.NOT_SET
+        if cursor is not None:
+            self.cursor = cursor
+
+    # Instance attribute type: str (validator is set below)
+    cursor = bb.Attribute("cursor")
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(SharingAllowlistListContinueArg, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+SharingAllowlistListContinueArg_validator = bv.Struct(SharingAllowlistListContinueArg)
+
+class SharingAllowlistListContinueError(bb.Union):
+    """
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+
+    :ivar team.SharingAllowlistListContinueError.invalid_cursor: Provided cursor
+        is not valid.
+    """
+
+    _catch_all = 'other'
+    # Attribute is overwritten below the class definition
+    invalid_cursor = None
+    # Attribute is overwritten below the class definition
+    other = None
+
+    def is_invalid_cursor(self):
+        """
+        Check if the union tag is ``invalid_cursor``.
+
+        :rtype: bool
+        """
+        return self._tag == 'invalid_cursor'
+
+    def is_other(self):
+        """
+        Check if the union tag is ``other``.
+
+        :rtype: bool
+        """
+        return self._tag == 'other'
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(SharingAllowlistListContinueError, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+SharingAllowlistListContinueError_validator = bv.Union(SharingAllowlistListContinueError)
+
+class SharingAllowlistListError(bb.Struct):
+    """
+    This struct is empty. The comment here is intentionally emitted to avoid
+    indentation issues with Stone.
+    """
+
+    __slots__ = [
+    ]
+
+    _has_required_fields = False
+
+    def __init__(self):
+        pass
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(SharingAllowlistListError, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+SharingAllowlistListError_validator = bv.Struct(SharingAllowlistListError)
+
+class SharingAllowlistListResponse(bb.Struct):
+    """
+    :ivar team.SharingAllowlistListResponse.domains: List of domains represented
+        by valid string representation (RFC-1034/5).
+    :ivar team.SharingAllowlistListResponse.emails: List of emails represented
+        by valid string representation (RFC-5322/822).
+    :ivar team.SharingAllowlistListResponse.cursor: If this is nonempty, there
+        are more entries that can be fetched with
+        :meth:`dropbox.dropbox_client.Dropbox.team_sharing_allowlist_list_continue`.
+    :ivar team.SharingAllowlistListResponse.has_more: if true indicates that
+        more entries can be fetched with
+        :meth:`dropbox.dropbox_client.Dropbox.team_sharing_allowlist_list_continue`.
+    """
+
+    __slots__ = [
+        '_domains_value',
+        '_emails_value',
+        '_cursor_value',
+        '_has_more_value',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 domains=None,
+                 emails=None,
+                 cursor=None,
+                 has_more=None):
+        self._domains_value = bb.NOT_SET
+        self._emails_value = bb.NOT_SET
+        self._cursor_value = bb.NOT_SET
+        self._has_more_value = bb.NOT_SET
+        if domains is not None:
+            self.domains = domains
+        if emails is not None:
+            self.emails = emails
+        if cursor is not None:
+            self.cursor = cursor
+        if has_more is not None:
+            self.has_more = has_more
+
+    # Instance attribute type: list of [str] (validator is set below)
+    domains = bb.Attribute("domains")
+
+    # Instance attribute type: list of [str] (validator is set below)
+    emails = bb.Attribute("emails")
+
+    # Instance attribute type: str (validator is set below)
+    cursor = bb.Attribute("cursor")
+
+    # Instance attribute type: bool (validator is set below)
+    has_more = bb.Attribute("has_more")
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(SharingAllowlistListResponse, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+SharingAllowlistListResponse_validator = bv.Struct(SharingAllowlistListResponse)
+
+class SharingAllowlistRemoveArgs(bb.Struct):
+    """
+    :ivar team.SharingAllowlistRemoveArgs.domains: List of domains represented
+        by valid string representation (RFC-1034/5).
+    :ivar team.SharingAllowlistRemoveArgs.emails: List of emails represented by
+        valid string representation (RFC-5322/822).
+    """
+
+    __slots__ = [
+        '_domains_value',
+        '_emails_value',
+    ]
+
+    _has_required_fields = False
+
+    def __init__(self,
+                 domains=None,
+                 emails=None):
+        self._domains_value = bb.NOT_SET
+        self._emails_value = bb.NOT_SET
+        if domains is not None:
+            self.domains = domains
+        if emails is not None:
+            self.emails = emails
+
+    # Instance attribute type: list of [str] (validator is set below)
+    domains = bb.Attribute("domains", nullable=True)
+
+    # Instance attribute type: list of [str] (validator is set below)
+    emails = bb.Attribute("emails", nullable=True)
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(SharingAllowlistRemoveArgs, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+SharingAllowlistRemoveArgs_validator = bv.Struct(SharingAllowlistRemoveArgs)
+
+class SharingAllowlistRemoveError(bb.Union):
+    """
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+
+    :ivar str team.SharingAllowlistRemoveError.malformed_entry: One of provided
+        values is not valid.
+    :ivar str team.SharingAllowlistRemoveError.entries_do_not_exist: One or more
+        provided values do not exist.
+    :ivar team.SharingAllowlistRemoveError.no_entries_provided: Neither single
+        domain nor email provided.
+    :ivar team.SharingAllowlistRemoveError.too_many_entries_provided: Too many
+        entries provided within one call.
+    :ivar team.SharingAllowlistRemoveError.unknown_error: Unknown error.
+    """
+
+    _catch_all = 'other'
+    # Attribute is overwritten below the class definition
+    no_entries_provided = None
+    # Attribute is overwritten below the class definition
+    too_many_entries_provided = None
+    # Attribute is overwritten below the class definition
+    unknown_error = None
+    # Attribute is overwritten below the class definition
+    other = None
+
+    @classmethod
+    def malformed_entry(cls, val):
+        """
+        Create an instance of this class set to the ``malformed_entry`` tag with
+        value ``val``.
+
+        :param str val:
+        :rtype: SharingAllowlistRemoveError
+        """
+        return cls('malformed_entry', val)
+
+    @classmethod
+    def entries_do_not_exist(cls, val):
+        """
+        Create an instance of this class set to the ``entries_do_not_exist`` tag
+        with value ``val``.
+
+        :param str val:
+        :rtype: SharingAllowlistRemoveError
+        """
+        return cls('entries_do_not_exist', val)
+
+    def is_malformed_entry(self):
+        """
+        Check if the union tag is ``malformed_entry``.
+
+        :rtype: bool
+        """
+        return self._tag == 'malformed_entry'
+
+    def is_entries_do_not_exist(self):
+        """
+        Check if the union tag is ``entries_do_not_exist``.
+
+        :rtype: bool
+        """
+        return self._tag == 'entries_do_not_exist'
+
+    def is_no_entries_provided(self):
+        """
+        Check if the union tag is ``no_entries_provided``.
+
+        :rtype: bool
+        """
+        return self._tag == 'no_entries_provided'
+
+    def is_too_many_entries_provided(self):
+        """
+        Check if the union tag is ``too_many_entries_provided``.
+
+        :rtype: bool
+        """
+        return self._tag == 'too_many_entries_provided'
+
+    def is_unknown_error(self):
+        """
+        Check if the union tag is ``unknown_error``.
+
+        :rtype: bool
+        """
+        return self._tag == 'unknown_error'
+
+    def is_other(self):
+        """
+        Check if the union tag is ``other``.
+
+        :rtype: bool
+        """
+        return self._tag == 'other'
+
+    def get_malformed_entry(self):
+        """
+        One of provided values is not valid.
+
+        Only call this if :meth:`is_malformed_entry` is true.
+
+        :rtype: str
+        """
+        if not self.is_malformed_entry():
+            raise AttributeError("tag 'malformed_entry' not set")
+        return self._value
+
+    def get_entries_do_not_exist(self):
+        """
+        One or more provided values do not exist.
+
+        Only call this if :meth:`is_entries_do_not_exist` is true.
+
+        :rtype: str
+        """
+        if not self.is_entries_do_not_exist():
+            raise AttributeError("tag 'entries_do_not_exist' not set")
+        return self._value
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(SharingAllowlistRemoveError, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+SharingAllowlistRemoveError_validator = bv.Union(SharingAllowlistRemoveError)
+
+class SharingAllowlistRemoveResponse(bb.Struct):
+    """
+    This struct is empty. The comment here is intentionally emitted to avoid
+    indentation issues with Stone.
+    """
+
+    __slots__ = [
+    ]
+
+    _has_required_fields = False
+
+    def __init__(self):
+        pass
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(SharingAllowlistRemoveResponse, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+SharingAllowlistRemoveResponse_validator = bv.Struct(SharingAllowlistRemoveResponse)
+
 class StorageBucket(bb.Struct):
     """
     Describes the number of users in a specific storage bucket.
@@ -15746,6 +16291,115 @@ SetCustomQuotaError._tagmap.update(CustomQuotaError._tagmap)
 
 SetCustomQuotaError.some_users_are_excluded = SetCustomQuotaError('some_users_are_excluded')
 
+SharingAllowlistAddArgs.domains.validator = bv.Nullable(bv.List(bv.String()))
+SharingAllowlistAddArgs.emails.validator = bv.Nullable(bv.List(bv.String()))
+SharingAllowlistAddArgs._all_field_names_ = set([
+    'domains',
+    'emails',
+])
+SharingAllowlistAddArgs._all_fields_ = [
+    ('domains', SharingAllowlistAddArgs.domains.validator),
+    ('emails', SharingAllowlistAddArgs.emails.validator),
+]
+
+SharingAllowlistAddError._malformed_entry_validator = bv.String()
+SharingAllowlistAddError._no_entries_provided_validator = bv.Void()
+SharingAllowlistAddError._too_many_entries_provided_validator = bv.Void()
+SharingAllowlistAddError._team_limit_reached_validator = bv.Void()
+SharingAllowlistAddError._unknown_error_validator = bv.Void()
+SharingAllowlistAddError._entries_already_exist_validator = bv.String()
+SharingAllowlistAddError._other_validator = bv.Void()
+SharingAllowlistAddError._tagmap = {
+    'malformed_entry': SharingAllowlistAddError._malformed_entry_validator,
+    'no_entries_provided': SharingAllowlistAddError._no_entries_provided_validator,
+    'too_many_entries_provided': SharingAllowlistAddError._too_many_entries_provided_validator,
+    'team_limit_reached': SharingAllowlistAddError._team_limit_reached_validator,
+    'unknown_error': SharingAllowlistAddError._unknown_error_validator,
+    'entries_already_exist': SharingAllowlistAddError._entries_already_exist_validator,
+    'other': SharingAllowlistAddError._other_validator,
+}
+
+SharingAllowlistAddError.no_entries_provided = SharingAllowlistAddError('no_entries_provided')
+SharingAllowlistAddError.too_many_entries_provided = SharingAllowlistAddError('too_many_entries_provided')
+SharingAllowlistAddError.team_limit_reached = SharingAllowlistAddError('team_limit_reached')
+SharingAllowlistAddError.unknown_error = SharingAllowlistAddError('unknown_error')
+SharingAllowlistAddError.other = SharingAllowlistAddError('other')
+
+SharingAllowlistAddResponse._all_field_names_ = set([])
+SharingAllowlistAddResponse._all_fields_ = []
+
+SharingAllowlistListArg.limit.validator = bv.UInt32(min_value=1, max_value=1000)
+SharingAllowlistListArg._all_field_names_ = set(['limit'])
+SharingAllowlistListArg._all_fields_ = [('limit', SharingAllowlistListArg.limit.validator)]
+
+SharingAllowlistListContinueArg.cursor.validator = bv.String()
+SharingAllowlistListContinueArg._all_field_names_ = set(['cursor'])
+SharingAllowlistListContinueArg._all_fields_ = [('cursor', SharingAllowlistListContinueArg.cursor.validator)]
+
+SharingAllowlistListContinueError._invalid_cursor_validator = bv.Void()
+SharingAllowlistListContinueError._other_validator = bv.Void()
+SharingAllowlistListContinueError._tagmap = {
+    'invalid_cursor': SharingAllowlistListContinueError._invalid_cursor_validator,
+    'other': SharingAllowlistListContinueError._other_validator,
+}
+
+SharingAllowlistListContinueError.invalid_cursor = SharingAllowlistListContinueError('invalid_cursor')
+SharingAllowlistListContinueError.other = SharingAllowlistListContinueError('other')
+
+SharingAllowlistListError._all_field_names_ = set([])
+SharingAllowlistListError._all_fields_ = []
+
+SharingAllowlistListResponse.domains.validator = bv.List(bv.String())
+SharingAllowlistListResponse.emails.validator = bv.List(bv.String())
+SharingAllowlistListResponse.cursor.validator = bv.String()
+SharingAllowlistListResponse.has_more.validator = bv.Boolean()
+SharingAllowlistListResponse._all_field_names_ = set([
+    'domains',
+    'emails',
+    'cursor',
+    'has_more',
+])
+SharingAllowlistListResponse._all_fields_ = [
+    ('domains', SharingAllowlistListResponse.domains.validator),
+    ('emails', SharingAllowlistListResponse.emails.validator),
+    ('cursor', SharingAllowlistListResponse.cursor.validator),
+    ('has_more', SharingAllowlistListResponse.has_more.validator),
+]
+
+SharingAllowlistRemoveArgs.domains.validator = bv.Nullable(bv.List(bv.String()))
+SharingAllowlistRemoveArgs.emails.validator = bv.Nullable(bv.List(bv.String()))
+SharingAllowlistRemoveArgs._all_field_names_ = set([
+    'domains',
+    'emails',
+])
+SharingAllowlistRemoveArgs._all_fields_ = [
+    ('domains', SharingAllowlistRemoveArgs.domains.validator),
+    ('emails', SharingAllowlistRemoveArgs.emails.validator),
+]
+
+SharingAllowlistRemoveError._malformed_entry_validator = bv.String()
+SharingAllowlistRemoveError._entries_do_not_exist_validator = bv.String()
+SharingAllowlistRemoveError._no_entries_provided_validator = bv.Void()
+SharingAllowlistRemoveError._too_many_entries_provided_validator = bv.Void()
+SharingAllowlistRemoveError._unknown_error_validator = bv.Void()
+SharingAllowlistRemoveError._other_validator = bv.Void()
+SharingAllowlistRemoveError._tagmap = {
+    'malformed_entry': SharingAllowlistRemoveError._malformed_entry_validator,
+    'entries_do_not_exist': SharingAllowlistRemoveError._entries_do_not_exist_validator,
+    'no_entries_provided': SharingAllowlistRemoveError._no_entries_provided_validator,
+    'too_many_entries_provided': SharingAllowlistRemoveError._too_many_entries_provided_validator,
+    'unknown_error': SharingAllowlistRemoveError._unknown_error_validator,
+    'other': SharingAllowlistRemoveError._other_validator,
+}
+
+SharingAllowlistRemoveError.no_entries_provided = SharingAllowlistRemoveError('no_entries_provided')
+SharingAllowlistRemoveError.too_many_entries_provided = SharingAllowlistRemoveError('too_many_entries_provided')
+SharingAllowlistRemoveError.unknown_error = SharingAllowlistRemoveError('unknown_error')
+SharingAllowlistRemoveError.other = SharingAllowlistRemoveError('other')
+
+SharingAllowlistRemoveResponse._all_field_names_ = set([])
+SharingAllowlistRemoveResponse._all_fields_ = []
+
 StorageBucket.bucket.validator = bv.String()
 StorageBucket.users.validator = bv.UInt64()
 StorageBucket._all_field_names_ = set([
@@ -16308,6 +16962,9 @@ MembersRemoveArg.keep_account.default = False
 MembersRemoveArg.retain_team_shares.default = False
 RevokeDesktopClientArg.delete_on_unlink.default = False
 RevokeLinkedApiAppArg.keep_app_folder.default = True
+SharingAllowlistListArg.limit.default = 1000
+SharingAllowlistListResponse.cursor.default = ''
+SharingAllowlistListResponse.has_more.default = False
 TeamFolderArchiveArg.force_async_off.default = False
 TeamFolderListArg.limit.default = 1000
 TeamNamespacesListArg.limit.default = 1000
@@ -17169,6 +17826,50 @@ reports_get_storage = bb.Route(
      'host': 'api',
      'style': 'rpc'},
 )
+sharing_allowlist_add = bb.Route(
+    'sharing_allowlist/add',
+    1,
+    False,
+    SharingAllowlistAddArgs_validator,
+    SharingAllowlistAddResponse_validator,
+    SharingAllowlistAddError_validator,
+    {'auth': 'team',
+     'host': 'api',
+     'style': 'rpc'},
+)
+sharing_allowlist_list = bb.Route(
+    'sharing_allowlist/list',
+    1,
+    False,
+    SharingAllowlistListArg_validator,
+    SharingAllowlistListResponse_validator,
+    SharingAllowlistListError_validator,
+    {'auth': 'team',
+     'host': 'api',
+     'style': 'rpc'},
+)
+sharing_allowlist_list_continue = bb.Route(
+    'sharing_allowlist/list/continue',
+    1,
+    False,
+    SharingAllowlistListContinueArg_validator,
+    SharingAllowlistListResponse_validator,
+    SharingAllowlistListContinueError_validator,
+    {'auth': 'team',
+     'host': 'api',
+     'style': 'rpc'},
+)
+sharing_allowlist_remove = bb.Route(
+    'sharing_allowlist/remove',
+    1,
+    False,
+    SharingAllowlistRemoveArgs_validator,
+    SharingAllowlistRemoveResponse_validator,
+    SharingAllowlistRemoveError_validator,
+    {'auth': 'team',
+     'host': 'api',
+     'style': 'rpc'},
+)
 team_folder_activate = bb.Route(
     'team_folder/activate',
     1,
@@ -17370,6 +18071,10 @@ ROUTES = {
     'reports/get_devices': reports_get_devices,
     'reports/get_membership': reports_get_membership,
     'reports/get_storage': reports_get_storage,
+    'sharing_allowlist/add': sharing_allowlist_add,
+    'sharing_allowlist/list': sharing_allowlist_list,
+    'sharing_allowlist/list/continue': sharing_allowlist_list_continue,
+    'sharing_allowlist/remove': sharing_allowlist_remove,
     'team_folder/activate': team_folder_activate,
     'team_folder/archive': team_folder_archive,
     'team_folder/archive/check': team_folder_archive_check,

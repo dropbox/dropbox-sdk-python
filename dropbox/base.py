@@ -3065,7 +3065,8 @@ class DropboxBase(object):
             scope: files.metadata.write
 
         :param str path: Path to the item to be tagged.
-        :param str tag_text: The value of the tag to add.
+        :param str tag_text: The value of the tag to add. Will be automatically
+            converted to lowercase letters.
         :rtype: None
         :raises: :class:`.exceptions.ApiError`
 
@@ -3116,7 +3117,8 @@ class DropboxBase(object):
             scope: files.metadata.write
 
         :param str path: Path to the item to tag.
-        :param str tag_text: The tag to remove.
+        :param str tag_text: The tag to remove. Will be automatically converted
+            to lowercase letters.
         :rtype: None
         :raises: :class:`.exceptions.ApiError`
 
@@ -3554,6 +3556,33 @@ class DropboxBase(object):
         r = self.request(
             files.upload_session_start_batch,
             'files',
+            arg,
+            None,
+        )
+        return r
+
+    # ------------------------------------------
+    # Routes in openid namespace
+
+    def openid_userinfo(self):
+        """
+        This route is used for refreshing the info that is found in the id_token
+        during the OIDC flow. This route doesn't require any arguments and will
+        use the scopes approved for the given access token.
+
+        Route attributes:
+            scope: openid
+
+        :rtype: :class:`dropbox.openid.UserInfoResult`
+        :raises: :class:`.exceptions.ApiError`
+
+        If this raises, ApiError will contain:
+            :class:`dropbox.openid.UserInfoError`
+        """
+        arg = openid.UserInfoArgs()
+        r = self.request(
+            openid.userinfo,
+            'openid',
             arg,
             None,
         )

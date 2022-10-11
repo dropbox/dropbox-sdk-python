@@ -7,36 +7,29 @@ from __future__ import unicode_literals
 from stone.backends.python_rsrc import stone_base as bb
 from stone.backends.python_rsrc import stone_validators as bv
 
-class AuthError(bb.Union):
+class OpenIdError(bb.Union):
     """
     This class acts as a tagged union. Only one of the ``is_*`` methods will
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
+
+    :ivar openid.OpenIdError.incorrect_openid_scopes: Missing openid claims for
+        the associated access token.
     """
 
     _catch_all = 'other'
     # Attribute is overwritten below the class definition
-    invalid_token = None
-    # Attribute is overwritten below the class definition
-    no_openid_auth = None
+    incorrect_openid_scopes = None
     # Attribute is overwritten below the class definition
     other = None
 
-    def is_invalid_token(self):
+    def is_incorrect_openid_scopes(self):
         """
-        Check if the union tag is ``invalid_token``.
+        Check if the union tag is ``incorrect_openid_scopes``.
 
         :rtype: bool
         """
-        return self._tag == 'invalid_token'
-
-    def is_no_openid_auth(self):
-        """
-        Check if the union tag is ``no_openid_auth``.
-
-        :rtype: bool
-        """
-        return self._tag == 'no_openid_auth'
+        return self._tag == 'incorrect_openid_scopes'
 
     def is_other(self):
         """
@@ -47,14 +40,13 @@ class AuthError(bb.Union):
         return self._tag == 'other'
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
-        super(AuthError, self)._process_custom_annotations(annotation_type, field_path, processor)
+        super(OpenIdError, self)._process_custom_annotations(annotation_type, field_path, processor)
 
-AuthError_validator = bv.Union(AuthError)
+OpenIdError_validator = bv.Union(OpenIdError)
 
 class UserInfoArgs(bb.Struct):
     """
-    This struct is empty. The comment here is intentionally emitted to avoid
-    indentation issues with Stone.
+    No Parameters
     """
 
     __slots__ = [
@@ -70,37 +62,70 @@ class UserInfoArgs(bb.Struct):
 
 UserInfoArgs_validator = bv.Struct(UserInfoArgs)
 
-class UserInfoError(bb.Struct):
+class UserInfoError(bb.Union):
+    """
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+    """
 
-    __slots__ = [
-        '_err_value',
-        '_error_message_value',
-    ]
+    _catch_all = 'other'
+    # Attribute is overwritten below the class definition
+    other = None
 
-    _has_required_fields = False
+    @classmethod
+    def openid_error(cls, val):
+        """
+        Create an instance of this class set to the ``openid_error`` tag with
+        value ``val``.
 
-    def __init__(self,
-                 err=None,
-                 error_message=None):
-        self._err_value = bb.NOT_SET
-        self._error_message_value = bb.NOT_SET
-        if err is not None:
-            self.err = err
-        if error_message is not None:
-            self.error_message = error_message
+        :param OpenIdError val:
+        :rtype: UserInfoError
+        """
+        return cls('openid_error', val)
 
-    # Instance attribute type: ErrUnion (validator is set below)
-    err = bb.Attribute("err", nullable=True, user_defined=True)
+    def is_openid_error(self):
+        """
+        Check if the union tag is ``openid_error``.
 
-    # Instance attribute type: str (validator is set below)
-    error_message = bb.Attribute("error_message")
+        :rtype: bool
+        """
+        return self._tag == 'openid_error'
+
+    def is_other(self):
+        """
+        Check if the union tag is ``other``.
+
+        :rtype: bool
+        """
+        return self._tag == 'other'
+
+    def get_openid_error(self):
+        """
+        Only call this if :meth:`is_openid_error` is true.
+
+        :rtype: OpenIdError
+        """
+        if not self.is_openid_error():
+            raise AttributeError("tag 'openid_error' not set")
+        return self._value
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(UserInfoError, self)._process_custom_annotations(annotation_type, field_path, processor)
 
-UserInfoError_validator = bv.Struct(UserInfoError)
+UserInfoError_validator = bv.Union(UserInfoError)
 
 class UserInfoResult(bb.Struct):
+    """
+    :ivar openid.UserInfoResult.family_name: Last name of user.
+    :ivar openid.UserInfoResult.given_name: First name of user.
+    :ivar openid.UserInfoResult.email: Email address of user.
+    :ivar openid.UserInfoResult.email_verified: If user is email verified.
+    :ivar openid.UserInfoResult.iss: Issuer of token (in this case Dropbox).
+    :ivar openid.UserInfoResult.sub: An identifier for the user. This is the
+        Dropbox account_id, a string value such as
+        dbid:AAH4f99T0taONIb-OurWxbNQ6ywGRopQngc.
+    """
 
     __slots__ = [
         '_family_name_value',
@@ -162,85 +187,27 @@ class UserInfoResult(bb.Struct):
 
 UserInfoResult_validator = bv.Struct(UserInfoResult)
 
-class ErrUnion(bb.Union):
-    """
-    This class acts as a tagged union. Only one of the ``is_*`` methods will
-    return true. To get the associated value of a tag (if one exists), use the
-    corresponding ``get_*`` method.
-    """
-
-    _catch_all = 'other'
-    # Attribute is overwritten below the class definition
-    other = None
-
-    @classmethod
-    def auth_error(cls, val):
-        """
-        Create an instance of this class set to the ``auth_error`` tag with
-        value ``val``.
-
-        :param AuthError val:
-        :rtype: ErrUnion
-        """
-        return cls('auth_error', val)
-
-    def is_auth_error(self):
-        """
-        Check if the union tag is ``auth_error``.
-
-        :rtype: bool
-        """
-        return self._tag == 'auth_error'
-
-    def is_other(self):
-        """
-        Check if the union tag is ``other``.
-
-        :rtype: bool
-        """
-        return self._tag == 'other'
-
-    def get_auth_error(self):
-        """
-        Only call this if :meth:`is_auth_error` is true.
-
-        :rtype: AuthError
-        """
-        if not self.is_auth_error():
-            raise AttributeError("tag 'auth_error' not set")
-        return self._value
-
-    def _process_custom_annotations(self, annotation_type, field_path, processor):
-        super(ErrUnion, self)._process_custom_annotations(annotation_type, field_path, processor)
-
-ErrUnion_validator = bv.Union(ErrUnion)
-
-AuthError._invalid_token_validator = bv.Void()
-AuthError._no_openid_auth_validator = bv.Void()
-AuthError._other_validator = bv.Void()
-AuthError._tagmap = {
-    'invalid_token': AuthError._invalid_token_validator,
-    'no_openid_auth': AuthError._no_openid_auth_validator,
-    'other': AuthError._other_validator,
+OpenIdError._incorrect_openid_scopes_validator = bv.Void()
+OpenIdError._other_validator = bv.Void()
+OpenIdError._tagmap = {
+    'incorrect_openid_scopes': OpenIdError._incorrect_openid_scopes_validator,
+    'other': OpenIdError._other_validator,
 }
 
-AuthError.invalid_token = AuthError('invalid_token')
-AuthError.no_openid_auth = AuthError('no_openid_auth')
-AuthError.other = AuthError('other')
+OpenIdError.incorrect_openid_scopes = OpenIdError('incorrect_openid_scopes')
+OpenIdError.other = OpenIdError('other')
 
 UserInfoArgs._all_field_names_ = set([])
 UserInfoArgs._all_fields_ = []
 
-UserInfoError.err.validator = bv.Nullable(ErrUnion_validator)
-UserInfoError.error_message.validator = bv.String()
-UserInfoError._all_field_names_ = set([
-    'err',
-    'error_message',
-])
-UserInfoError._all_fields_ = [
-    ('err', UserInfoError.err.validator),
-    ('error_message', UserInfoError.error_message.validator),
-]
+UserInfoError._openid_error_validator = OpenIdError_validator
+UserInfoError._other_validator = bv.Void()
+UserInfoError._tagmap = {
+    'openid_error': UserInfoError._openid_error_validator,
+    'other': UserInfoError._other_validator,
+}
+
+UserInfoError.other = UserInfoError('other')
 
 UserInfoResult.family_name.validator = bv.Nullable(bv.String())
 UserInfoResult.given_name.validator = bv.Nullable(bv.String())
@@ -265,18 +232,21 @@ UserInfoResult._all_fields_ = [
     ('sub', UserInfoResult.sub.validator),
 ]
 
-ErrUnion._auth_error_validator = AuthError_validator
-ErrUnion._other_validator = bv.Void()
-ErrUnion._tagmap = {
-    'auth_error': ErrUnion._auth_error_validator,
-    'other': ErrUnion._other_validator,
-}
-
-ErrUnion.other = ErrUnion('other')
-
-UserInfoError.error_message.default = ''
 UserInfoResult.iss.default = ''
 UserInfoResult.sub.default = ''
+userinfo = bb.Route(
+    'userinfo',
+    1,
+    False,
+    UserInfoArgs_validator,
+    UserInfoResult_validator,
+    UserInfoError_validator,
+    {'auth': 'user',
+     'host': 'api',
+     'style': 'rpc'},
+)
+
 ROUTES = {
+    'userinfo': userinfo,
 }
 

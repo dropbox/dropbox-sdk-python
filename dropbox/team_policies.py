@@ -1405,12 +1405,15 @@ class TeamSharingPolicies(bb.Struct):
         shared folders team members can join.
     :ivar team_policies.TeamSharingPolicies.shared_link_create_policy: Who can
         view shared links owned by team members.
+    :ivar team_policies.TeamSharingPolicies.group_creation_policy: Who can
+        create groups.
     """
 
     __slots__ = [
         '_shared_folder_member_policy_value',
         '_shared_folder_join_policy_value',
         '_shared_link_create_policy_value',
+        '_group_creation_policy_value',
     ]
 
     _has_required_fields = True
@@ -1418,16 +1421,20 @@ class TeamSharingPolicies(bb.Struct):
     def __init__(self,
                  shared_folder_member_policy=None,
                  shared_folder_join_policy=None,
-                 shared_link_create_policy=None):
+                 shared_link_create_policy=None,
+                 group_creation_policy=None):
         self._shared_folder_member_policy_value = bb.NOT_SET
         self._shared_folder_join_policy_value = bb.NOT_SET
         self._shared_link_create_policy_value = bb.NOT_SET
+        self._group_creation_policy_value = bb.NOT_SET
         if shared_folder_member_policy is not None:
             self.shared_folder_member_policy = shared_folder_member_policy
         if shared_folder_join_policy is not None:
             self.shared_folder_join_policy = shared_folder_join_policy
         if shared_link_create_policy is not None:
             self.shared_link_create_policy = shared_link_create_policy
+        if group_creation_policy is not None:
+            self.group_creation_policy = group_creation_policy
 
     # Instance attribute type: SharedFolderMemberPolicy (validator is set below)
     shared_folder_member_policy = bb.Attribute("shared_folder_member_policy", user_defined=True)
@@ -1437,6 +1444,9 @@ class TeamSharingPolicies(bb.Struct):
 
     # Instance attribute type: SharedLinkCreatePolicy (validator is set below)
     shared_link_create_policy = bb.Attribute("shared_link_create_policy", user_defined=True)
+
+    # Instance attribute type: GroupCreation (validator is set below)
+    group_creation_policy = bb.Attribute("group_creation_policy", user_defined=True)
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(TeamSharingPolicies, self)._process_custom_annotations(annotation_type, field_path, processor)
@@ -1922,15 +1932,18 @@ TeamMemberPolicies._all_fields_ = [
 TeamSharingPolicies.shared_folder_member_policy.validator = SharedFolderMemberPolicy_validator
 TeamSharingPolicies.shared_folder_join_policy.validator = SharedFolderJoinPolicy_validator
 TeamSharingPolicies.shared_link_create_policy.validator = SharedLinkCreatePolicy_validator
+TeamSharingPolicies.group_creation_policy.validator = GroupCreation_validator
 TeamSharingPolicies._all_field_names_ = set([
     'shared_folder_member_policy',
     'shared_folder_join_policy',
     'shared_link_create_policy',
+    'group_creation_policy',
 ])
 TeamSharingPolicies._all_fields_ = [
     ('shared_folder_member_policy', TeamSharingPolicies.shared_folder_member_policy.validator),
     ('shared_folder_join_policy', TeamSharingPolicies.shared_folder_join_policy.validator),
     ('shared_link_create_policy', TeamSharingPolicies.shared_link_create_policy.validator),
+    ('group_creation_policy', TeamSharingPolicies.group_creation_policy.validator),
 ]
 
 TwoStepVerificationPolicy._require_tfa_enable_validator = bv.Void()
