@@ -12376,6 +12376,8 @@ class TeamGetInfoResult(bb.Struct):
         available to the team.
     :ivar team.TeamGetInfoResult.num_provisioned_users: The number of accounts
         that have been invited or are already active members of the team.
+    :ivar team.TeamGetInfoResult.num_used_licenses: The number of licenses used
+        on the team.
     """
 
     __slots__ = [
@@ -12383,6 +12385,7 @@ class TeamGetInfoResult(bb.Struct):
         '_team_id_value',
         '_num_licensed_users_value',
         '_num_provisioned_users_value',
+        '_num_used_licenses_value',
         '_policies_value',
     ]
 
@@ -12393,11 +12396,13 @@ class TeamGetInfoResult(bb.Struct):
                  team_id=None,
                  num_licensed_users=None,
                  num_provisioned_users=None,
+                 num_used_licenses=None,
                  policies=None):
         self._name_value = bb.NOT_SET
         self._team_id_value = bb.NOT_SET
         self._num_licensed_users_value = bb.NOT_SET
         self._num_provisioned_users_value = bb.NOT_SET
+        self._num_used_licenses_value = bb.NOT_SET
         self._policies_value = bb.NOT_SET
         if name is not None:
             self.name = name
@@ -12407,6 +12412,8 @@ class TeamGetInfoResult(bb.Struct):
             self.num_licensed_users = num_licensed_users
         if num_provisioned_users is not None:
             self.num_provisioned_users = num_provisioned_users
+        if num_used_licenses is not None:
+            self.num_used_licenses = num_used_licenses
         if policies is not None:
             self.policies = policies
 
@@ -12421,6 +12428,9 @@ class TeamGetInfoResult(bb.Struct):
 
     # Instance attribute type: int (validator is set below)
     num_provisioned_users = bb.Attribute("num_provisioned_users")
+
+    # Instance attribute type: int (validator is set below)
+    num_used_licenses = bb.Attribute("num_used_licenses")
 
     # Instance attribute type: team_policies.TeamMemberPolicies (validator is set below)
     policies = bb.Attribute("policies", user_defined=True)
@@ -16638,12 +16648,14 @@ TeamGetInfoResult.name.validator = bv.String()
 TeamGetInfoResult.team_id.validator = bv.String()
 TeamGetInfoResult.num_licensed_users.validator = bv.UInt32()
 TeamGetInfoResult.num_provisioned_users.validator = bv.UInt32()
+TeamGetInfoResult.num_used_licenses.validator = bv.UInt32()
 TeamGetInfoResult.policies.validator = team_policies.TeamMemberPolicies_validator
 TeamGetInfoResult._all_field_names_ = set([
     'name',
     'team_id',
     'num_licensed_users',
     'num_provisioned_users',
+    'num_used_licenses',
     'policies',
 ])
 TeamGetInfoResult._all_fields_ = [
@@ -16651,6 +16663,7 @@ TeamGetInfoResult._all_fields_ = [
     ('team_id', TeamGetInfoResult.team_id.validator),
     ('num_licensed_users', TeamGetInfoResult.num_licensed_users.validator),
     ('num_provisioned_users', TeamGetInfoResult.num_provisioned_users.validator),
+    ('num_used_licenses', TeamGetInfoResult.num_used_licenses.validator),
     ('policies', TeamGetInfoResult.policies.validator),
 ]
 

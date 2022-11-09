@@ -7683,6 +7683,8 @@ class RequestedLinkAccessLevel(bb.Union):
         edit links yet.
     :ivar sharing.RequestedLinkAccessLevel.max: Request for the maximum access
         level you can set the link to.
+    :ivar sharing.RequestedLinkAccessLevel.default: Request for the default
+        access level the user has set.
     """
 
     _catch_all = 'other'
@@ -7692,6 +7694,8 @@ class RequestedLinkAccessLevel(bb.Union):
     editor = None
     # Attribute is overwritten below the class definition
     max = None
+    # Attribute is overwritten below the class definition
+    default = None
     # Attribute is overwritten below the class definition
     other = None
 
@@ -7718,6 +7722,14 @@ class RequestedLinkAccessLevel(bb.Union):
         :rtype: bool
         """
         return self._tag == 'max'
+
+    def is_default(self):
+        """
+        Check if the union tag is ``default``.
+
+        :rtype: bool
+        """
+        return self._tag == 'default'
 
     def is_other(self):
         """
@@ -12715,17 +12727,20 @@ RemoveMemberJobStatus._tagmap.update(async_.PollResultBase._tagmap)
 RequestedLinkAccessLevel._viewer_validator = bv.Void()
 RequestedLinkAccessLevel._editor_validator = bv.Void()
 RequestedLinkAccessLevel._max_validator = bv.Void()
+RequestedLinkAccessLevel._default_validator = bv.Void()
 RequestedLinkAccessLevel._other_validator = bv.Void()
 RequestedLinkAccessLevel._tagmap = {
     'viewer': RequestedLinkAccessLevel._viewer_validator,
     'editor': RequestedLinkAccessLevel._editor_validator,
     'max': RequestedLinkAccessLevel._max_validator,
+    'default': RequestedLinkAccessLevel._default_validator,
     'other': RequestedLinkAccessLevel._other_validator,
 }
 
 RequestedLinkAccessLevel.viewer = RequestedLinkAccessLevel('viewer')
 RequestedLinkAccessLevel.editor = RequestedLinkAccessLevel('editor')
 RequestedLinkAccessLevel.max = RequestedLinkAccessLevel('max')
+RequestedLinkAccessLevel.default = RequestedLinkAccessLevel('default')
 RequestedLinkAccessLevel.other = RequestedLinkAccessLevel('other')
 
 RevokeSharedLinkArg.url.validator = bv.String()
