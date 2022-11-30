@@ -3193,6 +3193,10 @@ class DropboxBase(object):
             this hash, an error will be returned. For more information see our
             `Content hash
             <https://www.dropbox.com/developers/reference/content-hash>`_ page.
+        :param mode: :class:`dropbox.files.WriteMode`
+        :param bool autorename: If there's a conflict, as determined by mode, 
+            have the Dropbox server try to autorename the file to avoid conflict.
+            The default for this field is False.
         :rtype: :class:`dropbox.files.FileMetadata`
         :raises: :class:`.exceptions.ApiError`
 
