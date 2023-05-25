@@ -23,7 +23,7 @@ auth_code = input("Enter the authorization code here: ").strip()
 
 try:
     oauth_result = auth_flow.finish(auth_code)
-    # Oauth token has files.metadata.read scope only
+    # authorization has files.metadata.read scope only
     assert oauth_result.scope == 'files.metadata.read'
 except Exception as e:
     print('Error: %s' % (e,))
@@ -33,7 +33,7 @@ except Exception as e:
 auth_flow2 = DropboxOAuth2FlowNoRedirect(APP_KEY,
                                          consumer_secret=APP_SECRET,
                                          token_access_type='offline',
-                                         scope=['files.metadata.write'])
+                                         scope=['account_info.read'])
 
 authorize_url = auth_flow2.start()
 print("1. Go to: " + authorize_url)
@@ -43,8 +43,8 @@ auth_code = input("Enter the authorization code here: ").strip()
 
 try:
     oauth_result = auth_flow2.finish(auth_code)
-    # Oauth token has files.metadata.write scope only
-    assert oauth_result.scope == 'files.metadata.write'
+    # authorization has account_info.read scope only
+    assert oauth_result.scope == 'account_info.read'
 except Exception as e:
     print('Error: %s' % (e,))
     exit(1)
@@ -66,8 +66,8 @@ auth_code = input("Enter the authorization code here: ").strip()
 try:
     oauth_result = auth_flow3.finish(auth_code)
     print(oauth_result)
-    # Oauth token has all granted user scopes
-    assert 'files.metadata.write' in oauth_result.scope
+    # authorization has all granted user scopes
+    assert 'account_info.read' in oauth_result.scope
     assert 'files.metadata.read' in oauth_result.scope
     assert 'files.content.read' in oauth_result.scope
     assert 'files.content.write' in oauth_result.scope
@@ -80,5 +80,6 @@ with dropbox.Dropbox(oauth2_access_token=oauth_result.access_token,
                      oauth2_access_token_expiration=oauth_result.expires_at,
                      oauth2_refresh_token=oauth_result.refresh_token,
                      app_key=APP_KEY,
-                     app_secret=APP_SECRET):
+                     app_secret=APP_SECRET) as dbx:
+    dbx.users_get_current_account()
     print("Successfully set up client!")
