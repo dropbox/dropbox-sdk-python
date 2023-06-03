@@ -33,7 +33,7 @@ install_reqs = [
 setup_requires = [
     # Pin pytest-runner to 5.2.0, since 5.3.0 uses `find_namespaces` directive, not supported in
     # Python 2.7
-    'pytest-runner == 5.2.0',
+    'pytest-runner == 5.3.0',
 ]
 
 # WARNING: This imposes limitations on test/requirements.txt such that the
