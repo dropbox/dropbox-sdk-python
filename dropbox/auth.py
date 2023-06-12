@@ -675,7 +675,7 @@ RateLimitError.retry_after.default = 1
 token_from_oauth1 = bb.Route(
     'token/from_oauth1',
     1,
-    False,
+    True,
     TokenFromOAuth1Arg_validator,
     TokenFromOAuth1Result_validator,
     TokenFromOAuth1Error_validator,

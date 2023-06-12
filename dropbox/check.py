@@ -9,7 +9,7 @@ from stone.backends.python_rsrc import stone_validators as bv
 
 class EchoArg(bb.Struct):
     """
-    EchoArg contains the arguments to be sent to the Dropbox servers.
+    Contains the arguments to be sent to the Dropbox servers.
 
     :ivar check.EchoArg.query: The string that you'd like to be echoed back to
         you.

@@ -573,6 +573,8 @@ class AccountCapturePolicy(bb.Union):
     # Attribute is overwritten below the class definition
     invited_users = None
     # Attribute is overwritten below the class definition
+    prevent_personal_creation = None
+    # Attribute is overwritten below the class definition
     other = None
 
     def is_all_users(self):
@@ -598,6 +600,14 @@ class AccountCapturePolicy(bb.Union):
         :rtype: bool
         """
         return self._tag == 'invited_users'
+
+    def is_prevent_personal_creation(self):
+        """
+        Check if the union tag is ``prevent_personal_creation``.
+
+        :rtype: bool
+        """
+        return self._tag == 'prevent_personal_creation'
 
     def is_other(self):
         """
@@ -2861,6 +2871,86 @@ class AssetLogInfo(bb.Union):
         super(AssetLogInfo, self)._process_custom_annotations(annotation_type, field_path, processor)
 
 AssetLogInfo_validator = bv.Union(AssetLogInfo)
+
+class BackupAdminInvitationSentDetails(bb.Struct):
+    """
+    Invited members to activate Backup.
+    """
+
+    __slots__ = [
+    ]
+
+    _has_required_fields = False
+
+    def __init__(self):
+        pass
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(BackupAdminInvitationSentDetails, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+BackupAdminInvitationSentDetails_validator = bv.Struct(BackupAdminInvitationSentDetails)
+
+class BackupAdminInvitationSentType(bb.Struct):
+
+    __slots__ = [
+        '_description_value',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 description=None):
+        self._description_value = bb.NOT_SET
+        if description is not None:
+            self.description = description
+
+    # Instance attribute type: str (validator is set below)
+    description = bb.Attribute("description")
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(BackupAdminInvitationSentType, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+BackupAdminInvitationSentType_validator = bv.Struct(BackupAdminInvitationSentType)
+
+class BackupInvitationOpenedDetails(bb.Struct):
+    """
+    Opened Backup invite.
+    """
+
+    __slots__ = [
+    ]
+
+    _has_required_fields = False
+
+    def __init__(self):
+        pass
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(BackupInvitationOpenedDetails, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+BackupInvitationOpenedDetails_validator = bv.Struct(BackupInvitationOpenedDetails)
+
+class BackupInvitationOpenedType(bb.Struct):
+
+    __slots__ = [
+        '_description_value',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 description=None):
+        self._description_value = bb.NOT_SET
+        if description is not None:
+            self.description = description
+
+    # Instance attribute type: str (validator is set below)
+    description = bb.Attribute("description")
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(BackupInvitationOpenedType, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+BackupInvitationOpenedType_validator = bv.Struct(BackupInvitationOpenedType)
 
 class BackupStatus(bb.Union):
     """
@@ -8107,6 +8197,7 @@ class EventCategory(bb.Union):
         mobile, desktop and Web platforms.
     :ivar team_log.EventCategory.domains: Events that involve domain management
         feature: domain verification, invite enforcement and account capture.
+    :ivar team_log.EventCategory.encryption: Events that involve encryption.
     :ivar team_log.EventCategory.file_operations: Events that have to do with
         filesystem operations on files and folders: copy, move, delete, etc.
     :ivar team_log.EventCategory.file_requests: Events that apply to the file
@@ -8154,6 +8245,8 @@ class EventCategory(bb.Union):
     devices = None
     # Attribute is overwritten below the class definition
     domains = None
+    # Attribute is overwritten below the class definition
+    encryption = None
     # Attribute is overwritten below the class definition
     file_operations = None
     # Attribute is overwritten below the class definition
@@ -8236,6 +8329,14 @@ class EventCategory(bb.Union):
         :rtype: bool
         """
         return self._tag == 'domains'
+
+    def is_encryption(self):
+        """
+        Check if the union tag is ``encryption``.
+
+        :rtype: bool
+        """
+        return self._tag == 'encryption'
 
     def is_file_operations(self):
         """
@@ -8426,6 +8527,28 @@ class EventDetails(bb.Union):
         :rtype: EventDetails
         """
         return cls('admin_alerting_triggered_alert_details', val)
+
+    @classmethod
+    def ransomware_restore_process_completed_details(cls, val):
+        """
+        Create an instance of this class set to the
+        ``ransomware_restore_process_completed_details`` tag with value ``val``.
+
+        :param RansomwareRestoreProcessCompletedDetails val:
+        :rtype: EventDetails
+        """
+        return cls('ransomware_restore_process_completed_details', val)
+
+    @classmethod
+    def ransomware_restore_process_started_details(cls, val):
+        """
+        Create an instance of this class set to the
+        ``ransomware_restore_process_started_details`` tag with value ``val``.
+
+        :param RansomwareRestoreProcessStartedDetails val:
+        :rtype: EventDetails
+        """
+        return cls('ransomware_restore_process_started_details', val)
 
     @classmethod
     def app_blocked_by_permissions_details(cls, val):
@@ -9196,6 +9319,85 @@ class EventDetails(bb.Union):
         return cls('enabled_domain_invites_details', val)
 
     @classmethod
+    def team_encryption_key_cancel_key_deletion_details(cls, val):
+        """
+        Create an instance of this class set to the
+        ``team_encryption_key_cancel_key_deletion_details`` tag with value
+        ``val``.
+
+        :param TeamEncryptionKeyCancelKeyDeletionDetails val:
+        :rtype: EventDetails
+        """
+        return cls('team_encryption_key_cancel_key_deletion_details', val)
+
+    @classmethod
+    def team_encryption_key_create_key_details(cls, val):
+        """
+        Create an instance of this class set to the
+        ``team_encryption_key_create_key_details`` tag with value ``val``.
+
+        :param TeamEncryptionKeyCreateKeyDetails val:
+        :rtype: EventDetails
+        """
+        return cls('team_encryption_key_create_key_details', val)
+
+    @classmethod
+    def team_encryption_key_delete_key_details(cls, val):
+        """
+        Create an instance of this class set to the
+        ``team_encryption_key_delete_key_details`` tag with value ``val``.
+
+        :param TeamEncryptionKeyDeleteKeyDetails val:
+        :rtype: EventDetails
+        """
+        return cls('team_encryption_key_delete_key_details', val)
+
+    @classmethod
+    def team_encryption_key_disable_key_details(cls, val):
+        """
+        Create an instance of this class set to the
+        ``team_encryption_key_disable_key_details`` tag with value ``val``.
+
+        :param TeamEncryptionKeyDisableKeyDetails val:
+        :rtype: EventDetails
+        """
+        return cls('team_encryption_key_disable_key_details', val)
+
+    @classmethod
+    def team_encryption_key_enable_key_details(cls, val):
+        """
+        Create an instance of this class set to the
+        ``team_encryption_key_enable_key_details`` tag with value ``val``.
+
+        :param TeamEncryptionKeyEnableKeyDetails val:
+        :rtype: EventDetails
+        """
+        return cls('team_encryption_key_enable_key_details', val)
+
+    @classmethod
+    def team_encryption_key_rotate_key_details(cls, val):
+        """
+        Create an instance of this class set to the
+        ``team_encryption_key_rotate_key_details`` tag with value ``val``.
+
+        :param TeamEncryptionKeyRotateKeyDetails val:
+        :rtype: EventDetails
+        """
+        return cls('team_encryption_key_rotate_key_details', val)
+
+    @classmethod
+    def team_encryption_key_schedule_key_deletion_details(cls, val):
+        """
+        Create an instance of this class set to the
+        ``team_encryption_key_schedule_key_deletion_details`` tag with value
+        ``val``.
+
+        :param TeamEncryptionKeyScheduleKeyDeletionDetails val:
+        :rtype: EventDetails
+        """
+        return cls('team_encryption_key_schedule_key_deletion_details', val)
+
+    @classmethod
     def apply_naming_convention_details(cls, val):
         """
         Create an instance of this class set to the
@@ -9227,6 +9429,17 @@ class EventDetails(bb.Union):
         :rtype: EventDetails
         """
         return cls('file_add_details', val)
+
+    @classmethod
+    def file_add_from_automation_details(cls, val):
+        """
+        Create an instance of this class set to the
+        ``file_add_from_automation_details`` tag with value ``val``.
+
+        :param FileAddFromAutomationDetails val:
+        :rtype: EventDetails
+        """
+        return cls('file_add_from_automation_details', val)
 
     @classmethod
     def file_copy_details(cls, val):
@@ -9458,6 +9671,17 @@ class EventDetails(bb.Union):
         :rtype: EventDetails
         """
         return cls('organize_folder_with_tidy_details', val)
+
+    @classmethod
+    def replay_file_delete_details(cls, val):
+        """
+        Create an instance of this class set to the
+        ``replay_file_delete_details`` tag with value ``val``.
+
+        :param ReplayFileDeleteDetails val:
+        :rtype: EventDetails
+        """
+        return cls('replay_file_delete_details', val)
 
     @classmethod
     def rewind_folder_details(cls, val):
@@ -9856,6 +10080,28 @@ class EventDetails(bb.Union):
         :rtype: EventDetails
         """
         return cls('sso_error_details', val)
+
+    @classmethod
+    def backup_admin_invitation_sent_details(cls, val):
+        """
+        Create an instance of this class set to the
+        ``backup_admin_invitation_sent_details`` tag with value ``val``.
+
+        :param BackupAdminInvitationSentDetails val:
+        :rtype: EventDetails
+        """
+        return cls('backup_admin_invitation_sent_details', val)
+
+    @classmethod
+    def backup_invitation_opened_details(cls, val):
+        """
+        Create an instance of this class set to the
+        ``backup_invitation_opened_details`` tag with value ``val``.
+
+        :param BackupInvitationOpenedDetails val:
+        :rtype: EventDetails
+        """
+        return cls('backup_invitation_opened_details', val)
 
     @classmethod
     def create_team_invite_link_details(cls, val):
@@ -10907,6 +11153,29 @@ class EventDetails(bb.Union):
         return cls('paper_admin_export_start_details', val)
 
     @classmethod
+    def ransomware_alert_create_report_details(cls, val):
+        """
+        Create an instance of this class set to the
+        ``ransomware_alert_create_report_details`` tag with value ``val``.
+
+        :param RansomwareAlertCreateReportDetails val:
+        :rtype: EventDetails
+        """
+        return cls('ransomware_alert_create_report_details', val)
+
+    @classmethod
+    def ransomware_alert_create_report_failed_details(cls, val):
+        """
+        Create an instance of this class set to the
+        ``ransomware_alert_create_report_failed_details`` tag with value
+        ``val``.
+
+        :param RansomwareAlertCreateReportFailedDetails val:
+        :rtype: EventDetails
+        """
+        return cls('ransomware_alert_create_report_failed_details', val)
+
+    @classmethod
     def smart_sync_create_admin_privilege_report_details(cls, val):
         """
         Create an instance of this class set to the
@@ -11071,6 +11340,50 @@ class EventDetails(bb.Union):
         :rtype: EventDetails
         """
         return cls('open_note_shared_details', val)
+
+    @classmethod
+    def replay_file_shared_link_created_details(cls, val):
+        """
+        Create an instance of this class set to the
+        ``replay_file_shared_link_created_details`` tag with value ``val``.
+
+        :param ReplayFileSharedLinkCreatedDetails val:
+        :rtype: EventDetails
+        """
+        return cls('replay_file_shared_link_created_details', val)
+
+    @classmethod
+    def replay_file_shared_link_modified_details(cls, val):
+        """
+        Create an instance of this class set to the
+        ``replay_file_shared_link_modified_details`` tag with value ``val``.
+
+        :param ReplayFileSharedLinkModifiedDetails val:
+        :rtype: EventDetails
+        """
+        return cls('replay_file_shared_link_modified_details', val)
+
+    @classmethod
+    def replay_project_team_add_details(cls, val):
+        """
+        Create an instance of this class set to the
+        ``replay_project_team_add_details`` tag with value ``val``.
+
+        :param ReplayProjectTeamAddDetails val:
+        :rtype: EventDetails
+        """
+        return cls('replay_project_team_add_details', val)
+
+    @classmethod
+    def replay_project_team_delete_details(cls, val):
+        """
+        Create an instance of this class set to the
+        ``replay_project_team_delete_details`` tag with value ``val``.
+
+        :param ReplayProjectTeamDeleteDetails val:
+        :rtype: EventDetails
+        """
+        return cls('replay_project_team_delete_details', val)
 
     @classmethod
     def sf_add_group_details(cls, val):
@@ -13817,6 +14130,22 @@ class EventDetails(bb.Union):
         """
         return self._tag == 'admin_alerting_triggered_alert_details'
 
+    def is_ransomware_restore_process_completed_details(self):
+        """
+        Check if the union tag is ``ransomware_restore_process_completed_details``.
+
+        :rtype: bool
+        """
+        return self._tag == 'ransomware_restore_process_completed_details'
+
+    def is_ransomware_restore_process_started_details(self):
+        """
+        Check if the union tag is ``ransomware_restore_process_started_details``.
+
+        :rtype: bool
+        """
+        return self._tag == 'ransomware_restore_process_started_details'
+
     def is_app_blocked_by_permissions_details(self):
         """
         Check if the union tag is ``app_blocked_by_permissions_details``.
@@ -14369,6 +14698,62 @@ class EventDetails(bb.Union):
         """
         return self._tag == 'enabled_domain_invites_details'
 
+    def is_team_encryption_key_cancel_key_deletion_details(self):
+        """
+        Check if the union tag is ``team_encryption_key_cancel_key_deletion_details``.
+
+        :rtype: bool
+        """
+        return self._tag == 'team_encryption_key_cancel_key_deletion_details'
+
+    def is_team_encryption_key_create_key_details(self):
+        """
+        Check if the union tag is ``team_encryption_key_create_key_details``.
+
+        :rtype: bool
+        """
+        return self._tag == 'team_encryption_key_create_key_details'
+
+    def is_team_encryption_key_delete_key_details(self):
+        """
+        Check if the union tag is ``team_encryption_key_delete_key_details``.
+
+        :rtype: bool
+        """
+        return self._tag == 'team_encryption_key_delete_key_details'
+
+    def is_team_encryption_key_disable_key_details(self):
+        """
+        Check if the union tag is ``team_encryption_key_disable_key_details``.
+
+        :rtype: bool
+        """
+        return self._tag == 'team_encryption_key_disable_key_details'
+
+    def is_team_encryption_key_enable_key_details(self):
+        """
+        Check if the union tag is ``team_encryption_key_enable_key_details``.
+
+        :rtype: bool
+        """
+        return self._tag == 'team_encryption_key_enable_key_details'
+
+    def is_team_encryption_key_rotate_key_details(self):
+        """
+        Check if the union tag is ``team_encryption_key_rotate_key_details``.
+
+        :rtype: bool
+        """
+        return self._tag == 'team_encryption_key_rotate_key_details'
+
+    def is_team_encryption_key_schedule_key_deletion_details(self):
+        """
+        Check if the union tag is ``team_encryption_key_schedule_key_deletion_details``.
+
+        :rtype: bool
+        """
+        return self._tag == 'team_encryption_key_schedule_key_deletion_details'
+
     def is_apply_naming_convention_details(self):
         """
         Check if the union tag is ``apply_naming_convention_details``.
@@ -14392,6 +14777,14 @@ class EventDetails(bb.Union):
         :rtype: bool
         """
         return self._tag == 'file_add_details'
+
+    def is_file_add_from_automation_details(self):
+        """
+        Check if the union tag is ``file_add_from_automation_details``.
+
+        :rtype: bool
+        """
+        return self._tag == 'file_add_from_automation_details'
 
     def is_file_copy_details(self):
         """
@@ -14560,6 +14953,14 @@ class EventDetails(bb.Union):
         :rtype: bool
         """
         return self._tag == 'organize_folder_with_tidy_details'
+
+    def is_replay_file_delete_details(self):
+        """
+        Check if the union tag is ``replay_file_delete_details``.
+
+        :rtype: bool
+        """
+        return self._tag == 'replay_file_delete_details'
 
     def is_rewind_folder_details(self):
         """
@@ -14848,6 +15249,22 @@ class EventDetails(bb.Union):
         :rtype: bool
         """
         return self._tag == 'sso_error_details'
+
+    def is_backup_admin_invitation_sent_details(self):
+        """
+        Check if the union tag is ``backup_admin_invitation_sent_details``.
+
+        :rtype: bool
+        """
+        return self._tag == 'backup_admin_invitation_sent_details'
+
+    def is_backup_invitation_opened_details(self):
+        """
+        Check if the union tag is ``backup_invitation_opened_details``.
+
+        :rtype: bool
+        """
+        return self._tag == 'backup_invitation_opened_details'
 
     def is_create_team_invite_link_details(self):
         """
@@ -15609,6 +16026,22 @@ class EventDetails(bb.Union):
         """
         return self._tag == 'paper_admin_export_start_details'
 
+    def is_ransomware_alert_create_report_details(self):
+        """
+        Check if the union tag is ``ransomware_alert_create_report_details``.
+
+        :rtype: bool
+        """
+        return self._tag == 'ransomware_alert_create_report_details'
+
+    def is_ransomware_alert_create_report_failed_details(self):
+        """
+        Check if the union tag is ``ransomware_alert_create_report_failed_details``.
+
+        :rtype: bool
+        """
+        return self._tag == 'ransomware_alert_create_report_failed_details'
+
     def is_smart_sync_create_admin_privilege_report_details(self):
         """
         Check if the union tag is ``smart_sync_create_admin_privilege_report_details``.
@@ -15728,6 +16161,38 @@ class EventDetails(bb.Union):
         :rtype: bool
         """
         return self._tag == 'open_note_shared_details'
+
+    def is_replay_file_shared_link_created_details(self):
+        """
+        Check if the union tag is ``replay_file_shared_link_created_details``.
+
+        :rtype: bool
+        """
+        return self._tag == 'replay_file_shared_link_created_details'
+
+    def is_replay_file_shared_link_modified_details(self):
+        """
+        Check if the union tag is ``replay_file_shared_link_modified_details``.
+
+        :rtype: bool
+        """
+        return self._tag == 'replay_file_shared_link_modified_details'
+
+    def is_replay_project_team_add_details(self):
+        """
+        Check if the union tag is ``replay_project_team_add_details``.
+
+        :rtype: bool
+        """
+        return self._tag == 'replay_project_team_add_details'
+
+    def is_replay_project_team_delete_details(self):
+        """
+        Check if the union tag is ``replay_project_team_delete_details``.
+
+        :rtype: bool
+        """
+        return self._tag == 'replay_project_team_delete_details'
 
     def is_sf_add_group_details(self):
         """
@@ -17711,6 +18176,26 @@ class EventDetails(bb.Union):
             raise AttributeError("tag 'admin_alerting_triggered_alert_details' not set")
         return self._value
 
+    def get_ransomware_restore_process_completed_details(self):
+        """
+        Only call this if :meth:`is_ransomware_restore_process_completed_details` is true.
+
+        :rtype: RansomwareRestoreProcessCompletedDetails
+        """
+        if not self.is_ransomware_restore_process_completed_details():
+            raise AttributeError("tag 'ransomware_restore_process_completed_details' not set")
+        return self._value
+
+    def get_ransomware_restore_process_started_details(self):
+        """
+        Only call this if :meth:`is_ransomware_restore_process_started_details` is true.
+
+        :rtype: RansomwareRestoreProcessStartedDetails
+        """
+        if not self.is_ransomware_restore_process_started_details():
+            raise AttributeError("tag 'ransomware_restore_process_started_details' not set")
+        return self._value
+
     def get_app_blocked_by_permissions_details(self):
         """
         Only call this if :meth:`is_app_blocked_by_permissions_details` is true.
@@ -18401,6 +18886,76 @@ class EventDetails(bb.Union):
             raise AttributeError("tag 'enabled_domain_invites_details' not set")
         return self._value
 
+    def get_team_encryption_key_cancel_key_deletion_details(self):
+        """
+        Only call this if :meth:`is_team_encryption_key_cancel_key_deletion_details` is true.
+
+        :rtype: TeamEncryptionKeyCancelKeyDeletionDetails
+        """
+        if not self.is_team_encryption_key_cancel_key_deletion_details():
+            raise AttributeError("tag 'team_encryption_key_cancel_key_deletion_details' not set")
+        return self._value
+
+    def get_team_encryption_key_create_key_details(self):
+        """
+        Only call this if :meth:`is_team_encryption_key_create_key_details` is true.
+
+        :rtype: TeamEncryptionKeyCreateKeyDetails
+        """
+        if not self.is_team_encryption_key_create_key_details():
+            raise AttributeError("tag 'team_encryption_key_create_key_details' not set")
+        return self._value
+
+    def get_team_encryption_key_delete_key_details(self):
+        """
+        Only call this if :meth:`is_team_encryption_key_delete_key_details` is true.
+
+        :rtype: TeamEncryptionKeyDeleteKeyDetails
+        """
+        if not self.is_team_encryption_key_delete_key_details():
+            raise AttributeError("tag 'team_encryption_key_delete_key_details' not set")
+        return self._value
+
+    def get_team_encryption_key_disable_key_details(self):
+        """
+        Only call this if :meth:`is_team_encryption_key_disable_key_details` is true.
+
+        :rtype: TeamEncryptionKeyDisableKeyDetails
+        """
+        if not self.is_team_encryption_key_disable_key_details():
+            raise AttributeError("tag 'team_encryption_key_disable_key_details' not set")
+        return self._value
+
+    def get_team_encryption_key_enable_key_details(self):
+        """
+        Only call this if :meth:`is_team_encryption_key_enable_key_details` is true.
+
+        :rtype: TeamEncryptionKeyEnableKeyDetails
+        """
+        if not self.is_team_encryption_key_enable_key_details():
+            raise AttributeError("tag 'team_encryption_key_enable_key_details' not set")
+        return self._value
+
+    def get_team_encryption_key_rotate_key_details(self):
+        """
+        Only call this if :meth:`is_team_encryption_key_rotate_key_details` is true.
+
+        :rtype: TeamEncryptionKeyRotateKeyDetails
+        """
+        if not self.is_team_encryption_key_rotate_key_details():
+            raise AttributeError("tag 'team_encryption_key_rotate_key_details' not set")
+        return self._value
+
+    def get_team_encryption_key_schedule_key_deletion_details(self):
+        """
+        Only call this if :meth:`is_team_encryption_key_schedule_key_deletion_details` is true.
+
+        :rtype: TeamEncryptionKeyScheduleKeyDeletionDetails
+        """
+        if not self.is_team_encryption_key_schedule_key_deletion_details():
+            raise AttributeError("tag 'team_encryption_key_schedule_key_deletion_details' not set")
+        return self._value
+
     def get_apply_naming_convention_details(self):
         """
         Only call this if :meth:`is_apply_naming_convention_details` is true.
@@ -18429,6 +18984,16 @@ class EventDetails(bb.Union):
         """
         if not self.is_file_add_details():
             raise AttributeError("tag 'file_add_details' not set")
+        return self._value
+
+    def get_file_add_from_automation_details(self):
+        """
+        Only call this if :meth:`is_file_add_from_automation_details` is true.
+
+        :rtype: FileAddFromAutomationDetails
+        """
+        if not self.is_file_add_from_automation_details():
+            raise AttributeError("tag 'file_add_from_automation_details' not set")
         return self._value
 
     def get_file_copy_details(self):
@@ -18639,6 +19204,16 @@ class EventDetails(bb.Union):
         """
         if not self.is_organize_folder_with_tidy_details():
             raise AttributeError("tag 'organize_folder_with_tidy_details' not set")
+        return self._value
+
+    def get_replay_file_delete_details(self):
+        """
+        Only call this if :meth:`is_replay_file_delete_details` is true.
+
+        :rtype: ReplayFileDeleteDetails
+        """
+        if not self.is_replay_file_delete_details():
+            raise AttributeError("tag 'replay_file_delete_details' not set")
         return self._value
 
     def get_rewind_folder_details(self):
@@ -18999,6 +19574,26 @@ class EventDetails(bb.Union):
         """
         if not self.is_sso_error_details():
             raise AttributeError("tag 'sso_error_details' not set")
+        return self._value
+
+    def get_backup_admin_invitation_sent_details(self):
+        """
+        Only call this if :meth:`is_backup_admin_invitation_sent_details` is true.
+
+        :rtype: BackupAdminInvitationSentDetails
+        """
+        if not self.is_backup_admin_invitation_sent_details():
+            raise AttributeError("tag 'backup_admin_invitation_sent_details' not set")
+        return self._value
+
+    def get_backup_invitation_opened_details(self):
+        """
+        Only call this if :meth:`is_backup_invitation_opened_details` is true.
+
+        :rtype: BackupInvitationOpenedDetails
+        """
+        if not self.is_backup_invitation_opened_details():
+            raise AttributeError("tag 'backup_invitation_opened_details' not set")
         return self._value
 
     def get_create_team_invite_link_details(self):
@@ -19951,6 +20546,26 @@ class EventDetails(bb.Union):
             raise AttributeError("tag 'paper_admin_export_start_details' not set")
         return self._value
 
+    def get_ransomware_alert_create_report_details(self):
+        """
+        Only call this if :meth:`is_ransomware_alert_create_report_details` is true.
+
+        :rtype: RansomwareAlertCreateReportDetails
+        """
+        if not self.is_ransomware_alert_create_report_details():
+            raise AttributeError("tag 'ransomware_alert_create_report_details' not set")
+        return self._value
+
+    def get_ransomware_alert_create_report_failed_details(self):
+        """
+        Only call this if :meth:`is_ransomware_alert_create_report_failed_details` is true.
+
+        :rtype: RansomwareAlertCreateReportFailedDetails
+        """
+        if not self.is_ransomware_alert_create_report_failed_details():
+            raise AttributeError("tag 'ransomware_alert_create_report_failed_details' not set")
+        return self._value
+
     def get_smart_sync_create_admin_privilege_report_details(self):
         """
         Only call this if :meth:`is_smart_sync_create_admin_privilege_report_details` is true.
@@ -20099,6 +20714,46 @@ class EventDetails(bb.Union):
         """
         if not self.is_open_note_shared_details():
             raise AttributeError("tag 'open_note_shared_details' not set")
+        return self._value
+
+    def get_replay_file_shared_link_created_details(self):
+        """
+        Only call this if :meth:`is_replay_file_shared_link_created_details` is true.
+
+        :rtype: ReplayFileSharedLinkCreatedDetails
+        """
+        if not self.is_replay_file_shared_link_created_details():
+            raise AttributeError("tag 'replay_file_shared_link_created_details' not set")
+        return self._value
+
+    def get_replay_file_shared_link_modified_details(self):
+        """
+        Only call this if :meth:`is_replay_file_shared_link_modified_details` is true.
+
+        :rtype: ReplayFileSharedLinkModifiedDetails
+        """
+        if not self.is_replay_file_shared_link_modified_details():
+            raise AttributeError("tag 'replay_file_shared_link_modified_details' not set")
+        return self._value
+
+    def get_replay_project_team_add_details(self):
+        """
+        Only call this if :meth:`is_replay_project_team_add_details` is true.
+
+        :rtype: ReplayProjectTeamAddDetails
+        """
+        if not self.is_replay_project_team_add_details():
+            raise AttributeError("tag 'replay_project_team_add_details' not set")
+        return self._value
+
+    def get_replay_project_team_delete_details(self):
+        """
+        Only call this if :meth:`is_replay_project_team_delete_details` is true.
+
+        :rtype: ReplayProjectTeamDeleteDetails
+        """
+        if not self.is_replay_project_team_delete_details():
+            raise AttributeError("tag 'replay_project_team_delete_details' not set")
         return self._value
 
     def get_sf_add_group_details(self):
@@ -22556,6 +23211,12 @@ class EventType(bb.Union):
     :ivar AdminAlertingTriggeredAlertType
         EventType.admin_alerting_triggered_alert: (admin_alerting) Triggered
         security alert
+    :ivar RansomwareRestoreProcessCompletedType
+        EventType.ransomware_restore_process_completed: (admin_alerting)
+        Completed ransomware restore process
+    :ivar RansomwareRestoreProcessStartedType
+        EventType.ransomware_restore_process_started: (admin_alerting) Started
+        ransomware restore process
     :ivar AppBlockedByPermissionsType EventType.app_blocked_by_permissions:
         (apps) Failed to connect app for member
     :ivar AppLinkTeamType EventType.app_link_team: (apps) Linked app for team
@@ -22723,12 +23384,35 @@ class EventType(bb.Union):
         from list of verified team domains
     :ivar EnabledDomainInvitesType EventType.enabled_domain_invites: (domains)
         Enabled domain invites (deprecated, no longer logged)
+    :ivar TeamEncryptionKeyCancelKeyDeletionType
+        EventType.team_encryption_key_cancel_key_deletion: (encryption) Canceled
+        team encryption key deletion
+    :ivar TeamEncryptionKeyCreateKeyType
+        EventType.team_encryption_key_create_key: (encryption) Created team
+        encryption key
+    :ivar TeamEncryptionKeyDeleteKeyType
+        EventType.team_encryption_key_delete_key: (encryption) Deleted team
+        encryption key
+    :ivar TeamEncryptionKeyDisableKeyType
+        EventType.team_encryption_key_disable_key: (encryption) Disabled team
+        encryption key
+    :ivar TeamEncryptionKeyEnableKeyType
+        EventType.team_encryption_key_enable_key: (encryption) Enabled team
+        encryption key
+    :ivar TeamEncryptionKeyRotateKeyType
+        EventType.team_encryption_key_rotate_key: (encryption) Rotated team
+        encryption key (deprecated, no longer logged)
+    :ivar TeamEncryptionKeyScheduleKeyDeletionType
+        EventType.team_encryption_key_schedule_key_deletion: (encryption)
+        Scheduled encryption key deletion
     :ivar ApplyNamingConventionType EventType.apply_naming_convention:
         (file_operations) Applied naming convention
     :ivar CreateFolderType EventType.create_folder: (file_operations) Created
         folders (deprecated, no longer logged)
     :ivar FileAddType EventType.file_add: (file_operations) Added files and/or
         folders
+    :ivar FileAddFromAutomationType EventType.file_add_from_automation:
+        (file_operations) Added files and/or folders from automation
     :ivar FileCopyType EventType.file_copy: (file_operations) Copied files
         and/or folders
     :ivar FileDeleteType EventType.file_delete: (file_operations) Deleted files
@@ -22773,6 +23457,8 @@ class EventType(bb.Union):
         (file_operations) Updated a label's value
     :ivar OrganizeFolderWithTidyType EventType.organize_folder_with_tidy:
         (file_operations) Organized a folder with multi-file organize
+    :ivar ReplayFileDeleteType EventType.replay_file_delete: (file_operations)
+        Deleted files in Replay
     :ivar RewindFolderType EventType.rewind_folder: (file_operations) Rewound a
         folder
     :ivar UndoNamingConventionType EventType.undo_naming_convention:
@@ -22843,6 +23529,10 @@ class EventType(bb.Union):
         Started admin sign-in-as session
     :ivar SsoErrorType EventType.sso_error: (logins) Failed to sign in via SSO
         (deprecated, replaced by 'Failed to sign in')
+    :ivar BackupAdminInvitationSentType EventType.backup_admin_invitation_sent:
+        (members) Invited members to activate Backup
+    :ivar BackupInvitationOpenedType EventType.backup_invitation_opened:
+        (members) Opened Backup invite
     :ivar CreateTeamInviteLinkType EventType.create_team_invite_link: (members)
         Created team invite link
     :ivar DeleteTeamInviteLinkType EventType.delete_team_invite_link: (members)
@@ -23062,6 +23752,12 @@ class EventType(bb.Union):
         report: Views of old links
     :ivar PaperAdminExportStartType EventType.paper_admin_export_start:
         (reports) Exported all team Paper docs
+    :ivar RansomwareAlertCreateReportType
+        EventType.ransomware_alert_create_report: (reports) Created ransomware
+        report
+    :ivar RansomwareAlertCreateReportFailedType
+        EventType.ransomware_alert_create_report_failed: (reports) Couldn't
+        generate ransomware report
     :ivar SmartSyncCreateAdminPrivilegeReportType
         EventType.smart_sync_create_admin_privilege_report: (reports) Created
         Smart Sync non-admin devices report
@@ -23094,6 +23790,16 @@ class EventType(bb.Union):
         received Paper doc (deprecated, no longer logged)
     :ivar OpenNoteSharedType EventType.open_note_shared: (sharing) Opened shared
         Paper doc (deprecated, no longer logged)
+    :ivar ReplayFileSharedLinkCreatedType
+        EventType.replay_file_shared_link_created: (sharing) Created shared link
+        in Replay
+    :ivar ReplayFileSharedLinkModifiedType
+        EventType.replay_file_shared_link_modified: (sharing) Modified shared
+        link in Replay
+    :ivar ReplayProjectTeamAddType EventType.replay_project_team_add: (sharing)
+        Added member to Replay Project
+    :ivar ReplayProjectTeamDeleteType EventType.replay_project_team_delete:
+        (sharing) Removed member from Replay Project
     :ivar SfAddGroupType EventType.sf_add_group: (sharing) Added team to shared
         folder (deprecated, no longer logged)
     :ivar SfAllowNonMembersToViewSharedLinksType
@@ -23765,6 +24471,28 @@ class EventType(bb.Union):
         :rtype: EventType
         """
         return cls('admin_alerting_triggered_alert', val)
+
+    @classmethod
+    def ransomware_restore_process_completed(cls, val):
+        """
+        Create an instance of this class set to the
+        ``ransomware_restore_process_completed`` tag with value ``val``.
+
+        :param RansomwareRestoreProcessCompletedType val:
+        :rtype: EventType
+        """
+        return cls('ransomware_restore_process_completed', val)
+
+    @classmethod
+    def ransomware_restore_process_started(cls, val):
+        """
+        Create an instance of this class set to the
+        ``ransomware_restore_process_started`` tag with value ``val``.
+
+        :param RansomwareRestoreProcessStartedType val:
+        :rtype: EventType
+        """
+        return cls('ransomware_restore_process_started', val)
 
     @classmethod
     def app_blocked_by_permissions(cls, val):
@@ -24529,6 +25257,83 @@ class EventType(bb.Union):
         return cls('enabled_domain_invites', val)
 
     @classmethod
+    def team_encryption_key_cancel_key_deletion(cls, val):
+        """
+        Create an instance of this class set to the
+        ``team_encryption_key_cancel_key_deletion`` tag with value ``val``.
+
+        :param TeamEncryptionKeyCancelKeyDeletionType val:
+        :rtype: EventType
+        """
+        return cls('team_encryption_key_cancel_key_deletion', val)
+
+    @classmethod
+    def team_encryption_key_create_key(cls, val):
+        """
+        Create an instance of this class set to the
+        ``team_encryption_key_create_key`` tag with value ``val``.
+
+        :param TeamEncryptionKeyCreateKeyType val:
+        :rtype: EventType
+        """
+        return cls('team_encryption_key_create_key', val)
+
+    @classmethod
+    def team_encryption_key_delete_key(cls, val):
+        """
+        Create an instance of this class set to the
+        ``team_encryption_key_delete_key`` tag with value ``val``.
+
+        :param TeamEncryptionKeyDeleteKeyType val:
+        :rtype: EventType
+        """
+        return cls('team_encryption_key_delete_key', val)
+
+    @classmethod
+    def team_encryption_key_disable_key(cls, val):
+        """
+        Create an instance of this class set to the
+        ``team_encryption_key_disable_key`` tag with value ``val``.
+
+        :param TeamEncryptionKeyDisableKeyType val:
+        :rtype: EventType
+        """
+        return cls('team_encryption_key_disable_key', val)
+
+    @classmethod
+    def team_encryption_key_enable_key(cls, val):
+        """
+        Create an instance of this class set to the
+        ``team_encryption_key_enable_key`` tag with value ``val``.
+
+        :param TeamEncryptionKeyEnableKeyType val:
+        :rtype: EventType
+        """
+        return cls('team_encryption_key_enable_key', val)
+
+    @classmethod
+    def team_encryption_key_rotate_key(cls, val):
+        """
+        Create an instance of this class set to the
+        ``team_encryption_key_rotate_key`` tag with value ``val``.
+
+        :param TeamEncryptionKeyRotateKeyType val:
+        :rtype: EventType
+        """
+        return cls('team_encryption_key_rotate_key', val)
+
+    @classmethod
+    def team_encryption_key_schedule_key_deletion(cls, val):
+        """
+        Create an instance of this class set to the
+        ``team_encryption_key_schedule_key_deletion`` tag with value ``val``.
+
+        :param TeamEncryptionKeyScheduleKeyDeletionType val:
+        :rtype: EventType
+        """
+        return cls('team_encryption_key_schedule_key_deletion', val)
+
+    @classmethod
     def apply_naming_convention(cls, val):
         """
         Create an instance of this class set to the ``apply_naming_convention``
@@ -24560,6 +25365,17 @@ class EventType(bb.Union):
         :rtype: EventType
         """
         return cls('file_add', val)
+
+    @classmethod
+    def file_add_from_automation(cls, val):
+        """
+        Create an instance of this class set to the ``file_add_from_automation``
+        tag with value ``val``.
+
+        :param FileAddFromAutomationType val:
+        :rtype: EventType
+        """
+        return cls('file_add_from_automation', val)
 
     @classmethod
     def file_copy(cls, val):
@@ -24791,6 +25607,17 @@ class EventType(bb.Union):
         :rtype: EventType
         """
         return cls('organize_folder_with_tidy', val)
+
+    @classmethod
+    def replay_file_delete(cls, val):
+        """
+        Create an instance of this class set to the ``replay_file_delete`` tag
+        with value ``val``.
+
+        :param ReplayFileDeleteType val:
+        :rtype: EventType
+        """
+        return cls('replay_file_delete', val)
 
     @classmethod
     def rewind_folder(cls, val):
@@ -25187,6 +26014,28 @@ class EventType(bb.Union):
         :rtype: EventType
         """
         return cls('sso_error', val)
+
+    @classmethod
+    def backup_admin_invitation_sent(cls, val):
+        """
+        Create an instance of this class set to the
+        ``backup_admin_invitation_sent`` tag with value ``val``.
+
+        :param BackupAdminInvitationSentType val:
+        :rtype: EventType
+        """
+        return cls('backup_admin_invitation_sent', val)
+
+    @classmethod
+    def backup_invitation_opened(cls, val):
+        """
+        Create an instance of this class set to the ``backup_invitation_opened``
+        tag with value ``val``.
+
+        :param BackupInvitationOpenedType val:
+        :rtype: EventType
+        """
+        return cls('backup_invitation_opened', val)
 
     @classmethod
     def create_team_invite_link(cls, val):
@@ -26234,6 +27083,28 @@ class EventType(bb.Union):
         return cls('paper_admin_export_start', val)
 
     @classmethod
+    def ransomware_alert_create_report(cls, val):
+        """
+        Create an instance of this class set to the
+        ``ransomware_alert_create_report`` tag with value ``val``.
+
+        :param RansomwareAlertCreateReportType val:
+        :rtype: EventType
+        """
+        return cls('ransomware_alert_create_report', val)
+
+    @classmethod
+    def ransomware_alert_create_report_failed(cls, val):
+        """
+        Create an instance of this class set to the
+        ``ransomware_alert_create_report_failed`` tag with value ``val``.
+
+        :param RansomwareAlertCreateReportFailedType val:
+        :rtype: EventType
+        """
+        return cls('ransomware_alert_create_report_failed', val)
+
+    @classmethod
     def smart_sync_create_admin_privilege_report(cls, val):
         """
         Create an instance of this class set to the
@@ -26397,6 +27268,50 @@ class EventType(bb.Union):
         :rtype: EventType
         """
         return cls('open_note_shared', val)
+
+    @classmethod
+    def replay_file_shared_link_created(cls, val):
+        """
+        Create an instance of this class set to the
+        ``replay_file_shared_link_created`` tag with value ``val``.
+
+        :param ReplayFileSharedLinkCreatedType val:
+        :rtype: EventType
+        """
+        return cls('replay_file_shared_link_created', val)
+
+    @classmethod
+    def replay_file_shared_link_modified(cls, val):
+        """
+        Create an instance of this class set to the
+        ``replay_file_shared_link_modified`` tag with value ``val``.
+
+        :param ReplayFileSharedLinkModifiedType val:
+        :rtype: EventType
+        """
+        return cls('replay_file_shared_link_modified', val)
+
+    @classmethod
+    def replay_project_team_add(cls, val):
+        """
+        Create an instance of this class set to the ``replay_project_team_add``
+        tag with value ``val``.
+
+        :param ReplayProjectTeamAddType val:
+        :rtype: EventType
+        """
+        return cls('replay_project_team_add', val)
+
+    @classmethod
+    def replay_project_team_delete(cls, val):
+        """
+        Create an instance of this class set to the
+        ``replay_project_team_delete`` tag with value ``val``.
+
+        :param ReplayProjectTeamDeleteType val:
+        :rtype: EventType
+        """
+        return cls('replay_project_team_delete', val)
 
     @classmethod
     def sf_add_group(cls, val):
@@ -29101,6 +30016,22 @@ class EventType(bb.Union):
         """
         return self._tag == 'admin_alerting_triggered_alert'
 
+    def is_ransomware_restore_process_completed(self):
+        """
+        Check if the union tag is ``ransomware_restore_process_completed``.
+
+        :rtype: bool
+        """
+        return self._tag == 'ransomware_restore_process_completed'
+
+    def is_ransomware_restore_process_started(self):
+        """
+        Check if the union tag is ``ransomware_restore_process_started``.
+
+        :rtype: bool
+        """
+        return self._tag == 'ransomware_restore_process_started'
+
     def is_app_blocked_by_permissions(self):
         """
         Check if the union tag is ``app_blocked_by_permissions``.
@@ -29653,6 +30584,62 @@ class EventType(bb.Union):
         """
         return self._tag == 'enabled_domain_invites'
 
+    def is_team_encryption_key_cancel_key_deletion(self):
+        """
+        Check if the union tag is ``team_encryption_key_cancel_key_deletion``.
+
+        :rtype: bool
+        """
+        return self._tag == 'team_encryption_key_cancel_key_deletion'
+
+    def is_team_encryption_key_create_key(self):
+        """
+        Check if the union tag is ``team_encryption_key_create_key``.
+
+        :rtype: bool
+        """
+        return self._tag == 'team_encryption_key_create_key'
+
+    def is_team_encryption_key_delete_key(self):
+        """
+        Check if the union tag is ``team_encryption_key_delete_key``.
+
+        :rtype: bool
+        """
+        return self._tag == 'team_encryption_key_delete_key'
+
+    def is_team_encryption_key_disable_key(self):
+        """
+        Check if the union tag is ``team_encryption_key_disable_key``.
+
+        :rtype: bool
+        """
+        return self._tag == 'team_encryption_key_disable_key'
+
+    def is_team_encryption_key_enable_key(self):
+        """
+        Check if the union tag is ``team_encryption_key_enable_key``.
+
+        :rtype: bool
+        """
+        return self._tag == 'team_encryption_key_enable_key'
+
+    def is_team_encryption_key_rotate_key(self):
+        """
+        Check if the union tag is ``team_encryption_key_rotate_key``.
+
+        :rtype: bool
+        """
+        return self._tag == 'team_encryption_key_rotate_key'
+
+    def is_team_encryption_key_schedule_key_deletion(self):
+        """
+        Check if the union tag is ``team_encryption_key_schedule_key_deletion``.
+
+        :rtype: bool
+        """
+        return self._tag == 'team_encryption_key_schedule_key_deletion'
+
     def is_apply_naming_convention(self):
         """
         Check if the union tag is ``apply_naming_convention``.
@@ -29676,6 +30663,14 @@ class EventType(bb.Union):
         :rtype: bool
         """
         return self._tag == 'file_add'
+
+    def is_file_add_from_automation(self):
+        """
+        Check if the union tag is ``file_add_from_automation``.
+
+        :rtype: bool
+        """
+        return self._tag == 'file_add_from_automation'
 
     def is_file_copy(self):
         """
@@ -29844,6 +30839,14 @@ class EventType(bb.Union):
         :rtype: bool
         """
         return self._tag == 'organize_folder_with_tidy'
+
+    def is_replay_file_delete(self):
+        """
+        Check if the union tag is ``replay_file_delete``.
+
+        :rtype: bool
+        """
+        return self._tag == 'replay_file_delete'
 
     def is_rewind_folder(self):
         """
@@ -30132,6 +31135,22 @@ class EventType(bb.Union):
         :rtype: bool
         """
         return self._tag == 'sso_error'
+
+    def is_backup_admin_invitation_sent(self):
+        """
+        Check if the union tag is ``backup_admin_invitation_sent``.
+
+        :rtype: bool
+        """
+        return self._tag == 'backup_admin_invitation_sent'
+
+    def is_backup_invitation_opened(self):
+        """
+        Check if the union tag is ``backup_invitation_opened``.
+
+        :rtype: bool
+        """
+        return self._tag == 'backup_invitation_opened'
 
     def is_create_team_invite_link(self):
         """
@@ -30893,6 +31912,22 @@ class EventType(bb.Union):
         """
         return self._tag == 'paper_admin_export_start'
 
+    def is_ransomware_alert_create_report(self):
+        """
+        Check if the union tag is ``ransomware_alert_create_report``.
+
+        :rtype: bool
+        """
+        return self._tag == 'ransomware_alert_create_report'
+
+    def is_ransomware_alert_create_report_failed(self):
+        """
+        Check if the union tag is ``ransomware_alert_create_report_failed``.
+
+        :rtype: bool
+        """
+        return self._tag == 'ransomware_alert_create_report_failed'
+
     def is_smart_sync_create_admin_privilege_report(self):
         """
         Check if the union tag is ``smart_sync_create_admin_privilege_report``.
@@ -31012,6 +32047,38 @@ class EventType(bb.Union):
         :rtype: bool
         """
         return self._tag == 'open_note_shared'
+
+    def is_replay_file_shared_link_created(self):
+        """
+        Check if the union tag is ``replay_file_shared_link_created``.
+
+        :rtype: bool
+        """
+        return self._tag == 'replay_file_shared_link_created'
+
+    def is_replay_file_shared_link_modified(self):
+        """
+        Check if the union tag is ``replay_file_shared_link_modified``.
+
+        :rtype: bool
+        """
+        return self._tag == 'replay_file_shared_link_modified'
+
+    def is_replay_project_team_add(self):
+        """
+        Check if the union tag is ``replay_project_team_add``.
+
+        :rtype: bool
+        """
+        return self._tag == 'replay_project_team_add'
+
+    def is_replay_project_team_delete(self):
+        """
+        Check if the union tag is ``replay_project_team_delete``.
+
+        :rtype: bool
+        """
+        return self._tag == 'replay_project_team_delete'
 
     def is_sf_add_group(self):
         """
@@ -32993,6 +34060,30 @@ class EventType(bb.Union):
             raise AttributeError("tag 'admin_alerting_triggered_alert' not set")
         return self._value
 
+    def get_ransomware_restore_process_completed(self):
+        """
+        (admin_alerting) Completed ransomware restore process
+
+        Only call this if :meth:`is_ransomware_restore_process_completed` is true.
+
+        :rtype: RansomwareRestoreProcessCompletedType
+        """
+        if not self.is_ransomware_restore_process_completed():
+            raise AttributeError("tag 'ransomware_restore_process_completed' not set")
+        return self._value
+
+    def get_ransomware_restore_process_started(self):
+        """
+        (admin_alerting) Started ransomware restore process
+
+        Only call this if :meth:`is_ransomware_restore_process_started` is true.
+
+        :rtype: RansomwareRestoreProcessStartedType
+        """
+        if not self.is_ransomware_restore_process_started():
+            raise AttributeError("tag 'ransomware_restore_process_started' not set")
+        return self._value
+
     def get_app_blocked_by_permissions(self):
         """
         (apps) Failed to connect app for member
@@ -33826,6 +34917,90 @@ class EventType(bb.Union):
             raise AttributeError("tag 'enabled_domain_invites' not set")
         return self._value
 
+    def get_team_encryption_key_cancel_key_deletion(self):
+        """
+        (encryption) Canceled team encryption key deletion
+
+        Only call this if :meth:`is_team_encryption_key_cancel_key_deletion` is true.
+
+        :rtype: TeamEncryptionKeyCancelKeyDeletionType
+        """
+        if not self.is_team_encryption_key_cancel_key_deletion():
+            raise AttributeError("tag 'team_encryption_key_cancel_key_deletion' not set")
+        return self._value
+
+    def get_team_encryption_key_create_key(self):
+        """
+        (encryption) Created team encryption key
+
+        Only call this if :meth:`is_team_encryption_key_create_key` is true.
+
+        :rtype: TeamEncryptionKeyCreateKeyType
+        """
+        if not self.is_team_encryption_key_create_key():
+            raise AttributeError("tag 'team_encryption_key_create_key' not set")
+        return self._value
+
+    def get_team_encryption_key_delete_key(self):
+        """
+        (encryption) Deleted team encryption key
+
+        Only call this if :meth:`is_team_encryption_key_delete_key` is true.
+
+        :rtype: TeamEncryptionKeyDeleteKeyType
+        """
+        if not self.is_team_encryption_key_delete_key():
+            raise AttributeError("tag 'team_encryption_key_delete_key' not set")
+        return self._value
+
+    def get_team_encryption_key_disable_key(self):
+        """
+        (encryption) Disabled team encryption key
+
+        Only call this if :meth:`is_team_encryption_key_disable_key` is true.
+
+        :rtype: TeamEncryptionKeyDisableKeyType
+        """
+        if not self.is_team_encryption_key_disable_key():
+            raise AttributeError("tag 'team_encryption_key_disable_key' not set")
+        return self._value
+
+    def get_team_encryption_key_enable_key(self):
+        """
+        (encryption) Enabled team encryption key
+
+        Only call this if :meth:`is_team_encryption_key_enable_key` is true.
+
+        :rtype: TeamEncryptionKeyEnableKeyType
+        """
+        if not self.is_team_encryption_key_enable_key():
+            raise AttributeError("tag 'team_encryption_key_enable_key' not set")
+        return self._value
+
+    def get_team_encryption_key_rotate_key(self):
+        """
+        (encryption) Rotated team encryption key (deprecated, no longer logged)
+
+        Only call this if :meth:`is_team_encryption_key_rotate_key` is true.
+
+        :rtype: TeamEncryptionKeyRotateKeyType
+        """
+        if not self.is_team_encryption_key_rotate_key():
+            raise AttributeError("tag 'team_encryption_key_rotate_key' not set")
+        return self._value
+
+    def get_team_encryption_key_schedule_key_deletion(self):
+        """
+        (encryption) Scheduled encryption key deletion
+
+        Only call this if :meth:`is_team_encryption_key_schedule_key_deletion` is true.
+
+        :rtype: TeamEncryptionKeyScheduleKeyDeletionType
+        """
+        if not self.is_team_encryption_key_schedule_key_deletion():
+            raise AttributeError("tag 'team_encryption_key_schedule_key_deletion' not set")
+        return self._value
+
     def get_apply_naming_convention(self):
         """
         (file_operations) Applied naming convention
@@ -33860,6 +35035,18 @@ class EventType(bb.Union):
         """
         if not self.is_file_add():
             raise AttributeError("tag 'file_add' not set")
+        return self._value
+
+    def get_file_add_from_automation(self):
+        """
+        (file_operations) Added files and/or folders from automation
+
+        Only call this if :meth:`is_file_add_from_automation` is true.
+
+        :rtype: FileAddFromAutomationType
+        """
+        if not self.is_file_add_from_automation():
+            raise AttributeError("tag 'file_add_from_automation' not set")
         return self._value
 
     def get_file_copy(self):
@@ -34112,6 +35299,18 @@ class EventType(bb.Union):
         """
         if not self.is_organize_folder_with_tidy():
             raise AttributeError("tag 'organize_folder_with_tidy' not set")
+        return self._value
+
+    def get_replay_file_delete(self):
+        """
+        (file_operations) Deleted files in Replay
+
+        Only call this if :meth:`is_replay_file_delete` is true.
+
+        :rtype: ReplayFileDeleteType
+        """
+        if not self.is_replay_file_delete():
+            raise AttributeError("tag 'replay_file_delete' not set")
         return self._value
 
     def get_rewind_folder(self):
@@ -34546,6 +35745,30 @@ class EventType(bb.Union):
         """
         if not self.is_sso_error():
             raise AttributeError("tag 'sso_error' not set")
+        return self._value
+
+    def get_backup_admin_invitation_sent(self):
+        """
+        (members) Invited members to activate Backup
+
+        Only call this if :meth:`is_backup_admin_invitation_sent` is true.
+
+        :rtype: BackupAdminInvitationSentType
+        """
+        if not self.is_backup_admin_invitation_sent():
+            raise AttributeError("tag 'backup_admin_invitation_sent' not set")
+        return self._value
+
+    def get_backup_invitation_opened(self):
+        """
+        (members) Opened Backup invite
+
+        Only call this if :meth:`is_backup_invitation_opened` is true.
+
+        :rtype: BackupInvitationOpenedType
+        """
+        if not self.is_backup_invitation_opened():
+            raise AttributeError("tag 'backup_invitation_opened' not set")
         return self._value
 
     def get_create_team_invite_link(self):
@@ -35698,6 +36921,30 @@ class EventType(bb.Union):
             raise AttributeError("tag 'paper_admin_export_start' not set")
         return self._value
 
+    def get_ransomware_alert_create_report(self):
+        """
+        (reports) Created ransomware report
+
+        Only call this if :meth:`is_ransomware_alert_create_report` is true.
+
+        :rtype: RansomwareAlertCreateReportType
+        """
+        if not self.is_ransomware_alert_create_report():
+            raise AttributeError("tag 'ransomware_alert_create_report' not set")
+        return self._value
+
+    def get_ransomware_alert_create_report_failed(self):
+        """
+        (reports) Couldn't generate ransomware report
+
+        Only call this if :meth:`is_ransomware_alert_create_report_failed` is true.
+
+        :rtype: RansomwareAlertCreateReportFailedType
+        """
+        if not self.is_ransomware_alert_create_report_failed():
+            raise AttributeError("tag 'ransomware_alert_create_report_failed' not set")
+        return self._value
+
     def get_smart_sync_create_admin_privilege_report(self):
         """
         (reports) Created Smart Sync non-admin devices report
@@ -35879,6 +37126,54 @@ class EventType(bb.Union):
         """
         if not self.is_open_note_shared():
             raise AttributeError("tag 'open_note_shared' not set")
+        return self._value
+
+    def get_replay_file_shared_link_created(self):
+        """
+        (sharing) Created shared link in Replay
+
+        Only call this if :meth:`is_replay_file_shared_link_created` is true.
+
+        :rtype: ReplayFileSharedLinkCreatedType
+        """
+        if not self.is_replay_file_shared_link_created():
+            raise AttributeError("tag 'replay_file_shared_link_created' not set")
+        return self._value
+
+    def get_replay_file_shared_link_modified(self):
+        """
+        (sharing) Modified shared link in Replay
+
+        Only call this if :meth:`is_replay_file_shared_link_modified` is true.
+
+        :rtype: ReplayFileSharedLinkModifiedType
+        """
+        if not self.is_replay_file_shared_link_modified():
+            raise AttributeError("tag 'replay_file_shared_link_modified' not set")
+        return self._value
+
+    def get_replay_project_team_add(self):
+        """
+        (sharing) Added member to Replay Project
+
+        Only call this if :meth:`is_replay_project_team_add` is true.
+
+        :rtype: ReplayProjectTeamAddType
+        """
+        if not self.is_replay_project_team_add():
+            raise AttributeError("tag 'replay_project_team_add' not set")
+        return self._value
+
+    def get_replay_project_team_delete(self):
+        """
+        (sharing) Removed member from Replay Project
+
+        Only call this if :meth:`is_replay_project_team_delete` is true.
+
+        :rtype: ReplayProjectTeamDeleteType
+        """
+        if not self.is_replay_project_team_delete():
+            raise AttributeError("tag 'replay_project_team_delete' not set")
         return self._value
 
     def get_sf_add_group(self):
@@ -38869,6 +40164,10 @@ class EventTypeArg(bb.Union):
         (admin_alerting) Changed an alert setting
     :ivar team_log.EventTypeArg.admin_alerting_triggered_alert: (admin_alerting)
         Triggered security alert
+    :ivar team_log.EventTypeArg.ransomware_restore_process_completed:
+        (admin_alerting) Completed ransomware restore process
+    :ivar team_log.EventTypeArg.ransomware_restore_process_started:
+        (admin_alerting) Started ransomware restore process
     :ivar team_log.EventTypeArg.app_blocked_by_permissions: (apps) Failed to
         connect app for member
     :ivar team_log.EventTypeArg.app_link_team: (apps) Linked app for team
@@ -39004,12 +40303,28 @@ class EventTypeArg(bb.Union):
         Removed domain from list of verified team domains
     :ivar team_log.EventTypeArg.enabled_domain_invites: (domains) Enabled domain
         invites (deprecated, no longer logged)
+    :ivar team_log.EventTypeArg.team_encryption_key_cancel_key_deletion:
+        (encryption) Canceled team encryption key deletion
+    :ivar team_log.EventTypeArg.team_encryption_key_create_key: (encryption)
+        Created team encryption key
+    :ivar team_log.EventTypeArg.team_encryption_key_delete_key: (encryption)
+        Deleted team encryption key
+    :ivar team_log.EventTypeArg.team_encryption_key_disable_key: (encryption)
+        Disabled team encryption key
+    :ivar team_log.EventTypeArg.team_encryption_key_enable_key: (encryption)
+        Enabled team encryption key
+    :ivar team_log.EventTypeArg.team_encryption_key_rotate_key: (encryption)
+        Rotated team encryption key (deprecated, no longer logged)
+    :ivar team_log.EventTypeArg.team_encryption_key_schedule_key_deletion:
+        (encryption) Scheduled encryption key deletion
     :ivar team_log.EventTypeArg.apply_naming_convention: (file_operations)
         Applied naming convention
     :ivar team_log.EventTypeArg.create_folder: (file_operations) Created folders
         (deprecated, no longer logged)
     :ivar team_log.EventTypeArg.file_add: (file_operations) Added files and/or
         folders
+    :ivar team_log.EventTypeArg.file_add_from_automation: (file_operations)
+        Added files and/or folders from automation
     :ivar team_log.EventTypeArg.file_copy: (file_operations) Copied files and/or
         folders
     :ivar team_log.EventTypeArg.file_delete: (file_operations) Deleted files
@@ -39051,6 +40366,8 @@ class EventTypeArg(bb.Union):
         Updated a label's value
     :ivar team_log.EventTypeArg.organize_folder_with_tidy: (file_operations)
         Organized a folder with multi-file organize
+    :ivar team_log.EventTypeArg.replay_file_delete: (file_operations) Deleted
+        files in Replay
     :ivar team_log.EventTypeArg.rewind_folder: (file_operations) Rewound a
         folder
     :ivar team_log.EventTypeArg.undo_naming_convention: (file_operations)
@@ -39116,6 +40433,10 @@ class EventTypeArg(bb.Union):
         sign-in-as session
     :ivar team_log.EventTypeArg.sso_error: (logins) Failed to sign in via SSO
         (deprecated, replaced by 'Failed to sign in')
+    :ivar team_log.EventTypeArg.backup_admin_invitation_sent: (members) Invited
+        members to activate Backup
+    :ivar team_log.EventTypeArg.backup_invitation_opened: (members) Opened
+        Backup invite
     :ivar team_log.EventTypeArg.create_team_invite_link: (members) Created team
         invite link
     :ivar team_log.EventTypeArg.delete_team_invite_link: (members) Deleted team
@@ -39302,6 +40623,10 @@ class EventTypeArg(bb.Union):
         Couldn't create report: Views of old links
     :ivar team_log.EventTypeArg.paper_admin_export_start: (reports) Exported all
         team Paper docs
+    :ivar team_log.EventTypeArg.ransomware_alert_create_report: (reports)
+        Created ransomware report
+    :ivar team_log.EventTypeArg.ransomware_alert_create_report_failed: (reports)
+        Couldn't generate ransomware report
     :ivar team_log.EventTypeArg.smart_sync_create_admin_privilege_report:
         (reports) Created Smart Sync non-admin devices report
     :ivar team_log.EventTypeArg.team_activity_create_report: (reports) Created
@@ -39331,6 +40656,14 @@ class EventTypeArg(bb.Union):
         Paper doc (deprecated, no longer logged)
     :ivar team_log.EventTypeArg.open_note_shared: (sharing) Opened shared Paper
         doc (deprecated, no longer logged)
+    :ivar team_log.EventTypeArg.replay_file_shared_link_created: (sharing)
+        Created shared link in Replay
+    :ivar team_log.EventTypeArg.replay_file_shared_link_modified: (sharing)
+        Modified shared link in Replay
+    :ivar team_log.EventTypeArg.replay_project_team_add: (sharing) Added member
+        to Replay Project
+    :ivar team_log.EventTypeArg.replay_project_team_delete: (sharing) Removed
+        member from Replay Project
     :ivar team_log.EventTypeArg.sf_add_group: (sharing) Added team to shared
         folder (deprecated, no longer logged)
     :ivar team_log.EventTypeArg.sf_allow_non_members_to_view_shared_links:
@@ -39875,6 +41208,10 @@ class EventTypeArg(bb.Union):
     # Attribute is overwritten below the class definition
     admin_alerting_triggered_alert = None
     # Attribute is overwritten below the class definition
+    ransomware_restore_process_completed = None
+    # Attribute is overwritten below the class definition
+    ransomware_restore_process_started = None
+    # Attribute is overwritten below the class definition
     app_blocked_by_permissions = None
     # Attribute is overwritten below the class definition
     app_link_team = None
@@ -40013,11 +41350,27 @@ class EventTypeArg(bb.Union):
     # Attribute is overwritten below the class definition
     enabled_domain_invites = None
     # Attribute is overwritten below the class definition
+    team_encryption_key_cancel_key_deletion = None
+    # Attribute is overwritten below the class definition
+    team_encryption_key_create_key = None
+    # Attribute is overwritten below the class definition
+    team_encryption_key_delete_key = None
+    # Attribute is overwritten below the class definition
+    team_encryption_key_disable_key = None
+    # Attribute is overwritten below the class definition
+    team_encryption_key_enable_key = None
+    # Attribute is overwritten below the class definition
+    team_encryption_key_rotate_key = None
+    # Attribute is overwritten below the class definition
+    team_encryption_key_schedule_key_deletion = None
+    # Attribute is overwritten below the class definition
     apply_naming_convention = None
     # Attribute is overwritten below the class definition
     create_folder = None
     # Attribute is overwritten below the class definition
     file_add = None
+    # Attribute is overwritten below the class definition
+    file_add_from_automation = None
     # Attribute is overwritten below the class definition
     file_copy = None
     # Attribute is overwritten below the class definition
@@ -40060,6 +41413,8 @@ class EventTypeArg(bb.Union):
     object_label_updated_value = None
     # Attribute is overwritten below the class definition
     organize_folder_with_tidy = None
+    # Attribute is overwritten below the class definition
+    replay_file_delete = None
     # Attribute is overwritten below the class definition
     rewind_folder = None
     # Attribute is overwritten below the class definition
@@ -40132,6 +41487,10 @@ class EventTypeArg(bb.Union):
     sign_in_as_session_start = None
     # Attribute is overwritten below the class definition
     sso_error = None
+    # Attribute is overwritten below the class definition
+    backup_admin_invitation_sent = None
+    # Attribute is overwritten below the class definition
+    backup_invitation_opened = None
     # Attribute is overwritten below the class definition
     create_team_invite_link = None
     # Attribute is overwritten below the class definition
@@ -40323,6 +41682,10 @@ class EventTypeArg(bb.Union):
     # Attribute is overwritten below the class definition
     paper_admin_export_start = None
     # Attribute is overwritten below the class definition
+    ransomware_alert_create_report = None
+    # Attribute is overwritten below the class definition
+    ransomware_alert_create_report_failed = None
+    # Attribute is overwritten below the class definition
     smart_sync_create_admin_privilege_report = None
     # Attribute is overwritten below the class definition
     team_activity_create_report = None
@@ -40352,6 +41715,14 @@ class EventTypeArg(bb.Union):
     note_share_receive = None
     # Attribute is overwritten below the class definition
     open_note_shared = None
+    # Attribute is overwritten below the class definition
+    replay_file_shared_link_created = None
+    # Attribute is overwritten below the class definition
+    replay_file_shared_link_modified = None
+    # Attribute is overwritten below the class definition
+    replay_project_team_add = None
+    # Attribute is overwritten below the class definition
+    replay_project_team_delete = None
     # Attribute is overwritten below the class definition
     sf_add_group = None
     # Attribute is overwritten below the class definition
@@ -40862,6 +42233,22 @@ class EventTypeArg(bb.Union):
         :rtype: bool
         """
         return self._tag == 'admin_alerting_triggered_alert'
+
+    def is_ransomware_restore_process_completed(self):
+        """
+        Check if the union tag is ``ransomware_restore_process_completed``.
+
+        :rtype: bool
+        """
+        return self._tag == 'ransomware_restore_process_completed'
+
+    def is_ransomware_restore_process_started(self):
+        """
+        Check if the union tag is ``ransomware_restore_process_started``.
+
+        :rtype: bool
+        """
+        return self._tag == 'ransomware_restore_process_started'
 
     def is_app_blocked_by_permissions(self):
         """
@@ -41415,6 +42802,62 @@ class EventTypeArg(bb.Union):
         """
         return self._tag == 'enabled_domain_invites'
 
+    def is_team_encryption_key_cancel_key_deletion(self):
+        """
+        Check if the union tag is ``team_encryption_key_cancel_key_deletion``.
+
+        :rtype: bool
+        """
+        return self._tag == 'team_encryption_key_cancel_key_deletion'
+
+    def is_team_encryption_key_create_key(self):
+        """
+        Check if the union tag is ``team_encryption_key_create_key``.
+
+        :rtype: bool
+        """
+        return self._tag == 'team_encryption_key_create_key'
+
+    def is_team_encryption_key_delete_key(self):
+        """
+        Check if the union tag is ``team_encryption_key_delete_key``.
+
+        :rtype: bool
+        """
+        return self._tag == 'team_encryption_key_delete_key'
+
+    def is_team_encryption_key_disable_key(self):
+        """
+        Check if the union tag is ``team_encryption_key_disable_key``.
+
+        :rtype: bool
+        """
+        return self._tag == 'team_encryption_key_disable_key'
+
+    def is_team_encryption_key_enable_key(self):
+        """
+        Check if the union tag is ``team_encryption_key_enable_key``.
+
+        :rtype: bool
+        """
+        return self._tag == 'team_encryption_key_enable_key'
+
+    def is_team_encryption_key_rotate_key(self):
+        """
+        Check if the union tag is ``team_encryption_key_rotate_key``.
+
+        :rtype: bool
+        """
+        return self._tag == 'team_encryption_key_rotate_key'
+
+    def is_team_encryption_key_schedule_key_deletion(self):
+        """
+        Check if the union tag is ``team_encryption_key_schedule_key_deletion``.
+
+        :rtype: bool
+        """
+        return self._tag == 'team_encryption_key_schedule_key_deletion'
+
     def is_apply_naming_convention(self):
         """
         Check if the union tag is ``apply_naming_convention``.
@@ -41438,6 +42881,14 @@ class EventTypeArg(bb.Union):
         :rtype: bool
         """
         return self._tag == 'file_add'
+
+    def is_file_add_from_automation(self):
+        """
+        Check if the union tag is ``file_add_from_automation``.
+
+        :rtype: bool
+        """
+        return self._tag == 'file_add_from_automation'
 
     def is_file_copy(self):
         """
@@ -41606,6 +43057,14 @@ class EventTypeArg(bb.Union):
         :rtype: bool
         """
         return self._tag == 'organize_folder_with_tidy'
+
+    def is_replay_file_delete(self):
+        """
+        Check if the union tag is ``replay_file_delete``.
+
+        :rtype: bool
+        """
+        return self._tag == 'replay_file_delete'
 
     def is_rewind_folder(self):
         """
@@ -41894,6 +43353,22 @@ class EventTypeArg(bb.Union):
         :rtype: bool
         """
         return self._tag == 'sso_error'
+
+    def is_backup_admin_invitation_sent(self):
+        """
+        Check if the union tag is ``backup_admin_invitation_sent``.
+
+        :rtype: bool
+        """
+        return self._tag == 'backup_admin_invitation_sent'
+
+    def is_backup_invitation_opened(self):
+        """
+        Check if the union tag is ``backup_invitation_opened``.
+
+        :rtype: bool
+        """
+        return self._tag == 'backup_invitation_opened'
 
     def is_create_team_invite_link(self):
         """
@@ -42655,6 +44130,22 @@ class EventTypeArg(bb.Union):
         """
         return self._tag == 'paper_admin_export_start'
 
+    def is_ransomware_alert_create_report(self):
+        """
+        Check if the union tag is ``ransomware_alert_create_report``.
+
+        :rtype: bool
+        """
+        return self._tag == 'ransomware_alert_create_report'
+
+    def is_ransomware_alert_create_report_failed(self):
+        """
+        Check if the union tag is ``ransomware_alert_create_report_failed``.
+
+        :rtype: bool
+        """
+        return self._tag == 'ransomware_alert_create_report_failed'
+
     def is_smart_sync_create_admin_privilege_report(self):
         """
         Check if the union tag is ``smart_sync_create_admin_privilege_report``.
@@ -42774,6 +44265,38 @@ class EventTypeArg(bb.Union):
         :rtype: bool
         """
         return self._tag == 'open_note_shared'
+
+    def is_replay_file_shared_link_created(self):
+        """
+        Check if the union tag is ``replay_file_shared_link_created``.
+
+        :rtype: bool
+        """
+        return self._tag == 'replay_file_shared_link_created'
+
+    def is_replay_file_shared_link_modified(self):
+        """
+        Check if the union tag is ``replay_file_shared_link_modified``.
+
+        :rtype: bool
+        """
+        return self._tag == 'replay_file_shared_link_modified'
+
+    def is_replay_project_team_add(self):
+        """
+        Check if the union tag is ``replay_project_team_add``.
+
+        :rtype: bool
+        """
+        return self._tag == 'replay_project_team_add'
+
+    def is_replay_project_team_delete(self):
+        """
+        Check if the union tag is ``replay_project_team_delete``.
+
+        :rtype: bool
+        """
+        return self._tag == 'replay_project_team_delete'
 
     def is_sf_add_group(self):
         """
@@ -45910,6 +47433,46 @@ class FileAddDetails(bb.Struct):
         super(FileAddDetails, self)._process_custom_annotations(annotation_type, field_path, processor)
 
 FileAddDetails_validator = bv.Struct(FileAddDetails)
+
+class FileAddFromAutomationDetails(bb.Struct):
+    """
+    Added files and/or folders from automation.
+    """
+
+    __slots__ = [
+    ]
+
+    _has_required_fields = False
+
+    def __init__(self):
+        pass
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(FileAddFromAutomationDetails, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+FileAddFromAutomationDetails_validator = bv.Struct(FileAddFromAutomationDetails)
+
+class FileAddFromAutomationType(bb.Struct):
+
+    __slots__ = [
+        '_description_value',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 description=None):
+        self._description_value = bb.NOT_SET
+        if description is not None:
+            self.description = description
+
+    # Instance attribute type: str (validator is set below)
+    description = bb.Attribute("description")
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(FileAddFromAutomationType, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+FileAddFromAutomationType_validator = bv.Struct(FileAddFromAutomationType)
 
 class FileAddType(bb.Struct):
 
@@ -52750,6 +54313,8 @@ class LoginMethod(bb.Union):
     # Attribute is overwritten below the class definition
     google_oauth = None
     # Attribute is overwritten below the class definition
+    lenovo_oauth = None
+    # Attribute is overwritten below the class definition
     password = None
     # Attribute is overwritten below the class definition
     qr_code = None
@@ -52785,6 +54350,14 @@ class LoginMethod(bb.Union):
         :rtype: bool
         """
         return self._tag == 'google_oauth'
+
+    def is_lenovo_oauth(self):
+        """
+        Check if the union tag is ``lenovo_oauth``.
+
+        :rtype: bool
+        """
+        return self._tag == 'lenovo_oauth'
 
     def is_password(self):
         """
@@ -60083,6 +61656,218 @@ class QuickActionType(bb.Union):
 
 QuickActionType_validator = bv.Union(QuickActionType)
 
+class RansomwareAlertCreateReportDetails(bb.Struct):
+    """
+    Created ransomware report.
+    """
+
+    __slots__ = [
+    ]
+
+    _has_required_fields = False
+
+    def __init__(self):
+        pass
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(RansomwareAlertCreateReportDetails, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+RansomwareAlertCreateReportDetails_validator = bv.Struct(RansomwareAlertCreateReportDetails)
+
+class RansomwareAlertCreateReportFailedDetails(bb.Struct):
+    """
+    Couldn't generate ransomware report.
+
+    :ivar team_log.RansomwareAlertCreateReportFailedDetails.failure_reason:
+        Failure reason.
+    """
+
+    __slots__ = [
+        '_failure_reason_value',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 failure_reason=None):
+        self._failure_reason_value = bb.NOT_SET
+        if failure_reason is not None:
+            self.failure_reason = failure_reason
+
+    # Instance attribute type: team.TeamReportFailureReason (validator is set below)
+    failure_reason = bb.Attribute("failure_reason", user_defined=True)
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(RansomwareAlertCreateReportFailedDetails, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+RansomwareAlertCreateReportFailedDetails_validator = bv.Struct(RansomwareAlertCreateReportFailedDetails)
+
+class RansomwareAlertCreateReportFailedType(bb.Struct):
+
+    __slots__ = [
+        '_description_value',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 description=None):
+        self._description_value = bb.NOT_SET
+        if description is not None:
+            self.description = description
+
+    # Instance attribute type: str (validator is set below)
+    description = bb.Attribute("description")
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(RansomwareAlertCreateReportFailedType, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+RansomwareAlertCreateReportFailedType_validator = bv.Struct(RansomwareAlertCreateReportFailedType)
+
+class RansomwareAlertCreateReportType(bb.Struct):
+
+    __slots__ = [
+        '_description_value',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 description=None):
+        self._description_value = bb.NOT_SET
+        if description is not None:
+            self.description = description
+
+    # Instance attribute type: str (validator is set below)
+    description = bb.Attribute("description")
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(RansomwareAlertCreateReportType, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+RansomwareAlertCreateReportType_validator = bv.Struct(RansomwareAlertCreateReportType)
+
+class RansomwareRestoreProcessCompletedDetails(bb.Struct):
+    """
+    Completed ransomware restore process.
+
+    :ivar team_log.RansomwareRestoreProcessCompletedDetails.status: The status
+        of the restore process.
+    :ivar
+        team_log.RansomwareRestoreProcessCompletedDetails.restored_files_count:
+        Restored files count.
+    :ivar
+        team_log.RansomwareRestoreProcessCompletedDetails.restored_files_failed_count:
+        Restored files failed count.
+    """
+
+    __slots__ = [
+        '_status_value',
+        '_restored_files_count_value',
+        '_restored_files_failed_count_value',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 status=None,
+                 restored_files_count=None,
+                 restored_files_failed_count=None):
+        self._status_value = bb.NOT_SET
+        self._restored_files_count_value = bb.NOT_SET
+        self._restored_files_failed_count_value = bb.NOT_SET
+        if status is not None:
+            self.status = status
+        if restored_files_count is not None:
+            self.restored_files_count = restored_files_count
+        if restored_files_failed_count is not None:
+            self.restored_files_failed_count = restored_files_failed_count
+
+    # Instance attribute type: str (validator is set below)
+    status = bb.Attribute("status")
+
+    # Instance attribute type: int (validator is set below)
+    restored_files_count = bb.Attribute("restored_files_count")
+
+    # Instance attribute type: int (validator is set below)
+    restored_files_failed_count = bb.Attribute("restored_files_failed_count")
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(RansomwareRestoreProcessCompletedDetails, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+RansomwareRestoreProcessCompletedDetails_validator = bv.Struct(RansomwareRestoreProcessCompletedDetails)
+
+class RansomwareRestoreProcessCompletedType(bb.Struct):
+
+    __slots__ = [
+        '_description_value',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 description=None):
+        self._description_value = bb.NOT_SET
+        if description is not None:
+            self.description = description
+
+    # Instance attribute type: str (validator is set below)
+    description = bb.Attribute("description")
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(RansomwareRestoreProcessCompletedType, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+RansomwareRestoreProcessCompletedType_validator = bv.Struct(RansomwareRestoreProcessCompletedType)
+
+class RansomwareRestoreProcessStartedDetails(bb.Struct):
+    """
+    Started ransomware restore process.
+
+    :ivar team_log.RansomwareRestoreProcessStartedDetails.extension: Ransomware
+        filename extension.
+    """
+
+    __slots__ = [
+        '_extension_value',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 extension=None):
+        self._extension_value = bb.NOT_SET
+        if extension is not None:
+            self.extension = extension
+
+    # Instance attribute type: str (validator is set below)
+    extension = bb.Attribute("extension")
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(RansomwareRestoreProcessStartedDetails, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+RansomwareRestoreProcessStartedDetails_validator = bv.Struct(RansomwareRestoreProcessStartedDetails)
+
+class RansomwareRestoreProcessStartedType(bb.Struct):
+
+    __slots__ = [
+        '_description_value',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 description=None):
+        self._description_value = bb.NOT_SET
+        if description is not None:
+            self.description = description
+
+    # Instance attribute type: str (validator is set below)
+    description = bb.Attribute("description")
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(RansomwareRestoreProcessStartedType, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+RansomwareRestoreProcessStartedType_validator = bv.Struct(RansomwareRestoreProcessStartedType)
+
 class RecipientsConfiguration(bb.Struct):
     """
     Recipients Configuration
@@ -60168,6 +61953,206 @@ class RelocateAssetReferencesLogInfo(bb.Struct):
         super(RelocateAssetReferencesLogInfo, self)._process_custom_annotations(annotation_type, field_path, processor)
 
 RelocateAssetReferencesLogInfo_validator = bv.Struct(RelocateAssetReferencesLogInfo)
+
+class ReplayFileDeleteDetails(bb.Struct):
+    """
+    Deleted files in Replay.
+    """
+
+    __slots__ = [
+    ]
+
+    _has_required_fields = False
+
+    def __init__(self):
+        pass
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(ReplayFileDeleteDetails, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+ReplayFileDeleteDetails_validator = bv.Struct(ReplayFileDeleteDetails)
+
+class ReplayFileDeleteType(bb.Struct):
+
+    __slots__ = [
+        '_description_value',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 description=None):
+        self._description_value = bb.NOT_SET
+        if description is not None:
+            self.description = description
+
+    # Instance attribute type: str (validator is set below)
+    description = bb.Attribute("description")
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(ReplayFileDeleteType, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+ReplayFileDeleteType_validator = bv.Struct(ReplayFileDeleteType)
+
+class ReplayFileSharedLinkCreatedDetails(bb.Struct):
+    """
+    Created shared link in Replay.
+    """
+
+    __slots__ = [
+    ]
+
+    _has_required_fields = False
+
+    def __init__(self):
+        pass
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(ReplayFileSharedLinkCreatedDetails, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+ReplayFileSharedLinkCreatedDetails_validator = bv.Struct(ReplayFileSharedLinkCreatedDetails)
+
+class ReplayFileSharedLinkCreatedType(bb.Struct):
+
+    __slots__ = [
+        '_description_value',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 description=None):
+        self._description_value = bb.NOT_SET
+        if description is not None:
+            self.description = description
+
+    # Instance attribute type: str (validator is set below)
+    description = bb.Attribute("description")
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(ReplayFileSharedLinkCreatedType, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+ReplayFileSharedLinkCreatedType_validator = bv.Struct(ReplayFileSharedLinkCreatedType)
+
+class ReplayFileSharedLinkModifiedDetails(bb.Struct):
+    """
+    Modified shared link in Replay.
+    """
+
+    __slots__ = [
+    ]
+
+    _has_required_fields = False
+
+    def __init__(self):
+        pass
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(ReplayFileSharedLinkModifiedDetails, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+ReplayFileSharedLinkModifiedDetails_validator = bv.Struct(ReplayFileSharedLinkModifiedDetails)
+
+class ReplayFileSharedLinkModifiedType(bb.Struct):
+
+    __slots__ = [
+        '_description_value',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 description=None):
+        self._description_value = bb.NOT_SET
+        if description is not None:
+            self.description = description
+
+    # Instance attribute type: str (validator is set below)
+    description = bb.Attribute("description")
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(ReplayFileSharedLinkModifiedType, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+ReplayFileSharedLinkModifiedType_validator = bv.Struct(ReplayFileSharedLinkModifiedType)
+
+class ReplayProjectTeamAddDetails(bb.Struct):
+    """
+    Added member to Replay Project.
+    """
+
+    __slots__ = [
+    ]
+
+    _has_required_fields = False
+
+    def __init__(self):
+        pass
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(ReplayProjectTeamAddDetails, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+ReplayProjectTeamAddDetails_validator = bv.Struct(ReplayProjectTeamAddDetails)
+
+class ReplayProjectTeamAddType(bb.Struct):
+
+    __slots__ = [
+        '_description_value',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 description=None):
+        self._description_value = bb.NOT_SET
+        if description is not None:
+            self.description = description
+
+    # Instance attribute type: str (validator is set below)
+    description = bb.Attribute("description")
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(ReplayProjectTeamAddType, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+ReplayProjectTeamAddType_validator = bv.Struct(ReplayProjectTeamAddType)
+
+class ReplayProjectTeamDeleteDetails(bb.Struct):
+    """
+    Removed member from Replay Project.
+    """
+
+    __slots__ = [
+    ]
+
+    _has_required_fields = False
+
+    def __init__(self):
+        pass
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(ReplayProjectTeamDeleteDetails, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+ReplayProjectTeamDeleteDetails_validator = bv.Struct(ReplayProjectTeamDeleteDetails)
+
+class ReplayProjectTeamDeleteType(bb.Struct):
+
+    __slots__ = [
+        '_description_value',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 description=None):
+        self._description_value = bb.NOT_SET
+        if description is not None:
+            self.description = description
+
+    # Instance attribute type: str (validator is set below)
+    description = bb.Attribute("description")
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(ReplayProjectTeamDeleteType, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+ReplayProjectTeamDeleteType_validator = bv.Struct(ReplayProjectTeamDeleteType)
 
 class ResellerLogInfo(bb.Struct):
     """
@@ -68874,6 +70859,286 @@ class TeamDetails(bb.Struct):
 
 TeamDetails_validator = bv.Struct(TeamDetails)
 
+class TeamEncryptionKeyCancelKeyDeletionDetails(bb.Struct):
+    """
+    Canceled team encryption key deletion.
+    """
+
+    __slots__ = [
+    ]
+
+    _has_required_fields = False
+
+    def __init__(self):
+        pass
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(TeamEncryptionKeyCancelKeyDeletionDetails, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+TeamEncryptionKeyCancelKeyDeletionDetails_validator = bv.Struct(TeamEncryptionKeyCancelKeyDeletionDetails)
+
+class TeamEncryptionKeyCancelKeyDeletionType(bb.Struct):
+
+    __slots__ = [
+        '_description_value',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 description=None):
+        self._description_value = bb.NOT_SET
+        if description is not None:
+            self.description = description
+
+    # Instance attribute type: str (validator is set below)
+    description = bb.Attribute("description")
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(TeamEncryptionKeyCancelKeyDeletionType, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+TeamEncryptionKeyCancelKeyDeletionType_validator = bv.Struct(TeamEncryptionKeyCancelKeyDeletionType)
+
+class TeamEncryptionKeyCreateKeyDetails(bb.Struct):
+    """
+    Created team encryption key.
+    """
+
+    __slots__ = [
+    ]
+
+    _has_required_fields = False
+
+    def __init__(self):
+        pass
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(TeamEncryptionKeyCreateKeyDetails, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+TeamEncryptionKeyCreateKeyDetails_validator = bv.Struct(TeamEncryptionKeyCreateKeyDetails)
+
+class TeamEncryptionKeyCreateKeyType(bb.Struct):
+
+    __slots__ = [
+        '_description_value',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 description=None):
+        self._description_value = bb.NOT_SET
+        if description is not None:
+            self.description = description
+
+    # Instance attribute type: str (validator is set below)
+    description = bb.Attribute("description")
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(TeamEncryptionKeyCreateKeyType, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+TeamEncryptionKeyCreateKeyType_validator = bv.Struct(TeamEncryptionKeyCreateKeyType)
+
+class TeamEncryptionKeyDeleteKeyDetails(bb.Struct):
+    """
+    Deleted team encryption key.
+    """
+
+    __slots__ = [
+    ]
+
+    _has_required_fields = False
+
+    def __init__(self):
+        pass
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(TeamEncryptionKeyDeleteKeyDetails, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+TeamEncryptionKeyDeleteKeyDetails_validator = bv.Struct(TeamEncryptionKeyDeleteKeyDetails)
+
+class TeamEncryptionKeyDeleteKeyType(bb.Struct):
+
+    __slots__ = [
+        '_description_value',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 description=None):
+        self._description_value = bb.NOT_SET
+        if description is not None:
+            self.description = description
+
+    # Instance attribute type: str (validator is set below)
+    description = bb.Attribute("description")
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(TeamEncryptionKeyDeleteKeyType, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+TeamEncryptionKeyDeleteKeyType_validator = bv.Struct(TeamEncryptionKeyDeleteKeyType)
+
+class TeamEncryptionKeyDisableKeyDetails(bb.Struct):
+    """
+    Disabled team encryption key.
+    """
+
+    __slots__ = [
+    ]
+
+    _has_required_fields = False
+
+    def __init__(self):
+        pass
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(TeamEncryptionKeyDisableKeyDetails, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+TeamEncryptionKeyDisableKeyDetails_validator = bv.Struct(TeamEncryptionKeyDisableKeyDetails)
+
+class TeamEncryptionKeyDisableKeyType(bb.Struct):
+
+    __slots__ = [
+        '_description_value',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 description=None):
+        self._description_value = bb.NOT_SET
+        if description is not None:
+            self.description = description
+
+    # Instance attribute type: str (validator is set below)
+    description = bb.Attribute("description")
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(TeamEncryptionKeyDisableKeyType, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+TeamEncryptionKeyDisableKeyType_validator = bv.Struct(TeamEncryptionKeyDisableKeyType)
+
+class TeamEncryptionKeyEnableKeyDetails(bb.Struct):
+    """
+    Enabled team encryption key.
+    """
+
+    __slots__ = [
+    ]
+
+    _has_required_fields = False
+
+    def __init__(self):
+        pass
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(TeamEncryptionKeyEnableKeyDetails, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+TeamEncryptionKeyEnableKeyDetails_validator = bv.Struct(TeamEncryptionKeyEnableKeyDetails)
+
+class TeamEncryptionKeyEnableKeyType(bb.Struct):
+
+    __slots__ = [
+        '_description_value',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 description=None):
+        self._description_value = bb.NOT_SET
+        if description is not None:
+            self.description = description
+
+    # Instance attribute type: str (validator is set below)
+    description = bb.Attribute("description")
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(TeamEncryptionKeyEnableKeyType, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+TeamEncryptionKeyEnableKeyType_validator = bv.Struct(TeamEncryptionKeyEnableKeyType)
+
+class TeamEncryptionKeyRotateKeyDetails(bb.Struct):
+    """
+    Rotated team encryption key.
+    """
+
+    __slots__ = [
+    ]
+
+    _has_required_fields = False
+
+    def __init__(self):
+        pass
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(TeamEncryptionKeyRotateKeyDetails, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+TeamEncryptionKeyRotateKeyDetails_validator = bv.Struct(TeamEncryptionKeyRotateKeyDetails)
+
+class TeamEncryptionKeyRotateKeyType(bb.Struct):
+
+    __slots__ = [
+        '_description_value',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 description=None):
+        self._description_value = bb.NOT_SET
+        if description is not None:
+            self.description = description
+
+    # Instance attribute type: str (validator is set below)
+    description = bb.Attribute("description")
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(TeamEncryptionKeyRotateKeyType, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+TeamEncryptionKeyRotateKeyType_validator = bv.Struct(TeamEncryptionKeyRotateKeyType)
+
+class TeamEncryptionKeyScheduleKeyDeletionDetails(bb.Struct):
+    """
+    Scheduled encryption key deletion.
+    """
+
+    __slots__ = [
+    ]
+
+    _has_required_fields = False
+
+    def __init__(self):
+        pass
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(TeamEncryptionKeyScheduleKeyDeletionDetails, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+TeamEncryptionKeyScheduleKeyDeletionDetails_validator = bv.Struct(TeamEncryptionKeyScheduleKeyDeletionDetails)
+
+class TeamEncryptionKeyScheduleKeyDeletionType(bb.Struct):
+
+    __slots__ = [
+        '_description_value',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 description=None):
+        self._description_value = bb.NOT_SET
+        if description is not None:
+            self.description = description
+
+    # Instance attribute type: str (validator is set below)
+    description = bb.Attribute("description")
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(TeamEncryptionKeyScheduleKeyDeletionType, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+TeamEncryptionKeyScheduleKeyDeletionType_validator = bv.Struct(TeamEncryptionKeyScheduleKeyDeletionType)
+
 class TeamEvent(bb.Struct):
     """
     An audit log event.
@@ -73528,17 +75793,20 @@ AccountCaptureNotificationType.other = AccountCaptureNotificationType('other')
 AccountCapturePolicy._all_users_validator = bv.Void()
 AccountCapturePolicy._disabled_validator = bv.Void()
 AccountCapturePolicy._invited_users_validator = bv.Void()
+AccountCapturePolicy._prevent_personal_creation_validator = bv.Void()
 AccountCapturePolicy._other_validator = bv.Void()
 AccountCapturePolicy._tagmap = {
     'all_users': AccountCapturePolicy._all_users_validator,
     'disabled': AccountCapturePolicy._disabled_validator,
     'invited_users': AccountCapturePolicy._invited_users_validator,
+    'prevent_personal_creation': AccountCapturePolicy._prevent_personal_creation_validator,
     'other': AccountCapturePolicy._other_validator,
 }
 
 AccountCapturePolicy.all_users = AccountCapturePolicy('all_users')
 AccountCapturePolicy.disabled = AccountCapturePolicy('disabled')
 AccountCapturePolicy.invited_users = AccountCapturePolicy('invited_users')
+AccountCapturePolicy.prevent_personal_creation = AccountCapturePolicy('prevent_personal_creation')
 AccountCapturePolicy.other = AccountCapturePolicy('other')
 
 AccountCaptureRelinquishAccountDetails.domain_name.validator = bv.String()
@@ -74050,6 +76318,20 @@ AssetLogInfo._tagmap = {
 }
 
 AssetLogInfo.other = AssetLogInfo('other')
+
+BackupAdminInvitationSentDetails._all_field_names_ = set([])
+BackupAdminInvitationSentDetails._all_fields_ = []
+
+BackupAdminInvitationSentType.description.validator = bv.String()
+BackupAdminInvitationSentType._all_field_names_ = set(['description'])
+BackupAdminInvitationSentType._all_fields_ = [('description', BackupAdminInvitationSentType.description.validator)]
+
+BackupInvitationOpenedDetails._all_field_names_ = set([])
+BackupInvitationOpenedDetails._all_fields_ = []
+
+BackupInvitationOpenedType.description.validator = bv.String()
+BackupInvitationOpenedType._all_field_names_ = set(['description'])
+BackupInvitationOpenedType._all_fields_ = [('description', BackupInvitationOpenedType.description.validator)]
 
 BackupStatus._disabled_validator = bv.Void()
 BackupStatus._enabled_validator = bv.Void()
@@ -75299,6 +77581,7 @@ EventCategory._comments_validator = bv.Void()
 EventCategory._data_governance_validator = bv.Void()
 EventCategory._devices_validator = bv.Void()
 EventCategory._domains_validator = bv.Void()
+EventCategory._encryption_validator = bv.Void()
 EventCategory._file_operations_validator = bv.Void()
 EventCategory._file_requests_validator = bv.Void()
 EventCategory._groups_validator = bv.Void()
@@ -75323,6 +77606,7 @@ EventCategory._tagmap = {
     'data_governance': EventCategory._data_governance_validator,
     'devices': EventCategory._devices_validator,
     'domains': EventCategory._domains_validator,
+    'encryption': EventCategory._encryption_validator,
     'file_operations': EventCategory._file_operations_validator,
     'file_requests': EventCategory._file_requests_validator,
     'groups': EventCategory._groups_validator,
@@ -75348,6 +77632,7 @@ EventCategory.comments = EventCategory('comments')
 EventCategory.data_governance = EventCategory('data_governance')
 EventCategory.devices = EventCategory('devices')
 EventCategory.domains = EventCategory('domains')
+EventCategory.encryption = EventCategory('encryption')
 EventCategory.file_operations = EventCategory('file_operations')
 EventCategory.file_requests = EventCategory('file_requests')
 EventCategory.groups = EventCategory('groups')
@@ -75369,6 +77654,8 @@ EventCategory.other = EventCategory('other')
 EventDetails._admin_alerting_alert_state_changed_details_validator = AdminAlertingAlertStateChangedDetails_validator
 EventDetails._admin_alerting_changed_alert_config_details_validator = AdminAlertingChangedAlertConfigDetails_validator
 EventDetails._admin_alerting_triggered_alert_details_validator = AdminAlertingTriggeredAlertDetails_validator
+EventDetails._ransomware_restore_process_completed_details_validator = RansomwareRestoreProcessCompletedDetails_validator
+EventDetails._ransomware_restore_process_started_details_validator = RansomwareRestoreProcessStartedDetails_validator
 EventDetails._app_blocked_by_permissions_details_validator = AppBlockedByPermissionsDetails_validator
 EventDetails._app_link_team_details_validator = AppLinkTeamDetails_validator
 EventDetails._app_link_user_details_validator = AppLinkUserDetails_validator
@@ -75438,9 +77725,17 @@ EventDetails._domain_verification_add_domain_fail_details_validator = DomainVeri
 EventDetails._domain_verification_add_domain_success_details_validator = DomainVerificationAddDomainSuccessDetails_validator
 EventDetails._domain_verification_remove_domain_details_validator = DomainVerificationRemoveDomainDetails_validator
 EventDetails._enabled_domain_invites_details_validator = EnabledDomainInvitesDetails_validator
+EventDetails._team_encryption_key_cancel_key_deletion_details_validator = TeamEncryptionKeyCancelKeyDeletionDetails_validator
+EventDetails._team_encryption_key_create_key_details_validator = TeamEncryptionKeyCreateKeyDetails_validator
+EventDetails._team_encryption_key_delete_key_details_validator = TeamEncryptionKeyDeleteKeyDetails_validator
+EventDetails._team_encryption_key_disable_key_details_validator = TeamEncryptionKeyDisableKeyDetails_validator
+EventDetails._team_encryption_key_enable_key_details_validator = TeamEncryptionKeyEnableKeyDetails_validator
+EventDetails._team_encryption_key_rotate_key_details_validator = TeamEncryptionKeyRotateKeyDetails_validator
+EventDetails._team_encryption_key_schedule_key_deletion_details_validator = TeamEncryptionKeyScheduleKeyDeletionDetails_validator
 EventDetails._apply_naming_convention_details_validator = ApplyNamingConventionDetails_validator
 EventDetails._create_folder_details_validator = CreateFolderDetails_validator
 EventDetails._file_add_details_validator = FileAddDetails_validator
+EventDetails._file_add_from_automation_details_validator = FileAddFromAutomationDetails_validator
 EventDetails._file_copy_details_validator = FileCopyDetails_validator
 EventDetails._file_delete_details_validator = FileDeleteDetails_validator
 EventDetails._file_download_details_validator = FileDownloadDetails_validator
@@ -75462,6 +77757,7 @@ EventDetails._object_label_added_details_validator = ObjectLabelAddedDetails_val
 EventDetails._object_label_removed_details_validator = ObjectLabelRemovedDetails_validator
 EventDetails._object_label_updated_value_details_validator = ObjectLabelUpdatedValueDetails_validator
 EventDetails._organize_folder_with_tidy_details_validator = OrganizeFolderWithTidyDetails_validator
+EventDetails._replay_file_delete_details_validator = ReplayFileDeleteDetails_validator
 EventDetails._rewind_folder_details_validator = RewindFolderDetails_validator
 EventDetails._undo_naming_convention_details_validator = UndoNamingConventionDetails_validator
 EventDetails._undo_organize_folder_with_tidy_details_validator = UndoOrganizeFolderWithTidyDetails_validator
@@ -75498,6 +77794,8 @@ EventDetails._reseller_support_session_start_details_validator = ResellerSupport
 EventDetails._sign_in_as_session_end_details_validator = SignInAsSessionEndDetails_validator
 EventDetails._sign_in_as_session_start_details_validator = SignInAsSessionStartDetails_validator
 EventDetails._sso_error_details_validator = SsoErrorDetails_validator
+EventDetails._backup_admin_invitation_sent_details_validator = BackupAdminInvitationSentDetails_validator
+EventDetails._backup_invitation_opened_details_validator = BackupInvitationOpenedDetails_validator
 EventDetails._create_team_invite_link_details_validator = CreateTeamInviteLinkDetails_validator
 EventDetails._delete_team_invite_link_details_validator = DeleteTeamInviteLinkDetails_validator
 EventDetails._member_add_external_id_details_validator = MemberAddExternalIdDetails_validator
@@ -75593,6 +77891,8 @@ EventDetails._no_password_link_view_report_failed_details_validator = NoPassword
 EventDetails._outdated_link_view_create_report_details_validator = OutdatedLinkViewCreateReportDetails_validator
 EventDetails._outdated_link_view_report_failed_details_validator = OutdatedLinkViewReportFailedDetails_validator
 EventDetails._paper_admin_export_start_details_validator = PaperAdminExportStartDetails_validator
+EventDetails._ransomware_alert_create_report_details_validator = RansomwareAlertCreateReportDetails_validator
+EventDetails._ransomware_alert_create_report_failed_details_validator = RansomwareAlertCreateReportFailedDetails_validator
 EventDetails._smart_sync_create_admin_privilege_report_details_validator = SmartSyncCreateAdminPrivilegeReportDetails_validator
 EventDetails._team_activity_create_report_details_validator = TeamActivityCreateReportDetails_validator
 EventDetails._team_activity_create_report_fail_details_validator = TeamActivityCreateReportFailDetails_validator
@@ -75608,6 +77908,10 @@ EventDetails._note_acl_team_link_details_validator = NoteAclTeamLinkDetails_vali
 EventDetails._note_shared_details_validator = NoteSharedDetails_validator
 EventDetails._note_share_receive_details_validator = NoteShareReceiveDetails_validator
 EventDetails._open_note_shared_details_validator = OpenNoteSharedDetails_validator
+EventDetails._replay_file_shared_link_created_details_validator = ReplayFileSharedLinkCreatedDetails_validator
+EventDetails._replay_file_shared_link_modified_details_validator = ReplayFileSharedLinkModifiedDetails_validator
+EventDetails._replay_project_team_add_details_validator = ReplayProjectTeamAddDetails_validator
+EventDetails._replay_project_team_delete_details_validator = ReplayProjectTeamDeleteDetails_validator
 EventDetails._sf_add_group_details_validator = SfAddGroupDetails_validator
 EventDetails._sf_allow_non_members_to_view_shared_links_details_validator = SfAllowNonMembersToViewSharedLinksDetails_validator
 EventDetails._sf_external_invite_warn_details_validator = SfExternalInviteWarnDetails_validator
@@ -75856,6 +78160,8 @@ EventDetails._tagmap = {
     'admin_alerting_alert_state_changed_details': EventDetails._admin_alerting_alert_state_changed_details_validator,
     'admin_alerting_changed_alert_config_details': EventDetails._admin_alerting_changed_alert_config_details_validator,
     'admin_alerting_triggered_alert_details': EventDetails._admin_alerting_triggered_alert_details_validator,
+    'ransomware_restore_process_completed_details': EventDetails._ransomware_restore_process_completed_details_validator,
+    'ransomware_restore_process_started_details': EventDetails._ransomware_restore_process_started_details_validator,
     'app_blocked_by_permissions_details': EventDetails._app_blocked_by_permissions_details_validator,
     'app_link_team_details': EventDetails._app_link_team_details_validator,
     'app_link_user_details': EventDetails._app_link_user_details_validator,
@@ -75925,9 +78231,17 @@ EventDetails._tagmap = {
     'domain_verification_add_domain_success_details': EventDetails._domain_verification_add_domain_success_details_validator,
     'domain_verification_remove_domain_details': EventDetails._domain_verification_remove_domain_details_validator,
     'enabled_domain_invites_details': EventDetails._enabled_domain_invites_details_validator,
+    'team_encryption_key_cancel_key_deletion_details': EventDetails._team_encryption_key_cancel_key_deletion_details_validator,
+    'team_encryption_key_create_key_details': EventDetails._team_encryption_key_create_key_details_validator,
+    'team_encryption_key_delete_key_details': EventDetails._team_encryption_key_delete_key_details_validator,
+    'team_encryption_key_disable_key_details': EventDetails._team_encryption_key_disable_key_details_validator,
+    'team_encryption_key_enable_key_details': EventDetails._team_encryption_key_enable_key_details_validator,
+    'team_encryption_key_rotate_key_details': EventDetails._team_encryption_key_rotate_key_details_validator,
+    'team_encryption_key_schedule_key_deletion_details': EventDetails._team_encryption_key_schedule_key_deletion_details_validator,
     'apply_naming_convention_details': EventDetails._apply_naming_convention_details_validator,
     'create_folder_details': EventDetails._create_folder_details_validator,
     'file_add_details': EventDetails._file_add_details_validator,
+    'file_add_from_automation_details': EventDetails._file_add_from_automation_details_validator,
     'file_copy_details': EventDetails._file_copy_details_validator,
     'file_delete_details': EventDetails._file_delete_details_validator,
     'file_download_details': EventDetails._file_download_details_validator,
@@ -75949,6 +78263,7 @@ EventDetails._tagmap = {
     'object_label_removed_details': EventDetails._object_label_removed_details_validator,
     'object_label_updated_value_details': EventDetails._object_label_updated_value_details_validator,
     'organize_folder_with_tidy_details': EventDetails._organize_folder_with_tidy_details_validator,
+    'replay_file_delete_details': EventDetails._replay_file_delete_details_validator,
     'rewind_folder_details': EventDetails._rewind_folder_details_validator,
     'undo_naming_convention_details': EventDetails._undo_naming_convention_details_validator,
     'undo_organize_folder_with_tidy_details': EventDetails._undo_organize_folder_with_tidy_details_validator,
@@ -75985,6 +78300,8 @@ EventDetails._tagmap = {
     'sign_in_as_session_end_details': EventDetails._sign_in_as_session_end_details_validator,
     'sign_in_as_session_start_details': EventDetails._sign_in_as_session_start_details_validator,
     'sso_error_details': EventDetails._sso_error_details_validator,
+    'backup_admin_invitation_sent_details': EventDetails._backup_admin_invitation_sent_details_validator,
+    'backup_invitation_opened_details': EventDetails._backup_invitation_opened_details_validator,
     'create_team_invite_link_details': EventDetails._create_team_invite_link_details_validator,
     'delete_team_invite_link_details': EventDetails._delete_team_invite_link_details_validator,
     'member_add_external_id_details': EventDetails._member_add_external_id_details_validator,
@@ -76080,6 +78397,8 @@ EventDetails._tagmap = {
     'outdated_link_view_create_report_details': EventDetails._outdated_link_view_create_report_details_validator,
     'outdated_link_view_report_failed_details': EventDetails._outdated_link_view_report_failed_details_validator,
     'paper_admin_export_start_details': EventDetails._paper_admin_export_start_details_validator,
+    'ransomware_alert_create_report_details': EventDetails._ransomware_alert_create_report_details_validator,
+    'ransomware_alert_create_report_failed_details': EventDetails._ransomware_alert_create_report_failed_details_validator,
     'smart_sync_create_admin_privilege_report_details': EventDetails._smart_sync_create_admin_privilege_report_details_validator,
     'team_activity_create_report_details': EventDetails._team_activity_create_report_details_validator,
     'team_activity_create_report_fail_details': EventDetails._team_activity_create_report_fail_details_validator,
@@ -76095,6 +78414,10 @@ EventDetails._tagmap = {
     'note_shared_details': EventDetails._note_shared_details_validator,
     'note_share_receive_details': EventDetails._note_share_receive_details_validator,
     'open_note_shared_details': EventDetails._open_note_shared_details_validator,
+    'replay_file_shared_link_created_details': EventDetails._replay_file_shared_link_created_details_validator,
+    'replay_file_shared_link_modified_details': EventDetails._replay_file_shared_link_modified_details_validator,
+    'replay_project_team_add_details': EventDetails._replay_project_team_add_details_validator,
+    'replay_project_team_delete_details': EventDetails._replay_project_team_delete_details_validator,
     'sf_add_group_details': EventDetails._sf_add_group_details_validator,
     'sf_allow_non_members_to_view_shared_links_details': EventDetails._sf_allow_non_members_to_view_shared_links_details_validator,
     'sf_external_invite_warn_details': EventDetails._sf_external_invite_warn_details_validator,
@@ -76346,6 +78669,8 @@ EventDetails.other = EventDetails('other')
 EventType._admin_alerting_alert_state_changed_validator = AdminAlertingAlertStateChangedType_validator
 EventType._admin_alerting_changed_alert_config_validator = AdminAlertingChangedAlertConfigType_validator
 EventType._admin_alerting_triggered_alert_validator = AdminAlertingTriggeredAlertType_validator
+EventType._ransomware_restore_process_completed_validator = RansomwareRestoreProcessCompletedType_validator
+EventType._ransomware_restore_process_started_validator = RansomwareRestoreProcessStartedType_validator
 EventType._app_blocked_by_permissions_validator = AppBlockedByPermissionsType_validator
 EventType._app_link_team_validator = AppLinkTeamType_validator
 EventType._app_link_user_validator = AppLinkUserType_validator
@@ -76415,9 +78740,17 @@ EventType._domain_verification_add_domain_fail_validator = DomainVerificationAdd
 EventType._domain_verification_add_domain_success_validator = DomainVerificationAddDomainSuccessType_validator
 EventType._domain_verification_remove_domain_validator = DomainVerificationRemoveDomainType_validator
 EventType._enabled_domain_invites_validator = EnabledDomainInvitesType_validator
+EventType._team_encryption_key_cancel_key_deletion_validator = TeamEncryptionKeyCancelKeyDeletionType_validator
+EventType._team_encryption_key_create_key_validator = TeamEncryptionKeyCreateKeyType_validator
+EventType._team_encryption_key_delete_key_validator = TeamEncryptionKeyDeleteKeyType_validator
+EventType._team_encryption_key_disable_key_validator = TeamEncryptionKeyDisableKeyType_validator
+EventType._team_encryption_key_enable_key_validator = TeamEncryptionKeyEnableKeyType_validator
+EventType._team_encryption_key_rotate_key_validator = TeamEncryptionKeyRotateKeyType_validator
+EventType._team_encryption_key_schedule_key_deletion_validator = TeamEncryptionKeyScheduleKeyDeletionType_validator
 EventType._apply_naming_convention_validator = ApplyNamingConventionType_validator
 EventType._create_folder_validator = CreateFolderType_validator
 EventType._file_add_validator = FileAddType_validator
+EventType._file_add_from_automation_validator = FileAddFromAutomationType_validator
 EventType._file_copy_validator = FileCopyType_validator
 EventType._file_delete_validator = FileDeleteType_validator
 EventType._file_download_validator = FileDownloadType_validator
@@ -76439,6 +78772,7 @@ EventType._object_label_added_validator = ObjectLabelAddedType_validator
 EventType._object_label_removed_validator = ObjectLabelRemovedType_validator
 EventType._object_label_updated_value_validator = ObjectLabelUpdatedValueType_validator
 EventType._organize_folder_with_tidy_validator = OrganizeFolderWithTidyType_validator
+EventType._replay_file_delete_validator = ReplayFileDeleteType_validator
 EventType._rewind_folder_validator = RewindFolderType_validator
 EventType._undo_naming_convention_validator = UndoNamingConventionType_validator
 EventType._undo_organize_folder_with_tidy_validator = UndoOrganizeFolderWithTidyType_validator
@@ -76475,6 +78809,8 @@ EventType._reseller_support_session_start_validator = ResellerSupportSessionStar
 EventType._sign_in_as_session_end_validator = SignInAsSessionEndType_validator
 EventType._sign_in_as_session_start_validator = SignInAsSessionStartType_validator
 EventType._sso_error_validator = SsoErrorType_validator
+EventType._backup_admin_invitation_sent_validator = BackupAdminInvitationSentType_validator
+EventType._backup_invitation_opened_validator = BackupInvitationOpenedType_validator
 EventType._create_team_invite_link_validator = CreateTeamInviteLinkType_validator
 EventType._delete_team_invite_link_validator = DeleteTeamInviteLinkType_validator
 EventType._member_add_external_id_validator = MemberAddExternalIdType_validator
@@ -76570,6 +78906,8 @@ EventType._no_password_link_view_report_failed_validator = NoPasswordLinkViewRep
 EventType._outdated_link_view_create_report_validator = OutdatedLinkViewCreateReportType_validator
 EventType._outdated_link_view_report_failed_validator = OutdatedLinkViewReportFailedType_validator
 EventType._paper_admin_export_start_validator = PaperAdminExportStartType_validator
+EventType._ransomware_alert_create_report_validator = RansomwareAlertCreateReportType_validator
+EventType._ransomware_alert_create_report_failed_validator = RansomwareAlertCreateReportFailedType_validator
 EventType._smart_sync_create_admin_privilege_report_validator = SmartSyncCreateAdminPrivilegeReportType_validator
 EventType._team_activity_create_report_validator = TeamActivityCreateReportType_validator
 EventType._team_activity_create_report_fail_validator = TeamActivityCreateReportFailType_validator
@@ -76585,6 +78923,10 @@ EventType._note_acl_team_link_validator = NoteAclTeamLinkType_validator
 EventType._note_shared_validator = NoteSharedType_validator
 EventType._note_share_receive_validator = NoteShareReceiveType_validator
 EventType._open_note_shared_validator = OpenNoteSharedType_validator
+EventType._replay_file_shared_link_created_validator = ReplayFileSharedLinkCreatedType_validator
+EventType._replay_file_shared_link_modified_validator = ReplayFileSharedLinkModifiedType_validator
+EventType._replay_project_team_add_validator = ReplayProjectTeamAddType_validator
+EventType._replay_project_team_delete_validator = ReplayProjectTeamDeleteType_validator
 EventType._sf_add_group_validator = SfAddGroupType_validator
 EventType._sf_allow_non_members_to_view_shared_links_validator = SfAllowNonMembersToViewSharedLinksType_validator
 EventType._sf_external_invite_warn_validator = SfExternalInviteWarnType_validator
@@ -76832,6 +79174,8 @@ EventType._tagmap = {
     'admin_alerting_alert_state_changed': EventType._admin_alerting_alert_state_changed_validator,
     'admin_alerting_changed_alert_config': EventType._admin_alerting_changed_alert_config_validator,
     'admin_alerting_triggered_alert': EventType._admin_alerting_triggered_alert_validator,
+    'ransomware_restore_process_completed': EventType._ransomware_restore_process_completed_validator,
+    'ransomware_restore_process_started': EventType._ransomware_restore_process_started_validator,
     'app_blocked_by_permissions': EventType._app_blocked_by_permissions_validator,
     'app_link_team': EventType._app_link_team_validator,
     'app_link_user': EventType._app_link_user_validator,
@@ -76901,9 +79245,17 @@ EventType._tagmap = {
     'domain_verification_add_domain_success': EventType._domain_verification_add_domain_success_validator,
     'domain_verification_remove_domain': EventType._domain_verification_remove_domain_validator,
     'enabled_domain_invites': EventType._enabled_domain_invites_validator,
+    'team_encryption_key_cancel_key_deletion': EventType._team_encryption_key_cancel_key_deletion_validator,
+    'team_encryption_key_create_key': EventType._team_encryption_key_create_key_validator,
+    'team_encryption_key_delete_key': EventType._team_encryption_key_delete_key_validator,
+    'team_encryption_key_disable_key': EventType._team_encryption_key_disable_key_validator,
+    'team_encryption_key_enable_key': EventType._team_encryption_key_enable_key_validator,
+    'team_encryption_key_rotate_key': EventType._team_encryption_key_rotate_key_validator,
+    'team_encryption_key_schedule_key_deletion': EventType._team_encryption_key_schedule_key_deletion_validator,
     'apply_naming_convention': EventType._apply_naming_convention_validator,
     'create_folder': EventType._create_folder_validator,
     'file_add': EventType._file_add_validator,
+    'file_add_from_automation': EventType._file_add_from_automation_validator,
     'file_copy': EventType._file_copy_validator,
     'file_delete': EventType._file_delete_validator,
     'file_download': EventType._file_download_validator,
@@ -76925,6 +79277,7 @@ EventType._tagmap = {
     'object_label_removed': EventType._object_label_removed_validator,
     'object_label_updated_value': EventType._object_label_updated_value_validator,
     'organize_folder_with_tidy': EventType._organize_folder_with_tidy_validator,
+    'replay_file_delete': EventType._replay_file_delete_validator,
     'rewind_folder': EventType._rewind_folder_validator,
     'undo_naming_convention': EventType._undo_naming_convention_validator,
     'undo_organize_folder_with_tidy': EventType._undo_organize_folder_with_tidy_validator,
@@ -76961,6 +79314,8 @@ EventType._tagmap = {
     'sign_in_as_session_end': EventType._sign_in_as_session_end_validator,
     'sign_in_as_session_start': EventType._sign_in_as_session_start_validator,
     'sso_error': EventType._sso_error_validator,
+    'backup_admin_invitation_sent': EventType._backup_admin_invitation_sent_validator,
+    'backup_invitation_opened': EventType._backup_invitation_opened_validator,
     'create_team_invite_link': EventType._create_team_invite_link_validator,
     'delete_team_invite_link': EventType._delete_team_invite_link_validator,
     'member_add_external_id': EventType._member_add_external_id_validator,
@@ -77056,6 +79411,8 @@ EventType._tagmap = {
     'outdated_link_view_create_report': EventType._outdated_link_view_create_report_validator,
     'outdated_link_view_report_failed': EventType._outdated_link_view_report_failed_validator,
     'paper_admin_export_start': EventType._paper_admin_export_start_validator,
+    'ransomware_alert_create_report': EventType._ransomware_alert_create_report_validator,
+    'ransomware_alert_create_report_failed': EventType._ransomware_alert_create_report_failed_validator,
     'smart_sync_create_admin_privilege_report': EventType._smart_sync_create_admin_privilege_report_validator,
     'team_activity_create_report': EventType._team_activity_create_report_validator,
     'team_activity_create_report_fail': EventType._team_activity_create_report_fail_validator,
@@ -77071,6 +79428,10 @@ EventType._tagmap = {
     'note_shared': EventType._note_shared_validator,
     'note_share_receive': EventType._note_share_receive_validator,
     'open_note_shared': EventType._open_note_shared_validator,
+    'replay_file_shared_link_created': EventType._replay_file_shared_link_created_validator,
+    'replay_file_shared_link_modified': EventType._replay_file_shared_link_modified_validator,
+    'replay_project_team_add': EventType._replay_project_team_add_validator,
+    'replay_project_team_delete': EventType._replay_project_team_delete_validator,
     'sf_add_group': EventType._sf_add_group_validator,
     'sf_allow_non_members_to_view_shared_links': EventType._sf_allow_non_members_to_view_shared_links_validator,
     'sf_external_invite_warn': EventType._sf_external_invite_warn_validator,
@@ -77321,6 +79682,8 @@ EventType.other = EventType('other')
 EventTypeArg._admin_alerting_alert_state_changed_validator = bv.Void()
 EventTypeArg._admin_alerting_changed_alert_config_validator = bv.Void()
 EventTypeArg._admin_alerting_triggered_alert_validator = bv.Void()
+EventTypeArg._ransomware_restore_process_completed_validator = bv.Void()
+EventTypeArg._ransomware_restore_process_started_validator = bv.Void()
 EventTypeArg._app_blocked_by_permissions_validator = bv.Void()
 EventTypeArg._app_link_team_validator = bv.Void()
 EventTypeArg._app_link_user_validator = bv.Void()
@@ -77390,9 +79753,17 @@ EventTypeArg._domain_verification_add_domain_fail_validator = bv.Void()
 EventTypeArg._domain_verification_add_domain_success_validator = bv.Void()
 EventTypeArg._domain_verification_remove_domain_validator = bv.Void()
 EventTypeArg._enabled_domain_invites_validator = bv.Void()
+EventTypeArg._team_encryption_key_cancel_key_deletion_validator = bv.Void()
+EventTypeArg._team_encryption_key_create_key_validator = bv.Void()
+EventTypeArg._team_encryption_key_delete_key_validator = bv.Void()
+EventTypeArg._team_encryption_key_disable_key_validator = bv.Void()
+EventTypeArg._team_encryption_key_enable_key_validator = bv.Void()
+EventTypeArg._team_encryption_key_rotate_key_validator = bv.Void()
+EventTypeArg._team_encryption_key_schedule_key_deletion_validator = bv.Void()
 EventTypeArg._apply_naming_convention_validator = bv.Void()
 EventTypeArg._create_folder_validator = bv.Void()
 EventTypeArg._file_add_validator = bv.Void()
+EventTypeArg._file_add_from_automation_validator = bv.Void()
 EventTypeArg._file_copy_validator = bv.Void()
 EventTypeArg._file_delete_validator = bv.Void()
 EventTypeArg._file_download_validator = bv.Void()
@@ -77414,6 +79785,7 @@ EventTypeArg._object_label_added_validator = bv.Void()
 EventTypeArg._object_label_removed_validator = bv.Void()
 EventTypeArg._object_label_updated_value_validator = bv.Void()
 EventTypeArg._organize_folder_with_tidy_validator = bv.Void()
+EventTypeArg._replay_file_delete_validator = bv.Void()
 EventTypeArg._rewind_folder_validator = bv.Void()
 EventTypeArg._undo_naming_convention_validator = bv.Void()
 EventTypeArg._undo_organize_folder_with_tidy_validator = bv.Void()
@@ -77450,6 +79822,8 @@ EventTypeArg._reseller_support_session_start_validator = bv.Void()
 EventTypeArg._sign_in_as_session_end_validator = bv.Void()
 EventTypeArg._sign_in_as_session_start_validator = bv.Void()
 EventTypeArg._sso_error_validator = bv.Void()
+EventTypeArg._backup_admin_invitation_sent_validator = bv.Void()
+EventTypeArg._backup_invitation_opened_validator = bv.Void()
 EventTypeArg._create_team_invite_link_validator = bv.Void()
 EventTypeArg._delete_team_invite_link_validator = bv.Void()
 EventTypeArg._member_add_external_id_validator = bv.Void()
@@ -77545,6 +79919,8 @@ EventTypeArg._no_password_link_view_report_failed_validator = bv.Void()
 EventTypeArg._outdated_link_view_create_report_validator = bv.Void()
 EventTypeArg._outdated_link_view_report_failed_validator = bv.Void()
 EventTypeArg._paper_admin_export_start_validator = bv.Void()
+EventTypeArg._ransomware_alert_create_report_validator = bv.Void()
+EventTypeArg._ransomware_alert_create_report_failed_validator = bv.Void()
 EventTypeArg._smart_sync_create_admin_privilege_report_validator = bv.Void()
 EventTypeArg._team_activity_create_report_validator = bv.Void()
 EventTypeArg._team_activity_create_report_fail_validator = bv.Void()
@@ -77560,6 +79936,10 @@ EventTypeArg._note_acl_team_link_validator = bv.Void()
 EventTypeArg._note_shared_validator = bv.Void()
 EventTypeArg._note_share_receive_validator = bv.Void()
 EventTypeArg._open_note_shared_validator = bv.Void()
+EventTypeArg._replay_file_shared_link_created_validator = bv.Void()
+EventTypeArg._replay_file_shared_link_modified_validator = bv.Void()
+EventTypeArg._replay_project_team_add_validator = bv.Void()
+EventTypeArg._replay_project_team_delete_validator = bv.Void()
 EventTypeArg._sf_add_group_validator = bv.Void()
 EventTypeArg._sf_allow_non_members_to_view_shared_links_validator = bv.Void()
 EventTypeArg._sf_external_invite_warn_validator = bv.Void()
@@ -77807,6 +80187,8 @@ EventTypeArg._tagmap = {
     'admin_alerting_alert_state_changed': EventTypeArg._admin_alerting_alert_state_changed_validator,
     'admin_alerting_changed_alert_config': EventTypeArg._admin_alerting_changed_alert_config_validator,
     'admin_alerting_triggered_alert': EventTypeArg._admin_alerting_triggered_alert_validator,
+    'ransomware_restore_process_completed': EventTypeArg._ransomware_restore_process_completed_validator,
+    'ransomware_restore_process_started': EventTypeArg._ransomware_restore_process_started_validator,
     'app_blocked_by_permissions': EventTypeArg._app_blocked_by_permissions_validator,
     'app_link_team': EventTypeArg._app_link_team_validator,
     'app_link_user': EventTypeArg._app_link_user_validator,
@@ -77876,9 +80258,17 @@ EventTypeArg._tagmap = {
     'domain_verification_add_domain_success': EventTypeArg._domain_verification_add_domain_success_validator,
     'domain_verification_remove_domain': EventTypeArg._domain_verification_remove_domain_validator,
     'enabled_domain_invites': EventTypeArg._enabled_domain_invites_validator,
+    'team_encryption_key_cancel_key_deletion': EventTypeArg._team_encryption_key_cancel_key_deletion_validator,
+    'team_encryption_key_create_key': EventTypeArg._team_encryption_key_create_key_validator,
+    'team_encryption_key_delete_key': EventTypeArg._team_encryption_key_delete_key_validator,
+    'team_encryption_key_disable_key': EventTypeArg._team_encryption_key_disable_key_validator,
+    'team_encryption_key_enable_key': EventTypeArg._team_encryption_key_enable_key_validator,
+    'team_encryption_key_rotate_key': EventTypeArg._team_encryption_key_rotate_key_validator,
+    'team_encryption_key_schedule_key_deletion': EventTypeArg._team_encryption_key_schedule_key_deletion_validator,
     'apply_naming_convention': EventTypeArg._apply_naming_convention_validator,
     'create_folder': EventTypeArg._create_folder_validator,
     'file_add': EventTypeArg._file_add_validator,
+    'file_add_from_automation': EventTypeArg._file_add_from_automation_validator,
     'file_copy': EventTypeArg._file_copy_validator,
     'file_delete': EventTypeArg._file_delete_validator,
     'file_download': EventTypeArg._file_download_validator,
@@ -77900,6 +80290,7 @@ EventTypeArg._tagmap = {
     'object_label_removed': EventTypeArg._object_label_removed_validator,
     'object_label_updated_value': EventTypeArg._object_label_updated_value_validator,
     'organize_folder_with_tidy': EventTypeArg._organize_folder_with_tidy_validator,
+    'replay_file_delete': EventTypeArg._replay_file_delete_validator,
     'rewind_folder': EventTypeArg._rewind_folder_validator,
     'undo_naming_convention': EventTypeArg._undo_naming_convention_validator,
     'undo_organize_folder_with_tidy': EventTypeArg._undo_organize_folder_with_tidy_validator,
@@ -77936,6 +80327,8 @@ EventTypeArg._tagmap = {
     'sign_in_as_session_end': EventTypeArg._sign_in_as_session_end_validator,
     'sign_in_as_session_start': EventTypeArg._sign_in_as_session_start_validator,
     'sso_error': EventTypeArg._sso_error_validator,
+    'backup_admin_invitation_sent': EventTypeArg._backup_admin_invitation_sent_validator,
+    'backup_invitation_opened': EventTypeArg._backup_invitation_opened_validator,
     'create_team_invite_link': EventTypeArg._create_team_invite_link_validator,
     'delete_team_invite_link': EventTypeArg._delete_team_invite_link_validator,
     'member_add_external_id': EventTypeArg._member_add_external_id_validator,
@@ -78031,6 +80424,8 @@ EventTypeArg._tagmap = {
     'outdated_link_view_create_report': EventTypeArg._outdated_link_view_create_report_validator,
     'outdated_link_view_report_failed': EventTypeArg._outdated_link_view_report_failed_validator,
     'paper_admin_export_start': EventTypeArg._paper_admin_export_start_validator,
+    'ransomware_alert_create_report': EventTypeArg._ransomware_alert_create_report_validator,
+    'ransomware_alert_create_report_failed': EventTypeArg._ransomware_alert_create_report_failed_validator,
     'smart_sync_create_admin_privilege_report': EventTypeArg._smart_sync_create_admin_privilege_report_validator,
     'team_activity_create_report': EventTypeArg._team_activity_create_report_validator,
     'team_activity_create_report_fail': EventTypeArg._team_activity_create_report_fail_validator,
@@ -78046,6 +80441,10 @@ EventTypeArg._tagmap = {
     'note_shared': EventTypeArg._note_shared_validator,
     'note_share_receive': EventTypeArg._note_share_receive_validator,
     'open_note_shared': EventTypeArg._open_note_shared_validator,
+    'replay_file_shared_link_created': EventTypeArg._replay_file_shared_link_created_validator,
+    'replay_file_shared_link_modified': EventTypeArg._replay_file_shared_link_modified_validator,
+    'replay_project_team_add': EventTypeArg._replay_project_team_add_validator,
+    'replay_project_team_delete': EventTypeArg._replay_project_team_delete_validator,
     'sf_add_group': EventTypeArg._sf_add_group_validator,
     'sf_allow_non_members_to_view_shared_links': EventTypeArg._sf_allow_non_members_to_view_shared_links_validator,
     'sf_external_invite_warn': EventTypeArg._sf_external_invite_warn_validator,
@@ -78294,6 +80693,8 @@ EventTypeArg._tagmap = {
 EventTypeArg.admin_alerting_alert_state_changed = EventTypeArg('admin_alerting_alert_state_changed')
 EventTypeArg.admin_alerting_changed_alert_config = EventTypeArg('admin_alerting_changed_alert_config')
 EventTypeArg.admin_alerting_triggered_alert = EventTypeArg('admin_alerting_triggered_alert')
+EventTypeArg.ransomware_restore_process_completed = EventTypeArg('ransomware_restore_process_completed')
+EventTypeArg.ransomware_restore_process_started = EventTypeArg('ransomware_restore_process_started')
 EventTypeArg.app_blocked_by_permissions = EventTypeArg('app_blocked_by_permissions')
 EventTypeArg.app_link_team = EventTypeArg('app_link_team')
 EventTypeArg.app_link_user = EventTypeArg('app_link_user')
@@ -78363,9 +80764,17 @@ EventTypeArg.domain_verification_add_domain_fail = EventTypeArg('domain_verifica
 EventTypeArg.domain_verification_add_domain_success = EventTypeArg('domain_verification_add_domain_success')
 EventTypeArg.domain_verification_remove_domain = EventTypeArg('domain_verification_remove_domain')
 EventTypeArg.enabled_domain_invites = EventTypeArg('enabled_domain_invites')
+EventTypeArg.team_encryption_key_cancel_key_deletion = EventTypeArg('team_encryption_key_cancel_key_deletion')
+EventTypeArg.team_encryption_key_create_key = EventTypeArg('team_encryption_key_create_key')
+EventTypeArg.team_encryption_key_delete_key = EventTypeArg('team_encryption_key_delete_key')
+EventTypeArg.team_encryption_key_disable_key = EventTypeArg('team_encryption_key_disable_key')
+EventTypeArg.team_encryption_key_enable_key = EventTypeArg('team_encryption_key_enable_key')
+EventTypeArg.team_encryption_key_rotate_key = EventTypeArg('team_encryption_key_rotate_key')
+EventTypeArg.team_encryption_key_schedule_key_deletion = EventTypeArg('team_encryption_key_schedule_key_deletion')
 EventTypeArg.apply_naming_convention = EventTypeArg('apply_naming_convention')
 EventTypeArg.create_folder = EventTypeArg('create_folder')
 EventTypeArg.file_add = EventTypeArg('file_add')
+EventTypeArg.file_add_from_automation = EventTypeArg('file_add_from_automation')
 EventTypeArg.file_copy = EventTypeArg('file_copy')
 EventTypeArg.file_delete = EventTypeArg('file_delete')
 EventTypeArg.file_download = EventTypeArg('file_download')
@@ -78387,6 +80796,7 @@ EventTypeArg.object_label_added = EventTypeArg('object_label_added')
 EventTypeArg.object_label_removed = EventTypeArg('object_label_removed')
 EventTypeArg.object_label_updated_value = EventTypeArg('object_label_updated_value')
 EventTypeArg.organize_folder_with_tidy = EventTypeArg('organize_folder_with_tidy')
+EventTypeArg.replay_file_delete = EventTypeArg('replay_file_delete')
 EventTypeArg.rewind_folder = EventTypeArg('rewind_folder')
 EventTypeArg.undo_naming_convention = EventTypeArg('undo_naming_convention')
 EventTypeArg.undo_organize_folder_with_tidy = EventTypeArg('undo_organize_folder_with_tidy')
@@ -78423,6 +80833,8 @@ EventTypeArg.reseller_support_session_start = EventTypeArg('reseller_support_ses
 EventTypeArg.sign_in_as_session_end = EventTypeArg('sign_in_as_session_end')
 EventTypeArg.sign_in_as_session_start = EventTypeArg('sign_in_as_session_start')
 EventTypeArg.sso_error = EventTypeArg('sso_error')
+EventTypeArg.backup_admin_invitation_sent = EventTypeArg('backup_admin_invitation_sent')
+EventTypeArg.backup_invitation_opened = EventTypeArg('backup_invitation_opened')
 EventTypeArg.create_team_invite_link = EventTypeArg('create_team_invite_link')
 EventTypeArg.delete_team_invite_link = EventTypeArg('delete_team_invite_link')
 EventTypeArg.member_add_external_id = EventTypeArg('member_add_external_id')
@@ -78518,6 +80930,8 @@ EventTypeArg.no_password_link_view_report_failed = EventTypeArg('no_password_lin
 EventTypeArg.outdated_link_view_create_report = EventTypeArg('outdated_link_view_create_report')
 EventTypeArg.outdated_link_view_report_failed = EventTypeArg('outdated_link_view_report_failed')
 EventTypeArg.paper_admin_export_start = EventTypeArg('paper_admin_export_start')
+EventTypeArg.ransomware_alert_create_report = EventTypeArg('ransomware_alert_create_report')
+EventTypeArg.ransomware_alert_create_report_failed = EventTypeArg('ransomware_alert_create_report_failed')
 EventTypeArg.smart_sync_create_admin_privilege_report = EventTypeArg('smart_sync_create_admin_privilege_report')
 EventTypeArg.team_activity_create_report = EventTypeArg('team_activity_create_report')
 EventTypeArg.team_activity_create_report_fail = EventTypeArg('team_activity_create_report_fail')
@@ -78533,6 +80947,10 @@ EventTypeArg.note_acl_team_link = EventTypeArg('note_acl_team_link')
 EventTypeArg.note_shared = EventTypeArg('note_shared')
 EventTypeArg.note_share_receive = EventTypeArg('note_share_receive')
 EventTypeArg.open_note_shared = EventTypeArg('open_note_shared')
+EventTypeArg.replay_file_shared_link_created = EventTypeArg('replay_file_shared_link_created')
+EventTypeArg.replay_file_shared_link_modified = EventTypeArg('replay_file_shared_link_modified')
+EventTypeArg.replay_project_team_add = EventTypeArg('replay_project_team_add')
+EventTypeArg.replay_project_team_delete = EventTypeArg('replay_project_team_delete')
 EventTypeArg.sf_add_group = EventTypeArg('sf_add_group')
 EventTypeArg.sf_allow_non_members_to_view_shared_links = EventTypeArg('sf_allow_non_members_to_view_shared_links')
 EventTypeArg.sf_external_invite_warn = EventTypeArg('sf_external_invite_warn')
@@ -79040,6 +81458,13 @@ FileAddCommentType._all_fields_ = [('description', FileAddCommentType.descriptio
 
 FileAddDetails._all_field_names_ = set([])
 FileAddDetails._all_fields_ = []
+
+FileAddFromAutomationDetails._all_field_names_ = set([])
+FileAddFromAutomationDetails._all_fields_ = []
+
+FileAddFromAutomationType.description.validator = bv.String()
+FileAddFromAutomationType._all_field_names_ = set(['description'])
+FileAddFromAutomationType._all_fields_ = [('description', FileAddFromAutomationType.description.validator)]
 
 FileAddType.description.validator = bv.String()
 FileAddType._all_field_names_ = set(['description'])
@@ -80654,6 +83079,7 @@ LoginFailType._all_fields_ = [('description', LoginFailType.description.validato
 LoginMethod._apple_oauth_validator = bv.Void()
 LoginMethod._first_party_token_exchange_validator = bv.Void()
 LoginMethod._google_oauth_validator = bv.Void()
+LoginMethod._lenovo_oauth_validator = bv.Void()
 LoginMethod._password_validator = bv.Void()
 LoginMethod._qr_code_validator = bv.Void()
 LoginMethod._saml_validator = bv.Void()
@@ -80664,6 +83090,7 @@ LoginMethod._tagmap = {
     'apple_oauth': LoginMethod._apple_oauth_validator,
     'first_party_token_exchange': LoginMethod._first_party_token_exchange_validator,
     'google_oauth': LoginMethod._google_oauth_validator,
+    'lenovo_oauth': LoginMethod._lenovo_oauth_validator,
     'password': LoginMethod._password_validator,
     'qr_code': LoginMethod._qr_code_validator,
     'saml': LoginMethod._saml_validator,
@@ -80675,6 +83102,7 @@ LoginMethod._tagmap = {
 LoginMethod.apple_oauth = LoginMethod('apple_oauth')
 LoginMethod.first_party_token_exchange = LoginMethod('first_party_token_exchange')
 LoginMethod.google_oauth = LoginMethod('google_oauth')
+LoginMethod.lenovo_oauth = LoginMethod('lenovo_oauth')
 LoginMethod.password = LoginMethod('password')
 LoginMethod.qr_code = LoginMethod('qr_code')
 LoginMethod.saml = LoginMethod('saml')
@@ -82299,6 +84727,47 @@ QuickActionType.unlink_device = QuickActionType('unlink_device')
 QuickActionType.unlink_session = QuickActionType('unlink_session')
 QuickActionType.other = QuickActionType('other')
 
+RansomwareAlertCreateReportDetails._all_field_names_ = set([])
+RansomwareAlertCreateReportDetails._all_fields_ = []
+
+RansomwareAlertCreateReportFailedDetails.failure_reason.validator = team.TeamReportFailureReason_validator
+RansomwareAlertCreateReportFailedDetails._all_field_names_ = set(['failure_reason'])
+RansomwareAlertCreateReportFailedDetails._all_fields_ = [('failure_reason', RansomwareAlertCreateReportFailedDetails.failure_reason.validator)]
+
+RansomwareAlertCreateReportFailedType.description.validator = bv.String()
+RansomwareAlertCreateReportFailedType._all_field_names_ = set(['description'])
+RansomwareAlertCreateReportFailedType._all_fields_ = [('description', RansomwareAlertCreateReportFailedType.description.validator)]
+
+RansomwareAlertCreateReportType.description.validator = bv.String()
+RansomwareAlertCreateReportType._all_field_names_ = set(['description'])
+RansomwareAlertCreateReportType._all_fields_ = [('description', RansomwareAlertCreateReportType.description.validator)]
+
+RansomwareRestoreProcessCompletedDetails.status.validator = bv.String()
+RansomwareRestoreProcessCompletedDetails.restored_files_count.validator = bv.Int64()
+RansomwareRestoreProcessCompletedDetails.restored_files_failed_count.validator = bv.Int64()
+RansomwareRestoreProcessCompletedDetails._all_field_names_ = set([
+    'status',
+    'restored_files_count',
+    'restored_files_failed_count',
+])
+RansomwareRestoreProcessCompletedDetails._all_fields_ = [
+    ('status', RansomwareRestoreProcessCompletedDetails.status.validator),
+    ('restored_files_count', RansomwareRestoreProcessCompletedDetails.restored_files_count.validator),
+    ('restored_files_failed_count', RansomwareRestoreProcessCompletedDetails.restored_files_failed_count.validator),
+]
+
+RansomwareRestoreProcessCompletedType.description.validator = bv.String()
+RansomwareRestoreProcessCompletedType._all_field_names_ = set(['description'])
+RansomwareRestoreProcessCompletedType._all_fields_ = [('description', RansomwareRestoreProcessCompletedType.description.validator)]
+
+RansomwareRestoreProcessStartedDetails.extension.validator = bv.String()
+RansomwareRestoreProcessStartedDetails._all_field_names_ = set(['extension'])
+RansomwareRestoreProcessStartedDetails._all_fields_ = [('extension', RansomwareRestoreProcessStartedDetails.extension.validator)]
+
+RansomwareRestoreProcessStartedType.description.validator = bv.String()
+RansomwareRestoreProcessStartedType._all_field_names_ = set(['description'])
+RansomwareRestoreProcessStartedType._all_fields_ = [('description', RansomwareRestoreProcessStartedType.description.validator)]
+
 RecipientsConfiguration.recipient_setting_type.validator = bv.Nullable(AlertRecipientsSettingType_validator)
 RecipientsConfiguration.emails.validator = bv.Nullable(bv.List(EmailAddress_validator))
 RecipientsConfiguration.groups.validator = bv.Nullable(bv.List(bv.String()))
@@ -82323,6 +84792,41 @@ RelocateAssetReferencesLogInfo._all_fields_ = [
     ('src_asset_index', RelocateAssetReferencesLogInfo.src_asset_index.validator),
     ('dest_asset_index', RelocateAssetReferencesLogInfo.dest_asset_index.validator),
 ]
+
+ReplayFileDeleteDetails._all_field_names_ = set([])
+ReplayFileDeleteDetails._all_fields_ = []
+
+ReplayFileDeleteType.description.validator = bv.String()
+ReplayFileDeleteType._all_field_names_ = set(['description'])
+ReplayFileDeleteType._all_fields_ = [('description', ReplayFileDeleteType.description.validator)]
+
+ReplayFileSharedLinkCreatedDetails._all_field_names_ = set([])
+ReplayFileSharedLinkCreatedDetails._all_fields_ = []
+
+ReplayFileSharedLinkCreatedType.description.validator = bv.String()
+ReplayFileSharedLinkCreatedType._all_field_names_ = set(['description'])
+ReplayFileSharedLinkCreatedType._all_fields_ = [('description', ReplayFileSharedLinkCreatedType.description.validator)]
+
+ReplayFileSharedLinkModifiedDetails._all_field_names_ = set([])
+ReplayFileSharedLinkModifiedDetails._all_fields_ = []
+
+ReplayFileSharedLinkModifiedType.description.validator = bv.String()
+ReplayFileSharedLinkModifiedType._all_field_names_ = set(['description'])
+ReplayFileSharedLinkModifiedType._all_fields_ = [('description', ReplayFileSharedLinkModifiedType.description.validator)]
+
+ReplayProjectTeamAddDetails._all_field_names_ = set([])
+ReplayProjectTeamAddDetails._all_fields_ = []
+
+ReplayProjectTeamAddType.description.validator = bv.String()
+ReplayProjectTeamAddType._all_field_names_ = set(['description'])
+ReplayProjectTeamAddType._all_fields_ = [('description', ReplayProjectTeamAddType.description.validator)]
+
+ReplayProjectTeamDeleteDetails._all_field_names_ = set([])
+ReplayProjectTeamDeleteDetails._all_fields_ = []
+
+ReplayProjectTeamDeleteType.description.validator = bv.String()
+ReplayProjectTeamDeleteType._all_field_names_ = set(['description'])
+ReplayProjectTeamDeleteType._all_fields_ = [('description', ReplayProjectTeamDeleteType.description.validator)]
 
 ResellerLogInfo.reseller_name.validator = bv.String()
 ResellerLogInfo.reseller_email.validator = EmailAddress_validator
@@ -84276,6 +86780,55 @@ TeamBrandingPolicyChangedType._all_fields_ = [('description', TeamBrandingPolicy
 TeamDetails.team.validator = bv.String()
 TeamDetails._all_field_names_ = set(['team'])
 TeamDetails._all_fields_ = [('team', TeamDetails.team.validator)]
+
+TeamEncryptionKeyCancelKeyDeletionDetails._all_field_names_ = set([])
+TeamEncryptionKeyCancelKeyDeletionDetails._all_fields_ = []
+
+TeamEncryptionKeyCancelKeyDeletionType.description.validator = bv.String()
+TeamEncryptionKeyCancelKeyDeletionType._all_field_names_ = set(['description'])
+TeamEncryptionKeyCancelKeyDeletionType._all_fields_ = [('description', TeamEncryptionKeyCancelKeyDeletionType.description.validator)]
+
+TeamEncryptionKeyCreateKeyDetails._all_field_names_ = set([])
+TeamEncryptionKeyCreateKeyDetails._all_fields_ = []
+
+TeamEncryptionKeyCreateKeyType.description.validator = bv.String()
+TeamEncryptionKeyCreateKeyType._all_field_names_ = set(['description'])
+TeamEncryptionKeyCreateKeyType._all_fields_ = [('description', TeamEncryptionKeyCreateKeyType.description.validator)]
+
+TeamEncryptionKeyDeleteKeyDetails._all_field_names_ = set([])
+TeamEncryptionKeyDeleteKeyDetails._all_fields_ = []
+
+TeamEncryptionKeyDeleteKeyType.description.validator = bv.String()
+TeamEncryptionKeyDeleteKeyType._all_field_names_ = set(['description'])
+TeamEncryptionKeyDeleteKeyType._all_fields_ = [('description', TeamEncryptionKeyDeleteKeyType.description.validator)]
+
+TeamEncryptionKeyDisableKeyDetails._all_field_names_ = set([])
+TeamEncryptionKeyDisableKeyDetails._all_fields_ = []
+
+TeamEncryptionKeyDisableKeyType.description.validator = bv.String()
+TeamEncryptionKeyDisableKeyType._all_field_names_ = set(['description'])
+TeamEncryptionKeyDisableKeyType._all_fields_ = [('description', TeamEncryptionKeyDisableKeyType.description.validator)]
+
+TeamEncryptionKeyEnableKeyDetails._all_field_names_ = set([])
+TeamEncryptionKeyEnableKeyDetails._all_fields_ = []
+
+TeamEncryptionKeyEnableKeyType.description.validator = bv.String()
+TeamEncryptionKeyEnableKeyType._all_field_names_ = set(['description'])
+TeamEncryptionKeyEnableKeyType._all_fields_ = [('description', TeamEncryptionKeyEnableKeyType.description.validator)]
+
+TeamEncryptionKeyRotateKeyDetails._all_field_names_ = set([])
+TeamEncryptionKeyRotateKeyDetails._all_fields_ = []
+
+TeamEncryptionKeyRotateKeyType.description.validator = bv.String()
+TeamEncryptionKeyRotateKeyType._all_field_names_ = set(['description'])
+TeamEncryptionKeyRotateKeyType._all_fields_ = [('description', TeamEncryptionKeyRotateKeyType.description.validator)]
+
+TeamEncryptionKeyScheduleKeyDeletionDetails._all_field_names_ = set([])
+TeamEncryptionKeyScheduleKeyDeletionDetails._all_fields_ = []
+
+TeamEncryptionKeyScheduleKeyDeletionType.description.validator = bv.String()
+TeamEncryptionKeyScheduleKeyDeletionType._all_field_names_ = set(['description'])
+TeamEncryptionKeyScheduleKeyDeletionType._all_fields_ = [('description', TeamEncryptionKeyScheduleKeyDeletionType.description.validator)]
 
 TeamEvent.timestamp.validator = common.DropboxTimestamp_validator
 TeamEvent.event_category.validator = EventCategory_validator

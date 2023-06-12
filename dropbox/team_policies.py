@@ -796,6 +796,58 @@ class RolloutMethod(bb.Union):
 
 RolloutMethod_validator = bv.Union(RolloutMethod)
 
+class SharedFolderBlanketLinkRestrictionPolicy(bb.Union):
+    """
+    Policy governing whether shared folder membership is required to access
+    shared links.
+
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+
+    :ivar team_policies.SharedFolderBlanketLinkRestrictionPolicy.members: Only
+        members of shared folders can access folder content via shared link.
+    :ivar team_policies.SharedFolderBlanketLinkRestrictionPolicy.anyone: Anyone
+        can access folder content via shared link.
+    """
+
+    _catch_all = 'other'
+    # Attribute is overwritten below the class definition
+    members = None
+    # Attribute is overwritten below the class definition
+    anyone = None
+    # Attribute is overwritten below the class definition
+    other = None
+
+    def is_members(self):
+        """
+        Check if the union tag is ``members``.
+
+        :rtype: bool
+        """
+        return self._tag == 'members'
+
+    def is_anyone(self):
+        """
+        Check if the union tag is ``anyone``.
+
+        :rtype: bool
+        """
+        return self._tag == 'anyone'
+
+    def is_other(self):
+        """
+        Check if the union tag is ``other``.
+
+        :rtype: bool
+        """
+        return self._tag == 'other'
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(SharedFolderBlanketLinkRestrictionPolicy, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+SharedFolderBlanketLinkRestrictionPolicy_validator = bv.Union(SharedFolderBlanketLinkRestrictionPolicy)
+
 class SharedFolderJoinPolicy(bb.Union):
     """
     Policy governing which shared folders a team member can join.
@@ -1407,6 +1459,9 @@ class TeamSharingPolicies(bb.Struct):
         view shared links owned by team members.
     :ivar team_policies.TeamSharingPolicies.group_creation_policy: Who can
         create groups.
+    :ivar
+        team_policies.TeamSharingPolicies.shared_folder_link_restriction_policy:
+        Who can view links to content in shared folders.
     """
 
     __slots__ = [
@@ -1414,6 +1469,7 @@ class TeamSharingPolicies(bb.Struct):
         '_shared_folder_join_policy_value',
         '_shared_link_create_policy_value',
         '_group_creation_policy_value',
+        '_shared_folder_link_restriction_policy_value',
     ]
 
     _has_required_fields = True
@@ -1422,11 +1478,13 @@ class TeamSharingPolicies(bb.Struct):
                  shared_folder_member_policy=None,
                  shared_folder_join_policy=None,
                  shared_link_create_policy=None,
-                 group_creation_policy=None):
+                 group_creation_policy=None,
+                 shared_folder_link_restriction_policy=None):
         self._shared_folder_member_policy_value = bb.NOT_SET
         self._shared_folder_join_policy_value = bb.NOT_SET
         self._shared_link_create_policy_value = bb.NOT_SET
         self._group_creation_policy_value = bb.NOT_SET
+        self._shared_folder_link_restriction_policy_value = bb.NOT_SET
         if shared_folder_member_policy is not None:
             self.shared_folder_member_policy = shared_folder_member_policy
         if shared_folder_join_policy is not None:
@@ -1435,6 +1493,8 @@ class TeamSharingPolicies(bb.Struct):
             self.shared_link_create_policy = shared_link_create_policy
         if group_creation_policy is not None:
             self.group_creation_policy = group_creation_policy
+        if shared_folder_link_restriction_policy is not None:
+            self.shared_folder_link_restriction_policy = shared_folder_link_restriction_policy
 
     # Instance attribute type: SharedFolderMemberPolicy (validator is set below)
     shared_folder_member_policy = bb.Attribute("shared_folder_member_policy", user_defined=True)
@@ -1447,6 +1507,9 @@ class TeamSharingPolicies(bb.Struct):
 
     # Instance attribute type: GroupCreation (validator is set below)
     group_creation_policy = bb.Attribute("group_creation_policy", user_defined=True)
+
+    # Instance attribute type: SharedFolderBlanketLinkRestrictionPolicy (validator is set below)
+    shared_folder_link_restriction_policy = bb.Attribute("shared_folder_link_restriction_policy", user_defined=True)
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(TeamSharingPolicies, self)._process_custom_annotations(annotation_type, field_path, processor)
@@ -1773,6 +1836,19 @@ RolloutMethod.unlink_all = RolloutMethod('unlink_all')
 RolloutMethod.unlink_most_inactive = RolloutMethod('unlink_most_inactive')
 RolloutMethod.add_member_to_exceptions = RolloutMethod('add_member_to_exceptions')
 
+SharedFolderBlanketLinkRestrictionPolicy._members_validator = bv.Void()
+SharedFolderBlanketLinkRestrictionPolicy._anyone_validator = bv.Void()
+SharedFolderBlanketLinkRestrictionPolicy._other_validator = bv.Void()
+SharedFolderBlanketLinkRestrictionPolicy._tagmap = {
+    'members': SharedFolderBlanketLinkRestrictionPolicy._members_validator,
+    'anyone': SharedFolderBlanketLinkRestrictionPolicy._anyone_validator,
+    'other': SharedFolderBlanketLinkRestrictionPolicy._other_validator,
+}
+
+SharedFolderBlanketLinkRestrictionPolicy.members = SharedFolderBlanketLinkRestrictionPolicy('members')
+SharedFolderBlanketLinkRestrictionPolicy.anyone = SharedFolderBlanketLinkRestrictionPolicy('anyone')
+SharedFolderBlanketLinkRestrictionPolicy.other = SharedFolderBlanketLinkRestrictionPolicy('other')
+
 SharedFolderJoinPolicy._from_team_only_validator = bv.Void()
 SharedFolderJoinPolicy._from_anyone_validator = bv.Void()
 SharedFolderJoinPolicy._other_validator = bv.Void()
@@ -1933,17 +2009,20 @@ TeamSharingPolicies.shared_folder_member_policy.validator = SharedFolderMemberPo
 TeamSharingPolicies.shared_folder_join_policy.validator = SharedFolderJoinPolicy_validator
 TeamSharingPolicies.shared_link_create_policy.validator = SharedLinkCreatePolicy_validator
 TeamSharingPolicies.group_creation_policy.validator = GroupCreation_validator
+TeamSharingPolicies.shared_folder_link_restriction_policy.validator = SharedFolderBlanketLinkRestrictionPolicy_validator
 TeamSharingPolicies._all_field_names_ = set([
     'shared_folder_member_policy',
     'shared_folder_join_policy',
     'shared_link_create_policy',
     'group_creation_policy',
+    'shared_folder_link_restriction_policy',
 ])
 TeamSharingPolicies._all_fields_ = [
     ('shared_folder_member_policy', TeamSharingPolicies.shared_folder_member_policy.validator),
     ('shared_folder_join_policy', TeamSharingPolicies.shared_folder_join_policy.validator),
     ('shared_link_create_policy', TeamSharingPolicies.shared_link_create_policy.validator),
     ('group_creation_policy', TeamSharingPolicies.group_creation_policy.validator),
+    ('shared_folder_link_restriction_policy', TeamSharingPolicies.shared_folder_link_restriction_policy.validator),
 ]
 
 TwoStepVerificationPolicy._require_tfa_enable_validator = bv.Void()
