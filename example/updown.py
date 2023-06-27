@@ -94,7 +94,7 @@ def main():
                 else:
                     print(name, 'exists with different stats, downloading')
                     res = download(dbx, folder, subfolder, name)
-                    with open(fullname) as f:
+                    with open(fullname, 'rb') as f:
                         data = f.read()
                     if res == data:
                         print(name, 'is already synced [content match]')
