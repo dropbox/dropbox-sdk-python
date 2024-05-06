@@ -181,8 +181,8 @@ class _DropboxTransport(object):
             Not required if PKCE was used to authorize the token
         :param list scope: list of scopes to request on refresh.  If left blank,
             refresh will request all available scopes for application
-        :param str ca_certs: path to CA certificate. If left blank, default certificate location \
-            will be used
+        :param str ca_certs: if specified, a path to a file of concatenated CA certificates in PEM
+            format; has the same meaning as when using :meth:`ssl.SSLContext.wrap_socket`.
         """
 
         if not (oauth2_access_token or oauth2_refresh_token or (app_key and app_secret)):

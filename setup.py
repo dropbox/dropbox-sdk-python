@@ -54,7 +54,6 @@ dist = setup(
     setup_requires=setup_requires,
     tests_require=test_reqs,
     packages=['dropbox'],
-    package_data={'dropbox': ['trusted-certs.crt']},
     zip_safe=False,
     author_email='dev-platform@dropbox.com',
     author='Dropbox',

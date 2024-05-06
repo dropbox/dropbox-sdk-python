@@ -1,4 +1,3 @@
-import pkg_resources
 import os
 import ssl
 
@@ -32,11 +31,6 @@ WEB_HOST = os.environ.get('DROPBOX_WEB_HOST', HOST_WWW + WEB_DOMAIN)
 # This is the default longest time we'll block on receiving data from the server
 DEFAULT_TIMEOUT = 100
 
-try:
-    _TRUSTED_CERT_FILE = pkg_resources.resource_filename(__name__, 'trusted-certs.crt')
-except NotImplementedError:  # Package is used inside python archive
-    _TRUSTED_CERT_FILE = None
-
 
 # TODO(kelkabany): We probably only want to instantiate this once so that even
 # if multiple Dropbox objects are instantiated, they all share the same pool.
@@ -44,9 +38,7 @@ class _SSLAdapter(HTTPAdapter):
     _ca_certs = None
 
     def __init__(self, *args, **kwargs):
-        self._ca_certs = kwargs.pop("ca_certs", None) or _TRUSTED_CERT_FILE
-        if not self._ca_certs:
-            raise AttributeError("CA certificate not set")
+        self._ca_certs = kwargs.pop("ca_certs", None)
         super(_SSLAdapter, self).__init__(*args, **kwargs)
 
     def init_poolmanager(self, connections, maxsize, block=False, **_):
