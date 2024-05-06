@@ -21,12 +21,8 @@ jobs:
             python-version: pypy-3.9
           - os: ubuntu-22.04
             python-version: pypy-3.10
-          - os: macos-14
-            python-version: 3.10
-          - os: macos-14
-            python-version: 3.11
-          - os: macos-14
-            python-version: 3.12
+          - os: macos-14  # apple silicon
+            python-version: "3.10"
     steps:
       - uses: actions/checkout@v2
       - name: Setup Python environment
@@ -84,12 +80,8 @@ jobs:
             python-version: pypy-3.9
           - os: ubuntu-22.04
             python-version: pypy-3.10
-          - os: macos-14
-            python-version: 3.10
-          - os: macos-14
-            python-version: 3.11
-          - os: macos-14
-            python-version: 3.12
+          - os: macos-14  # apple silicon
+            python-version: "3.10"
     steps:
       - uses: actions/checkout@v2.3.4
       - name: Setup Python environment
