@@ -15,7 +15,6 @@ jobs:
         include:
           - os: ubuntu-22.04
             python-version: [2.7, 3.8, 3.9, 3.10, 3.11, 3.12, pypy-2.7, pypy-3.9, pypy-3.10]
-        include:
           - os: macos-14
             python-version: [3.10, 3.11, 3.12]
     steps:
@@ -69,10 +68,9 @@ jobs:
         include:
           - os: ubuntu-22.04
             python-version: [2.7, 3.8, 3.9, 3.10, 3.11, 3.12, pypy-2.7, pypy-3.9, pypy-3.10]
-        include:
           - os: macos-14
             python-version: [3.10, 3.11, 3.12]
-    steps: 
+    steps:
       - uses: actions/checkout@v2.3.4
       - name: Setup Python environment
         uses: actions/setup-python@v2.3.4
