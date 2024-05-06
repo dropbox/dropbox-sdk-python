@@ -14,10 +14,6 @@ jobs:
         python-version: [3.8, 3.9, "3.10", 3.11, 3.12]
         include:
           - os: ubuntu-22.04
-            python-version: 2.7
-          - os: ubuntu-22.04
-            python-version: pypy-2.7
-          - os: ubuntu-22.04
             python-version: pypy-3.9
           - os: ubuntu-22.04
             python-version: pypy-3.10
@@ -72,10 +68,6 @@ jobs:
         os: [macos-13, windows-2022, ubuntu-22.04]
         python-version: [3.8, 3.9, "3.10", 3.11, 3.12]
         include:
-          - os: ubuntu-22.04
-            python-version: 2.7
-          - os: ubuntu-22.04
-            python-version: pypy-2.7
           - os: ubuntu-22.04
             python-version: pypy-3.9
           - os: ubuntu-22.04
