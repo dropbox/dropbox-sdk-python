@@ -5,7 +5,7 @@ stone >= 2
 # Other dependencies for development
 ply
 pytest
-pytest-runner
+pytest-runner == 5.3.2
 sphinx
 twine
 setuptools; python_version>="3.12"
