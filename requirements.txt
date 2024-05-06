@@ -8,4 +8,5 @@ pytest
 pytest-runner
 sphinx
 twine
+setuptools; python_version>="3.12"
 wheel
