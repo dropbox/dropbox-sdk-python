@@ -6,13 +6,13 @@ on:
 
 jobs:
   Update:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v2
       - name: Setup Python environment
-        uses: actions/setup-python@v2.2.2
+        uses: actions/setup-python@v2.3.4
         with:
-          python-version: 3.7
+          python-version: 3.8
       - name: Get current time
         uses: 1466587594/get-current-time@v2
         id: current-time

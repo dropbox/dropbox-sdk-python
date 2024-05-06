@@ -28,12 +28,7 @@ install_reqs = [
     'requests >= 2.16.2',
     'six >= 1.12.0',
     'stone >= 2',
-]
-
-setup_requires = [
-    # Pin pytest-runner to 5.2.0, since 5.3.0 uses `find_namespaces` directive, not supported in
-    # Python 2.7
-    'pytest-runner == 5.2.0',
+    'setuptools',
 ]
 
 # WARNING: This imposes limitations on test/requirements.txt such that the
@@ -50,7 +45,6 @@ dist = setup(
     name='dropbox',
     version=version,
     install_requires=install_reqs,
-    setup_requires=setup_requires,
     tests_require=test_reqs,
     packages=['dropbox'],
     package_data={'dropbox': ['trusted-certs.crt']},
@@ -71,12 +65,11 @@ dist = setup(
         'License :: OSI Approved :: MIT License',
         'Operating System :: OS Independent',
         'Programming Language :: Python',
-        'Programming Language :: Python :: 2.7',
-        'Programming Language :: Python :: 3.4',
-        'Programming Language :: Python :: 3.5',
-        'Programming Language :: Python :: 3.6',
-        'Programming Language :: Python :: 3.7',
         'Programming Language :: Python :: 3.8',
+        'Programming Language :: Python :: 3.9',
+        'Programming Language :: Python :: 3.10',
+        'Programming Language :: Python :: 3.11',
+        'Programming Language :: Python :: 3.12',
         'Programming Language :: Python :: Implementation :: CPython',
         'Programming Language :: Python :: Implementation :: PyPy',
         'Topic :: Software Development :: Libraries :: Python Modules',
