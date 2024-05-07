@@ -102,8 +102,6 @@ jobs:
           pip install flake8 pytest
           pip install -r requirements.txt
           pip install -r test/requirements.txt
-          pip install setuptools wheel twine # XXX
-          python setup.py bdist_wheel  # XXX
           python setup.py install --user
       - name: Run Integration Tests
         env:
