@@ -70,6 +70,7 @@ def _value_from_env_or_die(env_name):
 _TRUSTED_CERTS_FILE = os.path.join(os.path.dirname(__file__), "trusted-certs.crt")
 _EXPIRED_CERTS_FILE = os.path.join(os.path.dirname(__file__), "expired-certs.crt")
 
+# enables testing both with and without a manually-provided CA bundle
 @pytest.fixture(params=[None, _TRUSTED_CERTS_FILE], ids=["no-pinning", "pinning"])
 def dbx_session(request):
     return create_session(ca_certs=request.param)
@@ -325,6 +326,7 @@ def test_bad_auth(dbx_session):
     assert cm.value.error.is_invalid_access_token()
 
 def test_bad_pins():
+    # sanity-check: if we're pinning using expired pins, we should fail w/ an SSL error
     _dbx = Dropbox("dummy_token", ca_certs=_EXPIRED_CERTS_FILE)
     with pytest.raises(SSLError,) as cm:
         _dbx.files_list_folder('')
