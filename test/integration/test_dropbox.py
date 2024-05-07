@@ -26,7 +26,7 @@ from dropbox.dropbox_client import PATH_ROOT_HEADER, SELECT_USER_HEADER
 from dropbox.exceptions import (
     ApiError,
     AuthError,
-    BadInputError,
+    # BadInputError,
     PathRootError,
 )
 from dropbox.files import (
@@ -153,9 +153,12 @@ class TestDropbox:
     def test_bad_auth(self):
         # Test malformed token
         malformed_token_dbx = Dropbox(MALFORMED_TOKEN)
-        with pytest.raises(BadInputError,) as cm:
+        # TODO: backend is no longer returning `BadInputError`
+        # with pytest.raises(BadInputError,) as cm:
+        #     malformed_token_dbx.files_list_folder('')
+        # assert 'token is malformed' in cm.value.message
+        with pytest.raises(AuthError,):
             malformed_token_dbx.files_list_folder('')
-        assert 'token is malformed' in cm.value.message
 
         # Test reasonable-looking invalid token
         invalid_token_dbx = Dropbox(INVALID_TOKEN)
