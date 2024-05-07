@@ -590,7 +590,6 @@ class _DropboxTransport(object):
                                headers=headers,
                                data=body,
                                stream=stream,
-                               verify=True,
                                timeout=timeout,
                                )
         self.raise_dropbox_error_for_resp(r)

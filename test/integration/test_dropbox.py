@@ -40,6 +40,7 @@ from dropbox.common import (
     PathRoot,
     PathRoot_validator,
 )
+from dropbox.session import SSLError
 
 # Key Types
 REFRESH_TOKEN_KEY = "REFRESH_TOKEN"
@@ -67,6 +68,7 @@ def _value_from_env_or_die(env_name):
     return value
 
 _TRUSTED_CERTS_FILE = os.path.join(os.path.dirname(__file__), "trusted-certs.crt")
+_EXPIRED_CERTS_FILE = os.path.join(os.path.dirname(__file__), "expired-certs.crt")
 
 @pytest.fixture(params=[None, _TRUSTED_CERTS_FILE], ids=["no-pinning", "pinning"])
 def dbx_session(request):
@@ -118,7 +120,7 @@ RANDOM_FOLDER = random.sample(string.ascii_letters, 15)
 TIMESTAMP = str(datetime.datetime.utcnow())
 STATIC_FILE = "/test.txt"
 
-@pytest.fixture(scope='module', autouse=True)
+@pytest.fixture(scope='module')
 def pytest_setup():
     print("Setup")
     dbx = Dropbox(_value_from_env_or_die(format_env_name()))
@@ -133,47 +135,14 @@ def pytest_setup():
     except Exception:
         print("File not found")
 
-
 @pytest.mark.usefixtures(
+    "pytest_setup",
     "dbx_from_env",
     "refresh_dbx_from_env",
     "dbx_app_auth_from_env",
-    "dbx_share_url_from_env"
+    "dbx_share_url_from_env",
 )
 class TestDropbox:
-    def test_default_oauth2_urls(self):
-        flow_obj = DropboxOAuth2Flow('dummy_app_key', 'dummy_app_secret',
-            'http://localhost/dummy', 'dummy_session', 'dbx-auth-csrf-token')
-
-        assert re.match(
-            r'^https://{}/oauth2/authorize\?'.format(re.escape(session.WEB_HOST)),
-            flow_obj._get_authorize_url('http://localhost/redirect', 'state', 'legacy'),
-        )
-
-        assert flow_obj.build_url(
-            '/oauth2/authorize'
-        ) == 'https://{}/oauth2/authorize'.format(session.API_HOST)
-
-        assert flow_obj.build_url(
-            '/oauth2/authorize', host=session.WEB_HOST
-        ) == 'https://{}/oauth2/authorize'.format(session.WEB_HOST)
-
-    def test_bad_auth(self):
-        # Test malformed token
-        malformed_token_dbx = Dropbox(MALFORMED_TOKEN)
-        # TODO: backend is no longer returning `BadInputError`
-        # with pytest.raises(BadInputError,) as cm:
-        #     malformed_token_dbx.files_list_folder('')
-        # assert 'token is malformed' in cm.value.message
-        with pytest.raises(AuthError,):
-            malformed_token_dbx.files_list_folder('')
-
-        # Test reasonable-looking invalid token
-        invalid_token_dbx = Dropbox(INVALID_TOKEN)
-        with pytest.raises(AuthError) as cm:
-            invalid_token_dbx.files_list_folder('')
-        assert cm.value.error.is_invalid_access_token()
-
     def test_multi_auth(self, dbx_from_env, dbx_app_auth_from_env, dbx_share_url_from_env):
         # Test for user (with oauth token)
         preview_result, resp = dbx_from_env.files_get_thumbnail_v2(
@@ -288,7 +257,10 @@ class TestDropbox:
         # Verify response type is of v2 route
         assert isinstance(resp, DeleteResult)
 
-@pytest.mark.usefixtures("dbx_team_from_env")
+@pytest.mark.usefixtures(
+    "pytest_setup",
+    "dbx_team_from_env",
+)
 class TestDropboxTeam:
     def test_team(self, dbx_team_from_env):
         dbx_team_from_env.team_groups_list()
@@ -318,3 +290,41 @@ class TestDropboxTeam:
         new_dbxt = dbx_team_from_env.clone()
         assert dbx_team_from_env is not new_dbxt
         assert isinstance(new_dbxt, dbx_team_from_env.__class__)
+
+def test_default_oauth2_urls():
+    flow_obj = DropboxOAuth2Flow('dummy_app_key', 'dummy_app_secret',
+        'http://localhost/dummy', 'dummy_session', 'dbx-auth-csrf-token')
+
+    assert re.match(
+        r'^https://{}/oauth2/authorize\?'.format(re.escape(session.WEB_HOST)),
+        flow_obj._get_authorize_url('http://localhost/redirect', 'state', 'legacy'),
+    )
+
+    assert flow_obj.build_url(
+        '/oauth2/authorize'
+    ) == 'https://{}/oauth2/authorize'.format(session.API_HOST)
+
+    assert flow_obj.build_url(
+        '/oauth2/authorize', host=session.WEB_HOST
+    ) == 'https://{}/oauth2/authorize'.format(session.WEB_HOST)
+
+def test_bad_auth(dbx_session):
+    # Test malformed token
+    malformed_token_dbx = Dropbox(MALFORMED_TOKEN, session=dbx_session)
+    # TODO: backend is no longer returning `BadInputError`
+    # with pytest.raises(BadInputError,) as cm:
+    #     malformed_token_dbx.files_list_folder('')
+    # assert 'token is malformed' in cm.value.message
+    with pytest.raises(AuthError):
+        malformed_token_dbx.files_list_folder('')
+
+    # Test reasonable-looking invalid token
+    invalid_token_dbx = Dropbox(INVALID_TOKEN, session=dbx_session)
+    with pytest.raises(AuthError) as cm:
+        invalid_token_dbx.files_list_folder('')
+    assert cm.value.error.is_invalid_access_token()
+
+def test_bad_pins():
+    _dbx = Dropbox("dummy_token", ca_certs=_EXPIRED_CERTS_FILE)
+    with pytest.raises(SSLError,) as cm:
+        _dbx.files_list_folder('')
