@@ -25,7 +25,7 @@ for line in open(dbx_mod_path):
 version = eval(line.split('=', 1)[1].strip())  # pylint: disable=eval-used
 
 install_reqs = [
-    'requests>=2.27',
+    'requests<2.30',
     'urllib3<2',
     'six >= 1.12.0',
     'stone>=2,<3.3.3',
