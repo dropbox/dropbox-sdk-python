@@ -16,6 +16,7 @@ except ImportError:
     from StringIO import StringIO as BytesIO
 
 from dropbox import (
+    create_session,
     Dropbox,
     DropboxOAuth2Flow,
     DropboxTeam,
@@ -65,34 +66,41 @@ def _value_from_env_or_die(env_name):
         sys.exit(1)
     return value
 
+_TRUSTED_CERTS_FILE = os.path.join(os.path.dirname(__file__), "trusted-certs.crt")
+
+@pytest.fixture(params=[None, _TRUSTED_CERTS_FILE], ids=["no-pinning", "pinning"])
+def dbx_session(request):
+    return create_session(ca_certs=request.param)
+
 
 @pytest.fixture()
-def dbx_from_env():
+def dbx_from_env(dbx_session):
     oauth2_token = _value_from_env_or_die(format_env_name())
-    return Dropbox(oauth2_token)
+    return Dropbox(oauth2_token, session=dbx_session)
 
 
 @pytest.fixture()
-def refresh_dbx_from_env():
+def refresh_dbx_from_env(dbx_session):
     refresh_token = _value_from_env_or_die(format_env_name(SCOPED_KEY, USER_KEY, REFRESH_TOKEN_KEY))
     app_key = _value_from_env_or_die(format_env_name(SCOPED_KEY, USER_KEY, CLIENT_ID_KEY))
     app_secret = _value_from_env_or_die(format_env_name(SCOPED_KEY, USER_KEY, CLIENT_SECRET_KEY))
     return Dropbox(oauth2_refresh_token=refresh_token,
-                   app_key=app_key, app_secret=app_secret)
+                   app_key=app_key, app_secret=app_secret,
+                   session=dbx_session)
 
 
 @pytest.fixture()
-def dbx_team_from_env():
+def dbx_team_from_env(dbx_session):
     team_oauth2_token = _value_from_env_or_die(
         format_env_name(SCOPED_KEY, TEAM_KEY, ACCESS_TOKEN_KEY))
-    return DropboxTeam(team_oauth2_token)
+    return DropboxTeam(team_oauth2_token, session=dbx_session)
 
 
 @pytest.fixture()
-def dbx_app_auth_from_env():
+def dbx_app_auth_from_env(dbx_session):
     app_key = _value_from_env_or_die(format_env_name(SCOPED_KEY, USER_KEY, CLIENT_ID_KEY))
     app_secret = _value_from_env_or_die(format_env_name(SCOPED_KEY, USER_KEY, CLIENT_SECRET_KEY))
-    return Dropbox(app_key=app_key, app_secret=app_secret)
+    return Dropbox(app_key=app_key, app_secret=app_secret, session=dbx_session)
 
 
 @pytest.fixture()
