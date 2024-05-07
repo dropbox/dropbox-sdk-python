@@ -10,17 +10,26 @@ jobs:
     # https://github.com/actions/python-versions/blob/main/versions-manifest.json
     strategy:
       matrix:
-        os: [macos-latest, windows-latest]
-        python-version: [2.7, 3.5, 3.6, 3.7, 3.8, pypy-2.7, pypy-3.7]
+        os: [macos-13, windows-latest]
+        python-version: [3.5, 3.6, 3.7, 3.8, pypy-3.7]
         exclude:
           - os: windows-latest
             python-version: 3.6
         include:
-          - os: ubuntu-latest
+          - os: ubuntu-20.04
             python-version: 3.7
+          - os: ubuntu-20.04
+            python-version: 2.7
     steps:
       - uses: actions/checkout@v2
-      - name: Setup Python environment
+      - if: ${{ matrix.python-version == '2.7' }}
+        name: Setup Python environment (2.7)
+        run: |
+          sudo apt-get install python-is-python2
+          curl -sSL https://bootstrap.pypa.io/pip/2.7/get-pip.py -o get-pip.py
+          python get-pip.py
+      - if: ${{ matrix.python-version != '2.7' }}
+        name: Setup Python environment
         uses: actions/setup-python@v2.2.2
         with:
           python-version: ${{ matrix.python-version }}
@@ -38,7 +47,7 @@ jobs:
         run: |
           pytest test/unit/test_dropbox_unit.py
   Docs:
-    runs-on: macos-latest
+    runs-on: macos-13
     steps:
       - uses: actions/checkout@v2
       - name: Setup Python environment
@@ -64,17 +73,26 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-          os: [macos-latest, windows-latest]
-          python-version: [2.7, 3.5, 3.6, 3.7, 3.8, pypy-2.7, pypy-3.7]
+          os: [macos-13, windows-latest]
+          python-version: [3.5, 3.6, 3.7, 3.8, pypy-3.7]
           exclude:
             - os: windows-latest
               python-version: 3.6
           include:
-            - os: ubuntu-latest
+            - os: ubuntu-20.04
               python-version: 3.7
+            - os: ubuntu-20.04
+              python-version: 2.7
     steps: 
       - uses: actions/checkout@v2.3.4
-      - name: Setup Python environment
+      - if: ${{ matrix.python-version == '2.7' }}
+        name: Setup Python environment (2.7)
+        run: |
+          sudo apt-get install python-is-python2
+          curl -sSL https://bootstrap.pypa.io/pip/2.7/get-pip.py -o get-pip.py
+          python get-pip.py
+      - if: ${{ matrix.python-version != '2.7' }}
+        name: Setup Python environment
         uses: actions/setup-python@v2.2.2
         with:
           python-version: ${{ matrix.python-version }}
