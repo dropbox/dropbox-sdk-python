@@ -45,7 +45,7 @@ jobs:
           flake8 setup.py dropbox example test
       - name: Run Unit Tests
         run: |
-          pytest test/unit/test_dropbox_unit.py
+          pytest -v test/unit/test_dropbox_unit.py
   Docs:
     runs-on: macos-13
     steps:
@@ -121,4 +121,4 @@ jobs:
           SCOPED_TEAM_REFRESH_TOKEN: ${{ secrets.SCOPED_TEAM_REFRESH_TOKEN }}
           DROPBOX_SHARED_LINK: ${{ secrets.DROPBOX_SHARED_LINK }}
         run: |
-          pytest test/integration/test_dropbox.py
+          pytest -v test/integration/test_dropbox.py
