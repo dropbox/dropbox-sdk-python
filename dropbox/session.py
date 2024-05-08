@@ -51,14 +51,17 @@ class _SSLAdapter(HTTPAdapter):
         )
 
 def pinned_session(pool_maxsize=8, ca_certs=None):
+    # always verify, use cert bundle if provided
+
     _session = requests.session()
 
-    # always verify, use cert bundle if provided
+    # requests
     if ca_certs is not None:
         _session.verify = ca_certs
     else:
         _session.verify = True
 
+    # urllib3 within requests
     http_adapter = _SSLAdapter(pool_connections=4, pool_maxsize=pool_maxsize, ca_certs=ca_certs)
     _session.mount('https://', http_adapter)
     return _session
