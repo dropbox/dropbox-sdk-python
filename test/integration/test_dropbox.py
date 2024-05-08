@@ -328,5 +328,5 @@ def test_bad_auth(dbx_session):
 def test_bad_pins():
     # sanity-check: if we're pinning using expired pins, we should fail w/ an SSL error
     _dbx = Dropbox("dummy_token", ca_certs=_EXPIRED_CERTS_FILE)
-    with pytest.raises(SSLError,) as cm:
+    with pytest.raises(SSLError,):
         _dbx.files_list_folder('')
