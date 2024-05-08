@@ -16,7 +16,6 @@ import random
 import time
 
 import requests
-import six
 
 from datetime import datetime, timedelta
 from dropbox.auth import (
@@ -75,7 +74,7 @@ class RouteResult(object):
         :param requests.models.Response http_resp: A raw HTTP response. It will
             be used to stream the binary-body payload of the response.
         """
-        assert isinstance(obj_result, six.string_types), \
+        assert isinstance(obj_result, str), \
             'obj_result: expected string, got %r' % type(obj_result)
         if http_resp is not None:
             assert isinstance(http_resp, requests.models.Response), \
@@ -530,7 +529,7 @@ class _DropboxTransport(object):
         if host not in self._host_map:
             raise ValueError('Unknown value for host: %r' % host)
 
-        if not isinstance(request_binary, (six.binary_type, type(None))):
+        if not isinstance(request_binary, (bytes, type(None))):
             # Disallow streams and file-like objects even though the underlying
             # requests library supports them. This is to prevent incorrect
             # behavior when a non-rewindable stream is read from, but the

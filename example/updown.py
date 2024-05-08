@@ -9,7 +9,6 @@ import argparse
 import contextlib
 import datetime
 import os
-import six
 import sys
 import time
 import unicodedata
@@ -74,7 +73,7 @@ def main():
         # First do all the files.
         for name in files:
             fullname = os.path.join(dn, name)
-            if not isinstance(name, six.text_type):
+            if not isinstance(name, str):
                 name = name.decode('utf-8')
             nname = unicodedata.normalize('NFC', name)
             if name.startswith('.'):
