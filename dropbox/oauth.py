@@ -595,7 +595,7 @@ def _params_to_urlencoded(params):
     Returns a application/x-www-form-urlencoded :class:`str` representing the key/value pairs in
     :attr:`params`.
 
-    Keys and values are coerced via ``str()``'d and encoded via UTF-8 before calling
+    Keys and values are coerced via ``str()`` and encoded via UTF-8 before calling
     :meth:`urllib.parse.urlencode`.
     """
     def encode(o):
