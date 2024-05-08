@@ -10,18 +10,27 @@ jobs:
     # https://github.com/actions/python-versions/blob/main/versions-manifest.json
     strategy:
       matrix:
-        os: [macos-latest, windows-latest]
-        python-version: [2.7, 3.5, 3.6, 3.7, 3.8, pypy-2.7, pypy-3.7]
+        os: [macos-13, windows-latest]
+        python-version: [3.5, 3.6, 3.7, 3.8, pypy-3.7]
         exclude:
           - os: windows-latest
             python-version: 3.6
         include:
-          - os: ubuntu-latest
+          - os: ubuntu-20.04
             python-version: 3.7
+          - os: ubuntu-20.04
+            python-version: 2.7
     steps:
       - uses: actions/checkout@v2
-      - name: Setup Python environment
-        uses: actions/setup-python@v2.2.2
+      - if: ${{ matrix.python-version == '2.7' }}
+        name: Setup Python environment (2.7)
+        run: |
+          sudo apt-get install python-is-python2
+          curl -sSL https://bootstrap.pypa.io/pip/2.7/get-pip.py -o get-pip.py
+          python get-pip.py
+      - if: ${{ matrix.python-version != '2.7' }}
+        name: Setup Python environment
+        uses: actions/setup-python@v3.1.4
         with:
           python-version: ${{ matrix.python-version }}
       - name: Install Requirements
@@ -30,19 +39,19 @@ jobs:
           pip install flake8 pytest
           pip install -r requirements.txt
           pip install -r test/requirements.txt
-          python setup.py install
+          python setup.py install --user
       - name: Run Linter
         run: |
           flake8 setup.py dropbox example test
       - name: Run Unit Tests
         run: |
-          pytest test/unit/test_dropbox_unit.py
+          pytest -v test/unit/test_dropbox_unit.py
   Docs:
-    runs-on: macos-latest
+    runs-on: ubuntu-20.04
     steps:
       - uses: actions/checkout@v2
       - name: Setup Python environment
-        uses: actions/setup-python@v2.2.2
+        uses: actions/setup-python@v3.1.4
         with:
           python-version: '3.7'
       - name: Install Requirements
@@ -64,18 +73,27 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-          os: [macos-latest, windows-latest]
-          python-version: [2.7, 3.5, 3.6, 3.7, 3.8, pypy-2.7, pypy-3.7]
-          exclude:
-            - os: windows-latest
-              python-version: 3.6
-          include:
-            - os: ubuntu-latest
-              python-version: 3.7
-    steps: 
+        os: [macos-13, windows-latest]
+        python-version: [3.5, 3.6, 3.7, 3.8, pypy-3.7]
+        exclude:
+          - os: windows-latest
+            python-version: 3.6
+        include:
+          - os: ubuntu-20.04
+            python-version: 3.7
+          - os: ubuntu-20.04
+            python-version: 2.7
+    steps:
       - uses: actions/checkout@v2.3.4
-      - name: Setup Python environment
-        uses: actions/setup-python@v2.2.2
+      - if: ${{ matrix.python-version == '2.7' }}
+        name: Setup Python environment (2.7)
+        run: |
+          sudo apt-get install python-is-python2
+          curl -sSL https://bootstrap.pypa.io/pip/2.7/get-pip.py -o get-pip.py
+          python get-pip.py
+      - if: ${{ matrix.python-version != '2.7' }}
+        name: Setup Python environment
+        uses: actions/setup-python@v3.1.4
         with:
           python-version: ${{ matrix.python-version }}
       - name: Install Requirements
@@ -84,7 +102,7 @@ jobs:
           pip install flake8 pytest
           pip install -r requirements.txt
           pip install -r test/requirements.txt
-          python setup.py install
+          python setup.py install --user
       - name: Run Integration Tests
         env:
           LEGACY_USER_DROPBOX_TOKEN: ${{ secrets.LEGACY_USER_DROPBOX_TOKEN }}
@@ -101,4 +119,4 @@ jobs:
           SCOPED_TEAM_REFRESH_TOKEN: ${{ secrets.SCOPED_TEAM_REFRESH_TOKEN }}
           DROPBOX_SHARED_LINK: ${{ secrets.DROPBOX_SHARED_LINK }}
         run: |
-          pytest test/integration/test_dropbox.py
+          pytest -v test/integration/test_dropbox.py

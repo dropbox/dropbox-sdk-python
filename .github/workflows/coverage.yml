@@ -13,7 +13,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: Setup Python environment
-        uses: actions/setup-python@v2.2.2
+        uses: actions/setup-python@v3.1.4
         with:
           python-version: '3.7'
       - name: Install Requirements
@@ -28,8 +28,9 @@ jobs:
           coverage run --rcfile=.coveragerc -m pytest test/unit/test_dropbox_unit.py
           coverage xml
       - name: Publish Coverage
-        uses: codecov/codecov-action@v1.3.2
+        uses: codecov/codecov-action@v3.1.6
         with:
+          token: ${{ secrets.CODECOV_TOKEN }}
           flags: unit
           fail_ci_if_error: true
   IntegrationCoverage:
@@ -37,7 +38,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: Setup Python environment
-        uses: actions/setup-python@v2.2.2
+        uses: actions/setup-python@v3.1.4
         with:
           python-version: '3.7'
       - name: Install Requirements
@@ -66,7 +67,8 @@ jobs:
           coverage run --rcfile=.coveragerc -m pytest test/integration/test_dropbox.py
           coverage xml
       - name: Publish Coverage
-        uses: codecov/codecov-action@v1.3.2
+        uses: codecov/codecov-action@v3.1.6
         with:
+          token: ${{ secrets.CODECOV_TOKEN }}
           flags: integration
           fail_ci_if_error: true
