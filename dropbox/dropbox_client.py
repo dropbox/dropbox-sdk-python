@@ -182,7 +182,7 @@ class _DropboxTransport(object):
         :param list scope: list of scopes to request on refresh.  If left blank,
             refresh will request all available scopes for application
         :param str ca_certs: if specified, a path to a file of concatenated CA certificates in PEM
-            format; has the same meaning as when using :meth:`ssl.SSLContext.wrap_socket`.
+            format; has the same meaning as when using :func:`ssl.wrap_socket`.
         """
 
         if not (oauth2_access_token or oauth2_refresh_token or (app_key and app_secret)):
