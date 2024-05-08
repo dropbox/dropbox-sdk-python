@@ -30,6 +30,7 @@ jobs:
       - name: Publish Coverage
         uses: codecov/codecov-action@v3.1.6
         with:
+          token: ${{ secrets.CODECOV_TOKEN }}
           flags: unit
           fail_ci_if_error: true
   IntegrationCoverage:
@@ -68,5 +69,6 @@ jobs:
       - name: Publish Coverage
         uses: codecov/codecov-action@v3.1.6
         with:
+          token: ${{ secrets.CODECOV_TOKEN }}
           flags: integration
           fail_ci_if_error: true
