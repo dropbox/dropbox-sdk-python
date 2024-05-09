@@ -330,3 +330,9 @@ def test_bad_pins():
     _dbx = Dropbox("dummy_token", ca_certs=_EXPIRED_CERTS_FILE)
     with pytest.raises(SSLError,):
         _dbx.files_list_folder('')
+
+def test_bad_pins_session():
+    _session = create_session(ca_certs=_EXPIRED_CERTS_FILE)
+    _dbx = Dropbox("dummy_token2", session=_session)
+    with pytest.raises(SSLError,):
+        _dbx.files_list_folder('')
