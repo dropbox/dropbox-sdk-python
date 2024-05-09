@@ -62,7 +62,5 @@ jobs:
           body: |
             ${{ steps.git-diff.outputs.commit}}
           base: 'main'
-          team-reviewers: |
-            owners
-            maintainers
+          team-reviewers: "@dropbox/sdk-maintainers"
           draft: false
