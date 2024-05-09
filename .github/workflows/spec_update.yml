@@ -9,6 +9,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2.7.0
+        with:
+          token: ${{ secrets.SPEC_UPDATE_TOKEN }}
       - name: Setup Python environment
         uses: actions/setup-python@v3.1.4
         with:
