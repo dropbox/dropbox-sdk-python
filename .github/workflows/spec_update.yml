@@ -54,6 +54,7 @@ jobs:
         uses: peter-evans/create-pull-request@v5.0.3
         if: steps.git-diff-num.outputs.num-diff != 0
         with:
+          token: ${{ secrets.SPEC_UPDATE_TOKEN }}
           commit-message: |
             ${{ steps.git-diff.outputs.commit}}
           branch: ${{ steps.git-branch.outputs.branch }}
