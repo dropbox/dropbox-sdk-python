@@ -12396,8 +12396,8 @@ class TeamGetInfoResult(bb.Struct):
                  team_id=None,
                  num_licensed_users=None,
                  num_provisioned_users=None,
-                 num_used_licenses=None,
-                 policies=None):
+                 policies=None,
+                 num_used_licenses=None):
         self._name_value = bb.NOT_SET
         self._team_id_value = bb.NOT_SET
         self._num_licensed_users_value = bb.NOT_SET
@@ -16980,6 +16980,7 @@ SharingAllowlistListResponse.cursor.default = ''
 SharingAllowlistListResponse.has_more.default = False
 TeamFolderArchiveArg.force_async_off.default = False
 TeamFolderListArg.limit.default = 1000
+TeamGetInfoResult.num_used_licenses.default = 0
 TeamNamespacesListArg.limit.default = 1000
 devices_list_member_devices = bb.Route(
     'devices/list_member_devices',

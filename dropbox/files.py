@@ -10868,7 +10868,7 @@ Rev_validator = bv.String(min_length=9, pattern='[0-9a-f]+')
 SearchV2Cursor_validator = bv.String(min_length=1)
 Sha256HexHash_validator = bv.String(min_length=64, max_length=64)
 SharedLinkUrl_validator = bv.String()
-TagText_validator = bv.String(min_length=1, max_length=32, pattern='[A-Za-z0-9_]+')
+TagText_validator = bv.String(min_length=1, max_length=32, pattern='[\\w]+')
 WritePath_validator = bv.String(pattern='(/(.|[\\r\\n])*)|(ns:[0-9]+(/.*)?)')
 WritePathOrId_validator = bv.String(pattern='(/(.|[\\r\\n])*)|(ns:[0-9]+(/.*)?)|(id:.*)')
 AddTagArg.path.validator = Path_validator
@@ -11086,7 +11086,7 @@ DeleteArg._all_fields_ = [
     ('parent_rev', DeleteArg.parent_rev.validator),
 ]
 
-DeleteBatchArg.entries.validator = bv.List(DeleteArg_validator)
+DeleteBatchArg.entries.validator = bv.List(DeleteArg_validator, max_items=1000)
 DeleteBatchArg._all_field_names_ = set(['entries'])
 DeleteBatchArg._all_fields_ = [('entries', DeleteBatchArg.entries.validator)]
 
@@ -11979,7 +11979,7 @@ MinimalFileLinkMetadata._all_fields_ = [
     ('rev', MinimalFileLinkMetadata.rev.validator),
 ]
 
-RelocationBatchArgBase.entries.validator = bv.List(RelocationPath_validator, min_items=1)
+RelocationBatchArgBase.entries.validator = bv.List(RelocationPath_validator, min_items=1, max_items=1000)
 RelocationBatchArgBase.autorename.validator = bv.Boolean()
 RelocationBatchArgBase._all_field_names_ = set([
     'entries',

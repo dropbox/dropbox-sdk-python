@@ -1257,8 +1257,10 @@ class DropboxTeamBase(object):
     def team_member_space_limits_get_custom_quota(self,
                                                   users):
         """
-        Get users custom quota. Returns none as the custom quota if none was
-        set. A maximum of 1000 members can be specified in a single call.
+        Get users custom quota. A maximum of 1000 members can be specified in a
+        single call. Note: to apply a custom space limit, a team admin needs to
+        set a member space limit for the team first. (the team admin can check
+        the settings here: https://www.dropbox.com/team/admin/settings/space).
 
         Route attributes:
             scope: members.read
@@ -1283,7 +1285,10 @@ class DropboxTeamBase(object):
                                                      users):
         """
         Remove users custom quota. A maximum of 1000 members can be specified in
-        a single call.
+        a single call. Note: to apply a custom space limit, a team admin needs
+        to set a member space limit for the team first. (the team admin can
+        check the settings here:
+        https://www.dropbox.com/team/admin/settings/space).
 
         Route attributes:
             scope: members.write
@@ -1308,7 +1313,10 @@ class DropboxTeamBase(object):
                                                   users_and_quotas):
         """
         Set users custom quota. Custom quota has to be at least 15GB. A maximum
-        of 1000 members can be specified in a single call.
+        of 1000 members can be specified in a single call. Note: to apply a
+        custom space limit, a team admin needs to set a member space limit for
+        the team first. (the team admin can check the settings here:
+        https://www.dropbox.com/team/admin/settings/space).
 
         Route attributes:
             scope: members.read
