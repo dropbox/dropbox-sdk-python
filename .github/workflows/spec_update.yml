@@ -54,6 +54,8 @@ jobs:
         uses: peter-evans/create-pull-request@v5.0.3
         if: steps.git-diff-num.outputs.num-diff != 0
         with:
+          # TODO: `SPEC_UPDATE_TOKEN` is broken
+          # token: ${{ secrets.SPEC_UPDATE_TOKEN }}
           commit-message: |
             ${{ steps.git-diff.outputs.commit}}
           branch: ${{ steps.git-branch.outputs.branch }}
@@ -62,6 +64,6 @@ jobs:
           body: |
             ${{ steps.git-diff.outputs.commit}}
           base: 'main'
-          # TODO: `SPEC_UPDATE_TOKEN` needs to be fixed
-          # team-reviewers: "@dropbox/sdk-maintainers"
+          # TODO: `SPEC_UPDATE_TOKEN` is broken
+          # team-reviewers: "sdk-maintainers"
           draft: false
