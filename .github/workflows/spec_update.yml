@@ -62,4 +62,6 @@ jobs:
           body: |
             ${{ steps.git-diff.outputs.commit}}
           base: 'main'
+          # TODO: `SPEC_UPDATE_TOKEN` needs to be fixed
+          # team-reviewers: "@dropbox/sdk-maintainers"
           draft: false
