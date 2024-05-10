@@ -9,8 +9,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2.7.0
-        with:
-          token: ${{ secrets.SPEC_UPDATE_TOKEN }}
       - name: Setup Python environment
         uses: actions/setup-python@v3.1.4
         with:
@@ -56,7 +54,6 @@ jobs:
         uses: peter-evans/create-pull-request@v5.0.3
         if: steps.git-diff-num.outputs.num-diff != 0
         with:
-          token: ${{ secrets.SPEC_UPDATE_TOKEN }}
           commit-message: |
             ${{ steps.git-diff.outputs.commit}}
           branch: ${{ steps.git-branch.outputs.branch }}
@@ -65,5 +62,4 @@ jobs:
           body: |
             ${{ steps.git-diff.outputs.commit}}
           base: 'main'
-          team-reviewers: "@dropbox/sdk-maintainers"
           draft: false
