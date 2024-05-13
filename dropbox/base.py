@@ -82,6 +82,10 @@ class DropboxBase(object):
         If this raises, ApiError will contain:
             :class:`dropbox.auth.TokenFromOAuth1Error`
         """
+        warnings.warn(
+            'token/from_oauth1 is deprecated.',
+            DeprecationWarning,
+        )
         arg = auth.TokenFromOAuth1Arg(oauth1_token,
                                       oauth1_token_secret)
         r = self.request(
@@ -2880,7 +2884,7 @@ class DropboxBase(object):
                        url):
         """
         Save the data from a specified URL into a file in user's Dropbox. Note
-        that the transfer from the URL must complete within 5 minutes, or the
+        that the transfer from the URL must complete within 15 minutes, or the
         operation will time out and the job will fail. If the given path already
         exists, the file will be renamed to avoid the conflict (e.g. myfile
         (1).txt).

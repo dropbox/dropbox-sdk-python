@@ -90,6 +90,11 @@ class AccessLevel(bb.Union):
         the shared folder and does not have any access to comments.
     :ivar sharing.AccessLevel.traverse: The collaborator can only view the
         shared folder that they have access to.
+    :ivar sharing.AccessLevel.no_access: If there is a Righteous Link on the
+        folder which grants access and the user has visited such link, they are
+        allowed to perform certain action (i.e. add themselves to the folder)
+        via the link access even though the user themselves are not a member on
+        the shared folder yet.
     """
 
     _catch_all = 'other'
@@ -103,6 +108,8 @@ class AccessLevel(bb.Union):
     viewer_no_comment = None
     # Attribute is overwritten below the class definition
     traverse = None
+    # Attribute is overwritten below the class definition
+    no_access = None
     # Attribute is overwritten below the class definition
     other = None
 
@@ -145,6 +152,14 @@ class AccessLevel(bb.Union):
         :rtype: bool
         """
         return self._tag == 'traverse'
+
+    def is_no_access(self):
+        """
+        Check if the union tag is ``no_access``.
+
+        :rtype: bool
+        """
+        return self._tag == 'no_access'
 
     def is_other(self):
         """
@@ -7909,8 +7924,8 @@ class ShareFolderArgBase(bb.Struct):
         happen asynchronously.
     :ivar sharing.ShareFolderArgBase.member_policy: Who can be a member of this
         shared folder. Only applicable if the current user is on a team.
-    :ivar sharing.ShareFolderArgBase.path: The path to the folder to share. If
-        it does not exist, then a new one is created.
+    :ivar sharing.ShareFolderArgBase.path: The path or the file id to the folder
+        to share. If it does not exist, then a new one is created.
     :ivar sharing.ShareFolderArgBase.shared_link_policy: The policy to apply to
         shared links created for content inside this shared folder.  The current
         user must be on a team to set this policy to
@@ -8815,6 +8830,8 @@ class SharedFolderAccessError(bb.Union):
         invalid.
     :ivar sharing.SharedFolderAccessError.not_a_member: The user is not a member
         of the shared folder thus cannot access it.
+    :ivar sharing.SharedFolderAccessError.invalid_member: The user does not
+        exist or their account is disabled.
     :ivar sharing.SharedFolderAccessError.email_unverified: Never set.
     :ivar sharing.SharedFolderAccessError.unmounted: The shared folder is
         unmounted.
@@ -8825,6 +8842,8 @@ class SharedFolderAccessError(bb.Union):
     invalid_id = None
     # Attribute is overwritten below the class definition
     not_a_member = None
+    # Attribute is overwritten below the class definition
+    invalid_member = None
     # Attribute is overwritten below the class definition
     email_unverified = None
     # Attribute is overwritten below the class definition
@@ -8847,6 +8866,14 @@ class SharedFolderAccessError(bb.Union):
         :rtype: bool
         """
         return self._tag == 'not_a_member'
+
+    def is_invalid_member(self):
+        """
+        Check if the union tag is ``invalid_member``.
+
+        :rtype: bool
+        """
+        return self._tag == 'invalid_member'
 
     def is_email_unverified(self):
         """
@@ -9039,6 +9066,8 @@ class SharedFolderMetadataBase(bb.Struct):
     :ivar sharing.SharedFolderMetadataBase.parent_shared_folder_id: The ID of
         the parent shared folder. This field is present only if the folder is
         contained within another shared folder.
+    :ivar sharing.SharedFolderMetadataBase.path_display: The full path of this
+        shared folder. Absent for unmounted folders.
     :ivar sharing.SharedFolderMetadataBase.path_lower: The lower-cased full path
         of this shared folder. Absent for unmounted folders.
     :ivar sharing.SharedFolderMetadataBase.parent_folder_name: Display name for
@@ -9052,6 +9081,7 @@ class SharedFolderMetadataBase(bb.Struct):
         '_owner_display_names_value',
         '_owner_team_value',
         '_parent_shared_folder_id_value',
+        '_path_display_value',
         '_path_lower_value',
         '_parent_folder_name_value',
     ]
@@ -9065,6 +9095,7 @@ class SharedFolderMetadataBase(bb.Struct):
                  owner_display_names=None,
                  owner_team=None,
                  parent_shared_folder_id=None,
+                 path_display=None,
                  path_lower=None,
                  parent_folder_name=None):
         self._access_type_value = bb.NOT_SET
@@ -9073,6 +9104,7 @@ class SharedFolderMetadataBase(bb.Struct):
         self._owner_display_names_value = bb.NOT_SET
         self._owner_team_value = bb.NOT_SET
         self._parent_shared_folder_id_value = bb.NOT_SET
+        self._path_display_value = bb.NOT_SET
         self._path_lower_value = bb.NOT_SET
         self._parent_folder_name_value = bb.NOT_SET
         if access_type is not None:
@@ -9087,6 +9119,8 @@ class SharedFolderMetadataBase(bb.Struct):
             self.owner_team = owner_team
         if parent_shared_folder_id is not None:
             self.parent_shared_folder_id = parent_shared_folder_id
+        if path_display is not None:
+            self.path_display = path_display
         if path_lower is not None:
             self.path_lower = path_lower
         if parent_folder_name is not None:
@@ -9109,6 +9143,9 @@ class SharedFolderMetadataBase(bb.Struct):
 
     # Instance attribute type: str (validator is set below)
     parent_shared_folder_id = bb.Attribute("parent_shared_folder_id", nullable=True)
+
+    # Instance attribute type: str (validator is set below)
+    path_display = bb.Attribute("path_display", nullable=True)
 
     # Instance attribute type: str (validator is set below)
     path_lower = bb.Attribute("path_lower", nullable=True)
@@ -9169,6 +9206,7 @@ class SharedFolderMetadata(SharedFolderMetadataBase):
                  owner_display_names=None,
                  owner_team=None,
                  parent_shared_folder_id=None,
+                 path_display=None,
                  path_lower=None,
                  parent_folder_name=None,
                  link_metadata=None,
@@ -9180,6 +9218,7 @@ class SharedFolderMetadata(SharedFolderMetadataBase):
                                                    owner_display_names,
                                                    owner_team,
                                                    parent_shared_folder_id,
+                                                   path_display,
                                                    path_lower,
                                                    parent_folder_name)
         self._link_metadata_value = bb.NOT_SET
@@ -11093,6 +11132,7 @@ AccessLevel._editor_validator = bv.Void()
 AccessLevel._viewer_validator = bv.Void()
 AccessLevel._viewer_no_comment_validator = bv.Void()
 AccessLevel._traverse_validator = bv.Void()
+AccessLevel._no_access_validator = bv.Void()
 AccessLevel._other_validator = bv.Void()
 AccessLevel._tagmap = {
     'owner': AccessLevel._owner_validator,
@@ -11100,6 +11140,7 @@ AccessLevel._tagmap = {
     'viewer': AccessLevel._viewer_validator,
     'viewer_no_comment': AccessLevel._viewer_no_comment_validator,
     'traverse': AccessLevel._traverse_validator,
+    'no_access': AccessLevel._no_access_validator,
     'other': AccessLevel._other_validator,
 }
 
@@ -11108,6 +11149,7 @@ AccessLevel.editor = AccessLevel('editor')
 AccessLevel.viewer = AccessLevel('viewer')
 AccessLevel.viewer_no_comment = AccessLevel('viewer_no_comment')
 AccessLevel.traverse = AccessLevel('traverse')
+AccessLevel.no_access = AccessLevel('no_access')
 AccessLevel.other = AccessLevel('other')
 
 AclUpdatePolicy._owner_validator = bv.Void()
@@ -12781,7 +12823,7 @@ SetAccessInheritanceError.other = SetAccessInheritanceError('other')
 ShareFolderArgBase.acl_update_policy.validator = bv.Nullable(AclUpdatePolicy_validator)
 ShareFolderArgBase.force_async.validator = bv.Boolean()
 ShareFolderArgBase.member_policy.validator = bv.Nullable(MemberPolicy_validator)
-ShareFolderArgBase.path.validator = files.WritePath_validator
+ShareFolderArgBase.path.validator = files.WritePathOrId_validator
 ShareFolderArgBase.shared_link_policy.validator = bv.Nullable(SharedLinkPolicy_validator)
 ShareFolderArgBase.viewer_info_policy.validator = bv.Nullable(ViewerInfoPolicy_validator)
 ShareFolderArgBase.access_inheritance.validator = AccessInheritance_validator
@@ -12986,12 +13028,14 @@ SharedFileMetadata._all_fields_ = [
 
 SharedFolderAccessError._invalid_id_validator = bv.Void()
 SharedFolderAccessError._not_a_member_validator = bv.Void()
+SharedFolderAccessError._invalid_member_validator = bv.Void()
 SharedFolderAccessError._email_unverified_validator = bv.Void()
 SharedFolderAccessError._unmounted_validator = bv.Void()
 SharedFolderAccessError._other_validator = bv.Void()
 SharedFolderAccessError._tagmap = {
     'invalid_id': SharedFolderAccessError._invalid_id_validator,
     'not_a_member': SharedFolderAccessError._not_a_member_validator,
+    'invalid_member': SharedFolderAccessError._invalid_member_validator,
     'email_unverified': SharedFolderAccessError._email_unverified_validator,
     'unmounted': SharedFolderAccessError._unmounted_validator,
     'other': SharedFolderAccessError._other_validator,
@@ -12999,6 +13043,7 @@ SharedFolderAccessError._tagmap = {
 
 SharedFolderAccessError.invalid_id = SharedFolderAccessError('invalid_id')
 SharedFolderAccessError.not_a_member = SharedFolderAccessError('not_a_member')
+SharedFolderAccessError.invalid_member = SharedFolderAccessError('invalid_member')
 SharedFolderAccessError.email_unverified = SharedFolderAccessError('email_unverified')
 SharedFolderAccessError.unmounted = SharedFolderAccessError('unmounted')
 SharedFolderAccessError.other = SharedFolderAccessError('other')
@@ -13041,6 +13086,7 @@ SharedFolderMetadataBase.is_team_folder.validator = bv.Boolean()
 SharedFolderMetadataBase.owner_display_names.validator = bv.Nullable(bv.List(bv.String()))
 SharedFolderMetadataBase.owner_team.validator = bv.Nullable(users.Team_validator)
 SharedFolderMetadataBase.parent_shared_folder_id.validator = bv.Nullable(common.SharedFolderId_validator)
+SharedFolderMetadataBase.path_display.validator = bv.Nullable(bv.String())
 SharedFolderMetadataBase.path_lower.validator = bv.Nullable(bv.String())
 SharedFolderMetadataBase.parent_folder_name.validator = bv.Nullable(bv.String())
 SharedFolderMetadataBase._all_field_names_ = set([
@@ -13050,6 +13096,7 @@ SharedFolderMetadataBase._all_field_names_ = set([
     'owner_display_names',
     'owner_team',
     'parent_shared_folder_id',
+    'path_display',
     'path_lower',
     'parent_folder_name',
 ])
@@ -13060,6 +13107,7 @@ SharedFolderMetadataBase._all_fields_ = [
     ('owner_display_names', SharedFolderMetadataBase.owner_display_names.validator),
     ('owner_team', SharedFolderMetadataBase.owner_team.validator),
     ('parent_shared_folder_id', SharedFolderMetadataBase.parent_shared_folder_id.validator),
+    ('path_display', SharedFolderMetadataBase.path_display.validator),
     ('path_lower', SharedFolderMetadataBase.path_lower.validator),
     ('parent_folder_name', SharedFolderMetadataBase.parent_folder_name.validator),
 ]
