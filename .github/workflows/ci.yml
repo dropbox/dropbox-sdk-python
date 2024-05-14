@@ -11,7 +11,7 @@ jobs:
     strategy:
       matrix:
         os: [macos-13, windows-latest]
-        python-version: [3.5, 3.6, 3.7, 3.8, pypy-3.7]
+        python-version: [3.6, 3.7, 3.8, pypy-3.7]
         exclude:
           - os: windows-latest
             python-version: 3.6
@@ -74,7 +74,7 @@ jobs:
     strategy:
       matrix:
         os: [macos-13, windows-latest]
-        python-version: [3.5, 3.6, 3.7, 3.8, pypy-3.7]
+        python-version: [3.6, 3.7, 3.8, pypy-3.7]
         exclude:
           - os: windows-latest
             python-version: 3.6
