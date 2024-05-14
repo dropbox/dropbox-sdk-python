@@ -8,5 +8,6 @@ ply
 pytest
 pytest-runner==5.2.0
 sphinx
+sphinx_rtd_theme
 twine
 wheel
