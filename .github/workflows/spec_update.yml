@@ -8,7 +8,7 @@ jobs:
   Update:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v2.7.0
       - name: Setup Python environment
         uses: actions/setup-python@v3.1.4
         with:
@@ -51,10 +51,11 @@ jobs:
           pip install -r requirements.txt
           python generate_base_client.py
       - name: Create Pull Request
-        uses: peter-evans/create-pull-request@v5.0.0
+        uses: peter-evans/create-pull-request@v5.0.3
         if: steps.git-diff-num.outputs.num-diff != 0
         with:
-          token: ${{ secrets.SPEC_UPDATE_TOKEN }}
+          # TODO: `SPEC_UPDATE_TOKEN` is broken
+          # token: ${{ secrets.SPEC_UPDATE_TOKEN }}
           commit-message: |
             ${{ steps.git-diff.outputs.commit}}
           branch: ${{ steps.git-branch.outputs.branch }}
@@ -63,7 +64,6 @@ jobs:
           body: |
             ${{ steps.git-diff.outputs.commit}}
           base: 'main'
-          team-reviewers: |
-            owners
-            maintainers
+          # TODO: `SPEC_UPDATE_TOKEN` is broken
+          # team-reviewers: "sdk-maintainers"
           draft: false
