@@ -8,7 +8,6 @@ import argparse
 import contextlib
 import datetime
 import os
-import six
 import sys
 import time
 import unicodedata

@@ -14,7 +14,6 @@ __all__ = [
 
 import base64
 import os
-import six
 import urllib
 import re
 from datetime import datetime, timedelta
@@ -229,9 +228,6 @@ class DropboxOAuth2FlowBase:
         :return: The path and parameters components of an API URL.
         :rtype: str
         """
-        if six.PY2 and isinstance(target, str):
-            target = target.encode('utf8')
-
         target_path = url_path_quote(target)
 
         params = params or {}

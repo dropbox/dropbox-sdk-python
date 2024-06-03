@@ -26,7 +26,6 @@ version = eval(line.split('=', 1)[1].strip())  # pylint: disable=eval-used
 install_reqs = [
     'requests>=2.16.2',
     'urllib3<2',
-    'six >= 1.12.0',
     'stone>=2,<3.3.3',
 ]
 
@@ -63,19 +62,18 @@ dist = setup(
     project_urls={
         'Source': 'https://github.com/dropbox/dropbox-sdk-python',
     },
+    python_requires='>=3.8',
     # From <https://pypi.python.org/pypi?%3Aaction=list_classifiers>
     classifiers=[
         'Development Status :: 5 - Production/Stable',
         'Intended Audience :: Developers',
         'License :: OSI Approved :: MIT License',
         'Operating System :: OS Independent',
-        'Programming Language :: Python',
-        'Programming Language :: Python :: 2.7',
-        'Programming Language :: Python :: 3.4',
-        'Programming Language :: Python :: 3.5',
-        'Programming Language :: Python :: 3.6',
-        'Programming Language :: Python :: 3.7',
         'Programming Language :: Python :: 3.8',
+        'Programming Language :: Python :: 3.9',
+        'Programming Language :: Python :: 3.10',
+        'Programming Language :: Python :: 3.11',
+        'Programming Language :: Python :: 3.12',
         'Programming Language :: Python :: Implementation :: CPython',
         'Programming Language :: Python :: Implementation :: PyPy',
         'Topic :: Software Development :: Libraries :: Python Modules',

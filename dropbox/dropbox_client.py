@@ -16,7 +16,6 @@ import random
 import time
 
 import requests
-import six
 
 from datetime import datetime, timedelta
 from dropbox.auth import (
