@@ -1,5 +1,3 @@
-from __future__ import absolute_import
-
 from dropbox.dropbox_client import (  # noqa: F401 # pylint: disable=unused-import
     __version__, Dropbox, DropboxTeam, create_session
 )

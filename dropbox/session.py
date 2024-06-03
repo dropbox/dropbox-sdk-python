@@ -39,7 +39,7 @@ class _SSLAdapter(HTTPAdapter):
 
     def __init__(self, *args, **kwargs):
         self._ca_certs = kwargs.pop("ca_certs", None)
-        super(_SSLAdapter, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
 
     def init_poolmanager(self, connections, maxsize, block=False, **_):
         self.poolmanager = PoolManager(

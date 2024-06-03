@@ -1,6 +1,5 @@
 #!/usr/bin/env python
 
-from __future__ import absolute_import, division, print_function, unicode_literals
 
 import datetime
 import os
@@ -57,12 +56,12 @@ TEAM_KEY = "TEAM"
 SHARED_LINK_KEY = "DROPBOX_SHARED_LINK"
 
 def format_env_name(app_type=SCOPED_KEY, user_type=USER_KEY, key_type=ACCESS_TOKEN_KEY):
-    return '{}_{}_{}'.format(app_type, user_type, key_type)
+    return f'{app_type}_{user_type}_{key_type}'
 
 def _value_from_env_or_die(env_name):
     value = os.environ.get(env_name)
     if value is None:
-        print('Set {} environment variable to a valid value.'.format(env_name),
+        print(f'Set {env_name} environment variable to a valid value.',
               file=sys.stderr)
         sys.exit(1)
     return value
@@ -183,7 +182,7 @@ class TestDropbox:
     def test_upload_download(self, dbx_from_env):
         # Upload file
         random_filename = ''.join(RANDOM_FOLDER)
-        random_path = '/Test/%s/%s' % (TIMESTAMP, random_filename)
+        random_path = '/Test/{}/{}'.format(TIMESTAMP, random_filename)
         test_contents = DUMMY_PAYLOAD
         dbx_from_env.files_upload(test_contents, random_path)
 
@@ -297,17 +296,17 @@ def test_default_oauth2_urls():
         'http://localhost/dummy', 'dummy_session', 'dbx-auth-csrf-token')
 
     assert re.match(
-        r'^https://{}/oauth2/authorize\?'.format(re.escape(session.WEB_HOST)),
+        fr'^https://{re.escape(session.WEB_HOST)}/oauth2/authorize\?',
         flow_obj._get_authorize_url('http://localhost/redirect', 'state', 'legacy'),
     )
 
     assert flow_obj.build_url(
         '/oauth2/authorize'
-    ) == 'https://{}/oauth2/authorize'.format(session.API_HOST)
+    ) == f'https://{session.API_HOST}/oauth2/authorize'
 
     assert flow_obj.build_url(
         '/oauth2/authorize', host=session.WEB_HOST
-    ) == 'https://{}/oauth2/authorize'.format(session.WEB_HOST)
+    ) == f'https://{session.WEB_HOST}/oauth2/authorize'
 
 def test_bad_auth(dbx_session):
     # Test malformed token

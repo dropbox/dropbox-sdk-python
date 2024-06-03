@@ -61,7 +61,7 @@ def _build_egg(egg, archive_filename, to_dir):
     # returning the result
     log.warn(egg)
     if not os.path.exists(egg):
-        raise IOError('Could not build the egg.')
+        raise OSError('Could not build the egg.')
 
 
 def get_zip_class():

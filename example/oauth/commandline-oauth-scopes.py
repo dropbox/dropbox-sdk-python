@@ -26,7 +26,7 @@ try:
     # authorization has files.metadata.read scope only
     assert oauth_result.scope == 'files.metadata.read'
 except Exception as e:
-    print('Error: %s' % (e,))
+    print('Error: {}'.format(e))
     exit(1)
 
 # If an application needs write scopes now we can request the new scope with the auth flow
@@ -46,7 +46,7 @@ try:
     # authorization has account_info.read scope only
     assert oauth_result.scope == 'account_info.read'
 except Exception as e:
-    print('Error: %s' % (e,))
+    print('Error: {}'.format(e))
     exit(1)
 
 # If an application needs a new scope but wants to keep the existing scopes,
@@ -73,7 +73,7 @@ try:
     assert 'files.content.write' in oauth_result.scope
     print(oauth_result.scope)  # Printing for example
 except Exception as e:
-    print('Error: %s' % (e,))
+    print('Error: {}'.format(e))
     exit(1)
 
 with dropbox.Dropbox(oauth2_access_token=oauth_result.access_token,

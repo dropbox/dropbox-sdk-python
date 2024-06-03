@@ -19,7 +19,7 @@ auth_code = input("Enter the authorization code here: ").strip()
 try:
     oauth_result = auth_flow.finish(auth_code)
 except Exception as e:
-    print('Error: %s' % (e,))
+    print('Error: {}'.format(e))
     exit(1)
 
 with dropbox.Dropbox(oauth2_refresh_token=oauth_result.refresh_token, app_key=APP_KEY) as dbx:
