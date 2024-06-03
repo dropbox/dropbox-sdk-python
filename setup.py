@@ -1,6 +1,5 @@
 # Don't import unicode_literals because of a bug in py2 setuptools
 # where package_data is expected to be str and not unicode.
-from __future__ import absolute_import, division, print_function
 
 import codecs
 import os

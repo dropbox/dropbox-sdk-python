@@ -3,7 +3,6 @@
 This is an example app for API v2.
 """
 
-from __future__ import print_function
 
 import argparse
 import contextlib
@@ -74,7 +73,7 @@ def main():
         # First do all the files.
         for name in files:
             fullname = os.path.join(dn, name)
-            if not isinstance(name, six.text_type):
+            if not isinstance(name, str):
                 name = name.decode('utf-8')
             nname = unicodedata.normalize('NFC', name)
             if name.startswith('.'):
@@ -130,7 +129,7 @@ def list_folder(dbx, folder, subfolder):
     Return a dict mapping unicode filenames to
     FileMetadata|FolderMetadata entries.
     """
-    path = '/%s/%s' % (folder, subfolder.replace(os.path.sep, '/'))
+    path = '/{}/{}'.format(folder, subfolder.replace(os.path.sep, '/'))
     while '//' in path:
         path = path.replace('//', '/')
     path = path.rstrip('/')
@@ -151,7 +150,7 @@ def download(dbx, folder, subfolder, name):
 
     Return the bytes of the file, or None if it doesn't exist.
     """
-    path = '/%s/%s/%s' % (folder, subfolder.replace(os.path.sep, '/'), name)
+    path = '/{}/{}/{}'.format(folder, subfolder.replace(os.path.sep, '/'), name)
     while '//' in path:
         path = path.replace('//', '/')
     with stopwatch('download'):
@@ -169,7 +168,7 @@ def upload(dbx, fullname, folder, subfolder, name, overwrite=False):
 
     Return the request response, or None in case of error.
     """
-    path = '/%s/%s/%s' % (folder, subfolder.replace(os.path.sep, '/'), name)
+    path = '/{}/{}/{}'.format(folder, subfolder.replace(os.path.sep, '/'), name)
     while '//' in path:
         path = path.replace('//', '/')
     mode = (dropbox.files.WriteMode.overwrite
@@ -242,7 +241,7 @@ def stopwatch(message):
         yield
     finally:
         t1 = time.time()
-        print('Total elapsed time for %s: %.3f' % (message, t1 - t0))
+        print('Total elapsed time for {}: {:.3f}'.format(message, t1 - t0))
 
 if __name__ == '__main__':
     main()

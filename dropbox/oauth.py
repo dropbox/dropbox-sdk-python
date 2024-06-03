@@ -26,18 +26,14 @@ from .session import (
     DEFAULT_TIMEOUT,
 )
 
-if six.PY3:
-    url_path_quote = urllib.parse.quote  # pylint: disable=no-member,useless-suppression
-    url_encode = urllib.parse.urlencode  # pylint: disable=no-member,useless-suppression
-else:
-    url_path_quote = urllib.quote  # pylint: disable=no-member,useless-suppression
-    url_encode = urllib.urlencode  # pylint: disable=no-member,useless-suppression
+url_path_quote = urllib.parse.quote  # pylint: disable=no-member,useless-suppression
+url_encode = urllib.parse.urlencode  # pylint: disable=no-member,useless-suppression
 
 TOKEN_ACCESS_TYPES = ['offline', 'online', 'legacy']
 INCLUDE_GRANTED_SCOPES_TYPES = ['user', 'team']
 PKCE_VERIFIER_LENGTH = 128
 
-class OAuth2FlowNoRedirectResult(object):
+class OAuth2FlowNoRedirectResult:
     """
     Authorization information for an OAuth2Flow performed with no redirect.
     """
@@ -67,7 +63,7 @@ class OAuth2FlowNoRedirectResult(object):
         self.scope = scope
 
     def __repr__(self):
-        return 'OAuth2FlowNoRedirectResult(%s, %s, %s, %s, %s, %s)' % (
+        return 'OAuth2FlowNoRedirectResult({}, {}, {}, {}, {}, {})'.format(
             self.access_token,
             self.account_id,
             self.user_id,
@@ -89,7 +85,7 @@ class OAuth2FlowResult(OAuth2FlowNoRedirectResult):
 
         :param str url_state: The url state that was set by :meth:`DropboxOAuth2Flow.start`.
         """
-        super(OAuth2FlowResult, self).__init__(
+        super().__init__(
             access_token=access_token,
             account_id=account_id,
             user_id=user_id,
@@ -105,7 +101,7 @@ class OAuth2FlowResult(OAuth2FlowNoRedirectResult):
                    url_state, result.refresh_token, result.expires_at, result.scope)
 
     def __repr__(self):
-        return 'OAuth2FlowResult(%s, %s, %s, %s, %s, %s, %s)' % (
+        return 'OAuth2FlowResult({}, {}, {}, {}, {}, {}, {})'.format(
             self.access_token,
             self.account_id,
             self.user_id,
@@ -116,7 +112,7 @@ class OAuth2FlowResult(OAuth2FlowNoRedirectResult):
         )
 
 
-class DropboxOAuth2FlowBase(object):
+class DropboxOAuth2FlowBase:
 
     def __init__(self, consumer_key, consumer_secret=None, locale=None, token_access_type=None,
                  scope=None, include_granted_scopes=None, use_pkce=False, timeout=DEFAULT_TIMEOUT,
@@ -233,7 +229,7 @@ class DropboxOAuth2FlowBase(object):
         :return: The path and parameters components of an API URL.
         :rtype: str
         """
-        if six.PY2 and isinstance(target, six.text_type):
+        if six.PY2 and isinstance(target, str):
             target = target.encode('utf8')
 
         target_path = url_path_quote(target)
@@ -246,7 +242,7 @@ class DropboxOAuth2FlowBase(object):
 
         if params:
             query_string = _params_to_urlencoded(params)
-            return "%s?%s" % (target_path, query_string)
+            return "{}?{}".format(target_path, query_string)
         else:
             return target_path
 
@@ -260,7 +256,7 @@ class DropboxOAuth2FlowBase(object):
         :return: The full API URL.
         :rtype: str
         """
-        return "https://%s%s" % (host, self.build_path(target, params))
+        return "https://{}{}".format(host, self.build_path(target, params))
 
 
 class DropboxOAuth2FlowNoRedirect(DropboxOAuth2FlowBase):
@@ -311,7 +307,7 @@ class DropboxOAuth2FlowNoRedirect(DropboxOAuth2FlowBase):
         :param str ca_cert: path to CA certificate. If left blank, default certificate location \
             will be used
         """
-        super(DropboxOAuth2FlowNoRedirect, self).__init__(
+        super().__init__(
             consumer_key=consumer_key,
             consumer_secret=consumer_secret,
             locale=locale,
@@ -409,7 +405,7 @@ class DropboxOAuth2Flow(DropboxOAuth2FlowBase):
             will be used
         """
 
-        super(DropboxOAuth2Flow, self).__init__(
+        super().__init__(
             consumer_key=consumer_key,
             consumer_secret=consumer_secret,
             locale=locale,
@@ -610,15 +606,15 @@ def _params_to_urlencoded(params):
     unicode objects which are utf8-encoded.
     """
     def encode(o):
-        if isinstance(o, six.binary_type):
+        if isinstance(o, bytes):
             return o
         else:
-            if isinstance(o, six.text_type):
+            if isinstance(o, str):
                 return o.encode('utf-8')
             else:
                 return str(o).encode('utf-8')
 
-    utf8_params = {encode(k): encode(v) for k, v in six.iteritems(params)}
+    utf8_params = {encode(k): encode(v) for k, v in params.items()}
     return url_encode(utf8_params)
 
 def _generate_pkce_code_verifier():

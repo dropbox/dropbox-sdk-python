@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 #
 # Dropbox for Python documentation build configuration file, created by
 # sphinx-quickstart on Fri Oct 24 13:42:45 2014.
@@ -54,8 +53,8 @@ source_suffix = '.rst'
 master_doc = 'index'
 
 # General information about the project.
-project = u'Dropbox for Python'
-copyright = u'2015-2024, Dropbox, Inc.'
+project = 'Dropbox for Python'
+copyright = '2015-2024, Dropbox, Inc.'
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the

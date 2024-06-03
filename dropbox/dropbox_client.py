@@ -65,7 +65,7 @@ TEAM_AUTH = 'team'
 APP_AUTH = 'app'
 NO_AUTH = 'noauth'
 
-class RouteResult(object):
+class RouteResult:
     """The successful result of a call to a route."""
 
     def __init__(self, obj_result, http_resp=None):
@@ -75,7 +75,7 @@ class RouteResult(object):
         :param requests.models.Response http_resp: A raw HTTP response. It will
             be used to stream the binary-body payload of the response.
         """
-        assert isinstance(obj_result, six.string_types), \
+        assert isinstance(obj_result, str), \
             'obj_result: expected string, got %r' % type(obj_result)
         if http_resp is not None:
             assert isinstance(http_resp, requests.models.Response), \
@@ -84,7 +84,7 @@ class RouteResult(object):
         self.obj_result = obj_result
         self.http_resp = http_resp
 
-class RouteErrorResult(object):
+class RouteErrorResult:
     """The error result of a call to a route."""
 
     def __init__(self, request_id, obj_result):
@@ -117,7 +117,7 @@ def create_session(max_connections=8, proxies=None, ca_certs=None):
         session.proxies = proxies
     return session
 
-class _DropboxTransport(object):
+class _DropboxTransport:
     """
     Responsible for implementing the wire protocol for making requests to the
     Dropbox API.
@@ -191,7 +191,7 @@ class _DropboxTransport(object):
             )
 
         if headers is not None and not isinstance(headers, dict):
-            raise BadInputException('Expected dict, got {}'.format(headers))
+            raise BadInputException(f'Expected dict, got {headers}')
 
         if oauth2_refresh_token and not app_key:
             raise BadInputException("app_key is required to refresh tokens")
@@ -221,7 +221,7 @@ class _DropboxTransport(object):
         base_user_agent = 'OfficialDropboxPythonSDKv2/' + __version__
         if user_agent:
             self._raw_user_agent = user_agent
-            self._user_agent = '{}/{}'.format(user_agent, base_user_agent)
+            self._user_agent = f'{user_agent}/{base_user_agent}'
         else:
             self._raw_user_agent = None
             self._user_agent = base_user_agent
@@ -307,7 +307,7 @@ class _DropboxTransport(object):
         auth_type = route.attrs['auth']
         route_name = namespace + '/' + route.name
         if route.version > 1:
-            route_name += '_v{}'.format(route.version)
+            route_name += f'_v{route.version}'
         route_style = route.attrs['style'] or 'rpc'
         serialized_arg = stone_serializers.json_encode(route.arg_type,
                                                        request_arg)
@@ -388,7 +388,7 @@ class _DropboxTransport(object):
             return
 
         self._logger.info('Refreshing access token.')
-        url = "https://{}/oauth2/token".format(host)
+        url = f"https://{host}/oauth2/token"
         body = {'grant_type': 'refresh_token',
                 'refresh_token': self._oauth2_refresh_token,
                 'client_id': self._app_key,
@@ -530,7 +530,7 @@ class _DropboxTransport(object):
         if host not in self._host_map:
             raise ValueError('Unknown value for host: %r' % host)
 
-        if not isinstance(request_binary, (six.binary_type, type(None))):
+        if not isinstance(request_binary, (bytes, type(None))):
             # Disallow streams and file-like objects even though the underlying
             # requests library supports them. This is to prevent incorrect
             # behavior when a non-rewindable stream is read from, but the
@@ -553,7 +553,7 @@ class _DropboxTransport(object):
                 raise BadInputException(
                     'Client id and client secret are required for routes with app auth')
             auth_header = base64.b64encode(
-                "{}:{}".format(self._app_key, self._app_secret).encode("utf-8")
+                f"{self._app_key}:{self._app_secret}".encode("utf-8")
             )
             headers['Authorization'] = 'Basic {}'.format(auth_header.decode("utf-8"))
             if self._headers:
@@ -561,7 +561,7 @@ class _DropboxTransport(object):
         elif auth_type == NO_AUTH:
             pass
         else:
-            raise BadInputException('Unhandled auth type: {}'.format(auth_type))
+            raise BadInputException(f'Unhandled auth type: {auth_type}')
 
         # The contents of the body of the HTTP request
         body = None

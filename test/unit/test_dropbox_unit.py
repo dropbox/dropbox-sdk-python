@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-import mock
+from unittest import mock
 import pickle
 
 import pytest
@@ -46,22 +46,22 @@ class TestOAuth:
                                 assert authorization_url\
                                     .startswith('https://{}/oauth2/authorize?'
                                                 .format(session.WEB_HOST))
-                                assert 'client_id={}'.format(APP_KEY) in authorization_url
+                                assert f'client_id={APP_KEY}' in authorization_url
                                 assert 'response_type=code' in authorization_url
 
                                 if redirect_uri:
-                                    assert 'redirect_uri={}'.format(redirect_uri) \
+                                    assert f'redirect_uri={redirect_uri}' \
                                         in authorization_url
                                 else:
                                     assert 'redirect_uri' not in authorization_url
 
                                 if state:
-                                    assert 'state={}'.format(state) in authorization_url
+                                    assert f'state={state}' in authorization_url
                                 else:
                                     assert 'state' not in authorization_url
 
                                 if token_access_type:
-                                    assert 'token_access_type={}'.format(token_access_type) \
+                                    assert f'token_access_type={token_access_type}' \
                                         in authorization_url
                                 else:
                                     assert 'token_access_type' not in authorization_url
@@ -81,7 +81,7 @@ class TestOAuth:
 
                                 if code_challenge:
                                     assert 'code_challenge_method=S256' in authorization_url
-                                    assert 'code_challenge={}'.format(code_challenge)\
+                                    assert f'code_challenge={code_challenge}'\
                                         in authorization_url
                                 else:
                                     assert 'code_challenge_method' not in authorization_url
@@ -98,7 +98,7 @@ class TestOAuth:
         legacy_default_authorization_url = flow_obj._get_authorize_url(None, None, 'legacy')
         assert legacy_default_authorization_url.startswith('https://{}/oauth2/authorize?'
                                                            .format(session.WEB_HOST))
-        assert 'client_id={}'.format(APP_KEY) in legacy_default_authorization_url
+        assert f'client_id={APP_KEY}' in legacy_default_authorization_url
         assert 'response_type=code' in legacy_default_authorization_url
 
     def test_authorization_url_invalid_token_type_raises_assertion_error(self):
@@ -113,7 +113,7 @@ class TestOAuth:
         online_authorization_url = flow_obj._get_authorize_url(None, None, 'online')
         assert online_authorization_url.startswith('https://{}/oauth2/authorize?'
                                                    .format(session.WEB_HOST))
-        assert 'client_id={}'.format(APP_KEY) in online_authorization_url
+        assert f'client_id={APP_KEY}' in online_authorization_url
         assert 'response_type=code' in online_authorization_url
         assert 'token_access_type=online' in online_authorization_url
 
@@ -124,7 +124,7 @@ class TestOAuth:
         offline_authorization_url = flow_obj._get_authorize_url(None, None, 'offline')
         assert offline_authorization_url.startswith('https://{}/oauth2/authorize?'
                                                     .format(session.WEB_HOST))
-        assert 'client_id={}'.format(APP_KEY) in offline_authorization_url
+        assert f'client_id={APP_KEY}' in offline_authorization_url
         assert 'response_type=code' in offline_authorization_url
         assert 'token_access_type=offline' in offline_authorization_url
 
@@ -136,7 +136,7 @@ class TestOAuth:
         scope_authorization_url = flow_obj._get_authorize_url(None, None, 'offline', scopes, 'user')
         assert scope_authorization_url.startswith('https://{}/oauth2/authorize?'
                 .format(session.WEB_HOST))
-        assert 'client_id={}'.format(APP_KEY) in scope_authorization_url
+        assert f'client_id={APP_KEY}' in scope_authorization_url
         assert 'response_type=code' in scope_authorization_url
         assert 'token_access_type=offline' in scope_authorization_url
         assert 'scope=account_info.read+files.metadata.read' in scope_authorization_url
@@ -150,7 +150,7 @@ class TestOAuth:
         scope_authorization_url = flow_obj._get_authorize_url(None, None, 'offline', scopes)
         assert scope_authorization_url.startswith('https://{}/oauth2/authorize?'
                                                   .format(session.WEB_HOST))
-        assert 'client_id={}'.format(APP_KEY) in scope_authorization_url
+        assert f'client_id={APP_KEY}' in scope_authorization_url
         assert 'response_type=code' in scope_authorization_url
         assert 'token_access_type=offline' in scope_authorization_url
         assert 'scope=account_info.read+files.metadata.read' in scope_authorization_url
@@ -207,7 +207,7 @@ class TestOAuth:
 
         assert authorization_url.startswith('https://{}/oauth2/authorize?'
                                             .format(session.WEB_HOST))
-        assert 'client_id={}'.format(APP_KEY) in authorization_url
+        assert f'client_id={APP_KEY}' in authorization_url
         assert 'response_type=code' in authorization_url
         mycode = 'test oauth code'
         auth_result = auth_flow_offline_with_scopes.finish(mycode)
@@ -222,7 +222,7 @@ class TestOAuth:
         token_call_args = auth_flow_offline_with_scopes.requests_session.post.call_args_list
         assert len(token_call_args) == 1
         first_call_args = token_call_args[0]
-        assert first_call_args[0][0] == 'https://{}/oauth2/token'.format(session.API_HOST)
+        assert first_call_args[0][0] == f'https://{session.API_HOST}/oauth2/token'
         call_data = first_call_args[1]['data']
         assert call_data['client_id'] == APP_KEY
         assert call_data['grant_type'] == 'authorization_code'

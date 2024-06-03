@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-from __future__ import absolute_import, division, print_function, unicode_literals
 
 import argparse
 import glob
@@ -48,15 +47,15 @@ def main():
     if verbose:
         print('Generating Python types')
     subprocess.check_output(
-        (['python', '-m', 'stone.cli', 'python_types', dropbox_pkg_path] +
+        ['python', '-m', 'stone.cli', 'python_types', dropbox_pkg_path] +
          specs + ['-a', 'host', '-a', 'style', '-a', 'auth'] +
-         ['--', '-r', 'dropbox.dropbox_client.Dropbox.{ns}_{route}', '-p', 'dropbox']))
+         ['--', '-r', 'dropbox.dropbox_client.Dropbox.{ns}_{route}', '-p', 'dropbox'])
 
     if verbose:
         print('Generating Python client')
 
     o = subprocess.check_output(
-        (['python', '-m', 'stone.cli', 'python_client', dropbox_pkg_path] +
+        ['python', '-m', 'stone.cli', 'python_client', dropbox_pkg_path] +
          specs + ['-a', 'host', '-a', 'style', '-a', 'auth', '-a', 'scope'] +
          [
              '--',
@@ -65,12 +64,12 @@ def main():
               '-c', 'DropboxBase',
               '-t', 'dropbox',
               '-a', 'scope'
-         ]))
+         ])
     if o:
         print('Output:', o)
 
     o = subprocess.check_output(
-        (['python', '-m', 'stone.cli', 'python_client', dropbox_pkg_path] +
+        ['python', '-m', 'stone.cli', 'python_client', dropbox_pkg_path] +
          specs + ['-a', 'host', '-a', 'style', '-a', 'auth', '-a', 'scope'] +
          [
              '--',
@@ -79,7 +78,7 @@ def main():
              '-c', 'DropboxTeamBase',
              '-t', 'dropbox',
              '-a', 'scope'
-         ]))
+         ])
     if o:
         print('Output:', o)
 

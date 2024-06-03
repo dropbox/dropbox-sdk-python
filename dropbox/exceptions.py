@@ -4,7 +4,7 @@ class DropboxException(Exception):
     def __init__(self, request_id, *args, **kwargs):
         # A request_id can be shared with Dropbox Support to pinpoint the exact
         # request that returns an error.
-        super(DropboxException, self).__init__(request_id, *args, **kwargs)
+        super().__init__(request_id, *args, **kwargs)
         self.request_id = request_id
 
     def __str__(self):
@@ -24,20 +24,20 @@ class ApiError(DropboxException):
         :param (str) user_message_locale: The locale of ``user_message_text``,
             if present.
         """
-        super(ApiError, self).__init__(request_id, error)
+        super().__init__(request_id, error)
         self.error = error
         self.user_message_text = user_message_text
         self.user_message_locale = user_message_locale
 
     def __repr__(self):
-        return 'ApiError({!r}, {})'.format(self.request_id, self.error)
+        return f'ApiError({self.request_id!r}, {self.error})'
 
 
 class HttpError(DropboxException):
     """Errors produced at the HTTP layer."""
 
     def __init__(self, request_id, status_code, body):
-        super(HttpError, self).__init__(request_id, status_code, body)
+        super().__init__(request_id, status_code, body)
         self.status_code = status_code
         self.body = body
 
@@ -50,40 +50,40 @@ class PathRootError(HttpError):
     """Error caused by an invalid path root."""
 
     def __init__(self, request_id, error=None):
-        super(PathRootError, self).__init__(request_id, 422, None)
+        super().__init__(request_id, 422, None)
         self.error = error
 
     def __repr__(self):
-        return 'PathRootError({!r}, {!r})'.format(self.request_id, self.error)
+        return f'PathRootError({self.request_id!r}, {self.error!r})'
 
 
 class BadInputError(HttpError):
     """Errors due to bad input parameters to an API Operation."""
 
     def __init__(self, request_id, message):
-        super(BadInputError, self).__init__(request_id, 400, message)
+        super().__init__(request_id, 400, message)
         self.message = message
 
     def __repr__(self):
-        return 'BadInputError({!r}, {!r})'.format(self.request_id, self.message)
+        return f'BadInputError({self.request_id!r}, {self.message!r})'
 
 
 class AuthError(HttpError):
     """Errors due to invalid authentication credentials."""
 
     def __init__(self, request_id, error):
-        super(AuthError, self).__init__(request_id, 401, None)
+        super().__init__(request_id, 401, None)
         self.error = error
 
     def __repr__(self):
-        return 'AuthError({!r}, {!r})'.format(self.request_id, self.error)
+        return f'AuthError({self.request_id!r}, {self.error!r})'
 
 
 class RateLimitError(HttpError):
     """Error caused by rate limiting."""
 
     def __init__(self, request_id, error=None, backoff=None):
-        super(RateLimitError, self).__init__(request_id, 429, None)
+        super().__init__(request_id, 429, None)
         self.error = error
         self.backoff = backoff
 
