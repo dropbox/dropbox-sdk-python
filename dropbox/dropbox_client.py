@@ -377,7 +377,7 @@ class _DropboxTransport(object):
 
         :param host: host to hit token endpoint with
         :param scope: list of permission scopes for access token
-        :return:
+        :return: token content
         """
         if scope is not None and (len(scope) == 0 or not isinstance(scope, list)):
             raise BadInputException("Scope list must be of type list")
@@ -409,6 +409,7 @@ class _DropboxTransport(object):
         self._oauth2_access_token = token_content["access_token"]
         self._oauth2_access_token_expiration = datetime.utcnow() + \
             timedelta(seconds=int(token_content["expires_in"]))
+        return token_content
 
     def request_json_object(self,
                             host,
