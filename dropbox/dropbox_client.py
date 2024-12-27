@@ -181,8 +181,8 @@ class _DropboxTransport(object):
             Not required if PKCE was used to authorize the token
         :param list scope: list of scopes to request on refresh.  If left blank,
             refresh will request all available scopes for application
-        :param str ca_certs: path to CA certificate. If left blank, default certificate location \
-            will be used
+        :param str ca_certs: a path to a file of concatenated CA certificates in PEM format.
+            Has the same meaning as when using :func:`ssl.wrap_socket`.
         """
 
         if not (oauth2_access_token or oauth2_refresh_token or (app_key and app_secret)):
@@ -590,7 +590,6 @@ class _DropboxTransport(object):
                                headers=headers,
                                data=body,
                                stream=stream,
-                               verify=True,
                                timeout=timeout,
                                )
         self.raise_dropbox_error_for_resp(r)

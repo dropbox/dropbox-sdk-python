@@ -25,15 +25,15 @@ for line in open(dbx_mod_path):
 version = eval(line.split('=', 1)[1].strip())  # pylint: disable=eval-used
 
 install_reqs = [
-    'requests >= 2.16.2',
+    'requests>=2.16.2',
     'six >= 1.12.0',
-    'stone >= 2',
+    'stone>=2,<3.3.3',
 ]
 
 setup_requires = [
     # Pin pytest-runner to 5.2.0, since 5.3.0 uses `find_namespaces` directive, not supported in
     # Python 2.7
-    'pytest-runner == 5.2.0',
+    'pytest-runner==5.2.0',
 ]
 
 # WARNING: This imposes limitations on test/requirements.txt such that the
@@ -53,7 +53,6 @@ dist = setup(
     setup_requires=setup_requires,
     tests_require=test_reqs,
     packages=['dropbox'],
-    package_data={'dropbox': ['trusted-certs.crt']},
     zip_safe=False,
     author_email='dev-platform@dropbox.com',
     author='Dropbox',
