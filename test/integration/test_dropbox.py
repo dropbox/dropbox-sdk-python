@@ -119,7 +119,7 @@ DUMMY_PAYLOAD = string.ascii_letters.encode('ascii')
 
 RANDOM_FOLDER = random.sample(string.ascii_letters, 15)
 TIMESTAMP = str(datetime.datetime.utcnow())
-STATIC_FILE = "/test.txt"
+STATIC_FILE = "/test_%s.txt" % ("".join(random.sample(string.ascii_letters, 15)), )
 
 @pytest.fixture(scope='module')
 def pytest_setup():
