@@ -1,3 +1,5 @@
+**Important: Make sure you're using v12.0.2 or newer of this SDK by January 2026 for continued compatibility with the Dropbox API servers. Please refer to this blog post for more information: https://dropbox.tech/developers/api-server-certificate-changes**
+
 .. image:: https://cfl.dropboxstatic.com/static/images/sdk/python_banner.png
     :target: https://github.com/dropbox/dropbox-sdk-python
 
