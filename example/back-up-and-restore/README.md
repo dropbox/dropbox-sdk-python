@@ -22,7 +22,7 @@ In this example, it contains a simple string of text (initially "original").
 
 # API usage
 ## New v2 endpoints
-This app uses the Dropbox API v2 endpoints files_upload, files_restore, files_download_to_file, and files_list_revisions. See more here: http://dropbox-sdk-python.readthedocs.org/en/main/
+This app uses the Dropbox API v2 endpoints files_upload, files_restore, files_download_to_file, and files_list_revisions. See more here: https://dropbox-sdk-python.readthedocs.io/en/latest/
 
 ## Error checking
 This example also shows you how to do specific error handling with the new API v2 exceptions. In the backup() function, you can see how to check for a specific kind of API Error.
