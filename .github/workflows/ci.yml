@@ -16,12 +16,16 @@ jobs:
           - os: windows-latest
             python-version: 3.6
           - os: macos-latest
-            python-version: 3.6, 3.7
-          - os: macos-15-intel
-            python-version: 3.6, 3.7
+            python-version: 3.6
+          - os: macos-latest
+            python-version: 3.7
+          - os: macos-latest
+            python-version: pypy-3.7
         include:
           - os: ubuntu-20.04
             python-version: 3.7
+          - os: ubuntu-20.04
+            python-version: 3.9
           - os: ubuntu-20.04
             python-version: 2.7
     steps:
@@ -34,7 +38,7 @@ jobs:
           python get-pip.py
       - if: ${{ matrix.python-version != '2.7' }}
         name: Setup Python environment
-        uses: actions/setup-python@v3.1.4
+        uses: actions/setup-python@v4
         with:
           python-version: ${{ matrix.python-version }}
       - name: Install Requirements
@@ -83,12 +87,16 @@ jobs:
           - os: windows-latest
             python-version: 3.6
           - os: macos-latest
-            python-version: 3.6, 3.7
-          - os: macos-15-intel
-            python-version: 3.6, 3.7
+            python-version: 3.6
+          - os: macos-latest
+            python-version: 3.7
+          - os: macos-latest
+            python-version: pypy-3.7
         include:
           - os: ubuntu-20.04
             python-version: 3.7
+          - os: ubuntu-20.04
+            python-version: 3.9
           - os: ubuntu-20.04
             python-version: 2.7
     steps:
@@ -101,7 +109,7 @@ jobs:
           python get-pip.py
       - if: ${{ matrix.python-version != '2.7' }}
         name: Setup Python environment
-        uses: actions/setup-python@v3.1.4
+        uses: actions/setup-python@v4
         with:
           python-version: ${{ matrix.python-version }}
       - name: Install Requirements
