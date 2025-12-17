@@ -22,11 +22,11 @@ jobs:
           - os: macos-latest
             python-version: pypy-3.7
         include:
-          - os: ubuntu-latest
+          - os: ubuntu-20.04
             python-version: 3.7
           - os: ubuntu-latest
             python-version: 3.9
-          - os: ubuntu-latest
+          - os: ubuntu-20.04
             python-version: 2.7
     steps:
       - uses: actions/checkout@v2
@@ -93,11 +93,11 @@ jobs:
           - os: macos-latest
             python-version: pypy-3.7
         include:
-          - os: ubuntu-latest
+          - os: ubuntu-20.04
             python-version: 3.7
           - os: ubuntu-latest
             python-version: 3.9
-          - os: ubuntu-latest
+          - os: ubuntu-20.04
             python-version: 2.7
     steps:
       - uses: actions/checkout@v2.3.4
