@@ -11,7 +11,7 @@ jobs:
     strategy:
       matrix:
         os: [macos-15-intel, macos-latest, windows-latest, ubuntu-latest]
-        python-version: [3.9, "3.10", 3.11, pypy-3.8, pypy-3.10]      
+        python-version: [3.9, "3.10", 3.11, 3.12]      
     steps:
       - uses: actions/checkout@v5
       - name: Setup Python environment
@@ -34,9 +34,9 @@ jobs:
   Docs:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Setup Python environment
-        uses: actions/setup-python@v2.2.1
+        uses: actions/setup-python@v6
         with:
           python-version: '3.9'
       - name: Install Requirements
