@@ -7,8 +7,6 @@ jobs:
     continue-on-error: true
     runs-on: ${{ matrix.os }}
 
-    # Supported Python versions:
-    # https://github.com/actions/python-versions/blob/main/versions-manifest.json
     strategy:
       fail-fast: false
       matrix:
@@ -31,10 +29,23 @@ jobs:
           python -m pip install -r requirements.txt
           python -m pip install -r test/requirements.txt
 
-      - name: Build and install package (wheel)
+      - name: Build wheel
+        run: python -m build --wheel
+
+      - name: Show dist contents
+        run: ls -la dist
+        shell: bash
+
+      - name: Install package from wheel (robust)
+        shell: bash
         run: |
-          python -m build --wheel
-          python -m pip install dist/*.whl
+          WHEEL="$(python -c "import glob; w=glob.glob('dist/*.whl'); print(w[0] if w else '')")"
+          if [ -z "$WHEEL" ]; then
+            echo "No wheel was built. dist contains:"
+            ls -la dist || true
+            exit 1
+          fi
+          python -m pip install "$WHEEL"
 
       - name: Run linter
         run: |
@@ -67,9 +78,16 @@ jobs:
       - name: Validate distribution metadata
         run: twine check dist/*
 
+      - name: Build wheel
+        run: python -m build --wheel
+
       - name: Install package from wheel
         run: |
-          python -m pip install dist/*.whl
+          python -c "import glob,sys; w=glob.glob('dist/*.whl'); assert w, f'No wheel built. dist contains: {glob.glob(\"dist/*\")}'; print(w[0])"
+          python -c "import glob; print(glob.glob('dist/*.whl')[0])" > wheel_path.txt
+          python -m pip install "$(cat wheel_path.txt)"
+        shell: bash
+     
 
       - name: Test documentation generation
         run: |
