@@ -6,29 +6,41 @@ jobs:
   CI:
     continue-on-error: true
     runs-on: ${{ matrix.os }}
-    # Supported Versions:
+
+    # Supported Python versions:
     # https://github.com/actions/python-versions/blob/main/versions-manifest.json
     strategy:
+      fail-fast: false
       matrix:
         os: [macos-15-intel, macos-latest, windows-latest, ubuntu-latest]
-        python-version: [3.9, "3.10", 3.11]      
+        python-version: ["3.9", "3.10", "3.11"]
+
     steps:
       - uses: actions/checkout@v5
-      - name: Setup Python environment
+
+      - name: Set up Python
         uses: actions/setup-python@v6
         with:
           python-version: ${{ matrix.python-version }}
-      - name: Install Requirements
+          cache: "pip"
+
+      - name: Install dependencies
         run: |
-          python -m pip install --upgrade pip
-          pip install flake8 pytest
-          pip install -r requirements.txt
-          pip install -r test/requirements.txt
-          python setup.py install --user
-      - name: Run Linter
+          python -m pip install -U pip
+          python -m pip install -U build flake8 pytest
+          python -m pip install -r requirements.txt
+          python -m pip install -r test/requirements.txt
+
+      - name: Build and install package (wheel)
+        run: |
+          python -m build --wheel
+          python -m pip install dist/*.whl
+
+      - name: Run linter
         run: |
           flake8 setup.py dropbox example test
-      - name: Run Unit Tests
+
+      - name: Run unit tests
         run: |
           pytest -v test/unit/test_dropbox_unit.py
   Docs:
@@ -63,49 +75,49 @@ jobs:
         run: |
           sphinx-build -b html docs build/html
   Integration:
-  continue-on-error: true
-  runs-on: ${{ matrix.os }}
-  strategy:
-    fail-fast: false
-    matrix:
-      os: [macos-15-intel, macos-latest, windows-latest, ubuntu-latest]
-      python-version: ["3.9", "3.10", "3.11"]
-  steps:
-    - uses: actions/checkout@v5
+    continue-on-error: true
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [macos-15-intel, macos-latest, windows-latest, ubuntu-latest]
+        python-version: ["3.9", "3.10", "3.11"]
+    steps:
+      - uses: actions/checkout@v5
 
-    - name: Set up Python
-      uses: actions/setup-python@v6
-      with:
-        python-version: ${{ matrix.python-version }}
-        cache: "pip"
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: ${{ matrix.python-version }}
+          cache: "pip"
 
-    - name: Install dependencies
-      run: |
-        python -m pip install -U pip
-        python -m pip install -U build
-        python -m pip install -r requirements.txt
-        python -m pip install -r test/requirements.txt
-        python -m pip install -U flake8 pytest
+      - name: Install dependencies
+        run: |
+          python -m pip install -U pip
+          python -m pip install -U build
+          python -m pip install -r requirements.txt
+          python -m pip install -r test/requirements.txt
+          python -m pip install -U flake8 pytest
 
-    - name: Build and install package (wheel)
-      run: |
-        python -m build --wheel
-        python -m pip install dist/*.whl
+      - name: Build and install package (wheel)
+        run: |
+          python -m build --wheel
+          python -m pip install dist/*.whl
 
-    - name: Run integration tests
-      env:
-        LEGACY_USER_DROPBOX_TOKEN: ${{ secrets.LEGACY_USER_DROPBOX_TOKEN }}
-        LEGACY_USER_CLIENT_ID: ${{ secrets.LEGACY_USER_CLIENT_ID }}
-        LEGACY_USER_CLIENT_SECRET: ${{ secrets.LEGACY_USER_CLIENT_SECRET }}
-        LEGACY_USER_REFRESH_TOKEN: ${{ secrets.LEGACY_USER_REFRESH_TOKEN }}
-        SCOPED_USER_DROPBOX_TOKEN: ${{ secrets.SCOPED_USER_DROPBOX_TOKEN }}
-        SCOPED_USER_CLIENT_ID: ${{ secrets.SCOPED_USER_CLIENT_ID }}
-        SCOPED_USER_CLIENT_SECRET: ${{ secrets.SCOPED_USER_CLIENT_SECRET }}
-        SCOPED_USER_REFRESH_TOKEN: ${{ secrets.SCOPED_USER_REFRESH_TOKEN }}
-        SCOPED_TEAM_DROPBOX_TOKEN: ${{ secrets.SCOPED_TEAM_DROPBOX_TOKEN }}
-        SCOPED_TEAM_CLIENT_ID: ${{ secrets.SCOPED_TEAM_CLIENT_ID }}
-        SCOPED_TEAM_CLIENT_SECRET: ${{ secrets.SCOPED_TEAM_CLIENT_SECRET }}
-        SCOPED_TEAM_REFRESH_TOKEN: ${{ secrets.SCOPED_TEAM_REFRESH_TOKEN }}
-        DROPBOX_SHARED_LINK: ${{ secrets.DROPBOX_SHARED_LINK }}
-      run: |
-        pytest -v test/integration/test_dropbox.py
+      - name: Run integration tests
+        env:
+          LEGACY_USER_DROPBOX_TOKEN: ${{ secrets.LEGACY_USER_DROPBOX_TOKEN }}
+          LEGACY_USER_CLIENT_ID: ${{ secrets.LEGACY_USER_CLIENT_ID }}
+          LEGACY_USER_CLIENT_SECRET: ${{ secrets.LEGACY_USER_CLIENT_SECRET }}
+          LEGACY_USER_REFRESH_TOKEN: ${{ secrets.LEGACY_USER_REFRESH_TOKEN }}
+          SCOPED_USER_DROPBOX_TOKEN: ${{ secrets.SCOPED_USER_DROPBOX_TOKEN }}
+          SCOPED_USER_CLIENT_ID: ${{ secrets.SCOPED_USER_CLIENT_ID }}
+          SCOPED_USER_CLIENT_SECRET: ${{ secrets.SCOPED_USER_CLIENT_SECRET }}
+          SCOPED_USER_REFRESH_TOKEN: ${{ secrets.SCOPED_USER_REFRESH_TOKEN }}
+          SCOPED_TEAM_DROPBOX_TOKEN: ${{ secrets.SCOPED_TEAM_DROPBOX_TOKEN }}
+          SCOPED_TEAM_CLIENT_ID: ${{ secrets.SCOPED_TEAM_CLIENT_ID }}
+          SCOPED_TEAM_CLIENT_SECRET: ${{ secrets.SCOPED_TEAM_CLIENT_SECRET }}
+          SCOPED_TEAM_REFRESH_TOKEN: ${{ secrets.SCOPED_TEAM_REFRESH_TOKEN }}
+          DROPBOX_SHARED_LINK: ${{ secrets.DROPBOX_SHARED_LINK }}
+        run: |
+          pytest -v test/integration/test_dropbox.py
