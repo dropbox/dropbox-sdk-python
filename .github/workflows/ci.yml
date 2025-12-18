@@ -10,35 +10,12 @@ jobs:
     # https://github.com/actions/python-versions/blob/main/versions-manifest.json
     strategy:
       matrix:
-        os: [macos-15-intel, macos-latest, windows-latest]
-        python-version: [3.6, 3.7, 3.8, 3.9, pypy-3.7]
-        exclude:
-          - os: windows-latest
-            python-version: 3.6
-          - os: macos-latest
-            python-version: 3.6
-          - os: macos-latest
-            python-version: 3.7
-          - os: macos-latest
-            python-version: pypy-3.7
-        include:
-          - os: ubuntu-22.04
-            python-version: 3.7
-          - os: ubuntu-latest
-            python-version: 3.9
-          - os: ubuntu-22.04
-            python-version: 2.7
+        os: [macos-15-intel, macos-latest, windows-latest, ubuntu-latest]
+        python-version: [3.9, 3.10, 3.11, 3.12, pypy-3.8, pypy-3.10]      
     steps:
-      - uses: actions/checkout@v2
-      - if: ${{ matrix.python-version == '2.7' }}
-        name: Setup Python environment (2.7)
-        run: |
-          sudo apt-get install python-is-python2
-          curl -sSL https://bootstrap.pypa.io/pip/2.7/get-pip.py -o get-pip.py
-          python get-pip.py
-      - if: ${{ matrix.python-version != '2.7' }}
-        name: Setup Python environment
-        uses: actions/setup-python@v3.1.4
+      - uses: actions/checkout@v3
+      - name: Setup Python environment
+        uses: actions/setup-python@v4
         with:
           python-version: ${{ matrix.python-version }}
       - name: Install Requirements
@@ -55,11 +32,11 @@ jobs:
         run: |
           pytest -v test/unit/test_dropbox_unit.py
   Docs:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Setup Python environment
-        uses: actions/setup-python@v3.1.4
+        uses: actions/setup-python@v4
         with:
           python-version: '3.9'
       - name: Install Requirements
@@ -81,35 +58,12 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [macos-15-intel, macos-latest, windows-latest]
-        python-version: [3.6, 3.7, 3.8, 3.9, pypy-3.7]
-        exclude:
-          - os: windows-latest
-            python-version: 3.6
-          - os: macos-latest
-            python-version: 3.6
-          - os: macos-latest
-            python-version: 3.7
-          - os: macos-latest
-            python-version: pypy-3.7
-        include:
-          - os: ubuntu-22.04
-            python-version: 3.7
-          - os: ubuntu-latest
-            python-version: 3.9
-          - os: ubuntu-22.04
-            python-version: 2.7
+        os: [macos-15-intel, macos-latest, windows-latest, ubuntu-latest]
+        python-version: [3.9, 3.10, 3.11, 3.12, pypy-3.8, pypy-3.10]      
     steps:
-      - uses: actions/checkout@v2.3.4
-      - if: ${{ matrix.python-version == '2.7' }}
-        name: Setup Python environment (2.7)
-        run: |
-          sudo apt-get install python-is-python2
-          curl -sSL https://bootstrap.pypa.io/pip/2.7/get-pip.py -o get-pip.py
-          python get-pip.py
-      - if: ${{ matrix.python-version != '2.7' }}
-        name: Setup Python environment
-        uses: actions/setup-python@v3.1.4
+      - uses: actions/checkout@v3
+      - name: Setup Python environment
+        uses: actions/setup-python@v4
         with:
           python-version: ${{ matrix.python-version }}
       - name: Install Requirements
