@@ -2,4 +2,4 @@ pytest
 mock
 pytest-mock
 coverage
-stone>=2,<3.3.9
+stone>=2,<=3.3.9
