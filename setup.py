@@ -30,19 +30,6 @@ install_reqs = [
     'stone>=2,<=3.3.9',
 ]
 
-setup_requires = [
-    # Pin pytest-runner to 5.2.0, since 5.3.0 uses `find_namespaces` directive, not supported in
-    # Python 2.7
-    'pytest-runner==5.2.0',
-]
-
-# WARNING: This imposes limitations on test/requirements.txt such that the
-# full Pip syntax is not supported. See also
-# <http://stackoverflow.com/questions/14399534/>.
-test_reqs = []
-with open('test/requirements.txt') as f:
-    test_reqs += f.read().splitlines()
-
 with codecs.open('README.rst', encoding='utf-8') as f:
     README = f.read()
 
@@ -50,8 +37,6 @@ dist = setup(
     name='dropbox',
     version=version,
     install_requires=install_reqs,
-    setup_requires=setup_requires,
-    tests_require=test_reqs,
     packages=['dropbox'],
     zip_safe=False,
     author_email='dev-platform@dropbox.com',
