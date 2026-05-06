@@ -4,16 +4,6 @@ from __future__ import absolute_import, division, print_function
 
 import codecs
 import os
-import sys
-
-# Ensure setuptools is available
-try:
-    from ez_setup import use_setuptools
-    use_setuptools()
-except ImportError:
-    # Try to use ez_setup, but if not, continue anyway. The import is known
-    # to fail when installing from a tar.gz.
-    print('Could not import ez_setup', file=sys.stderr)
 
 from setuptools import setup
 
