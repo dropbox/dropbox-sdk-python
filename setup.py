@@ -12,7 +12,7 @@ line = '= "UNKNOWN"'
 for line in open(dbx_mod_path):
     if line.startswith('__version__'):
         break
-version = eval(line.split('=', 1)[1].strip())  # pylint: disable=eval-used
+version = line.split('=', 1)[1].strip().strip('\'"')
 
 install_reqs = [
     'requests>=2.16.2',
