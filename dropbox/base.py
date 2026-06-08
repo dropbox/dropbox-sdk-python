@@ -32,7 +32,8 @@ class DropboxBase(object):
     __metaclass__ = ABCMeta
 
     @abstractmethod
-    def request(self, route, namespace, arg, arg_binary=None):
+    def request(self, route, namespace, request_arg, request_binary,
+                timeout=None):
         pass
 
     # ------------------------------------------

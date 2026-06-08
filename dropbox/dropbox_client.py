@@ -196,7 +196,7 @@ class _DropboxTransport(object):
         if oauth2_refresh_token and not app_key:
             raise BadInputException("app_key is required to refresh tokens")
 
-        if scope is not None and (len(scope) == 0 or not isinstance(scope, list)):
+        if scope is not None and (not isinstance(scope, list) or len(scope) == 0):
             raise BadInputException("Scope list must be of type list")
 
         self._oauth2_access_token = oauth2_access_token
@@ -262,7 +262,7 @@ class _DropboxTransport(object):
             oauth2_access_token or self._oauth2_access_token,
             max_retries_on_error or self._max_retries_on_error,
             max_retries_on_rate_limit or self._max_retries_on_rate_limit,
-            user_agent or self._user_agent,
+            user_agent or self._raw_user_agent,
             session or self._session,
             headers or self._headers,
             timeout or self._timeout,
@@ -379,7 +379,7 @@ class _DropboxTransport(object):
         :param scope: list of permission scopes for access token
         :return:
         """
-        if scope is not None and (len(scope) == 0 or not isinstance(scope, list)):
+        if scope is not None and (not isinstance(scope, list) or len(scope) == 0):
             raise BadInputException("Scope list must be of type list")
 
         if not (self._oauth2_refresh_token and self._app_key):
