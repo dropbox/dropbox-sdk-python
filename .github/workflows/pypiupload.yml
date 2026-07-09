@@ -18,20 +18,19 @@ jobs:
     steps:
     - uses: actions/checkout@v5
 
-    # NOTE: The IAM role and Secrets Manager secret below must be provisioned
-    # for the dropbox-sdk-python repo. The stone repo's role/secret ARNs will
-    # NOT work here -- the role's trust policy is scoped to a single repo.
     - name: Configure AWS credentials (OIDC)
       uses: aws-actions/configure-aws-credentials@v4
       with:
-        role-to-assume: arn:aws:iam::082972943155:role/oidc-github-dropbox-sdk-python-repo
+        role-to-assume: arn:aws:iam::082972943155:role/oidc-github-dropbox-dropbox-sdk-python-repo
         aws-region: us-west-2
     - name: Get PyPI token from AWS Secrets Manager
       id: get-secret
       uses: aws-actions/aws-secretsmanager-get-secrets@v2
       with:
+        # Referenced by friendly name; Secrets Manager appends a random suffix to
+        # the full ARN, so the name is the stable identifier.
         secret-ids: |
-          PYPI_SECRET,arn:aws:secretsmanager:us-west-2:082972943155:secret:pypi-api-token-dropbox-sdk-python
+          PYPI_SECRET,pypi-api-token-dropbox-sdk-python
         parse-json-secrets: false
     - name: Setup Python environment
       uses: actions/setup-python@v6
