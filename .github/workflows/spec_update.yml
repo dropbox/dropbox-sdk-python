@@ -8,9 +8,9 @@ jobs:
   Update:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v5
       - name: Setup Python environment
-        uses: actions/setup-python@v3.1.4
+        uses: actions/setup-python@v6
         with:
           python-version: '3.11'
       - name: Get current time
@@ -51,7 +51,7 @@ jobs:
           pip install -r requirements.txt
           python generate_base_client.py
       - name: Create Pull Request
-        uses: peter-evans/create-pull-request@v5.0.0
+        uses: peter-evans/create-pull-request@v7
         if: steps.git-diff-num.outputs.num-diff != 0
         with:
           token: ${{ secrets.SPEC_UPDATE_TOKEN }}
