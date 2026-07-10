@@ -19,10 +19,9 @@ Documentation can be found on `Read The Docs`_.
 Requirements
 ============
 
-This SDK requires **Python 3.11 or newer**. Support for Python 2.7 and Python 3.4
-through 3.10 has been dropped, as those versions have reached end of life and are no
-longer maintained upstream. This release also updates the ``stone`` dependency to
-``>=3.4.0`` and removes the ``six`` dependency.
+This SDK requires **Python 3.11 or newer**. Earlier versions of Python, including
+Python 2.7 and Python 3.4 through 3.10, are not supported, as they have reached end
+of life and are no longer maintained upstream.
 
 Installation
 ============
