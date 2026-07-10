@@ -8,7 +8,7 @@ import pytest
 # Tests OAuth Flow
 from dropbox import DropboxOAuth2Flow, session, Dropbox, create_session
 from dropbox.dropbox_client import BadInputException, DropboxTeam
-from dropbox.exceptions import AuthError
+from dropbox.exceptions import AuthError, BadInputError
 from dropbox.oauth import OAuth2FlowNoRedirectResult, DropboxOAuth2FlowNoRedirect
 from datetime import datetime, timedelta
 
@@ -255,6 +255,37 @@ class TestClient:
         mocker.patch.object(session_obj, 'post', return_value=post_response)
         return session_obj
 
+    @pytest.fixture(scope='function')
+    def bad_request_no_error_key_session_instance(self, mocker):
+        # A 400 response whose JSON body does not contain an "error" key.
+        session_obj = create_session()
+        post_response = mock.MagicMock(status_code=400)
+        post_response.json.return_value = {"error_description": "some other problem"}
+        post_response.text = '{"error_description": "some other problem"}'
+        mocker.patch.object(session_obj, 'post', return_value=post_response)
+        return session_obj
+
+    @pytest.fixture(scope='function')
+    def server_error_then_ok_session_instance(self, mocker):
+        # First refresh POST returns 500, second returns 200 with a valid token.
+        session_obj = create_session()
+        error_response = mock.MagicMock(status_code=500)
+        error_response.text = 'internal server error'
+        ok_response = mock.MagicMock(status_code=200)
+        ok_response.json.return_value = {"access_token": ACCESS_TOKEN, "expires_in": EXPIRES_IN}
+        mocker.patch.object(session_obj, 'post',
+                            side_effect=[error_response, ok_response])
+        return session_obj
+
+    @pytest.fixture(scope='function')
+    def server_error_session_instance(self, mocker):
+        # Every refresh POST returns 500.
+        session_obj = create_session()
+        error_response = mock.MagicMock(status_code=500)
+        error_response.text = 'internal server error'
+        mocker.patch.object(session_obj, 'post', return_value=error_response)
+        return session_obj
+
     def test_default_Dropbox_raises_assertion_error(self):
         with pytest.raises(BadInputException):
             # Requires either access token or refresh token
@@ -405,6 +436,55 @@ class TestClient:
                       app_secret=APP_SECRET,
                       session=session_instance)
         dbx.as_user(TEAM_MEMBER_ID)
+
+    def test_non_list_scope_raises_bad_input(self, session_instance):
+        # A non-list scope with no len() must raise BadInputException, not
+        # TypeError from calling len() before the isinstance check.
+        with pytest.raises(BadInputException):
+            Dropbox(oauth2_access_token=ACCESS_TOKEN,
+                    scope=12345,
+                    session=session_instance)
+
+    def test_clone_does_not_double_user_agent(self, session_instance):
+        dbx = Dropbox(oauth2_access_token=ACCESS_TOKEN, session=session_instance,
+                      user_agent='myapp')
+        cloned = dbx.clone()
+        # The base suffix must appear exactly once after cloning.
+        assert cloned._user_agent.count('OfficialDropboxPythonSDKv2/') == 1
+        assert cloned._user_agent == dbx._user_agent
+
+    def test_refresh_400_without_error_key(self, bad_request_no_error_key_session_instance):
+        # A 400 body lacking the "error" key must raise BadInputError, not KeyError.
+        dbx = Dropbox(oauth2_refresh_token=REFRESH_TOKEN,
+                      app_key=APP_KEY,
+                      app_secret=APP_SECRET,
+                      session=bad_request_no_error_key_session_instance)
+        with pytest.raises(BadInputError):
+            dbx.check_and_refresh_access_token()
+
+    def test_refresh_retries_on_server_error(self, server_error_then_ok_session_instance):
+        # A 5xx on the refresh POST must be retried, then succeed.
+        dbx = Dropbox(oauth2_refresh_token=REFRESH_TOKEN,
+                      app_key=APP_KEY,
+                      app_secret=APP_SECRET,
+                      max_retries_on_error=2,
+                      session=server_error_then_ok_session_instance)
+        dbx.check_and_refresh_access_token()
+        assert server_error_then_ok_session_instance.post.call_count == 2
+        assert dbx._oauth2_access_token == ACCESS_TOKEN
+
+    def test_refresh_raises_after_exhausting_retries(self, server_error_session_instance):
+        # Once retries are exhausted, the 5xx propagates as InternalServerError.
+        from dropbox.exceptions import InternalServerError
+        dbx = Dropbox(oauth2_refresh_token=REFRESH_TOKEN,
+                      app_key=APP_KEY,
+                      app_secret=APP_SECRET,
+                      max_retries_on_error=2,
+                      session=server_error_session_instance)
+        with pytest.raises(InternalServerError):
+            dbx.check_and_refresh_access_token()
+        # Initial attempt + 2 retries.
+        assert server_error_session_instance.post.call_count == 3
 
 
 class TestSession:

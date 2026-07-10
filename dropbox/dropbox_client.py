@@ -195,7 +195,7 @@ class _DropboxTransport(object):
         if oauth2_refresh_token and not app_key:
             raise BadInputException("app_key is required to refresh tokens")
 
-        if scope is not None and (len(scope) == 0 or not isinstance(scope, list)):
+        if scope is not None and (not isinstance(scope, list) or len(scope) == 0):
             raise BadInputException("Scope list must be of type list")
 
         self._oauth2_access_token = oauth2_access_token
@@ -261,7 +261,7 @@ class _DropboxTransport(object):
             oauth2_access_token or self._oauth2_access_token,
             max_retries_on_error or self._max_retries_on_error,
             max_retries_on_rate_limit or self._max_retries_on_rate_limit,
-            user_agent or self._user_agent,
+            user_agent or self._raw_user_agent,
             session or self._session,
             headers or self._headers,
             timeout or self._timeout,
@@ -378,7 +378,7 @@ class _DropboxTransport(object):
         :param scope: list of permission scopes for access token
         :return:
         """
-        if scope is not None and (len(scope) == 0 or not isinstance(scope, list)):
+        if scope is not None and (not isinstance(scope, list) or len(scope) == 0):
             raise BadInputException("Scope list must be of type list")
 
         if not (self._oauth2_refresh_token and self._app_key):
@@ -401,8 +401,25 @@ class _DropboxTransport(object):
         timeout = DEFAULT_TIMEOUT
         if self._timeout:
             timeout = self._timeout
-        res = self._session.post(url, data=body, timeout=timeout)
-        self.raise_dropbox_error_for_resp(res)
+
+        attempt = 0
+        while True:
+            res = self._session.post(url, data=body, timeout=timeout)
+            try:
+                self.raise_dropbox_error_for_resp(res)
+                break
+            except InternalServerError as e:
+                attempt += 1
+                if attempt <= self._max_retries_on_error:
+                    # Use exponential backoff, matching request_json_string_with_retry.
+                    backoff = 2**attempt * random.random()
+                    self._logger.info(
+                        'HttpError status_code=%s while refreshing access token: '
+                        'Retrying in %.1f seconds',
+                        e.status_code, backoff)
+                    time.sleep(backoff)
+                else:
+                    raise
 
         token_content = res.json()
         self._oauth2_access_token = token_content["access_token"]
@@ -619,14 +636,14 @@ class _DropboxTransport(object):
             raise InternalServerError(request_id, res.status_code, res.text)
         elif res.status_code == 400:
             try:
-                if res.json()['error'] == 'invalid_grant':
+                if res.json().get('error') == 'invalid_grant':
                     request_id = res.headers.get('x-dropbox-request-id')
                     err = stone_serializers.json_compat_obj_decode(
                         AuthError_validator, 'invalid_access_token')
                     raise AuthError(request_id, err)
                 else:
                     raise BadInputError(request_id, res.text)
-            except ValueError:
+            except (ValueError, AttributeError):
                 raise BadInputError(request_id, res.text)
         elif res.status_code == 401:
             assert res.headers.get('content-type') == 'application/json', (
