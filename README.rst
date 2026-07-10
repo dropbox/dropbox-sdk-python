@@ -16,6 +16,13 @@ The official Dropbox SDK for Python.
 
 Documentation can be found on `Read The Docs`_.
 
+Requirements
+============
+
+This SDK requires **Python 3.11 or newer**. Earlier versions of Python, including
+Python 2.7 and Python 3.4 through 3.10, are not supported, as they have reached end
+of life and are no longer maintained upstream.
+
 Installation
 ============
 

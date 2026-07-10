@@ -4,14 +4,13 @@ on:
 
 jobs:
   CI:
-    continue-on-error: true
     runs-on: ${{ matrix.os }}
 
     strategy:
       fail-fast: false
       matrix:
         os: [macos-15-intel, macos-latest, windows-latest, ubuntu-latest]
-        python-version: ["3.9", "3.10", "3.11"]
+        python-version: ["3.11", "3.12", "3.13"]
 
     steps:
       - uses: actions/checkout@v5
@@ -62,7 +61,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v6
         with:
-          python-version: "3.9"
+          python-version: "3.11"
           cache: "pip"
 
       - name: Install build and doc tooling
@@ -101,7 +100,7 @@ jobs:
       max-parallel: 1
       matrix:
         os: [macos-15-intel, macos-latest, windows-latest, ubuntu-latest]
-        python-version: ["3.9", "3.10", "3.11"]
+        python-version: ["3.11", "3.12", "3.13"]
 
     steps:
       - uses: actions/checkout@v5

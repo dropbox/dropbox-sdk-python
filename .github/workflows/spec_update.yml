@@ -12,7 +12,7 @@ jobs:
       - name: Setup Python environment
         uses: actions/setup-python@v3.1.4
         with:
-          python-version: 3.9
+          python-version: '3.11'
       - name: Get current time
         uses: 1466587594/get-current-time@v2
         id: current-time

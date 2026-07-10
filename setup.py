@@ -1,7 +1,3 @@
-# Don't import unicode_literals because of a bug in py2 setuptools
-# where package_data is expected to be str and not unicode.
-from __future__ import absolute_import, division, print_function
-
 import codecs
 import os
 
@@ -16,8 +12,7 @@ version = eval(line.split('=', 1)[1].strip())  # pylint: disable=eval-used
 
 install_reqs = [
     'requests>=2.16.2',
-    'six >= 1.12.0',
-    'stone>=2,<=3.3.9',
+    'stone>=3.4.0,<4',
 ]
 
 with codecs.open('README.rst', encoding='utf-8') as f:
@@ -45,15 +40,13 @@ dist = setup(
         'License :: OSI Approved :: MIT License',
         'Operating System :: OS Independent',
         'Programming Language :: Python',
-        'Programming Language :: Python :: 2.7',
-        'Programming Language :: Python :: 3.4',
-        'Programming Language :: Python :: 3.5',
-        'Programming Language :: Python :: 3.6',
-        'Programming Language :: Python :: 3.7',
-        'Programming Language :: Python :: 3.8',
-        'Programming Language :: Python :: 3.9',
+        'Programming Language :: Python :: 3',
+        'Programming Language :: Python :: 3.11',
+        'Programming Language :: Python :: 3.12',
+        'Programming Language :: Python :: 3.13',
         'Programming Language :: Python :: Implementation :: CPython',
         'Programming Language :: Python :: Implementation :: PyPy',
         'Topic :: Software Development :: Libraries :: Python Modules',
     ],
+    python_requires='>=3.11',
 )
