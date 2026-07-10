@@ -1,4 +1,4 @@
-# Dependencies required for installation (keep in sync with setup.py)
+# Dependencies required for installation (keep in sync with pyproject.toml)
 requests>=2.16.2
 stone>=3.4.0,<4
 # Other dependencies for development
