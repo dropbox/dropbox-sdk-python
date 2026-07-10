@@ -48,7 +48,7 @@ jobs:
 
       - name: Run linter
         run: |
-          flake8 setup.py dropbox example test
+          flake8 dropbox example test
 
       - name: Run unit tests
         run: |

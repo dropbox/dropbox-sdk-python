@@ -40,7 +40,7 @@ Install from source:
 
     $ git clone git://github.com/dropbox/dropbox-sdk-python.git
     $ cd dropbox-sdk-python
-    $ python setup.py install
+    $ pip install .
 
 After installation, follow one of our `Examples`_ or read the documentation on `Read The Docs`_.
 

@@ -1,0 +1,49 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "dropbox"
+dynamic = ["version"]
+description = "Official Dropbox API Client"
+readme = { file = "README.rst", content-type = "text/x-rst" }
+requires-python = ">=3.11"
+license = { text = "MIT License" }
+authors = [{ name = "Dropbox", email = "dev-platform@dropbox.com" }]
+dependencies = [
+    "requests>=2.16.2",
+    "stone>=3.4.0,<4",
+]
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: Implementation :: CPython",
+    "Programming Language :: Python :: Implementation :: PyPy",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+]
+
+[project.urls]
+Homepage = "http://www.dropbox.com/developers"
+Source = "https://github.com/dropbox/dropbox-sdk-python"
+
+[project.optional-dependencies]
+test = ["pytest", "mock", "pytest-mock", "coverage", "stone>=3.4.0,<4"]
+docs = ["sphinx", "sphinx_rtd_theme"]
+dev = ["flake8", "twine", "wheel", "build"]
+
+[tool.setuptools]
+packages = ["dropbox"]
+zip-safe = false
+
+[tool.setuptools.dynamic]
+version = { attr = "dropbox.dropbox_client.__version__" }
+
+[tool.pytest.ini_options]
+norecursedirs = [".tox", ".venv", ".venv-*", "stone"]
