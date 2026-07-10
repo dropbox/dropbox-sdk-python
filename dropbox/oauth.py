@@ -14,7 +14,6 @@ __all__ = [
 
 import base64
 import os
-import six
 import urllib
 import re
 from datetime import datetime, timedelta
@@ -26,12 +25,8 @@ from .session import (
     DEFAULT_TIMEOUT,
 )
 
-if six.PY3:
-    url_path_quote = urllib.parse.quote  # pylint: disable=no-member,useless-suppression
-    url_encode = urllib.parse.urlencode  # pylint: disable=no-member,useless-suppression
-else:
-    url_path_quote = urllib.quote  # pylint: disable=no-member,useless-suppression
-    url_encode = urllib.urlencode  # pylint: disable=no-member,useless-suppression
+url_path_quote = urllib.parse.quote
+url_encode = urllib.parse.urlencode
 
 TOKEN_ACCESS_TYPES = ['offline', 'online', 'legacy']
 INCLUDE_GRANTED_SCOPES_TYPES = ['user', 'team']
@@ -233,9 +228,6 @@ class DropboxOAuth2FlowBase(object):
         :return: The path and parameters components of an API URL.
         :rtype: str
         """
-        if six.PY2 and isinstance(target, six.text_type):
-            target = target.encode('utf8')
-
         target_path = url_path_quote(target)
 
         params = params or {}
@@ -610,15 +602,15 @@ def _params_to_urlencoded(params):
     unicode objects which are utf8-encoded.
     """
     def encode(o):
-        if isinstance(o, six.binary_type):
+        if isinstance(o, bytes):
             return o
         else:
-            if isinstance(o, six.text_type):
+            if isinstance(o, str):
                 return o.encode('utf-8')
             else:
                 return str(o).encode('utf-8')
 
-    utf8_params = {encode(k): encode(v) for k, v in six.iteritems(params)}
+    utf8_params = {encode(k): encode(v) for k, v in params.items()}
     return url_encode(utf8_params)
 
 def _generate_pkce_code_verifier():
