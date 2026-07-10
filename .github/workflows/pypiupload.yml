@@ -6,13 +6,32 @@ name: Publish to PyPi
 on:
   release:
     types: [created]
+  workflow_dispatch:  # Allow manual trigger for testing
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    permissions:  # required for OIDC authentication
+      id-token: write
+      contents: read
 
     steps:
     - uses: actions/checkout@v5
+
+    - name: Configure AWS credentials (OIDC)
+      uses: aws-actions/configure-aws-credentials@v4
+      with:
+        role-to-assume: arn:aws:iam::082972943155:role/oidc-github-dropbox-dropbox-sdk-python-repo
+        aws-region: us-west-2
+    - name: Get PyPI token from AWS Secrets Manager
+      id: get-secret
+      uses: aws-actions/aws-secretsmanager-get-secrets@v2
+      with:
+        # Referenced by friendly name; Secrets Manager appends a random suffix to
+        # the full ARN, so the name is the stable identifier.
+        secret-ids: |
+          PYPI_SECRET,pypi-api-token-dropbox-sdk-python
+        parse-json-secrets: false
     - name: Setup Python environment
       uses: actions/setup-python@v6
       with:
@@ -26,7 +45,7 @@ jobs:
     - name: Publish
       env:
         TWINE_USERNAME: __token__
-        TWINE_PASSWORD: ${{ secrets.pypi_secret }}
+        TWINE_PASSWORD: ${{ env.PYPI_SECRET }}
       run: |
         twine check dist/*
         twine upload dist/*
