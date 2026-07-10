@@ -116,7 +116,7 @@ class DropboxOAuth2FlowBase(object):
     def __init__(self, consumer_key, consumer_secret=None, locale=None, token_access_type=None,
                  scope=None, include_granted_scopes=None, use_pkce=False, timeout=DEFAULT_TIMEOUT,
                  ca_certs=None):
-        if scope is not None and (len(scope) == 0 or not isinstance(scope, list)):
+        if scope is not None and (not isinstance(scope, list) or len(scope) == 0):
             raise BadInputException("Scope list must be of type list")
         if token_access_type is not None and token_access_type not in TOKEN_ACCESS_TYPES:
             raise BadInputException("Token access type must be from the following enum: {}".format(
