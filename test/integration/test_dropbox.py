@@ -10,6 +10,8 @@ import string
 import sys
 import pytest
 
+import dropbox.dropbox_client as dropbox_client
+
 try:
     from io import BytesIO
 except ImportError:
@@ -193,6 +195,17 @@ class TestDropbox:
 
         # Cleanup folder
         dbx_from_env.files_delete('/Test/%s' % TIMESTAMP)
+
+    def test_upload_auto_content_hash(self, dbx_from_env, monkeypatch):
+        # A deliberately incorrect auto-computed hash must be rejected by the
+        # server, proving the default hash is included in the request.
+        monkeypatch.setattr(dropbox_client, '_content_hash',
+                            lambda _: '0' * 64)
+        random_filename = ''.join(RANDOM_FOLDER)
+        random_path = '/Test/%s/%s' % (TIMESTAMP, random_filename)
+        with pytest.raises(ApiError) as cm:
+            dbx_from_env.files_upload(DUMMY_PAYLOAD, random_path)
+        assert cm.value.error.is_content_hash_mismatch()
 
     def test_bad_upload_types(self, dbx_from_env):
         with pytest.raises(TypeError):
