@@ -158,8 +158,8 @@ class AddSecondaryEmailResult(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar secondary_emails.SecondaryEmail team.AddSecondaryEmailResult.success:
-        Describes a secondary email that was successfully added to a user.
+    :ivar SecondaryEmail AddSecondaryEmailResult.success: Describes a secondary
+        email that was successfully added to a user.
     :ivar str team.AddSecondaryEmailResult.unavailable: Secondary email is not
         available to be claimed by the user.
     :ivar str team.AddSecondaryEmailResult.already_pending: Secondary email is
@@ -168,8 +168,8 @@ class AddSecondaryEmailResult(bb.Union):
         email is already a verified email for the user.
     :ivar str team.AddSecondaryEmailResult.reached_limit: User already has the
         maximum number of secondary emails allowed.
-    :ivar str team.AddSecondaryEmailResult.transient_error: A transient error
-        occurred. Please try again later.
+    :ivar str team.AddSecondaryEmailResult.transient_error: Field is deprecated.
+        A transient error occurred. Please try again later.
     :ivar str team.AddSecondaryEmailResult.too_many_updates: An error occurred
         due to conflicting updates. Please try again later.
     :ivar str team.AddSecondaryEmailResult.unknown_error: An unknown error
@@ -423,7 +423,7 @@ class AddSecondaryEmailResult(bb.Union):
 
     def get_transient_error(self):
         """
-        A transient error occurred. Please try again later.
+        Field is deprecated. A transient error occurred. Please try again later.
 
         Only call this if :meth:`is_transient_error` is true.
 
@@ -1018,7 +1018,7 @@ class DateRange(bb.Struct):
     Input arguments that can be provided for most reports.
 
     :ivar team.DateRange.start_date: Optional starting date (inclusive). If
-        start_date is None or too long ago, this field will  be set to 6 months
+        start_date is None or too long ago, this field will be set to 6 months
         ago.
     :ivar team.DateRange.end_date: Optional ending date (exclusive).
     """
@@ -1441,7 +1441,7 @@ class DevicesActive(bb.Struct):
     :ivar team.DevicesActive.android: Array of number of linked android devices
         with activity.
     :ivar team.DevicesActive.other: Array of number of other linked devices
-        (blackberry, windows phone, etc)  with activity.
+        (blackberry, windows phone, etc) with activity.
     :ivar team.DevicesActive.total: Array of total number of linked clients with
         activity.
     """
@@ -1855,6 +1855,8 @@ class Feature(bb.Union):
     :ivar team.Feature.has_team_file_events: Does this team have file events.
     :ivar team.Feature.has_team_selective_sync: Does this team have team
         selective sync enabled.
+    :ivar team.Feature.has_distinct_member_homes: Does this team have team
+        member folder.
     """
 
     _catch_all = 'other'
@@ -1866,6 +1868,8 @@ class Feature(bb.Union):
     has_team_file_events = None
     # Attribute is overwritten below the class definition
     has_team_selective_sync = None
+    # Attribute is overwritten below the class definition
+    has_distinct_member_homes = None
     # Attribute is overwritten below the class definition
     other = None
 
@@ -1900,6 +1904,14 @@ class Feature(bb.Union):
         :rtype: bool
         """
         return self._tag == 'has_team_selective_sync'
+
+    def is_has_distinct_member_homes(self):
+        """
+        Check if the union tag is ``has_distinct_member_homes``.
+
+        :rtype: bool
+        """
+        return self._tag == 'has_distinct_member_homes'
 
     def is_other(self):
         """
@@ -1972,6 +1984,17 @@ class FeatureValue(bb.Union):
         """
         return cls('has_team_selective_sync', val)
 
+    @classmethod
+    def has_distinct_member_homes(cls, val):
+        """
+        Create an instance of this class set to the
+        ``has_distinct_member_homes`` tag with value ``val``.
+
+        :param HasDistinctMemberHomesValue val:
+        :rtype: FeatureValue
+        """
+        return cls('has_distinct_member_homes', val)
+
     def is_upload_api_rate_limit(self):
         """
         Check if the union tag is ``upload_api_rate_limit``.
@@ -2003,6 +2026,14 @@ class FeatureValue(bb.Union):
         :rtype: bool
         """
         return self._tag == 'has_team_selective_sync'
+
+    def is_has_distinct_member_homes(self):
+        """
+        Check if the union tag is ``has_distinct_member_homes``.
+
+        :rtype: bool
+        """
+        return self._tag == 'has_distinct_member_homes'
 
     def is_other(self):
         """
@@ -2050,6 +2081,16 @@ class FeatureValue(bb.Union):
         """
         if not self.is_has_team_selective_sync():
             raise AttributeError("tag 'has_team_selective_sync' not set")
+        return self._value
+
+    def get_has_distinct_member_homes(self):
+        """
+        Only call this if :meth:`is_has_distinct_member_homes` is true.
+
+        :rtype: HasDistinctMemberHomesValue
+        """
+        if not self.is_has_distinct_member_homes():
+            raise AttributeError("tag 'has_distinct_member_homes' not set")
         return self._value
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
@@ -2952,8 +2993,8 @@ GroupMemberSetAccessTypeError_validator = bv.Union(GroupMemberSetAccessTypeError
 class IncludeMembersArg(bb.Struct):
     """
     :ivar team.IncludeMembersArg.return_members: Whether to return the list of
-        members in the group.  Note that the default value will cause all the
-        group members  to be returned in the response. This may take a long time
+        members in the group. Note that the default value will cause all the
+        group members to be returned in the response. This may take a long time
         for large groups.
     """
 
@@ -3181,11 +3222,11 @@ class GroupMembersChangeResult(bb.Struct):
 
     :ivar team.GroupMembersChangeResult.group_info: The group info after member
         change operation has been performed.
-    :ivar team.GroupMembersChangeResult.async_job_id: For legacy purposes
-        async_job_id will always return one space ' '. Formerly, it was an ID
-        that was used to obtain the status of granting/revoking group-owned
-        resources. It's no longer necessary because the async processing now
-        happens automatically.
+    :ivar team.GroupMembersChangeResult.async_job_id: Field is deprecated. For
+        legacy purposes async_job_id will always return one space ' '. Formerly,
+        it was an ID that was used to obtain the status of granting/revoking
+        group-owned resources. It's no longer necessary because the async
+        processing now happens automatically.
     """
 
     __slots__ = [
@@ -3418,9 +3459,9 @@ class GroupMembersSetAccessTypeArg(GroupMemberSelector):
     :ivar team.GroupMembersSetAccessTypeArg.access_type: New group access type
         the user will have.
     :ivar team.GroupMembersSetAccessTypeArg.return_members: Whether to return
-        the list of members in the group.  Note that the default value will
-        cause all the group members  to be returned in the response. This may
-        take a long time for large groups.
+        the list of members in the group. Note that the default value will cause
+        all the group members to be returned in the response. This may take a
+        long time for large groups.
     """
 
     __slots__ = [
@@ -4155,6 +4196,66 @@ class GroupsSelector(bb.Union):
         super(GroupsSelector, self)._process_custom_annotations(annotation_type, field_path, processor)
 
 GroupsSelector_validator = bv.Union(GroupsSelector)
+
+class HasDistinctMemberHomesValue(bb.Union):
+    """
+    The value for ``Feature.has_distinct_member_homes``.
+
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+
+    :ivar bool team.HasDistinctMemberHomesValue.has_distinct_member_homes: Does
+        this team have distinct team member homes.
+    """
+
+    _catch_all = 'other'
+    # Attribute is overwritten below the class definition
+    other = None
+
+    @classmethod
+    def has_distinct_member_homes(cls, val):
+        """
+        Create an instance of this class set to the
+        ``has_distinct_member_homes`` tag with value ``val``.
+
+        :param bool val:
+        :rtype: HasDistinctMemberHomesValue
+        """
+        return cls('has_distinct_member_homes', val)
+
+    def is_has_distinct_member_homes(self):
+        """
+        Check if the union tag is ``has_distinct_member_homes``.
+
+        :rtype: bool
+        """
+        return self._tag == 'has_distinct_member_homes'
+
+    def is_other(self):
+        """
+        Check if the union tag is ``other``.
+
+        :rtype: bool
+        """
+        return self._tag == 'other'
+
+    def get_has_distinct_member_homes(self):
+        """
+        Does this team have distinct team member homes.
+
+        Only call this if :meth:`is_has_distinct_member_homes` is true.
+
+        :rtype: bool
+        """
+        if not self.is_has_distinct_member_homes():
+            raise AttributeError("tag 'has_distinct_member_homes' not set")
+        return self._value
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(HasDistinctMemberHomesValue, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+HasDistinctMemberHomesValue_validator = bv.Union(HasDistinctMemberHomesValue)
 
 class HasTeamFileEventsValue(bb.Union):
     """
@@ -7697,6 +7798,84 @@ class MembersDeactivateError(UserSelectorError):
 
 MembersDeactivateError_validator = bv.Union(MembersDeactivateError)
 
+class MembersPermanentlyDeleteFilesError(MembersDeactivateError):
+    """
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+
+    :ivar team.MembersPermanentlyDeleteFilesError.transfer_in_progress: Cannot
+        permanently delete files while it's being transferred.
+    :ivar team.MembersPermanentlyDeleteFilesError.already_transferred: Cannot
+        permanently delete files that have already been transferred.
+    :ivar
+        team.MembersPermanentlyDeleteFilesError.already_transferred_or_deleted:
+        Cannot permanently delete files that have already been transferred or
+        deleted.
+    """
+
+    # Attribute is overwritten below the class definition
+    transfer_in_progress = None
+    # Attribute is overwritten below the class definition
+    already_transferred = None
+    # Attribute is overwritten below the class definition
+    already_transferred_or_deleted = None
+
+    def is_transfer_in_progress(self):
+        """
+        Check if the union tag is ``transfer_in_progress``.
+
+        :rtype: bool
+        """
+        return self._tag == 'transfer_in_progress'
+
+    def is_already_transferred(self):
+        """
+        Check if the union tag is ``already_transferred``.
+
+        :rtype: bool
+        """
+        return self._tag == 'already_transferred'
+
+    def is_already_transferred_or_deleted(self):
+        """
+        Check if the union tag is ``already_transferred_or_deleted``.
+
+        :rtype: bool
+        """
+        return self._tag == 'already_transferred_or_deleted'
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(MembersPermanentlyDeleteFilesError, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+MembersPermanentlyDeleteFilesError_validator = bv.Union(MembersPermanentlyDeleteFilesError)
+
+class MembersDeleteFormerMemberFilesError(MembersPermanentlyDeleteFilesError):
+    """
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+
+    :ivar team.MembersDeleteFormerMemberFilesError.user_not_removed: User has
+        not been removed from the team.
+    """
+
+    # Attribute is overwritten below the class definition
+    user_not_removed = None
+
+    def is_user_not_removed(self):
+        """
+        Check if the union tag is ``user_not_removed``.
+
+        :rtype: bool
+        """
+        return self._tag == 'user_not_removed'
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(MembersDeleteFormerMemberFilesError, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+MembersDeleteFormerMemberFilesError_validator = bv.Union(MembersDeleteFormerMemberFilesError)
+
 class MembersDeleteProfilePhotoArg(bb.Struct):
     """
     :ivar team.MembersDeleteProfilePhotoArg.user: Identity of the user whose
@@ -7759,6 +7938,35 @@ class MembersDeleteProfilePhotoError(MemberSelectorError):
         super(MembersDeleteProfilePhotoError, self)._process_custom_annotations(annotation_type, field_path, processor)
 
 MembersDeleteProfilePhotoError_validator = bv.Union(MembersDeleteProfilePhotoError)
+
+class MembersFormerMemberArg(bb.Struct):
+    """
+    Exactly one of team_member_id, email, or external_id must be provided to
+    identify a former team member.
+
+    :ivar team.MembersFormerMemberArg.user: Identity of user whose files will be
+        permanently deleted.
+    """
+
+    __slots__ = [
+        '_user_value',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 user=None):
+        self._user_value = bb.NOT_SET
+        if user is not None:
+            self.user = user
+
+    # Instance attribute type: UserSelectorArg (validator is set below)
+    user = bb.Attribute("user", user_defined=True)
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(MembersFormerMemberArg, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+MembersFormerMemberArg_validator = bv.Struct(MembersFormerMemberArg)
 
 class MembersGetAvailableTeamMemberRolesResult(bb.Struct):
     """
@@ -8404,9 +8612,9 @@ class MembersRemoveArg(MembersDeactivateArg):
         provided as well.
     :ivar team.MembersRemoveArg.keep_account: Downgrade the member to a Basic
         account. The user will retain the email address associated with their
-        Dropbox  account and data in their account that is not restricted to
-        team members. In order to keep the account the argument ``wipe_data``
-        should be set to ``False``.
+        Dropbox account and data in their account that is not restricted to team
+        members. In order to keep the account the argument ``wipe_data`` should
+        be set to ``False``.
     :ivar team.MembersRemoveArg.retain_team_shares: If provided, allows removed
         users to keep access to Dropbox folders (not Dropbox Paper folders)
         already explicitly shared with them (not via a group) when they are
@@ -8414,6 +8622,9 @@ class MembersRemoveArg(MembersDeactivateArg):
         that do not allow external sharing. In order to keep the sharing
         relationships, the arguments ``wipe_data`` should be set to ``False``
         and ``keep_account`` should be set to ``True``.
+    :ivar team.MembersRemoveArg.permanently_delete_files: Permanently delete the
+        data in the deleted member's account. After permanent deletion, the data
+        is no longer available to be transferred to a different user.
     """
 
     __slots__ = [
@@ -8421,6 +8632,7 @@ class MembersRemoveArg(MembersDeactivateArg):
         '_transfer_admin_id_value',
         '_keep_account_value',
         '_retain_team_shares_value',
+        '_permanently_delete_files_value',
     ]
 
     _has_required_fields = True
@@ -8431,13 +8643,15 @@ class MembersRemoveArg(MembersDeactivateArg):
                  transfer_dest_id=None,
                  transfer_admin_id=None,
                  keep_account=None,
-                 retain_team_shares=None):
+                 retain_team_shares=None,
+                 permanently_delete_files=None):
         super(MembersRemoveArg, self).__init__(user,
                                                wipe_data)
         self._transfer_dest_id_value = bb.NOT_SET
         self._transfer_admin_id_value = bb.NOT_SET
         self._keep_account_value = bb.NOT_SET
         self._retain_team_shares_value = bb.NOT_SET
+        self._permanently_delete_files_value = bb.NOT_SET
         if transfer_dest_id is not None:
             self.transfer_dest_id = transfer_dest_id
         if transfer_admin_id is not None:
@@ -8446,6 +8660,8 @@ class MembersRemoveArg(MembersDeactivateArg):
             self.keep_account = keep_account
         if retain_team_shares is not None:
             self.retain_team_shares = retain_team_shares
+        if permanently_delete_files is not None:
+            self.permanently_delete_files = permanently_delete_files
 
     # Instance attribute type: UserSelectorArg (validator is set below)
     transfer_dest_id = bb.Attribute("transfer_dest_id", nullable=True, user_defined=True)
@@ -8459,12 +8675,15 @@ class MembersRemoveArg(MembersDeactivateArg):
     # Instance attribute type: bool (validator is set below)
     retain_team_shares = bb.Attribute("retain_team_shares")
 
+    # Instance attribute type: bool (validator is set below)
+    permanently_delete_files = bb.Attribute("permanently_delete_files")
+
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(MembersRemoveArg, self)._process_custom_annotations(annotation_type, field_path, processor)
 
 MembersRemoveArg_validator = bv.Struct(MembersRemoveArg)
 
-class MembersTransferFilesError(MembersDeactivateError):
+class MembersTransferFilesError(MembersPermanentlyDeleteFilesError):
     """
     This class acts as a tagged union. Only one of the ``is_*`` methods will
     return true. To get the associated value of a tag (if one exists), use the
@@ -8602,6 +8821,10 @@ class MembersRemoveError(MembersTransferFilesError):
     :ivar team.MembersRemoveError.cannot_keep_account_and_delete_data: Cannot
         keep account and delete the data at the same time. To keep the account
         the argument wipe_data should be set to ``False``.
+    :ivar team.MembersRemoveError.cannot_keep_account_and_permanently_delete:
+        Cannot keep account and permanently delete the data at the same time. To
+        keep the account the argument permanently_delete_files should be set to
+        ``False``.
     :ivar team.MembersRemoveError.email_address_too_long_to_be_disabled: The
         email address of the user is too long to be disabled.
     :ivar team.MembersRemoveError.cannot_keep_invited_user_account: Cannot keep
@@ -8624,6 +8847,12 @@ class MembersRemoveError(MembersTransferFilesError):
     :ivar team.MembersRemoveError.cannot_keep_account_required_to_sign_tos: To
         convert this member to a Basic account, they'll first need to sign in to
         Dropbox and agree to the terms of service.
+    :ivar team.MembersRemoveError.cannot_permanently_delete_and_transfer: Cannot
+        permanently delete files and transfer the data to another user at the
+        same time.
+    :ivar team.MembersRemoveError.member_is_transfer_destination: This user is
+        the active destination of an in-progress file transfer. Wait for the
+        transfer to complete before removing this member.
     """
 
     # Attribute is overwritten below the class definition
@@ -8632,6 +8861,8 @@ class MembersRemoveError(MembersTransferFilesError):
     cannot_keep_account_and_transfer = None
     # Attribute is overwritten below the class definition
     cannot_keep_account_and_delete_data = None
+    # Attribute is overwritten below the class definition
+    cannot_keep_account_and_permanently_delete = None
     # Attribute is overwritten below the class definition
     email_address_too_long_to_be_disabled = None
     # Attribute is overwritten below the class definition
@@ -8648,6 +8879,10 @@ class MembersRemoveError(MembersTransferFilesError):
     cannot_keep_account_under_legal_hold = None
     # Attribute is overwritten below the class definition
     cannot_keep_account_required_to_sign_tos = None
+    # Attribute is overwritten below the class definition
+    cannot_permanently_delete_and_transfer = None
+    # Attribute is overwritten below the class definition
+    member_is_transfer_destination = None
 
     def is_remove_last_admin(self):
         """
@@ -8672,6 +8907,14 @@ class MembersRemoveError(MembersTransferFilesError):
         :rtype: bool
         """
         return self._tag == 'cannot_keep_account_and_delete_data'
+
+    def is_cannot_keep_account_and_permanently_delete(self):
+        """
+        Check if the union tag is ``cannot_keep_account_and_permanently_delete``.
+
+        :rtype: bool
+        """
+        return self._tag == 'cannot_keep_account_and_permanently_delete'
 
     def is_email_address_too_long_to_be_disabled(self):
         """
@@ -8736,6 +8979,22 @@ class MembersRemoveError(MembersTransferFilesError):
         :rtype: bool
         """
         return self._tag == 'cannot_keep_account_required_to_sign_tos'
+
+    def is_cannot_permanently_delete_and_transfer(self):
+        """
+        Check if the union tag is ``cannot_permanently_delete_and_transfer``.
+
+        :rtype: bool
+        """
+        return self._tag == 'cannot_permanently_delete_and_transfer'
+
+    def is_member_is_transfer_destination(self):
+        """
+        Check if the union tag is ``member_is_transfer_destination``.
+
+        :rtype: bool
+        """
+        return self._tag == 'member_is_transfer_destination'
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(MembersRemoveError, self)._process_custom_annotations(annotation_type, field_path, processor)
@@ -9733,6 +9992,8 @@ class NamespaceMetadata(bb.Struct):
     :ivar team.NamespaceMetadata.team_member_id: If this is a team member or app
         folder, the ID of the owning team member. Otherwise, this field is not
         present.
+    :ivar team.NamespaceMetadata.quota_limit: The quota limit in bytes for this
+        namespace tree. Only applicable to team folders.
     """
 
     __slots__ = [
@@ -9740,6 +10001,7 @@ class NamespaceMetadata(bb.Struct):
         '_namespace_id_value',
         '_namespace_type_value',
         '_team_member_id_value',
+        '_quota_limit_value',
     ]
 
     _has_required_fields = True
@@ -9748,11 +10010,13 @@ class NamespaceMetadata(bb.Struct):
                  name=None,
                  namespace_id=None,
                  namespace_type=None,
-                 team_member_id=None):
+                 team_member_id=None,
+                 quota_limit=None):
         self._name_value = bb.NOT_SET
         self._namespace_id_value = bb.NOT_SET
         self._namespace_type_value = bb.NOT_SET
         self._team_member_id_value = bb.NOT_SET
+        self._quota_limit_value = bb.NOT_SET
         if name is not None:
             self.name = name
         if namespace_id is not None:
@@ -9761,6 +10025,8 @@ class NamespaceMetadata(bb.Struct):
             self.namespace_type = namespace_type
         if team_member_id is not None:
             self.team_member_id = team_member_id
+        if quota_limit is not None:
+            self.quota_limit = quota_limit
 
     # Instance attribute type: str (validator is set below)
     name = bb.Attribute("name")
@@ -9773,6 +10039,9 @@ class NamespaceMetadata(bb.Struct):
 
     # Instance attribute type: str (validator is set below)
     team_member_id = bb.Attribute("team_member_id", nullable=True)
+
+    # Instance attribute type: int (validator is set below)
+    quota_limit = bb.Attribute("quota_limit")
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(NamespaceMetadata, self)._process_custom_annotations(annotation_type, field_path, processor)
@@ -9789,6 +10058,7 @@ class NamespaceType(bb.Union):
     :ivar team.NamespaceType.shared_folder: Shared folder.
     :ivar team.NamespaceType.team_folder: Top-level team-owned folder.
     :ivar team.NamespaceType.team_member_folder: Team member's home folder.
+    :ivar team.NamespaceType.team_member_root: Team member's root folder.
     """
 
     _catch_all = 'other'
@@ -9800,6 +10070,8 @@ class NamespaceType(bb.Union):
     team_folder = None
     # Attribute is overwritten below the class definition
     team_member_folder = None
+    # Attribute is overwritten below the class definition
+    team_member_root = None
     # Attribute is overwritten below the class definition
     other = None
 
@@ -9834,6 +10106,14 @@ class NamespaceType(bb.Union):
         :rtype: bool
         """
         return self._tag == 'team_member_folder'
+
+    def is_team_member_root(self):
+        """
+        Check if the union tag is ``team_member_root``.
+
+        :rtype: bool
+        """
+        return self._tag == 'team_member_root'
 
     def is_other(self):
         """
@@ -10461,9 +10741,9 @@ class RevokeLinkedApiAppArg(bb.Struct):
     :ivar team.RevokeLinkedApiAppArg.app_id: The application's unique id.
     :ivar team.RevokeLinkedApiAppArg.team_member_id: The unique id of the member
         owning the device.
-    :ivar team.RevokeLinkedApiAppArg.keep_app_folder: This flag is not longer
-        supported, the application dedicated folder (in case the application
-        uses  one) will be kept.
+    :ivar team.RevokeLinkedApiAppArg.keep_app_folder: Field is deprecated. This
+        flag is not longer supported, the application dedicated folder (in case
+        the application uses one) will be kept.
     """
 
     __slots__ = [
@@ -11607,6 +11887,8 @@ class TeamFolderCreateError(bb.Union):
         cannot be used because it is reserved.
     :ivar SyncSettingsError TeamFolderCreateError.sync_settings_error: An error
         occurred setting the sync settings.
+    :ivar team.TeamFolderCreateError.folder_count_limit_exceeded: The team has
+        reached the maximum number of team folders allowed by its plan.
     """
 
     _catch_all = 'other'
@@ -11616,6 +11898,8 @@ class TeamFolderCreateError(bb.Union):
     folder_name_already_used = None
     # Attribute is overwritten below the class definition
     folder_name_reserved = None
+    # Attribute is overwritten below the class definition
+    folder_count_limit_exceeded = None
     # Attribute is overwritten below the class definition
     other = None
 
@@ -11661,6 +11945,14 @@ class TeamFolderCreateError(bb.Union):
         :rtype: bool
         """
         return self._tag == 'sync_settings_error'
+
+    def is_folder_count_limit_exceeded(self):
+        """
+        Check if the union tag is ``folder_count_limit_exceeded``.
+
+        :rtype: bool
+        """
+        return self._tag == 'folder_count_limit_exceeded'
 
     def is_other(self):
         """
@@ -12033,6 +12325,8 @@ class TeamFolderMetadata(bb.Struct):
         team folder.
     :ivar team.TeamFolderMetadata.content_sync_settings: Sync settings applied
         to contents of this team folder.
+    :ivar team.TeamFolderMetadata.quota_limit: The quota limit in bytes for this
+        team folder namespace tree.
     """
 
     __slots__ = [
@@ -12042,6 +12336,7 @@ class TeamFolderMetadata(bb.Struct):
         '_is_team_shared_dropbox_value',
         '_sync_setting_value',
         '_content_sync_settings_value',
+        '_quota_limit_value',
     ]
 
     _has_required_fields = True
@@ -12052,13 +12347,15 @@ class TeamFolderMetadata(bb.Struct):
                  status=None,
                  is_team_shared_dropbox=None,
                  sync_setting=None,
-                 content_sync_settings=None):
+                 content_sync_settings=None,
+                 quota_limit=None):
         self._team_folder_id_value = bb.NOT_SET
         self._name_value = bb.NOT_SET
         self._status_value = bb.NOT_SET
         self._is_team_shared_dropbox_value = bb.NOT_SET
         self._sync_setting_value = bb.NOT_SET
         self._content_sync_settings_value = bb.NOT_SET
+        self._quota_limit_value = bb.NOT_SET
         if team_folder_id is not None:
             self.team_folder_id = team_folder_id
         if name is not None:
@@ -12071,6 +12368,8 @@ class TeamFolderMetadata(bb.Struct):
             self.sync_setting = sync_setting
         if content_sync_settings is not None:
             self.content_sync_settings = content_sync_settings
+        if quota_limit is not None:
+            self.quota_limit = quota_limit
 
     # Instance attribute type: str (validator is set below)
     team_folder_id = bb.Attribute("team_folder_id")
@@ -12089,6 +12388,9 @@ class TeamFolderMetadata(bb.Struct):
 
     # Instance attribute type: list of [files.ContentSyncSetting] (validator is set below)
     content_sync_settings = bb.Attribute("content_sync_settings")
+
+    # Instance attribute type: int (validator is set below)
+    quota_limit = bb.Attribute("quota_limit")
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(TeamFolderMetadata, self)._process_custom_annotations(annotation_type, field_path, processor)
@@ -12184,6 +12486,18 @@ class TeamFolderRenameError(BaseTeamFolderError):
 
 TeamFolderRenameError_validator = bv.Union(TeamFolderRenameError)
 
+class TeamFolderRestoreError(BaseTeamFolderError):
+    """
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+    """
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(TeamFolderRestoreError, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+TeamFolderRestoreError_validator = bv.Union(TeamFolderRestoreError)
+
 class TeamFolderStatus(bb.Union):
     """
     This class acts as a tagged union. Only one of the ``is_*`` methods will
@@ -12192,10 +12506,13 @@ class TeamFolderStatus(bb.Union):
 
     :ivar team.TeamFolderStatus.active: The team folder and sub-folders are
         available to all members.
-    :ivar team.TeamFolderStatus.archived: The team folder is not accessible
-        outside of the team folder manager.
-    :ivar team.TeamFolderStatus.archive_in_progress: The team folder is not
+    :ivar team.TeamFolderStatus.archived: The team folder is archived and is not
         accessible outside of the team folder manager.
+    :ivar team.TeamFolderStatus.archive_in_progress: The team folder is in the
+        process of being archived and is not accessible outside of the team
+        folder manager.
+    :ivar team.TeamFolderStatus.inactive: The team folder is unmounted and can
+        be restored.
     """
 
     _catch_all = 'other'
@@ -12205,6 +12522,8 @@ class TeamFolderStatus(bb.Union):
     archived = None
     # Attribute is overwritten below the class definition
     archive_in_progress = None
+    # Attribute is overwritten below the class definition
+    inactive = None
     # Attribute is overwritten below the class definition
     other = None
 
@@ -12231,6 +12550,14 @@ class TeamFolderStatus(bb.Union):
         :rtype: bool
         """
         return self._tag == 'archive_in_progress'
+
+    def is_inactive(self):
+        """
+        Check if the union tag is ``inactive``.
+
+        :rtype: bool
+        """
+        return self._tag == 'inactive'
 
     def is_other(self):
         """
@@ -12549,12 +12876,15 @@ class TeamMemberProfile(MemberProfile):
     :ivar team.TeamMemberProfile.groups: List of group IDs of groups that the
         user belongs to.
     :ivar team.TeamMemberProfile.member_folder_id: The namespace id of the
-        user's root folder.
+        user's member folder.
+    :ivar team.TeamMemberProfile.root_folder_id: The namespace id of the user's
+        root folder.
     """
 
     __slots__ = [
         '_groups_value',
         '_member_folder_id_value',
+        '_root_folder_id_value',
     ]
 
     _has_required_fields = True
@@ -12568,6 +12898,7 @@ class TeamMemberProfile(MemberProfile):
                  membership_type=None,
                  groups=None,
                  member_folder_id=None,
+                 root_folder_id=None,
                  external_id=None,
                  account_id=None,
                  secondary_emails=None,
@@ -12594,16 +12925,22 @@ class TeamMemberProfile(MemberProfile):
                                                 profile_photo_url)
         self._groups_value = bb.NOT_SET
         self._member_folder_id_value = bb.NOT_SET
+        self._root_folder_id_value = bb.NOT_SET
         if groups is not None:
             self.groups = groups
         if member_folder_id is not None:
             self.member_folder_id = member_folder_id
+        if root_folder_id is not None:
+            self.root_folder_id = root_folder_id
 
     # Instance attribute type: list of [str] (validator is set below)
     groups = bb.Attribute("groups")
 
     # Instance attribute type: str (validator is set below)
     member_folder_id = bb.Attribute("member_folder_id")
+
+    # Instance attribute type: str (validator is set below)
+    root_folder_id = bb.Attribute("root_folder_id")
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(TeamMemberProfile, self)._process_custom_annotations(annotation_type, field_path, processor)
@@ -12754,8 +13091,9 @@ class TeamMembershipType(bb.Union):
 
     :ivar team.TeamMembershipType.full: User uses a license and has full access
         to team resources like the shared quota.
-    :ivar team.TeamMembershipType.limited: User does not have access to the
-        shared quota and team admins have restricted administrative control.
+    :ivar team.TeamMembershipType.limited: Field is deprecated. User does not
+        have access to the shared quota and team admins have restricted
+        administrative control.
     """
 
     _catch_all = None
@@ -12787,8 +13125,8 @@ TeamMembershipType_validator = bv.Union(TeamMembershipType)
 
 class TeamNamespacesListArg(bb.Struct):
     """
-    :ivar team.TeamNamespacesListArg.limit: Specifying a value here has no
-        effect.
+    :ivar team.TeamNamespacesListArg.limit: Field is deprecated. Specifying a
+        value here has no effect.
     """
 
     __slots__ = [
@@ -13106,7 +13444,7 @@ class UploadApiRateLimitValue(bb.Union):
     corresponding ``get_*`` method.
 
     :ivar team.UploadApiRateLimitValue.unlimited: This team has unlimited upload
-        API quota. So far both server version account and legacy  account type
+        API quota. So far both server version account and legacy account type
         have unlimited monthly upload api quota.
     :ivar int team.UploadApiRateLimitValue.limit: The number of upload API calls
         allowed per month.
@@ -13368,7 +13706,7 @@ UserCustomQuotaArg_validator = bv.Struct(UserCustomQuotaArg)
 
 class UserCustomQuotaResult(bb.Struct):
     """
-    User and their custom quota in GB (1 TB = 1024 GB).  No quota returns if the
+    User and their custom quota in GB (1 TB = 1024 GB). No quota returns if the
     user has no custom quota set.
     """
 
@@ -13951,10 +14289,8 @@ ListHeldRevisionCursor_validator = bv.String(min_length=1)
 MembersGetInfoResult_validator = bv.List(MembersGetInfoItem_validator)
 NumberPerDay_validator = bv.List(bv.Nullable(bv.UInt64()))
 Path_validator = bv.String(pattern='(/(.|[\\r\\n])*)?')
-SecondaryEmail_validator = secondary_emails.SecondaryEmail_validator
-SecondaryEmail = secondary_emails.SecondaryEmail
 TeamMemberRoleId_validator = bv.String(max_length=128, pattern='pid_dbtmr:.*')
-UserQuota_validator = bv.UInt32(min_value=15)
+UserQuota_validator = bv.UInt32(min_value=2)
 DeviceSession.session_id.validator = bv.String()
 DeviceSession.ip_address.validator = bv.Nullable(bv.String())
 DeviceSession.country.validator = bv.Nullable(bv.String())
@@ -13992,7 +14328,7 @@ ActiveWebSession._all_fields_ = DeviceSession._all_fields_ + [
     ('expires', ActiveWebSession.expires.validator),
 ]
 
-AddSecondaryEmailResult._success_validator = SecondaryEmail_validator
+AddSecondaryEmailResult._success_validator = secondary_emails.SecondaryEmail_validator
 AddSecondaryEmailResult._unavailable_validator = common.EmailAddress_validator
 AddSecondaryEmailResult._already_pending_validator = common.EmailAddress_validator
 AddSecondaryEmailResult._already_owned_by_user_validator = common.EmailAddress_validator
@@ -14308,12 +14644,14 @@ Feature._upload_api_rate_limit_validator = bv.Void()
 Feature._has_team_shared_dropbox_validator = bv.Void()
 Feature._has_team_file_events_validator = bv.Void()
 Feature._has_team_selective_sync_validator = bv.Void()
+Feature._has_distinct_member_homes_validator = bv.Void()
 Feature._other_validator = bv.Void()
 Feature._tagmap = {
     'upload_api_rate_limit': Feature._upload_api_rate_limit_validator,
     'has_team_shared_dropbox': Feature._has_team_shared_dropbox_validator,
     'has_team_file_events': Feature._has_team_file_events_validator,
     'has_team_selective_sync': Feature._has_team_selective_sync_validator,
+    'has_distinct_member_homes': Feature._has_distinct_member_homes_validator,
     'other': Feature._other_validator,
 }
 
@@ -14321,18 +14659,21 @@ Feature.upload_api_rate_limit = Feature('upload_api_rate_limit')
 Feature.has_team_shared_dropbox = Feature('has_team_shared_dropbox')
 Feature.has_team_file_events = Feature('has_team_file_events')
 Feature.has_team_selective_sync = Feature('has_team_selective_sync')
+Feature.has_distinct_member_homes = Feature('has_distinct_member_homes')
 Feature.other = Feature('other')
 
 FeatureValue._upload_api_rate_limit_validator = UploadApiRateLimitValue_validator
 FeatureValue._has_team_shared_dropbox_validator = HasTeamSharedDropboxValue_validator
 FeatureValue._has_team_file_events_validator = HasTeamFileEventsValue_validator
 FeatureValue._has_team_selective_sync_validator = HasTeamSelectiveSyncValue_validator
+FeatureValue._has_distinct_member_homes_validator = HasDistinctMemberHomesValue_validator
 FeatureValue._other_validator = bv.Void()
 FeatureValue._tagmap = {
     'upload_api_rate_limit': FeatureValue._upload_api_rate_limit_validator,
     'has_team_shared_dropbox': FeatureValue._has_team_shared_dropbox_validator,
     'has_team_file_events': FeatureValue._has_team_file_events_validator,
     'has_team_selective_sync': FeatureValue._has_team_selective_sync_validator,
+    'has_distinct_member_homes': FeatureValue._has_distinct_member_homes_validator,
     'other': FeatureValue._other_validator,
 }
 
@@ -14817,6 +15158,15 @@ GroupsSelector._tagmap = {
     'group_ids': GroupsSelector._group_ids_validator,
     'group_external_ids': GroupsSelector._group_external_ids_validator,
 }
+
+HasDistinctMemberHomesValue._has_distinct_member_homes_validator = bv.Boolean()
+HasDistinctMemberHomesValue._other_validator = bv.Void()
+HasDistinctMemberHomesValue._tagmap = {
+    'has_distinct_member_homes': HasDistinctMemberHomesValue._has_distinct_member_homes_validator,
+    'other': HasDistinctMemberHomesValue._other_validator,
+}
+
+HasDistinctMemberHomesValue.other = HasDistinctMemberHomesValue('other')
 
 HasTeamFileEventsValue._enabled_validator = bv.Boolean()
 HasTeamFileEventsValue._other_validator = bv.Void()
@@ -15599,6 +15949,28 @@ MembersDeactivateError._tagmap.update(UserSelectorError._tagmap)
 MembersDeactivateError.user_not_in_team = MembersDeactivateError('user_not_in_team')
 MembersDeactivateError.other = MembersDeactivateError('other')
 
+MembersPermanentlyDeleteFilesError._transfer_in_progress_validator = bv.Void()
+MembersPermanentlyDeleteFilesError._already_transferred_validator = bv.Void()
+MembersPermanentlyDeleteFilesError._already_transferred_or_deleted_validator = bv.Void()
+MembersPermanentlyDeleteFilesError._tagmap = {
+    'transfer_in_progress': MembersPermanentlyDeleteFilesError._transfer_in_progress_validator,
+    'already_transferred': MembersPermanentlyDeleteFilesError._already_transferred_validator,
+    'already_transferred_or_deleted': MembersPermanentlyDeleteFilesError._already_transferred_or_deleted_validator,
+}
+MembersPermanentlyDeleteFilesError._tagmap.update(MembersDeactivateError._tagmap)
+
+MembersPermanentlyDeleteFilesError.transfer_in_progress = MembersPermanentlyDeleteFilesError('transfer_in_progress')
+MembersPermanentlyDeleteFilesError.already_transferred = MembersPermanentlyDeleteFilesError('already_transferred')
+MembersPermanentlyDeleteFilesError.already_transferred_or_deleted = MembersPermanentlyDeleteFilesError('already_transferred_or_deleted')
+
+MembersDeleteFormerMemberFilesError._user_not_removed_validator = bv.Void()
+MembersDeleteFormerMemberFilesError._tagmap = {
+    'user_not_removed': MembersDeleteFormerMemberFilesError._user_not_removed_validator,
+}
+MembersDeleteFormerMemberFilesError._tagmap.update(MembersPermanentlyDeleteFilesError._tagmap)
+
+MembersDeleteFormerMemberFilesError.user_not_removed = MembersDeleteFormerMemberFilesError('user_not_removed')
+
 MembersDeleteProfilePhotoArg.user.validator = UserSelectorArg_validator
 MembersDeleteProfilePhotoArg._all_field_names_ = set(['user'])
 MembersDeleteProfilePhotoArg._all_fields_ = [('user', MembersDeleteProfilePhotoArg.user.validator)]
@@ -15613,6 +15985,10 @@ MembersDeleteProfilePhotoError._tagmap.update(MemberSelectorError._tagmap)
 
 MembersDeleteProfilePhotoError.set_profile_disallowed = MembersDeleteProfilePhotoError('set_profile_disallowed')
 MembersDeleteProfilePhotoError.other = MembersDeleteProfilePhotoError('other')
+
+MembersFormerMemberArg.user.validator = UserSelectorArg_validator
+MembersFormerMemberArg._all_field_names_ = set(['user'])
+MembersFormerMemberArg._all_fields_ = [('user', MembersFormerMemberArg.user.validator)]
 
 MembersGetAvailableTeamMemberRolesResult.roles.validator = bv.List(TeamMemberRole_validator)
 MembersGetAvailableTeamMemberRolesResult._all_field_names_ = set(['roles'])
@@ -15754,17 +16130,20 @@ MembersRemoveArg.transfer_dest_id.validator = bv.Nullable(UserSelectorArg_valida
 MembersRemoveArg.transfer_admin_id.validator = bv.Nullable(UserSelectorArg_validator)
 MembersRemoveArg.keep_account.validator = bv.Boolean()
 MembersRemoveArg.retain_team_shares.validator = bv.Boolean()
+MembersRemoveArg.permanently_delete_files.validator = bv.Boolean()
 MembersRemoveArg._all_field_names_ = MembersDeactivateArg._all_field_names_.union(set([
     'transfer_dest_id',
     'transfer_admin_id',
     'keep_account',
     'retain_team_shares',
+    'permanently_delete_files',
 ]))
 MembersRemoveArg._all_fields_ = MembersDeactivateArg._all_fields_ + [
     ('transfer_dest_id', MembersRemoveArg.transfer_dest_id.validator),
     ('transfer_admin_id', MembersRemoveArg.transfer_admin_id.validator),
     ('keep_account', MembersRemoveArg.keep_account.validator),
     ('retain_team_shares', MembersRemoveArg.retain_team_shares.validator),
+    ('permanently_delete_files', MembersRemoveArg.permanently_delete_files.validator),
 ]
 
 MembersTransferFilesError._removed_and_transfer_dest_should_differ_validator = bv.Void()
@@ -15787,7 +16166,7 @@ MembersTransferFilesError._tagmap = {
     'transfer_admin_is_not_admin': MembersTransferFilesError._transfer_admin_is_not_admin_validator,
     'recipient_not_verified': MembersTransferFilesError._recipient_not_verified_validator,
 }
-MembersTransferFilesError._tagmap.update(MembersDeactivateError._tagmap)
+MembersTransferFilesError._tagmap.update(MembersPermanentlyDeleteFilesError._tagmap)
 
 MembersTransferFilesError.removed_and_transfer_dest_should_differ = MembersTransferFilesError('removed_and_transfer_dest_should_differ')
 MembersTransferFilesError.removed_and_transfer_admin_should_differ = MembersTransferFilesError('removed_and_transfer_admin_should_differ')
@@ -15802,6 +16181,7 @@ MembersTransferFilesError.recipient_not_verified = MembersTransferFilesError('re
 MembersRemoveError._remove_last_admin_validator = bv.Void()
 MembersRemoveError._cannot_keep_account_and_transfer_validator = bv.Void()
 MembersRemoveError._cannot_keep_account_and_delete_data_validator = bv.Void()
+MembersRemoveError._cannot_keep_account_and_permanently_delete_validator = bv.Void()
 MembersRemoveError._email_address_too_long_to_be_disabled_validator = bv.Void()
 MembersRemoveError._cannot_keep_invited_user_account_validator = bv.Void()
 MembersRemoveError._cannot_retain_shares_when_data_wiped_validator = bv.Void()
@@ -15810,10 +16190,13 @@ MembersRemoveError._cannot_retain_shares_when_team_external_sharing_off_validato
 MembersRemoveError._cannot_keep_account_validator = bv.Void()
 MembersRemoveError._cannot_keep_account_under_legal_hold_validator = bv.Void()
 MembersRemoveError._cannot_keep_account_required_to_sign_tos_validator = bv.Void()
+MembersRemoveError._cannot_permanently_delete_and_transfer_validator = bv.Void()
+MembersRemoveError._member_is_transfer_destination_validator = bv.Void()
 MembersRemoveError._tagmap = {
     'remove_last_admin': MembersRemoveError._remove_last_admin_validator,
     'cannot_keep_account_and_transfer': MembersRemoveError._cannot_keep_account_and_transfer_validator,
     'cannot_keep_account_and_delete_data': MembersRemoveError._cannot_keep_account_and_delete_data_validator,
+    'cannot_keep_account_and_permanently_delete': MembersRemoveError._cannot_keep_account_and_permanently_delete_validator,
     'email_address_too_long_to_be_disabled': MembersRemoveError._email_address_too_long_to_be_disabled_validator,
     'cannot_keep_invited_user_account': MembersRemoveError._cannot_keep_invited_user_account_validator,
     'cannot_retain_shares_when_data_wiped': MembersRemoveError._cannot_retain_shares_when_data_wiped_validator,
@@ -15822,12 +16205,15 @@ MembersRemoveError._tagmap = {
     'cannot_keep_account': MembersRemoveError._cannot_keep_account_validator,
     'cannot_keep_account_under_legal_hold': MembersRemoveError._cannot_keep_account_under_legal_hold_validator,
     'cannot_keep_account_required_to_sign_tos': MembersRemoveError._cannot_keep_account_required_to_sign_tos_validator,
+    'cannot_permanently_delete_and_transfer': MembersRemoveError._cannot_permanently_delete_and_transfer_validator,
+    'member_is_transfer_destination': MembersRemoveError._member_is_transfer_destination_validator,
 }
 MembersRemoveError._tagmap.update(MembersTransferFilesError._tagmap)
 
 MembersRemoveError.remove_last_admin = MembersRemoveError('remove_last_admin')
 MembersRemoveError.cannot_keep_account_and_transfer = MembersRemoveError('cannot_keep_account_and_transfer')
 MembersRemoveError.cannot_keep_account_and_delete_data = MembersRemoveError('cannot_keep_account_and_delete_data')
+MembersRemoveError.cannot_keep_account_and_permanently_delete = MembersRemoveError('cannot_keep_account_and_permanently_delete')
 MembersRemoveError.email_address_too_long_to_be_disabled = MembersRemoveError('email_address_too_long_to_be_disabled')
 MembersRemoveError.cannot_keep_invited_user_account = MembersRemoveError('cannot_keep_invited_user_account')
 MembersRemoveError.cannot_retain_shares_when_data_wiped = MembersRemoveError('cannot_retain_shares_when_data_wiped')
@@ -15836,6 +16222,8 @@ MembersRemoveError.cannot_retain_shares_when_team_external_sharing_off = Members
 MembersRemoveError.cannot_keep_account = MembersRemoveError('cannot_keep_account')
 MembersRemoveError.cannot_keep_account_under_legal_hold = MembersRemoveError('cannot_keep_account_under_legal_hold')
 MembersRemoveError.cannot_keep_account_required_to_sign_tos = MembersRemoveError('cannot_keep_account_required_to_sign_tos')
+MembersRemoveError.cannot_permanently_delete_and_transfer = MembersRemoveError('cannot_permanently_delete_and_transfer')
+MembersRemoveError.member_is_transfer_destination = MembersRemoveError('member_is_transfer_destination')
 
 MembersSendWelcomeError._other_validator = bv.Void()
 MembersSendWelcomeError._tagmap = {
@@ -16106,29 +16494,34 @@ NamespaceMetadata.name.validator = bv.String()
 NamespaceMetadata.namespace_id.validator = common.SharedFolderId_validator
 NamespaceMetadata.namespace_type.validator = NamespaceType_validator
 NamespaceMetadata.team_member_id.validator = bv.Nullable(team_common.TeamMemberId_validator)
+NamespaceMetadata.quota_limit.validator = bv.Int64()
 NamespaceMetadata._all_field_names_ = set([
     'name',
     'namespace_id',
     'namespace_type',
     'team_member_id',
+    'quota_limit',
 ])
 NamespaceMetadata._all_fields_ = [
     ('name', NamespaceMetadata.name.validator),
     ('namespace_id', NamespaceMetadata.namespace_id.validator),
     ('namespace_type', NamespaceMetadata.namespace_type.validator),
     ('team_member_id', NamespaceMetadata.team_member_id.validator),
+    ('quota_limit', NamespaceMetadata.quota_limit.validator),
 ]
 
 NamespaceType._app_folder_validator = bv.Void()
 NamespaceType._shared_folder_validator = bv.Void()
 NamespaceType._team_folder_validator = bv.Void()
 NamespaceType._team_member_folder_validator = bv.Void()
+NamespaceType._team_member_root_validator = bv.Void()
 NamespaceType._other_validator = bv.Void()
 NamespaceType._tagmap = {
     'app_folder': NamespaceType._app_folder_validator,
     'shared_folder': NamespaceType._shared_folder_validator,
     'team_folder': NamespaceType._team_folder_validator,
     'team_member_folder': NamespaceType._team_member_folder_validator,
+    'team_member_root': NamespaceType._team_member_root_validator,
     'other': NamespaceType._other_validator,
 }
 
@@ -16136,6 +16529,7 @@ NamespaceType.app_folder = NamespaceType('app_folder')
 NamespaceType.shared_folder = NamespaceType('shared_folder')
 NamespaceType.team_folder = NamespaceType('team_folder')
 NamespaceType.team_member_folder = NamespaceType('team_member_folder')
+NamespaceType.team_member_root = NamespaceType('team_member_root')
 NamespaceType.other = NamespaceType('other')
 
 RemoveCustomQuotaResult._success_validator = UserSelectorArg_validator
@@ -16479,18 +16873,21 @@ TeamFolderCreateError._invalid_folder_name_validator = bv.Void()
 TeamFolderCreateError._folder_name_already_used_validator = bv.Void()
 TeamFolderCreateError._folder_name_reserved_validator = bv.Void()
 TeamFolderCreateError._sync_settings_error_validator = files.SyncSettingsError_validator
+TeamFolderCreateError._folder_count_limit_exceeded_validator = bv.Void()
 TeamFolderCreateError._other_validator = bv.Void()
 TeamFolderCreateError._tagmap = {
     'invalid_folder_name': TeamFolderCreateError._invalid_folder_name_validator,
     'folder_name_already_used': TeamFolderCreateError._folder_name_already_used_validator,
     'folder_name_reserved': TeamFolderCreateError._folder_name_reserved_validator,
     'sync_settings_error': TeamFolderCreateError._sync_settings_error_validator,
+    'folder_count_limit_exceeded': TeamFolderCreateError._folder_count_limit_exceeded_validator,
     'other': TeamFolderCreateError._other_validator,
 }
 
 TeamFolderCreateError.invalid_folder_name = TeamFolderCreateError('invalid_folder_name')
 TeamFolderCreateError.folder_name_already_used = TeamFolderCreateError('folder_name_already_used')
 TeamFolderCreateError.folder_name_reserved = TeamFolderCreateError('folder_name_reserved')
+TeamFolderCreateError.folder_count_limit_exceeded = TeamFolderCreateError('folder_count_limit_exceeded')
 TeamFolderCreateError.other = TeamFolderCreateError('other')
 
 TeamFolderGetInfoItem._id_not_found_validator = bv.String()
@@ -16562,6 +16959,7 @@ TeamFolderMetadata.status.validator = TeamFolderStatus_validator
 TeamFolderMetadata.is_team_shared_dropbox.validator = bv.Boolean()
 TeamFolderMetadata.sync_setting.validator = files.SyncSetting_validator
 TeamFolderMetadata.content_sync_settings.validator = bv.List(files.ContentSyncSetting_validator)
+TeamFolderMetadata.quota_limit.validator = bv.Int64()
 TeamFolderMetadata._all_field_names_ = set([
     'team_folder_id',
     'name',
@@ -16569,6 +16967,7 @@ TeamFolderMetadata._all_field_names_ = set([
     'is_team_shared_dropbox',
     'sync_setting',
     'content_sync_settings',
+    'quota_limit',
 ])
 TeamFolderMetadata._all_fields_ = [
     ('team_folder_id', TeamFolderMetadata.team_folder_id.validator),
@@ -16577,6 +16976,7 @@ TeamFolderMetadata._all_fields_ = [
     ('is_team_shared_dropbox', TeamFolderMetadata.is_team_shared_dropbox.validator),
     ('sync_setting', TeamFolderMetadata.sync_setting.validator),
     ('content_sync_settings', TeamFolderMetadata.content_sync_settings.validator),
+    ('quota_limit', TeamFolderMetadata.quota_limit.validator),
 ]
 
 TeamFolderPermanentlyDeleteError._tagmap = {
@@ -16601,20 +17001,27 @@ TeamFolderRenameError.invalid_folder_name = TeamFolderRenameError('invalid_folde
 TeamFolderRenameError.folder_name_already_used = TeamFolderRenameError('folder_name_already_used')
 TeamFolderRenameError.folder_name_reserved = TeamFolderRenameError('folder_name_reserved')
 
+TeamFolderRestoreError._tagmap = {
+}
+TeamFolderRestoreError._tagmap.update(BaseTeamFolderError._tagmap)
+
 TeamFolderStatus._active_validator = bv.Void()
 TeamFolderStatus._archived_validator = bv.Void()
 TeamFolderStatus._archive_in_progress_validator = bv.Void()
+TeamFolderStatus._inactive_validator = bv.Void()
 TeamFolderStatus._other_validator = bv.Void()
 TeamFolderStatus._tagmap = {
     'active': TeamFolderStatus._active_validator,
     'archived': TeamFolderStatus._archived_validator,
     'archive_in_progress': TeamFolderStatus._archive_in_progress_validator,
+    'inactive': TeamFolderStatus._inactive_validator,
     'other': TeamFolderStatus._other_validator,
 }
 
 TeamFolderStatus.active = TeamFolderStatus('active')
 TeamFolderStatus.archived = TeamFolderStatus('archived')
 TeamFolderStatus.archive_in_progress = TeamFolderStatus('archive_in_progress')
+TeamFolderStatus.inactive = TeamFolderStatus('inactive')
 TeamFolderStatus.other = TeamFolderStatus('other')
 
 TeamFolderTeamSharedDropboxError._disallowed_validator = bv.Void()
@@ -16695,13 +17102,16 @@ TeamMemberInfoV2Result._all_fields_ = [('member_info', TeamMemberInfoV2Result.me
 
 TeamMemberProfile.groups.validator = bv.List(team_common.GroupId_validator)
 TeamMemberProfile.member_folder_id.validator = common.NamespaceId_validator
+TeamMemberProfile.root_folder_id.validator = common.NamespaceId_validator
 TeamMemberProfile._all_field_names_ = MemberProfile._all_field_names_.union(set([
     'groups',
     'member_folder_id',
+    'root_folder_id',
 ]))
 TeamMemberProfile._all_fields_ = MemberProfile._all_fields_ + [
     ('groups', TeamMemberProfile.groups.validator),
     ('member_folder_id', TeamMemberProfile.member_folder_id.validator),
+    ('root_folder_id', TeamMemberProfile.root_folder_id.validator),
 ]
 
 TeamMemberRole.role_id.validator = TeamMemberRoleId_validator
@@ -16973,6 +17383,8 @@ MembersListArg.limit.default = 1000
 MembersListArg.include_removed.default = False
 MembersRemoveArg.keep_account.default = False
 MembersRemoveArg.retain_team_shares.default = False
+MembersRemoveArg.permanently_delete_files.default = False
+NamespaceMetadata.quota_limit.default = 0
 RevokeDesktopClientArg.delete_on_unlink.default = False
 RevokeLinkedApiAppArg.keep_app_folder.default = True
 SharingAllowlistListArg.limit.default = 1000
@@ -16980,6 +17392,7 @@ SharingAllowlistListResponse.cursor.default = ''
 SharingAllowlistListResponse.has_more.default = False
 TeamFolderArchiveArg.force_async_off.default = False
 TeamFolderListArg.limit.default = 1000
+TeamFolderMetadata.quota_limit.default = 0
 TeamGetInfoResult.num_used_licenses.default = 0
 TeamNamespacesListArg.limit.default = 1000
 devices_list_member_devices = bb.Route(
@@ -17400,17 +17813,6 @@ member_space_limits_set_custom_quota = bb.Route(
      'host': 'api',
      'style': 'rpc'},
 )
-members_add_v2 = bb.Route(
-    'members/add',
-    2,
-    False,
-    MembersAddV2Arg_validator,
-    MembersAddLaunchV2Result_validator,
-    bv.Void(),
-    {'auth': 'team',
-     'host': 'api',
-     'style': 'rpc'},
-)
 members_add = bb.Route(
     'members/add',
     1,
@@ -17422,13 +17824,13 @@ members_add = bb.Route(
      'host': 'api',
      'style': 'rpc'},
 )
-members_add_job_status_get_v2 = bb.Route(
-    'members/add/job_status/get',
+members_add_v2 = bb.Route(
+    'members/add',
     2,
     False,
-    async_.PollArg_validator,
-    MembersAddJobStatusV2Result_validator,
-    async_.PollError_validator,
+    MembersAddV2Arg_validator,
+    MembersAddLaunchV2Result_validator,
+    bv.Void(),
     {'auth': 'team',
      'host': 'api',
      'style': 'rpc'},
@@ -17444,13 +17846,24 @@ members_add_job_status_get = bb.Route(
      'host': 'api',
      'style': 'rpc'},
 )
-members_delete_profile_photo_v2 = bb.Route(
-    'members/delete_profile_photo',
+members_add_job_status_get_v2 = bb.Route(
+    'members/add/job_status/get',
     2,
     False,
-    MembersDeleteProfilePhotoArg_validator,
-    TeamMemberInfoV2Result_validator,
-    MembersDeleteProfilePhotoError_validator,
+    async_.PollArg_validator,
+    MembersAddJobStatusV2Result_validator,
+    async_.PollError_validator,
+    {'auth': 'team',
+     'host': 'api',
+     'style': 'rpc'},
+)
+members_delete_former_member_files = bb.Route(
+    'members/delete_former_member_files',
+    1,
+    False,
+    MembersFormerMemberArg_validator,
+    bv.Void(),
+    MembersDeleteFormerMemberFilesError_validator,
     {'auth': 'team',
      'host': 'api',
      'style': 'rpc'},
@@ -17461,6 +17874,17 @@ members_delete_profile_photo = bb.Route(
     False,
     MembersDeleteProfilePhotoArg_validator,
     TeamMemberInfo_validator,
+    MembersDeleteProfilePhotoError_validator,
+    {'auth': 'team',
+     'host': 'api',
+     'style': 'rpc'},
+)
+members_delete_profile_photo_v2 = bb.Route(
+    'members/delete_profile_photo',
+    2,
+    False,
+    MembersDeleteProfilePhotoArg_validator,
+    TeamMemberInfoV2Result_validator,
     MembersDeleteProfilePhotoError_validator,
     {'auth': 'team',
      'host': 'api',
@@ -17477,17 +17901,6 @@ members_get_available_team_member_roles = bb.Route(
      'host': 'api',
      'style': 'rpc'},
 )
-members_get_info_v2 = bb.Route(
-    'members/get_info',
-    2,
-    False,
-    MembersGetInfoV2Arg_validator,
-    MembersGetInfoV2Result_validator,
-    MembersGetInfoError_validator,
-    {'auth': 'team',
-     'host': 'api',
-     'style': 'rpc'},
-)
 members_get_info = bb.Route(
     'members/get_info',
     1,
@@ -17499,13 +17912,13 @@ members_get_info = bb.Route(
      'host': 'api',
      'style': 'rpc'},
 )
-members_list_v2 = bb.Route(
-    'members/list',
+members_get_info_v2 = bb.Route(
+    'members/get_info',
     2,
     False,
-    MembersListArg_validator,
-    MembersListV2Result_validator,
-    MembersListError_validator,
+    MembersGetInfoV2Arg_validator,
+    MembersGetInfoV2Result_validator,
+    MembersGetInfoError_validator,
     {'auth': 'team',
      'host': 'api',
      'style': 'rpc'},
@@ -17521,13 +17934,13 @@ members_list = bb.Route(
      'host': 'api',
      'style': 'rpc'},
 )
-members_list_continue_v2 = bb.Route(
-    'members/list/continue',
+members_list_v2 = bb.Route(
+    'members/list',
     2,
     False,
-    MembersListContinueArg_validator,
+    MembersListArg_validator,
     MembersListV2Result_validator,
-    MembersListContinueError_validator,
+    MembersListError_validator,
     {'auth': 'team',
      'host': 'api',
      'style': 'rpc'},
@@ -17538,6 +17951,17 @@ members_list_continue = bb.Route(
     False,
     MembersListContinueArg_validator,
     MembersListResult_validator,
+    MembersListContinueError_validator,
+    {'auth': 'team',
+     'host': 'api',
+     'style': 'rpc'},
+)
+members_list_continue_v2 = bb.Route(
+    'members/list/continue',
+    2,
+    False,
+    MembersListContinueArg_validator,
+    MembersListV2Result_validator,
     MembersListContinueError_validator,
     {'auth': 'team',
      'host': 'api',
@@ -17642,17 +18066,6 @@ members_send_welcome_email = bb.Route(
      'host': 'api',
      'style': 'rpc'},
 )
-members_set_admin_permissions_v2 = bb.Route(
-    'members/set_admin_permissions',
-    2,
-    False,
-    MembersSetPermissions2Arg_validator,
-    MembersSetPermissions2Result_validator,
-    MembersSetPermissions2Error_validator,
-    {'auth': 'team',
-     'host': 'api',
-     'style': 'rpc'},
-)
 members_set_admin_permissions = bb.Route(
     'members/set_admin_permissions',
     1,
@@ -17664,13 +18077,13 @@ members_set_admin_permissions = bb.Route(
      'host': 'api',
      'style': 'rpc'},
 )
-members_set_profile_v2 = bb.Route(
-    'members/set_profile',
+members_set_admin_permissions_v2 = bb.Route(
+    'members/set_admin_permissions',
     2,
     False,
-    MembersSetProfileArg_validator,
-    TeamMemberInfoV2Result_validator,
-    MembersSetProfileError_validator,
+    MembersSetPermissions2Arg_validator,
+    MembersSetPermissions2Result_validator,
+    MembersSetPermissions2Error_validator,
     {'auth': 'team',
      'host': 'api',
      'style': 'rpc'},
@@ -17686,13 +18099,13 @@ members_set_profile = bb.Route(
      'host': 'api',
      'style': 'rpc'},
 )
-members_set_profile_photo_v2 = bb.Route(
-    'members/set_profile_photo',
+members_set_profile_v2 = bb.Route(
+    'members/set_profile',
     2,
     False,
-    MembersSetProfilePhotoArg_validator,
+    MembersSetProfileArg_validator,
     TeamMemberInfoV2Result_validator,
-    MembersSetProfilePhotoError_validator,
+    MembersSetProfileError_validator,
     {'auth': 'team',
      'host': 'api',
      'style': 'rpc'},
@@ -17703,6 +18116,17 @@ members_set_profile_photo = bb.Route(
     False,
     MembersSetProfilePhotoArg_validator,
     TeamMemberInfo_validator,
+    MembersSetProfilePhotoError_validator,
+    {'auth': 'team',
+     'host': 'api',
+     'style': 'rpc'},
+)
+members_set_profile_photo_v2 = bb.Route(
+    'members/set_profile_photo',
+    2,
+    False,
+    MembersSetProfilePhotoArg_validator,
+    TeamMemberInfoV2Result_validator,
     MembersSetProfilePhotoError_validator,
     {'auth': 'team',
      'host': 'api',
@@ -17770,28 +18194,6 @@ properties_template_get = bb.Route(
     file_properties.GetTemplateArg_validator,
     file_properties.GetTemplateResult_validator,
     file_properties.TemplateError_validator,
-    {'auth': 'team',
-     'host': 'api',
-     'style': 'rpc'},
-)
-properties_template_list = bb.Route(
-    'properties/template/list',
-    1,
-    True,
-    bv.Void(),
-    file_properties.ListTemplateResult_validator,
-    file_properties.TemplateError_validator,
-    {'auth': 'team',
-     'host': 'api',
-     'style': 'rpc'},
-)
-properties_template_update = bb.Route(
-    'properties/template/update',
-    1,
-    True,
-    file_properties.UpdateTemplateArg_validator,
-    file_properties.UpdateTemplateResult_validator,
-    file_properties.ModifyTemplateError_validator,
     {'auth': 'team',
      'host': 'api',
      'style': 'rpc'},
@@ -17983,6 +18385,17 @@ team_folder_rename = bb.Route(
      'host': 'api',
      'style': 'rpc'},
 )
+team_folder_restore = bb.Route(
+    'team_folder/restore',
+    1,
+    False,
+    TeamFolderIdArg_validator,
+    TeamFolderMetadata_validator,
+    TeamFolderRestoreError_validator,
+    {'auth': 'team',
+     'host': 'api',
+     'style': 'rpc'},
+)
 team_folder_update_sync_settings = bb.Route(
     'team_folder/update_sync_settings',
     1,
@@ -18045,19 +18458,20 @@ ROUTES = {
     'member_space_limits/get_custom_quota': member_space_limits_get_custom_quota,
     'member_space_limits/remove_custom_quota': member_space_limits_remove_custom_quota,
     'member_space_limits/set_custom_quota': member_space_limits_set_custom_quota,
-    'members/add:2': members_add_v2,
     'members/add': members_add,
-    'members/add/job_status/get:2': members_add_job_status_get_v2,
+    'members/add:2': members_add_v2,
     'members/add/job_status/get': members_add_job_status_get,
-    'members/delete_profile_photo:2': members_delete_profile_photo_v2,
+    'members/add/job_status/get:2': members_add_job_status_get_v2,
+    'members/delete_former_member_files': members_delete_former_member_files,
     'members/delete_profile_photo': members_delete_profile_photo,
+    'members/delete_profile_photo:2': members_delete_profile_photo_v2,
     'members/get_available_team_member_roles': members_get_available_team_member_roles,
-    'members/get_info:2': members_get_info_v2,
     'members/get_info': members_get_info,
-    'members/list:2': members_list_v2,
+    'members/get_info:2': members_get_info_v2,
     'members/list': members_list,
-    'members/list/continue:2': members_list_continue_v2,
+    'members/list:2': members_list_v2,
     'members/list/continue': members_list_continue,
+    'members/list/continue:2': members_list_continue_v2,
     'members/move_former_member_files': members_move_former_member_files,
     'members/move_former_member_files/job_status/check': members_move_former_member_files_job_status_check,
     'members/recover': members_recover,
@@ -18067,20 +18481,18 @@ ROUTES = {
     'members/secondary_emails/delete': members_secondary_emails_delete,
     'members/secondary_emails/resend_verification_emails': members_secondary_emails_resend_verification_emails,
     'members/send_welcome_email': members_send_welcome_email,
-    'members/set_admin_permissions:2': members_set_admin_permissions_v2,
     'members/set_admin_permissions': members_set_admin_permissions,
-    'members/set_profile:2': members_set_profile_v2,
+    'members/set_admin_permissions:2': members_set_admin_permissions_v2,
     'members/set_profile': members_set_profile,
-    'members/set_profile_photo:2': members_set_profile_photo_v2,
+    'members/set_profile:2': members_set_profile_v2,
     'members/set_profile_photo': members_set_profile_photo,
+    'members/set_profile_photo:2': members_set_profile_photo_v2,
     'members/suspend': members_suspend,
     'members/unsuspend': members_unsuspend,
     'namespaces/list': namespaces_list,
     'namespaces/list/continue': namespaces_list_continue,
     'properties/template/add': properties_template_add,
     'properties/template/get': properties_template_get,
-    'properties/template/list': properties_template_list,
-    'properties/template/update': properties_template_update,
     'reports/get_activity': reports_get_activity,
     'reports/get_devices': reports_get_devices,
     'reports/get_membership': reports_get_membership,
@@ -18098,6 +18510,7 @@ ROUTES = {
     'team_folder/list/continue': team_folder_list_continue,
     'team_folder/permanently_delete': team_folder_permanently_delete,
     'team_folder/rename': team_folder_rename,
+    'team_folder/restore': team_folder_restore,
     'team_folder/update_sync_settings': team_folder_update_sync_settings,
     'token/get_authenticated_admin': token_get_authenticated_admin,
 }

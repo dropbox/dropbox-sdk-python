@@ -13,6 +13,7 @@ from stone.backends.python_rsrc import stone_base as bb
 from stone.backends.python_rsrc import stone_validators as bv
 
 from dropbox import common
+from dropbox import files
 from dropbox import sharing
 
 class AddMember(bb.Struct):
@@ -457,6 +458,7 @@ class ExportFormat(bb.Union):
 
     :ivar paper.ExportFormat.html: The HTML export format.
     :ivar paper.ExportFormat.markdown: The markdown export format.
+    :ivar paper.ExportFormat.json: Doc metadata JSON export format.
     """
 
     _catch_all = 'other'
@@ -464,6 +466,8 @@ class ExportFormat(bb.Union):
     html = None
     # Attribute is overwritten below the class definition
     markdown = None
+    # Attribute is overwritten below the class definition
+    json = None
     # Attribute is overwritten below the class definition
     other = None
 
@@ -482,6 +486,14 @@ class ExportFormat(bb.Union):
         :rtype: bool
         """
         return self._tag == 'markdown'
+
+    def is_json(self):
+        """
+        Check if the union tag is ``json``.
+
+        :rtype: bool
+        """
+        return self._tag == 'json'
 
     def is_other(self):
         """
@@ -678,6 +690,44 @@ class FoldersContainingPaperDoc(bb.Struct):
 
 FoldersContainingPaperDoc_validator = bv.Struct(FoldersContainingPaperDoc)
 
+class GetDocMetadataArg(bb.Struct):
+    """
+    Argument for retrieving Paper doc metadata. Accepts either a legacy Paper
+    doc ID or a Cloud Doc file ID.
+
+    :ivar paper.GetDocMetadataArg.doc_id: Legacy Paper doc identifier.
+    :ivar paper.GetDocMetadataArg.file_id: Dropbox file ID for Cloud Docs
+        (post-PiFS migration).
+    """
+
+    __slots__ = [
+        '_doc_id_value',
+        '_file_id_value',
+    ]
+
+    _has_required_fields = False
+
+    def __init__(self,
+                 doc_id=None,
+                 file_id=None):
+        self._doc_id_value = bb.NOT_SET
+        self._file_id_value = bb.NOT_SET
+        if doc_id is not None:
+            self.doc_id = doc_id
+        if file_id is not None:
+            self.file_id = file_id
+
+    # Instance attribute type: str (validator is set below)
+    doc_id = bb.Attribute("doc_id", nullable=True)
+
+    # Instance attribute type: str (validator is set below)
+    file_id = bb.Attribute("file_id", nullable=True)
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(GetDocMetadataArg, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+GetDocMetadataArg_validator = bv.Struct(GetDocMetadataArg)
+
 class ImportFormat(bb.Union):
     """
     The import format of the incoming data.
@@ -843,6 +893,8 @@ class ListPaperDocsArgs(bb.Struct):
     :ivar paper.ListPaperDocsArgs.limit: Size limit per batch. The maximum
         number of docs that can be retrieved per batch is 1000. Higher value
         results in invalid arguments error.
+    :ivar paper.ListPaperDocsArgs.stop_at_date: Do not return results beyond
+        this date. Behavior depends on sort order.
     """
 
     __slots__ = [
@@ -850,6 +902,7 @@ class ListPaperDocsArgs(bb.Struct):
         '_sort_by_value',
         '_sort_order_value',
         '_limit_value',
+        '_stop_at_date_value',
     ]
 
     _has_required_fields = False
@@ -858,11 +911,13 @@ class ListPaperDocsArgs(bb.Struct):
                  filter_by=None,
                  sort_by=None,
                  sort_order=None,
-                 limit=None):
+                 limit=None,
+                 stop_at_date=None):
         self._filter_by_value = bb.NOT_SET
         self._sort_by_value = bb.NOT_SET
         self._sort_order_value = bb.NOT_SET
         self._limit_value = bb.NOT_SET
+        self._stop_at_date_value = bb.NOT_SET
         if filter_by is not None:
             self.filter_by = filter_by
         if sort_by is not None:
@@ -871,6 +926,8 @@ class ListPaperDocsArgs(bb.Struct):
             self.sort_order = sort_order
         if limit is not None:
             self.limit = limit
+        if stop_at_date is not None:
+            self.stop_at_date = stop_at_date
 
     # Instance attribute type: ListPaperDocsFilterBy (validator is set below)
     filter_by = bb.Attribute("filter_by", user_defined=True)
@@ -883,6 +940,9 @@ class ListPaperDocsArgs(bb.Struct):
 
     # Instance attribute type: int (validator is set below)
     limit = bb.Attribute("limit")
+
+    # Instance attribute type: datetime.datetime (validator is set below)
+    stop_at_date = bb.Attribute("stop_at_date", nullable=True)
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(ListPaperDocsArgs, self)._process_custom_annotations(annotation_type, field_path, processor)
@@ -1670,23 +1730,38 @@ class PaperDocCreateUpdateResult(bb.Struct):
 PaperDocCreateUpdateResult_validator = bv.Struct(PaperDocCreateUpdateResult)
 
 class PaperDocExport(RefPaperDoc):
+    """
+    :ivar paper.PaperDocExport.include_comments: When true, export includes
+        comment threads (e.g. markdown footnotes). When false or omitted, body
+        only. Other formats may adopt this later; currently only markdown uses
+        it. Plain bool (not optional): protoc-gen-godbx does not support proto3
+        optional yet.
+    """
 
     __slots__ = [
         '_export_format_value',
+        '_include_comments_value',
     ]
 
     _has_required_fields = True
 
     def __init__(self,
                  doc_id=None,
-                 export_format=None):
+                 export_format=None,
+                 include_comments=None):
         super(PaperDocExport, self).__init__(doc_id)
         self._export_format_value = bb.NOT_SET
+        self._include_comments_value = bb.NOT_SET
         if export_format is not None:
             self.export_format = export_format
+        if include_comments is not None:
+            self.include_comments = include_comments
 
     # Instance attribute type: ExportFormat (validator is set below)
     export_format = bb.Attribute("export_format", user_defined=True)
+
+    # Instance attribute type: bool (validator is set below)
+    include_comments = bb.Attribute("include_comments")
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(PaperDocExport, self)._process_custom_annotations(annotation_type, field_path, processor)
@@ -1746,6 +1821,101 @@ class PaperDocExportResult(bb.Struct):
         super(PaperDocExportResult, self)._process_custom_annotations(annotation_type, field_path, processor)
 
 PaperDocExportResult_validator = bv.Struct(PaperDocExportResult)
+
+class PaperDocGetMetadataResult(bb.Struct):
+    """
+    Metadata returned by docs/get_metadata.
+
+    :ivar paper.PaperDocGetMetadataResult.doc_id: The Paper doc ID.
+    :ivar paper.PaperDocGetMetadataResult.owner: The Paper doc owner's email
+        address.
+    :ivar paper.PaperDocGetMetadataResult.title: The Paper doc title.
+    :ivar paper.PaperDocGetMetadataResult.created_date: The Paper doc creation
+        date.
+    :ivar paper.PaperDocGetMetadataResult.status: The Paper doc status.
+    :ivar paper.PaperDocGetMetadataResult.revision: The Paper doc revision.
+        Simply an ever increasing number.
+    :ivar paper.PaperDocGetMetadataResult.last_updated_date: The date when the
+        Paper doc was last edited.
+    :ivar paper.PaperDocGetMetadataResult.last_editor: The email address of the
+        last editor of the Paper doc.
+    """
+
+    __slots__ = [
+        '_doc_id_value',
+        '_owner_value',
+        '_title_value',
+        '_created_date_value',
+        '_status_value',
+        '_revision_value',
+        '_last_updated_date_value',
+        '_last_editor_value',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 doc_id=None,
+                 owner=None,
+                 title=None,
+                 created_date=None,
+                 status=None,
+                 revision=None,
+                 last_updated_date=None,
+                 last_editor=None):
+        self._doc_id_value = bb.NOT_SET
+        self._owner_value = bb.NOT_SET
+        self._title_value = bb.NOT_SET
+        self._created_date_value = bb.NOT_SET
+        self._status_value = bb.NOT_SET
+        self._revision_value = bb.NOT_SET
+        self._last_updated_date_value = bb.NOT_SET
+        self._last_editor_value = bb.NOT_SET
+        if doc_id is not None:
+            self.doc_id = doc_id
+        if owner is not None:
+            self.owner = owner
+        if title is not None:
+            self.title = title
+        if created_date is not None:
+            self.created_date = created_date
+        if status is not None:
+            self.status = status
+        if revision is not None:
+            self.revision = revision
+        if last_updated_date is not None:
+            self.last_updated_date = last_updated_date
+        if last_editor is not None:
+            self.last_editor = last_editor
+
+    # Instance attribute type: str (validator is set below)
+    doc_id = bb.Attribute("doc_id")
+
+    # Instance attribute type: str (validator is set below)
+    owner = bb.Attribute("owner")
+
+    # Instance attribute type: str (validator is set below)
+    title = bb.Attribute("title")
+
+    # Instance attribute type: datetime.datetime (validator is set below)
+    created_date = bb.Attribute("created_date")
+
+    # Instance attribute type: PaperDocStatus (validator is set below)
+    status = bb.Attribute("status", user_defined=True)
+
+    # Instance attribute type: int (validator is set below)
+    revision = bb.Attribute("revision")
+
+    # Instance attribute type: datetime.datetime (validator is set below)
+    last_updated_date = bb.Attribute("last_updated_date")
+
+    # Instance attribute type: str (validator is set below)
+    last_editor = bb.Attribute("last_editor")
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(PaperDocGetMetadataResult, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+PaperDocGetMetadataResult_validator = bv.Struct(PaperDocGetMetadataResult)
 
 class PaperDocPermissionLevel(bb.Union):
     """
@@ -1823,6 +1993,55 @@ class PaperDocSharingPolicy(RefPaperDoc):
         super(PaperDocSharingPolicy, self)._process_custom_annotations(annotation_type, field_path, processor)
 
 PaperDocSharingPolicy_validator = bv.Struct(PaperDocSharingPolicy)
+
+class PaperDocStatus(bb.Union):
+    """
+    The status of a Paper doc.
+
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+
+    :ivar paper.PaperDocStatus.active: The Paper doc is active.
+    :ivar paper.PaperDocStatus.deleted: The Paper doc is deleted.
+    """
+
+    _catch_all = 'other'
+    # Attribute is overwritten below the class definition
+    active = None
+    # Attribute is overwritten below the class definition
+    deleted = None
+    # Attribute is overwritten below the class definition
+    other = None
+
+    def is_active(self):
+        """
+        Check if the union tag is ``active``.
+
+        :rtype: bool
+        """
+        return self._tag == 'active'
+
+    def is_deleted(self):
+        """
+        Check if the union tag is ``deleted``.
+
+        :rtype: bool
+        """
+        return self._tag == 'deleted'
+
+    def is_other(self):
+        """
+        Check if the union tag is ``other``.
+
+        :rtype: bool
+        """
+        return self._tag == 'other'
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(PaperDocStatus, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+PaperDocStatus_validator = bv.Union(PaperDocStatus)
 
 class PaperDocUpdateArgs(RefPaperDoc):
     """
@@ -2365,7 +2584,6 @@ class UserOnPaperDocFilter(bb.Union):
 
 UserOnPaperDocFilter_validator = bv.Union(UserOnPaperDocFilter)
 
-# Paper doc ID.
 PaperDocId_validator = bv.String()
 AddMember.permission_level.validator = PaperDocPermissionLevel_validator
 AddMember.member.validator = sharing.MemberSelector_validator
@@ -2482,15 +2700,18 @@ DocSubscriptionLevel.no_email = DocSubscriptionLevel('no_email')
 
 ExportFormat._html_validator = bv.Void()
 ExportFormat._markdown_validator = bv.Void()
+ExportFormat._json_validator = bv.Void()
 ExportFormat._other_validator = bv.Void()
 ExportFormat._tagmap = {
     'html': ExportFormat._html_validator,
     'markdown': ExportFormat._markdown_validator,
+    'json': ExportFormat._json_validator,
     'other': ExportFormat._other_validator,
 }
 
 ExportFormat.html = ExportFormat('html')
 ExportFormat.markdown = ExportFormat('markdown')
+ExportFormat.json = ExportFormat('json')
 ExportFormat.other = ExportFormat('other')
 
 Folder.id.validator = bv.String()
@@ -2541,6 +2762,17 @@ FoldersContainingPaperDoc._all_fields_ = [
     ('folders', FoldersContainingPaperDoc.folders.validator),
 ]
 
+GetDocMetadataArg.doc_id.validator = bv.Nullable(PaperDocId_validator)
+GetDocMetadataArg.file_id.validator = bv.Nullable(files.FileId_validator)
+GetDocMetadataArg._all_field_names_ = set([
+    'doc_id',
+    'file_id',
+])
+GetDocMetadataArg._all_fields_ = [
+    ('doc_id', GetDocMetadataArg.doc_id.validator),
+    ('file_id', GetDocMetadataArg.file_id.validator),
+]
+
 ImportFormat._html_validator = bv.Void()
 ImportFormat._markdown_validator = bv.Void()
 ImportFormat._plain_text_validator = bv.Void()
@@ -2581,17 +2813,20 @@ ListPaperDocsArgs.filter_by.validator = ListPaperDocsFilterBy_validator
 ListPaperDocsArgs.sort_by.validator = ListPaperDocsSortBy_validator
 ListPaperDocsArgs.sort_order.validator = ListPaperDocsSortOrder_validator
 ListPaperDocsArgs.limit.validator = bv.Int32(min_value=1, max_value=1000)
+ListPaperDocsArgs.stop_at_date.validator = bv.Nullable(common.DropboxTimestamp_validator)
 ListPaperDocsArgs._all_field_names_ = set([
     'filter_by',
     'sort_by',
     'sort_order',
     'limit',
+    'stop_at_date',
 ])
 ListPaperDocsArgs._all_fields_ = [
     ('filter_by', ListPaperDocsArgs.filter_by.validator),
     ('sort_by', ListPaperDocsArgs.sort_by.validator),
     ('sort_order', ListPaperDocsArgs.sort_order.validator),
     ('limit', ListPaperDocsArgs.limit.validator),
+    ('stop_at_date', ListPaperDocsArgs.stop_at_date.validator),
 ]
 
 ListPaperDocsContinueArgs.cursor.validator = bv.String()
@@ -2786,8 +3021,15 @@ PaperDocCreateUpdateResult._all_fields_ = [
 ]
 
 PaperDocExport.export_format.validator = ExportFormat_validator
-PaperDocExport._all_field_names_ = RefPaperDoc._all_field_names_.union(set(['export_format']))
-PaperDocExport._all_fields_ = RefPaperDoc._all_fields_ + [('export_format', PaperDocExport.export_format.validator)]
+PaperDocExport.include_comments.validator = bv.Boolean()
+PaperDocExport._all_field_names_ = RefPaperDoc._all_field_names_.union(set([
+    'export_format',
+    'include_comments',
+]))
+PaperDocExport._all_fields_ = RefPaperDoc._all_fields_ + [
+    ('export_format', PaperDocExport.export_format.validator),
+    ('include_comments', PaperDocExport.include_comments.validator),
+]
 
 PaperDocExportResult.owner.validator = bv.String()
 PaperDocExportResult.title.validator = bv.String()
@@ -2806,6 +3048,35 @@ PaperDocExportResult._all_fields_ = [
     ('mime_type', PaperDocExportResult.mime_type.validator),
 ]
 
+PaperDocGetMetadataResult.doc_id.validator = PaperDocId_validator
+PaperDocGetMetadataResult.owner.validator = bv.String()
+PaperDocGetMetadataResult.title.validator = bv.String()
+PaperDocGetMetadataResult.created_date.validator = common.DropboxTimestamp_validator
+PaperDocGetMetadataResult.status.validator = PaperDocStatus_validator
+PaperDocGetMetadataResult.revision.validator = bv.Int64()
+PaperDocGetMetadataResult.last_updated_date.validator = common.DropboxTimestamp_validator
+PaperDocGetMetadataResult.last_editor.validator = bv.String()
+PaperDocGetMetadataResult._all_field_names_ = set([
+    'doc_id',
+    'owner',
+    'title',
+    'created_date',
+    'status',
+    'revision',
+    'last_updated_date',
+    'last_editor',
+])
+PaperDocGetMetadataResult._all_fields_ = [
+    ('doc_id', PaperDocGetMetadataResult.doc_id.validator),
+    ('owner', PaperDocGetMetadataResult.owner.validator),
+    ('title', PaperDocGetMetadataResult.title.validator),
+    ('created_date', PaperDocGetMetadataResult.created_date.validator),
+    ('status', PaperDocGetMetadataResult.status.validator),
+    ('revision', PaperDocGetMetadataResult.revision.validator),
+    ('last_updated_date', PaperDocGetMetadataResult.last_updated_date.validator),
+    ('last_editor', PaperDocGetMetadataResult.last_editor.validator),
+]
+
 PaperDocPermissionLevel._edit_validator = bv.Void()
 PaperDocPermissionLevel._view_and_comment_validator = bv.Void()
 PaperDocPermissionLevel._other_validator = bv.Void()
@@ -2822,6 +3093,19 @@ PaperDocPermissionLevel.other = PaperDocPermissionLevel('other')
 PaperDocSharingPolicy.sharing_policy.validator = SharingPolicy_validator
 PaperDocSharingPolicy._all_field_names_ = RefPaperDoc._all_field_names_.union(set(['sharing_policy']))
 PaperDocSharingPolicy._all_fields_ = RefPaperDoc._all_fields_ + [('sharing_policy', PaperDocSharingPolicy.sharing_policy.validator)]
+
+PaperDocStatus._active_validator = bv.Void()
+PaperDocStatus._deleted_validator = bv.Void()
+PaperDocStatus._other_validator = bv.Void()
+PaperDocStatus._tagmap = {
+    'active': PaperDocStatus._active_validator,
+    'deleted': PaperDocStatus._deleted_validator,
+    'other': PaperDocStatus._other_validator,
+}
+
+PaperDocStatus.active = PaperDocStatus('active')
+PaperDocStatus.deleted = PaperDocStatus('deleted')
+PaperDocStatus.other = PaperDocStatus('other')
 
 PaperDocUpdateArgs.doc_update_policy.validator = PaperDocUpdatePolicy_validator
 PaperDocUpdateArgs.revision.validator = bv.Int64()
@@ -2974,6 +3258,7 @@ ListPaperDocsArgs.limit.default = 1000
 ListUsersOnFolderArgs.limit.default = 1000
 ListUsersOnPaperDocArgs.limit.default = 1000
 ListUsersOnPaperDocArgs.filter_by.default = UserOnPaperDocFilter.shared
+PaperDocExport.include_comments.default = False
 docs_archive = bb.Route(
     'docs/archive',
     1,
@@ -3035,6 +3320,17 @@ docs_get_folder_info = bb.Route(
     True,
     RefPaperDoc_validator,
     FoldersContainingPaperDoc_validator,
+    DocLookupError_validator,
+    {'auth': 'user',
+     'host': 'api',
+     'style': 'rpc'},
+)
+docs_get_metadata = bb.Route(
+    'docs/get_metadata',
+    1,
+    False,
+    GetDocMetadataArg_validator,
+    PaperDocGetMetadataResult_validator,
     DocLookupError_validator,
     {'auth': 'user',
      'host': 'api',
@@ -3169,6 +3465,7 @@ ROUTES = {
     'docs/folder_users/list': docs_folder_users_list,
     'docs/folder_users/list/continue': docs_folder_users_list_continue,
     'docs/get_folder_info': docs_get_folder_info,
+    'docs/get_metadata': docs_get_metadata,
     'docs/list': docs_list,
     'docs/list/continue': docs_list_continue,
     'docs/permanently_delete': docs_permanently_delete,

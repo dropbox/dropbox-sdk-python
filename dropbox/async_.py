@@ -126,7 +126,7 @@ class PollResultBase(bb.Union):
     Result returned by methods that poll for the status of an asynchronous job.
     Unions that extend this union should add a 'complete' field with a type of
     the information returned upon job completion. See :class:`PollEmptyResult`
-    for an example.
+    for an example
 
     This class acts as a tagged union. Only one of the ``is_*`` methods will
     return true. To get the associated value of a tag (if one exists), use the

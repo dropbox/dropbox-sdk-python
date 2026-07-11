@@ -117,6 +117,130 @@ class ComputerBackupPolicyState(bb.Union):
 
 ComputerBackupPolicyState_validator = bv.Union(ComputerBackupPolicyState)
 
+class DefaultLinkExpirationDaysPolicy(bb.Union):
+    """
+    Policy governing default expiration date for new links shared outside the
+    team.
+
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+
+    :ivar team_policies.DefaultLinkExpirationDaysPolicy.none: New links shared
+        outside the team default to no expiration date.
+    :ivar team_policies.DefaultLinkExpirationDaysPolicy.day_1: New links shared
+        outside the team default to expire in one day.
+    :ivar team_policies.DefaultLinkExpirationDaysPolicy.day_3: New links shared
+        outside the team default to expire in three days.
+    :ivar team_policies.DefaultLinkExpirationDaysPolicy.day_7: New links shared
+        outside the team default to expire in seven days.
+    :ivar team_policies.DefaultLinkExpirationDaysPolicy.day_30: New links shared
+        outside the team default to expire in 30 days.
+    :ivar team_policies.DefaultLinkExpirationDaysPolicy.day_90: New links shared
+        outside the team default to expire in 90 days.
+    :ivar team_policies.DefaultLinkExpirationDaysPolicy.day_180: New links
+        shared outside the team default to expire in 180 days.
+    :ivar team_policies.DefaultLinkExpirationDaysPolicy.year_1: New links shared
+        outside the team default to expire in 365 days.
+    """
+
+    _catch_all = 'other'
+    # Attribute is overwritten below the class definition
+    none = None
+    # Attribute is overwritten below the class definition
+    day_1 = None
+    # Attribute is overwritten below the class definition
+    day_3 = None
+    # Attribute is overwritten below the class definition
+    day_7 = None
+    # Attribute is overwritten below the class definition
+    day_30 = None
+    # Attribute is overwritten below the class definition
+    day_90 = None
+    # Attribute is overwritten below the class definition
+    day_180 = None
+    # Attribute is overwritten below the class definition
+    year_1 = None
+    # Attribute is overwritten below the class definition
+    other = None
+
+    def is_none(self):
+        """
+        Check if the union tag is ``none``.
+
+        :rtype: bool
+        """
+        return self._tag == 'none'
+
+    def is_day_1(self):
+        """
+        Check if the union tag is ``day_1``.
+
+        :rtype: bool
+        """
+        return self._tag == 'day_1'
+
+    def is_day_3(self):
+        """
+        Check if the union tag is ``day_3``.
+
+        :rtype: bool
+        """
+        return self._tag == 'day_3'
+
+    def is_day_7(self):
+        """
+        Check if the union tag is ``day_7``.
+
+        :rtype: bool
+        """
+        return self._tag == 'day_7'
+
+    def is_day_30(self):
+        """
+        Check if the union tag is ``day_30``.
+
+        :rtype: bool
+        """
+        return self._tag == 'day_30'
+
+    def is_day_90(self):
+        """
+        Check if the union tag is ``day_90``.
+
+        :rtype: bool
+        """
+        return self._tag == 'day_90'
+
+    def is_day_180(self):
+        """
+        Check if the union tag is ``day_180``.
+
+        :rtype: bool
+        """
+        return self._tag == 'day_180'
+
+    def is_year_1(self):
+        """
+        Check if the union tag is ``year_1``.
+
+        :rtype: bool
+        """
+        return self._tag == 'year_1'
+
+    def is_other(self):
+        """
+        Check if the union tag is ``other``.
+
+        :rtype: bool
+        """
+        return self._tag == 'other'
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(DefaultLinkExpirationDaysPolicy, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+DefaultLinkExpirationDaysPolicy_validator = bv.Union(DefaultLinkExpirationDaysPolicy)
+
 class EmmState(bb.Union):
     """
     This class acts as a tagged union. Only one of the ``is_*`` methods will
@@ -174,6 +298,58 @@ class EmmState(bb.Union):
         super(EmmState, self)._process_custom_annotations(annotation_type, field_path, processor)
 
 EmmState_validator = bv.Union(EmmState)
+
+class EnforceLinkPasswordPolicy(bb.Union):
+    """
+    Policy governing whether new links shared outside the team require
+    passwords.
+
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+
+    :ivar team_policies.EnforceLinkPasswordPolicy.optional: New links shared
+        outside the team do not require passwords.
+    :ivar team_policies.EnforceLinkPasswordPolicy.required: New links shared
+        outside the team require passwords.
+    """
+
+    _catch_all = 'other'
+    # Attribute is overwritten below the class definition
+    optional = None
+    # Attribute is overwritten below the class definition
+    required = None
+    # Attribute is overwritten below the class definition
+    other = None
+
+    def is_optional(self):
+        """
+        Check if the union tag is ``optional``.
+
+        :rtype: bool
+        """
+        return self._tag == 'optional'
+
+    def is_required(self):
+        """
+        Check if the union tag is ``required``.
+
+        :rtype: bool
+        """
+        return self._tag == 'required'
+
+    def is_other(self):
+        """
+        Check if the union tag is ``other``.
+
+        :rtype: bool
+        """
+        return self._tag == 'other'
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(EnforceLinkPasswordPolicy, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+EnforceLinkPasswordPolicy_validator = bv.Union(EnforceLinkPasswordPolicy)
 
 class ExternalDriveBackupPolicyState(bb.Union):
     """
@@ -297,6 +473,8 @@ class FileProviderMigrationPolicyState(bb.Union):
         not opted out of File Provider Migration for team members.
     :ivar team_policies.FileProviderMigrationPolicyState.default: Team admin has
         default value based on team tier.
+    :ivar team_policies.FileProviderMigrationPolicyState.immediate: Team admin
+        has chosen to do File Provider Migration immediately for the team.
     """
 
     _catch_all = 'other'
@@ -306,6 +484,8 @@ class FileProviderMigrationPolicyState(bb.Union):
     enabled = None
     # Attribute is overwritten below the class definition
     default = None
+    # Attribute is overwritten below the class definition
+    immediate = None
     # Attribute is overwritten below the class definition
     other = None
 
@@ -332,6 +512,14 @@ class FileProviderMigrationPolicyState(bb.Union):
         :rtype: bool
         """
         return self._tag == 'default'
+
+    def is_immediate(self):
+        """
+        Check if the union tag is ``immediate``.
+
+        :rtype: bool
+        """
+        return self._tag == 'immediate'
 
     def is_other(self):
         """
@@ -692,11 +880,15 @@ class PasswordStrengthPolicy(bb.Union):
     corresponding ``get_*`` method.
 
     :ivar team_policies.PasswordStrengthPolicy.minimal_requirements: User
-        passwords will adhere to the minimal password strength policy.
+        passwords will not adhere to a password strength policy.
     :ivar team_policies.PasswordStrengthPolicy.moderate_password: User passwords
-        will adhere to the moderate password strength policy.
+        will adhere to the strong password strength policy. Note that product
+        surfaces refer to this as the strong policy but the value must be kept
+        as is for backwards compatability.
     :ivar team_policies.PasswordStrengthPolicy.strong_password: User passwords
-        will adhere to the very strong password strength policy.
+        will adhere to the very strong password strength policy. Note that
+        product surfaces refer to this as the very strong policy but the value
+        must be kept as is for backwards compatability.
     """
 
     _catch_all = 'other'
@@ -912,6 +1104,9 @@ class SharedFolderMemberPolicy(bb.Union):
         member of a folder shared by a team member.
     :ivar team_policies.SharedFolderMemberPolicy.anyone: Anyone can be a member
         of a folder shared by a team member.
+    :ivar team_policies.SharedFolderMemberPolicy.team_and_approved: Only a
+        teammate and approved people can be a member of a folder shared by a
+        team member.
     """
 
     _catch_all = 'other'
@@ -919,6 +1114,8 @@ class SharedFolderMemberPolicy(bb.Union):
     team = None
     # Attribute is overwritten below the class definition
     anyone = None
+    # Attribute is overwritten below the class definition
+    team_and_approved = None
     # Attribute is overwritten below the class definition
     other = None
 
@@ -937,6 +1134,14 @@ class SharedFolderMemberPolicy(bb.Union):
         :rtype: bool
         """
         return self._tag == 'anyone'
+
+    def is_team_and_approved(self):
+        """
+        Check if the union tag is ``team_and_approved``.
+
+        :rtype: bool
+        """
+        return self._tag == 'team_and_approved'
 
     def is_other(self):
         """
@@ -1030,6 +1235,67 @@ class SharedLinkCreatePolicy(bb.Union):
         super(SharedLinkCreatePolicy, self)._process_custom_annotations(annotation_type, field_path, processor)
 
 SharedLinkCreatePolicy_validator = bv.Union(SharedLinkCreatePolicy)
+
+class SharedLinkDefaultPermissionsPolicy(bb.Union):
+    """
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+
+    :ivar team_policies.SharedLinkDefaultPermissionsPolicy.default: No team
+        default. Member defaults used instead.
+    :ivar team_policies.SharedLinkDefaultPermissionsPolicy.edit: Default to edit
+        when creating new sharing links
+    :ivar team_policies.SharedLinkDefaultPermissionsPolicy.view: Default to
+        view-only when creating new sharing links
+    """
+
+    _catch_all = 'other'
+    # Attribute is overwritten below the class definition
+    default = None
+    # Attribute is overwritten below the class definition
+    edit = None
+    # Attribute is overwritten below the class definition
+    view = None
+    # Attribute is overwritten below the class definition
+    other = None
+
+    def is_default(self):
+        """
+        Check if the union tag is ``default``.
+
+        :rtype: bool
+        """
+        return self._tag == 'default'
+
+    def is_edit(self):
+        """
+        Check if the union tag is ``edit``.
+
+        :rtype: bool
+        """
+        return self._tag == 'edit'
+
+    def is_view(self):
+        """
+        Check if the union tag is ``view``.
+
+        :rtype: bool
+        """
+        return self._tag == 'view'
+
+    def is_other(self):
+        """
+        Check if the union tag is ``other``.
+
+        :rtype: bool
+        """
+        return self._tag == 'other'
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(SharedLinkDefaultPermissionsPolicy, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+SharedLinkDefaultPermissionsPolicy_validator = bv.Union(SharedLinkDefaultPermissionsPolicy)
 
 class ShowcaseDownloadPolicy(bb.Union):
     """
@@ -1401,6 +1667,9 @@ class TeamMemberPolicies(bb.Struct):
     :ivar team_policies.TeamMemberPolicies.suggest_members_policy: The team
         policy on if teammembers are allowed to suggest users for admins to
         invite to the team.
+    :ivar team_policies.TeamMemberPolicies.top_level_content_policy: Policy for
+        deciding whether members can edit team folders at the top level of the
+        team space.
     """
 
     __slots__ = [
@@ -1408,6 +1677,7 @@ class TeamMemberPolicies(bb.Struct):
         '_emm_state_value',
         '_office_addin_value',
         '_suggest_members_policy_value',
+        '_top_level_content_policy_value',
     ]
 
     _has_required_fields = True
@@ -1416,11 +1686,13 @@ class TeamMemberPolicies(bb.Struct):
                  sharing=None,
                  emm_state=None,
                  office_addin=None,
-                 suggest_members_policy=None):
+                 suggest_members_policy=None,
+                 top_level_content_policy=None):
         self._sharing_value = bb.NOT_SET
         self._emm_state_value = bb.NOT_SET
         self._office_addin_value = bb.NOT_SET
         self._suggest_members_policy_value = bb.NOT_SET
+        self._top_level_content_policy_value = bb.NOT_SET
         if sharing is not None:
             self.sharing = sharing
         if emm_state is not None:
@@ -1429,6 +1701,8 @@ class TeamMemberPolicies(bb.Struct):
             self.office_addin = office_addin
         if suggest_members_policy is not None:
             self.suggest_members_policy = suggest_members_policy
+        if top_level_content_policy is not None:
+            self.top_level_content_policy = top_level_content_policy
 
     # Instance attribute type: TeamSharingPolicies (validator is set below)
     sharing = bb.Attribute("sharing", user_defined=True)
@@ -1441,6 +1715,9 @@ class TeamMemberPolicies(bb.Struct):
 
     # Instance attribute type: SuggestMembersPolicy (validator is set below)
     suggest_members_policy = bb.Attribute("suggest_members_policy", user_defined=True)
+
+    # Instance attribute type: TopLevelContentPolicy (validator is set below)
+    top_level_content_policy = bb.Attribute("top_level_content_policy", user_defined=True)
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(TeamMemberPolicies, self)._process_custom_annotations(annotation_type, field_path, processor)
@@ -1462,6 +1739,13 @@ class TeamSharingPolicies(bb.Struct):
     :ivar
         team_policies.TeamSharingPolicies.shared_folder_link_restriction_policy:
         Who can view links to content in shared folders.
+    :ivar team_policies.TeamSharingPolicies.enforce_link_password_policy: If
+        passwords are required for new links shared outside the team.
+    :ivar team_policies.TeamSharingPolicies.default_link_expiration_days_policy:
+        Default expiration date for new links shared outside the team.
+    :ivar
+        team_policies.TeamSharingPolicies.shared_link_default_permissions_policy:
+        Default access level for new links shared by team members.
     """
 
     __slots__ = [
@@ -1470,6 +1754,9 @@ class TeamSharingPolicies(bb.Struct):
         '_shared_link_create_policy_value',
         '_group_creation_policy_value',
         '_shared_folder_link_restriction_policy_value',
+        '_enforce_link_password_policy_value',
+        '_default_link_expiration_days_policy_value',
+        '_shared_link_default_permissions_policy_value',
     ]
 
     _has_required_fields = True
@@ -1479,12 +1766,18 @@ class TeamSharingPolicies(bb.Struct):
                  shared_folder_join_policy=None,
                  shared_link_create_policy=None,
                  group_creation_policy=None,
-                 shared_folder_link_restriction_policy=None):
+                 shared_folder_link_restriction_policy=None,
+                 enforce_link_password_policy=None,
+                 default_link_expiration_days_policy=None,
+                 shared_link_default_permissions_policy=None):
         self._shared_folder_member_policy_value = bb.NOT_SET
         self._shared_folder_join_policy_value = bb.NOT_SET
         self._shared_link_create_policy_value = bb.NOT_SET
         self._group_creation_policy_value = bb.NOT_SET
         self._shared_folder_link_restriction_policy_value = bb.NOT_SET
+        self._enforce_link_password_policy_value = bb.NOT_SET
+        self._default_link_expiration_days_policy_value = bb.NOT_SET
+        self._shared_link_default_permissions_policy_value = bb.NOT_SET
         if shared_folder_member_policy is not None:
             self.shared_folder_member_policy = shared_folder_member_policy
         if shared_folder_join_policy is not None:
@@ -1495,6 +1788,12 @@ class TeamSharingPolicies(bb.Struct):
             self.group_creation_policy = group_creation_policy
         if shared_folder_link_restriction_policy is not None:
             self.shared_folder_link_restriction_policy = shared_folder_link_restriction_policy
+        if enforce_link_password_policy is not None:
+            self.enforce_link_password_policy = enforce_link_password_policy
+        if default_link_expiration_days_policy is not None:
+            self.default_link_expiration_days_policy = default_link_expiration_days_policy
+        if shared_link_default_permissions_policy is not None:
+            self.shared_link_default_permissions_policy = shared_link_default_permissions_policy
 
     # Instance attribute type: SharedFolderMemberPolicy (validator is set below)
     shared_folder_member_policy = bb.Attribute("shared_folder_member_policy", user_defined=True)
@@ -1511,10 +1810,68 @@ class TeamSharingPolicies(bb.Struct):
     # Instance attribute type: SharedFolderBlanketLinkRestrictionPolicy (validator is set below)
     shared_folder_link_restriction_policy = bb.Attribute("shared_folder_link_restriction_policy", user_defined=True)
 
+    # Instance attribute type: EnforceLinkPasswordPolicy (validator is set below)
+    enforce_link_password_policy = bb.Attribute("enforce_link_password_policy", user_defined=True)
+
+    # Instance attribute type: DefaultLinkExpirationDaysPolicy (validator is set below)
+    default_link_expiration_days_policy = bb.Attribute("default_link_expiration_days_policy", user_defined=True)
+
+    # Instance attribute type: SharedLinkDefaultPermissionsPolicy (validator is set below)
+    shared_link_default_permissions_policy = bb.Attribute("shared_link_default_permissions_policy", user_defined=True)
+
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(TeamSharingPolicies, self)._process_custom_annotations(annotation_type, field_path, processor)
 
 TeamSharingPolicies_validator = bv.Struct(TeamSharingPolicies)
+
+class TopLevelContentPolicy(bb.Union):
+    """
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+
+    :ivar team_policies.TopLevelContentPolicy.admin_only: Only admins can edit
+        team folders at the top level of the team space.
+    :ivar team_policies.TopLevelContentPolicy.everyone: Everyone on the team can
+        edit team folders at the top level of the team space.
+    """
+
+    _catch_all = 'other'
+    # Attribute is overwritten below the class definition
+    admin_only = None
+    # Attribute is overwritten below the class definition
+    everyone = None
+    # Attribute is overwritten below the class definition
+    other = None
+
+    def is_admin_only(self):
+        """
+        Check if the union tag is ``admin_only``.
+
+        :rtype: bool
+        """
+        return self._tag == 'admin_only'
+
+    def is_everyone(self):
+        """
+        Check if the union tag is ``everyone``.
+
+        :rtype: bool
+        """
+        return self._tag == 'everyone'
+
+    def is_other(self):
+        """
+        Check if the union tag is ``other``.
+
+        :rtype: bool
+        """
+        return self._tag == 'other'
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(TopLevelContentPolicy, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+TopLevelContentPolicy_validator = bv.Union(TopLevelContentPolicy)
 
 class TwoStepVerificationPolicy(bb.Union):
     """
@@ -1655,6 +2012,37 @@ ComputerBackupPolicyState.enabled = ComputerBackupPolicyState('enabled')
 ComputerBackupPolicyState.default = ComputerBackupPolicyState('default')
 ComputerBackupPolicyState.other = ComputerBackupPolicyState('other')
 
+DefaultLinkExpirationDaysPolicy._none_validator = bv.Void()
+DefaultLinkExpirationDaysPolicy._day_1_validator = bv.Void()
+DefaultLinkExpirationDaysPolicy._day_3_validator = bv.Void()
+DefaultLinkExpirationDaysPolicy._day_7_validator = bv.Void()
+DefaultLinkExpirationDaysPolicy._day_30_validator = bv.Void()
+DefaultLinkExpirationDaysPolicy._day_90_validator = bv.Void()
+DefaultLinkExpirationDaysPolicy._day_180_validator = bv.Void()
+DefaultLinkExpirationDaysPolicy._year_1_validator = bv.Void()
+DefaultLinkExpirationDaysPolicy._other_validator = bv.Void()
+DefaultLinkExpirationDaysPolicy._tagmap = {
+    'none': DefaultLinkExpirationDaysPolicy._none_validator,
+    'day_1': DefaultLinkExpirationDaysPolicy._day_1_validator,
+    'day_3': DefaultLinkExpirationDaysPolicy._day_3_validator,
+    'day_7': DefaultLinkExpirationDaysPolicy._day_7_validator,
+    'day_30': DefaultLinkExpirationDaysPolicy._day_30_validator,
+    'day_90': DefaultLinkExpirationDaysPolicy._day_90_validator,
+    'day_180': DefaultLinkExpirationDaysPolicy._day_180_validator,
+    'year_1': DefaultLinkExpirationDaysPolicy._year_1_validator,
+    'other': DefaultLinkExpirationDaysPolicy._other_validator,
+}
+
+DefaultLinkExpirationDaysPolicy.none = DefaultLinkExpirationDaysPolicy('none')
+DefaultLinkExpirationDaysPolicy.day_1 = DefaultLinkExpirationDaysPolicy('day_1')
+DefaultLinkExpirationDaysPolicy.day_3 = DefaultLinkExpirationDaysPolicy('day_3')
+DefaultLinkExpirationDaysPolicy.day_7 = DefaultLinkExpirationDaysPolicy('day_7')
+DefaultLinkExpirationDaysPolicy.day_30 = DefaultLinkExpirationDaysPolicy('day_30')
+DefaultLinkExpirationDaysPolicy.day_90 = DefaultLinkExpirationDaysPolicy('day_90')
+DefaultLinkExpirationDaysPolicy.day_180 = DefaultLinkExpirationDaysPolicy('day_180')
+DefaultLinkExpirationDaysPolicy.year_1 = DefaultLinkExpirationDaysPolicy('year_1')
+DefaultLinkExpirationDaysPolicy.other = DefaultLinkExpirationDaysPolicy('other')
+
 EmmState._disabled_validator = bv.Void()
 EmmState._optional_validator = bv.Void()
 EmmState._required_validator = bv.Void()
@@ -1670,6 +2058,19 @@ EmmState.disabled = EmmState('disabled')
 EmmState.optional = EmmState('optional')
 EmmState.required = EmmState('required')
 EmmState.other = EmmState('other')
+
+EnforceLinkPasswordPolicy._optional_validator = bv.Void()
+EnforceLinkPasswordPolicy._required_validator = bv.Void()
+EnforceLinkPasswordPolicy._other_validator = bv.Void()
+EnforceLinkPasswordPolicy._tagmap = {
+    'optional': EnforceLinkPasswordPolicy._optional_validator,
+    'required': EnforceLinkPasswordPolicy._required_validator,
+    'other': EnforceLinkPasswordPolicy._other_validator,
+}
+
+EnforceLinkPasswordPolicy.optional = EnforceLinkPasswordPolicy('optional')
+EnforceLinkPasswordPolicy.required = EnforceLinkPasswordPolicy('required')
+EnforceLinkPasswordPolicy.other = EnforceLinkPasswordPolicy('other')
 
 ExternalDriveBackupPolicyState._disabled_validator = bv.Void()
 ExternalDriveBackupPolicyState._enabled_validator = bv.Void()
@@ -1703,17 +2104,20 @@ FileLockingPolicyState.other = FileLockingPolicyState('other')
 FileProviderMigrationPolicyState._disabled_validator = bv.Void()
 FileProviderMigrationPolicyState._enabled_validator = bv.Void()
 FileProviderMigrationPolicyState._default_validator = bv.Void()
+FileProviderMigrationPolicyState._immediate_validator = bv.Void()
 FileProviderMigrationPolicyState._other_validator = bv.Void()
 FileProviderMigrationPolicyState._tagmap = {
     'disabled': FileProviderMigrationPolicyState._disabled_validator,
     'enabled': FileProviderMigrationPolicyState._enabled_validator,
     'default': FileProviderMigrationPolicyState._default_validator,
+    'immediate': FileProviderMigrationPolicyState._immediate_validator,
     'other': FileProviderMigrationPolicyState._other_validator,
 }
 
 FileProviderMigrationPolicyState.disabled = FileProviderMigrationPolicyState('disabled')
 FileProviderMigrationPolicyState.enabled = FileProviderMigrationPolicyState('enabled')
 FileProviderMigrationPolicyState.default = FileProviderMigrationPolicyState('default')
+FileProviderMigrationPolicyState.immediate = FileProviderMigrationPolicyState('immediate')
 FileProviderMigrationPolicyState.other = FileProviderMigrationPolicyState('other')
 
 GroupCreation._admins_and_members_validator = bv.Void()
@@ -1864,15 +2268,18 @@ SharedFolderJoinPolicy.other = SharedFolderJoinPolicy('other')
 
 SharedFolderMemberPolicy._team_validator = bv.Void()
 SharedFolderMemberPolicy._anyone_validator = bv.Void()
+SharedFolderMemberPolicy._team_and_approved_validator = bv.Void()
 SharedFolderMemberPolicy._other_validator = bv.Void()
 SharedFolderMemberPolicy._tagmap = {
     'team': SharedFolderMemberPolicy._team_validator,
     'anyone': SharedFolderMemberPolicy._anyone_validator,
+    'team_and_approved': SharedFolderMemberPolicy._team_and_approved_validator,
     'other': SharedFolderMemberPolicy._other_validator,
 }
 
 SharedFolderMemberPolicy.team = SharedFolderMemberPolicy('team')
 SharedFolderMemberPolicy.anyone = SharedFolderMemberPolicy('anyone')
+SharedFolderMemberPolicy.team_and_approved = SharedFolderMemberPolicy('team_and_approved')
 SharedFolderMemberPolicy.other = SharedFolderMemberPolicy('other')
 
 SharedLinkCreatePolicy._default_public_validator = bv.Void()
@@ -1893,6 +2300,22 @@ SharedLinkCreatePolicy.default_team_only = SharedLinkCreatePolicy('default_team_
 SharedLinkCreatePolicy.team_only = SharedLinkCreatePolicy('team_only')
 SharedLinkCreatePolicy.default_no_one = SharedLinkCreatePolicy('default_no_one')
 SharedLinkCreatePolicy.other = SharedLinkCreatePolicy('other')
+
+SharedLinkDefaultPermissionsPolicy._default_validator = bv.Void()
+SharedLinkDefaultPermissionsPolicy._edit_validator = bv.Void()
+SharedLinkDefaultPermissionsPolicy._view_validator = bv.Void()
+SharedLinkDefaultPermissionsPolicy._other_validator = bv.Void()
+SharedLinkDefaultPermissionsPolicy._tagmap = {
+    'default': SharedLinkDefaultPermissionsPolicy._default_validator,
+    'edit': SharedLinkDefaultPermissionsPolicy._edit_validator,
+    'view': SharedLinkDefaultPermissionsPolicy._view_validator,
+    'other': SharedLinkDefaultPermissionsPolicy._other_validator,
+}
+
+SharedLinkDefaultPermissionsPolicy.default = SharedLinkDefaultPermissionsPolicy('default')
+SharedLinkDefaultPermissionsPolicy.edit = SharedLinkDefaultPermissionsPolicy('edit')
+SharedLinkDefaultPermissionsPolicy.view = SharedLinkDefaultPermissionsPolicy('view')
+SharedLinkDefaultPermissionsPolicy.other = SharedLinkDefaultPermissionsPolicy('other')
 
 ShowcaseDownloadPolicy._disabled_validator = bv.Void()
 ShowcaseDownloadPolicy._enabled_validator = bv.Void()
@@ -1992,17 +2415,20 @@ TeamMemberPolicies.sharing.validator = TeamSharingPolicies_validator
 TeamMemberPolicies.emm_state.validator = EmmState_validator
 TeamMemberPolicies.office_addin.validator = OfficeAddInPolicy_validator
 TeamMemberPolicies.suggest_members_policy.validator = SuggestMembersPolicy_validator
+TeamMemberPolicies.top_level_content_policy.validator = TopLevelContentPolicy_validator
 TeamMemberPolicies._all_field_names_ = set([
     'sharing',
     'emm_state',
     'office_addin',
     'suggest_members_policy',
+    'top_level_content_policy',
 ])
 TeamMemberPolicies._all_fields_ = [
     ('sharing', TeamMemberPolicies.sharing.validator),
     ('emm_state', TeamMemberPolicies.emm_state.validator),
     ('office_addin', TeamMemberPolicies.office_addin.validator),
     ('suggest_members_policy', TeamMemberPolicies.suggest_members_policy.validator),
+    ('top_level_content_policy', TeamMemberPolicies.top_level_content_policy.validator),
 ]
 
 TeamSharingPolicies.shared_folder_member_policy.validator = SharedFolderMemberPolicy_validator
@@ -2010,12 +2436,18 @@ TeamSharingPolicies.shared_folder_join_policy.validator = SharedFolderJoinPolicy
 TeamSharingPolicies.shared_link_create_policy.validator = SharedLinkCreatePolicy_validator
 TeamSharingPolicies.group_creation_policy.validator = GroupCreation_validator
 TeamSharingPolicies.shared_folder_link_restriction_policy.validator = SharedFolderBlanketLinkRestrictionPolicy_validator
+TeamSharingPolicies.enforce_link_password_policy.validator = EnforceLinkPasswordPolicy_validator
+TeamSharingPolicies.default_link_expiration_days_policy.validator = DefaultLinkExpirationDaysPolicy_validator
+TeamSharingPolicies.shared_link_default_permissions_policy.validator = SharedLinkDefaultPermissionsPolicy_validator
 TeamSharingPolicies._all_field_names_ = set([
     'shared_folder_member_policy',
     'shared_folder_join_policy',
     'shared_link_create_policy',
     'group_creation_policy',
     'shared_folder_link_restriction_policy',
+    'enforce_link_password_policy',
+    'default_link_expiration_days_policy',
+    'shared_link_default_permissions_policy',
 ])
 TeamSharingPolicies._all_fields_ = [
     ('shared_folder_member_policy', TeamSharingPolicies.shared_folder_member_policy.validator),
@@ -2023,7 +2455,23 @@ TeamSharingPolicies._all_fields_ = [
     ('shared_link_create_policy', TeamSharingPolicies.shared_link_create_policy.validator),
     ('group_creation_policy', TeamSharingPolicies.group_creation_policy.validator),
     ('shared_folder_link_restriction_policy', TeamSharingPolicies.shared_folder_link_restriction_policy.validator),
+    ('enforce_link_password_policy', TeamSharingPolicies.enforce_link_password_policy.validator),
+    ('default_link_expiration_days_policy', TeamSharingPolicies.default_link_expiration_days_policy.validator),
+    ('shared_link_default_permissions_policy', TeamSharingPolicies.shared_link_default_permissions_policy.validator),
 ]
+
+TopLevelContentPolicy._admin_only_validator = bv.Void()
+TopLevelContentPolicy._everyone_validator = bv.Void()
+TopLevelContentPolicy._other_validator = bv.Void()
+TopLevelContentPolicy._tagmap = {
+    'admin_only': TopLevelContentPolicy._admin_only_validator,
+    'everyone': TopLevelContentPolicy._everyone_validator,
+    'other': TopLevelContentPolicy._other_validator,
+}
+
+TopLevelContentPolicy.admin_only = TopLevelContentPolicy('admin_only')
+TopLevelContentPolicy.everyone = TopLevelContentPolicy('everyone')
+TopLevelContentPolicy.other = TopLevelContentPolicy('other')
 
 TwoStepVerificationPolicy._require_tfa_enable_validator = bv.Void()
 TwoStepVerificationPolicy._require_tfa_disable_validator = bv.Void()

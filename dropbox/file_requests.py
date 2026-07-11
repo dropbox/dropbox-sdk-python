@@ -112,6 +112,8 @@ class CreateFileRequestArgs(bb.Struct):
         accept any file submissions, but it can be opened later.
     :ivar file_requests.CreateFileRequestArgs.description: A description of the
         file request.
+    :ivar file_requests.CreateFileRequestArgs.video_project_id: If this request
+        was created from video project, its id.
     """
 
     __slots__ = [
@@ -120,6 +122,7 @@ class CreateFileRequestArgs(bb.Struct):
         '_deadline_value',
         '_open_value',
         '_description_value',
+        '_video_project_id_value',
     ]
 
     _has_required_fields = True
@@ -129,12 +132,14 @@ class CreateFileRequestArgs(bb.Struct):
                  destination=None,
                  deadline=None,
                  open=None,
-                 description=None):
+                 description=None,
+                 video_project_id=None):
         self._title_value = bb.NOT_SET
         self._destination_value = bb.NOT_SET
         self._deadline_value = bb.NOT_SET
         self._open_value = bb.NOT_SET
         self._description_value = bb.NOT_SET
+        self._video_project_id_value = bb.NOT_SET
         if title is not None:
             self.title = title
         if destination is not None:
@@ -145,6 +150,8 @@ class CreateFileRequestArgs(bb.Struct):
             self.open = open
         if description is not None:
             self.description = description
+        if video_project_id is not None:
+            self.video_project_id = video_project_id
 
     # Instance attribute type: str (validator is set below)
     title = bb.Attribute("title")
@@ -160,6 +167,9 @@ class CreateFileRequestArgs(bb.Struct):
 
     # Instance attribute type: str (validator is set below)
     description = bb.Attribute("description", nullable=True)
+
+    # Instance attribute type: str (validator is set below)
+    video_project_id = bb.Attribute("video_project_id", nullable=True)
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(CreateFileRequestArgs, self)._process_custom_annotations(annotation_type, field_path, processor)
@@ -190,6 +200,8 @@ class FileRequestError(GeneralFileRequestsError):
     :ivar file_requests.FileRequestError.validation_error: There was an error
         validating the request. For example, the title was invalid, or there
         were disallowed characters in the destination path.
+    :ivar file_requests.FileRequestError.no_write_permission: This user doesn't
+        have permission to edit files in a destination folder
     """
 
     # Attribute is overwritten below the class definition
@@ -204,6 +216,8 @@ class FileRequestError(GeneralFileRequestsError):
     email_unverified = None
     # Attribute is overwritten below the class definition
     validation_error = None
+    # Attribute is overwritten below the class definition
+    no_write_permission = None
 
     def is_not_found(self):
         """
@@ -252,6 +266,14 @@ class FileRequestError(GeneralFileRequestsError):
         :rtype: bool
         """
         return self._tag == 'validation_error'
+
+    def is_no_write_permission(self):
+        """
+        Check if the union tag is ``no_write_permission``.
+
+        :rtype: bool
+        """
+        return self._tag == 'no_write_permission'
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(FileRequestError, self)._process_custom_annotations(annotation_type, field_path, processor)
@@ -448,6 +470,8 @@ class FileRequest(bb.Struct):
         request has received.
     :ivar file_requests.FileRequest.description: A description of the file
         request.
+    :ivar file_requests.FileRequest.video_project_id: If this request was
+        created from video project, its id.
     """
 
     __slots__ = [
@@ -460,6 +484,7 @@ class FileRequest(bb.Struct):
         '_is_open_value',
         '_file_count_value',
         '_description_value',
+        '_video_project_id_value',
     ]
 
     _has_required_fields = True
@@ -473,7 +498,8 @@ class FileRequest(bb.Struct):
                  file_count=None,
                  destination=None,
                  deadline=None,
-                 description=None):
+                 description=None,
+                 video_project_id=None):
         self._id_value = bb.NOT_SET
         self._url_value = bb.NOT_SET
         self._title_value = bb.NOT_SET
@@ -483,6 +509,7 @@ class FileRequest(bb.Struct):
         self._is_open_value = bb.NOT_SET
         self._file_count_value = bb.NOT_SET
         self._description_value = bb.NOT_SET
+        self._video_project_id_value = bb.NOT_SET
         if id is not None:
             self.id = id
         if url is not None:
@@ -501,6 +528,8 @@ class FileRequest(bb.Struct):
             self.file_count = file_count
         if description is not None:
             self.description = description
+        if video_project_id is not None:
+            self.video_project_id = video_project_id
 
     # Instance attribute type: str (validator is set below)
     id = bb.Attribute("id")
@@ -529,6 +558,9 @@ class FileRequest(bb.Struct):
     # Instance attribute type: str (validator is set below)
     description = bb.Attribute("description", nullable=True)
 
+    # Instance attribute type: str (validator is set below)
+    video_project_id = bb.Attribute("video_project_id", nullable=True)
+
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(FileRequest, self)._process_custom_annotations(annotation_type, field_path, processor)
 
@@ -539,7 +571,7 @@ class FileRequestDeadline(bb.Struct):
     :ivar file_requests.FileRequestDeadline.deadline: The deadline for this file
         request.
     :ivar file_requests.FileRequestDeadline.allow_late_uploads: If set, allow
-        uploads after the deadline has passed. These     uploads will be marked
+        uploads after the deadline has passed. These uploads will be marked
         overdue.
     """
 
@@ -1054,12 +1086,14 @@ CreateFileRequestArgs.destination.validator = files.Path_validator
 CreateFileRequestArgs.deadline.validator = bv.Nullable(FileRequestDeadline_validator)
 CreateFileRequestArgs.open.validator = bv.Boolean()
 CreateFileRequestArgs.description.validator = bv.Nullable(bv.String())
+CreateFileRequestArgs.video_project_id.validator = bv.Nullable(bv.String())
 CreateFileRequestArgs._all_field_names_ = set([
     'title',
     'destination',
     'deadline',
     'open',
     'description',
+    'video_project_id',
 ])
 CreateFileRequestArgs._all_fields_ = [
     ('title', CreateFileRequestArgs.title.validator),
@@ -1067,6 +1101,7 @@ CreateFileRequestArgs._all_fields_ = [
     ('deadline', CreateFileRequestArgs.deadline.validator),
     ('open', CreateFileRequestArgs.open.validator),
     ('description', CreateFileRequestArgs.description.validator),
+    ('video_project_id', CreateFileRequestArgs.video_project_id.validator),
 ]
 
 FileRequestError._not_found_validator = bv.Void()
@@ -1075,6 +1110,7 @@ FileRequestError._app_lacks_access_validator = bv.Void()
 FileRequestError._no_permission_validator = bv.Void()
 FileRequestError._email_unverified_validator = bv.Void()
 FileRequestError._validation_error_validator = bv.Void()
+FileRequestError._no_write_permission_validator = bv.Void()
 FileRequestError._tagmap = {
     'not_found': FileRequestError._not_found_validator,
     'not_a_folder': FileRequestError._not_a_folder_validator,
@@ -1082,6 +1118,7 @@ FileRequestError._tagmap = {
     'no_permission': FileRequestError._no_permission_validator,
     'email_unverified': FileRequestError._email_unverified_validator,
     'validation_error': FileRequestError._validation_error_validator,
+    'no_write_permission': FileRequestError._no_write_permission_validator,
 }
 FileRequestError._tagmap.update(GeneralFileRequestsError._tagmap)
 
@@ -1091,6 +1128,7 @@ FileRequestError.app_lacks_access = FileRequestError('app_lacks_access')
 FileRequestError.no_permission = FileRequestError('no_permission')
 FileRequestError.email_unverified = FileRequestError('email_unverified')
 FileRequestError.validation_error = FileRequestError('validation_error')
+FileRequestError.no_write_permission = FileRequestError('no_write_permission')
 
 CreateFileRequestError._invalid_location_validator = bv.Void()
 CreateFileRequestError._rate_limit_validator = bv.Void()
@@ -1136,6 +1174,7 @@ FileRequest.deadline.validator = bv.Nullable(FileRequestDeadline_validator)
 FileRequest.is_open.validator = bv.Boolean()
 FileRequest.file_count.validator = bv.Int64()
 FileRequest.description.validator = bv.Nullable(bv.String())
+FileRequest.video_project_id.validator = bv.Nullable(bv.String())
 FileRequest._all_field_names_ = set([
     'id',
     'url',
@@ -1146,6 +1185,7 @@ FileRequest._all_field_names_ = set([
     'is_open',
     'file_count',
     'description',
+    'video_project_id',
 ])
 FileRequest._all_fields_ = [
     ('id', FileRequest.id.validator),
@@ -1157,6 +1197,7 @@ FileRequest._all_fields_ = [
     ('is_open', FileRequest.is_open.validator),
     ('file_count', FileRequest.file_count.validator),
     ('description', FileRequest.description.validator),
+    ('video_project_id', FileRequest.video_project_id.validator),
 ]
 
 FileRequestDeadline.deadline.validator = common.DropboxTimestamp_validator
@@ -1335,23 +1376,23 @@ get = bb.Route(
      'host': 'api',
      'style': 'rpc'},
 )
-list_v2 = bb.Route(
-    'list',
-    2,
-    False,
-    ListFileRequestsArg_validator,
-    ListFileRequestsV2Result_validator,
-    ListFileRequestsError_validator,
-    {'auth': 'user',
-     'host': 'api',
-     'style': 'rpc'},
-)
 list = bb.Route(
     'list',
     1,
     False,
     bv.Void(),
     ListFileRequestsResult_validator,
+    ListFileRequestsError_validator,
+    {'auth': 'user',
+     'host': 'api',
+     'style': 'rpc'},
+)
+list_v2 = bb.Route(
+    'list',
+    2,
+    False,
+    ListFileRequestsArg_validator,
+    ListFileRequestsV2Result_validator,
     ListFileRequestsError_validator,
     {'auth': 'user',
      'host': 'api',
@@ -1386,8 +1427,8 @@ ROUTES = {
     'delete': delete,
     'delete_all_closed': delete_all_closed,
     'get': get,
-    'list:2': list_v2,
     'list': list,
+    'list:2': list_v2,
     'list/continue': list_continue,
     'update': update,
 }

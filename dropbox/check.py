@@ -35,6 +35,44 @@ class EchoArg(bb.Struct):
 
 EchoArg_validator = bv.Struct(EchoArg)
 
+class EchoError(bb.Union):
+    """
+    EchoError contains the error returned from the Dropbox servers.
+
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+
+    :ivar check.EchoError.user_requested: The request was successful.
+    """
+
+    _catch_all = 'other'
+    # Attribute is overwritten below the class definition
+    user_requested = None
+    # Attribute is overwritten below the class definition
+    other = None
+
+    def is_user_requested(self):
+        """
+        Check if the union tag is ``user_requested``.
+
+        :rtype: bool
+        """
+        return self._tag == 'user_requested'
+
+    def is_other(self):
+        """
+        Check if the union tag is ``other``.
+
+        :rtype: bool
+        """
+        return self._tag == 'other'
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(EchoError, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+EchoError_validator = bv.Union(EchoError)
+
 class EchoResult(bb.Struct):
     """
     EchoResult contains the result returned from the Dropbox servers.
@@ -67,6 +105,16 @@ EchoArg.query.validator = bv.String(max_length=500)
 EchoArg._all_field_names_ = set(['query'])
 EchoArg._all_fields_ = [('query', EchoArg.query.validator)]
 
+EchoError._user_requested_validator = bv.Void()
+EchoError._other_validator = bv.Void()
+EchoError._tagmap = {
+    'user_requested': EchoError._user_requested_validator,
+    'other': EchoError._other_validator,
+}
+
+EchoError.user_requested = EchoError('user_requested')
+EchoError.other = EchoError('other')
+
 EchoResult.result.validator = bv.String()
 EchoResult._all_field_names_ = set(['result'])
 EchoResult._all_fields_ = [('result', EchoResult.result.validator)]
@@ -79,7 +127,7 @@ app = bb.Route(
     False,
     EchoArg_validator,
     EchoResult_validator,
-    bv.Void(),
+    EchoError_validator,
     {'auth': 'app',
      'host': 'api',
      'style': 'rpc'},
@@ -90,7 +138,7 @@ user = bb.Route(
     False,
     EchoArg_validator,
     EchoResult_validator,
-    bv.Void(),
+    EchoError_validator,
     {'auth': 'user',
      'host': 'api',
      'style': 'rpc'},
