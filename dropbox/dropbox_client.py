@@ -10,6 +10,7 @@ __version__ = '0.0.0'
 
 import base64
 import contextlib
+import copy
 import json
 import logging
 import random
@@ -23,6 +24,7 @@ from dropbox.auth import (
     RateLimitError_validator,
 )
 from dropbox import files
+from dropbox.content_hash import content_hash as _content_hash
 from dropbox.common import (
     PathRoot,
     PathRoot_validator,
@@ -151,7 +153,8 @@ class _DropboxTransport(object):
                  app_key=None,
                  app_secret=None,
                  scope=None,
-                 ca_certs=None):
+                 ca_certs=None,
+                 auto_content_hash=True):
         """
         :param str oauth2_access_token: OAuth2 access token for making client
             requests.
@@ -182,6 +185,8 @@ class _DropboxTransport(object):
             refresh will request all available scopes for application
         :param str ca_certs: a path to a file of concatenated CA certificates in PEM format.
             Has the same meaning as when using :func:`ssl.wrap_socket`.
+        :param bool auto_content_hash: If True (default), send a computed
+            content_hash with uploads so the server verifies integrity.
         """
 
         if not (oauth2_access_token or oauth2_refresh_token or (app_key and app_secret)):
@@ -205,6 +210,7 @@ class _DropboxTransport(object):
         self._app_key = app_key
         self._app_secret = app_secret
         self._scope = scope
+        self._auto_content_hash = auto_content_hash
 
         self._max_retries_on_error = max_retries_on_error
         self._max_retries_on_rate_limit = max_retries_on_rate_limit
@@ -246,7 +252,8 @@ class _DropboxTransport(object):
             oauth2_access_token_expiration=None,
             app_key=None,
             app_secret=None,
-            scope=None):
+            scope=None,
+            auto_content_hash=None):
         """
         Creates a new copy of the Dropbox client with the same defaults unless modified by
         arguments to clone()
@@ -269,7 +276,10 @@ class _DropboxTransport(object):
             oauth2_access_token_expiration or self._oauth2_access_token_expiration,
             app_key or self._app_key,
             app_secret or self._app_secret,
-            scope or self._scope
+            scope or self._scope,
+            auto_content_hash=(self._auto_content_hash
+                               if auto_content_hash is None
+                               else auto_content_hash),
         )
 
     def request(self,
@@ -308,6 +318,9 @@ class _DropboxTransport(object):
         if route.version > 1:
             route_name += '_v{}'.format(route.version)
         route_style = route.attrs['style'] or 'rpc'
+
+        request_arg = self._maybe_add_content_hash(request_arg, request_binary)
+
         serialized_arg = stone_serializers.json_encode(route.arg_type,
                                                        request_arg)
 
@@ -355,6 +368,23 @@ class _DropboxTransport(object):
             return (deserialized_result, res.http_resp)
         else:
             return deserialized_result
+
+    def _maybe_add_content_hash(self, request_arg, request_binary):
+        """Set content_hash on upload args when the caller didn't. Returns a
+        copy; the caller's arg is not mutated."""
+        if not self._auto_content_hash:
+            return request_arg
+        if not isinstance(request_binary, bytes):
+            return request_arg
+        if request_arg is None or \
+                'content_hash' not in getattr(request_arg, '_all_field_names_', ()):
+            return request_arg
+        if request_arg.content_hash is not None:
+            return request_arg
+
+        request_arg = copy.copy(request_arg)
+        request_arg.content_hash = _content_hash(request_binary)
+        return request_arg
 
     def check_and_refresh_access_token(self):
         """
@@ -804,6 +834,7 @@ class DropboxTeam(_DropboxTransport, DropboxTeamBase):
             app_key=self._app_key,
             app_secret=self._app_secret,
             scope=self._scope,
+            auto_content_hash=self._auto_content_hash,
         )
 
 class BadInputException(Exception):

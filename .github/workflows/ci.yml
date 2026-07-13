@@ -52,7 +52,7 @@ jobs:
 
       - name: Run unit tests
         run: |
-          pytest -v test/unit/test_dropbox_unit.py
+          pytest -v test/unit/
   Docs:
     runs-on: ubuntu-latest
     steps:

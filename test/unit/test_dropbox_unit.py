@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 
+import json
 import mock
 import pickle
 
@@ -7,7 +8,13 @@ import pytest
 
 # Tests OAuth Flow
 from dropbox import DropboxOAuth2Flow, session, Dropbox, create_session
-from dropbox.dropbox_client import BadInputException, DropboxTeam
+from dropbox.dropbox_client import (
+    BadInputException,
+    DropboxTeam,
+    RouteResult,
+)
+from dropbox.content_hash import content_hash
+from dropbox.common import PathRoot
 from dropbox.exceptions import AuthError, BadInputError
 from dropbox.oauth import OAuth2FlowNoRedirectResult, DropboxOAuth2FlowNoRedirect
 from datetime import datetime, timedelta
@@ -427,15 +434,17 @@ class TestClient:
         dbx = DropboxTeam(oauth2_refresh_token=REFRESH_TOKEN,
                       app_key=APP_KEY,
                       app_secret=APP_SECRET,
-                      session=session_instance)
-        dbx.as_admin(ADMIN_ID)
+                      session=session_instance,
+                      auto_content_hash=False)
+        assert dbx.as_admin(ADMIN_ID)._auto_content_hash is False
 
     def test_team_client_as_user(self, session_instance):
         dbx = DropboxTeam(oauth2_refresh_token=REFRESH_TOKEN,
                       app_key=APP_KEY,
                       app_secret=APP_SECRET,
-                      session=session_instance)
-        dbx.as_user(TEAM_MEMBER_ID)
+                      session=session_instance,
+                      auto_content_hash=False)
+        assert dbx.as_user(TEAM_MEMBER_ID)._auto_content_hash is False
 
     def test_non_list_scope_raises_bad_input(self, session_instance):
         # A non-list scope with no len() must raise BadInputException, not
@@ -452,6 +461,20 @@ class TestClient:
         # The base suffix must appear exactly once after cloning.
         assert cloned._user_agent.count('OfficialDropboxPythonSDKv2/') == 1
         assert cloned._user_agent == dbx._user_agent
+
+    def test_clone_preserves_and_can_override_auto_content_hash(self, session_instance):
+        dbx = Dropbox(oauth2_access_token=ACCESS_TOKEN,
+                      session=session_instance,
+                      auto_content_hash=False)
+        assert dbx.clone()._auto_content_hash is False
+        assert dbx.clone(auto_content_hash=True)._auto_content_hash is True
+
+    def test_with_path_root_preserves_auto_content_hash(self, session_instance):
+        dbx = Dropbox(oauth2_access_token=ACCESS_TOKEN,
+                      session=session_instance,
+                      auto_content_hash=False)
+        cloned = dbx.with_path_root(PathRoot.home)
+        assert cloned._auto_content_hash is False
 
     def test_refresh_400_without_error_key(self, bad_request_no_error_key_session_instance):
         # A 400 body lacking the "error" key must raise BadInputError, not KeyError.
@@ -485,6 +508,56 @@ class TestClient:
             dbx.check_and_refresh_access_token()
         # Initial attempt + 2 retries.
         assert server_error_session_instance.post.call_count == 3
+
+
+class TestAutoContentHash:
+
+    def _fake_file_metadata(self, size, file_content_hash):
+        return json.dumps({
+            'name': 'a.txt',
+            'id': 'id:1',
+            'client_modified': '2020-01-01T00:00:00Z',
+            'server_modified': '2020-01-01T00:00:00Z',
+            'rev': '0123456789',
+            'size': size,
+            'path_lower': '/a.txt',
+            'path_display': '/a.txt',
+            'content_hash': file_content_hash,
+        })
+
+    def _capture_upload(self, dbx, data, **upload_kwargs):
+        # Stub out the network layer and capture the serialized argument sent.
+        captured = {}
+
+        def fake_request(host, name, style, serialized_arg, auth, binary,
+                         timeout=None):
+            captured['arg'] = json.loads(serialized_arg)
+            return RouteResult(self._fake_file_metadata(
+                len(data), content_hash(data)))
+
+        dbx.request_json_string_with_retry = fake_request
+        dbx.check_and_refresh_access_token = lambda: None
+        dbx.files_upload(data, '/a.txt', **upload_kwargs)
+        return captured['arg']
+
+    def test_upload_adds_content_hash_by_default(self):
+        data = b'hello world'
+        dbx = Dropbox(oauth2_access_token=ACCESS_TOKEN)
+        arg = self._capture_upload(dbx, data)
+        assert arg['content_hash'] == content_hash(data)
+
+    def test_upload_no_content_hash_when_disabled(self):
+        data = b'hello world'
+        dbx = Dropbox(oauth2_access_token=ACCESS_TOKEN, auto_content_hash=False)
+        arg = self._capture_upload(dbx, data)
+        assert 'content_hash' not in arg
+
+    def test_upload_respects_caller_content_hash(self):
+        data = b'hello world'
+        caller_hash = 'f' * 64
+        dbx = Dropbox(oauth2_access_token=ACCESS_TOKEN)
+        arg = self._capture_upload(dbx, data, content_hash=caller_hash)
+        assert arg['content_hash'] == caller_hash
 
 
 class TestSession:

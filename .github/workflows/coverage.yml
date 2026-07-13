@@ -30,7 +30,7 @@ jobs:
           pip install .
       - name: Generate Unit Test Coverage
         run: |
-          coverage run --rcfile=.coveragerc -m pytest test/unit/test_dropbox_unit.py
+          coverage run --rcfile=.coveragerc -m pytest test/unit/
           coverage xml
       - name: Publish Coverage
         uses: codecov/codecov-action@v5
