@@ -145,6 +145,68 @@ class BasicAccount(Account):
 
 BasicAccount_validator = bv.Struct(BasicAccount)
 
+class DistinctMemberHomeValue(bb.Union):
+    """
+    The value for ``UserFeature.distinct_member_home``.
+
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+
+    :ivar bool users.DistinctMemberHomeValue.enabled: When this value is True,
+        the user have distinct home and root ns. When the value is False the
+        user's home ns and root ns are the same.
+    """
+
+    _catch_all = 'other'
+    # Attribute is overwritten below the class definition
+    other = None
+
+    @classmethod
+    def enabled(cls, val):
+        """
+        Create an instance of this class set to the ``enabled`` tag with value
+        ``val``.
+
+        :param bool val:
+        :rtype: DistinctMemberHomeValue
+        """
+        return cls('enabled', val)
+
+    def is_enabled(self):
+        """
+        Check if the union tag is ``enabled``.
+
+        :rtype: bool
+        """
+        return self._tag == 'enabled'
+
+    def is_other(self):
+        """
+        Check if the union tag is ``other``.
+
+        :rtype: bool
+        """
+        return self._tag == 'other'
+
+    def get_enabled(self):
+        """
+        When this value is True, the user have distinct home and root ns. When
+        the value is False the user's home ns and root ns are the same.
+
+        Only call this if :meth:`is_enabled` is true.
+
+        :rtype: bool
+        """
+        if not self.is_enabled():
+            raise AttributeError("tag 'enabled' not set")
+        return self._value
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(DistinctMemberHomeValue, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+DistinctMemberHomeValue_validator = bv.Union(DistinctMemberHomeValue)
+
 class FileLockingValue(bb.Union):
     """
     The value for ``UserFeature.file_locking``.
@@ -363,11 +425,14 @@ class FullTeam(Team):
     :ivar users.FullTeam.sharing_policies: Team policies governing sharing.
     :ivar users.FullTeam.office_addin_policy: Team policy governing the use of
         the Office Add-In.
+    :ivar users.FullTeam.top_level_content_policy: Team policy governing whether
+        members can edit team folders at the top level of the team space.
     """
 
     __slots__ = [
         '_sharing_policies_value',
         '_office_addin_policy_value',
+        '_top_level_content_policy_value',
     ]
 
     _has_required_fields = True
@@ -376,21 +441,28 @@ class FullTeam(Team):
                  id=None,
                  name=None,
                  sharing_policies=None,
-                 office_addin_policy=None):
+                 office_addin_policy=None,
+                 top_level_content_policy=None):
         super(FullTeam, self).__init__(id,
                                        name)
         self._sharing_policies_value = bb.NOT_SET
         self._office_addin_policy_value = bb.NOT_SET
+        self._top_level_content_policy_value = bb.NOT_SET
         if sharing_policies is not None:
             self.sharing_policies = sharing_policies
         if office_addin_policy is not None:
             self.office_addin_policy = office_addin_policy
+        if top_level_content_policy is not None:
+            self.top_level_content_policy = top_level_content_policy
 
     # Instance attribute type: team_policies.TeamSharingPolicies (validator is set below)
     sharing_policies = bb.Attribute("sharing_policies", user_defined=True)
 
     # Instance attribute type: team_policies.OfficeAddInPolicy (validator is set below)
     office_addin_policy = bb.Attribute("office_addin_policy", user_defined=True)
+
+    # Instance attribute type: team_policies.TopLevelContentPolicy (validator is set below)
+    top_level_content_policy = bb.Attribute("top_level_content_policy", user_defined=True)
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(FullTeam, self)._process_custom_annotations(annotation_type, field_path, processor)
@@ -834,6 +906,68 @@ class SpaceUsage(bb.Struct):
 
 SpaceUsage_validator = bv.Struct(SpaceUsage)
 
+class TeamSharedDropboxValue(bb.Union):
+    """
+    The value for ``UserFeature.team_shared_dropbox``.
+
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+
+    :ivar bool users.TeamSharedDropboxValue.enabled: When this value is True,
+        the user have a shared team root. When the value is False the user have
+        distinct root.
+    """
+
+    _catch_all = 'other'
+    # Attribute is overwritten below the class definition
+    other = None
+
+    @classmethod
+    def enabled(cls, val):
+        """
+        Create an instance of this class set to the ``enabled`` tag with value
+        ``val``.
+
+        :param bool val:
+        :rtype: TeamSharedDropboxValue
+        """
+        return cls('enabled', val)
+
+    def is_enabled(self):
+        """
+        Check if the union tag is ``enabled``.
+
+        :rtype: bool
+        """
+        return self._tag == 'enabled'
+
+    def is_other(self):
+        """
+        Check if the union tag is ``other``.
+
+        :rtype: bool
+        """
+        return self._tag == 'other'
+
+    def get_enabled(self):
+        """
+        When this value is True, the user have a shared team root. When the
+        value is False the user have distinct root.
+
+        Only call this if :meth:`is_enabled` is true.
+
+        :rtype: bool
+        """
+        if not self.is_enabled():
+            raise AttributeError("tag 'enabled' not set")
+        return self._value
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(TeamSharedDropboxValue, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+TeamSharedDropboxValue_validator = bv.Union(TeamSharedDropboxValue)
+
 class TeamSpaceAllocation(bb.Struct):
     """
     :ivar users.TeamSpaceAllocation.used: The total space currently used by the
@@ -915,6 +1049,12 @@ class UserFeature(bb.Union):
         about how the user's Paper files are stored.
     :ivar users.UserFeature.file_locking: This feature allows users to lock
         files in order to restrict other users from editing them.
+    :ivar users.UserFeature.team_shared_dropbox: This feature contains
+        information about whether or not the user is part of a team with a
+        shared team root.
+    :ivar users.UserFeature.distinct_member_home: This feature contains
+        information about whether or not the user's home namespace is distinct
+        from their root namespace.
     """
 
     _catch_all = 'other'
@@ -922,6 +1062,10 @@ class UserFeature(bb.Union):
     paper_as_files = None
     # Attribute is overwritten below the class definition
     file_locking = None
+    # Attribute is overwritten below the class definition
+    team_shared_dropbox = None
+    # Attribute is overwritten below the class definition
+    distinct_member_home = None
     # Attribute is overwritten below the class definition
     other = None
 
@@ -940,6 +1084,22 @@ class UserFeature(bb.Union):
         :rtype: bool
         """
         return self._tag == 'file_locking'
+
+    def is_team_shared_dropbox(self):
+        """
+        Check if the union tag is ``team_shared_dropbox``.
+
+        :rtype: bool
+        """
+        return self._tag == 'team_shared_dropbox'
+
+    def is_distinct_member_home(self):
+        """
+        Check if the union tag is ``distinct_member_home``.
+
+        :rtype: bool
+        """
+        return self._tag == 'distinct_member_home'
 
     def is_other(self):
         """
@@ -989,6 +1149,28 @@ class UserFeatureValue(bb.Union):
         """
         return cls('file_locking', val)
 
+    @classmethod
+    def team_shared_dropbox(cls, val):
+        """
+        Create an instance of this class set to the ``team_shared_dropbox`` tag
+        with value ``val``.
+
+        :param TeamSharedDropboxValue val:
+        :rtype: UserFeatureValue
+        """
+        return cls('team_shared_dropbox', val)
+
+    @classmethod
+    def distinct_member_home(cls, val):
+        """
+        Create an instance of this class set to the ``distinct_member_home`` tag
+        with value ``val``.
+
+        :param DistinctMemberHomeValue val:
+        :rtype: UserFeatureValue
+        """
+        return cls('distinct_member_home', val)
+
     def is_paper_as_files(self):
         """
         Check if the union tag is ``paper_as_files``.
@@ -1004,6 +1186,22 @@ class UserFeatureValue(bb.Union):
         :rtype: bool
         """
         return self._tag == 'file_locking'
+
+    def is_team_shared_dropbox(self):
+        """
+        Check if the union tag is ``team_shared_dropbox``.
+
+        :rtype: bool
+        """
+        return self._tag == 'team_shared_dropbox'
+
+    def is_distinct_member_home(self):
+        """
+        Check if the union tag is ``distinct_member_home``.
+
+        :rtype: bool
+        """
+        return self._tag == 'distinct_member_home'
 
     def is_other(self):
         """
@@ -1031,6 +1229,26 @@ class UserFeatureValue(bb.Union):
         """
         if not self.is_file_locking():
             raise AttributeError("tag 'file_locking' not set")
+        return self._value
+
+    def get_team_shared_dropbox(self):
+        """
+        Only call this if :meth:`is_team_shared_dropbox` is true.
+
+        :rtype: TeamSharedDropboxValue
+        """
+        if not self.is_team_shared_dropbox():
+            raise AttributeError("tag 'team_shared_dropbox' not set")
+        return self._value
+
+    def get_distinct_member_home(self):
+        """
+        Only call this if :meth:`is_distinct_member_home` is true.
+
+        :rtype: DistinctMemberHomeValue
+        """
+        if not self.is_distinct_member_home():
+            raise AttributeError("tag 'distinct_member_home' not set")
         return self._value
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
@@ -1160,6 +1378,15 @@ BasicAccount._all_fields_ = Account._all_fields_ + [
     ('team_member_id', BasicAccount.team_member_id.validator),
 ]
 
+DistinctMemberHomeValue._enabled_validator = bv.Boolean()
+DistinctMemberHomeValue._other_validator = bv.Void()
+DistinctMemberHomeValue._tagmap = {
+    'enabled': DistinctMemberHomeValue._enabled_validator,
+    'other': DistinctMemberHomeValue._other_validator,
+}
+
+DistinctMemberHomeValue.other = DistinctMemberHomeValue('other')
+
 FileLockingValue._enabled_validator = bv.Boolean()
 FileLockingValue._other_validator = bv.Void()
 FileLockingValue._tagmap = {
@@ -1211,13 +1438,16 @@ Team._all_fields_ = [
 
 FullTeam.sharing_policies.validator = team_policies.TeamSharingPolicies_validator
 FullTeam.office_addin_policy.validator = team_policies.OfficeAddInPolicy_validator
+FullTeam.top_level_content_policy.validator = team_policies.TopLevelContentPolicy_validator
 FullTeam._all_field_names_ = Team._all_field_names_.union(set([
     'sharing_policies',
     'office_addin_policy',
+    'top_level_content_policy',
 ]))
 FullTeam._all_fields_ = Team._all_fields_ + [
     ('sharing_policies', FullTeam.sharing_policies.validator),
     ('office_addin_policy', FullTeam.office_addin_policy.validator),
+    ('top_level_content_policy', FullTeam.top_level_content_policy.validator),
 ]
 
 GetAccountArg.account_id.validator = users_common.AccountId_validator
@@ -1302,6 +1532,15 @@ SpaceUsage._all_fields_ = [
     ('allocation', SpaceUsage.allocation.validator),
 ]
 
+TeamSharedDropboxValue._enabled_validator = bv.Boolean()
+TeamSharedDropboxValue._other_validator = bv.Void()
+TeamSharedDropboxValue._tagmap = {
+    'enabled': TeamSharedDropboxValue._enabled_validator,
+    'other': TeamSharedDropboxValue._other_validator,
+}
+
+TeamSharedDropboxValue.other = TeamSharedDropboxValue('other')
+
 TeamSpaceAllocation.used.validator = bv.UInt64()
 TeamSpaceAllocation.allocated.validator = bv.UInt64()
 TeamSpaceAllocation.user_within_team_space_allocated.validator = bv.UInt64()
@@ -1324,23 +1563,33 @@ TeamSpaceAllocation._all_fields_ = [
 
 UserFeature._paper_as_files_validator = bv.Void()
 UserFeature._file_locking_validator = bv.Void()
+UserFeature._team_shared_dropbox_validator = bv.Void()
+UserFeature._distinct_member_home_validator = bv.Void()
 UserFeature._other_validator = bv.Void()
 UserFeature._tagmap = {
     'paper_as_files': UserFeature._paper_as_files_validator,
     'file_locking': UserFeature._file_locking_validator,
+    'team_shared_dropbox': UserFeature._team_shared_dropbox_validator,
+    'distinct_member_home': UserFeature._distinct_member_home_validator,
     'other': UserFeature._other_validator,
 }
 
 UserFeature.paper_as_files = UserFeature('paper_as_files')
 UserFeature.file_locking = UserFeature('file_locking')
+UserFeature.team_shared_dropbox = UserFeature('team_shared_dropbox')
+UserFeature.distinct_member_home = UserFeature('distinct_member_home')
 UserFeature.other = UserFeature('other')
 
 UserFeatureValue._paper_as_files_validator = PaperAsFilesValue_validator
 UserFeatureValue._file_locking_validator = FileLockingValue_validator
+UserFeatureValue._team_shared_dropbox_validator = TeamSharedDropboxValue_validator
+UserFeatureValue._distinct_member_home_validator = DistinctMemberHomeValue_validator
 UserFeatureValue._other_validator = bv.Void()
 UserFeatureValue._tagmap = {
     'paper_as_files': UserFeatureValue._paper_as_files_validator,
     'file_locking': UserFeatureValue._file_locking_validator,
+    'team_shared_dropbox': UserFeatureValue._team_shared_dropbox_validator,
+    'distinct_member_home': UserFeatureValue._distinct_member_home_validator,
     'other': UserFeatureValue._other_validator,
 }
 

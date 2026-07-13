@@ -7,6 +7,36 @@ from __future__ import unicode_literals
 from stone.backends.python_rsrc import stone_base as bb
 from stone.backends.python_rsrc import stone_validators as bv
 
+class DropboxDuration(bb.Struct):
+
+    __slots__ = [
+        '_seconds_value',
+        '_nanos_value',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 seconds=None,
+                 nanos=None):
+        self._seconds_value = bb.NOT_SET
+        self._nanos_value = bb.NOT_SET
+        if seconds is not None:
+            self.seconds = seconds
+        if nanos is not None:
+            self.nanos = nanos
+
+    # Instance attribute type: int (validator is set below)
+    seconds = bb.Attribute("seconds")
+
+    # Instance attribute type: int (validator is set below)
+    nanos = bb.Attribute("nanos")
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(DropboxDuration, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+DropboxDuration_validator = bv.Struct(DropboxDuration)
+
 class PathRoot(bb.Union):
     """
     This class acts as a tagged union. Only one of the ``is_*`` methods will
@@ -127,7 +157,7 @@ class PathRootError(bb.Union):
         Dropbox-API-Path-Root header is not valid. The value of this error is
         the user's latest root info.
     :ivar common.PathRootError.no_permission: You don't have permission to
-        access the namespace id in Dropbox-API-Path-Root  header.
+        access the namespace id in Dropbox-API-Path-Root header.
     """
 
     _catch_all = 'other'
@@ -195,8 +225,9 @@ class RootInfo(bb.Struct):
 
     :ivar common.RootInfo.root_namespace_id: The namespace ID for user's root
         namespace. It will be the namespace ID of the shared team root if the
-        user is member of a team with a separate team root. Otherwise it will be
-        same as ``RootInfo.home_namespace_id``.
+        user is member of a team with a separate team root, or the user root if
+        user is member of a team with separate distinct roots for users.
+        Otherwise it will be the same as ``RootInfo.home_namespace_id``.
     :ivar common.RootInfo.home_namespace_id: The namespace ID for user's home
         namespace.
     """
@@ -265,18 +296,29 @@ class UserRootInfo(RootInfo):
     """
     Root info when user is not member of a team or the user is a member of a
     team and the team does not have a separate root namespace.
+
+    :ivar common.UserRootInfo.home_path: The path for user's home directory
+        under the distinct user root.
     """
 
     __slots__ = [
+        '_home_path_value',
     ]
 
     _has_required_fields = True
 
     def __init__(self,
                  root_namespace_id=None,
-                 home_namespace_id=None):
+                 home_namespace_id=None,
+                 home_path=None):
         super(UserRootInfo, self).__init__(root_namespace_id,
                                            home_namespace_id)
+        self._home_path_value = bb.NOT_SET
+        if home_path is not None:
+            self.home_path = home_path
+
+    # Instance attribute type: str (validator is set below)
+    home_path = bb.Attribute("home_path", nullable=True)
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(UserRootInfo, self)._process_custom_annotations(annotation_type, field_path, processor)
@@ -288,13 +330,23 @@ DisplayName_validator = bv.String(pattern='[^/:?*<>"|]*')
 DisplayNameLegacy_validator = bv.String()
 DropboxTimestamp_validator = bv.Timestamp('%Y-%m-%dT%H:%M:%SZ')
 EmailAddress_validator = bv.String(max_length=255, pattern="^['#&A-Za-z0-9._%+-]+@[A-Za-z0-9-][A-Za-z0-9.-]*\\.[A-Za-z]{2,15}$")
-# A ISO639-1 code.
 LanguageCode_validator = bv.String(min_length=2)
-NamePart_validator = bv.String(min_length=1, max_length=100, pattern='[^/:?*<>"|]*')
+NamePart_validator = bv.String(min_length=1, max_length=50, pattern='[^/:?*<>"|]*')
 NamespaceId_validator = bv.String(pattern='[-_0-9a-zA-Z:]+')
-OptionalNamePart_validator = bv.String(max_length=100, pattern='[^/:?*<>"|]*')
+OptionalNamePart_validator = bv.String(max_length=50, pattern='[^/:?*<>"|]*')
 SessionId_validator = bv.String()
 SharedFolderId_validator = NamespaceId_validator
+DropboxDuration.seconds.validator = bv.Int64()
+DropboxDuration.nanos.validator = bv.Int32()
+DropboxDuration._all_field_names_ = set([
+    'seconds',
+    'nanos',
+])
+DropboxDuration._all_fields_ = [
+    ('seconds', DropboxDuration.seconds.validator),
+    ('nanos', DropboxDuration.nanos.validator),
+]
+
 PathRoot._home_validator = bv.Void()
 PathRoot._root_validator = NamespaceId_validator
 PathRoot._namespace_id_validator = NamespaceId_validator
@@ -350,9 +402,10 @@ TeamRootInfo._all_field_names_ = RootInfo._all_field_names_.union(TeamRootInfo._
 TeamRootInfo._fields_ = [('home_path', TeamRootInfo.home_path.validator)]
 TeamRootInfo._all_fields_ = RootInfo._all_fields_ + TeamRootInfo._fields_
 
-UserRootInfo._field_names_ = set([])
+UserRootInfo.home_path.validator = bv.Nullable(bv.String())
+UserRootInfo._field_names_ = set(['home_path'])
 UserRootInfo._all_field_names_ = RootInfo._all_field_names_.union(UserRootInfo._field_names_)
-UserRootInfo._fields_ = []
+UserRootInfo._fields_ = [('home_path', UserRootInfo.home_path.validator)]
 UserRootInfo._all_fields_ = RootInfo._all_fields_ + UserRootInfo._fields_
 
 ROUTES = {

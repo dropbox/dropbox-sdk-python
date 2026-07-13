@@ -18,7 +18,7 @@ You can think of a property group template as a class definition for a particula
 
 Templates are owned either by a user/app pair or team/app pair. Templates and their associated properties can't be accessed by any app other than the app that created them, and even then, only when the app is linked with the owner of the template (either a user or team).
 
-User-owned templates are accessed via the user-auth file_properties/templates/*_for_user endpoints, while team-owned templates are accessed via the team-auth file_properties/templates/*_for_team endpoints. Properties associated with either type of template can be accessed via the user-auth properties/* endpoints.
+User-owned templates are accessed via the user-auth `file_properties/templates/*_for_user` endpoints, while team-owned templates are accessed via the team-auth `file_properties/templates/*_for_team` endpoints. Properties associated with either type of template can be accessed via the user-auth `properties/*` endpoints.
 
 Finally, properties can be accessed from a number of endpoints that return metadata, including `files/get_metadata`, and `files/list_folder`. Properties can also be added during upload, using `files/upload`.
 """
@@ -33,7 +33,7 @@ class AddPropertiesArg(bb.Struct):
         file or folder.
     :ivar file_properties.AddPropertiesArg.property_groups: The property groups
         which are to be added to a Dropbox file. No two groups in the input
-        should  refer to the same template.
+        should refer to the same template.
     """
 
     __slots__ = [
@@ -692,7 +692,7 @@ class OverwritePropertyGroupArg(bb.Struct):
         for the file or folder.
     :ivar file_properties.OverwritePropertyGroupArg.property_groups: The
         property groups "snapshot" updates to force apply. No two groups in the
-        input should  refer to the same template.
+        input should refer to the same template.
     """
 
     __slots__ = [
@@ -1125,9 +1125,6 @@ class PropertyFieldTemplate(bb.Struct):
         being described. Property field keys can be up to 256 bytes.
     :ivar file_properties.PropertyFieldTemplate.description: Description of the
         property field. Property field descriptions can be up to 1024 bytes.
-    :ivar file_properties.PropertyFieldTemplate.type: Data type of the value of
-        this property field. This type will be enforced upon property creation
-        and modifications.
     """
 
     __slots__ = [
@@ -1209,11 +1206,14 @@ PropertyGroup_validator = bv.Struct(PropertyGroup)
 
 class PropertyGroupUpdate(bb.Struct):
     """
+    Property routes
+
     :ivar file_properties.PropertyGroupUpdate.template_id: A unique identifier
         for a property template.
     :ivar file_properties.PropertyGroupUpdate.add_or_update_fields: Property
         fields to update. If the property field already exists, it is updated.
-        If the property field doesn't exist, the property group is added.
+        If the property field doesn't exist, it will be created as long as the
+        property group already exists.
     :ivar file_properties.PropertyGroupUpdate.remove_fields: Property fields to
         remove (by name), provided they exist.
     """

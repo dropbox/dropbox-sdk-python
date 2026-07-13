@@ -20,9 +20,15 @@ class AccessError(bb.Union):
         account type cannot access the resource.
     :ivar PaperAccessError AccessError.paper_access_denied: Current account
         cannot access Paper.
+    :ivar auth.AccessError.team_access_denied: Team doesn't have permission to
+        access.
+    :ivar NoPermissionError AccessError.no_permission: Caller does not have
+        permission to access the resource.
     """
 
     _catch_all = 'other'
+    # Attribute is overwritten below the class definition
+    team_access_denied = None
     # Attribute is overwritten below the class definition
     other = None
 
@@ -48,6 +54,17 @@ class AccessError(bb.Union):
         """
         return cls('paper_access_denied', val)
 
+    @classmethod
+    def no_permission(cls, val):
+        """
+        Create an instance of this class set to the ``no_permission`` tag with
+        value ``val``.
+
+        :param NoPermissionError val:
+        :rtype: AccessError
+        """
+        return cls('no_permission', val)
+
     def is_invalid_account_type(self):
         """
         Check if the union tag is ``invalid_account_type``.
@@ -63,6 +80,22 @@ class AccessError(bb.Union):
         :rtype: bool
         """
         return self._tag == 'paper_access_denied'
+
+    def is_team_access_denied(self):
+        """
+        Check if the union tag is ``team_access_denied``.
+
+        :rtype: bool
+        """
+        return self._tag == 'team_access_denied'
+
+    def is_no_permission(self):
+        """
+        Check if the union tag is ``no_permission``.
+
+        :rtype: bool
+        """
+        return self._tag == 'no_permission'
 
     def is_other(self):
         """
@@ -94,6 +127,18 @@ class AccessError(bb.Union):
         """
         if not self.is_paper_access_denied():
             raise AttributeError("tag 'paper_access_denied' not set")
+        return self._value
+
+    def get_no_permission(self):
+        """
+        Caller does not have permission to access the resource.
+
+        Only call this if :meth:`is_no_permission` is true.
+
+        :rtype: NoPermissionError
+        """
+        if not self.is_no_permission():
+            raise AttributeError("tag 'no_permission' not set")
         return self._value
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
@@ -278,6 +323,67 @@ class InvalidAccountTypeError(bb.Union):
         super(InvalidAccountTypeError, self)._process_custom_annotations(annotation_type, field_path, processor)
 
 InvalidAccountTypeError_validator = bv.Union(InvalidAccountTypeError)
+
+class NoPermissionError(bb.Union):
+    """
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+
+    :ivar UnauthorizedAccountIdUsageError
+        NoPermissionError.unauthorized_account_id_usage: Current caller does not
+        have permission to access the account information for one or more of the
+        specified account IDs.
+    """
+
+    _catch_all = 'other'
+    # Attribute is overwritten below the class definition
+    other = None
+
+    @classmethod
+    def unauthorized_account_id_usage(cls, val):
+        """
+        Create an instance of this class set to the
+        ``unauthorized_account_id_usage`` tag with value ``val``.
+
+        :param UnauthorizedAccountIdUsageError val:
+        :rtype: NoPermissionError
+        """
+        return cls('unauthorized_account_id_usage', val)
+
+    def is_unauthorized_account_id_usage(self):
+        """
+        Check if the union tag is ``unauthorized_account_id_usage``.
+
+        :rtype: bool
+        """
+        return self._tag == 'unauthorized_account_id_usage'
+
+    def is_other(self):
+        """
+        Check if the union tag is ``other``.
+
+        :rtype: bool
+        """
+        return self._tag == 'other'
+
+    def get_unauthorized_account_id_usage(self):
+        """
+        Current caller does not have permission to access the account
+        information for one or more of the specified account IDs.
+
+        Only call this if :meth:`is_unauthorized_account_id_usage` is true.
+
+        :rtype: UnauthorizedAccountIdUsageError
+        """
+        if not self.is_unauthorized_account_id_usage():
+            raise AttributeError("tag 'unauthorized_account_id_usage' not set")
+        return self._value
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(NoPermissionError, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+NoPermissionError_validator = bv.Union(NoPermissionError)
 
 class PaperAccessError(bb.Union):
     """
@@ -551,15 +657,46 @@ class TokenScopeError(bb.Struct):
 
 TokenScopeError_validator = bv.Struct(TokenScopeError)
 
+class UnauthorizedAccountIdUsageError(bb.Struct):
+    """
+    :ivar auth.UnauthorizedAccountIdUsageError.unauthorized_account_ids: The
+        account IDs that the caller does not have permission to use.
+    """
+
+    __slots__ = [
+        '_unauthorized_account_ids_value',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 unauthorized_account_ids=None):
+        self._unauthorized_account_ids_value = bb.NOT_SET
+        if unauthorized_account_ids is not None:
+            self.unauthorized_account_ids = unauthorized_account_ids
+
+    # Instance attribute type: list of [str] (validator is set below)
+    unauthorized_account_ids = bb.Attribute("unauthorized_account_ids")
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(UnauthorizedAccountIdUsageError, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+UnauthorizedAccountIdUsageError_validator = bv.Struct(UnauthorizedAccountIdUsageError)
+
 AccessError._invalid_account_type_validator = InvalidAccountTypeError_validator
 AccessError._paper_access_denied_validator = PaperAccessError_validator
+AccessError._team_access_denied_validator = bv.Void()
+AccessError._no_permission_validator = NoPermissionError_validator
 AccessError._other_validator = bv.Void()
 AccessError._tagmap = {
     'invalid_account_type': AccessError._invalid_account_type_validator,
     'paper_access_denied': AccessError._paper_access_denied_validator,
+    'team_access_denied': AccessError._team_access_denied_validator,
+    'no_permission': AccessError._no_permission_validator,
     'other': AccessError._other_validator,
 }
 
+AccessError.team_access_denied = AccessError('team_access_denied')
 AccessError.other = AccessError('other')
 
 AuthError._invalid_access_token_validator = bv.Void()
@@ -601,6 +738,15 @@ InvalidAccountTypeError._tagmap = {
 InvalidAccountTypeError.endpoint = InvalidAccountTypeError('endpoint')
 InvalidAccountTypeError.feature = InvalidAccountTypeError('feature')
 InvalidAccountTypeError.other = InvalidAccountTypeError('other')
+
+NoPermissionError._unauthorized_account_id_usage_validator = UnauthorizedAccountIdUsageError_validator
+NoPermissionError._other_validator = bv.Void()
+NoPermissionError._tagmap = {
+    'unauthorized_account_id_usage': NoPermissionError._unauthorized_account_id_usage_validator,
+    'other': NoPermissionError._other_validator,
+}
+
+NoPermissionError.other = NoPermissionError('other')
 
 PaperAccessError._paper_disabled_validator = bv.Void()
 PaperAccessError._not_paper_user_validator = bv.Void()
@@ -670,6 +816,10 @@ TokenFromOAuth1Result._all_fields_ = [('oauth2_token', TokenFromOAuth1Result.oau
 TokenScopeError.required_scope.validator = bv.String()
 TokenScopeError._all_field_names_ = set(['required_scope'])
 TokenScopeError._all_fields_ = [('required_scope', TokenScopeError.required_scope.validator)]
+
+UnauthorizedAccountIdUsageError.unauthorized_account_ids.validator = bv.List(bv.String())
+UnauthorizedAccountIdUsageError._all_field_names_ = set(['unauthorized_account_ids'])
+UnauthorizedAccountIdUsageError._all_fields_ = [('unauthorized_account_ids', UnauthorizedAccountIdUsageError.unauthorized_account_ids.validator)]
 
 RateLimitError.retry_after.default = 1
 token_from_oauth1 = bb.Route(

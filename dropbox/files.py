@@ -139,8 +139,8 @@ class GetMetadataArg(bb.Struct):
         :class:`DeletedMetadata` will be returned for deleted file or folder,
         otherwise ``LookupError.not_found`` will be returned.
     :ivar files.GetMetadataArg.include_has_explicit_shared_members: If true, the
-        results will include a flag for each file indicating whether or not
-        that file has any explicit members.
+        results will include a flag for each file indicating whether or not that
+        file has any explicit members.
     :ivar files.GetMetadataArg.include_property_groups: If set to a valid list
         of template IDs, ``FileMetadata.property_groups`` is set if there exists
         property data associated with the file and each of the listed templates.
@@ -200,9 +200,10 @@ GetMetadataArg_validator = bv.Struct(GetMetadataArg)
 
 class AlphaGetMetadataArg(GetMetadataArg):
     """
-    :ivar files.AlphaGetMetadataArg.include_property_templates: If set to a
-        valid list of template IDs, ``FileMetadata.property_groups`` is set for
-        files with custom properties.
+    :ivar files.AlphaGetMetadataArg.include_property_templates: Field is
+        deprecated. If set to a valid list of template IDs,
+        ``FileMetadata.property_groups`` is set for files with custom
+        properties.
     """
 
     __slots__ = [
@@ -751,6 +752,9 @@ class CreateFolderBatchLaunch(async_.LaunchResultBase):
 CreateFolderBatchLaunch_validator = bv.Union(CreateFolderBatchLaunch)
 
 class FileOpsResult(bb.Struct):
+    """
+    Result for File Operations
+    """
 
     __slots__ = [
     ]
@@ -1077,8 +1081,8 @@ class DeleteBatchError(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar files.DeleteBatchError.too_many_write_operations: Use
-        ``DeleteError.too_many_write_operations``.
+    :ivar files.DeleteBatchError.too_many_write_operations: Field is deprecated.
+        Use ``DeleteError.too_many_write_operations``.
         :meth:`dropbox.dropbox_client.Dropbox.files_delete_batch` now provides
         smaller granularity about which entry has failed because of this.
     """
@@ -1531,8 +1535,8 @@ class Metadata(bb.Struct):
         casing. Changes to only the casing of paths won't be returned by
         :meth:`dropbox.dropbox_client.Dropbox.files_list_folder_continue`. This
         field will be null if the file or folder is not mounted.
-    :ivar files.Metadata.parent_shared_folder_id: Please use
-        ``FileSharingInfo.parent_shared_folder_id`` or
+    :ivar files.Metadata.parent_shared_folder_id: Field is deprecated. Please
+        use ``FileSharingInfo.parent_shared_folder_id`` or
         ``FolderSharingInfo.parent_shared_folder_id`` instead.
     :ivar files.Metadata.preview_url: The preview URL of the file.
     """
@@ -1593,9 +1597,13 @@ class DeletedMetadata(Metadata):
     """
     Indicates that there used to be a file or folder at this path, but it no
     longer exists.
+
+    :ivar files.DeletedMetadata.is_restorable: If present, indicates whether
+        this deleted entry can be restored.
     """
 
     __slots__ = [
+        '_is_restorable_value',
     ]
 
     _has_required_fields = True
@@ -1605,12 +1613,19 @@ class DeletedMetadata(Metadata):
                  path_lower=None,
                  path_display=None,
                  parent_shared_folder_id=None,
-                 preview_url=None):
+                 preview_url=None,
+                 is_restorable=None):
         super(DeletedMetadata, self).__init__(name,
                                               path_lower,
                                               path_display,
                                               parent_shared_folder_id,
                                               preview_url)
+        self._is_restorable_value = bb.NOT_SET
+        if is_restorable is not None:
+            self.is_restorable = is_restorable
+
+    # Instance attribute type: bool (validator is set below)
+    is_restorable = bb.Attribute("is_restorable", nullable=True)
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(DeletedMetadata, self)._process_custom_annotations(annotation_type, field_path, processor)
@@ -1656,7 +1671,8 @@ Dimensions_validator = bv.Struct(Dimensions)
 class DownloadArg(bb.Struct):
     """
     :ivar files.DownloadArg.path: The path of the file to download.
-    :ivar files.DownloadArg.rev: Please specify revision in ``path`` instead.
+    :ivar files.DownloadArg.rev: Field is deprecated. Please specify revision in
+        ``path`` instead.
     """
 
     __slots__ = [
@@ -2457,19 +2473,21 @@ class FileMetadata(Metadata):
     :ivar files.FileMetadata.property_groups: Additional information if the file
         has custom properties with the property template specified.
     :ivar files.FileMetadata.has_explicit_shared_members: This flag will only be
-        present if include_has_explicit_shared_members  is true in
+        present if include_has_explicit_shared_members is true in
         :meth:`dropbox.dropbox_client.Dropbox.files_list_folder` or
-        :meth:`dropbox.dropbox_client.Dropbox.files_get_metadata`. If this  flag
+        :meth:`dropbox.dropbox_client.Dropbox.files_get_metadata`. If this flag
         is present, it will be true if this file has any explicit shared
         members. This is different from sharing_info in that this could be true
         in the case where a file has explicit members but is not contained
-        within  a shared folder.
+        within a shared folder.
     :ivar files.FileMetadata.content_hash: A hash of the file content. This
         field can be used to verify data integrity. For more information see our
         `Content hash
         <https://www.dropbox.com/developers/reference/content-hash>`_ page.
     :ivar files.FileMetadata.file_lock_info: If present, the metadata associated
         with the file's current lock.
+    :ivar files.FileMetadata.is_restorable: If present, indicates whether this
+        file revision can be restored.
     """
 
     __slots__ = [
@@ -2487,6 +2505,7 @@ class FileMetadata(Metadata):
         '_has_explicit_shared_members_value',
         '_content_hash_value',
         '_file_lock_info_value',
+        '_is_restorable_value',
     ]
 
     _has_required_fields = True
@@ -2510,7 +2529,8 @@ class FileMetadata(Metadata):
                  property_groups=None,
                  has_explicit_shared_members=None,
                  content_hash=None,
-                 file_lock_info=None):
+                 file_lock_info=None,
+                 is_restorable=None):
         super(FileMetadata, self).__init__(name,
                                            path_lower,
                                            path_display,
@@ -2530,6 +2550,7 @@ class FileMetadata(Metadata):
         self._has_explicit_shared_members_value = bb.NOT_SET
         self._content_hash_value = bb.NOT_SET
         self._file_lock_info_value = bb.NOT_SET
+        self._is_restorable_value = bb.NOT_SET
         if id is not None:
             self.id = id
         if client_modified is not None:
@@ -2558,6 +2579,8 @@ class FileMetadata(Metadata):
             self.content_hash = content_hash
         if file_lock_info is not None:
             self.file_lock_info = file_lock_info
+        if is_restorable is not None:
+            self.is_restorable = is_restorable
 
     # Instance attribute type: str (validator is set below)
     id = bb.Attribute("id")
@@ -2600,6 +2623,9 @@ class FileMetadata(Metadata):
 
     # Instance attribute type: FileLockMetadata (validator is set below)
     file_lock_info = bb.Attribute("file_lock_info", nullable=True, user_defined=True)
+
+    # Instance attribute type: bool (validator is set below)
+    is_restorable = bb.Attribute("is_restorable", nullable=True)
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(FileMetadata, self)._process_custom_annotations(annotation_type, field_path, processor)
@@ -2721,8 +2747,8 @@ FileStatus_validator = bv.Union(FileStatus)
 class FolderMetadata(Metadata):
     """
     :ivar files.FolderMetadata.id: A unique identifier for the folder.
-    :ivar files.FolderMetadata.shared_folder_id: Please use ``sharing_info``
-        instead.
+    :ivar files.FolderMetadata.shared_folder_id: Field is deprecated. Please use
+        ``sharing_info`` instead.
     :ivar files.FolderMetadata.sharing_info: Set if the folder is contained in a
         shared folder or is a shared folder mount point.
     :ivar files.FolderMetadata.property_groups: Additional information if the
@@ -3188,9 +3214,8 @@ class GetTemporaryUploadLinkArg(bb.Struct):
         parameters provided to
         :meth:`dropbox.dropbox_client.Dropbox.files_upload`.
     :ivar files.GetTemporaryUploadLinkArg.duration: How long before this link
-        expires, in seconds.  Attempting to start an upload with this link
-        longer than this period  of time after link creation will result in an
-        error.
+        expires, in seconds. Attempting to start an upload with this link longer
+        than this period of time after link creation will result in an error.
     """
 
     __slots__ = [
@@ -3599,15 +3624,20 @@ class ListFolderArg(bb.Struct):
     :ivar files.ListFolderArg.path: A unique identifier for the file.
     :ivar files.ListFolderArg.recursive: If true, the list folder operation will
         be applied recursively to all subfolders and the response will contain
-        contents of all subfolders.
-    :ivar files.ListFolderArg.include_media_info: If true,
+        contents of all subfolders. In some cases, setting
+        ``ListFolderArg.recursive`` to ``True`` may lead to performance issues
+        or errors, especially when traversing folder structures with a large
+        number of items. A workaround for such cases is to set
+        ``ListFolderArg.recursive`` to ``False`` and traverse subfolders one at
+        a time.
+    :ivar files.ListFolderArg.include_media_info: Field is deprecated. If true,
         ``FileMetadata.media_info`` is set for photo and video. This parameter
         will no longer have an effect starting December 2, 2019.
     :ivar files.ListFolderArg.include_deleted: If true, the results will include
         entries for files and folders that used to exist but were deleted.
     :ivar files.ListFolderArg.include_has_explicit_shared_members: If true, the
-        results will include a flag for each file indicating whether or not
-        that file has any explicit members.
+        results will include a flag for each file indicating whether or not that
+        file has any explicit members.
     :ivar files.ListFolderArg.include_mounted_folders: If true, the results will
         include entries under mounted folders which includes app folder, shared
         folder and team folder.
@@ -3624,6 +3654,8 @@ class ListFolderArg(bb.Struct):
         property data associated with the file and each of the listed templates.
     :ivar files.ListFolderArg.include_non_downloadable_files: If true, include
         files that are not downloadable, i.e. Google Docs.
+    :ivar files.ListFolderArg.include_restorable_info: If true, each returned
+        deleted entry will include whether that entry can be restored.
     """
 
     __slots__ = [
@@ -3637,6 +3669,7 @@ class ListFolderArg(bb.Struct):
         '_shared_link_value',
         '_include_property_groups_value',
         '_include_non_downloadable_files_value',
+        '_include_restorable_info_value',
     ]
 
     _has_required_fields = True
@@ -3651,7 +3684,8 @@ class ListFolderArg(bb.Struct):
                  limit=None,
                  shared_link=None,
                  include_property_groups=None,
-                 include_non_downloadable_files=None):
+                 include_non_downloadable_files=None,
+                 include_restorable_info=None):
         self._path_value = bb.NOT_SET
         self._recursive_value = bb.NOT_SET
         self._include_media_info_value = bb.NOT_SET
@@ -3662,6 +3696,7 @@ class ListFolderArg(bb.Struct):
         self._shared_link_value = bb.NOT_SET
         self._include_property_groups_value = bb.NOT_SET
         self._include_non_downloadable_files_value = bb.NOT_SET
+        self._include_restorable_info_value = bb.NOT_SET
         if path is not None:
             self.path = path
         if recursive is not None:
@@ -3682,6 +3717,8 @@ class ListFolderArg(bb.Struct):
             self.include_property_groups = include_property_groups
         if include_non_downloadable_files is not None:
             self.include_non_downloadable_files = include_non_downloadable_files
+        if include_restorable_info is not None:
+            self.include_restorable_info = include_restorable_info
 
     # Instance attribute type: str (validator is set below)
     path = bb.Attribute("path")
@@ -3712,6 +3749,9 @@ class ListFolderArg(bb.Struct):
 
     # Instance attribute type: bool (validator is set below)
     include_non_downloadable_files = bb.Attribute("include_non_downloadable_files")
+
+    # Instance attribute type: bool (validator is set below)
+    include_restorable_info = bb.Attribute("include_restorable_info")
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(ListFolderArg, self)._process_custom_annotations(annotation_type, field_path, processor)
@@ -4099,12 +4139,20 @@ class ListRevisionsArg(bb.Struct):
         listing the revisions for a given file path or id.
     :ivar files.ListRevisionsArg.limit: The maximum number of revision entries
         returned.
+    :ivar files.ListRevisionsArg.before_rev: If set, ListRevisions will only
+        return revisions prior to before_rev. Can be set using the last revision
+        from a previous call to list_revisions to fetch the next page of
+        revisions. Only supported in path mode.
+    :ivar files.ListRevisionsArg.include_restorable_info: If true, each returned
+        revision will include whether that revision can be restored.
     """
 
     __slots__ = [
         '_path_value',
         '_mode_value',
         '_limit_value',
+        '_before_rev_value',
+        '_include_restorable_info_value',
     ]
 
     _has_required_fields = True
@@ -4112,16 +4160,24 @@ class ListRevisionsArg(bb.Struct):
     def __init__(self,
                  path=None,
                  mode=None,
-                 limit=None):
+                 limit=None,
+                 before_rev=None,
+                 include_restorable_info=None):
         self._path_value = bb.NOT_SET
         self._mode_value = bb.NOT_SET
         self._limit_value = bb.NOT_SET
+        self._before_rev_value = bb.NOT_SET
+        self._include_restorable_info_value = bb.NOT_SET
         if path is not None:
             self.path = path
         if mode is not None:
             self.mode = mode
         if limit is not None:
             self.limit = limit
+        if before_rev is not None:
+            self.before_rev = before_rev
+        if include_restorable_info is not None:
+            self.include_restorable_info = include_restorable_info
 
     # Instance attribute type: str (validator is set below)
     path = bb.Attribute("path")
@@ -4131,6 +4187,12 @@ class ListRevisionsArg(bb.Struct):
 
     # Instance attribute type: int (validator is set below)
     limit = bb.Attribute("limit")
+
+    # Instance attribute type: str (validator is set below)
+    before_rev = bb.Attribute("before_rev", nullable=True)
+
+    # Instance attribute type: bool (validator is set below)
+    include_restorable_info = bb.Attribute("include_restorable_info")
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(ListRevisionsArg, self)._process_custom_annotations(annotation_type, field_path, processor)
@@ -4142,9 +4204,18 @@ class ListRevisionsError(bb.Union):
     This class acts as a tagged union. Only one of the ``is_*`` methods will
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
+
+    :ivar files.ListRevisionsError.invalid_before_rev: The revision in
+        before_rev is invalid.
+    :ivar files.ListRevisionsError.before_rev_not_supported: The before_rev
+        argument is only supported in path mode.
     """
 
     _catch_all = 'other'
+    # Attribute is overwritten below the class definition
+    invalid_before_rev = None
+    # Attribute is overwritten below the class definition
+    before_rev_not_supported = None
     # Attribute is overwritten below the class definition
     other = None
 
@@ -4166,6 +4237,22 @@ class ListRevisionsError(bb.Union):
         :rtype: bool
         """
         return self._tag == 'path'
+
+    def is_invalid_before_rev(self):
+        """
+        Check if the union tag is ``invalid_before_rev``.
+
+        :rtype: bool
+        """
+        return self._tag == 'invalid_before_rev'
+
+    def is_before_rev_not_supported(self):
+        """
+        Check if the union tag is ``before_rev_not_supported``.
+
+        :rtype: bool
+        """
+        return self._tag == 'before_rev_not_supported'
 
     def is_other(self):
         """
@@ -4243,17 +4330,23 @@ ListRevisionsMode_validator = bv.Union(ListRevisionsMode)
 class ListRevisionsResult(bb.Struct):
     """
     :ivar files.ListRevisionsResult.is_deleted: If the file identified by the
-        latest revision in the response is either deleted or moved.
+        latest revision in the response is either deleted or moved. If
+        before_rev is set, this refers to the latest revision of the file older
+        than before_rev.
     :ivar files.ListRevisionsResult.server_deleted: The time of deletion if the
         file was deleted.
     :ivar files.ListRevisionsResult.entries: The revisions for the file. Only
         revisions that are not deleted will show up here.
+    :ivar files.ListRevisionsResult.has_more: If true, then there are more
+        entries available. Call list_revisions again with before_rev equal to
+        the revision of the last returned entry to retrieve the rest.
     """
 
     __slots__ = [
         '_is_deleted_value',
         '_server_deleted_value',
         '_entries_value',
+        '_has_more_value',
     ]
 
     _has_required_fields = True
@@ -4261,16 +4354,20 @@ class ListRevisionsResult(bb.Struct):
     def __init__(self,
                  is_deleted=None,
                  entries=None,
+                 has_more=None,
                  server_deleted=None):
         self._is_deleted_value = bb.NOT_SET
         self._server_deleted_value = bb.NOT_SET
         self._entries_value = bb.NOT_SET
+        self._has_more_value = bb.NOT_SET
         if is_deleted is not None:
             self.is_deleted = is_deleted
         if server_deleted is not None:
             self.server_deleted = server_deleted
         if entries is not None:
             self.entries = entries
+        if has_more is not None:
+            self.has_more = has_more
 
     # Instance attribute type: bool (validator is set below)
     is_deleted = bb.Attribute("is_deleted")
@@ -4280,6 +4377,9 @@ class ListRevisionsResult(bb.Struct):
 
     # Instance attribute type: list of [FileMetadata] (validator is set below)
     entries = bb.Attribute("entries")
+
+    # Instance attribute type: bool (validator is set below)
+    has_more = bb.Attribute("has_more")
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(ListRevisionsResult, self)._process_custom_annotations(annotation_type, field_path, processor)
@@ -4558,7 +4658,8 @@ LockFileError_validator = bv.Union(LockFileError)
 class LockFileResult(bb.Struct):
     """
     :ivar files.LockFileResult.metadata: Metadata of the file.
-    :ivar files.LockFileResult.lock: The file lock state after the operation.
+    :ivar files.LockFileResult.lock: Field is deprecated. The file lock state
+        after the operation.
     """
 
     __slots__ = [
@@ -4805,6 +4906,8 @@ class MediaInfo(bb.Union):
     :ivar files.MediaInfo.pending: Indicate the photo/video is still under
         processing and metadata is not available yet.
     :ivar MediaMetadata MediaInfo.metadata: The metadata for the photo/video.
+        Uses MediaMetadataAbstract to preserve photo/video subtypes (e.g.
+        VideoMetadata.duration).
     """
 
     _catch_all = None
@@ -4840,7 +4943,8 @@ class MediaInfo(bb.Union):
 
     def get_metadata(self):
         """
-        The metadata for the photo/video.
+        The metadata for the photo/video. Uses MediaMetadataAbstract to preserve
+        photo/video subtypes (e.g. VideoMetadata.duration).
 
         Only call this if :meth:`is_metadata` is true.
 
@@ -5757,7 +5861,8 @@ PhotoMetadata_validator = bv.Struct(PhotoMetadata)
 class PreviewArg(bb.Struct):
     """
     :ivar files.PreviewArg.path: The path of the file to preview.
-    :ivar files.PreviewArg.rev: Please specify revision in ``path`` instead.
+    :ivar files.PreviewArg.rev: Field is deprecated. Please specify revision in
+        ``path`` instead.
     """
 
     __slots__ = [
@@ -5797,7 +5902,7 @@ class PreviewError(bb.Union):
     :ivar LookupError PreviewError.path: An error occurs when downloading
         metadata for the file.
     :ivar files.PreviewError.in_progress: This preview generation is still in
-        progress and the file is not ready  for preview yet.
+        progress and the file is not ready for preview yet.
     :ivar files.PreviewError.unsupported_extension: The file extension is not
         supported preview generation.
     :ivar files.PreviewError.unsupported_content: The file content is not
@@ -5948,7 +6053,8 @@ RelocationPath_validator = bv.Struct(RelocationPath)
 
 class RelocationArg(RelocationPath):
     """
-    :ivar files.RelocationArg.allow_shared_folder: This flag has no effect.
+    :ivar files.RelocationArg.allow_shared_folder: Field is deprecated. This
+        flag has no effect.
     :ivar files.RelocationArg.autorename: If there's a conflict, have the
         Dropbox server try to autorename the file to avoid the conflict.
     :ivar files.RelocationArg.allow_ownership_transfer: Allow moves by owner
@@ -5998,7 +6104,8 @@ RelocationArg_validator = bv.Struct(RelocationArg)
 
 class RelocationBatchArg(RelocationBatchArgBase):
     """
-    :ivar files.RelocationBatchArg.allow_shared_folder: This flag has no effect.
+    :ivar files.RelocationBatchArg.allow_shared_folder: Field is deprecated.
+        This flag has no effect.
     :ivar files.RelocationBatchArg.allow_ownership_transfer: Allow moves by
         owner even if it would result in an ownership transfer for the content
         being moved. This does not apply to copies.
@@ -7274,8 +7381,8 @@ class SaveUrlError(bb.Union):
     corresponding ``get_*`` method.
 
     :ivar files.SaveUrlError.download_failed: Failed downloading the given URL.
-        The URL may be  password-protected and the password provided was
-        incorrect,  or the link may be disabled.
+        The URL may be password-protected and the password provided was
+        incorrect, or the link may be disabled.
     :ivar files.SaveUrlError.invalid_url: The given URL is invalid.
     :ivar files.SaveUrlError.not_found: The file where the URL is saved to no
         longer exists.
@@ -7773,6 +7880,8 @@ class SearchMatchTypeV2(bb.Union):
         based on both its contents and its file name.
     :ivar files.SearchMatchTypeV2.image_content: This item was matched on image
         content.
+    :ivar files.SearchMatchTypeV2.metadata: This item was matched based on its
+        metadata.
     """
 
     _catch_all = 'other'
@@ -7784,6 +7893,8 @@ class SearchMatchTypeV2(bb.Union):
     filename_and_content = None
     # Attribute is overwritten below the class definition
     image_content = None
+    # Attribute is overwritten below the class definition
+    metadata = None
     # Attribute is overwritten below the class definition
     other = None
 
@@ -7818,6 +7929,14 @@ class SearchMatchTypeV2(bb.Union):
         :rtype: bool
         """
         return self._tag == 'image_content'
+
+    def is_metadata(self):
+        """
+        Check if the union tag is ``metadata``.
+
+        :rtype: bool
+        """
+        return self._tag == 'metadata'
 
     def is_other(self):
         """
@@ -8123,8 +8242,8 @@ class SearchV2Arg(bb.Struct):
     :ivar files.SearchV2Arg.options: Options for more targeted search results.
     :ivar files.SearchV2Arg.match_field_options: Options for search results
         match fields.
-    :ivar files.SearchV2Arg.include_highlights: Deprecated and moved this option
-        to SearchMatchFieldOptions.
+    :ivar files.SearchV2Arg.include_highlights: Field is deprecated. Deprecated
+        and moved this option to SearchMatchFieldOptions.
     """
 
     __slots__ = [
@@ -8290,7 +8409,7 @@ class SharedLinkFileInfo(bb.Struct):
     :ivar files.SharedLinkFileInfo.path: The path corresponding to a file in a
         shared link to a folder. Required for shared links to folders.
     :ivar files.SharedLinkFileInfo.password: Password for the shared link.
-        Required for password-protected shared links to files  unless it can be
+        Required for password-protected shared links to files unless it can be
         read from a cookie.
     """
 
@@ -8655,11 +8774,18 @@ class ThumbnailArg(bb.Struct):
     :ivar files.ThumbnailArg.path: The path to the image file you want to
         thumbnail.
     :ivar files.ThumbnailArg.format: The format for the thumbnail image, jpeg
-        (default) or png. For  images that are photos, jpeg should be preferred,
-        while png is  better for screenshots and digital arts.
+        (default), png, or webp. For images that are photos, jpeg should be
+        preferred, while png is better for screenshots and digital arts, and web
+        for compression.
     :ivar files.ThumbnailArg.size: The size for the thumbnail image.
     :ivar files.ThumbnailArg.mode: How to resize and crop the image to achieve
         the desired size.
+    :ivar files.ThumbnailArg.quality: Field is only returned for "internal"
+        callers. Quality of the thumbnail image.
+    :ivar files.ThumbnailArg.exclude_media_info: Normally,
+        ``FileMetadata.media_info`` is set for photo and video. When this flag
+        is true, ``FileMetadata.media_info`` is not populated. This improves
+        latency for use cases where `media_info` is not needed.
     """
 
     __slots__ = [
@@ -8667,6 +8793,8 @@ class ThumbnailArg(bb.Struct):
         '_format_value',
         '_size_value',
         '_mode_value',
+        '_quality_value',
+        '_exclude_media_info_value',
     ]
 
     _has_required_fields = True
@@ -8675,11 +8803,15 @@ class ThumbnailArg(bb.Struct):
                  path=None,
                  format=None,
                  size=None,
-                 mode=None):
+                 mode=None,
+                 quality=None,
+                 exclude_media_info=None):
         self._path_value = bb.NOT_SET
         self._format_value = bb.NOT_SET
         self._size_value = bb.NOT_SET
         self._mode_value = bb.NOT_SET
+        self._quality_value = bb.NOT_SET
+        self._exclude_media_info_value = bb.NOT_SET
         if path is not None:
             self.path = path
         if format is not None:
@@ -8688,6 +8820,10 @@ class ThumbnailArg(bb.Struct):
             self.size = size
         if mode is not None:
             self.mode = mode
+        if quality is not None:
+            self.quality = quality
+        if exclude_media_info is not None:
+            self.exclude_media_info = exclude_media_info
 
     # Instance attribute type: str (validator is set below)
     path = bb.Attribute("path")
@@ -8700,6 +8836,12 @@ class ThumbnailArg(bb.Struct):
 
     # Instance attribute type: ThumbnailMode (validator is set below)
     mode = bb.Attribute("mode", user_defined=True)
+
+    # Instance attribute type: ThumbnailQuality (validator is set below)
+    quality = bb.Attribute("quality", user_defined=True)
+
+    # Instance attribute type: bool (validator is set below)
+    exclude_media_info = bb.Attribute("exclude_media_info", nullable=True)
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(ThumbnailArg, self)._process_custom_annotations(annotation_type, field_path, processor)
@@ -8718,6 +8860,8 @@ class ThumbnailError(bb.Union):
         allow conversion to a thumbnail.
     :ivar files.ThumbnailError.unsupported_image: The image cannot be converted
         to a thumbnail.
+    :ivar files.ThumbnailError.encrypted_content: Encrypted content cannot be
+        converted to a thumbnail.
     :ivar files.ThumbnailError.conversion_error: An error occurs during
         thumbnail conversion.
     """
@@ -8727,6 +8871,8 @@ class ThumbnailError(bb.Union):
     unsupported_extension = None
     # Attribute is overwritten below the class definition
     unsupported_image = None
+    # Attribute is overwritten below the class definition
+    encrypted_content = None
     # Attribute is overwritten below the class definition
     conversion_error = None
 
@@ -8765,6 +8911,14 @@ class ThumbnailError(bb.Union):
         """
         return self._tag == 'unsupported_image'
 
+    def is_encrypted_content(self):
+        """
+        Check if the union tag is ``encrypted_content``.
+
+        :rtype: bool
+        """
+        return self._tag == 'encrypted_content'
+
     def is_conversion_error(self):
         """
         Check if the union tag is ``conversion_error``.
@@ -8802,6 +8956,8 @@ class ThumbnailFormat(bb.Union):
     jpeg = None
     # Attribute is overwritten below the class definition
     png = None
+    # Attribute is overwritten below the class definition
+    webp = None
 
     def is_jpeg(self):
         """
@@ -8818,6 +8974,14 @@ class ThumbnailFormat(bb.Union):
         :rtype: bool
         """
         return self._tag == 'png'
+
+    def is_webp(self):
+        """
+        Check if the union tag is ``webp``.
+
+        :rtype: bool
+        """
+        return self._tag == 'webp'
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(ThumbnailFormat, self)._process_custom_annotations(annotation_type, field_path, processor)
@@ -8836,6 +9000,7 @@ class ThumbnailMode(bb.Union):
         given size or its transpose.
     :ivar files.ThumbnailMode.fitone_bestfit: Scale down the image to completely
         cover the given size or its transpose.
+    :ivar files.ThumbnailMode.original: Don't resize the image at all.
     """
 
     _catch_all = None
@@ -8845,6 +9010,8 @@ class ThumbnailMode(bb.Union):
     bestfit = None
     # Attribute is overwritten below the class definition
     fitone_bestfit = None
+    # Attribute is overwritten below the class definition
+    original = None
 
     def is_strict(self):
         """
@@ -8870,10 +9037,55 @@ class ThumbnailMode(bb.Union):
         """
         return self._tag == 'fitone_bestfit'
 
+    def is_original(self):
+        """
+        Check if the union tag is ``original``.
+
+        :rtype: bool
+        """
+        return self._tag == 'original'
+
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(ThumbnailMode, self)._process_custom_annotations(annotation_type, field_path, processor)
 
 ThumbnailMode_validator = bv.Union(ThumbnailMode)
+
+class ThumbnailQuality(bb.Union):
+    """
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+
+    :ivar files.ThumbnailQuality.quality_80: default thumbnail quality.
+    :ivar files.ThumbnailQuality.quality_90: high thumbnail quality.
+    """
+
+    _catch_all = None
+    # Attribute is overwritten below the class definition
+    quality_80 = None
+    # Attribute is overwritten below the class definition
+    quality_90 = None
+
+    def is_quality_80(self):
+        """
+        Check if the union tag is ``quality_80``.
+
+        :rtype: bool
+        """
+        return self._tag == 'quality_80'
+
+    def is_quality_90(self):
+        """
+        Check if the union tag is ``quality_90``.
+
+        :rtype: bool
+        """
+        return self._tag == 'quality_90'
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(ThumbnailQuality, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+ThumbnailQuality_validator = bv.Union(ThumbnailQuality)
 
 class ThumbnailSize(bb.Union):
     """
@@ -8890,6 +9102,8 @@ class ThumbnailSize(bb.Union):
     :ivar files.ThumbnailSize.w960h640: 960 by 640 px.
     :ivar files.ThumbnailSize.w1024h768: 1024 by 768 px.
     :ivar files.ThumbnailSize.w2048h1536: 2048 by 1536 px.
+    :ivar files.ThumbnailSize.w3200h2400: Field is only returned for "internal"
+        callers. 3200 by 2400 px.
     """
 
     _catch_all = None
@@ -8911,6 +9125,8 @@ class ThumbnailSize(bb.Union):
     w1024h768 = None
     # Attribute is overwritten below the class definition
     w2048h1536 = None
+    # Attribute is overwritten below the class definition
+    w3200h2400 = None
 
     def is_w32h32(self):
         """
@@ -8984,6 +9200,14 @@ class ThumbnailSize(bb.Union):
         """
         return self._tag == 'w2048h1536'
 
+    def is_w3200h2400(self):
+        """
+        Check if the union tag is ``w3200h2400``.
+
+        :rtype: bool
+        """
+        return self._tag == 'w3200h2400'
+
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(ThumbnailSize, self)._process_custom_annotations(annotation_type, field_path, processor)
 
@@ -8995,11 +9219,18 @@ class ThumbnailV2Arg(bb.Struct):
         preview. This could be a path to a file, a shared link pointing to a
         file, or a shared link pointing to a folder, with a relative path.
     :ivar files.ThumbnailV2Arg.format: The format for the thumbnail image, jpeg
-        (default) or png. For  images that are photos, jpeg should be preferred,
-        while png is  better for screenshots and digital arts.
+        (default), png, or webp. For images that are photos, jpeg should be
+        preferred, while png is better for screenshots and digital arts, and web
+        for compression.
     :ivar files.ThumbnailV2Arg.size: The size for the thumbnail image.
     :ivar files.ThumbnailV2Arg.mode: How to resize and crop the image to achieve
         the desired size.
+    :ivar files.ThumbnailV2Arg.quality: Field is only returned for "internal"
+        callers. Quality of the thumbnail image.
+    :ivar files.ThumbnailV2Arg.exclude_media_info: Normally,
+        ``FileMetadata.media_info`` is set for photo and video. When this flag
+        is true, ``FileMetadata.media_info`` is not populated. This improves
+        latency for use cases where `media_info` is not needed.
     """
 
     __slots__ = [
@@ -9007,6 +9238,8 @@ class ThumbnailV2Arg(bb.Struct):
         '_format_value',
         '_size_value',
         '_mode_value',
+        '_quality_value',
+        '_exclude_media_info_value',
     ]
 
     _has_required_fields = True
@@ -9015,11 +9248,15 @@ class ThumbnailV2Arg(bb.Struct):
                  resource=None,
                  format=None,
                  size=None,
-                 mode=None):
+                 mode=None,
+                 quality=None,
+                 exclude_media_info=None):
         self._resource_value = bb.NOT_SET
         self._format_value = bb.NOT_SET
         self._size_value = bb.NOT_SET
         self._mode_value = bb.NOT_SET
+        self._quality_value = bb.NOT_SET
+        self._exclude_media_info_value = bb.NOT_SET
         if resource is not None:
             self.resource = resource
         if format is not None:
@@ -9028,6 +9265,10 @@ class ThumbnailV2Arg(bb.Struct):
             self.size = size
         if mode is not None:
             self.mode = mode
+        if quality is not None:
+            self.quality = quality
+        if exclude_media_info is not None:
+            self.exclude_media_info = exclude_media_info
 
     # Instance attribute type: PathOrLink (validator is set below)
     resource = bb.Attribute("resource", user_defined=True)
@@ -9040,6 +9281,12 @@ class ThumbnailV2Arg(bb.Struct):
 
     # Instance attribute type: ThumbnailMode (validator is set below)
     mode = bb.Attribute("mode", user_defined=True)
+
+    # Instance attribute type: ThumbnailQuality (validator is set below)
+    quality = bb.Attribute("quality", user_defined=True)
+
+    # Instance attribute type: bool (validator is set below)
+    exclude_media_info = bb.Attribute("exclude_media_info", nullable=True)
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(ThumbnailV2Arg, self)._process_custom_annotations(annotation_type, field_path, processor)
@@ -9058,6 +9305,8 @@ class ThumbnailV2Error(bb.Union):
         doesn't allow conversion to a thumbnail.
     :ivar files.ThumbnailV2Error.unsupported_image: The image cannot be
         converted to a thumbnail.
+    :ivar files.ThumbnailV2Error.encrypted_content: Encrypted content cannot be
+        converted to a thumbnail.
     :ivar files.ThumbnailV2Error.conversion_error: An error occurred during
         thumbnail conversion.
     :ivar files.ThumbnailV2Error.access_denied: Access to this shared link is
@@ -9070,6 +9319,8 @@ class ThumbnailV2Error(bb.Union):
     unsupported_extension = None
     # Attribute is overwritten below the class definition
     unsupported_image = None
+    # Attribute is overwritten below the class definition
+    encrypted_content = None
     # Attribute is overwritten below the class definition
     conversion_error = None
     # Attribute is overwritten below the class definition
@@ -9113,6 +9364,14 @@ class ThumbnailV2Error(bb.Union):
         :rtype: bool
         """
         return self._tag == 'unsupported_image'
+
+    def is_encrypted_content(self):
+        """
+        Check if the union tag is ``encrypted_content``.
+
+        :rtype: bool
+        """
+        return self._tag == 'encrypted_content'
 
     def is_conversion_error(self):
         """
@@ -9269,9 +9528,11 @@ class UploadError(bb.Union):
         property group is invalid. The file has uploaded without property
         groups.
     :ivar files.UploadError.payload_too_large: The request payload must be at
-        most 150 MB.
+        most 150 MiB.
     :ivar files.UploadError.content_hash_mismatch: The content received by the
         Dropbox server in this call does not match the provided content hash.
+    :ivar files.UploadError.encryption_not_supported: The file is required to be
+        encrypted, which is not supported in our public API.
     """
 
     _catch_all = 'other'
@@ -9279,6 +9540,8 @@ class UploadError(bb.Union):
     payload_too_large = None
     # Attribute is overwritten below the class definition
     content_hash_mismatch = None
+    # Attribute is overwritten below the class definition
+    encryption_not_supported = None
     # Attribute is overwritten below the class definition
     other = None
 
@@ -9335,6 +9598,14 @@ class UploadError(bb.Union):
         :rtype: bool
         """
         return self._tag == 'content_hash_mismatch'
+
+    def is_encryption_not_supported(self):
+        """
+        Check if the union tag is ``encryption_not_supported``.
+
+        :rtype: bool
+        """
+        return self._tag == 'encryption_not_supported'
 
     def is_other(self):
         """
@@ -9425,34 +9696,123 @@ class UploadSessionAppendArg(bb.Struct):
 
 UploadSessionAppendArg_validator = bv.Struct(UploadSessionAppendArg)
 
-class UploadSessionLookupError(bb.Union):
+class UploadSessionAppendBatchArg(bb.Struct):
+    """
+    :ivar files.UploadSessionAppendBatchArg.entries: Append information for each
+        file in the batch.
+    :ivar files.UploadSessionAppendBatchArg.content_hash: A hash of the entire
+        request body which is all the concatenated pieces of file content that
+        were uploaded in this call. If provided and the uploaded content does
+        not match this hash, an error will be returned. For more information see
+        our `Content hash
+        <https://www.dropbox.com/developers/reference/content-hash>`_ page.
+    """
+
+    __slots__ = [
+        '_entries_value',
+        '_content_hash_value',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 entries=None,
+                 content_hash=None):
+        self._entries_value = bb.NOT_SET
+        self._content_hash_value = bb.NOT_SET
+        if entries is not None:
+            self.entries = entries
+        if content_hash is not None:
+            self.content_hash = content_hash
+
+    # Instance attribute type: list of [UploadSessionAppendBatchArgEntry] (validator is set below)
+    entries = bb.Attribute("entries")
+
+    # Instance attribute type: str (validator is set below)
+    content_hash = bb.Attribute("content_hash", nullable=True)
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(UploadSessionAppendBatchArg, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+UploadSessionAppendBatchArg_validator = bv.Struct(UploadSessionAppendBatchArg)
+
+class UploadSessionAppendBatchArgEntry(bb.Struct):
+    """
+    :ivar files.UploadSessionAppendBatchArgEntry.cursor: Contains the upload
+        session ID and the offset.
+    :ivar files.UploadSessionAppendBatchArgEntry.length: Length in bytes of the
+        data that should be appended for this session. Used to split the batched
+        upload data for multiple upload sessions.
+    :ivar files.UploadSessionAppendBatchArgEntry.close: If true, the current
+        session will be closed, at which point you won't be able to call
+        :meth:`dropbox.dropbox_client.Dropbox.files_upload_session_append_batch`
+        anymore with the current session.
+    """
+
+    __slots__ = [
+        '_cursor_value',
+        '_length_value',
+        '_close_value',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 cursor=None,
+                 length=None,
+                 close=None):
+        self._cursor_value = bb.NOT_SET
+        self._length_value = bb.NOT_SET
+        self._close_value = bb.NOT_SET
+        if cursor is not None:
+            self.cursor = cursor
+        if length is not None:
+            self.length = length
+        if close is not None:
+            self.close = close
+
+    # Instance attribute type: UploadSessionCursor (validator is set below)
+    cursor = bb.Attribute("cursor", user_defined=True)
+
+    # Instance attribute type: int (validator is set below)
+    length = bb.Attribute("length")
+
+    # Instance attribute type: bool (validator is set below)
+    close = bb.Attribute("close")
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(UploadSessionAppendBatchArgEntry, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+UploadSessionAppendBatchArgEntry_validator = bv.Struct(UploadSessionAppendBatchArgEntry)
+
+class UploadSessionAppendBatchEntryError(bb.Union):
     """
     This class acts as a tagged union. Only one of the ``is_*`` methods will
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar files.UploadSessionLookupError.not_found: The upload session ID was
-        not found or has expired. Upload sessions are valid for 7 days.
-    :ivar UploadSessionOffsetError UploadSessionLookupError.incorrect_offset:
-        The specified offset was incorrect. See the value for the correct
-        offset. This error may occur when a previous request was received and
-        processed successfully but the client did not receive the response, e.g.
-        due to a network error.
-    :ivar files.UploadSessionLookupError.closed: You are attempting to append
-        data to an upload session that has already been closed (i.e. committed).
-    :ivar files.UploadSessionLookupError.not_closed: The session must be closed
-        before calling upload_session/finish_batch.
-    :ivar files.UploadSessionLookupError.too_large: You can not append to the
-        upload session because the size of a file should not reach the max file
-        size limit (i.e. 350GB).
-    :ivar files.UploadSessionLookupError.concurrent_session_invalid_offset: For
-        concurrent upload sessions, offset needs to be multiple of 4194304
-        bytes.
-    :ivar files.UploadSessionLookupError.concurrent_session_invalid_data_size:
-        For concurrent upload sessions, only chunks with size multiple of
-        4194304 bytes can be uploaded.
-    :ivar files.UploadSessionLookupError.payload_too_large: The request payload
-        must be at most 150 MB.
+    :ivar files.UploadSessionAppendBatchEntryError.not_found: The upload session
+        ID was not found or has expired. Upload sessions are valid for 7 days.
+    :ivar UploadSessionOffsetError
+        UploadSessionAppendBatchEntryError.incorrect_offset: The specified
+        offset was incorrect. See the value for the correct offset. This error
+        may occur when a previous request was received and processed
+        successfully but the client did not receive the response, e.g. due to a
+        network error.
+    :ivar files.UploadSessionAppendBatchEntryError.closed: You are attempting to
+        append data to an upload session that has already been closed (i.e.
+        committed).
+    :ivar files.UploadSessionAppendBatchEntryError.too_large: You can not append
+        to the upload session because the size of a file should not exceed the
+        max file size limit (i.e. 2^41 - 2^22 or 2,199,019,061,248 bytes).
+    :ivar
+        files.UploadSessionAppendBatchEntryError.concurrent_session_invalid_offset:
+        For concurrent upload sessions, offset needs to be multiple of 2^22
+        (4,194,304) bytes.
+    :ivar
+        files.UploadSessionAppendBatchEntryError.concurrent_session_invalid_data_size:
+        For concurrent upload sessions, only chunks with size multiple of 2^22
+        (4,194,304) bytes can be uploaded.
     """
 
     _catch_all = 'other'
@@ -9461,15 +9821,11 @@ class UploadSessionLookupError(bb.Union):
     # Attribute is overwritten below the class definition
     closed = None
     # Attribute is overwritten below the class definition
-    not_closed = None
-    # Attribute is overwritten below the class definition
     too_large = None
     # Attribute is overwritten below the class definition
     concurrent_session_invalid_offset = None
     # Attribute is overwritten below the class definition
     concurrent_session_invalid_data_size = None
-    # Attribute is overwritten below the class definition
-    payload_too_large = None
     # Attribute is overwritten below the class definition
     other = None
 
@@ -9480,7 +9836,7 @@ class UploadSessionLookupError(bb.Union):
         with value ``val``.
 
         :param UploadSessionOffsetError val:
-        :rtype: UploadSessionLookupError
+        :rtype: UploadSessionAppendBatchEntryError
         """
         return cls('incorrect_offset', val)
 
@@ -9508,13 +9864,284 @@ class UploadSessionLookupError(bb.Union):
         """
         return self._tag == 'closed'
 
-    def is_not_closed(self):
+    def is_too_large(self):
         """
-        Check if the union tag is ``not_closed``.
+        Check if the union tag is ``too_large``.
 
         :rtype: bool
         """
-        return self._tag == 'not_closed'
+        return self._tag == 'too_large'
+
+    def is_concurrent_session_invalid_offset(self):
+        """
+        Check if the union tag is ``concurrent_session_invalid_offset``.
+
+        :rtype: bool
+        """
+        return self._tag == 'concurrent_session_invalid_offset'
+
+    def is_concurrent_session_invalid_data_size(self):
+        """
+        Check if the union tag is ``concurrent_session_invalid_data_size``.
+
+        :rtype: bool
+        """
+        return self._tag == 'concurrent_session_invalid_data_size'
+
+    def is_other(self):
+        """
+        Check if the union tag is ``other``.
+
+        :rtype: bool
+        """
+        return self._tag == 'other'
+
+    def get_incorrect_offset(self):
+        """
+        The specified offset was incorrect. See the value for the correct
+        offset. This error may occur when a previous request was received and
+        processed successfully but the client did not receive the response, e.g.
+        due to a network error.
+
+        Only call this if :meth:`is_incorrect_offset` is true.
+
+        :rtype: UploadSessionOffsetError
+        """
+        if not self.is_incorrect_offset():
+            raise AttributeError("tag 'incorrect_offset' not set")
+        return self._value
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(UploadSessionAppendBatchEntryError, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+UploadSessionAppendBatchEntryError_validator = bv.Union(UploadSessionAppendBatchEntryError)
+
+class UploadSessionAppendBatchError(bb.Union):
+    """
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+
+    :ivar files.UploadSessionAppendBatchError.payload_too_large: The request
+        payload must be at most 150 MiB.
+    :ivar files.UploadSessionAppendBatchError.content_hash_mismatch: The content
+        received by the Dropbox server in this call does not match the provided
+        content hash.
+    :ivar files.UploadSessionAppendBatchError.length_mismatch: The total length
+        of the content received by the Dropbox server in this call does not
+        match the total of the provided lengths in the batch arguments.
+    """
+
+    _catch_all = 'other'
+    # Attribute is overwritten below the class definition
+    payload_too_large = None
+    # Attribute is overwritten below the class definition
+    content_hash_mismatch = None
+    # Attribute is overwritten below the class definition
+    length_mismatch = None
+    # Attribute is overwritten below the class definition
+    other = None
+
+    def is_payload_too_large(self):
+        """
+        Check if the union tag is ``payload_too_large``.
+
+        :rtype: bool
+        """
+        return self._tag == 'payload_too_large'
+
+    def is_content_hash_mismatch(self):
+        """
+        Check if the union tag is ``content_hash_mismatch``.
+
+        :rtype: bool
+        """
+        return self._tag == 'content_hash_mismatch'
+
+    def is_length_mismatch(self):
+        """
+        Check if the union tag is ``length_mismatch``.
+
+        :rtype: bool
+        """
+        return self._tag == 'length_mismatch'
+
+    def is_other(self):
+        """
+        Check if the union tag is ``other``.
+
+        :rtype: bool
+        """
+        return self._tag == 'other'
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(UploadSessionAppendBatchError, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+UploadSessionAppendBatchError_validator = bv.Union(UploadSessionAppendBatchError)
+
+class UploadSessionAppendBatchResult(bb.Struct):
+    """
+    :ivar files.UploadSessionAppendBatchResult.entries: Each entry in
+        ``UploadSessionAppendBatchArg.entries`` will appear at the same position
+        inside ``UploadSessionAppendBatchResult.entries``.
+    """
+
+    __slots__ = [
+        '_entries_value',
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self,
+                 entries=None):
+        self._entries_value = bb.NOT_SET
+        if entries is not None:
+            self.entries = entries
+
+    # Instance attribute type: list of [UploadSessionAppendBatchResultEntry] (validator is set below)
+    entries = bb.Attribute("entries")
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(UploadSessionAppendBatchResult, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+UploadSessionAppendBatchResult_validator = bv.Struct(UploadSessionAppendBatchResult)
+
+class UploadSessionAppendBatchResultEntry(bb.Union):
+    """
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+    """
+
+    _catch_all = None
+    # Attribute is overwritten below the class definition
+    success = None
+
+    @classmethod
+    def failure(cls, val):
+        """
+        Create an instance of this class set to the ``failure`` tag with value
+        ``val``.
+
+        :param UploadSessionAppendBatchEntryError val:
+        :rtype: UploadSessionAppendBatchResultEntry
+        """
+        return cls('failure', val)
+
+    def is_success(self):
+        """
+        Check if the union tag is ``success``.
+
+        :rtype: bool
+        """
+        return self._tag == 'success'
+
+    def is_failure(self):
+        """
+        Check if the union tag is ``failure``.
+
+        :rtype: bool
+        """
+        return self._tag == 'failure'
+
+    def get_failure(self):
+        """
+        Only call this if :meth:`is_failure` is true.
+
+        :rtype: UploadSessionAppendBatchEntryError
+        """
+        if not self.is_failure():
+            raise AttributeError("tag 'failure' not set")
+        return self._value
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(UploadSessionAppendBatchResultEntry, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+UploadSessionAppendBatchResultEntry_validator = bv.Union(UploadSessionAppendBatchResultEntry)
+
+class UploadSessionAppendError(bb.Union):
+    """
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+
+    :ivar files.UploadSessionAppendError.not_found: The upload session ID was
+        not found or has expired. Upload sessions are valid for 7 days.
+    :ivar UploadSessionOffsetError UploadSessionAppendError.incorrect_offset:
+        The specified offset was incorrect. See the value for the correct
+        offset. This error may occur when a previous request was received and
+        processed successfully but the client did not receive the response, e.g.
+        due to a network error.
+    :ivar files.UploadSessionAppendError.closed: You are attempting to append
+        data to an upload session that has already been closed (i.e. committed).
+    :ivar files.UploadSessionAppendError.too_large: You can not append to the
+        upload session because the size of a file should not exceed the max file
+        size limit (i.e. 2^41 - 2^22 or 2,199,019,061,248 bytes).
+    :ivar files.UploadSessionAppendError.concurrent_session_invalid_offset: For
+        concurrent upload sessions, offset needs to be multiple of 2^22
+        (4,194,304) bytes.
+    :ivar files.UploadSessionAppendError.concurrent_session_invalid_data_size:
+        For concurrent upload sessions, only chunks with size multiple of 2^22
+        (4,194,304) bytes can be uploaded.
+    :ivar files.UploadSessionAppendError.payload_too_large: The request payload
+        must be at most 150 MiB.
+    :ivar files.UploadSessionAppendError.content_hash_mismatch: The content
+        received by the Dropbox server in this call does not match the provided
+        content hash.
+    """
+
+    _catch_all = 'other'
+    # Attribute is overwritten below the class definition
+    not_found = None
+    # Attribute is overwritten below the class definition
+    closed = None
+    # Attribute is overwritten below the class definition
+    too_large = None
+    # Attribute is overwritten below the class definition
+    concurrent_session_invalid_offset = None
+    # Attribute is overwritten below the class definition
+    concurrent_session_invalid_data_size = None
+    # Attribute is overwritten below the class definition
+    payload_too_large = None
+    # Attribute is overwritten below the class definition
+    content_hash_mismatch = None
+    # Attribute is overwritten below the class definition
+    other = None
+
+    @classmethod
+    def incorrect_offset(cls, val):
+        """
+        Create an instance of this class set to the ``incorrect_offset`` tag
+        with value ``val``.
+
+        :param UploadSessionOffsetError val:
+        :rtype: UploadSessionAppendError
+        """
+        return cls('incorrect_offset', val)
+
+    def is_not_found(self):
+        """
+        Check if the union tag is ``not_found``.
+
+        :rtype: bool
+        """
+        return self._tag == 'not_found'
+
+    def is_incorrect_offset(self):
+        """
+        Check if the union tag is ``incorrect_offset``.
+
+        :rtype: bool
+        """
+        return self._tag == 'incorrect_offset'
+
+    def is_closed(self):
+        """
+        Check if the union tag is ``closed``.
+
+        :rtype: bool
+        """
+        return self._tag == 'closed'
 
     def is_too_large(self):
         """
@@ -9548,6 +10175,14 @@ class UploadSessionLookupError(bb.Union):
         """
         return self._tag == 'payload_too_large'
 
+    def is_content_hash_mismatch(self):
+        """
+        Check if the union tag is ``content_hash_mismatch``.
+
+        :rtype: bool
+        """
+        return self._tag == 'content_hash_mismatch'
+
     def is_other(self):
         """
         Check if the union tag is ``other``.
@@ -9570,33 +10205,6 @@ class UploadSessionLookupError(bb.Union):
         if not self.is_incorrect_offset():
             raise AttributeError("tag 'incorrect_offset' not set")
         return self._value
-
-    def _process_custom_annotations(self, annotation_type, field_path, processor):
-        super(UploadSessionLookupError, self)._process_custom_annotations(annotation_type, field_path, processor)
-
-UploadSessionLookupError_validator = bv.Union(UploadSessionLookupError)
-
-class UploadSessionAppendError(UploadSessionLookupError):
-    """
-    This class acts as a tagged union. Only one of the ``is_*`` methods will
-    return true. To get the associated value of a tag (if one exists), use the
-    corresponding ``get_*`` method.
-
-    :ivar files.UploadSessionAppendError.content_hash_mismatch: The content
-        received by the Dropbox server in this call does not match the provided
-        content hash.
-    """
-
-    # Attribute is overwritten below the class definition
-    content_hash_mismatch = None
-
-    def is_content_hash_mismatch(self):
-        """
-        Check if the union tag is ``content_hash_mismatch``.
-
-        :rtype: bool
-        """
-        return self._tag == 'content_hash_mismatch'
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(UploadSessionAppendError, self)._process_custom_annotations(annotation_type, field_path, processor)
@@ -9935,10 +10543,10 @@ class UploadSessionFinishError(bb.Union):
     :ivar InvalidPropertyGroupError UploadSessionFinishError.properties_error:
         The supplied property group is invalid. The file has uploaded without
         property groups.
-    :ivar files.UploadSessionFinishError.too_many_shared_folder_targets: The
-        batch request commits files into too many different shared folders.
-        Please limit your batch request to files contained in a single shared
-        folder.
+    :ivar files.UploadSessionFinishError.too_many_shared_folder_targets: Field
+        is deprecated. The batch request commits files into too many different
+        shared folders. Please limit your batch request to files contained in a
+        single shared folder.
     :ivar files.UploadSessionFinishError.too_many_write_operations: There are
         too many write operations happening in the user's Dropbox. You should
         retry uploading this file.
@@ -9949,10 +10557,12 @@ class UploadSessionFinishError(bb.Union):
     :ivar files.UploadSessionFinishError.concurrent_session_missing_data: Not
         all pieces of data were uploaded before trying to finish the session.
     :ivar files.UploadSessionFinishError.payload_too_large: The request payload
-        must be at most 150 MB.
+        must be at most 150 MiB.
     :ivar files.UploadSessionFinishError.content_hash_mismatch: The content
         received by the Dropbox server in this call does not match the provided
         content hash.
+    :ivar files.UploadSessionFinishError.encryption_not_supported: The file is
+        required to be encrypted, which is not supported in our public API.
     """
 
     _catch_all = 'other'
@@ -9970,6 +10580,8 @@ class UploadSessionFinishError(bb.Union):
     payload_too_large = None
     # Attribute is overwritten below the class definition
     content_hash_mismatch = None
+    # Attribute is overwritten below the class definition
+    encryption_not_supported = None
     # Attribute is overwritten below the class definition
     other = None
 
@@ -10086,6 +10698,14 @@ class UploadSessionFinishError(bb.Union):
         """
         return self._tag == 'content_hash_mismatch'
 
+    def is_encryption_not_supported(self):
+        """
+        Check if the union tag is ``encryption_not_supported``.
+
+        :rtype: bool
+        """
+        return self._tag == 'encryption_not_supported'
+
     def is_other(self):
         """
         Check if the union tag is ``other``.
@@ -10137,6 +10757,157 @@ class UploadSessionFinishError(bb.Union):
         super(UploadSessionFinishError, self)._process_custom_annotations(annotation_type, field_path, processor)
 
 UploadSessionFinishError_validator = bv.Union(UploadSessionFinishError)
+
+class UploadSessionLookupError(bb.Union):
+    """
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+
+    :ivar files.UploadSessionLookupError.not_found: The upload session ID was
+        not found or has expired. Upload sessions are valid for 7 days.
+    :ivar UploadSessionOffsetError UploadSessionLookupError.incorrect_offset:
+        The specified offset was incorrect. See the value for the correct
+        offset. This error may occur when a previous request was received and
+        processed successfully but the client did not receive the response, e.g.
+        due to a network error.
+    :ivar files.UploadSessionLookupError.closed: You are attempting to append
+        data to an upload session that has already been closed (i.e. committed).
+    :ivar files.UploadSessionLookupError.not_closed: The session must be closed
+        before calling upload_session/finish_batch.
+    :ivar files.UploadSessionLookupError.too_large: You can not append to the
+        upload session because the size of a file should not exceed the max file
+        size limit (i.e. 2^41 - 2^22 or 2,199,019,061,248 bytes).
+    :ivar files.UploadSessionLookupError.concurrent_session_invalid_offset: For
+        concurrent upload sessions, offset needs to be multiple of 2^22
+        (4,194,304) bytes.
+    :ivar files.UploadSessionLookupError.concurrent_session_invalid_data_size:
+        For concurrent upload sessions, only chunks with size multiple of 2^22
+        (4,194,304) bytes can be uploaded.
+    :ivar files.UploadSessionLookupError.payload_too_large: The request payload
+        must be at most 150 MiB.
+    """
+
+    _catch_all = 'other'
+    # Attribute is overwritten below the class definition
+    not_found = None
+    # Attribute is overwritten below the class definition
+    closed = None
+    # Attribute is overwritten below the class definition
+    not_closed = None
+    # Attribute is overwritten below the class definition
+    too_large = None
+    # Attribute is overwritten below the class definition
+    concurrent_session_invalid_offset = None
+    # Attribute is overwritten below the class definition
+    concurrent_session_invalid_data_size = None
+    # Attribute is overwritten below the class definition
+    payload_too_large = None
+    # Attribute is overwritten below the class definition
+    other = None
+
+    @classmethod
+    def incorrect_offset(cls, val):
+        """
+        Create an instance of this class set to the ``incorrect_offset`` tag
+        with value ``val``.
+
+        :param UploadSessionOffsetError val:
+        :rtype: UploadSessionLookupError
+        """
+        return cls('incorrect_offset', val)
+
+    def is_not_found(self):
+        """
+        Check if the union tag is ``not_found``.
+
+        :rtype: bool
+        """
+        return self._tag == 'not_found'
+
+    def is_incorrect_offset(self):
+        """
+        Check if the union tag is ``incorrect_offset``.
+
+        :rtype: bool
+        """
+        return self._tag == 'incorrect_offset'
+
+    def is_closed(self):
+        """
+        Check if the union tag is ``closed``.
+
+        :rtype: bool
+        """
+        return self._tag == 'closed'
+
+    def is_not_closed(self):
+        """
+        Check if the union tag is ``not_closed``.
+
+        :rtype: bool
+        """
+        return self._tag == 'not_closed'
+
+    def is_too_large(self):
+        """
+        Check if the union tag is ``too_large``.
+
+        :rtype: bool
+        """
+        return self._tag == 'too_large'
+
+    def is_concurrent_session_invalid_offset(self):
+        """
+        Check if the union tag is ``concurrent_session_invalid_offset``.
+
+        :rtype: bool
+        """
+        return self._tag == 'concurrent_session_invalid_offset'
+
+    def is_concurrent_session_invalid_data_size(self):
+        """
+        Check if the union tag is ``concurrent_session_invalid_data_size``.
+
+        :rtype: bool
+        """
+        return self._tag == 'concurrent_session_invalid_data_size'
+
+    def is_payload_too_large(self):
+        """
+        Check if the union tag is ``payload_too_large``.
+
+        :rtype: bool
+        """
+        return self._tag == 'payload_too_large'
+
+    def is_other(self):
+        """
+        Check if the union tag is ``other``.
+
+        :rtype: bool
+        """
+        return self._tag == 'other'
+
+    def get_incorrect_offset(self):
+        """
+        The specified offset was incorrect. See the value for the correct
+        offset. This error may occur when a previous request was received and
+        processed successfully but the client did not receive the response, e.g.
+        due to a network error.
+
+        Only call this if :meth:`is_incorrect_offset` is true.
+
+        :rtype: UploadSessionOffsetError
+        """
+        if not self.is_incorrect_offset():
+            raise AttributeError("tag 'incorrect_offset' not set")
+        return self._value
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(UploadSessionLookupError, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+UploadSessionLookupError_validator = bv.Union(UploadSessionLookupError)
 
 class UploadSessionOffsetError(bb.Struct):
     """
@@ -10292,7 +11063,7 @@ class UploadSessionStartError(bb.Union):
     :ivar files.UploadSessionStartError.concurrent_session_close_not_allowed:
         Can not start a closed concurrent upload session.
     :ivar files.UploadSessionStartError.payload_too_large: The request payload
-        must be at most 150 MB.
+        must be at most 150 MiB.
     :ivar files.UploadSessionStartError.content_hash_mismatch: The content
         received by the Dropbox server in this call does not match the provided
         content hash.
@@ -10610,6 +11381,8 @@ class WriteError(bb.Union):
         allowed at this path.
     :ivar files.WriteError.too_many_write_operations: There are too many write
         operations in user's Dropbox. Please retry this request.
+    :ivar files.WriteError.access_restricted: The user doesn't have permission
+        to perform the action due to restrictions set by a team administrator
     """
 
     _catch_all = 'other'
@@ -10625,6 +11398,8 @@ class WriteError(bb.Union):
     operation_suppressed = None
     # Attribute is overwritten below the class definition
     too_many_write_operations = None
+    # Attribute is overwritten below the class definition
+    access_restricted = None
     # Attribute is overwritten below the class definition
     other = None
 
@@ -10713,6 +11488,14 @@ class WriteError(bb.Union):
         :rtype: bool
         """
         return self._tag == 'too_many_write_operations'
+
+    def is_access_restricted(self):
+        """
+        Check if the union tag is ``access_restricted``.
+
+        :rtype: bool
+        """
+        return self._tag == 'access_restricted'
 
     def is_other(self):
         """
@@ -10860,17 +11643,17 @@ Id_validator = bv.String(min_length=1)
 ListFolderCursor_validator = bv.String(min_length=1)
 MalformedPathError_validator = bv.Nullable(bv.String())
 Path_validator = bv.String(pattern='/(.|[\\r\\n])*')
-PathOrId_validator = bv.String(pattern='/(.|[\\r\\n])*|id:.*|(ns:[0-9]+(/.*)?)')
-PathR_validator = bv.String(pattern='(/(.|[\\r\\n])*)?|(ns:[0-9]+(/.*)?)')
-PathROrId_validator = bv.String(pattern='(/(.|[\\r\\n])*)?|id:.*|(ns:[0-9]+(/.*)?)')
-ReadPath_validator = bv.String(pattern='(/(.|[\\r\\n])*|id:.*)|(rev:[0-9a-f]{9,})|(ns:[0-9]+(/.*)?)')
+PathOrId_validator = bv.String(pattern='/(.|[\\r\\n])*|id:.*|(ns:[0-9]+(/(.|[\\r\\n])*)?)')
+PathR_validator = bv.String(pattern='(/(.|[\\r\\n])*)?|(ns:[0-9]+(/(.|[\\r\\n])*)?)')
+PathROrId_validator = bv.String(pattern='(/(.|[\\r\\n])*)?|id:.*|(ns:[0-9]+(/(.|[\\r\\n])*)?)')
+ReadPath_validator = bv.String(pattern='(/(.|[\\r\\n])*|id:.*)|(rev:[0-9a-f]{9,})|(ns:[0-9]+(/(.|[\\r\\n])*)?)')
 Rev_validator = bv.String(min_length=9, pattern='[0-9a-f]+')
 SearchV2Cursor_validator = bv.String(min_length=1)
 Sha256HexHash_validator = bv.String(min_length=64, max_length=64)
 SharedLinkUrl_validator = bv.String()
 TagText_validator = bv.String(min_length=1, max_length=32, pattern='[\\w]+')
-WritePath_validator = bv.String(pattern='(/(.|[\\r\\n])*)|(ns:[0-9]+(/.*)?)')
-WritePathOrId_validator = bv.String(pattern='(/(.|[\\r\\n])*)|(ns:[0-9]+(/.*)?)|(id:.*)')
+WritePath_validator = bv.String(pattern='(/(.|[\\r\\n])*)|(ns:[0-9]+(/(.|[\\r\\n])*)?)')
+WritePathOrId_validator = bv.String(pattern='(/(.|[\\r\\n])*)|(ns:[0-9]+(/(.|[\\r\\n])*)?)|(id:.*)')
 AddTagArg.path.validator = Path_validator
 AddTagArg.tag_text.validator = TagText_validator
 AddTagArg._all_field_names_ = set([
@@ -11192,9 +11975,10 @@ Metadata._pytype_to_tag_and_subtype_ = {
 }
 Metadata._is_catch_all_ = False
 
-DeletedMetadata._field_names_ = set([])
+DeletedMetadata.is_restorable.validator = bv.Nullable(bv.Boolean())
+DeletedMetadata._field_names_ = set(['is_restorable'])
 DeletedMetadata._all_field_names_ = Metadata._all_field_names_.union(DeletedMetadata._field_names_)
-DeletedMetadata._fields_ = []
+DeletedMetadata._fields_ = [('is_restorable', DeletedMetadata.is_restorable.validator)]
 DeletedMetadata._all_fields_ = Metadata._all_fields_ + DeletedMetadata._fields_
 
 Dimensions.height.validator = bv.UInt64()
@@ -11406,6 +12190,7 @@ FileMetadata.property_groups.validator = bv.Nullable(bv.List(file_properties.Pro
 FileMetadata.has_explicit_shared_members.validator = bv.Nullable(bv.Boolean())
 FileMetadata.content_hash.validator = bv.Nullable(Sha256HexHash_validator)
 FileMetadata.file_lock_info.validator = bv.Nullable(FileLockMetadata_validator)
+FileMetadata.is_restorable.validator = bv.Nullable(bv.Boolean())
 FileMetadata._field_names_ = set([
     'id',
     'client_modified',
@@ -11421,6 +12206,7 @@ FileMetadata._field_names_ = set([
     'has_explicit_shared_members',
     'content_hash',
     'file_lock_info',
+    'is_restorable',
 ])
 FileMetadata._all_field_names_ = Metadata._all_field_names_.union(FileMetadata._field_names_)
 FileMetadata._fields_ = [
@@ -11438,6 +12224,7 @@ FileMetadata._fields_ = [
     ('has_explicit_shared_members', FileMetadata.has_explicit_shared_members.validator),
     ('content_hash', FileMetadata.content_hash.validator),
     ('file_lock_info', FileMetadata.file_lock_info.validator),
+    ('is_restorable', FileMetadata.is_restorable.validator),
 ]
 FileMetadata._all_fields_ = Metadata._all_fields_ + FileMetadata._fields_
 
@@ -11676,6 +12463,7 @@ ListFolderArg.limit.validator = bv.Nullable(bv.UInt32(min_value=1, max_value=200
 ListFolderArg.shared_link.validator = bv.Nullable(SharedLink_validator)
 ListFolderArg.include_property_groups.validator = bv.Nullable(file_properties.TemplateFilterBase_validator)
 ListFolderArg.include_non_downloadable_files.validator = bv.Boolean()
+ListFolderArg.include_restorable_info.validator = bv.Boolean()
 ListFolderArg._all_field_names_ = set([
     'path',
     'recursive',
@@ -11687,6 +12475,7 @@ ListFolderArg._all_field_names_ = set([
     'shared_link',
     'include_property_groups',
     'include_non_downloadable_files',
+    'include_restorable_info',
 ])
 ListFolderArg._all_fields_ = [
     ('path', ListFolderArg.path.validator),
@@ -11699,6 +12488,7 @@ ListFolderArg._all_fields_ = [
     ('shared_link', ListFolderArg.shared_link.validator),
     ('include_property_groups', ListFolderArg.include_property_groups.validator),
     ('include_non_downloadable_files', ListFolderArg.include_non_downloadable_files.validator),
+    ('include_restorable_info', ListFolderArg.include_restorable_info.validator),
 ]
 
 ListFolderContinueArg.cursor.validator = ListFolderCursor_validator
@@ -11781,24 +12571,36 @@ ListFolderResult._all_fields_ = [
 ListRevisionsArg.path.validator = PathOrId_validator
 ListRevisionsArg.mode.validator = ListRevisionsMode_validator
 ListRevisionsArg.limit.validator = bv.UInt64(min_value=1, max_value=100)
+ListRevisionsArg.before_rev.validator = bv.Nullable(Rev_validator)
+ListRevisionsArg.include_restorable_info.validator = bv.Boolean()
 ListRevisionsArg._all_field_names_ = set([
     'path',
     'mode',
     'limit',
+    'before_rev',
+    'include_restorable_info',
 ])
 ListRevisionsArg._all_fields_ = [
     ('path', ListRevisionsArg.path.validator),
     ('mode', ListRevisionsArg.mode.validator),
     ('limit', ListRevisionsArg.limit.validator),
+    ('before_rev', ListRevisionsArg.before_rev.validator),
+    ('include_restorable_info', ListRevisionsArg.include_restorable_info.validator),
 ]
 
 ListRevisionsError._path_validator = LookupError_validator
+ListRevisionsError._invalid_before_rev_validator = bv.Void()
+ListRevisionsError._before_rev_not_supported_validator = bv.Void()
 ListRevisionsError._other_validator = bv.Void()
 ListRevisionsError._tagmap = {
     'path': ListRevisionsError._path_validator,
+    'invalid_before_rev': ListRevisionsError._invalid_before_rev_validator,
+    'before_rev_not_supported': ListRevisionsError._before_rev_not_supported_validator,
     'other': ListRevisionsError._other_validator,
 }
 
+ListRevisionsError.invalid_before_rev = ListRevisionsError('invalid_before_rev')
+ListRevisionsError.before_rev_not_supported = ListRevisionsError('before_rev_not_supported')
 ListRevisionsError.other = ListRevisionsError('other')
 
 ListRevisionsMode._path_validator = bv.Void()
@@ -11817,15 +12619,18 @@ ListRevisionsMode.other = ListRevisionsMode('other')
 ListRevisionsResult.is_deleted.validator = bv.Boolean()
 ListRevisionsResult.server_deleted.validator = bv.Nullable(common.DropboxTimestamp_validator)
 ListRevisionsResult.entries.validator = bv.List(FileMetadata_validator)
+ListRevisionsResult.has_more.validator = bv.Boolean()
 ListRevisionsResult._all_field_names_ = set([
     'is_deleted',
     'server_deleted',
     'entries',
+    'has_more',
 ])
 ListRevisionsResult._all_fields_ = [
     ('is_deleted', ListRevisionsResult.is_deleted.validator),
     ('server_deleted', ListRevisionsResult.server_deleted.validator),
     ('entries', ListRevisionsResult.entries.validator),
+    ('has_more', ListRevisionsResult.has_more.validator),
 ]
 
 LockConflictError.lock.validator = FileLock_validator
@@ -12550,12 +13355,14 @@ SearchMatchTypeV2._filename_validator = bv.Void()
 SearchMatchTypeV2._file_content_validator = bv.Void()
 SearchMatchTypeV2._filename_and_content_validator = bv.Void()
 SearchMatchTypeV2._image_content_validator = bv.Void()
+SearchMatchTypeV2._metadata_validator = bv.Void()
 SearchMatchTypeV2._other_validator = bv.Void()
 SearchMatchTypeV2._tagmap = {
     'filename': SearchMatchTypeV2._filename_validator,
     'file_content': SearchMatchTypeV2._file_content_validator,
     'filename_and_content': SearchMatchTypeV2._filename_and_content_validator,
     'image_content': SearchMatchTypeV2._image_content_validator,
+    'metadata': SearchMatchTypeV2._metadata_validator,
     'other': SearchMatchTypeV2._other_validator,
 }
 
@@ -12563,6 +13370,7 @@ SearchMatchTypeV2.filename = SearchMatchTypeV2('filename')
 SearchMatchTypeV2.file_content = SearchMatchTypeV2('file_content')
 SearchMatchTypeV2.filename_and_content = SearchMatchTypeV2('filename_and_content')
 SearchMatchTypeV2.image_content = SearchMatchTypeV2('image_content')
+SearchMatchTypeV2.metadata = SearchMatchTypeV2('metadata')
 SearchMatchTypeV2.other = SearchMatchTypeV2('other')
 
 SearchMatchV2.metadata.validator = MetadataV2_validator
@@ -12783,56 +13591,81 @@ ThumbnailArg.path.validator = ReadPath_validator
 ThumbnailArg.format.validator = ThumbnailFormat_validator
 ThumbnailArg.size.validator = ThumbnailSize_validator
 ThumbnailArg.mode.validator = ThumbnailMode_validator
+ThumbnailArg.quality.validator = ThumbnailQuality_validator
+ThumbnailArg.exclude_media_info.validator = bv.Nullable(bv.Boolean())
 ThumbnailArg._all_field_names_ = set([
     'path',
     'format',
     'size',
     'mode',
+    'exclude_media_info',
 ])
 ThumbnailArg._all_fields_ = [
     ('path', ThumbnailArg.path.validator),
     ('format', ThumbnailArg.format.validator),
     ('size', ThumbnailArg.size.validator),
     ('mode', ThumbnailArg.mode.validator),
+    ('exclude_media_info', ThumbnailArg.exclude_media_info.validator),
 ]
+ThumbnailArg._all_internal_field_names_ = set(['quality'])
+ThumbnailArg._all_internal_fields_ = [('quality', ThumbnailArg.quality.validator)]
 
 ThumbnailError._path_validator = LookupError_validator
 ThumbnailError._unsupported_extension_validator = bv.Void()
 ThumbnailError._unsupported_image_validator = bv.Void()
+ThumbnailError._encrypted_content_validator = bv.Void()
 ThumbnailError._conversion_error_validator = bv.Void()
 ThumbnailError._tagmap = {
     'path': ThumbnailError._path_validator,
     'unsupported_extension': ThumbnailError._unsupported_extension_validator,
     'unsupported_image': ThumbnailError._unsupported_image_validator,
+    'encrypted_content': ThumbnailError._encrypted_content_validator,
     'conversion_error': ThumbnailError._conversion_error_validator,
 }
 
 ThumbnailError.unsupported_extension = ThumbnailError('unsupported_extension')
 ThumbnailError.unsupported_image = ThumbnailError('unsupported_image')
+ThumbnailError.encrypted_content = ThumbnailError('encrypted_content')
 ThumbnailError.conversion_error = ThumbnailError('conversion_error')
 
 ThumbnailFormat._jpeg_validator = bv.Void()
 ThumbnailFormat._png_validator = bv.Void()
+ThumbnailFormat._webp_validator = bv.Void()
 ThumbnailFormat._tagmap = {
     'jpeg': ThumbnailFormat._jpeg_validator,
     'png': ThumbnailFormat._png_validator,
+    'webp': ThumbnailFormat._webp_validator,
 }
 
 ThumbnailFormat.jpeg = ThumbnailFormat('jpeg')
 ThumbnailFormat.png = ThumbnailFormat('png')
+ThumbnailFormat.webp = ThumbnailFormat('webp')
 
 ThumbnailMode._strict_validator = bv.Void()
 ThumbnailMode._bestfit_validator = bv.Void()
 ThumbnailMode._fitone_bestfit_validator = bv.Void()
+ThumbnailMode._original_validator = bv.Void()
 ThumbnailMode._tagmap = {
     'strict': ThumbnailMode._strict_validator,
     'bestfit': ThumbnailMode._bestfit_validator,
     'fitone_bestfit': ThumbnailMode._fitone_bestfit_validator,
+    'original': ThumbnailMode._original_validator,
 }
 
 ThumbnailMode.strict = ThumbnailMode('strict')
 ThumbnailMode.bestfit = ThumbnailMode('bestfit')
 ThumbnailMode.fitone_bestfit = ThumbnailMode('fitone_bestfit')
+ThumbnailMode.original = ThumbnailMode('original')
+
+ThumbnailQuality._quality_80_validator = bv.Void()
+ThumbnailQuality._quality_90_validator = bv.Void()
+ThumbnailQuality._tagmap = {
+    'quality_80': ThumbnailQuality._quality_80_validator,
+    'quality_90': ThumbnailQuality._quality_90_validator,
+}
+
+ThumbnailQuality.quality_80 = ThumbnailQuality('quality_80')
+ThumbnailQuality.quality_90 = ThumbnailQuality('quality_90')
 
 ThumbnailSize._w32h32_validator = bv.Void()
 ThumbnailSize._w64h64_validator = bv.Void()
@@ -12843,6 +13676,8 @@ ThumbnailSize._w640h480_validator = bv.Void()
 ThumbnailSize._w960h640_validator = bv.Void()
 ThumbnailSize._w1024h768_validator = bv.Void()
 ThumbnailSize._w2048h1536_validator = bv.Void()
+ThumbnailSize._w3200h2400_validator = bv.Void()
+ThumbnailSize._permissioned_tagmaps = {'internal'}
 ThumbnailSize._tagmap = {
     'w32h32': ThumbnailSize._w32h32_validator,
     'w64h64': ThumbnailSize._w64h64_validator,
@@ -12854,6 +13689,9 @@ ThumbnailSize._tagmap = {
     'w1024h768': ThumbnailSize._w1024h768_validator,
     'w2048h1536': ThumbnailSize._w2048h1536_validator,
 }
+ThumbnailSize._internal_tagmap = {
+    'w3200h2400': ThumbnailSize._w3200h2400_validator,
+}
 
 ThumbnailSize.w32h32 = ThumbnailSize('w32h32')
 ThumbnailSize.w64h64 = ThumbnailSize('w64h64')
@@ -12864,27 +13702,35 @@ ThumbnailSize.w640h480 = ThumbnailSize('w640h480')
 ThumbnailSize.w960h640 = ThumbnailSize('w960h640')
 ThumbnailSize.w1024h768 = ThumbnailSize('w1024h768')
 ThumbnailSize.w2048h1536 = ThumbnailSize('w2048h1536')
+ThumbnailSize.w3200h2400 = ThumbnailSize('w3200h2400')
 
 ThumbnailV2Arg.resource.validator = PathOrLink_validator
 ThumbnailV2Arg.format.validator = ThumbnailFormat_validator
 ThumbnailV2Arg.size.validator = ThumbnailSize_validator
 ThumbnailV2Arg.mode.validator = ThumbnailMode_validator
+ThumbnailV2Arg.quality.validator = ThumbnailQuality_validator
+ThumbnailV2Arg.exclude_media_info.validator = bv.Nullable(bv.Boolean())
 ThumbnailV2Arg._all_field_names_ = set([
     'resource',
     'format',
     'size',
     'mode',
+    'exclude_media_info',
 ])
 ThumbnailV2Arg._all_fields_ = [
     ('resource', ThumbnailV2Arg.resource.validator),
     ('format', ThumbnailV2Arg.format.validator),
     ('size', ThumbnailV2Arg.size.validator),
     ('mode', ThumbnailV2Arg.mode.validator),
+    ('exclude_media_info', ThumbnailV2Arg.exclude_media_info.validator),
 ]
+ThumbnailV2Arg._all_internal_field_names_ = set(['quality'])
+ThumbnailV2Arg._all_internal_fields_ = [('quality', ThumbnailV2Arg.quality.validator)]
 
 ThumbnailV2Error._path_validator = LookupError_validator
 ThumbnailV2Error._unsupported_extension_validator = bv.Void()
 ThumbnailV2Error._unsupported_image_validator = bv.Void()
+ThumbnailV2Error._encrypted_content_validator = bv.Void()
 ThumbnailV2Error._conversion_error_validator = bv.Void()
 ThumbnailV2Error._access_denied_validator = bv.Void()
 ThumbnailV2Error._not_found_validator = bv.Void()
@@ -12893,6 +13739,7 @@ ThumbnailV2Error._tagmap = {
     'path': ThumbnailV2Error._path_validator,
     'unsupported_extension': ThumbnailV2Error._unsupported_extension_validator,
     'unsupported_image': ThumbnailV2Error._unsupported_image_validator,
+    'encrypted_content': ThumbnailV2Error._encrypted_content_validator,
     'conversion_error': ThumbnailV2Error._conversion_error_validator,
     'access_denied': ThumbnailV2Error._access_denied_validator,
     'not_found': ThumbnailV2Error._not_found_validator,
@@ -12901,6 +13748,7 @@ ThumbnailV2Error._tagmap = {
 
 ThumbnailV2Error.unsupported_extension = ThumbnailV2Error('unsupported_extension')
 ThumbnailV2Error.unsupported_image = ThumbnailV2Error('unsupported_image')
+ThumbnailV2Error.encrypted_content = ThumbnailV2Error('encrypted_content')
 ThumbnailV2Error.conversion_error = ThumbnailV2Error('conversion_error')
 ThumbnailV2Error.access_denied = ThumbnailV2Error('access_denied')
 ThumbnailV2Error.not_found = ThumbnailV2Error('not_found')
@@ -12922,17 +13770,20 @@ UploadError._path_validator = UploadWriteFailed_validator
 UploadError._properties_error_validator = file_properties.InvalidPropertyGroupError_validator
 UploadError._payload_too_large_validator = bv.Void()
 UploadError._content_hash_mismatch_validator = bv.Void()
+UploadError._encryption_not_supported_validator = bv.Void()
 UploadError._other_validator = bv.Void()
 UploadError._tagmap = {
     'path': UploadError._path_validator,
     'properties_error': UploadError._properties_error_validator,
     'payload_too_large': UploadError._payload_too_large_validator,
     'content_hash_mismatch': UploadError._content_hash_mismatch_validator,
+    'encryption_not_supported': UploadError._encryption_not_supported_validator,
     'other': UploadError._other_validator,
 }
 
 UploadError.payload_too_large = UploadError('payload_too_large')
 UploadError.content_hash_mismatch = UploadError('content_hash_mismatch')
+UploadError.encryption_not_supported = UploadError('encryption_not_supported')
 UploadError.other = UploadError('other')
 
 UploadSessionAppendArg.cursor.validator = UploadSessionCursor_validator
@@ -12949,43 +13800,113 @@ UploadSessionAppendArg._all_fields_ = [
     ('content_hash', UploadSessionAppendArg.content_hash.validator),
 ]
 
-UploadSessionLookupError._not_found_validator = bv.Void()
-UploadSessionLookupError._incorrect_offset_validator = UploadSessionOffsetError_validator
-UploadSessionLookupError._closed_validator = bv.Void()
-UploadSessionLookupError._not_closed_validator = bv.Void()
-UploadSessionLookupError._too_large_validator = bv.Void()
-UploadSessionLookupError._concurrent_session_invalid_offset_validator = bv.Void()
-UploadSessionLookupError._concurrent_session_invalid_data_size_validator = bv.Void()
-UploadSessionLookupError._payload_too_large_validator = bv.Void()
-UploadSessionLookupError._other_validator = bv.Void()
-UploadSessionLookupError._tagmap = {
-    'not_found': UploadSessionLookupError._not_found_validator,
-    'incorrect_offset': UploadSessionLookupError._incorrect_offset_validator,
-    'closed': UploadSessionLookupError._closed_validator,
-    'not_closed': UploadSessionLookupError._not_closed_validator,
-    'too_large': UploadSessionLookupError._too_large_validator,
-    'concurrent_session_invalid_offset': UploadSessionLookupError._concurrent_session_invalid_offset_validator,
-    'concurrent_session_invalid_data_size': UploadSessionLookupError._concurrent_session_invalid_data_size_validator,
-    'payload_too_large': UploadSessionLookupError._payload_too_large_validator,
-    'other': UploadSessionLookupError._other_validator,
+UploadSessionAppendBatchArg.entries.validator = bv.List(UploadSessionAppendBatchArgEntry_validator, max_items=1000)
+UploadSessionAppendBatchArg.content_hash.validator = bv.Nullable(Sha256HexHash_validator)
+UploadSessionAppendBatchArg._all_field_names_ = set([
+    'entries',
+    'content_hash',
+])
+UploadSessionAppendBatchArg._all_fields_ = [
+    ('entries', UploadSessionAppendBatchArg.entries.validator),
+    ('content_hash', UploadSessionAppendBatchArg.content_hash.validator),
+]
+
+UploadSessionAppendBatchArgEntry.cursor.validator = UploadSessionCursor_validator
+UploadSessionAppendBatchArgEntry.length.validator = bv.UInt64()
+UploadSessionAppendBatchArgEntry.close.validator = bv.Boolean()
+UploadSessionAppendBatchArgEntry._all_field_names_ = set([
+    'cursor',
+    'length',
+    'close',
+])
+UploadSessionAppendBatchArgEntry._all_fields_ = [
+    ('cursor', UploadSessionAppendBatchArgEntry.cursor.validator),
+    ('length', UploadSessionAppendBatchArgEntry.length.validator),
+    ('close', UploadSessionAppendBatchArgEntry.close.validator),
+]
+
+UploadSessionAppendBatchEntryError._not_found_validator = bv.Void()
+UploadSessionAppendBatchEntryError._incorrect_offset_validator = UploadSessionOffsetError_validator
+UploadSessionAppendBatchEntryError._closed_validator = bv.Void()
+UploadSessionAppendBatchEntryError._too_large_validator = bv.Void()
+UploadSessionAppendBatchEntryError._concurrent_session_invalid_offset_validator = bv.Void()
+UploadSessionAppendBatchEntryError._concurrent_session_invalid_data_size_validator = bv.Void()
+UploadSessionAppendBatchEntryError._other_validator = bv.Void()
+UploadSessionAppendBatchEntryError._tagmap = {
+    'not_found': UploadSessionAppendBatchEntryError._not_found_validator,
+    'incorrect_offset': UploadSessionAppendBatchEntryError._incorrect_offset_validator,
+    'closed': UploadSessionAppendBatchEntryError._closed_validator,
+    'too_large': UploadSessionAppendBatchEntryError._too_large_validator,
+    'concurrent_session_invalid_offset': UploadSessionAppendBatchEntryError._concurrent_session_invalid_offset_validator,
+    'concurrent_session_invalid_data_size': UploadSessionAppendBatchEntryError._concurrent_session_invalid_data_size_validator,
+    'other': UploadSessionAppendBatchEntryError._other_validator,
 }
 
-UploadSessionLookupError.not_found = UploadSessionLookupError('not_found')
-UploadSessionLookupError.closed = UploadSessionLookupError('closed')
-UploadSessionLookupError.not_closed = UploadSessionLookupError('not_closed')
-UploadSessionLookupError.too_large = UploadSessionLookupError('too_large')
-UploadSessionLookupError.concurrent_session_invalid_offset = UploadSessionLookupError('concurrent_session_invalid_offset')
-UploadSessionLookupError.concurrent_session_invalid_data_size = UploadSessionLookupError('concurrent_session_invalid_data_size')
-UploadSessionLookupError.payload_too_large = UploadSessionLookupError('payload_too_large')
-UploadSessionLookupError.other = UploadSessionLookupError('other')
+UploadSessionAppendBatchEntryError.not_found = UploadSessionAppendBatchEntryError('not_found')
+UploadSessionAppendBatchEntryError.closed = UploadSessionAppendBatchEntryError('closed')
+UploadSessionAppendBatchEntryError.too_large = UploadSessionAppendBatchEntryError('too_large')
+UploadSessionAppendBatchEntryError.concurrent_session_invalid_offset = UploadSessionAppendBatchEntryError('concurrent_session_invalid_offset')
+UploadSessionAppendBatchEntryError.concurrent_session_invalid_data_size = UploadSessionAppendBatchEntryError('concurrent_session_invalid_data_size')
+UploadSessionAppendBatchEntryError.other = UploadSessionAppendBatchEntryError('other')
 
+UploadSessionAppendBatchError._payload_too_large_validator = bv.Void()
+UploadSessionAppendBatchError._content_hash_mismatch_validator = bv.Void()
+UploadSessionAppendBatchError._length_mismatch_validator = bv.Void()
+UploadSessionAppendBatchError._other_validator = bv.Void()
+UploadSessionAppendBatchError._tagmap = {
+    'payload_too_large': UploadSessionAppendBatchError._payload_too_large_validator,
+    'content_hash_mismatch': UploadSessionAppendBatchError._content_hash_mismatch_validator,
+    'length_mismatch': UploadSessionAppendBatchError._length_mismatch_validator,
+    'other': UploadSessionAppendBatchError._other_validator,
+}
+
+UploadSessionAppendBatchError.payload_too_large = UploadSessionAppendBatchError('payload_too_large')
+UploadSessionAppendBatchError.content_hash_mismatch = UploadSessionAppendBatchError('content_hash_mismatch')
+UploadSessionAppendBatchError.length_mismatch = UploadSessionAppendBatchError('length_mismatch')
+UploadSessionAppendBatchError.other = UploadSessionAppendBatchError('other')
+
+UploadSessionAppendBatchResult.entries.validator = bv.List(UploadSessionAppendBatchResultEntry_validator)
+UploadSessionAppendBatchResult._all_field_names_ = set(['entries'])
+UploadSessionAppendBatchResult._all_fields_ = [('entries', UploadSessionAppendBatchResult.entries.validator)]
+
+UploadSessionAppendBatchResultEntry._success_validator = bv.Void()
+UploadSessionAppendBatchResultEntry._failure_validator = UploadSessionAppendBatchEntryError_validator
+UploadSessionAppendBatchResultEntry._tagmap = {
+    'success': UploadSessionAppendBatchResultEntry._success_validator,
+    'failure': UploadSessionAppendBatchResultEntry._failure_validator,
+}
+
+UploadSessionAppendBatchResultEntry.success = UploadSessionAppendBatchResultEntry('success')
+
+UploadSessionAppendError._not_found_validator = bv.Void()
+UploadSessionAppendError._incorrect_offset_validator = UploadSessionOffsetError_validator
+UploadSessionAppendError._closed_validator = bv.Void()
+UploadSessionAppendError._too_large_validator = bv.Void()
+UploadSessionAppendError._concurrent_session_invalid_offset_validator = bv.Void()
+UploadSessionAppendError._concurrent_session_invalid_data_size_validator = bv.Void()
+UploadSessionAppendError._payload_too_large_validator = bv.Void()
 UploadSessionAppendError._content_hash_mismatch_validator = bv.Void()
+UploadSessionAppendError._other_validator = bv.Void()
 UploadSessionAppendError._tagmap = {
+    'not_found': UploadSessionAppendError._not_found_validator,
+    'incorrect_offset': UploadSessionAppendError._incorrect_offset_validator,
+    'closed': UploadSessionAppendError._closed_validator,
+    'too_large': UploadSessionAppendError._too_large_validator,
+    'concurrent_session_invalid_offset': UploadSessionAppendError._concurrent_session_invalid_offset_validator,
+    'concurrent_session_invalid_data_size': UploadSessionAppendError._concurrent_session_invalid_data_size_validator,
+    'payload_too_large': UploadSessionAppendError._payload_too_large_validator,
     'content_hash_mismatch': UploadSessionAppendError._content_hash_mismatch_validator,
+    'other': UploadSessionAppendError._other_validator,
 }
-UploadSessionAppendError._tagmap.update(UploadSessionLookupError._tagmap)
 
+UploadSessionAppendError.not_found = UploadSessionAppendError('not_found')
+UploadSessionAppendError.closed = UploadSessionAppendError('closed')
+UploadSessionAppendError.too_large = UploadSessionAppendError('too_large')
+UploadSessionAppendError.concurrent_session_invalid_offset = UploadSessionAppendError('concurrent_session_invalid_offset')
+UploadSessionAppendError.concurrent_session_invalid_data_size = UploadSessionAppendError('concurrent_session_invalid_data_size')
+UploadSessionAppendError.payload_too_large = UploadSessionAppendError('payload_too_large')
 UploadSessionAppendError.content_hash_mismatch = UploadSessionAppendError('content_hash_mismatch')
+UploadSessionAppendError.other = UploadSessionAppendError('other')
 
 UploadSessionCursor.session_id.validator = bv.String()
 UploadSessionCursor.offset.validator = bv.UInt64()
@@ -13053,6 +13974,7 @@ UploadSessionFinishError._concurrent_session_not_closed_validator = bv.Void()
 UploadSessionFinishError._concurrent_session_missing_data_validator = bv.Void()
 UploadSessionFinishError._payload_too_large_validator = bv.Void()
 UploadSessionFinishError._content_hash_mismatch_validator = bv.Void()
+UploadSessionFinishError._encryption_not_supported_validator = bv.Void()
 UploadSessionFinishError._other_validator = bv.Void()
 UploadSessionFinishError._tagmap = {
     'lookup_failed': UploadSessionFinishError._lookup_failed_validator,
@@ -13065,6 +13987,7 @@ UploadSessionFinishError._tagmap = {
     'concurrent_session_missing_data': UploadSessionFinishError._concurrent_session_missing_data_validator,
     'payload_too_large': UploadSessionFinishError._payload_too_large_validator,
     'content_hash_mismatch': UploadSessionFinishError._content_hash_mismatch_validator,
+    'encryption_not_supported': UploadSessionFinishError._encryption_not_supported_validator,
     'other': UploadSessionFinishError._other_validator,
 }
 
@@ -13075,7 +13998,38 @@ UploadSessionFinishError.concurrent_session_not_closed = UploadSessionFinishErro
 UploadSessionFinishError.concurrent_session_missing_data = UploadSessionFinishError('concurrent_session_missing_data')
 UploadSessionFinishError.payload_too_large = UploadSessionFinishError('payload_too_large')
 UploadSessionFinishError.content_hash_mismatch = UploadSessionFinishError('content_hash_mismatch')
+UploadSessionFinishError.encryption_not_supported = UploadSessionFinishError('encryption_not_supported')
 UploadSessionFinishError.other = UploadSessionFinishError('other')
+
+UploadSessionLookupError._not_found_validator = bv.Void()
+UploadSessionLookupError._incorrect_offset_validator = UploadSessionOffsetError_validator
+UploadSessionLookupError._closed_validator = bv.Void()
+UploadSessionLookupError._not_closed_validator = bv.Void()
+UploadSessionLookupError._too_large_validator = bv.Void()
+UploadSessionLookupError._concurrent_session_invalid_offset_validator = bv.Void()
+UploadSessionLookupError._concurrent_session_invalid_data_size_validator = bv.Void()
+UploadSessionLookupError._payload_too_large_validator = bv.Void()
+UploadSessionLookupError._other_validator = bv.Void()
+UploadSessionLookupError._tagmap = {
+    'not_found': UploadSessionLookupError._not_found_validator,
+    'incorrect_offset': UploadSessionLookupError._incorrect_offset_validator,
+    'closed': UploadSessionLookupError._closed_validator,
+    'not_closed': UploadSessionLookupError._not_closed_validator,
+    'too_large': UploadSessionLookupError._too_large_validator,
+    'concurrent_session_invalid_offset': UploadSessionLookupError._concurrent_session_invalid_offset_validator,
+    'concurrent_session_invalid_data_size': UploadSessionLookupError._concurrent_session_invalid_data_size_validator,
+    'payload_too_large': UploadSessionLookupError._payload_too_large_validator,
+    'other': UploadSessionLookupError._other_validator,
+}
+
+UploadSessionLookupError.not_found = UploadSessionLookupError('not_found')
+UploadSessionLookupError.closed = UploadSessionLookupError('closed')
+UploadSessionLookupError.not_closed = UploadSessionLookupError('not_closed')
+UploadSessionLookupError.too_large = UploadSessionLookupError('too_large')
+UploadSessionLookupError.concurrent_session_invalid_offset = UploadSessionLookupError('concurrent_session_invalid_offset')
+UploadSessionLookupError.concurrent_session_invalid_data_size = UploadSessionLookupError('concurrent_session_invalid_data_size')
+UploadSessionLookupError.payload_too_large = UploadSessionLookupError('payload_too_large')
+UploadSessionLookupError.other = UploadSessionLookupError('other')
 
 UploadSessionOffsetError.correct_offset.validator = bv.UInt64()
 UploadSessionOffsetError._all_field_names_ = set(['correct_offset'])
@@ -13191,6 +14145,7 @@ WriteError._disallowed_name_validator = bv.Void()
 WriteError._team_folder_validator = bv.Void()
 WriteError._operation_suppressed_validator = bv.Void()
 WriteError._too_many_write_operations_validator = bv.Void()
+WriteError._access_restricted_validator = bv.Void()
 WriteError._other_validator = bv.Void()
 WriteError._tagmap = {
     'malformed_path': WriteError._malformed_path_validator,
@@ -13201,6 +14156,7 @@ WriteError._tagmap = {
     'team_folder': WriteError._team_folder_validator,
     'operation_suppressed': WriteError._operation_suppressed_validator,
     'too_many_write_operations': WriteError._too_many_write_operations_validator,
+    'access_restricted': WriteError._access_restricted_validator,
     'other': WriteError._other_validator,
 }
 
@@ -13210,6 +14166,7 @@ WriteError.disallowed_name = WriteError('disallowed_name')
 WriteError.team_folder = WriteError('team_folder')
 WriteError.operation_suppressed = WriteError('operation_suppressed')
 WriteError.too_many_write_operations = WriteError('too_many_write_operations')
+WriteError.access_restricted = WriteError('access_restricted')
 WriteError.other = WriteError('other')
 
 WriteMode._add_validator = bv.Void()
@@ -13244,9 +14201,11 @@ ListFolderArg.include_deleted.default = False
 ListFolderArg.include_has_explicit_shared_members.default = False
 ListFolderArg.include_mounted_folders.default = True
 ListFolderArg.include_non_downloadable_files.default = True
+ListFolderArg.include_restorable_info.default = False
 ListFolderLongpollArg.timeout.default = 30
 ListRevisionsArg.mode.default = ListRevisionsMode.path
 ListRevisionsArg.limit.default = 10
+ListRevisionsArg.include_restorable_info.default = False
 RelocationBatchArgBase.autorename.default = False
 MoveBatchArg.allow_ownership_transfer.default = False
 RelocationArg.allow_shared_folder.default = False
@@ -13264,10 +14223,13 @@ SearchOptions.filename_only.default = False
 ThumbnailArg.format.default = ThumbnailFormat.jpeg
 ThumbnailArg.size.default = ThumbnailSize.w64h64
 ThumbnailArg.mode.default = ThumbnailMode.strict
+ThumbnailArg.quality.default = ThumbnailQuality.quality_80
 ThumbnailV2Arg.format.default = ThumbnailFormat.jpeg
 ThumbnailV2Arg.size.default = ThumbnailSize.w64h64
 ThumbnailV2Arg.mode.default = ThumbnailMode.strict
+ThumbnailV2Arg.quality.default = ThumbnailQuality.quality_80
 UploadSessionAppendArg.close.default = False
+UploadSessionAppendBatchArgEntry.close.default = False
 UploadSessionStartArg.close.default = False
 alpha_get_metadata = bb.Route(
     'alpha/get_metadata',
@@ -13291,17 +14253,6 @@ alpha_upload = bb.Route(
      'host': 'content',
      'style': 'upload'},
 )
-copy_v2 = bb.Route(
-    'copy',
-    2,
-    False,
-    RelocationArg_validator,
-    RelocationResult_validator,
-    RelocationError_validator,
-    {'auth': 'user',
-     'host': 'api',
-     'style': 'rpc'},
-)
 copy = bb.Route(
     'copy',
     1,
@@ -13313,13 +14264,13 @@ copy = bb.Route(
      'host': 'api',
      'style': 'rpc'},
 )
-copy_batch_v2 = bb.Route(
-    'copy_batch',
+copy_v2 = bb.Route(
+    'copy',
     2,
     False,
-    CopyBatchArg_validator,
-    RelocationBatchV2Launch_validator,
-    bv.Void(),
+    RelocationArg_validator,
+    RelocationResult_validator,
+    RelocationError_validator,
     {'auth': 'user',
      'host': 'api',
      'style': 'rpc'},
@@ -13335,13 +14286,13 @@ copy_batch = bb.Route(
      'host': 'api',
      'style': 'rpc'},
 )
-copy_batch_check_v2 = bb.Route(
-    'copy_batch/check',
+copy_batch_v2 = bb.Route(
+    'copy_batch',
     2,
     False,
-    async_.PollArg_validator,
-    RelocationBatchV2JobStatus_validator,
-    async_.PollError_validator,
+    CopyBatchArg_validator,
+    RelocationBatchV2Launch_validator,
+    bv.Void(),
     {'auth': 'user',
      'host': 'api',
      'style': 'rpc'},
@@ -13352,6 +14303,17 @@ copy_batch_check = bb.Route(
     True,
     async_.PollArg_validator,
     RelocationBatchJobStatus_validator,
+    async_.PollError_validator,
+    {'auth': 'user',
+     'host': 'api',
+     'style': 'rpc'},
+)
+copy_batch_check_v2 = bb.Route(
+    'copy_batch/check',
+    2,
+    False,
+    async_.PollArg_validator,
+    RelocationBatchV2JobStatus_validator,
     async_.PollError_validator,
     {'auth': 'user',
      'host': 'api',
@@ -13379,23 +14341,23 @@ copy_reference_save = bb.Route(
      'host': 'api',
      'style': 'rpc'},
 )
-create_folder_v2 = bb.Route(
-    'create_folder',
-    2,
-    False,
-    CreateFolderArg_validator,
-    CreateFolderResult_validator,
-    CreateFolderError_validator,
-    {'auth': 'user',
-     'host': 'api',
-     'style': 'rpc'},
-)
 create_folder = bb.Route(
     'create_folder',
     1,
     True,
     CreateFolderArg_validator,
     FolderMetadata_validator,
+    CreateFolderError_validator,
+    {'auth': 'user',
+     'host': 'api',
+     'style': 'rpc'},
+)
+create_folder_v2 = bb.Route(
+    'create_folder',
+    2,
+    False,
+    CreateFolderArg_validator,
+    CreateFolderResult_validator,
     CreateFolderError_validator,
     {'auth': 'user',
      'host': 'api',
@@ -13423,23 +14385,23 @@ create_folder_batch_check = bb.Route(
      'host': 'api',
      'style': 'rpc'},
 )
-delete_v2 = bb.Route(
-    'delete',
-    2,
-    False,
-    DeleteArg_validator,
-    DeleteResult_validator,
-    DeleteError_validator,
-    {'auth': 'user',
-     'host': 'api',
-     'style': 'rpc'},
-)
 delete = bb.Route(
     'delete',
     1,
     True,
     DeleteArg_validator,
     Metadata_validator,
+    DeleteError_validator,
+    {'auth': 'user',
+     'host': 'api',
+     'style': 'rpc'},
+)
+delete_v2 = bb.Route(
+    'delete',
+    2,
+    False,
+    DeleteArg_validator,
+    DeleteResult_validator,
     DeleteError_validator,
     {'auth': 'user',
      'host': 'api',
@@ -13654,17 +14616,6 @@ lock_file_batch = bb.Route(
      'host': 'api',
      'style': 'rpc'},
 )
-move_v2 = bb.Route(
-    'move',
-    2,
-    False,
-    RelocationArg_validator,
-    RelocationResult_validator,
-    RelocationError_validator,
-    {'auth': 'user',
-     'host': 'api',
-     'style': 'rpc'},
-)
 move = bb.Route(
     'move',
     1,
@@ -13676,13 +14627,13 @@ move = bb.Route(
      'host': 'api',
      'style': 'rpc'},
 )
-move_batch_v2 = bb.Route(
-    'move_batch',
+move_v2 = bb.Route(
+    'move',
     2,
     False,
-    MoveBatchArg_validator,
-    RelocationBatchV2Launch_validator,
-    bv.Void(),
+    RelocationArg_validator,
+    RelocationResult_validator,
+    RelocationError_validator,
     {'auth': 'user',
      'host': 'api',
      'style': 'rpc'},
@@ -13698,13 +14649,13 @@ move_batch = bb.Route(
      'host': 'api',
      'style': 'rpc'},
 )
-move_batch_check_v2 = bb.Route(
-    'move_batch/check',
+move_batch_v2 = bb.Route(
+    'move_batch',
     2,
     False,
-    async_.PollArg_validator,
-    RelocationBatchV2JobStatus_validator,
-    async_.PollError_validator,
+    MoveBatchArg_validator,
+    RelocationBatchV2Launch_validator,
+    bv.Void(),
     {'auth': 'user',
      'host': 'api',
      'style': 'rpc'},
@@ -13715,6 +14666,17 @@ move_batch_check = bb.Route(
     True,
     async_.PollArg_validator,
     RelocationBatchJobStatus_validator,
+    async_.PollError_validator,
+    {'auth': 'user',
+     'host': 'api',
+     'style': 'rpc'},
+)
+move_batch_check_v2 = bb.Route(
+    'move_batch/check',
+    2,
+    False,
+    async_.PollArg_validator,
+    RelocationBatchV2JobStatus_validator,
     async_.PollError_validator,
     {'auth': 'user',
      'host': 'api',
@@ -13771,39 +14733,6 @@ properties_overwrite = bb.Route(
     file_properties.OverwritePropertyGroupArg_validator,
     bv.Void(),
     file_properties.InvalidPropertyGroupError_validator,
-    {'auth': 'user',
-     'host': 'api',
-     'style': 'rpc'},
-)
-properties_remove = bb.Route(
-    'properties/remove',
-    1,
-    True,
-    file_properties.RemovePropertiesArg_validator,
-    bv.Void(),
-    file_properties.RemovePropertiesError_validator,
-    {'auth': 'user',
-     'host': 'api',
-     'style': 'rpc'},
-)
-properties_template_get = bb.Route(
-    'properties/template/get',
-    1,
-    True,
-    file_properties.GetTemplateArg_validator,
-    file_properties.GetTemplateResult_validator,
-    file_properties.TemplateError_validator,
-    {'auth': 'user',
-     'host': 'api',
-     'style': 'rpc'},
-)
-properties_template_list = bb.Route(
-    'properties/template/list',
-    1,
-    True,
-    bv.Void(),
-    file_properties.ListTemplateResult_validator,
-    file_properties.TemplateError_validator,
     {'auth': 'user',
      'host': 'api',
      'style': 'rpc'},
@@ -13940,6 +14869,17 @@ upload = bb.Route(
      'host': 'content',
      'style': 'upload'},
 )
+upload_session_append = bb.Route(
+    'upload_session/append',
+    1,
+    True,
+    UploadSessionCursor_validator,
+    bv.Void(),
+    UploadSessionAppendError_validator,
+    {'auth': 'user',
+     'host': 'content',
+     'style': 'upload'},
+)
 upload_session_append_v2 = bb.Route(
     'upload_session/append',
     2,
@@ -13951,13 +14891,13 @@ upload_session_append_v2 = bb.Route(
      'host': 'content',
      'style': 'upload'},
 )
-upload_session_append = bb.Route(
-    'upload_session/append',
+upload_session_append_batch = bb.Route(
+    'upload_session/append_batch',
     1,
-    True,
-    UploadSessionCursor_validator,
-    bv.Void(),
-    UploadSessionAppendError_validator,
+    False,
+    UploadSessionAppendBatchArg_validator,
+    UploadSessionAppendBatchResult_validator,
+    UploadSessionAppendBatchError_validator,
     {'auth': 'user',
      'host': 'content',
      'style': 'upload'},
@@ -14032,20 +14972,20 @@ upload_session_start_batch = bb.Route(
 ROUTES = {
     'alpha/get_metadata': alpha_get_metadata,
     'alpha/upload': alpha_upload,
-    'copy:2': copy_v2,
     'copy': copy,
-    'copy_batch:2': copy_batch_v2,
+    'copy:2': copy_v2,
     'copy_batch': copy_batch,
-    'copy_batch/check:2': copy_batch_check_v2,
+    'copy_batch:2': copy_batch_v2,
     'copy_batch/check': copy_batch_check,
+    'copy_batch/check:2': copy_batch_check_v2,
     'copy_reference/get': copy_reference_get,
     'copy_reference/save': copy_reference_save,
-    'create_folder:2': create_folder_v2,
     'create_folder': create_folder,
+    'create_folder:2': create_folder_v2,
     'create_folder_batch': create_folder_batch,
     'create_folder_batch/check': create_folder_batch_check,
-    'delete:2': delete_v2,
     'delete': delete,
+    'delete:2': delete_v2,
     'delete_batch': delete_batch,
     'delete_batch/check': delete_batch_check,
     'download': download,
@@ -14065,20 +15005,17 @@ ROUTES = {
     'list_folder/longpoll': list_folder_longpoll,
     'list_revisions': list_revisions,
     'lock_file_batch': lock_file_batch,
-    'move:2': move_v2,
     'move': move,
-    'move_batch:2': move_batch_v2,
+    'move:2': move_v2,
     'move_batch': move_batch,
-    'move_batch/check:2': move_batch_check_v2,
+    'move_batch:2': move_batch_v2,
     'move_batch/check': move_batch_check,
+    'move_batch/check:2': move_batch_check_v2,
     'paper/create': paper_create,
     'paper/update': paper_update,
     'permanently_delete': permanently_delete,
     'properties/add': properties_add,
     'properties/overwrite': properties_overwrite,
-    'properties/remove': properties_remove,
-    'properties/template/get': properties_template_get,
-    'properties/template/list': properties_template_list,
     'properties/update': properties_update,
     'restore': restore,
     'save_url': save_url,
@@ -14091,8 +15028,9 @@ ROUTES = {
     'tags/remove': tags_remove,
     'unlock_file_batch': unlock_file_batch,
     'upload': upload,
-    'upload_session/append:2': upload_session_append_v2,
     'upload_session/append': upload_session_append,
+    'upload_session/append:2': upload_session_append_v2,
+    'upload_session/append_batch': upload_session_append_batch,
     'upload_session/finish': upload_session_finish,
     'upload_session/finish_batch': upload_session_finish_batch,
     'upload_session/finish_batch:2': upload_session_finish_batch_v2,
