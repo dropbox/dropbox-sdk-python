@@ -11,8 +11,8 @@ class EchoArg(bb.Struct):
     """
     Contains the arguments to be sent to the Dropbox servers.
 
-    :ivar check.EchoArg.query: The string that you'd like to be echoed back to
-        you.
+    :ivar EchoArg.query:
+        The string that you'd like to be echoed back to you.
     """
 
     __slots__ = [
@@ -43,7 +43,8 @@ class EchoError(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar check.EchoError.user_requested: The request was successful.
+    :ivar EchoError.user_requested:
+        The request was successful.
     """
 
     _catch_all = 'other'
@@ -77,8 +78,8 @@ class EchoResult(bb.Struct):
     """
     EchoResult contains the result returned from the Dropbox servers.
 
-    :ivar check.EchoResult.result: If everything worked correctly, this would be
-        the same as query.
+    :ivar EchoResult.result:
+        If everything worked correctly, this would be the same as query.
     """
 
     __slots__ = [

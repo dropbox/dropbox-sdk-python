@@ -11,8 +11,8 @@ from dropbox import common
 
 class DeleteManualContactsArg(bb.Struct):
     """
-    :ivar contacts.DeleteManualContactsArg.email_addresses: List of manually
-        added contacts to be deleted.
+    :ivar DeleteManualContactsArg.email_addresses:
+        List of manually added contacts to be deleted.
     """
 
     __slots__ = [
@@ -41,9 +41,10 @@ class DeleteManualContactsError(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar list of [str] contacts.DeleteManualContactsError.contacts_not_found:
+    :ivar DeleteManualContactsError.contacts_not_found:
         Can't delete contacts from this list. Make sure the list only has
         manually added contacts. The deletion was cancelled.
+    :vartype DeleteManualContactsError.contacts_not_found: list of [str]
     """
 
     _catch_all = 'other'

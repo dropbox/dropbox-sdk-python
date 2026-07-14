@@ -13,7 +13,7 @@ license-files = ["LICENSE"]
 authors = [{ name = "Dropbox", email = "dev-platform@dropbox.com" }]
 dependencies = [
     "requests>=2.16.2",
-    "stone>=3.5.1,<4",
+    "stone>=3.5.2,<4",
 ]
 classifiers = [
     "Development Status :: 5 - Production/Stable",
@@ -34,7 +34,7 @@ Homepage = "http://www.dropbox.com/developers"
 Source = "https://github.com/dropbox/dropbox-sdk-python"
 
 [project.optional-dependencies]
-test = ["pytest", "mock", "pytest-mock", "coverage", "stone>=3.5.1,<4"]
+test = ["pytest", "mock", "pytest-mock", "coverage", "stone>=3.5.2,<4"]
 docs = ["sphinx", "sphinx_rtd_theme"]
 dev = ["flake8", "twine", "wheel", "build"]
 

@@ -16,14 +16,17 @@ class AccessError(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar InvalidAccountTypeError AccessError.invalid_account_type: Current
-        account type cannot access the resource.
-    :ivar PaperAccessError AccessError.paper_access_denied: Current account
-        cannot access Paper.
-    :ivar auth.AccessError.team_access_denied: Team doesn't have permission to
-        access.
-    :ivar NoPermissionError AccessError.no_permission: Caller does not have
-        permission to access the resource.
+    :ivar AccessError.invalid_account_type:
+        Current account type cannot access the resource.
+    :vartype AccessError.invalid_account_type: InvalidAccountTypeError
+    :ivar AccessError.paper_access_denied:
+        Current account cannot access Paper.
+    :vartype AccessError.paper_access_denied: PaperAccessError
+    :ivar AccessError.team_access_denied:
+        Team doesn't have permission to access.
+    :ivar AccessError.no_permission:
+        Caller does not have permission to access the resource.
+    :vartype AccessError.no_permission: NoPermissionError
     """
 
     _catch_all = 'other'
@@ -154,17 +157,23 @@ class AuthError(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar auth.AuthError.invalid_access_token: The access token is invalid.
-    :ivar auth.AuthError.invalid_select_user: The user specified in
-        'Dropbox-API-Select-User' is no longer on the team.
-    :ivar auth.AuthError.invalid_select_admin: The user specified in
-        'Dropbox-API-Select-Admin' is not a Dropbox Business team admin.
-    :ivar auth.AuthError.user_suspended: The user has been suspended.
-    :ivar auth.AuthError.expired_access_token: The access token has expired.
-    :ivar TokenScopeError AuthError.missing_scope: The access token does not
-        have the required scope to access the route.
-    :ivar auth.AuthError.route_access_denied: The route is not available to
-        public.
+    :ivar AuthError.invalid_access_token:
+        The access token is invalid.
+    :ivar AuthError.invalid_select_user:
+        The user specified in 'Dropbox-API-Select-User' is no longer on the
+        team.
+    :ivar AuthError.invalid_select_admin:
+        The user specified in 'Dropbox-API-Select-Admin' is not a Dropbox
+        Business team admin.
+    :ivar AuthError.user_suspended:
+        The user has been suspended.
+    :ivar AuthError.expired_access_token:
+        The access token has expired.
+    :ivar AuthError.missing_scope:
+        The access token does not have the required scope to access the route.
+    :vartype AuthError.missing_scope: TokenScopeError
+    :ivar AuthError.route_access_denied:
+        The route is not available to public.
     """
 
     _catch_all = 'other'
@@ -281,10 +290,11 @@ class InvalidAccountTypeError(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar auth.InvalidAccountTypeError.endpoint: Current account type doesn't
-        have permission to access this route endpoint.
-    :ivar auth.InvalidAccountTypeError.feature: Current account type doesn't
-        have permission to access this feature.
+    :ivar InvalidAccountTypeError.endpoint:
+        Current account type doesn't have permission to access this route
+        endpoint.
+    :ivar InvalidAccountTypeError.feature:
+        Current account type doesn't have permission to access this feature.
     """
 
     _catch_all = 'other'
@@ -330,10 +340,10 @@ class NoPermissionError(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar UnauthorizedAccountIdUsageError
-        NoPermissionError.unauthorized_account_id_usage: Current caller does not
-        have permission to access the account information for one or more of the
-        specified account IDs.
+    :ivar NoPermissionError.unauthorized_account_id_usage:
+        Current caller does not have permission to access the account
+        information for one or more of the specified account IDs.
+    :vartype NoPermissionError.unauthorized_account_id_usage: UnauthorizedAccountIdUsageError
     """
 
     _catch_all = 'other'
@@ -391,9 +401,10 @@ class PaperAccessError(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar auth.PaperAccessError.paper_disabled: Paper is disabled.
-    :ivar auth.PaperAccessError.not_paper_user: The provided user has not used
-        Paper yet.
+    :ivar PaperAccessError.paper_disabled:
+        Paper is disabled.
+    :ivar PaperAccessError.not_paper_user:
+        The provided user has not used Paper yet.
     """
 
     _catch_all = 'other'
@@ -437,10 +448,11 @@ class RateLimitError(bb.Struct):
     """
     Error occurred because the app is being rate limited.
 
-    :ivar auth.RateLimitError.reason: The reason why the app is being rate
-        limited.
-    :ivar auth.RateLimitError.retry_after: The number of seconds that the app
-        should wait before making another request.
+    :ivar RateLimitError.reason:
+        The reason why the app is being rate limited.
+    :ivar RateLimitError.retry_after:
+        The number of seconds that the app should wait before making another
+        request.
     """
 
     __slots__ = [
@@ -477,10 +489,11 @@ class RateLimitReason(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar auth.RateLimitReason.too_many_requests: You are making too many
-        requests in the past few minutes.
-    :ivar auth.RateLimitReason.too_many_write_operations: There are currently
-        too many write operations happening in the user's Dropbox.
+    :ivar RateLimitReason.too_many_requests:
+        You are making too many requests in the past few minutes.
+    :ivar RateLimitReason.too_many_write_operations:
+        There are currently too many write operations happening in the user's
+        Dropbox.
     """
 
     _catch_all = 'other'
@@ -522,10 +535,10 @@ RateLimitReason_validator = bv.Union(RateLimitReason)
 
 class TokenFromOAuth1Arg(bb.Struct):
     """
-    :ivar auth.TokenFromOAuth1Arg.oauth1_token: The supplied OAuth 1.0 access
-        token.
-    :ivar auth.TokenFromOAuth1Arg.oauth1_token_secret: The token secret
-        associated with the supplied access token.
+    :ivar TokenFromOAuth1Arg.oauth1_token:
+        The supplied OAuth 1.0 access token.
+    :ivar TokenFromOAuth1Arg.oauth1_token_secret:
+        The token secret associated with the supplied access token.
     """
 
     __slots__ = [
@@ -562,10 +575,11 @@ class TokenFromOAuth1Error(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar auth.TokenFromOAuth1Error.invalid_oauth1_token_info: Part or all of
-        the OAuth 1.0 access token info is invalid.
-    :ivar auth.TokenFromOAuth1Error.app_id_mismatch: The authorized app does not
-        match the app associated with the supplied access token.
+    :ivar TokenFromOAuth1Error.invalid_oauth1_token_info:
+        Part or all of the OAuth 1.0 access token info is invalid.
+    :ivar TokenFromOAuth1Error.app_id_mismatch:
+        The authorized app does not match the app associated with the supplied
+        access token.
     """
 
     _catch_all = 'other'
@@ -607,8 +621,8 @@ TokenFromOAuth1Error_validator = bv.Union(TokenFromOAuth1Error)
 
 class TokenFromOAuth1Result(bb.Struct):
     """
-    :ivar auth.TokenFromOAuth1Result.oauth2_token: The OAuth 2.0 token generated
-        from the supplied OAuth 1.0 token.
+    :ivar TokenFromOAuth1Result.oauth2_token:
+        The OAuth 2.0 token generated from the supplied OAuth 1.0 token.
     """
 
     __slots__ = [
@@ -633,8 +647,8 @@ TokenFromOAuth1Result_validator = bv.Struct(TokenFromOAuth1Result)
 
 class TokenScopeError(bb.Struct):
     """
-    :ivar auth.TokenScopeError.required_scope: The required scope to access the
-        route.
+    :ivar TokenScopeError.required_scope:
+        The required scope to access the route.
     """
 
     __slots__ = [
@@ -659,8 +673,8 @@ TokenScopeError_validator = bv.Struct(TokenScopeError)
 
 class UnauthorizedAccountIdUsageError(bb.Struct):
     """
-    :ivar auth.UnauthorizedAccountIdUsageError.unauthorized_account_ids: The
-        account IDs that the caller does not have permission to use.
+    :ivar UnauthorizedAccountIdUsageError.unauthorized_account_ids:
+        The account IDs that the caller does not have permission to use.
     """
 
     __slots__ = [

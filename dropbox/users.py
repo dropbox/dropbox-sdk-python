@@ -21,16 +21,20 @@ class Account(bb.Struct):
     The amount of detail revealed about an account depends on the user being
     queried and the user making the query.
 
-    :ivar users.Account.account_id: The user's unique Dropbox ID.
-    :ivar users.Account.name: Details of a user's name.
-    :ivar users.Account.email: The user's email address. Do not rely on this
-        without checking the ``email_verified`` field. Even then, it's possible
-        that the user has since lost access to their email.
-    :ivar users.Account.email_verified: Whether the user has verified their
-        email address.
-    :ivar users.Account.profile_photo_url: URL for the photo representing the
-        user, if one is set.
-    :ivar users.Account.disabled: Whether the user has been disabled.
+    :ivar Account.account_id:
+        The user's unique Dropbox ID.
+    :ivar Account.name:
+        Details of a user's name.
+    :ivar Account.email:
+        The user's email address. Do not rely on this without checking the
+        ``email_verified`` field. Even then, it's possible that the user has
+        since lost access to their email.
+    :ivar Account.email_verified:
+        Whether the user has verified their email address.
+    :ivar Account.profile_photo_url:
+        URL for the photo representing the user, if one is set.
+    :ivar Account.disabled:
+        Whether the user has been disabled.
     """
 
     __slots__ = [
@@ -97,12 +101,12 @@ class BasicAccount(Account):
     """
     Basic information about any account.
 
-    :ivar users.BasicAccount.is_teammate: Whether this user is a teammate of the
-        current user. If this account is the current user's account, then this
-        will be ``True``.
-    :ivar users.BasicAccount.team_member_id: The user's unique team member id.
-        This field will only be present if the user is part of a team and
-        ``is_teammate`` is ``True``.
+    :ivar BasicAccount.is_teammate:
+        Whether this user is a teammate of the current user. If this account is
+        the current user's account, then this will be ``True``.
+    :ivar BasicAccount.team_member_id:
+        The user's unique team member id. This field will only be present if the
+        user is part of a team and ``is_teammate`` is ``True``.
     """
 
     __slots__ = [
@@ -153,9 +157,10 @@ class DistinctMemberHomeValue(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar bool users.DistinctMemberHomeValue.enabled: When this value is True,
-        the user have distinct home and root ns. When the value is False the
-        user's home ns and root ns are the same.
+    :ivar DistinctMemberHomeValue.enabled:
+        When this value is True, the user have distinct home and root ns. When
+        the value is False the user's home ns and root ns are the same.
+    :vartype DistinctMemberHomeValue.enabled: bool
     """
 
     _catch_all = 'other'
@@ -215,10 +220,11 @@ class FileLockingValue(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar bool users.FileLockingValue.enabled: When this value is True, the user
-        can lock files in shared directories. When the value is False the user
-        can unlock the files they have locked or request to unlock files locked
-        by others.
+    :ivar FileLockingValue.enabled:
+        When this value is True, the user can lock files in shared directories.
+        When the value is False the user can unlock the files they have locked
+        or request to unlock files locked by others.
+    :vartype FileLockingValue.enabled: bool
     """
 
     _catch_all = 'other'
@@ -275,23 +281,27 @@ class FullAccount(Account):
     """
     Detailed information about the current user's account.
 
-    :ivar users.FullAccount.country: The user's two-letter country code, if
-        available. Country codes are based on `ISO 3166-1
-        <http://en.wikipedia.org/wiki/ISO_3166-1>`_.
-    :ivar users.FullAccount.locale: The language that the user specified. Locale
-        tags will be `IETF language tags
-        <http://en.wikipedia.org/wiki/IETF_language_tag>`_.
-    :ivar users.FullAccount.referral_link: The user's `referral link
-        <https://www.dropbox.com/referrals>`_.
-    :ivar users.FullAccount.team: If this account is a member of a team,
-        information about that team.
-    :ivar users.FullAccount.team_member_id: This account's unique team member
-        id. This field will only be present if ``team`` is present.
-    :ivar users.FullAccount.is_paired: Whether the user has a personal and work
-        account. If the current account is personal, then ``team`` will always
-        be None, but ``is_paired`` will indicate if a work account is linked.
-    :ivar users.FullAccount.account_type: What type of account this user has.
-    :ivar users.FullAccount.root_info: The root info for this account.
+    :ivar FullAccount.country:
+        The user's two-letter country code, if available. Country codes are
+        based on `ISO 3166-1 <http://en.wikipedia.org/wiki/ISO_3166-1>`_.
+    :ivar FullAccount.locale:
+        The language that the user specified. Locale tags will be `IETF language
+        tags <http://en.wikipedia.org/wiki/IETF_language_tag>`_.
+    :ivar FullAccount.referral_link:
+        The user's `referral link <https://www.dropbox.com/referrals>`_.
+    :ivar FullAccount.team:
+        If this account is a member of a team, information about that team.
+    :ivar FullAccount.team_member_id:
+        This account's unique team member id. This field will only be present if
+        ``team`` is present.
+    :ivar FullAccount.is_paired:
+        Whether the user has a personal and work account. If the current account
+        is personal, then ``team`` will always be None, but ``is_paired`` will
+        indicate if a work account is linked.
+    :ivar FullAccount.account_type:
+        What type of account this user has.
+    :ivar FullAccount.root_info:
+        The root info for this account.
     """
 
     __slots__ = [
@@ -386,8 +396,10 @@ class Team(bb.Struct):
     """
     Information about a team.
 
-    :ivar users.Team.id: The team's unique ID.
-    :ivar users.Team.name: The name of the team.
+    :ivar Team.id:
+        The team's unique ID.
+    :ivar Team.name:
+        The name of the team.
     """
 
     __slots__ = [
@@ -422,11 +434,13 @@ class FullTeam(Team):
     """
     Detailed information about a team.
 
-    :ivar users.FullTeam.sharing_policies: Team policies governing sharing.
-    :ivar users.FullTeam.office_addin_policy: Team policy governing the use of
-        the Office Add-In.
-    :ivar users.FullTeam.top_level_content_policy: Team policy governing whether
-        members can edit team folders at the top level of the team space.
+    :ivar FullTeam.sharing_policies:
+        Team policies governing sharing.
+    :ivar FullTeam.office_addin_policy:
+        Team policy governing the use of the Office Add-In.
+    :ivar FullTeam.top_level_content_policy:
+        Team policy governing whether members can edit team folders at the top
+        level of the team space.
     """
 
     __slots__ = [
@@ -471,7 +485,8 @@ FullTeam_validator = bv.Struct(FullTeam)
 
 class GetAccountArg(bb.Struct):
     """
-    :ivar users.GetAccountArg.account_id: A user's account identifier.
+    :ivar GetAccountArg.account_id:
+        A user's account identifier.
     """
 
     __slots__ = [
@@ -496,8 +511,9 @@ GetAccountArg_validator = bv.Struct(GetAccountArg)
 
 class GetAccountBatchArg(bb.Struct):
     """
-    :ivar users.GetAccountBatchArg.account_ids: List of user account
-        identifiers.  Should not contain any duplicate account IDs.
+    :ivar GetAccountBatchArg.account_ids:
+        List of user account identifiers.  Should not contain any duplicate
+        account IDs.
     """
 
     __slots__ = [
@@ -526,9 +542,10 @@ class GetAccountBatchError(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar str users.GetAccountBatchError.no_account: The value is an account ID
-        specified in :field:`GetAccountBatchArg.account_ids` that does not
-        exist.
+    :ivar GetAccountBatchError.no_account:
+        The value is an account ID specified in
+        ``GetAccountBatchArg.account_ids`` that does not exist.
+    :vartype GetAccountBatchError.no_account: str
     """
 
     _catch_all = 'other'
@@ -586,8 +603,8 @@ class GetAccountError(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar users.GetAccountError.no_account: The specified
-        ``GetAccountArg.account_id`` does not exist.
+    :ivar GetAccountError.no_account:
+        The specified ``GetAccountArg.account_id`` does not exist.
     """
 
     _catch_all = 'other'
@@ -619,8 +636,8 @@ GetAccountError_validator = bv.Union(GetAccountError)
 
 class IndividualSpaceAllocation(bb.Struct):
     """
-    :ivar users.IndividualSpaceAllocation.allocated: The total space allocated
-        to the user's account (bytes).
+    :ivar IndividualSpaceAllocation.allocated:
+        The total space allocated to the user's account (bytes).
     """
 
     __slots__ = [
@@ -647,15 +664,20 @@ class Name(bb.Struct):
     """
     Representations for a person's name to assist with internationalization.
 
-    :ivar users.Name.given_name: Also known as a first name.
-    :ivar users.Name.surname: Also known as a last name or family name.
-    :ivar users.Name.familiar_name: Locale-dependent name. In the US, a person's
-        familiar name is their ``given_name``, but elsewhere, it could be any
-        combination of a person's ``given_name`` and ``surname``.
-    :ivar users.Name.display_name: A name that can be used directly to represent
-        the name of a user's Dropbox account.
-    :ivar users.Name.abbreviated_name: An abbreviated form of the person's name.
-        Their initials in most locales.
+    :ivar Name.given_name:
+        Also known as a first name.
+    :ivar Name.surname:
+        Also known as a last name or family name.
+    :ivar Name.familiar_name:
+        Locale-dependent name. In the US, a person's familiar name is their
+        ``given_name``, but elsewhere, it could be any combination of a person's
+        ``given_name`` and ``surname``.
+    :ivar Name.display_name:
+        A name that can be used directly to represent the name of a user's
+        Dropbox account.
+    :ivar Name.abbreviated_name:
+        An abbreviated form of the person's name. Their initials in most
+        locales.
     """
 
     __slots__ = [
@@ -718,11 +740,13 @@ class PaperAsFilesValue(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar bool users.PaperAsFilesValue.enabled: When this value is true, the
-        user's Paper docs are accessible in Dropbox with the .paper extension
-        and must be accessed via the /files endpoints.  When this value is
-        false, the user's Paper docs are stored separate from Dropbox files and
-        folders and should be accessed via the /paper endpoints.
+    :ivar PaperAsFilesValue.enabled:
+        When this value is true, the user's Paper docs are accessible in Dropbox
+        with the .paper extension and must be accessed via the /files endpoints.
+        When this value is false, the user's Paper docs are stored separate from
+        Dropbox files and folders and should be accessed via the /paper
+        endpoints.
+    :vartype PaperAsFilesValue.enabled: bool
     """
 
     _catch_all = 'other'
@@ -785,10 +809,12 @@ class SpaceAllocation(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar IndividualSpaceAllocation SpaceAllocation.individual: The user's space
-        allocation applies only to their individual account.
-    :ivar TeamSpaceAllocation SpaceAllocation.team: The user shares space with
-        other members of their team.
+    :ivar SpaceAllocation.individual:
+        The user's space allocation applies only to their individual account.
+    :vartype SpaceAllocation.individual: IndividualSpaceAllocation
+    :ivar SpaceAllocation.team:
+        The user shares space with other members of their team.
+    :vartype SpaceAllocation.team: TeamSpaceAllocation
     """
 
     _catch_all = 'other'
@@ -874,8 +900,10 @@ class SpaceUsage(bb.Struct):
     """
     Information about a user's space usage and quota.
 
-    :ivar users.SpaceUsage.used: The user's total space usage (bytes).
-    :ivar users.SpaceUsage.allocation: The user's space allocation.
+    :ivar SpaceUsage.used:
+        The user's total space usage (bytes).
+    :ivar SpaceUsage.allocation:
+        The user's space allocation.
     """
 
     __slots__ = [
@@ -914,9 +942,10 @@ class TeamSharedDropboxValue(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar bool users.TeamSharedDropboxValue.enabled: When this value is True,
-        the user have a shared team root. When the value is False the user have
-        distinct root.
+    :ivar TeamSharedDropboxValue.enabled:
+        When this value is True, the user have a shared team root. When the
+        value is False the user have distinct root.
+    :vartype TeamSharedDropboxValue.enabled: bool
     """
 
     _catch_all = 'other'
@@ -970,18 +999,19 @@ TeamSharedDropboxValue_validator = bv.Union(TeamSharedDropboxValue)
 
 class TeamSpaceAllocation(bb.Struct):
     """
-    :ivar users.TeamSpaceAllocation.used: The total space currently used by the
-        user's team (bytes).
-    :ivar users.TeamSpaceAllocation.allocated: The total space allocated to the
-        user's team (bytes).
-    :ivar users.TeamSpaceAllocation.user_within_team_space_allocated: The total
-        space allocated to the user within its team allocated space (0 means
-        that no restriction is imposed on the user's quota within its team).
-    :ivar users.TeamSpaceAllocation.user_within_team_space_limit_type: The type
-        of the space limit imposed on the team member (off, alert_only,
+    :ivar TeamSpaceAllocation.used:
+        The total space currently used by the user's team (bytes).
+    :ivar TeamSpaceAllocation.allocated:
+        The total space allocated to the user's team (bytes).
+    :ivar TeamSpaceAllocation.user_within_team_space_allocated:
+        The total space allocated to the user within its team allocated space (0
+        means that no restriction is imposed on the user's quota within its
+        team).
+    :ivar TeamSpaceAllocation.user_within_team_space_limit_type:
+        The type of the space limit imposed on the team member (off, alert_only,
         stop_sync).
-    :ivar users.TeamSpaceAllocation.user_within_team_space_used_cached: An
-        accurate cached calculation of a team member's total space usage
+    :ivar TeamSpaceAllocation.user_within_team_space_used_cached:
+        An accurate cached calculation of a team member's total space usage
         (bytes).
     """
 
@@ -1045,16 +1075,18 @@ class UserFeature(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar users.UserFeature.paper_as_files: This feature contains information
-        about how the user's Paper files are stored.
-    :ivar users.UserFeature.file_locking: This feature allows users to lock
-        files in order to restrict other users from editing them.
-    :ivar users.UserFeature.team_shared_dropbox: This feature contains
-        information about whether or not the user is part of a team with a
-        shared team root.
-    :ivar users.UserFeature.distinct_member_home: This feature contains
-        information about whether or not the user's home namespace is distinct
-        from their root namespace.
+    :ivar UserFeature.paper_as_files:
+        This feature contains information about how the user's Paper files are
+        stored.
+    :ivar UserFeature.file_locking:
+        This feature allows users to lock files in order to restrict other users
+        from editing them.
+    :ivar UserFeature.team_shared_dropbox:
+        This feature contains information about whether or not the user is part
+        of a team with a shared team root.
+    :ivar UserFeature.distinct_member_home:
+        This feature contains information about whether or not the user's home
+        namespace is distinct from their root namespace.
     """
 
     _catch_all = 'other'
@@ -1258,9 +1290,9 @@ UserFeatureValue_validator = bv.Union(UserFeatureValue)
 
 class UserFeaturesGetValuesBatchArg(bb.Struct):
     """
-    :ivar users.UserFeaturesGetValuesBatchArg.features: A list of features in
-        :class:`UserFeature`. If the list is empty, this route will return
-        :class:`UserFeaturesGetValuesBatchError`.
+    :ivar UserFeaturesGetValuesBatchArg.features:
+        A list of features in :class:`UserFeature`. If the list is empty, this
+        route will return :class:`UserFeaturesGetValuesBatchError`.
     """
 
     __slots__ = [
@@ -1289,8 +1321,8 @@ class UserFeaturesGetValuesBatchError(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar users.UserFeaturesGetValuesBatchError.empty_features_list: At least
-        one :class:`UserFeature` must be included in the
+    :ivar UserFeaturesGetValuesBatchError.empty_features_list:
+        At least one :class:`UserFeature` must be included in the
         :class:`UserFeaturesGetValuesBatchArg`.features list.
     """
 

@@ -11,9 +11,11 @@ from dropbox import common
 
 class SecondaryEmail(bb.Struct):
     """
-    :ivar secondary_emails.SecondaryEmail.email: Secondary email address.
-    :ivar secondary_emails.SecondaryEmail.is_verified: Whether or not the
-        secondary email address is verified to be owned by a user.
+    :ivar SecondaryEmail.email:
+        Secondary email address.
+    :ivar SecondaryEmail.is_verified:
+        Whether or not the secondary email address is verified to be owned by a
+        user.
     """
 
     __slots__ = [

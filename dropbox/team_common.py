@@ -17,12 +17,12 @@ class GroupManagementType(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar team_common.GroupManagementType.user_managed: A group which is managed
-        by selected users.
-    :ivar team_common.GroupManagementType.company_managed: A group which is
-        managed by team admins only.
-    :ivar team_common.GroupManagementType.system_managed: A group which is
-        managed automatically by Dropbox.
+    :ivar GroupManagementType.user_managed:
+        A group which is managed by selected users.
+    :ivar GroupManagementType.company_managed:
+        A group which is managed by team admins only.
+    :ivar GroupManagementType.system_managed:
+        A group which is managed automatically by Dropbox.
     """
 
     _catch_all = 'other'
@@ -76,12 +76,13 @@ class GroupSummary(bb.Struct):
     """
     Information about a group.
 
-    :ivar team_common.GroupSummary.group_external_id: External ID of group. This
-        is an arbitrary ID that an admin can attach to a group.
-    :ivar team_common.GroupSummary.member_count: The number of members in the
-        group.
-    :ivar team_common.GroupSummary.group_management_type: Who is allowed to
-        manage the group.
+    :ivar GroupSummary.group_external_id:
+        External ID of group. This is an arbitrary ID that an admin can attach
+        to a group.
+    :ivar GroupSummary.member_count:
+        The number of members in the group.
+    :ivar GroupSummary.group_management_type:
+        Who is allowed to manage the group.
     """
 
     __slots__ = [
@@ -144,11 +145,11 @@ class GroupType(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar team_common.GroupType.team: A group to which team members are
-        automatically added. Applicable to `team folders
-        <https://www.dropbox.com/help/986>`_ only.
-    :ivar team_common.GroupType.user_managed: A group is created and managed by
-        a user.
+    :ivar GroupType.team:
+        A group to which team members are automatically added. Applicable to
+        `team folders <https://www.dropbox.com/help/986>`_ only.
+    :ivar GroupType.user_managed:
+        A group is created and managed by a user.
     """
 
     _catch_all = 'other'
@@ -196,14 +197,14 @@ class MemberSpaceLimitType(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar team_common.MemberSpaceLimitType.off: The team member does not have
-        imposed space limit.
-    :ivar team_common.MemberSpaceLimitType.alert_only: The team member has soft
-        imposed space limit - the limit is used for display and for
-        notifications.
-    :ivar team_common.MemberSpaceLimitType.stop_sync: The team member has hard
-        imposed space limit - Dropbox file sync will stop after the limit is
-        reached.
+    :ivar MemberSpaceLimitType.off:
+        The team member does not have imposed space limit.
+    :ivar MemberSpaceLimitType.alert_only:
+        The team member has soft imposed space limit - the limit is used for
+        display and for notifications.
+    :ivar MemberSpaceLimitType.stop_sync:
+        The team member has hard imposed space limit - Dropbox file sync will
+        stop after the limit is reached.
     """
 
     _catch_all = 'other'
@@ -257,8 +258,10 @@ class TimeRange(bb.Struct):
     """
     Time range.
 
-    :ivar team_common.TimeRange.start_time: Optional starting time (inclusive).
-    :ivar team_common.TimeRange.end_time: Optional ending time (exclusive).
+    :ivar TimeRange.start_time:
+        Optional starting time (inclusive).
+    :ivar TimeRange.end_time:
+        Optional ending time (exclusive).
     """
 
     __slots__ = [

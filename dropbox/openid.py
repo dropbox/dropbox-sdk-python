@@ -13,8 +13,8 @@ class OpenIdError(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar openid.OpenIdError.incorrect_openid_scopes: Missing openid claims for
-        the associated access token.
+    :ivar OpenIdError.incorrect_openid_scopes:
+        Missing openid claims for the associated access token.
     """
 
     _catch_all = 'other'
@@ -117,14 +117,19 @@ UserInfoError_validator = bv.Union(UserInfoError)
 
 class UserInfoResult(bb.Struct):
     """
-    :ivar openid.UserInfoResult.family_name: Last name of user.
-    :ivar openid.UserInfoResult.given_name: First name of user.
-    :ivar openid.UserInfoResult.email: Email address of user.
-    :ivar openid.UserInfoResult.email_verified: If user is email verified.
-    :ivar openid.UserInfoResult.iss: Issuer of token (in this case Dropbox).
-    :ivar openid.UserInfoResult.sub: An identifier for the user. This is the
-        Dropbox account_id, a string value such as
-        dbid:AAH4f99T0taONIb-OurWxbNQ6ywGRopQngc.
+    :ivar UserInfoResult.family_name:
+        Last name of user.
+    :ivar UserInfoResult.given_name:
+        First name of user.
+    :ivar UserInfoResult.email:
+        Email address of user.
+    :ivar UserInfoResult.email_verified:
+        If user is email verified.
+    :ivar UserInfoResult.iss:
+        Issuer of token (in this case Dropbox).
+    :ivar UserInfoResult.sub:
+        An identifier for the user. This is the Dropbox account_id, a string
+        value such as dbid:AAH4f99T0taONIb-OurWxbNQ6ywGRopQngc.
     """
 
     __slots__ = [

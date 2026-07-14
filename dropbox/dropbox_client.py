@@ -473,7 +473,7 @@ class _DropboxTransport(object):
         :param route_style: The style of the route.
         :param str request_arg: A JSON-serializable Python object representing
             the argument for the route.
-        :param auth_type str
+        :param str auth_type: The auth type of the route.
         :param Optional[bytes] request_binary: Bytes representing the binary
             payload. Use None if there is no binary payload.
         :param Optional[float] timeout: Maximum duration in seconds
