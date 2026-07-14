@@ -9,14 +9,14 @@ from stone.backends.python_rsrc import stone_validators as bv
 
 class AccountPhotoGetArg(bb.Struct):
     """
-    :ivar account.AccountPhotoGetArg.dbx_account_id: Encoded ID of the user.
-        Must start either with 'dbid:' or 'dbaphid:'.
-    :ivar account.AccountPhotoGetArg.size: A string representing the size of the
-        photo.
-    :ivar account.AccountPhotoGetArg.circle_crop: True if the photo should be
-        cropped and false otherwise.
-    :ivar account.AccountPhotoGetArg.expect_account_photo: True if we expect
-        account photo to exist.
+    :ivar AccountPhotoGetArg.dbx_account_id:
+        Encoded ID of the user. Must start either with 'dbid:' or 'dbaphid:'.
+    :ivar AccountPhotoGetArg.size:
+        A string representing the size of the photo.
+    :ivar AccountPhotoGetArg.circle_crop:
+        True if the photo should be cropped and false otherwise.
+    :ivar AccountPhotoGetArg.expect_account_photo:
+        True if we expect account photo to exist.
     """
 
     __slots__ = [
@@ -69,12 +69,13 @@ class AccountPhotoGetError(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar ThumbnailError AccountPhotoGetError.thumbnail_error: Indicates
-        infrastructural failure.
-    :ivar account.AccountPhotoGetError.account_photo_missing: Account photo is
-        missing (but we did not expect it to exist).
-    :ivar account.AccountPhotoGetError.expected_account_photo_missing: Account
-        photo was expected to exist, but it's missing.
+    :ivar AccountPhotoGetError.thumbnail_error:
+        Indicates infrastructural failure.
+    :vartype AccountPhotoGetError.thumbnail_error: ThumbnailError
+    :ivar AccountPhotoGetError.account_photo_missing:
+        Account photo is missing (but we did not expect it to exist).
+    :ivar AccountPhotoGetError.expected_account_photo_missing:
+        Account photo was expected to exist, but it's missing.
     """
 
     _catch_all = 'other'
@@ -147,8 +148,8 @@ AccountPhotoGetError_validator = bv.Union(AccountPhotoGetError)
 
 class AccountPhotoGetResult(bb.Struct):
     """
-    :ivar account.AccountPhotoGetResult.content_type: The data returned by
-        get_photo.
+    :ivar AccountPhotoGetResult.content_type:
+        The data returned by get_photo.
     """
 
     __slots__ = [
@@ -242,8 +243,9 @@ class PhotoSourceArg(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar str account.PhotoSourceArg.base64_data: Image data in base64-encoded
-        bytes.
+    :ivar PhotoSourceArg.base64_data:
+        Image data in base64-encoded bytes.
+    :vartype PhotoSourceArg.base64_data: str
     """
 
     _catch_all = 'other'
@@ -296,8 +298,8 @@ PhotoSourceArg_validator = bv.Union(PhotoSourceArg)
 
 class SetProfilePhotoArg(bb.Struct):
     """
-    :ivar account.SetProfilePhotoArg.photo: Image to set as the user's new
-        profile photo.
+    :ivar SetProfilePhotoArg.photo:
+        Image to set as the user's new profile photo.
     """
 
     __slots__ = [
@@ -326,16 +328,16 @@ class SetProfilePhotoError(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar account.SetProfilePhotoError.file_type_error: File cannot be set as
-        profile photo.
-    :ivar account.SetProfilePhotoError.file_size_error: File cannot exceed 10
-        MB.
-    :ivar account.SetProfilePhotoError.dimension_error: Image must be larger
-        than 128 x 128.
-    :ivar account.SetProfilePhotoError.thumbnail_error: Image could not be
-        thumbnailed.
-    :ivar account.SetProfilePhotoError.transient_error: Temporary infrastructure
-        failure, please retry.
+    :ivar SetProfilePhotoError.file_type_error:
+        File cannot be set as profile photo.
+    :ivar SetProfilePhotoError.file_size_error:
+        File cannot exceed 10 MB.
+    :ivar SetProfilePhotoError.dimension_error:
+        Image must be larger than 128 x 128.
+    :ivar SetProfilePhotoError.thumbnail_error:
+        Image could not be thumbnailed.
+    :ivar SetProfilePhotoError.transient_error:
+        Temporary infrastructure failure, please retry.
     """
 
     _catch_all = 'other'
@@ -407,8 +409,8 @@ SetProfilePhotoError_validator = bv.Union(SetProfilePhotoError)
 
 class SetProfilePhotoResult(bb.Struct):
     """
-    :ivar account.SetProfilePhotoResult.profile_photo_url: URL for the photo
-        representing the user, if one is set.
+    :ivar SetProfilePhotoResult.profile_photo_url:
+        URL for the photo representing the user, if one is set.
     """
 
     __slots__ = [
@@ -437,10 +439,10 @@ class ThumbnailError(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar account.ThumbnailError.permanent_failure: Indicates permanent
-        infrastructural failure.
-    :ivar account.ThumbnailError.temporary_failure: Indicates temporary
-        infrastructural failure.
+    :ivar ThumbnailError.permanent_failure:
+        Indicates permanent infrastructural failure.
+    :ivar ThumbnailError.temporary_failure:
+        Indicates temporary infrastructural failure.
     """
 
     _catch_all = 'other'

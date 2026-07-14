@@ -18,9 +18,11 @@ from dropbox import users_common
 
 class AddTagArg(bb.Struct):
     """
-    :ivar files.AddTagArg.path: Path to the item to be tagged.
-    :ivar files.AddTagArg.tag_text: The value of the tag to add. Will be
-        automatically converted to lowercase letters.
+    :ivar AddTagArg.path:
+        Path to the item to be tagged.
+    :ivar AddTagArg.tag_text:
+        The value of the tag to add. Will be automatically converted to
+        lowercase letters.
     """
 
     __slots__ = [
@@ -110,8 +112,8 @@ class AddTagError(BaseTagError):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar files.AddTagError.too_many_tags: The item already has the maximum
-        supported number of tags.
+    :ivar AddTagError.too_many_tags:
+        The item already has the maximum supported number of tags.
     """
 
     # Attribute is overwritten below the class definition
@@ -132,18 +134,20 @@ AddTagError_validator = bv.Union(AddTagError)
 
 class GetMetadataArg(bb.Struct):
     """
-    :ivar files.GetMetadataArg.path: The path of a file or folder on Dropbox.
-    :ivar files.GetMetadataArg.include_media_info: If true,
-        ``FileMetadata.media_info`` is set for photo and video.
-    :ivar files.GetMetadataArg.include_deleted: If true,
-        :class:`DeletedMetadata` will be returned for deleted file or folder,
-        otherwise ``LookupError.not_found`` will be returned.
-    :ivar files.GetMetadataArg.include_has_explicit_shared_members: If true, the
-        results will include a flag for each file indicating whether or not that
-        file has any explicit members.
-    :ivar files.GetMetadataArg.include_property_groups: If set to a valid list
-        of template IDs, ``FileMetadata.property_groups`` is set if there exists
-        property data associated with the file and each of the listed templates.
+    :ivar GetMetadataArg.path:
+        The path of a file or folder on Dropbox.
+    :ivar GetMetadataArg.include_media_info:
+        If true, ``FileMetadata.media_info`` is set for photo and video.
+    :ivar GetMetadataArg.include_deleted:
+        If true, :class:`DeletedMetadata` will be returned for deleted file or
+        folder, otherwise ``LookupError.not_found`` will be returned.
+    :ivar GetMetadataArg.include_has_explicit_shared_members:
+        If true, the results will include a flag for each file indicating
+        whether or not that file has any explicit members.
+    :ivar GetMetadataArg.include_property_groups:
+        If set to a valid list of template IDs, ``FileMetadata.property_groups``
+        is set if there exists property data associated with the file and each
+        of the listed templates.
     """
 
     __slots__ = [
@@ -200,8 +204,8 @@ GetMetadataArg_validator = bv.Struct(GetMetadataArg)
 
 class AlphaGetMetadataArg(GetMetadataArg):
     """
-    :ivar files.AlphaGetMetadataArg.include_property_templates: Field is
-        deprecated. If set to a valid list of template IDs,
+    :ivar AlphaGetMetadataArg.include_property_templates:
+        Field is deprecated. If set to a valid list of template IDs,
         ``FileMetadata.property_groups`` is set for files with custom
         properties.
     """
@@ -322,28 +326,33 @@ AlphaGetMetadataError_validator = bv.Union(AlphaGetMetadataError)
 
 class CommitInfo(bb.Struct):
     """
-    :ivar files.CommitInfo.path: Path in the user's Dropbox to save the file.
-    :ivar files.CommitInfo.mode: Selects what to do if the file already exists.
-    :ivar files.CommitInfo.autorename: If there's a conflict, as determined by
-        ``mode``, have the Dropbox server try to autorename the file to avoid
-        conflict.
-    :ivar files.CommitInfo.client_modified: The value to store as the
-        ``client_modified`` timestamp. Dropbox automatically records the time at
-        which the file was written to the Dropbox servers. It can also record an
-        additional timestamp, provided by Dropbox desktop clients, mobile
-        clients, and API apps of when the file was actually created or modified.
-    :ivar files.CommitInfo.mute: Normally, users are made aware of any file
-        modifications in their Dropbox account via notifications in the client
-        software. If ``True``, this tells the clients that this modification
-        shouldn't result in a user notification.
-    :ivar files.CommitInfo.property_groups: List of custom properties to add to
-        file.
-    :ivar files.CommitInfo.strict_conflict: Be more strict about how each
-        :class:`WriteMode` detects conflict. For example, always return a
-        conflict error when ``mode`` = ``WriteMode.update`` and the given "rev"
-        doesn't match the existing file's "rev", even if the existing file has
-        been deleted. This also forces a conflict even when the target path
-        refers to a file with identical contents.
+    :ivar CommitInfo.path:
+        Path in the user's Dropbox to save the file.
+    :ivar CommitInfo.mode:
+        Selects what to do if the file already exists.
+    :ivar CommitInfo.autorename:
+        If there's a conflict, as determined by ``mode``, have the Dropbox
+        server try to autorename the file to avoid conflict.
+    :ivar CommitInfo.client_modified:
+        The value to store as the ``client_modified`` timestamp. Dropbox
+        automatically records the time at which the file was written to the
+        Dropbox servers. It can also record an additional timestamp, provided by
+        Dropbox desktop clients, mobile clients, and API apps of when the file
+        was actually created or modified.
+    :ivar CommitInfo.mute:
+        Normally, users are made aware of any file modifications in their
+        Dropbox account via notifications in the client software. If ``True``,
+        this tells the clients that this modification shouldn't result in a user
+        notification.
+    :ivar CommitInfo.property_groups:
+        List of custom properties to add to file.
+    :ivar CommitInfo.strict_conflict:
+        Be more strict about how each :class:`WriteMode` detects conflict. For
+        example, always return a conflict error when ``mode`` =
+        ``WriteMode.update`` and the given "rev" doesn't match the existing
+        file's "rev", even if the existing file has been deleted. This also
+        forces a conflict even when the target path refers to a file with
+        identical contents.
     """
 
     __slots__ = [
@@ -416,9 +425,10 @@ CommitInfo_validator = bv.Struct(CommitInfo)
 
 class ContentSyncSetting(bb.Struct):
     """
-    :ivar files.ContentSyncSetting.id: Id of the item this setting is applied
-        to.
-    :ivar files.ContentSyncSetting.sync_setting: Setting for this item.
+    :ivar ContentSyncSetting.id:
+        Id of the item this setting is applied to.
+    :ivar ContentSyncSetting.sync_setting:
+        Setting for this item.
     """
 
     __slots__ = [
@@ -451,9 +461,10 @@ ContentSyncSetting_validator = bv.Struct(ContentSyncSetting)
 
 class ContentSyncSettingArg(bb.Struct):
     """
-    :ivar files.ContentSyncSettingArg.id: Id of the item this setting is applied
-        to.
-    :ivar files.ContentSyncSettingArg.sync_setting: Setting for this item.
+    :ivar ContentSyncSettingArg.id:
+        Id of the item this setting is applied to.
+    :ivar ContentSyncSettingArg.sync_setting:
+        Setting for this item.
     """
 
     __slots__ = [
@@ -486,9 +497,11 @@ ContentSyncSettingArg_validator = bv.Struct(ContentSyncSettingArg)
 
 class CreateFolderArg(bb.Struct):
     """
-    :ivar files.CreateFolderArg.path: Path in the user's Dropbox to create.
-    :ivar files.CreateFolderArg.autorename: If there's a conflict, have the
-        Dropbox server try to autorename the folder to avoid the conflict.
+    :ivar CreateFolderArg.path:
+        Path in the user's Dropbox to create.
+    :ivar CreateFolderArg.autorename:
+        If there's a conflict, have the Dropbox server try to autorename the
+        folder to avoid the conflict.
     """
 
     __slots__ = [
@@ -521,13 +534,14 @@ CreateFolderArg_validator = bv.Struct(CreateFolderArg)
 
 class CreateFolderBatchArg(bb.Struct):
     """
-    :ivar files.CreateFolderBatchArg.paths: List of paths to be created in the
-        user's Dropbox. Duplicate path arguments in the batch are considered
-        only once.
-    :ivar files.CreateFolderBatchArg.autorename: If there's a conflict, have the
-        Dropbox server try to autorename the folder to avoid the conflict.
-    :ivar files.CreateFolderBatchArg.force_async: Whether to force the create to
-        happen asynchronously.
+    :ivar CreateFolderBatchArg.paths:
+        List of paths to be created in the user's Dropbox. Duplicate path
+        arguments in the batch are considered only once.
+    :ivar CreateFolderBatchArg.autorename:
+        If there's a conflict, have the Dropbox server try to autorename the
+        folder to avoid the conflict.
+    :ivar CreateFolderBatchArg.force_async:
+        Whether to force the create to happen asynchronously.
     """
 
     __slots__ = [
@@ -572,8 +586,8 @@ class CreateFolderBatchError(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar files.CreateFolderBatchError.too_many_files: The operation would
-        involve too many files or folders.
+    :ivar CreateFolderBatchError.too_many_files:
+        The operation would involve too many files or folders.
     """
 
     _catch_all = 'other'
@@ -609,10 +623,12 @@ class CreateFolderBatchJobStatus(async_.PollResultBase):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar CreateFolderBatchResult CreateFolderBatchJobStatus.complete: The batch
-        create folder has finished.
-    :ivar CreateFolderBatchError CreateFolderBatchJobStatus.failed: The batch
-        create folder has failed.
+    :ivar CreateFolderBatchJobStatus.complete:
+        The batch create folder has finished.
+    :vartype CreateFolderBatchJobStatus.complete: CreateFolderBatchResult
+    :ivar CreateFolderBatchJobStatus.failed:
+        The batch create folder has failed.
+    :vartype CreateFolderBatchJobStatus.failed: CreateFolderBatchError
     """
 
     _catch_all = 'other'
@@ -771,9 +787,9 @@ FileOpsResult_validator = bv.Struct(FileOpsResult)
 
 class CreateFolderBatchResult(FileOpsResult):
     """
-    :ivar files.CreateFolderBatchResult.entries: Each entry in
-        ``CreateFolderBatchArg.paths`` will appear at the same position inside
-        ``CreateFolderBatchResult.entries``.
+    :ivar CreateFolderBatchResult.entries:
+        Each entry in ``CreateFolderBatchArg.paths`` will appear at the same
+        position inside ``CreateFolderBatchResult.entries``.
     """
 
     __slots__ = [
@@ -924,8 +940,8 @@ CreateFolderEntryError_validator = bv.Union(CreateFolderEntryError)
 
 class CreateFolderEntryResult(bb.Struct):
     """
-    :ivar files.CreateFolderEntryResult.metadata: Metadata of the created
-        folder.
+    :ivar CreateFolderEntryResult.metadata:
+        Metadata of the created folder.
     """
 
     __slots__ = [
@@ -993,7 +1009,8 @@ CreateFolderError_validator = bv.Union(CreateFolderError)
 
 class CreateFolderResult(FileOpsResult):
     """
-    :ivar files.CreateFolderResult.metadata: Metadata of the created folder.
+    :ivar CreateFolderResult.metadata:
+        Metadata of the created folder.
     """
 
     __slots__ = [
@@ -1019,10 +1036,11 @@ CreateFolderResult_validator = bv.Struct(CreateFolderResult)
 
 class DeleteArg(bb.Struct):
     """
-    :ivar files.DeleteArg.path: Path in the user's Dropbox to delete.
-    :ivar files.DeleteArg.parent_rev: Perform delete if given "rev" matches the
-        existing file's latest "rev". This field does not support deleting a
-        folder.
+    :ivar DeleteArg.path:
+        Path in the user's Dropbox to delete.
+    :ivar DeleteArg.parent_rev:
+        Perform delete if given "rev" matches the existing file's latest "rev".
+        This field does not support deleting a folder.
     """
 
     __slots__ = [
@@ -1081,8 +1099,8 @@ class DeleteBatchError(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar files.DeleteBatchError.too_many_write_operations: Field is deprecated.
-        Use ``DeleteError.too_many_write_operations``.
+    :ivar DeleteBatchError.too_many_write_operations:
+        Field is deprecated. Use ``DeleteError.too_many_write_operations``.
         :meth:`dropbox.dropbox_client.Dropbox.files_delete_batch` now provides
         smaller granularity about which entry has failed because of this.
     """
@@ -1120,10 +1138,12 @@ class DeleteBatchJobStatus(async_.PollResultBase):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar DeleteBatchResult DeleteBatchJobStatus.complete: The batch delete has
-        finished.
-    :ivar DeleteBatchError DeleteBatchJobStatus.failed: The batch delete has
-        failed.
+    :ivar DeleteBatchJobStatus.complete:
+        The batch delete has finished.
+    :vartype DeleteBatchJobStatus.complete: DeleteBatchResult
+    :ivar DeleteBatchJobStatus.failed:
+        The batch delete has failed.
+    :vartype DeleteBatchJobStatus.failed: DeleteBatchError
     """
 
     _catch_all = 'other'
@@ -1263,9 +1283,9 @@ DeleteBatchLaunch_validator = bv.Union(DeleteBatchLaunch)
 
 class DeleteBatchResult(FileOpsResult):
     """
-    :ivar files.DeleteBatchResult.entries: Each entry in
-        ``DeleteBatchArg.entries`` will appear at the same position inside
-        ``DeleteBatchResult.entries``.
+    :ivar DeleteBatchResult.entries:
+        Each entry in ``DeleteBatchArg.entries`` will appear at the same
+        position inside ``DeleteBatchResult.entries``.
     """
 
     __slots__ = [
@@ -1291,7 +1311,8 @@ DeleteBatchResult_validator = bv.Struct(DeleteBatchResult)
 
 class DeleteBatchResultData(bb.Struct):
     """
-    :ivar files.DeleteBatchResultData.metadata: Metadata of the deleted object.
+    :ivar DeleteBatchResultData.metadata:
+        Metadata of the deleted object.
     """
 
     __slots__ = [
@@ -1392,10 +1413,11 @@ class DeleteError(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar files.DeleteError.too_many_write_operations: There are too many write
-        operations in user's Dropbox. Please retry this request.
-    :ivar files.DeleteError.too_many_files: There are too many files in one
-        request. Please retry with fewer files.
+    :ivar DeleteError.too_many_write_operations:
+        There are too many write operations in user's Dropbox. Please retry this
+        request.
+    :ivar DeleteError.too_many_files:
+        There are too many files in one request. Please retry with fewer files.
     """
 
     _catch_all = 'other'
@@ -1495,7 +1517,8 @@ DeleteError_validator = bv.Union(DeleteError)
 
 class DeleteResult(FileOpsResult):
     """
-    :ivar files.DeleteResult.metadata: Metadata of the deleted object.
+    :ivar DeleteResult.metadata:
+        Metadata of the deleted object.
     """
 
     __slots__ = [
@@ -1523,22 +1546,26 @@ class Metadata(bb.Struct):
     """
     Metadata for a file or folder.
 
-    :ivar files.Metadata.name: The last component of the path (including
-        extension). This never contains a slash.
-    :ivar files.Metadata.path_lower: The lowercased full path in the user's
-        Dropbox. This always starts with a slash. This field will be null if the
-        file or folder is not mounted.
-    :ivar files.Metadata.path_display: The cased path to be used for display
-        purposes only. In rare instances the casing will not correctly match the
-        user's filesystem, but this behavior will match the path provided in the
-        Core API v1, and at least the last path component will have the correct
-        casing. Changes to only the casing of paths won't be returned by
+    :ivar Metadata.name:
+        The last component of the path (including extension). This never
+        contains a slash.
+    :ivar Metadata.path_lower:
+        The lowercased full path in the user's Dropbox. This always starts with
+        a slash. This field will be null if the file or folder is not mounted.
+    :ivar Metadata.path_display:
+        The cased path to be used for display purposes only. In rare instances
+        the casing will not correctly match the user's filesystem, but this
+        behavior will match the path provided in the Core API v1, and at least
+        the last path component will have the correct casing. Changes to only
+        the casing of paths won't be returned by
         :meth:`dropbox.dropbox_client.Dropbox.files_list_folder_continue`. This
         field will be null if the file or folder is not mounted.
-    :ivar files.Metadata.parent_shared_folder_id: Field is deprecated. Please
-        use ``FileSharingInfo.parent_shared_folder_id`` or
+    :ivar Metadata.parent_shared_folder_id:
+        Field is deprecated. Please use
+        ``FileSharingInfo.parent_shared_folder_id`` or
         ``FolderSharingInfo.parent_shared_folder_id`` instead.
-    :ivar files.Metadata.preview_url: The preview URL of the file.
+    :ivar Metadata.preview_url:
+        The preview URL of the file.
     """
 
     __slots__ = [
@@ -1598,8 +1625,8 @@ class DeletedMetadata(Metadata):
     Indicates that there used to be a file or folder at this path, but it no
     longer exists.
 
-    :ivar files.DeletedMetadata.is_restorable: If present, indicates whether
-        this deleted entry can be restored.
+    :ivar DeletedMetadata.is_restorable:
+        If present, indicates whether this deleted entry can be restored.
     """
 
     __slots__ = [
@@ -1636,8 +1663,10 @@ class Dimensions(bb.Struct):
     """
     Dimensions for a photo or video.
 
-    :ivar files.Dimensions.height: Height of the photo/video.
-    :ivar files.Dimensions.width: Width of the photo/video.
+    :ivar Dimensions.height:
+        Height of the photo/video.
+    :ivar Dimensions.width:
+        Width of the photo/video.
     """
 
     __slots__ = [
@@ -1670,9 +1699,10 @@ Dimensions_validator = bv.Struct(Dimensions)
 
 class DownloadArg(bb.Struct):
     """
-    :ivar files.DownloadArg.path: The path of the file to download.
-    :ivar files.DownloadArg.rev: Field is deprecated. Please specify revision in
-        ``path`` instead.
+    :ivar DownloadArg.path:
+        The path of the file to download.
+    :ivar DownloadArg.rev:
+        Field is deprecated. Please specify revision in ``path`` instead.
     """
 
     __slots__ = [
@@ -1709,8 +1739,8 @@ class DownloadError(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar files.DownloadError.unsupported_file: This file type cannot be
-        downloaded directly; use
+    :ivar DownloadError.unsupported_file:
+        This file type cannot be downloaded directly; use
         :meth:`dropbox.dropbox_client.Dropbox.files_export` instead.
     """
 
@@ -1772,7 +1802,8 @@ DownloadError_validator = bv.Union(DownloadError)
 
 class DownloadZipArg(bb.Struct):
     """
-    :ivar files.DownloadZipArg.path: The path of the folder to download.
+    :ivar DownloadZipArg.path:
+        The path of the folder to download.
     """
 
     __slots__ = [
@@ -1801,10 +1832,10 @@ class DownloadZipError(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar files.DownloadZipError.too_large: The folder or a file is too large to
-        download.
-    :ivar files.DownloadZipError.too_many_files: The folder has too many files
-        to download.
+    :ivar DownloadZipError.too_large:
+        The folder or a file is too large to download.
+    :ivar DownloadZipError.too_many_files:
+        The folder has too many files to download.
     """
 
     _catch_all = 'other'
@@ -1897,10 +1928,11 @@ DownloadZipResult_validator = bv.Struct(DownloadZipResult)
 
 class ExportArg(bb.Struct):
     """
-    :ivar files.ExportArg.path: The path of the file to be exported.
-    :ivar files.ExportArg.export_format: The file format to which the file
-        should be exported. This must be one of the formats listed in the file's
-        export_options returned by
+    :ivar ExportArg.path:
+        The path of the file to be exported.
+    :ivar ExportArg.export_format:
+        The file format to which the file should be exported. This must be one
+        of the formats listed in the file's export_options returned by
         :meth:`dropbox.dropbox_client.Dropbox.files_get_metadata`. If none is
         specified, the default format (specified in export_as in file metadata)
         will be used.
@@ -1940,12 +1972,13 @@ class ExportError(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar files.ExportError.non_exportable: This file type cannot be exported.
-        Use :meth:`dropbox.dropbox_client.Dropbox.files_download` instead.
-    :ivar files.ExportError.invalid_export_format: The specified export format
-        is not a valid option for this file type.
-    :ivar files.ExportError.retry_error: The exportable content is not yet
-        available. Please retry later.
+    :ivar ExportError.non_exportable:
+        This file type cannot be exported. Use
+        :meth:`dropbox.dropbox_client.Dropbox.files_download` instead.
+    :ivar ExportError.invalid_export_format:
+        The specified export format is not a valid option for this file type.
+    :ivar ExportError.retry_error:
+        The exportable content is not yet available. Please retry later.
     """
 
     _catch_all = 'other'
@@ -2028,11 +2061,11 @@ class ExportInfo(bb.Struct):
     """
     Export information for a file.
 
-    :ivar files.ExportInfo.export_as: Format to which the file can be exported
-        to.
-    :ivar files.ExportInfo.export_options: Additional formats to which the file
-        can be exported. These values can be specified as the export_format in
-        /files/export.
+    :ivar ExportInfo.export_as:
+        Format to which the file can be exported to.
+    :ivar ExportInfo.export_options:
+        Additional formats to which the file can be exported. These values can
+        be specified as the export_format in /files/export.
     """
 
     __slots__ = [
@@ -2065,16 +2098,19 @@ ExportInfo_validator = bv.Struct(ExportInfo)
 
 class ExportMetadata(bb.Struct):
     """
-    :ivar files.ExportMetadata.name: The last component of the path (including
-        extension). This never contains a slash.
-    :ivar files.ExportMetadata.size: The file size in bytes.
-    :ivar files.ExportMetadata.export_hash: A hash based on the exported file
-        content. This field can be used to verify data integrity. Similar to
-        content hash. For more information see our `Content hash
+    :ivar ExportMetadata.name:
+        The last component of the path (including extension). This never
+        contains a slash.
+    :ivar ExportMetadata.size:
+        The file size in bytes.
+    :ivar ExportMetadata.export_hash:
+        A hash based on the exported file content. This field can be used to
+        verify data integrity. Similar to content hash. For more information see
+        our `Content hash
         <https://www.dropbox.com/developers/reference/content-hash>`_ page.
-    :ivar files.ExportMetadata.paper_revision: If the file is a Paper doc, this
-        gives the latest doc revision which can be used in
-        :meth:`dropbox.dropbox_client.Dropbox.files_paper_update`.
+    :ivar ExportMetadata.paper_revision:
+        If the file is a Paper doc, this gives the latest doc revision which can
+        be used in :meth:`dropbox.dropbox_client.Dropbox.files_paper_update`.
     """
 
     __slots__ = [
@@ -2123,9 +2159,10 @@ ExportMetadata_validator = bv.Struct(ExportMetadata)
 
 class ExportResult(bb.Struct):
     """
-    :ivar files.ExportResult.export_metadata: Metadata for the exported version
-        of the file.
-    :ivar files.ExportResult.file_metadata: Metadata for the original file.
+    :ivar ExportResult.export_metadata:
+        Metadata for the exported version of the file.
+    :ivar ExportResult.file_metadata:
+        Metadata for the original file.
     """
 
     __slots__ = [
@@ -2162,17 +2199,26 @@ class FileCategory(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar files.FileCategory.image: jpg, png, gif, and more.
-    :ivar files.FileCategory.document: doc, docx, txt, and more.
-    :ivar files.FileCategory.pdf: pdf.
-    :ivar files.FileCategory.spreadsheet: xlsx, xls, csv, and more.
-    :ivar files.FileCategory.presentation: ppt, pptx, key, and more.
-    :ivar files.FileCategory.audio: mp3, wav, mid, and more.
-    :ivar files.FileCategory.video: mov, wmv, mp4, and more.
-    :ivar files.FileCategory.folder: dropbox folder.
-    :ivar files.FileCategory.paper: dropbox paper doc.
-    :ivar files.FileCategory.others: any file not in one of the categories
-        above.
+    :ivar FileCategory.image:
+        jpg, png, gif, and more.
+    :ivar FileCategory.document:
+        doc, docx, txt, and more.
+    :ivar FileCategory.pdf:
+        pdf.
+    :ivar FileCategory.spreadsheet:
+        xlsx, xls, csv, and more.
+    :ivar FileCategory.presentation:
+        ppt, pptx, key, and more.
+    :ivar FileCategory.audio:
+        mp3, wav, mid, and more.
+    :ivar FileCategory.video:
+        mov, wmv, mp4, and more.
+    :ivar FileCategory.folder:
+        dropbox folder.
+    :ivar FileCategory.paper:
+        dropbox paper doc.
+    :ivar FileCategory.others:
+        any file not in one of the categories above.
     """
 
     _catch_all = 'other'
@@ -2294,7 +2340,8 @@ FileCategory_validator = bv.Union(FileCategory)
 
 class FileLock(bb.Struct):
     """
-    :ivar files.FileLock.content: The lock description.
+    :ivar FileLock.content:
+        The lock description.
     """
 
     __slots__ = [
@@ -2323,9 +2370,11 @@ class FileLockContent(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar files.FileLockContent.unlocked: Empty type to indicate no lock.
-    :ivar SingleUserLock FileLockContent.single_user: A lock held by a single
-        user.
+    :ivar FileLockContent.unlocked:
+        Empty type to indicate no lock.
+    :ivar FileLockContent.single_user:
+        A lock held by a single user.
+    :vartype FileLockContent.single_user: SingleUserLock
     """
 
     _catch_all = 'other'
@@ -2388,13 +2437,14 @@ FileLockContent_validator = bv.Union(FileLockContent)
 
 class FileLockMetadata(bb.Struct):
     """
-    :ivar files.FileLockMetadata.is_lockholder: True if caller holds the file
-        lock.
-    :ivar files.FileLockMetadata.lockholder_name: The display name of the lock
-        holder.
-    :ivar files.FileLockMetadata.lockholder_account_id: The account ID of the
-        lock holder if known.
-    :ivar files.FileLockMetadata.created: The timestamp of the lock was created.
+    :ivar FileLockMetadata.is_lockholder:
+        True if caller holds the file lock.
+    :ivar FileLockMetadata.lockholder_name:
+        The display name of the lock holder.
+    :ivar FileLockMetadata.lockholder_account_id:
+        The account ID of the lock holder if known.
+    :ivar FileLockMetadata.created:
+        The timestamp of the lock was created.
     """
 
     __slots__ = [
@@ -2443,51 +2493,58 @@ FileLockMetadata_validator = bv.Struct(FileLockMetadata)
 
 class FileMetadata(Metadata):
     """
-    :ivar files.FileMetadata.id: A unique identifier for the file.
-    :ivar files.FileMetadata.client_modified: For files, this is the
-        modification time set by the desktop client when the file was added to
-        Dropbox. Since this time is not verified (the Dropbox server stores
-        whatever the desktop client sends up), this should only be used for
-        display purposes (such as sorting) and not, for example, to determine if
-        a file has changed or not.
-    :ivar files.FileMetadata.server_modified: The last time the file was
-        modified on Dropbox.
-    :ivar files.FileMetadata.rev: A unique identifier for the current revision
-        of a file. This field is the same rev as elsewhere in the API and can be
-        used to detect changes and avoid conflicts.
-    :ivar files.FileMetadata.size: The file size in bytes.
-    :ivar files.FileMetadata.media_info: Additional information if the file is a
-        photo or video. This field will not be set on entries returned by
+    :ivar FileMetadata.id:
+        A unique identifier for the file.
+    :ivar FileMetadata.client_modified:
+        For files, this is the modification time set by the desktop client when
+        the file was added to Dropbox. Since this time is not verified (the
+        Dropbox server stores whatever the desktop client sends up), this should
+        only be used for display purposes (such as sorting) and not, for
+        example, to determine if a file has changed or not.
+    :ivar FileMetadata.server_modified:
+        The last time the file was modified on Dropbox.
+    :ivar FileMetadata.rev:
+        A unique identifier for the current revision of a file. This field is
+        the same rev as elsewhere in the API and can be used to detect changes
+        and avoid conflicts.
+    :ivar FileMetadata.size:
+        The file size in bytes.
+    :ivar FileMetadata.media_info:
+        Additional information if the file is a photo or video. This field will
+        not be set on entries returned by
         :meth:`dropbox.dropbox_client.Dropbox.files_list_folder`,
         :meth:`dropbox.dropbox_client.Dropbox.files_list_folder_continue`, or
         :meth:`dropbox.dropbox_client.Dropbox.files_get_thumbnail_batch`,
         starting December 2, 2019.
-    :ivar files.FileMetadata.symlink_info: Set if this file is a symlink.
-    :ivar files.FileMetadata.sharing_info: Set if this file is contained in a
-        shared folder.
-    :ivar files.FileMetadata.is_downloadable: If true, file can be downloaded
-        directly; else the file must be exported.
-    :ivar files.FileMetadata.export_info: Information about format this file can
-        be exported to. This filed must be set if ``is_downloadable`` is set to
-        false.
-    :ivar files.FileMetadata.property_groups: Additional information if the file
-        has custom properties with the property template specified.
-    :ivar files.FileMetadata.has_explicit_shared_members: This flag will only be
-        present if include_has_explicit_shared_members is true in
-        :meth:`dropbox.dropbox_client.Dropbox.files_list_folder` or
+    :ivar FileMetadata.symlink_info:
+        Set if this file is a symlink.
+    :ivar FileMetadata.sharing_info:
+        Set if this file is contained in a shared folder.
+    :ivar FileMetadata.is_downloadable:
+        If true, file can be downloaded directly; else the file must be
+        exported.
+    :ivar FileMetadata.export_info:
+        Information about format this file can be exported to. This filed must
+        be set if ``is_downloadable`` is set to false.
+    :ivar FileMetadata.property_groups:
+        Additional information if the file has custom properties with the
+        property template specified.
+    :ivar FileMetadata.has_explicit_shared_members:
+        This flag will only be present if include_has_explicit_shared_members is
+        true in :meth:`dropbox.dropbox_client.Dropbox.files_list_folder` or
         :meth:`dropbox.dropbox_client.Dropbox.files_get_metadata`. If this flag
         is present, it will be true if this file has any explicit shared
         members. This is different from sharing_info in that this could be true
         in the case where a file has explicit members but is not contained
         within a shared folder.
-    :ivar files.FileMetadata.content_hash: A hash of the file content. This
-        field can be used to verify data integrity. For more information see our
-        `Content hash
+    :ivar FileMetadata.content_hash:
+        A hash of the file content. This field can be used to verify data
+        integrity. For more information see our `Content hash
         <https://www.dropbox.com/developers/reference/content-hash>`_ page.
-    :ivar files.FileMetadata.file_lock_info: If present, the metadata associated
-        with the file's current lock.
-    :ivar files.FileMetadata.is_restorable: If present, indicates whether this
-        file revision can be restored.
+    :ivar FileMetadata.file_lock_info:
+        If present, the metadata associated with the file's current lock.
+    :ivar FileMetadata.is_restorable:
+        If present, indicates whether this file revision can be restored.
     """
 
     __slots__ = [
@@ -2636,8 +2693,8 @@ class SharingInfo(bb.Struct):
     """
     Sharing info for a file or folder.
 
-    :ivar files.SharingInfo.read_only: True if the file or folder is inside a
-        read-only shared folder.
+    :ivar SharingInfo.read_only:
+        True if the file or folder is inside a read-only shared folder.
     """
 
     __slots__ = [
@@ -2664,10 +2721,11 @@ class FileSharingInfo(SharingInfo):
     """
     Sharing info for a file which is contained by a shared folder.
 
-    :ivar files.FileSharingInfo.parent_shared_folder_id: ID of shared folder
-        that holds this file.
-    :ivar files.FileSharingInfo.modified_by: The last user who modified the
-        file. This field will be null if the user's account has been deleted.
+    :ivar FileSharingInfo.parent_shared_folder_id:
+        ID of shared folder that holds this file.
+    :ivar FileSharingInfo.modified_by:
+        The last user who modified the file. This field will be null if the
+        user's account has been deleted.
     """
 
     __slots__ = [
@@ -2746,15 +2804,18 @@ FileStatus_validator = bv.Union(FileStatus)
 
 class FolderMetadata(Metadata):
     """
-    :ivar files.FolderMetadata.id: A unique identifier for the folder.
-    :ivar files.FolderMetadata.shared_folder_id: Field is deprecated. Please use
-        ``sharing_info`` instead.
-    :ivar files.FolderMetadata.sharing_info: Set if the folder is contained in a
-        shared folder or is a shared folder mount point.
-    :ivar files.FolderMetadata.property_groups: Additional information if the
-        file has custom properties with the property template specified. Note
-        that only properties associated with user-owned templates, not
-        team-owned templates, can be attached to folders.
+    :ivar FolderMetadata.id:
+        A unique identifier for the folder.
+    :ivar FolderMetadata.shared_folder_id:
+        Field is deprecated. Please use ``sharing_info`` instead.
+    :ivar FolderMetadata.sharing_info:
+        Set if the folder is contained in a shared folder or is a shared folder
+        mount point.
+    :ivar FolderMetadata.property_groups:
+        Additional information if the file has custom properties with the
+        property template specified. Note that only properties associated with
+        user-owned templates, not team-owned templates, can be attached to
+        folders.
     """
 
     __slots__ = [
@@ -2816,17 +2877,18 @@ class FolderSharingInfo(SharingInfo):
     Sharing info for a folder which is contained in a shared folder or is a
     shared folder mount point.
 
-    :ivar files.FolderSharingInfo.parent_shared_folder_id: Set if the folder is
-        contained by a shared folder.
-    :ivar files.FolderSharingInfo.shared_folder_id: If this folder is a shared
-        folder mount point, the ID of the shared folder mounted at this
-        location.
-    :ivar files.FolderSharingInfo.traverse_only: Specifies that the folder can
-        only be traversed and the user can only see a limited subset of the
-        contents of this folder because they don't have read access to this
-        folder. They do, however, have access to some sub folder.
-    :ivar files.FolderSharingInfo.no_access: Specifies that the folder cannot be
-        accessed by the user.
+    :ivar FolderSharingInfo.parent_shared_folder_id:
+        Set if the folder is contained by a shared folder.
+    :ivar FolderSharingInfo.shared_folder_id:
+        If this folder is a shared folder mount point, the ID of the shared
+        folder mounted at this location.
+    :ivar FolderSharingInfo.traverse_only:
+        Specifies that the folder can only be traversed and the user can only
+        see a limited subset of the contents of this folder because they don't
+        have read access to this folder. They do, however, have access to some
+        sub folder.
+    :ivar FolderSharingInfo.no_access:
+        Specifies that the folder cannot be accessed by the user.
     """
 
     __slots__ = [
@@ -2877,8 +2939,8 @@ FolderSharingInfo_validator = bv.Struct(FolderSharingInfo)
 
 class GetCopyReferenceArg(bb.Struct):
     """
-    :ivar files.GetCopyReferenceArg.path: The path to the file or folder you
-        want to get a copy reference to.
+    :ivar GetCopyReferenceArg.path:
+        The path to the file or folder you want to get a copy reference to.
     """
 
     __slots__ = [
@@ -2956,12 +3018,14 @@ GetCopyReferenceError_validator = bv.Union(GetCopyReferenceError)
 
 class GetCopyReferenceResult(bb.Struct):
     """
-    :ivar files.GetCopyReferenceResult.metadata: Metadata of the file or folder.
-    :ivar files.GetCopyReferenceResult.copy_reference: A copy reference to the
-        file or folder.
-    :ivar files.GetCopyReferenceResult.expires: The expiration date of the copy
-        reference. This value is currently set to be far enough in the future so
-        that expiration is effectively not an issue.
+    :ivar GetCopyReferenceResult.metadata:
+        Metadata of the file or folder.
+    :ivar GetCopyReferenceResult.copy_reference:
+        A copy reference to the file or folder.
+    :ivar GetCopyReferenceResult.expires:
+        The expiration date of the copy reference. This value is currently set
+        to be far enough in the future so that expiration is effectively not an
+        issue.
     """
 
     __slots__ = [
@@ -3002,7 +3066,8 @@ GetCopyReferenceResult_validator = bv.Struct(GetCopyReferenceResult)
 
 class GetTagsArg(bb.Struct):
     """
-    :ivar files.GetTagsArg.paths: Path to the items.
+    :ivar GetTagsArg.paths:
+        Path to the items.
     """
 
     __slots__ = [
@@ -3027,8 +3092,8 @@ GetTagsArg_validator = bv.Struct(GetTagsArg)
 
 class GetTagsResult(bb.Struct):
     """
-    :ivar files.GetTagsResult.paths_to_tags: List of paths and their
-        corresponding tags.
+    :ivar GetTagsResult.paths_to_tags:
+        List of paths and their corresponding tags.
     """
 
     __slots__ = [
@@ -3053,8 +3118,8 @@ GetTagsResult_validator = bv.Struct(GetTagsResult)
 
 class GetTemporaryLinkArg(bb.Struct):
     """
-    :ivar files.GetTemporaryLinkArg.path: The path to the file you want a
-        temporary link to.
+    :ivar GetTemporaryLinkArg.path:
+        The path to the file you want a temporary link to.
     """
 
     __slots__ = [
@@ -3083,16 +3148,17 @@ class GetTemporaryLinkError(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar files.GetTemporaryLinkError.email_not_verified: This user's email
-        address is not verified. This functionality is only available on
-        accounts with a verified email address. Users can verify their email
-        address `here <https://www.dropbox.com/help/317>`_.
-    :ivar files.GetTemporaryLinkError.unsupported_file: Cannot get temporary
-        link to this file type; use
+    :ivar GetTemporaryLinkError.email_not_verified:
+        This user's email address is not verified. This functionality is only
+        available on accounts with a verified email address. Users can verify
+        their email address `here <https://www.dropbox.com/help/317>`_.
+    :ivar GetTemporaryLinkError.unsupported_file:
+        Cannot get temporary link to this file type; use
         :meth:`dropbox.dropbox_client.Dropbox.files_export` instead.
-    :ivar files.GetTemporaryLinkError.not_allowed: The user is not allowed to
-        request a temporary link to the specified file. For example, this can
-        occur if the file is restricted or if the user's links are `banned
+    :ivar GetTemporaryLinkError.not_allowed:
+        The user is not allowed to request a temporary link to the specified
+        file. For example, this can occur if the file is restricted or if the
+        user's links are `banned
         <https://help.dropbox.com/files-folders/share/banned-links>`_.
     """
 
@@ -3174,9 +3240,10 @@ GetTemporaryLinkError_validator = bv.Union(GetTemporaryLinkError)
 
 class GetTemporaryLinkResult(bb.Struct):
     """
-    :ivar files.GetTemporaryLinkResult.metadata: Metadata of the file.
-    :ivar files.GetTemporaryLinkResult.link: The temporary link which can be
-        used to stream content the file.
+    :ivar GetTemporaryLinkResult.metadata:
+        Metadata of the file.
+    :ivar GetTemporaryLinkResult.link:
+        The temporary link which can be used to stream content the file.
     """
 
     __slots__ = [
@@ -3209,13 +3276,14 @@ GetTemporaryLinkResult_validator = bv.Struct(GetTemporaryLinkResult)
 
 class GetTemporaryUploadLinkArg(bb.Struct):
     """
-    :ivar files.GetTemporaryUploadLinkArg.commit_info: Contains the path and
-        other optional modifiers for the future upload commit. Equivalent to the
-        parameters provided to
+    :ivar GetTemporaryUploadLinkArg.commit_info:
+        Contains the path and other optional modifiers for the future upload
+        commit. Equivalent to the parameters provided to
         :meth:`dropbox.dropbox_client.Dropbox.files_upload`.
-    :ivar files.GetTemporaryUploadLinkArg.duration: How long before this link
-        expires, in seconds. Attempting to start an upload with this link longer
-        than this period of time after link creation will result in an error.
+    :ivar GetTemporaryUploadLinkArg.duration:
+        How long before this link expires, in seconds. Attempting to start an
+        upload with this link longer than this period of time after link
+        creation will result in an error.
     """
 
     __slots__ = [
@@ -3248,8 +3316,9 @@ GetTemporaryUploadLinkArg_validator = bv.Struct(GetTemporaryUploadLinkArg)
 
 class GetTemporaryUploadLinkResult(bb.Struct):
     """
-    :ivar files.GetTemporaryUploadLinkResult.link: The temporary link which can
-        be used to stream a file to a Dropbox location.
+    :ivar GetTemporaryUploadLinkResult.link:
+        The temporary link which can be used to stream a file to a Dropbox
+        location.
     """
 
     __slots__ = [
@@ -3277,7 +3346,8 @@ class GetThumbnailBatchArg(bb.Struct):
     Arguments for
     :meth:`dropbox.dropbox_client.Dropbox.files_get_thumbnail_batch`.
 
-    :ivar files.GetThumbnailBatchArg.entries: List of files to get thumbnails.
+    :ivar GetThumbnailBatchArg.entries:
+        List of files to get thumbnails.
     """
 
     __slots__ = [
@@ -3306,8 +3376,8 @@ class GetThumbnailBatchError(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar files.GetThumbnailBatchError.too_many_files: The operation involves
-        more than 25 files.
+    :ivar GetThumbnailBatchError.too_many_files:
+        The operation involves more than 25 files.
     """
 
     _catch_all = 'other'
@@ -3339,8 +3409,8 @@ GetThumbnailBatchError_validator = bv.Union(GetThumbnailBatchError)
 
 class GetThumbnailBatchResult(bb.Struct):
     """
-    :ivar files.GetThumbnailBatchResult.entries: List of files and their
-        thumbnails.
+    :ivar GetThumbnailBatchResult.entries:
+        List of files and their thumbnails.
     """
 
     __slots__ = [
@@ -3365,8 +3435,8 @@ GetThumbnailBatchResult_validator = bv.Struct(GetThumbnailBatchResult)
 
 class GetThumbnailBatchResultData(bb.Struct):
     """
-    :ivar files.GetThumbnailBatchResultData.thumbnail: A string containing the
-        base64-encoded thumbnail data for this file.
+    :ivar GetThumbnailBatchResultData.thumbnail:
+        A string containing the base64-encoded thumbnail data for this file.
     """
 
     __slots__ = [
@@ -3403,8 +3473,9 @@ class GetThumbnailBatchResultEntry(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar ThumbnailError GetThumbnailBatchResultEntry.failure: The result for
-        this file if it was an error.
+    :ivar GetThumbnailBatchResultEntry.failure:
+        The result for this file if it was an error.
+    :vartype GetThumbnailBatchResultEntry.failure: ThumbnailError
     """
 
     _catch_all = 'other'
@@ -3488,8 +3559,10 @@ class GpsCoordinates(bb.Struct):
     """
     GPS coordinates for a photo or video.
 
-    :ivar files.GpsCoordinates.latitude: Latitude of the GPS coordinates.
-    :ivar files.GpsCoordinates.longitude: Longitude of the GPS coordinates.
+    :ivar GpsCoordinates.latitude:
+        Latitude of the GPS coordinates.
+    :ivar GpsCoordinates.longitude:
+        Longitude of the GPS coordinates.
     """
 
     __slots__ = [
@@ -3522,10 +3595,10 @@ GpsCoordinates_validator = bv.Struct(GpsCoordinates)
 
 class HighlightSpan(bb.Struct):
     """
-    :ivar files.HighlightSpan.highlight_str: String to be determined whether it
-        should be highlighted or not.
-    :ivar files.HighlightSpan.is_highlighted: The string should be highlighted
-        or not.
+    :ivar HighlightSpan.highlight_str:
+        String to be determined whether it should be highlighted or not.
+    :ivar HighlightSpan.is_highlighted:
+        The string should be highlighted or not.
     """
 
     __slots__ = [
@@ -3564,12 +3637,12 @@ class ImportFormat(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar files.ImportFormat.html: The provided data is interpreted as standard
-        HTML.
-    :ivar files.ImportFormat.markdown: The provided data is interpreted as
-        markdown.
-    :ivar files.ImportFormat.plain_text: The provided data is interpreted as
-        plain text.
+    :ivar ImportFormat.html:
+        The provided data is interpreted as standard HTML.
+    :ivar ImportFormat.markdown:
+        The provided data is interpreted as markdown.
+    :ivar ImportFormat.plain_text:
+        The provided data is interpreted as plain text.
     """
 
     _catch_all = 'other'
@@ -3621,41 +3694,47 @@ ImportFormat_validator = bv.Union(ImportFormat)
 
 class ListFolderArg(bb.Struct):
     """
-    :ivar files.ListFolderArg.path: A unique identifier for the file.
-    :ivar files.ListFolderArg.recursive: If true, the list folder operation will
-        be applied recursively to all subfolders and the response will contain
-        contents of all subfolders. In some cases, setting
-        ``ListFolderArg.recursive`` to ``True`` may lead to performance issues
-        or errors, especially when traversing folder structures with a large
-        number of items. A workaround for such cases is to set
-        ``ListFolderArg.recursive`` to ``False`` and traverse subfolders one at
-        a time.
-    :ivar files.ListFolderArg.include_media_info: Field is deprecated. If true,
-        ``FileMetadata.media_info`` is set for photo and video. This parameter
-        will no longer have an effect starting December 2, 2019.
-    :ivar files.ListFolderArg.include_deleted: If true, the results will include
-        entries for files and folders that used to exist but were deleted.
-    :ivar files.ListFolderArg.include_has_explicit_shared_members: If true, the
-        results will include a flag for each file indicating whether or not that
-        file has any explicit members.
-    :ivar files.ListFolderArg.include_mounted_folders: If true, the results will
-        include entries under mounted folders which includes app folder, shared
-        folder and team folder.
-    :ivar files.ListFolderArg.limit: The maximum number of results to return per
-        request. Note: This is an approximate number and there can be slightly
-        more entries returned in some cases.
-    :ivar files.ListFolderArg.shared_link: A shared link to list the contents
-        of. If the link is password-protected, the password must be provided. If
-        this field is present, ``ListFolderArg.path`` will be relative to root
-        of the shared link. Only non-recursive mode is supported for shared
-        link.
-    :ivar files.ListFolderArg.include_property_groups: If set to a valid list of
-        template IDs, ``FileMetadata.property_groups`` is set if there exists
-        property data associated with the file and each of the listed templates.
-    :ivar files.ListFolderArg.include_non_downloadable_files: If true, include
-        files that are not downloadable, i.e. Google Docs.
-    :ivar files.ListFolderArg.include_restorable_info: If true, each returned
-        deleted entry will include whether that entry can be restored.
+    :ivar ListFolderArg.path:
+        A unique identifier for the file.
+    :ivar ListFolderArg.recursive:
+        If true, the list folder operation will be applied recursively to all
+        subfolders and the response will contain contents of all subfolders. In
+        some cases, setting ``ListFolderArg.recursive`` to ``True`` may lead to
+        performance issues or errors, especially when traversing folder
+        structures with a large number of items. A workaround for such cases is
+        to set ``ListFolderArg.recursive`` to ``False`` and traverse subfolders
+        one at a time.
+    :ivar ListFolderArg.include_media_info:
+        Field is deprecated. If true, ``FileMetadata.media_info`` is set for
+        photo and video. This parameter will no longer have an effect starting
+        December 2, 2019.
+    :ivar ListFolderArg.include_deleted:
+        If true, the results will include entries for files and folders that
+        used to exist but were deleted.
+    :ivar ListFolderArg.include_has_explicit_shared_members:
+        If true, the results will include a flag for each file indicating
+        whether or not that file has any explicit members.
+    :ivar ListFolderArg.include_mounted_folders:
+        If true, the results will include entries under mounted folders which
+        includes app folder, shared folder and team folder.
+    :ivar ListFolderArg.limit:
+        The maximum number of results to return per request. Note: This is an
+        approximate number and there can be slightly more entries returned in
+        some cases.
+    :ivar ListFolderArg.shared_link:
+        A shared link to list the contents of. If the link is
+        password-protected, the password must be provided. If this field is
+        present, ``ListFolderArg.path`` will be relative to root of the shared
+        link. Only non-recursive mode is supported for shared link.
+    :ivar ListFolderArg.include_property_groups:
+        If set to a valid list of template IDs, ``FileMetadata.property_groups``
+        is set if there exists property data associated with the file and each
+        of the listed templates.
+    :ivar ListFolderArg.include_non_downloadable_files:
+        If true, include files that are not downloadable, i.e. Google Docs.
+    :ivar ListFolderArg.include_restorable_info:
+        If true, each returned deleted entry will include whether that entry can
+        be restored.
     """
 
     __slots__ = [
@@ -3760,8 +3839,9 @@ ListFolderArg_validator = bv.Struct(ListFolderArg)
 
 class ListFolderContinueArg(bb.Struct):
     """
-    :ivar files.ListFolderContinueArg.cursor: The cursor returned by your last
-        call to :meth:`dropbox.dropbox_client.Dropbox.files_list_folder` or
+    :ivar ListFolderContinueArg.cursor:
+        The cursor returned by your last call to
+        :meth:`dropbox.dropbox_client.Dropbox.files_list_folder` or
         :meth:`dropbox.dropbox_client.Dropbox.files_list_folder_continue`.
     """
 
@@ -3791,8 +3871,8 @@ class ListFolderContinueError(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar files.ListFolderContinueError.reset: Indicates that the cursor has
-        been invalidated. Call
+    :ivar ListFolderContinueError.reset:
+        Indicates that the cursor has been invalidated. Call
         :meth:`dropbox.dropbox_client.Dropbox.files_list_folder` to obtain a new
         cursor.
     """
@@ -3937,7 +4017,8 @@ ListFolderError_validator = bv.Union(ListFolderError)
 
 class ListFolderGetLatestCursorResult(bb.Struct):
     """
-    :ivar files.ListFolderGetLatestCursorResult.cursor: Pass the cursor into
+    :ivar ListFolderGetLatestCursorResult.cursor:
+        Pass the cursor into
         :meth:`dropbox.dropbox_client.Dropbox.files_list_folder_continue` to see
         what's changed in the folder since your previous query.
     """
@@ -3964,16 +4045,17 @@ ListFolderGetLatestCursorResult_validator = bv.Struct(ListFolderGetLatestCursorR
 
 class ListFolderLongpollArg(bb.Struct):
     """
-    :ivar files.ListFolderLongpollArg.cursor: A cursor as returned by
+    :ivar ListFolderLongpollArg.cursor:
+        A cursor as returned by
         :meth:`dropbox.dropbox_client.Dropbox.files_list_folder` or
         :meth:`dropbox.dropbox_client.Dropbox.files_list_folder_continue`.
         Cursors retrieved by setting ``ListFolderArg.include_media_info`` to
         ``True`` are not supported.
-    :ivar files.ListFolderLongpollArg.timeout: A timeout in seconds. The request
-        will block for at most this length of time, plus up to 90 seconds of
-        random jitter added to avoid the thundering herd problem. Care should be
-        taken when using this parameter, as some network infrastructure does not
-        support long timeouts.
+    :ivar ListFolderLongpollArg.timeout:
+        A timeout in seconds. The request will block for at most this length of
+        time, plus up to 90 seconds of random jitter added to avoid the
+        thundering herd problem. Care should be taken when using this parameter,
+        as some network infrastructure does not support long timeouts.
     """
 
     __slots__ = [
@@ -4010,8 +4092,8 @@ class ListFolderLongpollError(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar files.ListFolderLongpollError.reset: Indicates that the cursor has
-        been invalidated. Call
+    :ivar ListFolderLongpollError.reset:
+        Indicates that the cursor has been invalidated. Call
         :meth:`dropbox.dropbox_client.Dropbox.files_list_folder` to obtain a new
         cursor.
     """
@@ -4045,12 +4127,12 @@ ListFolderLongpollError_validator = bv.Union(ListFolderLongpollError)
 
 class ListFolderLongpollResult(bb.Struct):
     """
-    :ivar files.ListFolderLongpollResult.changes: Indicates whether new changes
-        are available. If true, call
+    :ivar ListFolderLongpollResult.changes:
+        Indicates whether new changes are available. If true, call
         :meth:`dropbox.dropbox_client.Dropbox.files_list_folder_continue` to
         retrieve the changes.
-    :ivar files.ListFolderLongpollResult.backoff: If present, backoff for at
-        least this many seconds before calling
+    :ivar ListFolderLongpollResult.backoff:
+        If present, backoff for at least this many seconds before calling
         :meth:`dropbox.dropbox_client.Dropbox.files_list_folder_longpoll` again.
     """
 
@@ -4084,13 +4166,14 @@ ListFolderLongpollResult_validator = bv.Struct(ListFolderLongpollResult)
 
 class ListFolderResult(bb.Struct):
     """
-    :ivar files.ListFolderResult.entries: The files and (direct) subfolders in
-        the folder.
-    :ivar files.ListFolderResult.cursor: Pass the cursor into
+    :ivar ListFolderResult.entries:
+        The files and (direct) subfolders in the folder.
+    :ivar ListFolderResult.cursor:
+        Pass the cursor into
         :meth:`dropbox.dropbox_client.Dropbox.files_list_folder_continue` to see
         what's changed in the folder since your previous query.
-    :ivar files.ListFolderResult.has_more: If true, then there are more entries
-        available. Pass the cursor to
+    :ivar ListFolderResult.has_more:
+        If true, then there are more entries available. Pass the cursor to
         :meth:`dropbox.dropbox_client.Dropbox.files_list_folder_continue` to
         retrieve the rest.
     """
@@ -4133,18 +4216,21 @@ ListFolderResult_validator = bv.Struct(ListFolderResult)
 
 class ListRevisionsArg(bb.Struct):
     """
-    :ivar files.ListRevisionsArg.path: The path to the file you want to see the
-        revisions of.
-    :ivar files.ListRevisionsArg.mode: Determines the behavior of the API in
-        listing the revisions for a given file path or id.
-    :ivar files.ListRevisionsArg.limit: The maximum number of revision entries
-        returned.
-    :ivar files.ListRevisionsArg.before_rev: If set, ListRevisions will only
-        return revisions prior to before_rev. Can be set using the last revision
-        from a previous call to list_revisions to fetch the next page of
-        revisions. Only supported in path mode.
-    :ivar files.ListRevisionsArg.include_restorable_info: If true, each returned
-        revision will include whether that revision can be restored.
+    :ivar ListRevisionsArg.path:
+        The path to the file you want to see the revisions of.
+    :ivar ListRevisionsArg.mode:
+        Determines the behavior of the API in listing the revisions for a given
+        file path or id.
+    :ivar ListRevisionsArg.limit:
+        The maximum number of revision entries returned.
+    :ivar ListRevisionsArg.before_rev:
+        If set, ListRevisions will only return revisions prior to before_rev.
+        Can be set using the last revision from a previous call to
+        list_revisions to fetch the next page of revisions. Only supported in
+        path mode.
+    :ivar ListRevisionsArg.include_restorable_info:
+        If true, each returned revision will include whether that revision can
+        be restored.
     """
 
     __slots__ = [
@@ -4205,10 +4291,10 @@ class ListRevisionsError(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar files.ListRevisionsError.invalid_before_rev: The revision in
-        before_rev is invalid.
-    :ivar files.ListRevisionsError.before_rev_not_supported: The before_rev
-        argument is only supported in path mode.
+    :ivar ListRevisionsError.invalid_before_rev:
+        The revision in before_rev is invalid.
+    :ivar ListRevisionsError.before_rev_not_supported:
+        The before_rev argument is only supported in path mode.
     """
 
     _catch_all = 'other'
@@ -4283,11 +4369,12 @@ class ListRevisionsMode(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar files.ListRevisionsMode.path: Returns revisions with the same file
-        path as identified by the latest file entry at the given file path or
-        id.
-    :ivar files.ListRevisionsMode.id: Returns revisions with the same file id as
-        identified by the latest file entry at the given file path or id.
+    :ivar ListRevisionsMode.path:
+        Returns revisions with the same file path as identified by the latest
+        file entry at the given file path or id.
+    :ivar ListRevisionsMode.id:
+        Returns revisions with the same file id as identified by the latest file
+        entry at the given file path or id.
     """
 
     _catch_all = 'other'
@@ -4329,17 +4416,19 @@ ListRevisionsMode_validator = bv.Union(ListRevisionsMode)
 
 class ListRevisionsResult(bb.Struct):
     """
-    :ivar files.ListRevisionsResult.is_deleted: If the file identified by the
-        latest revision in the response is either deleted or moved. If
-        before_rev is set, this refers to the latest revision of the file older
-        than before_rev.
-    :ivar files.ListRevisionsResult.server_deleted: The time of deletion if the
-        file was deleted.
-    :ivar files.ListRevisionsResult.entries: The revisions for the file. Only
-        revisions that are not deleted will show up here.
-    :ivar files.ListRevisionsResult.has_more: If true, then there are more
-        entries available. Call list_revisions again with before_rev equal to
-        the revision of the last returned entry to retrieve the rest.
+    :ivar ListRevisionsResult.is_deleted:
+        If the file identified by the latest revision in the response is either
+        deleted or moved. If before_rev is set, this refers to the latest
+        revision of the file older than before_rev.
+    :ivar ListRevisionsResult.server_deleted:
+        The time of deletion if the file was deleted.
+    :ivar ListRevisionsResult.entries:
+        The revisions for the file. Only revisions that are not deleted will
+        show up here.
+    :ivar ListRevisionsResult.has_more:
+        If true, then there are more entries available. Call list_revisions
+        again with before_rev equal to the revision of the last returned entry
+        to retrieve the rest.
     """
 
     __slots__ = [
@@ -4388,7 +4477,8 @@ ListRevisionsResult_validator = bv.Struct(ListRevisionsResult)
 
 class LockConflictError(bb.Struct):
     """
-    :ivar files.LockConflictError.lock: The lock that caused the conflict.
+    :ivar LockConflictError.lock:
+        The lock that caused the conflict.
     """
 
     __slots__ = [
@@ -4413,7 +4503,8 @@ LockConflictError_validator = bv.Struct(LockConflictError)
 
 class LockFileArg(bb.Struct):
     """
-    :ivar files.LockFileArg.path: Path in the user's Dropbox to a file.
+    :ivar LockFileArg.path:
+        Path in the user's Dropbox to a file.
     """
 
     __slots__ = [
@@ -4438,9 +4529,10 @@ LockFileArg_validator = bv.Struct(LockFileArg)
 
 class LockFileBatchArg(bb.Struct):
     """
-    :ivar files.LockFileBatchArg.entries: List of 'entries'. Each 'entry'
-        contains a path of the file which will be locked or queried. Duplicate
-        path arguments in the batch are considered only once.
+    :ivar LockFileBatchArg.entries:
+        List of 'entries'. Each 'entry' contains a path of the file which will
+        be locked or queried. Duplicate path arguments in the batch are
+        considered only once.
     """
 
     __slots__ = [
@@ -4465,9 +4557,10 @@ LockFileBatchArg_validator = bv.Struct(LockFileBatchArg)
 
 class LockFileBatchResult(FileOpsResult):
     """
-    :ivar files.LockFileBatchResult.entries: Each Entry in the 'entries' will
-        have '.tag' with the operation status (e.g. success), the metadata for
-        the file and the lock state after the operation.
+    :ivar LockFileBatchResult.entries:
+        Each Entry in the 'entries' will have '.tag' with the operation status
+        (e.g. success), the metadata for the file and the lock state after the
+        operation.
     """
 
     __slots__ = [
@@ -4497,23 +4590,28 @@ class LockFileError(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar LookupError LockFileError.path_lookup: Could not find the specified
-        resource.
-    :ivar files.LockFileError.too_many_write_operations: There are too many
-        write operations in user's Dropbox. Please retry this request.
-    :ivar files.LockFileError.too_many_files: There are too many files in one
-        request. Please retry with fewer files.
-    :ivar files.LockFileError.no_write_permission: The user does not have
-        permissions to change the lock state or access the file.
-    :ivar files.LockFileError.cannot_be_locked: Item is a type that cannot be
-        locked.
-    :ivar files.LockFileError.file_not_shared: Requested file is not currently
-        shared.
-    :ivar LockConflictError LockFileError.lock_conflict: The user action
-        conflicts with an existing lock on the file.
-    :ivar files.LockFileError.internal_error: Something went wrong with the job
-        on Dropbox's end. You'll need to verify that the action you were taking
-        succeeded, and if not, try again. This should happen very rarely.
+    :ivar LockFileError.path_lookup:
+        Could not find the specified resource.
+    :vartype LockFileError.path_lookup: LookupError
+    :ivar LockFileError.too_many_write_operations:
+        There are too many write operations in user's Dropbox. Please retry this
+        request.
+    :ivar LockFileError.too_many_files:
+        There are too many files in one request. Please retry with fewer files.
+    :ivar LockFileError.no_write_permission:
+        The user does not have permissions to change the lock state or access
+        the file.
+    :ivar LockFileError.cannot_be_locked:
+        Item is a type that cannot be locked.
+    :ivar LockFileError.file_not_shared:
+        Requested file is not currently shared.
+    :ivar LockFileError.lock_conflict:
+        The user action conflicts with an existing lock on the file.
+    :vartype LockFileError.lock_conflict: LockConflictError
+    :ivar LockFileError.internal_error:
+        Something went wrong with the job on Dropbox's end. You'll need to
+        verify that the action you were taking succeeded, and if not, try again.
+        This should happen very rarely.
     """
 
     _catch_all = 'other'
@@ -4657,9 +4755,10 @@ LockFileError_validator = bv.Union(LockFileError)
 
 class LockFileResult(bb.Struct):
     """
-    :ivar files.LockFileResult.metadata: Metadata of the file.
-    :ivar files.LockFileResult.lock: Field is deprecated. The file lock state
-        after the operation.
+    :ivar LockFileResult.metadata:
+        Metadata of the file.
+    :ivar LockFileResult.lock:
+        Field is deprecated. The file lock state after the operation.
     """
 
     __slots__ = [
@@ -4768,22 +4867,27 @@ class LookupError(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar Optional[str] files.LookupError.malformed_path: The given path does
-        not satisfy the required path format. Please refer to the :link:`Path
-        formats documentation
-        https://www.dropbox.com/developers/documentation/http/documentation#path-formats`
+    :ivar LookupError.malformed_path:
+        The given path does not satisfy the required path format. Please refer
+        to the `Path formats documentation
+        <https://www.dropbox.com/developers/documentation/http/documentation#path-formats>`_
         for more information.
-    :ivar files.LookupError.not_found: There is nothing at the given path.
-    :ivar files.LookupError.not_file: We were expecting a file, but the given
-        path refers to something that isn't a file.
-    :ivar files.LookupError.not_folder: We were expecting a folder, but the
-        given path refers to something that isn't a folder.
-    :ivar files.LookupError.restricted_content: The file cannot be transferred
-        because the content is restricted. For example, we might restrict a file
-        due to legal requirements.
-    :ivar files.LookupError.unsupported_content_type: This operation is not
-        supported for this content type.
-    :ivar files.LookupError.locked: The given path is locked.
+    :vartype LookupError.malformed_path: Optional[str]
+    :ivar LookupError.not_found:
+        There is nothing at the given path.
+    :ivar LookupError.not_file:
+        We were expecting a file, but the given path refers to something that
+        isn't a file.
+    :ivar LookupError.not_folder:
+        We were expecting a folder, but the given path refers to something that
+        isn't a folder.
+    :ivar LookupError.restricted_content:
+        The file cannot be transferred because the content is restricted. For
+        example, we might restrict a file due to legal requirements.
+    :ivar LookupError.unsupported_content_type:
+        This operation is not supported for this content type.
+    :ivar LookupError.locked:
+        The given path is locked.
     """
 
     _catch_all = 'other'
@@ -4903,11 +5007,13 @@ class MediaInfo(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar files.MediaInfo.pending: Indicate the photo/video is still under
-        processing and metadata is not available yet.
-    :ivar MediaMetadata MediaInfo.metadata: The metadata for the photo/video.
-        Uses MediaMetadataAbstract to preserve photo/video subtypes (e.g.
-        VideoMetadata.duration).
+    :ivar MediaInfo.pending:
+        Indicate the photo/video is still under processing and metadata is not
+        available yet.
+    :ivar MediaInfo.metadata:
+        The metadata for the photo/video. Uses MediaMetadataAbstract to preserve
+        photo/video subtypes (e.g. VideoMetadata.duration).
+    :vartype MediaInfo.metadata: MediaMetadata
     """
 
     _catch_all = None
@@ -4963,10 +5069,12 @@ class MediaMetadata(bb.Struct):
     """
     Metadata for a photo or video.
 
-    :ivar files.MediaMetadata.dimensions: Dimension of the photo/video.
-    :ivar files.MediaMetadata.location: The GPS coordinate of the photo/video.
-    :ivar files.MediaMetadata.time_taken: The timestamp when the photo/video is
-        taken.
+    :ivar MediaMetadata.dimensions:
+        Dimension of the photo/video.
+    :ivar MediaMetadata.location:
+        The GPS coordinate of the photo/video.
+    :ivar MediaMetadata.time_taken:
+        The timestamp when the photo/video is taken.
     """
 
     __slots__ = [
@@ -5062,15 +5170,18 @@ MetadataV2_validator = bv.Union(MetadataV2)
 
 class MinimalFileLinkMetadata(bb.Struct):
     """
-    :ivar files.MinimalFileLinkMetadata.url: URL of the shared link.
-    :ivar files.MinimalFileLinkMetadata.id: Unique identifier for the linked
-        file.
-    :ivar files.MinimalFileLinkMetadata.path: Full path in the user's Dropbox.
-        This always starts with a slash. This field will only be present only if
-        the linked file is in the authenticated user's Dropbox.
-    :ivar files.MinimalFileLinkMetadata.rev: A unique identifier for the current
-        revision of a file. This field is the same rev as elsewhere in the API
-        and can be used to detect changes and avoid conflicts.
+    :ivar MinimalFileLinkMetadata.url:
+        URL of the shared link.
+    :ivar MinimalFileLinkMetadata.id:
+        Unique identifier for the linked file.
+    :ivar MinimalFileLinkMetadata.path:
+        Full path in the user's Dropbox. This always starts with a slash. This
+        field will only be present only if the linked file is in the
+        authenticated user's Dropbox.
+    :ivar MinimalFileLinkMetadata.rev:
+        A unique identifier for the current revision of a file. This field is
+        the same rev as elsewhere in the API and can be used to detect changes
+        and avoid conflicts.
     """
 
     __slots__ = [
@@ -5119,11 +5230,12 @@ MinimalFileLinkMetadata_validator = bv.Struct(MinimalFileLinkMetadata)
 
 class RelocationBatchArgBase(bb.Struct):
     """
-    :ivar files.RelocationBatchArgBase.entries: List of entries to be moved or
-        copied. Each entry is :class:`RelocationPath`.
-    :ivar files.RelocationBatchArgBase.autorename: If there's a conflict with
-        any file, have the Dropbox server try to autorename that file to avoid
-        the conflict.
+    :ivar RelocationBatchArgBase.entries:
+        List of entries to be moved or copied. Each entry is
+        :class:`RelocationPath`.
+    :ivar RelocationBatchArgBase.autorename:
+        If there's a conflict with any file, have the Dropbox server try to
+        autorename that file to avoid the conflict.
     """
 
     __slots__ = [
@@ -5156,9 +5268,9 @@ RelocationBatchArgBase_validator = bv.Struct(RelocationBatchArgBase)
 
 class MoveBatchArg(RelocationBatchArgBase):
     """
-    :ivar files.MoveBatchArg.allow_ownership_transfer: Allow moves by owner even
-        if it would result in an ownership transfer for the content being moved.
-        This does not apply to copies.
+    :ivar MoveBatchArg.allow_ownership_transfer:
+        Allow moves by owner even if it would result in an ownership transfer
+        for the content being moved. This does not apply to copies.
     """
 
     __slots__ = [
@@ -5191,8 +5303,8 @@ class MoveIntoFamilyError(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar files.MoveIntoFamilyError.is_shared_folder: Moving shared folder into
-        Family Room folder is not allowed.
+    :ivar MoveIntoFamilyError.is_shared_folder:
+        Moving shared folder into Family Room folder is not allowed.
     """
 
     _catch_all = 'other'
@@ -5228,8 +5340,8 @@ class MoveIntoVaultError(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar files.MoveIntoVaultError.is_shared_folder: Moving shared folder into
-        Vault is not allowed.
+    :ivar MoveIntoVaultError.is_shared_folder:
+        Moving shared folder into Vault is not allowed.
     """
 
     _catch_all = 'other'
@@ -5265,15 +5377,15 @@ class PaperContentError(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar files.PaperContentError.insufficient_permissions: Your account does
-        not have permissions to edit Paper docs.
-    :ivar files.PaperContentError.content_malformed: The provided content was
-        malformed and cannot be imported to Paper.
-    :ivar files.PaperContentError.doc_length_exceeded: The Paper doc would be
-        too large, split the content into multiple docs.
-    :ivar files.PaperContentError.image_size_exceeded: The imported document
-        contains an image that is too large. The current limit is 1MB. This only
-        applies to HTML with data URI.
+    :ivar PaperContentError.insufficient_permissions:
+        Your account does not have permissions to edit Paper docs.
+    :ivar PaperContentError.content_malformed:
+        The provided content was malformed and cannot be imported to Paper.
+    :ivar PaperContentError.doc_length_exceeded:
+        The Paper doc would be too large, split the content into multiple docs.
+    :ivar PaperContentError.image_size_exceeded:
+        The imported document contains an image that is too large. The current
+        limit is 1MB. This only applies to HTML with data URI.
     """
 
     _catch_all = 'other'
@@ -5335,10 +5447,12 @@ PaperContentError_validator = bv.Union(PaperContentError)
 
 class PaperCreateArg(bb.Struct):
     """
-    :ivar files.PaperCreateArg.path: The fully qualified path to the location in
-        the user's Dropbox where the Paper Doc should be created. This should
-        include the document's title and end with .paper.
-    :ivar files.PaperCreateArg.import_format: The format of the provided data.
+    :ivar PaperCreateArg.path:
+        The fully qualified path to the location in the user's Dropbox where the
+        Paper Doc should be created. This should include the document's title
+        and end with .paper.
+    :ivar PaperCreateArg.import_format:
+        The format of the provided data.
     """
 
     __slots__ = [
@@ -5375,14 +5489,14 @@ class PaperCreateError(PaperContentError):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar files.PaperCreateError.invalid_path: The file could not be saved to
-        the specified location.
-    :ivar files.PaperCreateError.email_unverified: The user's email must be
-        verified to create Paper docs.
-    :ivar files.PaperCreateError.invalid_file_extension: The file path must end
-        in .paper.
-    :ivar files.PaperCreateError.paper_disabled: Paper is disabled for your
-        team.
+    :ivar PaperCreateError.invalid_path:
+        The file could not be saved to the specified location.
+    :ivar PaperCreateError.email_unverified:
+        The user's email must be verified to create Paper docs.
+    :ivar PaperCreateError.invalid_file_extension:
+        The file path must end in .paper.
+    :ivar PaperCreateError.paper_disabled:
+        Paper is disabled for your team.
     """
 
     # Attribute is overwritten below the class definition
@@ -5433,12 +5547,14 @@ PaperCreateError_validator = bv.Union(PaperCreateError)
 
 class PaperCreateResult(bb.Struct):
     """
-    :ivar files.PaperCreateResult.url: URL to open the Paper Doc.
-    :ivar files.PaperCreateResult.result_path: The fully qualified path the
-        Paper Doc was actually created at.
-    :ivar files.PaperCreateResult.file_id: The id to use in Dropbox APIs when
-        referencing the Paper Doc.
-    :ivar files.PaperCreateResult.paper_revision: The current doc revision.
+    :ivar PaperCreateResult.url:
+        URL to open the Paper Doc.
+    :ivar PaperCreateResult.result_path:
+        The fully qualified path the Paper Doc was actually created at.
+    :ivar PaperCreateResult.file_id:
+        The id to use in Dropbox APIs when referencing the Paper Doc.
+    :ivar PaperCreateResult.paper_revision:
+        The current doc revision.
     """
 
     __slots__ = [
@@ -5491,15 +5607,19 @@ class PaperDocUpdatePolicy(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar files.PaperDocUpdatePolicy.update: Sets the doc content to the
-        provided content if the provided paper_revision matches the latest doc
-        revision. Otherwise, returns an error.
-    :ivar files.PaperDocUpdatePolicy.overwrite: Sets the doc content to the
-        provided content without checking paper_revision.
-    :ivar files.PaperDocUpdatePolicy.prepend: Adds the provided content to the
-        beginning of the doc without checking paper_revision.
-    :ivar files.PaperDocUpdatePolicy.append: Adds the provided content to the
-        end of the doc without checking paper_revision.
+    :ivar PaperDocUpdatePolicy.update:
+        Sets the doc content to the provided content if the provided
+        paper_revision matches the latest doc revision. Otherwise, returns an
+        error.
+    :ivar PaperDocUpdatePolicy.overwrite:
+        Sets the doc content to the provided content without checking
+        paper_revision.
+    :ivar PaperDocUpdatePolicy.prepend:
+        Adds the provided content to the beginning of the doc without checking
+        paper_revision.
+    :ivar PaperDocUpdatePolicy.append:
+        Adds the provided content to the end of the doc without checking
+        paper_revision.
     """
 
     _catch_all = 'other'
@@ -5561,14 +5681,17 @@ PaperDocUpdatePolicy_validator = bv.Union(PaperDocUpdatePolicy)
 
 class PaperUpdateArg(bb.Struct):
     """
-    :ivar files.PaperUpdateArg.path: Path in the user's Dropbox to update. The
-        path must correspond to a Paper doc or an error will be returned.
-    :ivar files.PaperUpdateArg.import_format: The format of the provided data.
-    :ivar files.PaperUpdateArg.doc_update_policy: How the provided content
-        should be applied to the doc.
-    :ivar files.PaperUpdateArg.paper_revision: The latest doc revision. Required
-        when doc_update_policy is update. This value must match the current
-        revision of the doc or error revision_mismatch will be returned.
+    :ivar PaperUpdateArg.path:
+        Path in the user's Dropbox to update. The path must correspond to a
+        Paper doc or an error will be returned.
+    :ivar PaperUpdateArg.import_format:
+        The format of the provided data.
+    :ivar PaperUpdateArg.doc_update_policy:
+        How the provided content should be applied to the doc.
+    :ivar PaperUpdateArg.paper_revision:
+        The latest doc revision. Required when doc_update_policy is update. This
+        value must match the current revision of the doc or error
+        revision_mismatch will be returned.
     """
 
     __slots__ = [
@@ -5621,12 +5744,12 @@ class PaperUpdateError(PaperContentError):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar files.PaperUpdateError.revision_mismatch: The provided revision does
-        not match the document head.
-    :ivar files.PaperUpdateError.doc_archived: This operation is not allowed on
-        archived Paper docs.
-    :ivar files.PaperUpdateError.doc_deleted: This operation is not allowed on
-        deleted Paper docs.
+    :ivar PaperUpdateError.revision_mismatch:
+        The provided revision does not match the document head.
+    :ivar PaperUpdateError.doc_archived:
+        This operation is not allowed on archived Paper docs.
+    :ivar PaperUpdateError.doc_deleted:
+        This operation is not allowed on deleted Paper docs.
     """
 
     # Attribute is overwritten below the class definition
@@ -5696,7 +5819,8 @@ PaperUpdateError_validator = bv.Union(PaperUpdateError)
 
 class PaperUpdateResult(bb.Struct):
     """
-    :ivar files.PaperUpdateResult.paper_revision: The current doc revision.
+    :ivar PaperUpdateResult.paper_revision:
+        The current doc revision.
     """
 
     __slots__ = [
@@ -5803,8 +5927,10 @@ PathOrLink_validator = bv.Union(PathOrLink)
 
 class PathToTags(bb.Struct):
     """
-    :ivar files.PathToTags.path: Path of the item.
-    :ivar files.PathToTags.tags: Tags assigned to this item.
+    :ivar PathToTags.path:
+        Path of the item.
+    :ivar PathToTags.tags:
+        Tags assigned to this item.
     """
 
     __slots__ = [
@@ -5860,9 +5986,10 @@ PhotoMetadata_validator = bv.Struct(PhotoMetadata)
 
 class PreviewArg(bb.Struct):
     """
-    :ivar files.PreviewArg.path: The path of the file to preview.
-    :ivar files.PreviewArg.rev: Field is deprecated. Please specify revision in
-        ``path`` instead.
+    :ivar PreviewArg.path:
+        The path of the file to preview.
+    :ivar PreviewArg.rev:
+        Field is deprecated. Please specify revision in ``path`` instead.
     """
 
     __slots__ = [
@@ -5899,14 +6026,16 @@ class PreviewError(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar LookupError PreviewError.path: An error occurs when downloading
-        metadata for the file.
-    :ivar files.PreviewError.in_progress: This preview generation is still in
-        progress and the file is not ready for preview yet.
-    :ivar files.PreviewError.unsupported_extension: The file extension is not
-        supported preview generation.
-    :ivar files.PreviewError.unsupported_content: The file content is not
-        supported for preview generation.
+    :ivar PreviewError.path:
+        An error occurs when downloading metadata for the file.
+    :vartype PreviewError.path: LookupError
+    :ivar PreviewError.in_progress:
+        This preview generation is still in progress and the file is not ready
+        for preview yet.
+    :ivar PreviewError.unsupported_extension:
+        The file extension is not supported preview generation.
+    :ivar PreviewError.unsupported_content:
+        The file content is not supported for preview generation.
     """
 
     _catch_all = None
@@ -5979,12 +6108,13 @@ PreviewError_validator = bv.Union(PreviewError)
 
 class PreviewResult(bb.Struct):
     """
-    :ivar files.PreviewResult.file_metadata: Metadata corresponding to the file
-        received as an argument. Will be populated if the endpoint is called
-        with a path (ReadPath).
-    :ivar files.PreviewResult.link_metadata: Minimal metadata corresponding to
-        the file received as an argument. Will be populated if the endpoint is
-        called using a shared link (SharedLinkFileInfo).
+    :ivar PreviewResult.file_metadata:
+        Metadata corresponding to the file received as an argument. Will be
+        populated if the endpoint is called with a path (ReadPath).
+    :ivar PreviewResult.link_metadata:
+        Minimal metadata corresponding to the file received as an argument. Will
+        be populated if the endpoint is called using a shared link
+        (SharedLinkFileInfo).
     """
 
     __slots__ = [
@@ -6017,10 +6147,10 @@ PreviewResult_validator = bv.Struct(PreviewResult)
 
 class RelocationPath(bb.Struct):
     """
-    :ivar files.RelocationPath.from_path: Path in the user's Dropbox to be
-        copied or moved.
-    :ivar files.RelocationPath.to_path: Path in the user's Dropbox that is the
-        destination.
+    :ivar RelocationPath.from_path:
+        Path in the user's Dropbox to be copied or moved.
+    :ivar RelocationPath.to_path:
+        Path in the user's Dropbox that is the destination.
     """
 
     __slots__ = [
@@ -6053,13 +6183,14 @@ RelocationPath_validator = bv.Struct(RelocationPath)
 
 class RelocationArg(RelocationPath):
     """
-    :ivar files.RelocationArg.allow_shared_folder: Field is deprecated. This
-        flag has no effect.
-    :ivar files.RelocationArg.autorename: If there's a conflict, have the
-        Dropbox server try to autorename the file to avoid the conflict.
-    :ivar files.RelocationArg.allow_ownership_transfer: Allow moves by owner
-        even if it would result in an ownership transfer for the content being
-        moved. This does not apply to copies.
+    :ivar RelocationArg.allow_shared_folder:
+        Field is deprecated. This flag has no effect.
+    :ivar RelocationArg.autorename:
+        If there's a conflict, have the Dropbox server try to autorename the
+        file to avoid the conflict.
+    :ivar RelocationArg.allow_ownership_transfer:
+        Allow moves by owner even if it would result in an ownership transfer
+        for the content being moved. This does not apply to copies.
     """
 
     __slots__ = [
@@ -6104,11 +6235,11 @@ RelocationArg_validator = bv.Struct(RelocationArg)
 
 class RelocationBatchArg(RelocationBatchArgBase):
     """
-    :ivar files.RelocationBatchArg.allow_shared_folder: Field is deprecated.
-        This flag has no effect.
-    :ivar files.RelocationBatchArg.allow_ownership_transfer: Allow moves by
-        owner even if it would result in an ownership transfer for the content
-        being moved. This does not apply to copies.
+    :ivar RelocationBatchArg.allow_shared_folder:
+        Field is deprecated. This flag has no effect.
+    :ivar RelocationBatchArg.allow_ownership_transfer:
+        Allow moves by owner even if it would result in an ownership transfer
+        for the content being moved. This does not apply to copies.
     """
 
     __slots__ = [
@@ -6149,33 +6280,38 @@ class RelocationError(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar files.RelocationError.cant_copy_shared_folder: Shared folders can't be
-        copied.
-    :ivar files.RelocationError.cant_nest_shared_folder: Your move operation
-        would result in nested shared folders.  This is not allowed.
-    :ivar files.RelocationError.cant_move_folder_into_itself: You cannot move a
-        folder into itself.
-    :ivar files.RelocationError.too_many_files: The operation would involve more
-        than 10,000 files and folders.
-    :ivar files.RelocationError.duplicated_or_nested_paths: There are
-        duplicated/nested paths among ``RelocationArg.from_path`` and
+    :ivar RelocationError.cant_copy_shared_folder:
+        Shared folders can't be copied.
+    :ivar RelocationError.cant_nest_shared_folder:
+        Your move operation would result in nested shared folders.  This is not
+        allowed.
+    :ivar RelocationError.cant_move_folder_into_itself:
+        You cannot move a folder into itself.
+    :ivar RelocationError.too_many_files:
+        The operation would involve more than 10,000 files and folders.
+    :ivar RelocationError.duplicated_or_nested_paths:
+        There are duplicated/nested paths among ``RelocationArg.from_path`` and
         ``RelocationArg.to_path``.
-    :ivar files.RelocationError.cant_transfer_ownership: Your move operation
-        would result in an ownership transfer. You may reissue the request with
-        the field ``RelocationArg.allow_ownership_transfer`` to true.
-    :ivar files.RelocationError.insufficient_quota: The current user does not
-        have enough space to move or copy the files.
-    :ivar files.RelocationError.internal_error: Something went wrong with the
-        job on Dropbox's end. You'll need to verify that the action you were
-        taking succeeded, and if not, try again. This should happen very rarely.
-    :ivar files.RelocationError.cant_move_shared_folder: Can't move the shared
-        folder to the given destination.
-    :ivar MoveIntoVaultError RelocationError.cant_move_into_vault: Some content
-        cannot be moved into Vault under certain circumstances, see detailed
-        error.
-    :ivar MoveIntoFamilyError RelocationError.cant_move_into_family: Some
-        content cannot be moved into the Family Room folder under certain
+    :ivar RelocationError.cant_transfer_ownership:
+        Your move operation would result in an ownership transfer. You may
+        reissue the request with the field
+        ``RelocationArg.allow_ownership_transfer`` to true.
+    :ivar RelocationError.insufficient_quota:
+        The current user does not have enough space to move or copy the files.
+    :ivar RelocationError.internal_error:
+        Something went wrong with the job on Dropbox's end. You'll need to
+        verify that the action you were taking succeeded, and if not, try again.
+        This should happen very rarely.
+    :ivar RelocationError.cant_move_shared_folder:
+        Can't move the shared folder to the given destination.
+    :ivar RelocationError.cant_move_into_vault:
+        Some content cannot be moved into Vault under certain circumstances, see
+        detailed error.
+    :vartype RelocationError.cant_move_into_vault: MoveIntoVaultError
+    :ivar RelocationError.cant_move_into_family:
+        Some content cannot be moved into the Family Room folder under certain
         circumstances, see detailed error.
+    :vartype RelocationError.cant_move_into_family: MoveIntoFamilyError
     """
 
     _catch_all = 'other'
@@ -6442,8 +6578,9 @@ class RelocationBatchError(RelocationError):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar files.RelocationBatchError.too_many_write_operations: There are too
-        many write operations in user's Dropbox. Please retry this request.
+    :ivar RelocationBatchError.too_many_write_operations:
+        There are too many write operations in user's Dropbox. Please retry this
+        request.
     """
 
     # Attribute is overwritten below the class definition
@@ -6468,14 +6605,16 @@ class RelocationBatchErrorEntry(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar RelocationError RelocationBatchErrorEntry.relocation_error: User
-        errors that retry won't help.
-    :ivar files.RelocationBatchErrorEntry.internal_error: Something went wrong
-        with the job on Dropbox's end. You'll need to verify that the action you
-        were taking succeeded, and if not, try again. This should happen very
-        rarely.
-    :ivar files.RelocationBatchErrorEntry.too_many_write_operations: There are
-        too many write operations in user's Dropbox. Please retry this request.
+    :ivar RelocationBatchErrorEntry.relocation_error:
+        User errors that retry won't help.
+    :vartype RelocationBatchErrorEntry.relocation_error: RelocationError
+    :ivar RelocationBatchErrorEntry.internal_error:
+        Something went wrong with the job on Dropbox's end. You'll need to
+        verify that the action you were taking succeeded, and if not, try again.
+        This should happen very rarely.
+    :ivar RelocationBatchErrorEntry.too_many_write_operations:
+        There are too many write operations in user's Dropbox. Please retry this
+        request.
     """
 
     _catch_all = 'other'
@@ -6552,10 +6691,12 @@ class RelocationBatchJobStatus(async_.PollResultBase):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar RelocationBatchResult RelocationBatchJobStatus.complete: The copy or
-        move batch job has finished.
-    :ivar RelocationBatchError RelocationBatchJobStatus.failed: The copy or move
-        batch job has failed with exception.
+    :ivar RelocationBatchJobStatus.complete:
+        The copy or move batch job has finished.
+    :vartype RelocationBatchJobStatus.complete: RelocationBatchResult
+    :ivar RelocationBatchJobStatus.failed:
+        The copy or move batch job has failed with exception.
+    :vartype RelocationBatchJobStatus.failed: RelocationBatchError
     """
 
     @classmethod
@@ -6707,8 +6848,8 @@ RelocationBatchResult_validator = bv.Struct(RelocationBatchResult)
 
 class RelocationBatchResultData(bb.Struct):
     """
-    :ivar files.RelocationBatchResultData.metadata: Metadata of the relocated
-        object.
+    :ivar RelocationBatchResultData.metadata:
+        Metadata of the relocated object.
     """
 
     __slots__ = [
@@ -6824,8 +6965,9 @@ class RelocationBatchV2JobStatus(async_.PollResultBase):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar RelocationBatchV2Result RelocationBatchV2JobStatus.complete: The copy
-        or move batch job has finished.
+    :ivar RelocationBatchV2JobStatus.complete:
+        The copy or move batch job has finished.
+    :vartype RelocationBatchV2JobStatus.complete: RelocationBatchV2Result
     """
 
     @classmethod
@@ -6911,9 +7053,9 @@ RelocationBatchV2Launch_validator = bv.Union(RelocationBatchV2Launch)
 
 class RelocationBatchV2Result(FileOpsResult):
     """
-    :ivar files.RelocationBatchV2Result.entries: Each entry in
-        CopyBatchArg.entries or ``MoveBatchArg.entries`` will appear at the same
-        position inside ``RelocationBatchV2Result.entries``.
+    :ivar RelocationBatchV2Result.entries:
+        Each entry in CopyBatchArg.entries or ``MoveBatchArg.entries`` will
+        appear at the same position inside ``RelocationBatchV2Result.entries``.
     """
 
     __slots__ = [
@@ -6939,7 +7081,8 @@ RelocationBatchV2Result_validator = bv.Struct(RelocationBatchV2Result)
 
 class RelocationResult(FileOpsResult):
     """
-    :ivar files.RelocationResult.metadata: Metadata of the relocated object.
+    :ivar RelocationResult.metadata:
+        Metadata of the relocated object.
     """
 
     __slots__ = [
@@ -6965,9 +7108,10 @@ RelocationResult_validator = bv.Struct(RelocationResult)
 
 class RemoveTagArg(bb.Struct):
     """
-    :ivar files.RemoveTagArg.path: Path to the item to tag.
-    :ivar files.RemoveTagArg.tag_text: The tag to remove. Will be automatically
-        converted to lowercase letters.
+    :ivar RemoveTagArg.path:
+        Path to the item to tag.
+    :ivar RemoveTagArg.tag_text:
+        The tag to remove. Will be automatically converted to lowercase letters.
     """
 
     __slots__ = [
@@ -7004,8 +7148,8 @@ class RemoveTagError(BaseTagError):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar files.RemoveTagError.tag_not_present: That tag doesn't exist at this
-        path.
+    :ivar RemoveTagError.tag_not_present:
+        That tag doesn't exist at this path.
     """
 
     # Attribute is overwritten below the class definition
@@ -7026,8 +7170,10 @@ RemoveTagError_validator = bv.Union(RemoveTagError)
 
 class RestoreArg(bb.Struct):
     """
-    :ivar files.RestoreArg.path: The path to save the restored file.
-    :ivar files.RestoreArg.rev: The revision to restore.
+    :ivar RestoreArg.path:
+        The path to save the restored file.
+    :ivar RestoreArg.rev:
+        The revision to restore.
     """
 
     __slots__ = [
@@ -7064,14 +7210,17 @@ class RestoreError(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar LookupError RestoreError.path_lookup: An error occurs when downloading
-        metadata for the file.
-    :ivar WriteError RestoreError.path_write: An error occurs when trying to
-        restore the file to that path.
-    :ivar files.RestoreError.invalid_revision: The revision is invalid. It may
-        not exist or may point to a deleted file.
-    :ivar files.RestoreError.in_progress: The restore is currently executing,
-        but has not yet completed.
+    :ivar RestoreError.path_lookup:
+        An error occurs when downloading metadata for the file.
+    :vartype RestoreError.path_lookup: LookupError
+    :ivar RestoreError.path_write:
+        An error occurs when trying to restore the file to that path.
+    :vartype RestoreError.path_write: WriteError
+    :ivar RestoreError.invalid_revision:
+        The revision is invalid. It may not exist or may point to a deleted
+        file.
+    :ivar RestoreError.in_progress:
+        The restore is currently executing, but has not yet completed.
     """
 
     _catch_all = 'other'
@@ -7175,10 +7324,11 @@ RestoreError_validator = bv.Union(RestoreError)
 
 class SaveCopyReferenceArg(bb.Struct):
     """
-    :ivar files.SaveCopyReferenceArg.copy_reference: A copy reference returned
-        by :meth:`dropbox.dropbox_client.Dropbox.files_copy_reference_get`.
-    :ivar files.SaveCopyReferenceArg.path: Path in the user's Dropbox that is
-        the destination.
+    :ivar SaveCopyReferenceArg.copy_reference:
+        A copy reference returned by
+        :meth:`dropbox.dropbox_client.Dropbox.files_copy_reference_get`.
+    :ivar SaveCopyReferenceArg.path:
+        Path in the user's Dropbox that is the destination.
     """
 
     __slots__ = [
@@ -7215,16 +7365,16 @@ class SaveCopyReferenceError(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar files.SaveCopyReferenceError.invalid_copy_reference: The copy
-        reference is invalid.
-    :ivar files.SaveCopyReferenceError.no_permission: You don't have permission
-        to save the given copy reference. Please make sure this app is same app
-        which created the copy reference and the source user is still linked to
-        the app.
-    :ivar files.SaveCopyReferenceError.not_found: The file referenced by the
-        copy reference cannot be found.
-    :ivar files.SaveCopyReferenceError.too_many_files: The operation would
-        involve more than 10,000 files and folders.
+    :ivar SaveCopyReferenceError.invalid_copy_reference:
+        The copy reference is invalid.
+    :ivar SaveCopyReferenceError.no_permission:
+        You don't have permission to save the given copy reference. Please make
+        sure this app is same app which created the copy reference and the
+        source user is still linked to the app.
+    :ivar SaveCopyReferenceError.not_found:
+        The file referenced by the copy reference cannot be found.
+    :ivar SaveCopyReferenceError.too_many_files:
+        The operation would involve more than 10,000 files and folders.
     """
 
     _catch_all = 'other'
@@ -7315,8 +7465,8 @@ SaveCopyReferenceError_validator = bv.Union(SaveCopyReferenceError)
 
 class SaveCopyReferenceResult(bb.Struct):
     """
-    :ivar files.SaveCopyReferenceResult.metadata: The metadata of the saved file
-        or folder in the user's Dropbox.
+    :ivar SaveCopyReferenceResult.metadata:
+        The metadata of the saved file or folder in the user's Dropbox.
     """
 
     __slots__ = [
@@ -7341,9 +7491,10 @@ SaveCopyReferenceResult_validator = bv.Struct(SaveCopyReferenceResult)
 
 class SaveUrlArg(bb.Struct):
     """
-    :ivar files.SaveUrlArg.path: The path in Dropbox where the URL will be saved
-        to.
-    :ivar files.SaveUrlArg.url: The URL to be saved.
+    :ivar SaveUrlArg.path:
+        The path in Dropbox where the URL will be saved to.
+    :ivar SaveUrlArg.url:
+        The URL to be saved.
     """
 
     __slots__ = [
@@ -7380,12 +7531,13 @@ class SaveUrlError(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar files.SaveUrlError.download_failed: Failed downloading the given URL.
-        The URL may be password-protected and the password provided was
-        incorrect, or the link may be disabled.
-    :ivar files.SaveUrlError.invalid_url: The given URL is invalid.
-    :ivar files.SaveUrlError.not_found: The file where the URL is saved to no
-        longer exists.
+    :ivar SaveUrlError.download_failed:
+        Failed downloading the given URL. The URL may be password-protected and
+        the password provided was incorrect, or the link may be disabled.
+    :ivar SaveUrlError.invalid_url:
+        The given URL is invalid.
+    :ivar SaveUrlError.not_found:
+        The file where the URL is saved to no longer exists.
     """
 
     _catch_all = 'other'
@@ -7470,8 +7622,9 @@ class SaveUrlJobStatus(async_.PollResultBase):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar FileMetadata SaveUrlJobStatus.complete: Metadata of the file where the
-        URL is saved to.
+    :ivar SaveUrlJobStatus.complete:
+        Metadata of the file where the URL is saved to.
+    :vartype SaveUrlJobStatus.complete: FileMetadata
     """
 
     @classmethod
@@ -7545,8 +7698,9 @@ class SaveUrlResult(async_.LaunchResultBase):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar FileMetadata SaveUrlResult.complete: Metadata of the file where the
-        URL is saved to.
+    :ivar SaveUrlResult.complete:
+        Metadata of the file where the URL is saved to.
+    :vartype SaveUrlResult.complete: FileMetadata
     """
 
     @classmethod
@@ -7587,20 +7741,21 @@ SaveUrlResult_validator = bv.Union(SaveUrlResult)
 
 class SearchArg(bb.Struct):
     """
-    :ivar files.SearchArg.path: The path in the user's Dropbox to search. Should
-        probably be a folder.
-    :ivar files.SearchArg.query: The string to search for. Query string may be
-        rewritten to improve relevance of results. The string is split on spaces
-        into multiple tokens. For file name searching, the last token is used
-        for prefix matching (i.e. "bat c" matches "bat cave" but not "batman
-        car").
-    :ivar files.SearchArg.start: The starting index within the search results
-        (used for paging).
-    :ivar files.SearchArg.max_results: The maximum number of search results to
-        return.
-    :ivar files.SearchArg.mode: The search mode (filename, filename_and_content,
-        or deleted_filename). Note that searching file content is only available
-        for Dropbox Business accounts.
+    :ivar SearchArg.path:
+        The path in the user's Dropbox to search. Should probably be a folder.
+    :ivar SearchArg.query:
+        The string to search for. Query string may be rewritten to improve
+        relevance of results. The string is split on spaces into multiple
+        tokens. For file name searching, the last token is used for prefix
+        matching (i.e. "bat c" matches "bat cave" but not "batman car").
+    :ivar SearchArg.start:
+        The starting index within the search results (used for paging).
+    :ivar SearchArg.max_results:
+        The maximum number of search results to return.
+    :ivar SearchArg.mode:
+        The search mode (filename, filename_and_content, or deleted_filename).
+        Note that searching file content is only available for Dropbox Business
+        accounts.
     """
 
     __slots__ = [
@@ -7661,8 +7816,8 @@ class SearchError(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar files.SearchError.internal_error: Something went wrong, please try
-        again.
+    :ivar SearchError.internal_error:
+        Something went wrong, please try again.
     """
 
     _catch_all = 'other'
@@ -7752,9 +7907,10 @@ SearchError_validator = bv.Union(SearchError)
 
 class SearchMatch(bb.Struct):
     """
-    :ivar files.SearchMatch.match_type: The type of the match.
-    :ivar files.SearchMatch.metadata: The metadata for the matched file or
-        folder.
+    :ivar SearchMatch.match_type:
+        The type of the match.
+    :ivar SearchMatch.metadata:
+        The metadata for the matched file or folder.
     """
 
     __slots__ = [
@@ -7787,8 +7943,8 @@ SearchMatch_validator = bv.Struct(SearchMatch)
 
 class SearchMatchFieldOptions(bb.Struct):
     """
-    :ivar files.SearchMatchFieldOptions.include_highlights: Whether to include
-        highlight span from file title.
+    :ivar SearchMatchFieldOptions.include_highlights:
+        Whether to include highlight span from file title.
     """
 
     __slots__ = [
@@ -7819,12 +7975,12 @@ class SearchMatchType(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar files.SearchMatchType.filename: This item was matched on its file or
-        folder name.
-    :ivar files.SearchMatchType.content: This item was matched based on its file
-        contents.
-    :ivar files.SearchMatchType.both: This item was matched based on both its
-        contents and its file name.
+    :ivar SearchMatchType.filename:
+        This item was matched on its file or folder name.
+    :ivar SearchMatchType.content:
+        This item was matched based on its file contents.
+    :ivar SearchMatchType.both:
+        This item was matched based on both its contents and its file name.
     """
 
     _catch_all = None
@@ -7872,16 +8028,16 @@ class SearchMatchTypeV2(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar files.SearchMatchTypeV2.filename: This item was matched on its file or
-        folder name.
-    :ivar files.SearchMatchTypeV2.file_content: This item was matched based on
-        its file contents.
-    :ivar files.SearchMatchTypeV2.filename_and_content: This item was matched
-        based on both its contents and its file name.
-    :ivar files.SearchMatchTypeV2.image_content: This item was matched on image
-        content.
-    :ivar files.SearchMatchTypeV2.metadata: This item was matched based on its
-        metadata.
+    :ivar SearchMatchTypeV2.filename:
+        This item was matched on its file or folder name.
+    :ivar SearchMatchTypeV2.file_content:
+        This item was matched based on its file contents.
+    :ivar SearchMatchTypeV2.filename_and_content:
+        This item was matched based on both its contents and its file name.
+    :ivar SearchMatchTypeV2.image_content:
+        This item was matched on image content.
+    :ivar SearchMatchTypeV2.metadata:
+        This item was matched based on its metadata.
     """
 
     _catch_all = 'other'
@@ -7953,11 +8109,13 @@ SearchMatchTypeV2_validator = bv.Union(SearchMatchTypeV2)
 
 class SearchMatchV2(bb.Struct):
     """
-    :ivar files.SearchMatchV2.metadata: The metadata for the matched file or
-        folder.
-    :ivar files.SearchMatchV2.match_type: The type of the match.
-    :ivar files.SearchMatchV2.highlight_spans: The list of HighlightSpan
-        determines which parts of the file title should be highlighted.
+    :ivar SearchMatchV2.metadata:
+        The metadata for the matched file or folder.
+    :ivar SearchMatchV2.match_type:
+        The type of the match.
+    :ivar SearchMatchV2.highlight_spans:
+        The list of HighlightSpan determines which parts of the file title
+        should be highlighted.
     """
 
     __slots__ = [
@@ -8002,11 +8160,12 @@ class SearchMode(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar files.SearchMode.filename: Search file and folder names.
-    :ivar files.SearchMode.filename_and_content: Search file and folder names as
-        well as file contents.
-    :ivar files.SearchMode.deleted_filename: Search for deleted file and folder
-        names.
+    :ivar SearchMode.filename:
+        Search file and folder names.
+    :ivar SearchMode.filename_and_content:
+        Search file and folder names as well as file contents.
+    :ivar SearchMode.deleted_filename:
+        Search for deleted file and folder names.
     """
 
     _catch_all = None
@@ -8048,22 +8207,26 @@ SearchMode_validator = bv.Union(SearchMode)
 
 class SearchOptions(bb.Struct):
     """
-    :ivar files.SearchOptions.path: Scopes the search to a path in the user's
-        Dropbox. Searches the entire Dropbox if not specified.
-    :ivar files.SearchOptions.max_results: The maximum number of search results
-        to return.
-    :ivar files.SearchOptions.order_by: Specified property of the order of
-        search results. By default, results are sorted by relevance.
-    :ivar files.SearchOptions.file_status: Restricts search to the given file
-        status.
-    :ivar files.SearchOptions.filename_only: Restricts search to only match on
-        filenames.
-    :ivar files.SearchOptions.file_extensions: Restricts search to only the
-        extensions specified. Only supported for active file search.
-    :ivar files.SearchOptions.file_categories: Restricts search to only the file
-        categories specified. Only supported for active file search.
-    :ivar files.SearchOptions.account_id: Restricts results to the given account
-        id.
+    :ivar SearchOptions.path:
+        Scopes the search to a path in the user's Dropbox. Searches the entire
+        Dropbox if not specified.
+    :ivar SearchOptions.max_results:
+        The maximum number of search results to return.
+    :ivar SearchOptions.order_by:
+        Specified property of the order of search results. By default, results
+        are sorted by relevance.
+    :ivar SearchOptions.file_status:
+        Restricts search to the given file status.
+    :ivar SearchOptions.filename_only:
+        Restricts search to only match on filenames.
+    :ivar SearchOptions.file_extensions:
+        Restricts search to only the extensions specified. Only supported for
+        active file search.
+    :ivar SearchOptions.file_categories:
+        Restricts search to only the file categories specified. Only supported
+        for active file search.
+    :ivar SearchOptions.account_id:
+        Restricts results to the given account id.
     """
 
     __slots__ = [
@@ -8188,13 +8351,14 @@ SearchOrderBy_validator = bv.Union(SearchOrderBy)
 
 class SearchResult(bb.Struct):
     """
-    :ivar files.SearchResult.matches: A list (possibly empty) of matches for the
-        query.
-    :ivar files.SearchResult.more: Used for paging. If true, indicates there is
-        another page of results available that can be fetched by calling
+    :ivar SearchResult.matches:
+        A list (possibly empty) of matches for the query.
+    :ivar SearchResult.more:
+        Used for paging. If true, indicates there is another page of results
+        available that can be fetched by calling
         :meth:`dropbox.dropbox_client.Dropbox.files_search` again.
-    :ivar files.SearchResult.start: Used for paging. Value to set the start
-        argument to when calling
+    :ivar SearchResult.start:
+        Used for paging. Value to set the start argument to when calling
         :meth:`dropbox.dropbox_client.Dropbox.files_search` to fetch the next
         page of results.
     """
@@ -8237,13 +8401,16 @@ SearchResult_validator = bv.Struct(SearchResult)
 
 class SearchV2Arg(bb.Struct):
     """
-    :ivar files.SearchV2Arg.query: The string to search for. May match across
-        multiple fields based on the request arguments.
-    :ivar files.SearchV2Arg.options: Options for more targeted search results.
-    :ivar files.SearchV2Arg.match_field_options: Options for search results
-        match fields.
-    :ivar files.SearchV2Arg.include_highlights: Field is deprecated. Deprecated
-        and moved this option to SearchMatchFieldOptions.
+    :ivar SearchV2Arg.query:
+        The string to search for. May match across multiple fields based on the
+        request arguments.
+    :ivar SearchV2Arg.options:
+        Options for more targeted search results.
+    :ivar SearchV2Arg.match_field_options:
+        Options for search results match fields.
+    :ivar SearchV2Arg.include_highlights:
+        Field is deprecated. Deprecated and moved this option to
+        SearchMatchFieldOptions.
     """
 
     __slots__ = [
@@ -8292,9 +8459,10 @@ SearchV2Arg_validator = bv.Struct(SearchV2Arg)
 
 class SearchV2ContinueArg(bb.Struct):
     """
-    :ivar files.SearchV2ContinueArg.cursor: The cursor returned by your last
-        call to :meth:`dropbox.dropbox_client.Dropbox.files_search`. Used to
-        fetch the next page of results.
+    :ivar SearchV2ContinueArg.cursor:
+        The cursor returned by your last call to
+        :meth:`dropbox.dropbox_client.Dropbox.files_search`. Used to fetch the
+        next page of results.
     """
 
     __slots__ = [
@@ -8319,13 +8487,15 @@ SearchV2ContinueArg_validator = bv.Struct(SearchV2ContinueArg)
 
 class SearchV2Result(bb.Struct):
     """
-    :ivar files.SearchV2Result.matches: A list (possibly empty) of matches for
-        the query.
-    :ivar files.SearchV2Result.has_more: Used for paging. If true, indicates
-        there is another page of results available that can be fetched by
-        calling :meth:`dropbox.dropbox_client.Dropbox.files_search_continue`
-        with the cursor.
-    :ivar files.SearchV2Result.cursor: Pass the cursor into
+    :ivar SearchV2Result.matches:
+        A list (possibly empty) of matches for the query.
+    :ivar SearchV2Result.has_more:
+        Used for paging. If true, indicates there is another page of results
+        available that can be fetched by calling
+        :meth:`dropbox.dropbox_client.Dropbox.files_search_continue` with the
+        cursor.
+    :ivar SearchV2Result.cursor:
+        Pass the cursor into
         :meth:`dropbox.dropbox_client.Dropbox.files_search_continue` to fetch
         the next page of results.
     """
@@ -8368,8 +8538,10 @@ SearchV2Result_validator = bv.Struct(SearchV2Result)
 
 class SharedLink(bb.Struct):
     """
-    :ivar files.SharedLink.url: Shared link url.
-    :ivar files.SharedLink.password: Password for the shared link.
+    :ivar SharedLink.url:
+        Shared link url.
+    :ivar SharedLink.password:
+        Password for the shared link.
     """
 
     __slots__ = [
@@ -8402,15 +8574,16 @@ SharedLink_validator = bv.Struct(SharedLink)
 
 class SharedLinkFileInfo(bb.Struct):
     """
-    :ivar files.SharedLinkFileInfo.url: The shared link corresponding to either
-        a file or shared link to a folder. If it is for a folder shared link, we
-        use the path param to determine for which file in the folder the view is
-        for.
-    :ivar files.SharedLinkFileInfo.path: The path corresponding to a file in a
-        shared link to a folder. Required for shared links to folders.
-    :ivar files.SharedLinkFileInfo.password: Password for the shared link.
-        Required for password-protected shared links to files unless it can be
-        read from a cookie.
+    :ivar SharedLinkFileInfo.url:
+        The shared link corresponding to either a file or shared link to a
+        folder. If it is for a folder shared link, we use the path param to
+        determine for which file in the folder the view is for.
+    :ivar SharedLinkFileInfo.path:
+        The path corresponding to a file in a shared link to a folder. Required
+        for shared links to folders.
+    :ivar SharedLinkFileInfo.password:
+        Password for the shared link. Required for password-protected shared
+        links to files unless it can be read from a cookie.
     """
 
     __slots__ = [
@@ -8451,11 +8624,12 @@ SharedLinkFileInfo_validator = bv.Struct(SharedLinkFileInfo)
 
 class SingleUserLock(bb.Struct):
     """
-    :ivar files.SingleUserLock.created: The time the lock was created.
-    :ivar files.SingleUserLock.lock_holder_account_id: The account ID of the
-        lock holder if known.
-    :ivar files.SingleUserLock.lock_holder_team_id: The id of the team of the
-        account holder if it exists.
+    :ivar SingleUserLock.created:
+        The time the lock was created.
+    :ivar SingleUserLock.lock_holder_account_id:
+        The account ID of the lock holder if known.
+    :ivar SingleUserLock.lock_holder_team_id:
+        The id of the team of the account holder if it exists.
     """
 
     __slots__ = [
@@ -8496,7 +8670,8 @@ SingleUserLock_validator = bv.Struct(SingleUserLock)
 
 class SymlinkInfo(bb.Struct):
     """
-    :ivar files.SymlinkInfo.target: The target this symlink points to.
+    :ivar SymlinkInfo.target:
+        The target this symlink points to.
     """
 
     __slots__ = [
@@ -8525,14 +8700,16 @@ class SyncSetting(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar files.SyncSetting.default: On first sync to members' computers, the
-        specified folder will follow its parent folder's setting or otherwise
-        follow default sync behavior.
-    :ivar files.SyncSetting.not_synced: On first sync to members' computers, the
-        specified folder will be set to not sync with selective sync.
-    :ivar files.SyncSetting.not_synced_inactive: The specified folder's
-        not_synced setting is inactive due to its location or other
-        configuration changes. It will follow its parent folder's setting.
+    :ivar SyncSetting.default:
+        On first sync to members' computers, the specified folder will follow
+        its parent folder's setting or otherwise follow default sync behavior.
+    :ivar SyncSetting.not_synced:
+        On first sync to members' computers, the specified folder will be set to
+        not sync with selective sync.
+    :ivar SyncSetting.not_synced_inactive:
+        The specified folder's not_synced setting is inactive due to its
+        location or other configuration changes. It will follow its parent
+        folder's setting.
     """
 
     _catch_all = 'other'
@@ -8588,11 +8765,12 @@ class SyncSettingArg(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar files.SyncSettingArg.default: On first sync to members' computers, the
-        specified folder will follow its parent folder's setting or otherwise
-        follow default sync behavior.
-    :ivar files.SyncSettingArg.not_synced: On first sync to members' computers,
-        the specified folder will be set to not sync with selective sync.
+    :ivar SyncSettingArg.default:
+        On first sync to members' computers, the specified folder will follow
+        its parent folder's setting or otherwise follow default sync behavior.
+    :ivar SyncSettingArg.not_synced:
+        On first sync to members' computers, the specified folder will be set to
+        not sync with selective sync.
     """
 
     _catch_all = 'other'
@@ -8638,10 +8816,11 @@ class SyncSettingsError(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar files.SyncSettingsError.unsupported_combination: Setting this
-        combination of sync settings simultaneously is not supported.
-    :ivar files.SyncSettingsError.unsupported_configuration: The specified
-        configuration is not supported.
+    :ivar SyncSettingsError.unsupported_combination:
+        Setting this combination of sync settings simultaneously is not
+        supported.
+    :ivar SyncSettingsError.unsupported_configuration:
+        The specified configuration is not supported.
     """
 
     _catch_all = 'other'
@@ -8718,7 +8897,9 @@ class Tag(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar UserGeneratedTag Tag.user_generated_tag: Tag generated by the user.
+    :ivar Tag.user_generated_tag:
+        Tag generated by the user.
+    :vartype Tag.user_generated_tag: UserGeneratedTag
     """
 
     _catch_all = 'other'
@@ -8771,21 +8952,23 @@ Tag_validator = bv.Union(Tag)
 
 class ThumbnailArg(bb.Struct):
     """
-    :ivar files.ThumbnailArg.path: The path to the image file you want to
-        thumbnail.
-    :ivar files.ThumbnailArg.format: The format for the thumbnail image, jpeg
-        (default), png, or webp. For images that are photos, jpeg should be
-        preferred, while png is better for screenshots and digital arts, and web
-        for compression.
-    :ivar files.ThumbnailArg.size: The size for the thumbnail image.
-    :ivar files.ThumbnailArg.mode: How to resize and crop the image to achieve
-        the desired size.
-    :ivar files.ThumbnailArg.quality: Field is only returned for "internal"
-        callers. Quality of the thumbnail image.
-    :ivar files.ThumbnailArg.exclude_media_info: Normally,
-        ``FileMetadata.media_info`` is set for photo and video. When this flag
-        is true, ``FileMetadata.media_info`` is not populated. This improves
-        latency for use cases where `media_info` is not needed.
+    :ivar ThumbnailArg.path:
+        The path to the image file you want to thumbnail.
+    :ivar ThumbnailArg.format:
+        The format for the thumbnail image, jpeg (default), png, or webp. For
+        images that are photos, jpeg should be preferred, while png is better
+        for screenshots and digital arts, and web for compression.
+    :ivar ThumbnailArg.size:
+        The size for the thumbnail image.
+    :ivar ThumbnailArg.mode:
+        How to resize and crop the image to achieve the desired size.
+    :ivar ThumbnailArg.quality:
+        Field is only returned for "internal" callers. Quality of the thumbnail
+        image.
+    :ivar ThumbnailArg.exclude_media_info:
+        Normally, ``FileMetadata.media_info`` is set for photo and video. When
+        this flag is true, ``FileMetadata.media_info`` is not populated. This
+        improves latency for use cases where `media_info` is not needed.
     """
 
     __slots__ = [
@@ -8854,16 +9037,17 @@ class ThumbnailError(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar LookupError ThumbnailError.path: An error occurs when downloading
-        metadata for the image.
-    :ivar files.ThumbnailError.unsupported_extension: The file extension doesn't
-        allow conversion to a thumbnail.
-    :ivar files.ThumbnailError.unsupported_image: The image cannot be converted
-        to a thumbnail.
-    :ivar files.ThumbnailError.encrypted_content: Encrypted content cannot be
-        converted to a thumbnail.
-    :ivar files.ThumbnailError.conversion_error: An error occurs during
-        thumbnail conversion.
+    :ivar ThumbnailError.path:
+        An error occurs when downloading metadata for the image.
+    :vartype ThumbnailError.path: LookupError
+    :ivar ThumbnailError.unsupported_extension:
+        The file extension doesn't allow conversion to a thumbnail.
+    :ivar ThumbnailError.unsupported_image:
+        The image cannot be converted to a thumbnail.
+    :ivar ThumbnailError.encrypted_content:
+        Encrypted content cannot be converted to a thumbnail.
+    :ivar ThumbnailError.conversion_error:
+        An error occurs during thumbnail conversion.
     """
 
     _catch_all = None
@@ -8994,13 +9178,15 @@ class ThumbnailMode(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar files.ThumbnailMode.strict: Scale down the image to fit within the
-        given size.
-    :ivar files.ThumbnailMode.bestfit: Scale down the image to fit within the
-        given size or its transpose.
-    :ivar files.ThumbnailMode.fitone_bestfit: Scale down the image to completely
-        cover the given size or its transpose.
-    :ivar files.ThumbnailMode.original: Don't resize the image at all.
+    :ivar ThumbnailMode.strict:
+        Scale down the image to fit within the given size.
+    :ivar ThumbnailMode.bestfit:
+        Scale down the image to fit within the given size or its transpose.
+    :ivar ThumbnailMode.fitone_bestfit:
+        Scale down the image to completely cover the given size or its
+        transpose.
+    :ivar ThumbnailMode.original:
+        Don't resize the image at all.
     """
 
     _catch_all = None
@@ -9056,8 +9242,10 @@ class ThumbnailQuality(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar files.ThumbnailQuality.quality_80: default thumbnail quality.
-    :ivar files.ThumbnailQuality.quality_90: high thumbnail quality.
+    :ivar ThumbnailQuality.quality_80:
+        default thumbnail quality.
+    :ivar ThumbnailQuality.quality_90:
+        high thumbnail quality.
     """
 
     _catch_all = None
@@ -9093,17 +9281,26 @@ class ThumbnailSize(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar files.ThumbnailSize.w32h32: 32 by 32 px.
-    :ivar files.ThumbnailSize.w64h64: 64 by 64 px.
-    :ivar files.ThumbnailSize.w128h128: 128 by 128 px.
-    :ivar files.ThumbnailSize.w256h256: 256 by 256 px.
-    :ivar files.ThumbnailSize.w480h320: 480 by 320 px.
-    :ivar files.ThumbnailSize.w640h480: 640 by 480 px.
-    :ivar files.ThumbnailSize.w960h640: 960 by 640 px.
-    :ivar files.ThumbnailSize.w1024h768: 1024 by 768 px.
-    :ivar files.ThumbnailSize.w2048h1536: 2048 by 1536 px.
-    :ivar files.ThumbnailSize.w3200h2400: Field is only returned for "internal"
-        callers. 3200 by 2400 px.
+    :ivar ThumbnailSize.w32h32:
+        32 by 32 px.
+    :ivar ThumbnailSize.w64h64:
+        64 by 64 px.
+    :ivar ThumbnailSize.w128h128:
+        128 by 128 px.
+    :ivar ThumbnailSize.w256h256:
+        256 by 256 px.
+    :ivar ThumbnailSize.w480h320:
+        480 by 320 px.
+    :ivar ThumbnailSize.w640h480:
+        640 by 480 px.
+    :ivar ThumbnailSize.w960h640:
+        960 by 640 px.
+    :ivar ThumbnailSize.w1024h768:
+        1024 by 768 px.
+    :ivar ThumbnailSize.w2048h1536:
+        2048 by 1536 px.
+    :ivar ThumbnailSize.w3200h2400:
+        Field is only returned for "internal" callers. 3200 by 2400 px.
     """
 
     _catch_all = None
@@ -9215,22 +9412,25 @@ ThumbnailSize_validator = bv.Union(ThumbnailSize)
 
 class ThumbnailV2Arg(bb.Struct):
     """
-    :ivar files.ThumbnailV2Arg.resource: Information specifying which file to
-        preview. This could be a path to a file, a shared link pointing to a
-        file, or a shared link pointing to a folder, with a relative path.
-    :ivar files.ThumbnailV2Arg.format: The format for the thumbnail image, jpeg
-        (default), png, or webp. For images that are photos, jpeg should be
-        preferred, while png is better for screenshots and digital arts, and web
-        for compression.
-    :ivar files.ThumbnailV2Arg.size: The size for the thumbnail image.
-    :ivar files.ThumbnailV2Arg.mode: How to resize and crop the image to achieve
-        the desired size.
-    :ivar files.ThumbnailV2Arg.quality: Field is only returned for "internal"
-        callers. Quality of the thumbnail image.
-    :ivar files.ThumbnailV2Arg.exclude_media_info: Normally,
-        ``FileMetadata.media_info`` is set for photo and video. When this flag
-        is true, ``FileMetadata.media_info`` is not populated. This improves
-        latency for use cases where `media_info` is not needed.
+    :ivar ThumbnailV2Arg.resource:
+        Information specifying which file to preview. This could be a path to a
+        file, a shared link pointing to a file, or a shared link pointing to a
+        folder, with a relative path.
+    :ivar ThumbnailV2Arg.format:
+        The format for the thumbnail image, jpeg (default), png, or webp. For
+        images that are photos, jpeg should be preferred, while png is better
+        for screenshots and digital arts, and web for compression.
+    :ivar ThumbnailV2Arg.size:
+        The size for the thumbnail image.
+    :ivar ThumbnailV2Arg.mode:
+        How to resize and crop the image to achieve the desired size.
+    :ivar ThumbnailV2Arg.quality:
+        Field is only returned for "internal" callers. Quality of the thumbnail
+        image.
+    :ivar ThumbnailV2Arg.exclude_media_info:
+        Normally, ``FileMetadata.media_info`` is set for photo and video. When
+        this flag is true, ``FileMetadata.media_info`` is not populated. This
+        improves latency for use cases where `media_info` is not needed.
     """
 
     __slots__ = [
@@ -9299,19 +9499,21 @@ class ThumbnailV2Error(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar LookupError ThumbnailV2Error.path: An error occurred when downloading
-        metadata for the image.
-    :ivar files.ThumbnailV2Error.unsupported_extension: The file extension
-        doesn't allow conversion to a thumbnail.
-    :ivar files.ThumbnailV2Error.unsupported_image: The image cannot be
-        converted to a thumbnail.
-    :ivar files.ThumbnailV2Error.encrypted_content: Encrypted content cannot be
-        converted to a thumbnail.
-    :ivar files.ThumbnailV2Error.conversion_error: An error occurred during
-        thumbnail conversion.
-    :ivar files.ThumbnailV2Error.access_denied: Access to this shared link is
-        forbidden.
-    :ivar files.ThumbnailV2Error.not_found: The shared link does not exist.
+    :ivar ThumbnailV2Error.path:
+        An error occurred when downloading metadata for the image.
+    :vartype ThumbnailV2Error.path: LookupError
+    :ivar ThumbnailV2Error.unsupported_extension:
+        The file extension doesn't allow conversion to a thumbnail.
+    :ivar ThumbnailV2Error.unsupported_image:
+        The image cannot be converted to a thumbnail.
+    :ivar ThumbnailV2Error.encrypted_content:
+        Encrypted content cannot be converted to a thumbnail.
+    :ivar ThumbnailV2Error.conversion_error:
+        An error occurred during thumbnail conversion.
+    :ivar ThumbnailV2Error.access_denied:
+        Access to this shared link is forbidden.
+    :ivar ThumbnailV2Error.not_found:
+        The shared link does not exist.
     """
 
     _catch_all = 'other'
@@ -9424,7 +9626,8 @@ ThumbnailV2Error_validator = bv.Union(ThumbnailV2Error)
 
 class UnlockFileArg(bb.Struct):
     """
-    :ivar files.UnlockFileArg.path: Path in the user's Dropbox to a file.
+    :ivar UnlockFileArg.path:
+        Path in the user's Dropbox to a file.
     """
 
     __slots__ = [
@@ -9449,9 +9652,10 @@ UnlockFileArg_validator = bv.Struct(UnlockFileArg)
 
 class UnlockFileBatchArg(bb.Struct):
     """
-    :ivar files.UnlockFileBatchArg.entries: List of 'entries'. Each 'entry'
-        contains a path of the file which will be unlocked. Duplicate path
-        arguments in the batch are considered only once.
+    :ivar UnlockFileBatchArg.entries:
+        List of 'entries'. Each 'entry' contains a path of the file which will
+        be unlocked. Duplicate path arguments in the batch are considered only
+        once.
     """
 
     __slots__ = [
@@ -9476,10 +9680,11 @@ UnlockFileBatchArg_validator = bv.Struct(UnlockFileBatchArg)
 
 class UploadArg(CommitInfo):
     """
-    :ivar files.UploadArg.content_hash: A hash of the file content uploaded in
-        this call. If provided and the uploaded content does not match this
-        hash, an error will be returned. For more information see our `Content
-        hash <https://www.dropbox.com/developers/reference/content-hash>`_ page.
+    :ivar UploadArg.content_hash:
+        A hash of the file content uploaded in this call. If provided and the
+        uploaded content does not match this hash, an error will be returned.
+        For more information see our `Content hash
+        <https://www.dropbox.com/developers/reference/content-hash>`_ page.
     """
 
     __slots__ = [
@@ -9522,17 +9727,21 @@ class UploadError(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar UploadWriteFailed UploadError.path: Unable to save the uploaded
-        contents to a file.
-    :ivar InvalidPropertyGroupError UploadError.properties_error: The supplied
-        property group is invalid. The file has uploaded without property
-        groups.
-    :ivar files.UploadError.payload_too_large: The request payload must be at
-        most 150 MiB.
-    :ivar files.UploadError.content_hash_mismatch: The content received by the
-        Dropbox server in this call does not match the provided content hash.
-    :ivar files.UploadError.encryption_not_supported: The file is required to be
-        encrypted, which is not supported in our public API.
+    :ivar UploadError.path:
+        Unable to save the uploaded contents to a file.
+    :vartype UploadError.path: UploadWriteFailed
+    :ivar UploadError.properties_error:
+        The supplied property group is invalid. The file has uploaded without
+        property groups.
+    :vartype UploadError.properties_error: file_properties.InvalidPropertyGroupError
+    :ivar UploadError.payload_too_large:
+        The request payload must be at most 150 MiB.
+    :ivar UploadError.content_hash_mismatch:
+        The content received by the Dropbox server in this call does not match
+        the provided content hash.
+    :ivar UploadError.encryption_not_supported:
+        The file is required to be encrypted, which is not supported in our
+        public API.
     """
 
     _catch_all = 'other'
@@ -9647,16 +9856,17 @@ UploadError_validator = bv.Union(UploadError)
 
 class UploadSessionAppendArg(bb.Struct):
     """
-    :ivar files.UploadSessionAppendArg.cursor: Contains the upload session ID
-        and the offset.
-    :ivar files.UploadSessionAppendArg.close: If true, the current session will
-        be closed, at which point you won't be able to call
+    :ivar UploadSessionAppendArg.cursor:
+        Contains the upload session ID and the offset.
+    :ivar UploadSessionAppendArg.close:
+        If true, the current session will be closed, at which point you won't be
+        able to call
         :meth:`dropbox.dropbox_client.Dropbox.files_upload_session_append`
         anymore with the current session.
-    :ivar files.UploadSessionAppendArg.content_hash: A hash of the file content
-        uploaded in this call. If provided and the uploaded content does not
-        match this hash, an error will be returned. For more information see our
-        `Content hash
+    :ivar UploadSessionAppendArg.content_hash:
+        A hash of the file content uploaded in this call. If provided and the
+        uploaded content does not match this hash, an error will be returned.
+        For more information see our `Content hash
         <https://www.dropbox.com/developers/reference/content-hash>`_ page.
     """
 
@@ -9698,13 +9908,13 @@ UploadSessionAppendArg_validator = bv.Struct(UploadSessionAppendArg)
 
 class UploadSessionAppendBatchArg(bb.Struct):
     """
-    :ivar files.UploadSessionAppendBatchArg.entries: Append information for each
-        file in the batch.
-    :ivar files.UploadSessionAppendBatchArg.content_hash: A hash of the entire
-        request body which is all the concatenated pieces of file content that
-        were uploaded in this call. If provided and the uploaded content does
-        not match this hash, an error will be returned. For more information see
-        our `Content hash
+    :ivar UploadSessionAppendBatchArg.entries:
+        Append information for each file in the batch.
+    :ivar UploadSessionAppendBatchArg.content_hash:
+        A hash of the entire request body which is all the concatenated pieces
+        of file content that were uploaded in this call. If provided and the
+        uploaded content does not match this hash, an error will be returned.
+        For more information see our `Content hash
         <https://www.dropbox.com/developers/reference/content-hash>`_ page.
     """
 
@@ -9738,13 +9948,14 @@ UploadSessionAppendBatchArg_validator = bv.Struct(UploadSessionAppendBatchArg)
 
 class UploadSessionAppendBatchArgEntry(bb.Struct):
     """
-    :ivar files.UploadSessionAppendBatchArgEntry.cursor: Contains the upload
-        session ID and the offset.
-    :ivar files.UploadSessionAppendBatchArgEntry.length: Length in bytes of the
-        data that should be appended for this session. Used to split the batched
-        upload data for multiple upload sessions.
-    :ivar files.UploadSessionAppendBatchArgEntry.close: If true, the current
-        session will be closed, at which point you won't be able to call
+    :ivar UploadSessionAppendBatchArgEntry.cursor:
+        Contains the upload session ID and the offset.
+    :ivar UploadSessionAppendBatchArgEntry.length:
+        Length in bytes of the data that should be appended for this session.
+        Used to split the batched upload data for multiple upload sessions.
+    :ivar UploadSessionAppendBatchArgEntry.close:
+        If true, the current session will be closed, at which point you won't be
+        able to call
         :meth:`dropbox.dropbox_client.Dropbox.files_upload_session_append_batch`
         anymore with the current session.
     """
@@ -9791,26 +10002,26 @@ class UploadSessionAppendBatchEntryError(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar files.UploadSessionAppendBatchEntryError.not_found: The upload session
-        ID was not found or has expired. Upload sessions are valid for 7 days.
-    :ivar UploadSessionOffsetError
-        UploadSessionAppendBatchEntryError.incorrect_offset: The specified
-        offset was incorrect. See the value for the correct offset. This error
-        may occur when a previous request was received and processed
-        successfully but the client did not receive the response, e.g. due to a
-        network error.
-    :ivar files.UploadSessionAppendBatchEntryError.closed: You are attempting to
-        append data to an upload session that has already been closed (i.e.
-        committed).
-    :ivar files.UploadSessionAppendBatchEntryError.too_large: You can not append
-        to the upload session because the size of a file should not exceed the
-        max file size limit (i.e. 2^41 - 2^22 or 2,199,019,061,248 bytes).
-    :ivar
-        files.UploadSessionAppendBatchEntryError.concurrent_session_invalid_offset:
+    :ivar UploadSessionAppendBatchEntryError.not_found:
+        The upload session ID was not found or has expired. Upload sessions are
+        valid for 7 days.
+    :ivar UploadSessionAppendBatchEntryError.incorrect_offset:
+        The specified offset was incorrect. See the value for the correct
+        offset. This error may occur when a previous request was received and
+        processed successfully but the client did not receive the response, e.g.
+        due to a network error.
+    :vartype UploadSessionAppendBatchEntryError.incorrect_offset: UploadSessionOffsetError
+    :ivar UploadSessionAppendBatchEntryError.closed:
+        You are attempting to append data to an upload session that has already
+        been closed (i.e. committed).
+    :ivar UploadSessionAppendBatchEntryError.too_large:
+        You can not append to the upload session because the size of a file
+        should not exceed the max file size limit (i.e. 2^41 - 2^22 or
+        2,199,019,061,248 bytes).
+    :ivar UploadSessionAppendBatchEntryError.concurrent_session_invalid_offset:
         For concurrent upload sessions, offset needs to be multiple of 2^22
         (4,194,304) bytes.
-    :ivar
-        files.UploadSessionAppendBatchEntryError.concurrent_session_invalid_data_size:
+    :ivar UploadSessionAppendBatchEntryError.concurrent_session_invalid_data_size:
         For concurrent upload sessions, only chunks with size multiple of 2^22
         (4,194,304) bytes can be uploaded.
     """
@@ -9922,14 +10133,15 @@ class UploadSessionAppendBatchError(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar files.UploadSessionAppendBatchError.payload_too_large: The request
-        payload must be at most 150 MiB.
-    :ivar files.UploadSessionAppendBatchError.content_hash_mismatch: The content
-        received by the Dropbox server in this call does not match the provided
-        content hash.
-    :ivar files.UploadSessionAppendBatchError.length_mismatch: The total length
-        of the content received by the Dropbox server in this call does not
-        match the total of the provided lengths in the batch arguments.
+    :ivar UploadSessionAppendBatchError.payload_too_large:
+        The request payload must be at most 150 MiB.
+    :ivar UploadSessionAppendBatchError.content_hash_mismatch:
+        The content received by the Dropbox server in this call does not match
+        the provided content hash.
+    :ivar UploadSessionAppendBatchError.length_mismatch:
+        The total length of the content received by the Dropbox server in this
+        call does not match the total of the provided lengths in the batch
+        arguments.
     """
 
     _catch_all = 'other'
@@ -9981,9 +10193,9 @@ UploadSessionAppendBatchError_validator = bv.Union(UploadSessionAppendBatchError
 
 class UploadSessionAppendBatchResult(bb.Struct):
     """
-    :ivar files.UploadSessionAppendBatchResult.entries: Each entry in
-        ``UploadSessionAppendBatchArg.entries`` will appear at the same position
-        inside ``UploadSessionAppendBatchResult.entries``.
+    :ivar UploadSessionAppendBatchResult.entries:
+        Each entry in ``UploadSessionAppendBatchArg.entries`` will appear at the
+        same position inside ``UploadSessionAppendBatchResult.entries``.
     """
 
     __slots__ = [
@@ -10065,29 +10277,33 @@ class UploadSessionAppendError(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar files.UploadSessionAppendError.not_found: The upload session ID was
-        not found or has expired. Upload sessions are valid for 7 days.
-    :ivar UploadSessionOffsetError UploadSessionAppendError.incorrect_offset:
+    :ivar UploadSessionAppendError.not_found:
+        The upload session ID was not found or has expired. Upload sessions are
+        valid for 7 days.
+    :ivar UploadSessionAppendError.incorrect_offset:
         The specified offset was incorrect. See the value for the correct
         offset. This error may occur when a previous request was received and
         processed successfully but the client did not receive the response, e.g.
         due to a network error.
-    :ivar files.UploadSessionAppendError.closed: You are attempting to append
-        data to an upload session that has already been closed (i.e. committed).
-    :ivar files.UploadSessionAppendError.too_large: You can not append to the
-        upload session because the size of a file should not exceed the max file
-        size limit (i.e. 2^41 - 2^22 or 2,199,019,061,248 bytes).
-    :ivar files.UploadSessionAppendError.concurrent_session_invalid_offset: For
-        concurrent upload sessions, offset needs to be multiple of 2^22
+    :vartype UploadSessionAppendError.incorrect_offset: UploadSessionOffsetError
+    :ivar UploadSessionAppendError.closed:
+        You are attempting to append data to an upload session that has already
+        been closed (i.e. committed).
+    :ivar UploadSessionAppendError.too_large:
+        You can not append to the upload session because the size of a file
+        should not exceed the max file size limit (i.e. 2^41 - 2^22 or
+        2,199,019,061,248 bytes).
+    :ivar UploadSessionAppendError.concurrent_session_invalid_offset:
+        For concurrent upload sessions, offset needs to be multiple of 2^22
         (4,194,304) bytes.
-    :ivar files.UploadSessionAppendError.concurrent_session_invalid_data_size:
+    :ivar UploadSessionAppendError.concurrent_session_invalid_data_size:
         For concurrent upload sessions, only chunks with size multiple of 2^22
         (4,194,304) bytes can be uploaded.
-    :ivar files.UploadSessionAppendError.payload_too_large: The request payload
-        must be at most 150 MiB.
-    :ivar files.UploadSessionAppendError.content_hash_mismatch: The content
-        received by the Dropbox server in this call does not match the provided
-        content hash.
+    :ivar UploadSessionAppendError.payload_too_large:
+        The request payload must be at most 150 MiB.
+    :ivar UploadSessionAppendError.content_hash_mismatch:
+        The content received by the Dropbox server in this call does not match
+        the provided content hash.
     """
 
     _catch_all = 'other'
@@ -10213,11 +10429,13 @@ UploadSessionAppendError_validator = bv.Union(UploadSessionAppendError)
 
 class UploadSessionCursor(bb.Struct):
     """
-    :ivar files.UploadSessionCursor.session_id: The upload session ID (returned
-        by :meth:`dropbox.dropbox_client.Dropbox.files_upload_session_start`).
-    :ivar files.UploadSessionCursor.offset: Offset in bytes at which data should
-        be appended. We use this to make sure upload data isn't lost or
-        duplicated in the event of a network error.
+    :ivar UploadSessionCursor.session_id:
+        The upload session ID (returned by
+        :meth:`dropbox.dropbox_client.Dropbox.files_upload_session_start`).
+    :ivar UploadSessionCursor.offset:
+        Offset in bytes at which data should be appended. We use this to make
+        sure upload data isn't lost or duplicated in the event of a network
+        error.
     """
 
     __slots__ = [
@@ -10250,14 +10468,14 @@ UploadSessionCursor_validator = bv.Struct(UploadSessionCursor)
 
 class UploadSessionFinishArg(bb.Struct):
     """
-    :ivar files.UploadSessionFinishArg.cursor: Contains the upload session ID
-        and the offset.
-    :ivar files.UploadSessionFinishArg.commit: Contains the path and other
-        optional modifiers for the commit.
-    :ivar files.UploadSessionFinishArg.content_hash: A hash of the file content
-        uploaded in this call. If provided and the uploaded content does not
-        match this hash, an error will be returned. For more information see our
-        `Content hash
+    :ivar UploadSessionFinishArg.cursor:
+        Contains the upload session ID and the offset.
+    :ivar UploadSessionFinishArg.commit:
+        Contains the path and other optional modifiers for the commit.
+    :ivar UploadSessionFinishArg.content_hash:
+        A hash of the file content uploaded in this call. If provided and the
+        uploaded content does not match this hash, an error will be returned.
+        For more information see our `Content hash
         <https://www.dropbox.com/developers/reference/content-hash>`_ page.
     """
 
@@ -10299,8 +10517,8 @@ UploadSessionFinishArg_validator = bv.Struct(UploadSessionFinishArg)
 
 class UploadSessionFinishBatchArg(bb.Struct):
     """
-    :ivar files.UploadSessionFinishBatchArg.entries: Commit information for each
-        file in the batch.
+    :ivar UploadSessionFinishBatchArg.entries:
+        Commit information for each file in the batch.
     """
 
     __slots__ = [
@@ -10329,10 +10547,11 @@ class UploadSessionFinishBatchJobStatus(async_.PollResultBase):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar UploadSessionFinishBatchResult
-        UploadSessionFinishBatchJobStatus.complete: The
+    :ivar UploadSessionFinishBatchJobStatus.complete:
+        The
         :meth:`dropbox.dropbox_client.Dropbox.files_upload_session_finish_batch`
         has finished.
+    :vartype UploadSessionFinishBatchJobStatus.complete: UploadSessionFinishBatchResult
     """
 
     @classmethod
@@ -10432,9 +10651,9 @@ UploadSessionFinishBatchLaunch_validator = bv.Union(UploadSessionFinishBatchLaun
 
 class UploadSessionFinishBatchResult(bb.Struct):
     """
-    :ivar files.UploadSessionFinishBatchResult.entries: Each entry in
-        ``UploadSessionFinishBatchArg.entries`` will appear at the same position
-        inside ``UploadSessionFinishBatchResult.entries``.
+    :ivar UploadSessionFinishBatchResult.entries:
+        Each entry in ``UploadSessionFinishBatchArg.entries`` will appear at the
+        same position inside ``UploadSessionFinishBatchResult.entries``.
     """
 
     __slots__ = [
@@ -10535,34 +10754,40 @@ class UploadSessionFinishError(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar UploadSessionLookupError UploadSessionFinishError.lookup_failed: The
-        session arguments are incorrect; the value explains the reason.
-    :ivar WriteError UploadSessionFinishError.path: Unable to save the uploaded
-        contents to a file. Data has already been appended to the upload
-        session. Please retry with empty data body and updated offset.
-    :ivar InvalidPropertyGroupError UploadSessionFinishError.properties_error:
+    :ivar UploadSessionFinishError.lookup_failed:
+        The session arguments are incorrect; the value explains the reason.
+    :vartype UploadSessionFinishError.lookup_failed: UploadSessionLookupError
+    :ivar UploadSessionFinishError.path:
+        Unable to save the uploaded contents to a file. Data has already been
+        appended to the upload session. Please retry with empty data body and
+        updated offset.
+    :vartype UploadSessionFinishError.path: WriteError
+    :ivar UploadSessionFinishError.properties_error:
         The supplied property group is invalid. The file has uploaded without
         property groups.
-    :ivar files.UploadSessionFinishError.too_many_shared_folder_targets: Field
-        is deprecated. The batch request commits files into too many different
-        shared folders. Please limit your batch request to files contained in a
-        single shared folder.
-    :ivar files.UploadSessionFinishError.too_many_write_operations: There are
-        too many write operations happening in the user's Dropbox. You should
-        retry uploading this file.
-    :ivar files.UploadSessionFinishError.concurrent_session_data_not_allowed:
+    :vartype UploadSessionFinishError.properties_error: file_properties.InvalidPropertyGroupError
+    :ivar UploadSessionFinishError.too_many_shared_folder_targets:
+        Field is deprecated. The batch request commits files into too many
+        different shared folders. Please limit your batch request to files
+        contained in a single shared folder.
+    :ivar UploadSessionFinishError.too_many_write_operations:
+        There are too many write operations happening in the user's Dropbox. You
+        should retry uploading this file.
+    :ivar UploadSessionFinishError.concurrent_session_data_not_allowed:
         Uploading data not allowed when finishing concurrent upload session.
-    :ivar files.UploadSessionFinishError.concurrent_session_not_closed:
+    :ivar UploadSessionFinishError.concurrent_session_not_closed:
         Concurrent upload sessions need to be closed before finishing.
-    :ivar files.UploadSessionFinishError.concurrent_session_missing_data: Not
-        all pieces of data were uploaded before trying to finish the session.
-    :ivar files.UploadSessionFinishError.payload_too_large: The request payload
-        must be at most 150 MiB.
-    :ivar files.UploadSessionFinishError.content_hash_mismatch: The content
-        received by the Dropbox server in this call does not match the provided
-        content hash.
-    :ivar files.UploadSessionFinishError.encryption_not_supported: The file is
-        required to be encrypted, which is not supported in our public API.
+    :ivar UploadSessionFinishError.concurrent_session_missing_data:
+        Not all pieces of data were uploaded before trying to finish the
+        session.
+    :ivar UploadSessionFinishError.payload_too_large:
+        The request payload must be at most 150 MiB.
+    :ivar UploadSessionFinishError.content_hash_mismatch:
+        The content received by the Dropbox server in this call does not match
+        the provided content hash.
+    :ivar UploadSessionFinishError.encryption_not_supported:
+        The file is required to be encrypted, which is not supported in our
+        public API.
     """
 
     _catch_all = 'other'
@@ -10764,28 +10989,32 @@ class UploadSessionLookupError(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar files.UploadSessionLookupError.not_found: The upload session ID was
-        not found or has expired. Upload sessions are valid for 7 days.
-    :ivar UploadSessionOffsetError UploadSessionLookupError.incorrect_offset:
+    :ivar UploadSessionLookupError.not_found:
+        The upload session ID was not found or has expired. Upload sessions are
+        valid for 7 days.
+    :ivar UploadSessionLookupError.incorrect_offset:
         The specified offset was incorrect. See the value for the correct
         offset. This error may occur when a previous request was received and
         processed successfully but the client did not receive the response, e.g.
         due to a network error.
-    :ivar files.UploadSessionLookupError.closed: You are attempting to append
-        data to an upload session that has already been closed (i.e. committed).
-    :ivar files.UploadSessionLookupError.not_closed: The session must be closed
-        before calling upload_session/finish_batch.
-    :ivar files.UploadSessionLookupError.too_large: You can not append to the
-        upload session because the size of a file should not exceed the max file
-        size limit (i.e. 2^41 - 2^22 or 2,199,019,061,248 bytes).
-    :ivar files.UploadSessionLookupError.concurrent_session_invalid_offset: For
-        concurrent upload sessions, offset needs to be multiple of 2^22
+    :vartype UploadSessionLookupError.incorrect_offset: UploadSessionOffsetError
+    :ivar UploadSessionLookupError.closed:
+        You are attempting to append data to an upload session that has already
+        been closed (i.e. committed).
+    :ivar UploadSessionLookupError.not_closed:
+        The session must be closed before calling upload_session/finish_batch.
+    :ivar UploadSessionLookupError.too_large:
+        You can not append to the upload session because the size of a file
+        should not exceed the max file size limit (i.e. 2^41 - 2^22 or
+        2,199,019,061,248 bytes).
+    :ivar UploadSessionLookupError.concurrent_session_invalid_offset:
+        For concurrent upload sessions, offset needs to be multiple of 2^22
         (4,194,304) bytes.
-    :ivar files.UploadSessionLookupError.concurrent_session_invalid_data_size:
+    :ivar UploadSessionLookupError.concurrent_session_invalid_data_size:
         For concurrent upload sessions, only chunks with size multiple of 2^22
         (4,194,304) bytes can be uploaded.
-    :ivar files.UploadSessionLookupError.payload_too_large: The request payload
-        must be at most 150 MiB.
+    :ivar UploadSessionLookupError.payload_too_large:
+        The request payload must be at most 150 MiB.
     """
 
     _catch_all = 'other'
@@ -10911,8 +11140,8 @@ UploadSessionLookupError_validator = bv.Union(UploadSessionLookupError)
 
 class UploadSessionOffsetError(bb.Struct):
     """
-    :ivar files.UploadSessionOffsetError.correct_offset: The offset up to which
-        data has been collected.
+    :ivar UploadSessionOffsetError.correct_offset:
+        The offset up to which data has been collected.
     """
 
     __slots__ = [
@@ -10937,17 +11166,18 @@ UploadSessionOffsetError_validator = bv.Struct(UploadSessionOffsetError)
 
 class UploadSessionStartArg(bb.Struct):
     """
-    :ivar files.UploadSessionStartArg.close: If true, the current session will
-        be closed, at which point you won't be able to call
+    :ivar UploadSessionStartArg.close:
+        If true, the current session will be closed, at which point you won't be
+        able to call
         :meth:`dropbox.dropbox_client.Dropbox.files_upload_session_append`
         anymore with the current session.
-    :ivar files.UploadSessionStartArg.session_type: Type of upload session you
-        want to start. If not specified, default is
+    :ivar UploadSessionStartArg.session_type:
+        Type of upload session you want to start. If not specified, default is
         ``UploadSessionType.sequential``.
-    :ivar files.UploadSessionStartArg.content_hash: A hash of the file content
-        uploaded in this call. If provided and the uploaded content does not
-        match this hash, an error will be returned. For more information see our
-        `Content hash
+    :ivar UploadSessionStartArg.content_hash:
+        A hash of the file content uploaded in this call. If provided and the
+        uploaded content does not match this hash, an error will be returned.
+        For more information see our `Content hash
         <https://www.dropbox.com/developers/reference/content-hash>`_ page.
     """
 
@@ -10989,11 +11219,11 @@ UploadSessionStartArg_validator = bv.Struct(UploadSessionStartArg)
 
 class UploadSessionStartBatchArg(bb.Struct):
     """
-    :ivar files.UploadSessionStartBatchArg.session_type: Type of upload session
-        you want to start. If not specified, default is
+    :ivar UploadSessionStartBatchArg.session_type:
+        Type of upload session you want to start. If not specified, default is
         ``UploadSessionType.sequential``.
-    :ivar files.UploadSessionStartBatchArg.num_sessions: The number of upload
-        sessions to start.
+    :ivar UploadSessionStartBatchArg.num_sessions:
+        The number of upload sessions to start.
     """
 
     __slots__ = [
@@ -11026,8 +11256,9 @@ UploadSessionStartBatchArg_validator = bv.Struct(UploadSessionStartBatchArg)
 
 class UploadSessionStartBatchResult(bb.Struct):
     """
-    :ivar files.UploadSessionStartBatchResult.session_ids: A List of unique
-        identifiers for the upload session. Pass each session_id to
+    :ivar UploadSessionStartBatchResult.session_ids:
+        A List of unique identifiers for the upload session. Pass each
+        session_id to
         :meth:`dropbox.dropbox_client.Dropbox.files_upload_session_append` and
         :meth:`dropbox.dropbox_client.Dropbox.files_upload_session_finish`.
     """
@@ -11058,15 +11289,15 @@ class UploadSessionStartError(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar files.UploadSessionStartError.concurrent_session_data_not_allowed:
+    :ivar UploadSessionStartError.concurrent_session_data_not_allowed:
         Uploading data not allowed when starting concurrent upload session.
-    :ivar files.UploadSessionStartError.concurrent_session_close_not_allowed:
+    :ivar UploadSessionStartError.concurrent_session_close_not_allowed:
         Can not start a closed concurrent upload session.
-    :ivar files.UploadSessionStartError.payload_too_large: The request payload
-        must be at most 150 MiB.
-    :ivar files.UploadSessionStartError.content_hash_mismatch: The content
-        received by the Dropbox server in this call does not match the provided
-        content hash.
+    :ivar UploadSessionStartError.payload_too_large:
+        The request payload must be at most 150 MiB.
+    :ivar UploadSessionStartError.content_hash_mismatch:
+        The content received by the Dropbox server in this call does not match
+        the provided content hash.
     """
 
     _catch_all = 'other'
@@ -11128,8 +11359,8 @@ UploadSessionStartError_validator = bv.Union(UploadSessionStartError)
 
 class UploadSessionStartResult(bb.Struct):
     """
-    :ivar files.UploadSessionStartResult.session_id: A unique identifier for the
-        upload session. Pass this to
+    :ivar UploadSessionStartResult.session_id:
+        A unique identifier for the upload session. Pass this to
         :meth:`dropbox.dropbox_client.Dropbox.files_upload_session_append` and
         :meth:`dropbox.dropbox_client.Dropbox.files_upload_session_finish`.
     """
@@ -11160,10 +11391,11 @@ class UploadSessionType(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar files.UploadSessionType.sequential: Pieces of data are uploaded
-        sequentially one after another. This is the default behavior.
-    :ivar files.UploadSessionType.concurrent: Pieces of data can be uploaded in
-        concurrent RPCs in any order.
+    :ivar UploadSessionType.sequential:
+        Pieces of data are uploaded sequentially one after another. This is the
+        default behavior.
+    :ivar UploadSessionType.concurrent:
+        Pieces of data can be uploaded in concurrent RPCs in any order.
     """
 
     _catch_all = 'other'
@@ -11205,12 +11437,12 @@ UploadSessionType_validator = bv.Union(UploadSessionType)
 
 class UploadWriteFailed(bb.Struct):
     """
-    :ivar files.UploadWriteFailed.reason: The reason why the file couldn't be
-        saved.
-    :ivar files.UploadWriteFailed.upload_session_id: The upload session ID; data
-        has already been uploaded to the corresponding upload session and this
-        ID may be used to retry the commit with
-        :meth:`dropbox.dropbox_client.Dropbox.files_upload_session_finish`.
+    :ivar UploadWriteFailed.reason:
+        The reason why the file couldn't be saved.
+    :ivar UploadWriteFailed.upload_session_id:
+        The upload session ID; data has already been uploaded to the
+        corresponding upload session and this ID may be used to retry the commit
+        with :meth:`dropbox.dropbox_client.Dropbox.files_upload_session_finish`.
     """
 
     __slots__ = [
@@ -11267,8 +11499,8 @@ class VideoMetadata(MediaMetadata):
     """
     Metadata for a video.
 
-    :ivar files.VideoMetadata.duration: The duration of the video in
-        milliseconds.
+    :ivar VideoMetadata.duration:
+        The duration of the video in milliseconds.
     """
 
     __slots__ = [
@@ -11303,10 +11535,13 @@ class WriteConflictError(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar files.WriteConflictError.file: There's a file in the way.
-    :ivar files.WriteConflictError.folder: There's a folder in the way.
-    :ivar files.WriteConflictError.file_ancestor: There's a file at an ancestor
-        path, so we couldn't create the required parent folders.
+    :ivar WriteConflictError.file:
+        There's a file in the way.
+    :ivar WriteConflictError.folder:
+        There's a folder in the way.
+    :ivar WriteConflictError.file_ancestor:
+        There's a file at an ancestor path, so we couldn't create the required
+        parent folders.
     """
 
     _catch_all = 'other'
@@ -11362,27 +11597,32 @@ class WriteError(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar Optional[str] files.WriteError.malformed_path: The given path does not
-        satisfy the required path format. Please refer to the :link:`Path
-        formats documentation
-        https://www.dropbox.com/developers/documentation/http/documentation#path-formats`
+    :ivar WriteError.malformed_path:
+        The given path does not satisfy the required path format. Please refer
+        to the `Path formats documentation
+        <https://www.dropbox.com/developers/documentation/http/documentation#path-formats>`_
         for more information.
-    :ivar WriteConflictError WriteError.conflict: Couldn't write to the target
-        path because there was something in the way.
-    :ivar files.WriteError.no_write_permission: The user doesn't have
-        permissions to write to the target location.
-    :ivar files.WriteError.insufficient_space: The user doesn't have enough
-        available space (bytes) to write more data.
-    :ivar files.WriteError.disallowed_name: Dropbox will not save the file or
-        folder because of its name.
-    :ivar files.WriteError.team_folder: This endpoint cannot move or delete team
-        folders.
-    :ivar files.WriteError.operation_suppressed: This file operation is not
-        allowed at this path.
-    :ivar files.WriteError.too_many_write_operations: There are too many write
-        operations in user's Dropbox. Please retry this request.
-    :ivar files.WriteError.access_restricted: The user doesn't have permission
-        to perform the action due to restrictions set by a team administrator
+    :vartype WriteError.malformed_path: Optional[str]
+    :ivar WriteError.conflict:
+        Couldn't write to the target path because there was something in the
+        way.
+    :vartype WriteError.conflict: WriteConflictError
+    :ivar WriteError.no_write_permission:
+        The user doesn't have permissions to write to the target location.
+    :ivar WriteError.insufficient_space:
+        The user doesn't have enough available space (bytes) to write more data.
+    :ivar WriteError.disallowed_name:
+        Dropbox will not save the file or folder because of its name.
+    :ivar WriteError.team_folder:
+        This endpoint cannot move or delete team folders.
+    :ivar WriteError.operation_suppressed:
+        This file operation is not allowed at this path.
+    :ivar WriteError.too_many_write_operations:
+        There are too many write operations in user's Dropbox. Please retry this
+        request.
+    :ivar WriteError.access_restricted:
+        The user doesn't have permission to perform the action due to
+        restrictions set by a team administrator
     """
 
     _catch_all = 'other'
@@ -11554,20 +11794,24 @@ class WriteMode(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar files.WriteMode.add: Do not overwrite an existing file if there is a
-        conflict. The autorename strategy is to append a number to the file
-        name. For example, "document.txt" might become "document (2).txt".
-    :ivar files.WriteMode.overwrite: Always overwrite the existing file. The
-        autorename strategy is the same as it is for ``add``.
-    :ivar str files.WriteMode.update: Overwrite if the given "rev" matches the
-        existing file's "rev". The supplied value should be the latest known
-        "rev" of the file, for example, from :type:`FileMetadata`, from when the
-        file was last downloaded by the app. This will cause the file on the
-        Dropbox servers to be overwritten if the given "rev" matches the
-        existing file's current "rev" on the Dropbox servers. The autorename
-        strategy is to append the string "conflicted copy" to the file name. For
-        example, "document.txt" might become "document (conflicted copy).txt" or
-        "document (Panda's conflicted copy).txt".
+    :ivar WriteMode.add:
+        Do not overwrite an existing file if there is a conflict. The autorename
+        strategy is to append a number to the file name. For example,
+        "document.txt" might become "document (2).txt".
+    :ivar WriteMode.overwrite:
+        Always overwrite the existing file. The autorename strategy is the same
+        as it is for ``add``.
+    :ivar WriteMode.update:
+        Overwrite if the given "rev" matches the existing file's "rev". The
+        supplied value should be the latest known "rev" of the file, for
+        example, from :class:`FileMetadata`, from when the file was last
+        downloaded by the app. This will cause the file on the Dropbox servers
+        to be overwritten if the given "rev" matches the existing file's current
+        "rev" on the Dropbox servers. The autorename strategy is to append the
+        string "conflicted copy" to the file name. For example, "document.txt"
+        might become "document (conflicted copy).txt" or "document (Panda's
+        conflicted copy).txt".
+    :vartype WriteMode.update: str
     """
 
     _catch_all = None

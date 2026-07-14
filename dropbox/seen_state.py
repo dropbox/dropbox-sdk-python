@@ -15,19 +15,21 @@ class PlatformType(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar seen_state.PlatformType.web: The content was viewed on the web.
-    :ivar seen_state.PlatformType.desktop: The content was viewed on a desktop
-        client.
-    :ivar seen_state.PlatformType.mobile_ios: The content was viewed on a mobile
-        iOS client.
-    :ivar seen_state.PlatformType.mobile_android: The content was viewed on a
-        mobile android client.
-    :ivar seen_state.PlatformType.api: The content was viewed from an API
-        client.
-    :ivar seen_state.PlatformType.unknown: The content was viewed on an unknown
-        platform.
-    :ivar seen_state.PlatformType.mobile: The content was viewed on a mobile
-        client. DEPRECATED: Use mobile_ios or mobile_android instead.
+    :ivar PlatformType.web:
+        The content was viewed on the web.
+    :ivar PlatformType.desktop:
+        The content was viewed on a desktop client.
+    :ivar PlatformType.mobile_ios:
+        The content was viewed on a mobile iOS client.
+    :ivar PlatformType.mobile_android:
+        The content was viewed on a mobile android client.
+    :ivar PlatformType.api:
+        The content was viewed from an API client.
+    :ivar PlatformType.unknown:
+        The content was viewed on an unknown platform.
+    :ivar PlatformType.mobile:
+        The content was viewed on a mobile client. DEPRECATED: Use mobile_ios or
+        mobile_android instead.
     """
 
     _catch_all = 'other'

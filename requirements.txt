@@ -1,6 +1,6 @@
 # Dependencies required for installation (keep in sync with pyproject.toml)
 requests>=2.16.2
-stone>=3.5.1,<4
+stone>=3.5.2,<4
 # Other dependencies for development
 pytest
 sphinx

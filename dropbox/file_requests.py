@@ -22,8 +22,8 @@ class GeneralFileRequestsError(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar file_requests.GeneralFileRequestsError.disabled_for_team: This user's
-        Dropbox Business team doesn't allow file requests.
+    :ivar GeneralFileRequestsError.disabled_for_team:
+        This user's Dropbox Business team doesn't allow file requests.
     """
 
     _catch_all = 'other'
@@ -71,8 +71,8 @@ class CountFileRequestsResult(bb.Struct):
     """
     Result for :meth:`dropbox.dropbox_client.Dropbox.file_requests_count`.
 
-    :ivar file_requests.CountFileRequestsResult.file_request_count: The number
-        file requests owner by this user.
+    :ivar CountFileRequestsResult.file_request_count:
+        The number file requests owner by this user.
     """
 
     __slots__ = [
@@ -99,21 +99,23 @@ class CreateFileRequestArgs(bb.Struct):
     """
     Arguments for :meth:`dropbox.dropbox_client.Dropbox.file_requests_create`.
 
-    :ivar file_requests.CreateFileRequestArgs.title: The title of the file
-        request. Must not be empty.
-    :ivar file_requests.CreateFileRequestArgs.destination: The path of the
-        folder in the Dropbox where uploaded files will be sent. For apps with
-        the app folder permission, this will be relative to the app folder.
-    :ivar file_requests.CreateFileRequestArgs.deadline: The deadline for the
-        file request. Deadlines can only be set by Professional and Business
-        accounts.
-    :ivar file_requests.CreateFileRequestArgs.open: Whether or not the file
-        request should be open. If the file request is closed, it will not
-        accept any file submissions, but it can be opened later.
-    :ivar file_requests.CreateFileRequestArgs.description: A description of the
-        file request.
-    :ivar file_requests.CreateFileRequestArgs.video_project_id: If this request
-        was created from video project, its id.
+    :ivar CreateFileRequestArgs.title:
+        The title of the file request. Must not be empty.
+    :ivar CreateFileRequestArgs.destination:
+        The path of the folder in the Dropbox where uploaded files will be sent.
+        For apps with the app folder permission, this will be relative to the
+        app folder.
+    :ivar CreateFileRequestArgs.deadline:
+        The deadline for the file request. Deadlines can only be set by
+        Professional and Business accounts.
+    :ivar CreateFileRequestArgs.open:
+        Whether or not the file request should be open. If the file request is
+        closed, it will not accept any file submissions, but it can be opened
+        later.
+    :ivar CreateFileRequestArgs.description:
+        A description of the file request.
+    :ivar CreateFileRequestArgs.video_project_id:
+        If this request was created from video project, its id.
     """
 
     __slots__ = [
@@ -184,24 +186,24 @@ class FileRequestError(GeneralFileRequestsError):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar file_requests.FileRequestError.not_found: This file request ID was not
-        found.
-    :ivar file_requests.FileRequestError.not_a_folder: The specified path is not
-        a folder.
-    :ivar file_requests.FileRequestError.app_lacks_access: This file request is
-        not accessible to this app. Apps with the app folder permission can only
-        access file requests in their app folder.
-    :ivar file_requests.FileRequestError.no_permission: This user doesn't have
-        permission to access or modify this file request.
-    :ivar file_requests.FileRequestError.email_unverified: This user's email
-        address is not verified. File requests are only available on accounts
-        with a verified email address. Users can verify their email address
-        `here <https://www.dropbox.com/help/317>`_.
-    :ivar file_requests.FileRequestError.validation_error: There was an error
-        validating the request. For example, the title was invalid, or there
-        were disallowed characters in the destination path.
-    :ivar file_requests.FileRequestError.no_write_permission: This user doesn't
-        have permission to edit files in a destination folder
+    :ivar FileRequestError.not_found:
+        This file request ID was not found.
+    :ivar FileRequestError.not_a_folder:
+        The specified path is not a folder.
+    :ivar FileRequestError.app_lacks_access:
+        This file request is not accessible to this app. Apps with the app
+        folder permission can only access file requests in their app folder.
+    :ivar FileRequestError.no_permission:
+        This user doesn't have permission to access or modify this file request.
+    :ivar FileRequestError.email_unverified:
+        This user's email address is not verified. File requests are only
+        available on accounts with a verified email address. Users can verify
+        their email address `here <https://www.dropbox.com/help/317>`_.
+    :ivar FileRequestError.validation_error:
+        There was an error validating the request. For example, the title was
+        invalid, or there were disallowed characters in the destination path.
+    :ivar FileRequestError.no_write_permission:
+        This user doesn't have permission to edit files in a destination folder
     """
 
     # Attribute is overwritten below the class definition
@@ -288,11 +290,11 @@ class CreateFileRequestError(FileRequestError):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar file_requests.CreateFileRequestError.invalid_location: File requests
-        are not available on the specified folder.
-    :ivar file_requests.CreateFileRequestError.rate_limit: The user has reached
-        the rate limit for creating file requests. The limit is currently 4000
-        file requests total.
+    :ivar CreateFileRequestError.invalid_location:
+        File requests are not available on the specified folder.
+    :ivar CreateFileRequestError.rate_limit:
+        The user has reached the rate limit for creating file requests. The
+        limit is currently 4000 file requests total.
     """
 
     # Attribute is overwritten below the class definition
@@ -340,8 +342,8 @@ class DeleteAllClosedFileRequestsResult(bb.Struct):
     Result for
     :meth:`dropbox.dropbox_client.Dropbox.file_requests_delete_all_closed`.
 
-    :ivar file_requests.DeleteAllClosedFileRequestsResult.file_requests: The
-        file requests deleted for this user.
+    :ivar DeleteAllClosedFileRequestsResult.file_requests:
+        The file requests deleted for this user.
     """
 
     __slots__ = [
@@ -368,8 +370,8 @@ class DeleteFileRequestArgs(bb.Struct):
     """
     Arguments for :meth:`dropbox.dropbox_client.Dropbox.file_requests_delete`.
 
-    :ivar file_requests.DeleteFileRequestArgs.ids: List IDs of the file requests
-        to delete.
+    :ivar DeleteFileRequestArgs.ids:
+        List IDs of the file requests to delete.
     """
 
     __slots__ = [
@@ -400,8 +402,8 @@ class DeleteFileRequestError(FileRequestError):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar file_requests.DeleteFileRequestError.file_request_open: One or more
-        file requests currently open.
+    :ivar DeleteFileRequestError.file_request_open:
+        One or more file requests currently open.
     """
 
     # Attribute is overwritten below the class definition
@@ -424,8 +426,8 @@ class DeleteFileRequestsResult(bb.Struct):
     """
     Result for :meth:`dropbox.dropbox_client.Dropbox.file_requests_delete`.
 
-    :ivar file_requests.DeleteFileRequestsResult.file_requests: The file
-        requests deleted by the request.
+    :ivar DeleteFileRequestsResult.file_requests:
+        The file requests deleted by the request.
     """
 
     __slots__ = [
@@ -453,25 +455,30 @@ class FileRequest(bb.Struct):
     A `file request <https://www.dropbox.com/help/9090>`_ for receiving files
     into the user's Dropbox account.
 
-    :ivar file_requests.FileRequest.id: The ID of the file request.
-    :ivar file_requests.FileRequest.url: The URL of the file request.
-    :ivar file_requests.FileRequest.title: The title of the file request.
-    :ivar file_requests.FileRequest.destination: The path of the folder in the
-        Dropbox where uploaded files will be sent. This can be None if the
-        destination was removed. For apps with the app folder permission, this
-        will be relative to the app folder.
-    :ivar file_requests.FileRequest.created: When this file request was created.
-    :ivar file_requests.FileRequest.deadline: The deadline for this file
-        request. Only set if the request has a deadline.
-    :ivar file_requests.FileRequest.is_open: Whether or not the file request is
-        open. If the file request is closed, it will not accept any more file
-        submissions.
-    :ivar file_requests.FileRequest.file_count: The number of files this file
-        request has received.
-    :ivar file_requests.FileRequest.description: A description of the file
-        request.
-    :ivar file_requests.FileRequest.video_project_id: If this request was
-        created from video project, its id.
+    :ivar FileRequest.id:
+        The ID of the file request.
+    :ivar FileRequest.url:
+        The URL of the file request.
+    :ivar FileRequest.title:
+        The title of the file request.
+    :ivar FileRequest.destination:
+        The path of the folder in the Dropbox where uploaded files will be sent.
+        This can be None if the destination was removed. For apps with the app
+        folder permission, this will be relative to the app folder.
+    :ivar FileRequest.created:
+        When this file request was created.
+    :ivar FileRequest.deadline:
+        The deadline for this file request. Only set if the request has a
+        deadline.
+    :ivar FileRequest.is_open:
+        Whether or not the file request is open. If the file request is closed,
+        it will not accept any more file submissions.
+    :ivar FileRequest.file_count:
+        The number of files this file request has received.
+    :ivar FileRequest.description:
+        A description of the file request.
+    :ivar FileRequest.video_project_id:
+        If this request was created from video project, its id.
     """
 
     __slots__ = [
@@ -568,11 +575,11 @@ FileRequest_validator = bv.Struct(FileRequest)
 
 class FileRequestDeadline(bb.Struct):
     """
-    :ivar file_requests.FileRequestDeadline.deadline: The deadline for this file
-        request.
-    :ivar file_requests.FileRequestDeadline.allow_late_uploads: If set, allow
-        uploads after the deadline has passed. These uploads will be marked
-        overdue.
+    :ivar FileRequestDeadline.deadline:
+        The deadline for this file request.
+    :ivar FileRequestDeadline.allow_late_uploads:
+        If set, allow uploads after the deadline has passed. These uploads will
+        be marked overdue.
     """
 
     __slots__ = [
@@ -607,8 +614,8 @@ class GetFileRequestArgs(bb.Struct):
     """
     Arguments for :meth:`dropbox.dropbox_client.Dropbox.file_requests_get`.
 
-    :ivar file_requests.GetFileRequestArgs.id: The ID of the file request to
-        retrieve.
+    :ivar GetFileRequestArgs.id:
+        The ID of the file request to retrieve.
     """
 
     __slots__ = [
@@ -723,8 +730,8 @@ class ListFileRequestsArg(bb.Struct):
     """
     Arguments for :meth:`dropbox.dropbox_client.Dropbox.file_requests_list`.
 
-    :ivar file_requests.ListFileRequestsArg.limit: The maximum number of file
-        requests that should be returned per request.
+    :ivar ListFileRequestsArg.limit:
+        The maximum number of file requests that should be returned per request.
     """
 
     __slots__ = [
@@ -749,8 +756,9 @@ ListFileRequestsArg_validator = bv.Struct(ListFileRequestsArg)
 
 class ListFileRequestsContinueArg(bb.Struct):
     """
-    :ivar file_requests.ListFileRequestsContinueArg.cursor: The cursor returned
-        by the previous API call specified in the endpoint description.
+    :ivar ListFileRequestsContinueArg.cursor:
+        The cursor returned by the previous API call specified in the endpoint
+        description.
     """
 
     __slots__ = [
@@ -781,8 +789,8 @@ class ListFileRequestsContinueError(GeneralFileRequestsError):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar file_requests.ListFileRequestsContinueError.invalid_cursor: The cursor
-        is invalid.
+    :ivar ListFileRequestsContinueError.invalid_cursor:
+        The cursor is invalid.
     """
 
     # Attribute is overwritten below the class definition
@@ -819,9 +827,9 @@ class ListFileRequestsResult(bb.Struct):
     """
     Result for :meth:`dropbox.dropbox_client.Dropbox.file_requests_list`.
 
-    :ivar file_requests.ListFileRequestsResult.file_requests: The file requests
-        owned by this user. Apps with the app folder permission will only see
-        file requests in their app folder.
+    :ivar ListFileRequestsResult.file_requests:
+        The file requests owned by this user. Apps with the app folder
+        permission will only see file requests in their app folder.
     """
 
     __slots__ = [
@@ -849,15 +857,17 @@ class ListFileRequestsV2Result(bb.Struct):
     Result for :meth:`dropbox.dropbox_client.Dropbox.file_requests_list` and
     :meth:`dropbox.dropbox_client.Dropbox.file_requests_list_continue`.
 
-    :ivar file_requests.ListFileRequestsV2Result.file_requests: The file
-        requests owned by this user. Apps with the app folder permission will
-        only see file requests in their app folder.
-    :ivar file_requests.ListFileRequestsV2Result.cursor: Pass the cursor into
+    :ivar ListFileRequestsV2Result.file_requests:
+        The file requests owned by this user. Apps with the app folder
+        permission will only see file requests in their app folder.
+    :ivar ListFileRequestsV2Result.cursor:
+        Pass the cursor into
         :meth:`dropbox.dropbox_client.Dropbox.file_requests_list_continue` to
         obtain additional file requests.
-    :ivar file_requests.ListFileRequestsV2Result.has_more: Is true if there are
-        additional file requests that have not been returned yet. An additional
-        call to :route:list/continue` can retrieve them.
+    :ivar ListFileRequestsV2Result.has_more:
+        Is true if there are additional file requests that have not been
+        returned yet. An additional call to :route:list/continue` can retrieve
+        them.
     """
 
     __slots__ = [
@@ -900,20 +910,21 @@ class UpdateFileRequestArgs(bb.Struct):
     """
     Arguments for :meth:`dropbox.dropbox_client.Dropbox.file_requests_update`.
 
-    :ivar file_requests.UpdateFileRequestArgs.id: The ID of the file request to
-        update.
-    :ivar file_requests.UpdateFileRequestArgs.title: The new title of the file
-        request. Must not be empty.
-    :ivar file_requests.UpdateFileRequestArgs.destination: The new path of the
-        folder in the Dropbox where uploaded files will be sent. For apps with
-        the app folder permission, this will be relative to the app folder.
-    :ivar file_requests.UpdateFileRequestArgs.deadline: The new deadline for the
-        file request. Deadlines can only be set by Professional and Business
-        accounts.
-    :ivar file_requests.UpdateFileRequestArgs.open: Whether to set this file
-        request as open or closed.
-    :ivar file_requests.UpdateFileRequestArgs.description: The description of
-        the file request.
+    :ivar UpdateFileRequestArgs.id:
+        The ID of the file request to update.
+    :ivar UpdateFileRequestArgs.title:
+        The new title of the file request. Must not be empty.
+    :ivar UpdateFileRequestArgs.destination:
+        The new path of the folder in the Dropbox where uploaded files will be
+        sent. For apps with the app folder permission, this will be relative to
+        the app folder.
+    :ivar UpdateFileRequestArgs.deadline:
+        The new deadline for the file request. Deadlines can only be set by
+        Professional and Business accounts.
+    :ivar UpdateFileRequestArgs.open:
+        Whether to set this file request as open or closed.
+    :ivar UpdateFileRequestArgs.description:
+        The description of the file request.
     """
 
     __slots__ = [
@@ -982,11 +993,11 @@ class UpdateFileRequestDeadline(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar file_requests.UpdateFileRequestDeadline.no_update: Do not change the
-        file request's deadline.
-    :ivar Optional[FileRequestDeadline]
-        file_requests.UpdateFileRequestDeadline.update: If :val:`null`, the file
-        request's deadline is cleared.
+    :ivar UpdateFileRequestDeadline.no_update:
+        Do not change the file request's deadline.
+    :ivar UpdateFileRequestDeadline.update:
+        If None, the file request's deadline is cleared.
+    :vartype UpdateFileRequestDeadline.update: Optional[FileRequestDeadline]
     """
 
     _catch_all = 'other'

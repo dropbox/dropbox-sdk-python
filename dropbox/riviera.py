@@ -15,13 +15,14 @@ class ApiExifGpsMetadata(bb.Struct):
     populated on a best-effort basis and may be empty when absent from the
     source file.
 
-    :ivar riviera.ApiExifGpsMetadata.latitude: Latitude / longitude in decimal
-        degrees (positive = N/E, negative = S/W).
-    :ivar riviera.ApiExifGpsMetadata.altitude: Altitude in meters, as reported
-        by the source (string to preserve the original representation, which may
-        include a reference direction).
-    :ivar riviera.ApiExifGpsMetadata.timestamp: Timestamp / datestamp of the GPS
-        fix, in the EXIF-provided format.
+    :ivar ApiExifGpsMetadata.latitude:
+        Latitude / longitude in decimal degrees (positive = N/E, negative =
+        S/W).
+    :ivar ApiExifGpsMetadata.altitude:
+        Altitude in meters, as reported by the source (string to preserve the
+        original representation, which may include a reference direction).
+    :ivar ApiExifGpsMetadata.timestamp:
+        Timestamp / datestamp of the GPS fix, in the EXIF-provided format.
     """
 
     __slots__ = [
@@ -81,15 +82,17 @@ class ApiExifMetadata(bb.Struct):
     Image EXIF metadata. Mirrors the useful subset of the internal
     `riviera.ExifMetadata` message. Fields are best-effort and may be empty.
 
-    :ivar riviera.ApiExifMetadata.date_time_original: Capture time in the
-        EXIF-provided format (local time of the camera).
-    :ivar riviera.ApiExifMetadata.offset_time_original: Timezone offset for
-        `date_time_original`, e.g. "+09:00".
-    :ivar riviera.ApiExifMetadata.orientation: EXIF orientation value (1-8). See
-        the EXIF spec; 1 is the normal upright orientation.
-    :ivar riviera.ApiExifMetadata.exposure_time: fraction in string form, e.g.
-        "1/250"
-    :ivar riviera.ApiExifMetadata.focal_length: e.g. "26.0 mm"
+    :ivar ApiExifMetadata.date_time_original:
+        Capture time in the EXIF-provided format (local time of the camera).
+    :ivar ApiExifMetadata.offset_time_original:
+        Timezone offset for `date_time_original`, e.g. "+09:00".
+    :ivar ApiExifMetadata.orientation:
+        EXIF orientation value (1-8). See the EXIF spec; 1 is the normal upright
+        orientation.
+    :ivar ApiExifMetadata.exposure_time:
+        fraction in string form, e.g. "1/250"
+    :ivar ApiExifMetadata.focal_length:
+        e.g. "26.0 mm"
     """
 
     __slots__ = [
@@ -237,8 +240,8 @@ class ApiMediaMetadata(bb.Struct):
     Audio/video container and per-stream metadata. Mirrors the useful subset of
     the internal `riviera.MediaMetadata` message.
 
-    :ivar riviera.ApiMediaMetadata.creation_time: Container-level creation time,
-        when present.
+    :ivar ApiMediaMetadata.creation_time:
+        Container-level creation time, when present.
     """
 
     __slots__ = [
@@ -289,14 +292,16 @@ class ApiMediaStream(bb.Struct):
     """
     A single audio or video stream within a media file.
 
-    :ivar riviera.ApiMediaStream.codec_type: "audio", "video", etc.
-    :ivar riviera.ApiMediaStream.width: Video-specific fields (zero / empty for
-        audio streams).
-    :ivar riviera.ApiMediaStream.display_aspect_ratio: e.g. "16:9"
-    :ivar riviera.ApiMediaStream.channels: Audio-specific fields (zero / empty
-        for video streams).
-    :ivar riviera.ApiMediaStream.language_iso_639: ISO 639 language code for the
-        stream, when present.
+    :ivar ApiMediaStream.codec_type:
+        "audio", "video", etc.
+    :ivar ApiMediaStream.width:
+        Video-specific fields (zero / empty for audio streams).
+    :ivar ApiMediaStream.display_aspect_ratio:
+        e.g. "16:9"
+    :ivar ApiMediaStream.channels:
+        Audio-specific fields (zero / empty for video streams).
+    :ivar ApiMediaStream.language_iso_639:
+        ISO 639 language code for the stream, when present.
     """
 
     __slots__ = [
@@ -429,8 +434,10 @@ class ApiOfficeMetadata(bb.Struct):
     message. Some fields apply only to specific document types (e.g. `slides`
     for PowerPoint, `words`/`pages` for Word).
 
-    :ivar riviera.ApiOfficeMetadata.pages: Word only.
-    :ivar riviera.ApiOfficeMetadata.slides: PowerPoint only.
+    :ivar ApiOfficeMetadata.pages:
+        Word only.
+    :ivar ApiOfficeMetadata.slides:
+        PowerPoint only.
     """
 
     __slots__ = [
@@ -545,8 +552,8 @@ class ApiPdfMetadata(bb.Struct):
     """
     PDF document metadata.
 
-    :ivar riviera.ApiPdfMetadata.width: Width / height of the first page, in PDF
-        points.
+    :ivar ApiPdfMetadata.width:
+        Width / height of the first page, in PDF points.
     """
 
     __slots__ = [
@@ -665,10 +672,10 @@ class ContentApiV2Error(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar riviera.ContentApiV2Error.not_found_error: The referenced file does
-        not exist or is not accessible.
-    :ivar riviera.ContentApiV2Error.is_a_folder_error: The target is a folder,
-        not a file.
+    :ivar ContentApiV2Error.not_found_error:
+        The referenced file does not exist or is not accessible.
+    :ivar ContentApiV2Error.is_a_folder_error:
+        The target is a folder, not a file.
     """
 
     _catch_all = 'other'
@@ -841,11 +848,16 @@ class ErrorCode(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar riviera.ErrorCode.bad_request: 400
-    :ivar riviera.ErrorCode.api_error: 409
-    :ivar riviera.ErrorCode.access_error: 403
-    :ivar riviera.ErrorCode.ratelimit_error: 429
-    :ivar riviera.ErrorCode.unavailable: 503
+    :ivar ErrorCode.bad_request:
+        400
+    :ivar ErrorCode.api_error:
+        409
+    :ivar ErrorCode.access_error:
+        403
+    :ivar ErrorCode.ratelimit_error:
+        429
+    :ivar ErrorCode.unavailable:
+        503
     """
 
     _catch_all = 'other'
@@ -1042,28 +1054,28 @@ class GetMarkdownArgs(bb.Struct):
     `file_id`, `path`, or `url` must be supplied via `file_id_or_url` to
     identify the document to convert to markdown.
 
-    :ivar riviera.GetMarkdownArgs.file_id_or_url: Identifier of the document to
-        convert. Callers must set exactly one of the oneof variants: - file_id:
-        a Dropbox-issued file id (format: "id:<id>") for a file the
-        authenticated user has access to. - path: an absolute Dropbox path, e.g.
-        "/folder/report.docx". - url: either a Dropbox shared link
-        (www.dropbox.com) or an external HTTPS URL pointing to a supported
-        document file. - Dropbox shared links are resolved internally using the
-        caller's authenticated identity and the link's visibility / download
-        settings. They therefore require an authenticated user context
-        (anonymous `url` requests against Dropbox links are rejected with an
-        `ACCESS_ERROR`). Links protected by a password are rejected with
-        `shared_link_password_protected`; links with downloads disabled are
-        rejected with `link_download_disabled_error`. - External URLs are
-        fetched over HTTPS through the backend's egress proxy and must point at
-        a supported document file extension. The referenced file must be a
-        document in a supported format; requests against unsupported formats
-        return `unsupported_format_error`.
-    :ivar riviera.GetMarkdownArgs.enable_ocr: Enable OCR for PDF documents.
-        Processing is slower when enabled.
-    :ivar riviera.GetMarkdownArgs.embed_images: When true, embed images as
-        base64 data URIs in the markdown output. This can significantly increase
-        output size.
+    :ivar GetMarkdownArgs.file_id_or_url:
+        Identifier of the document to convert. Callers must set exactly one of
+        the oneof variants: - file_id: a Dropbox-issued file id (format:
+        "id:<id>") for a file the authenticated user has access to. - path: an
+        absolute Dropbox path, e.g. "/folder/report.docx". - url: either a
+        Dropbox shared link (www.dropbox.com) or an external HTTPS URL pointing
+        to a supported document file. - Dropbox shared links are resolved
+        internally using the caller's authenticated identity and the link's
+        visibility / download settings. They therefore require an authenticated
+        user context (anonymous `url` requests against Dropbox links are
+        rejected with an `ACCESS_ERROR`). Links protected by a password are
+        rejected with `shared_link_password_protected`; links with downloads
+        disabled are rejected with `link_download_disabled_error`. - External
+        URLs are fetched over HTTPS through the backend's egress proxy and must
+        point at a supported document file extension. The referenced file must
+        be a document in a supported format; requests against unsupported
+        formats return `unsupported_format_error`.
+    :ivar GetMarkdownArgs.enable_ocr:
+        Enable OCR for PDF documents. Processing is slower when enabled.
+    :ivar GetMarkdownArgs.embed_images:
+        When true, embed images as base64 data URIs in the markdown output. This
+        can significantly increase output size.
     """
 
     __slots__ = [
@@ -1228,7 +1240,8 @@ GetMarkdownAsyncError_validator = bv.Struct(GetMarkdownAsyncError)
 
 class GetMarkdownResult(bb.Struct):
     """
-    :ivar riviera.GetMarkdownResult.markdown: The converted markdown content
+    :ivar GetMarkdownResult.markdown:
+        The converted markdown content
     """
 
     __slots__ = [
@@ -1257,25 +1270,25 @@ class GetMetadataArgs(bb.Struct):
     `file_id`, `path`, or `url` must be supplied via `file_id_or_url` to
     identify the file whose metadata should be extracted.
 
-    :ivar riviera.GetMetadataArgs.file_id_or_url: Identifier of the file to
-        extract metadata from. Callers must set exactly one of the oneof
-        variants: - file_id: a Dropbox-issued file id (format: "id:<id>") for a
-        file the authenticated user has access to. - path: an absolute Dropbox
-        path, e.g. "/folder/photo.jpg". - url: either a Dropbox shared link
-        (www.dropbox.com) or an external HTTPS URL pointing to a supported file.
-        - Dropbox shared links are resolved internally using the caller's
-        authenticated identity and the link's visibility / download settings.
-        They therefore require an authenticated user context (anonymous `url`
-        requests against Dropbox links are rejected with an `ACCESS_ERROR`).
-        Links protected by a password are rejected with
-        `shared_link_password_protected`; links with downloads disabled are
-        rejected with `link_download_disabled_error`. - External URLs are
-        fetched over HTTPS through the backend's egress proxy and must point at
-        a supported file extension. The kind of metadata returned is determined
-        by the file type: image files return EXIF metadata, audio/video files
-        return media metadata, PDFs return PDF metadata, and MS Office documents
-        (docx, pptx, xlsx) return Office metadata. Requests against unsupported
-        formats return `unsupported_format_error`.
+    :ivar GetMetadataArgs.file_id_or_url:
+        Identifier of the file to extract metadata from. Callers must set
+        exactly one of the oneof variants: - file_id: a Dropbox-issued file id
+        (format: "id:<id>") for a file the authenticated user has access to. -
+        path: an absolute Dropbox path, e.g. "/folder/photo.jpg". - url: either
+        a Dropbox shared link (www.dropbox.com) or an external HTTPS URL
+        pointing to a supported file. - Dropbox shared links are resolved
+        internally using the caller's authenticated identity and the link's
+        visibility / download settings. They therefore require an authenticated
+        user context (anonymous `url` requests against Dropbox links are
+        rejected with an `ACCESS_ERROR`). Links protected by a password are
+        rejected with `shared_link_password_protected`; links with downloads
+        disabled are rejected with `link_download_disabled_error`. - External
+        URLs are fetched over HTTPS through the backend's egress proxy and must
+        point at a supported file extension. The kind of metadata returned is
+        determined by the file type: image files return EXIF metadata,
+        audio/video files return media metadata, PDFs return PDF metadata, and
+        MS Office documents (docx, pptx, xlsx) return Office metadata. Requests
+        against unsupported formats return `unsupported_format_error`.
     """
 
     __slots__ = [
@@ -1424,9 +1437,9 @@ GetMetadataAsyncError_validator = bv.Struct(GetMetadataAsyncError)
 
 class GetMetadataResult(bb.Struct):
     """
-    :ivar riviera.GetMetadataResult.metadata_type: The kind of metadata that was
-        extracted for the requested file. Callers should read the matching field
-        of the `metadata` oneof.
+    :ivar GetMetadataResult.metadata_type:
+        The kind of metadata that was extracted for the requested file. Callers
+        should read the matching field of the `metadata` oneof.
     """
 
     __slots__ = [
@@ -1463,37 +1476,39 @@ class GetTranscriptArgs(bb.Struct):
     `file_id`, `path`, or `url` must be supplied via `file_id_or_url` to
     identify the audio or video asset to transcribe.
 
-    :ivar riviera.GetTranscriptArgs.file_id_or_url: Identifier of the media
-        asset to transcribe. Callers must set exactly one of the oneof variants:
-        - file_id: a Dropbox-issued file id (format: "id:<id>") for a file the
-        authenticated user has access to. - path: an absolute Dropbox path, e.g.
-        "/folder/recording.mp4". - url: either a Dropbox shared link
-        (www.dropbox.com) or an external HTTPS URL pointing to a supported
-        audio/video file. - Dropbox shared links are resolved internally using
-        the caller's authenticated identity and the link's visibility / download
-        settings. They therefore require an authenticated user context
-        (anonymous `url` requests against Dropbox links are rejected with an
-        `ACCESS_ERROR`). Links protected by a password are rejected with
-        `shared_link_password_protected`; links with downloads disabled are
-        rejected with `link_download_disabled_error`. - External URLs are
-        fetched over HTTPS through the backend's egress proxy and must point at
-        a supported audio/video file extension. The referenced asset must be an
-        audio or video file in a supported format; requests against files with
-        no audio track return a `no_audio_error`.
-    :ivar riviera.GetTranscriptArgs.timestamp_level: Granularity of the time
-        offsets returned for each transcript segment. Defaults to `SENTENCE. -
-        SENTENCE: one segment per spoken sentence (recommended). - WORD: one
-        segment per word, useful for fine-grained alignment such as captioning
-        or highlight-as-you-listen experiences.
-    :ivar riviera.GetTranscriptArgs.included_special_words: Comma-delimited list
-        of non-lexical filler words to preserve in the transcript output, e.g.
-        `"uh, ah, uhm"`. By default these fillers are stripped. Unrecognized
-        tokens are ignored. Leave empty to use the default filtering behavior.
-    :ivar riviera.GetTranscriptArgs.audio_language: Optional ISO 639-1
-        two-letter language code hinting the spoken language of the source audio
-        (e.g. "en", "ja"). When empty, the service auto-detects the language;
-        supplying a hint improves accuracy and latency for short or ambiguous
-        clips. Unsupported languages fall back to auto-detection.
+    :ivar GetTranscriptArgs.file_id_or_url:
+        Identifier of the media asset to transcribe. Callers must set exactly
+        one of the oneof variants: - file_id: a Dropbox-issued file id (format:
+        "id:<id>") for a file the authenticated user has access to. - path: an
+        absolute Dropbox path, e.g. "/folder/recording.mp4". - url: either a
+        Dropbox shared link (www.dropbox.com) or an external HTTPS URL pointing
+        to a supported audio/video file. - Dropbox shared links are resolved
+        internally using the caller's authenticated identity and the link's
+        visibility / download settings. They therefore require an authenticated
+        user context (anonymous `url` requests against Dropbox links are
+        rejected with an `ACCESS_ERROR`). Links protected by a password are
+        rejected with `shared_link_password_protected`; links with downloads
+        disabled are rejected with `link_download_disabled_error`. - External
+        URLs are fetched over HTTPS through the backend's egress proxy and must
+        point at a supported audio/video file extension. The referenced asset
+        must be an audio or video file in a supported format; requests against
+        files with no audio track return a `no_audio_error`.
+    :ivar GetTranscriptArgs.timestamp_level:
+        Granularity of the time offsets returned for each transcript segment.
+        Defaults to `SENTENCE. - SENTENCE: one segment per spoken sentence
+        (recommended). - WORD: one segment per word, useful for fine-grained
+        alignment such as captioning or highlight-as-you-listen experiences.
+    :ivar GetTranscriptArgs.included_special_words:
+        Comma-delimited list of non-lexical filler words to preserve in the
+        transcript output, e.g. `"uh, ah, uhm"`. By default these fillers are
+        stripped. Unrecognized tokens are ignored. Leave empty to use the
+        default filtering behavior.
+    :ivar GetTranscriptArgs.audio_language:
+        Optional ISO 639-1 two-letter language code hinting the spoken language
+        of the source audio (e.g. "en", "ja"). When empty, the service
+        auto-detects the language; supplying a hint improves accuracy and
+        latency for short or ambiguous clips. Unsupported languages fall back to
+        auto-detection.
     """
 
     __slots__ = [
@@ -1666,10 +1681,10 @@ GetTranscriptAsyncError_validator = bv.Struct(GetTranscriptAsyncError)
 
 class GetTranscriptResult(bb.Struct):
     """
-    :ivar riviera.GetTranscriptResult.structured_transcript: The structured
-        transcript produced for the requested media asset, with per-segment
-        text, start/end offsets (in seconds from the beginning of the media),
-        and the detected or caller-supplied locale.
+    :ivar GetTranscriptResult.structured_transcript:
+        The structured transcript produced for the requested media asset, with
+        per-segment text, start/end offsets (in seconds from the beginning of
+        the media), and the detected or caller-supplied locale.
     """
 
     __slots__ = [
@@ -1698,10 +1713,10 @@ class MarkdownConversionApiV2Error(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar riviera.MarkdownConversionApiV2Error.not_found_error: The referenced
-        file does not exist or is not accessible.
-    :ivar riviera.MarkdownConversionApiV2Error.is_a_folder_error: The target is
-        a folder, not a file.
+    :ivar MarkdownConversionApiV2Error.not_found_error:
+        The referenced file does not exist or is not accessible.
+    :ivar MarkdownConversionApiV2Error.is_a_folder_error:
+        The target is a folder, not a file.
     """
 
     _catch_all = 'other'
@@ -1877,10 +1892,10 @@ class MetadataExtractionApiV2Error(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar riviera.MetadataExtractionApiV2Error.not_found_error: The referenced
-        file does not exist or is not accessible.
-    :ivar riviera.MetadataExtractionApiV2Error.is_a_folder_error: The target is
-        a folder, not a file.
+    :ivar MetadataExtractionApiV2Error.not_found_error:
+        The referenced file does not exist or is not accessible.
+    :ivar MetadataExtractionApiV2Error.is_a_folder_error:
+        The target is a folder, not a file.
     """
 
     _catch_all = 'other'

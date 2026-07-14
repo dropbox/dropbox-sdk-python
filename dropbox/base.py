@@ -72,13 +72,16 @@ class DropboxBase(object):
         Route attributes:
             scope: account_info.read
 
-        :param str dbx_account_id: Encoded ID of the user. Must start either
-            with 'dbid:' or 'dbaphid:'.
-        :param str size: A string representing the size of the photo.
-        :param bool circle_crop: True if the photo should be cropped and false
+        :param dbx_account_id: Encoded ID of the user. Must start either with
+            'dbid:' or 'dbaphid:'.
+        :type dbx_account_id: str
+        :param size: A string representing the size of the photo.
+        :type size: str
+        :param circle_crop: True if the photo should be cropped and false
             otherwise.
-        :param bool expect_account_photo: True if we expect account photo to
-            exist.
+        :type circle_crop: bool
+        :param expect_account_photo: True if we expect account photo to exist.
+        :type expect_account_photo: bool
         :rtype: (:class:`dropbox.account.AccountPhotoGetResult`,
                  :class:`requests.models.Response`)
         :raises: :class:`.exceptions.ApiError`
@@ -117,13 +120,16 @@ class DropboxBase(object):
             scope: account_info.read
 
         :param str download_path: Path on local machine to save file.
-        :param str dbx_account_id: Encoded ID of the user. Must start either
-            with 'dbid:' or 'dbaphid:'.
-        :param str size: A string representing the size of the photo.
-        :param bool circle_crop: True if the photo should be cropped and false
+        :param dbx_account_id: Encoded ID of the user. Must start either with
+            'dbid:' or 'dbaphid:'.
+        :type dbx_account_id: str
+        :param size: A string representing the size of the photo.
+        :type size: str
+        :param circle_crop: True if the photo should be cropped and false
             otherwise.
-        :param bool expect_account_photo: True if we expect account photo to
-            exist.
+        :type circle_crop: bool
+        :param expect_account_photo: True if we expect account photo to exist.
+        :type expect_account_photo: bool
         :rtype: :class:`dropbox.account.AccountPhotoGetResult`
         :raises: :class:`.exceptions.ApiError`
 
@@ -178,9 +184,11 @@ class DropboxBase(object):
         Creates an OAuth 2.0 access token from the supplied OAuth 1.0 access
         token.
 
-        :param str oauth1_token: The supplied OAuth 1.0 access token.
-        :param str oauth1_token_secret: The token secret associated with the
+        :param oauth1_token: The supplied OAuth 1.0 access token.
+        :type oauth1_token: str
+        :param oauth1_token_secret: The token secret associated with the
             supplied access token.
+        :type oauth1_token_secret: str
         :rtype: :class:`dropbox.auth.TokenFromOAuth1Result`
         :raises: :class:`.exceptions.ApiError`
 
@@ -232,7 +240,8 @@ class DropboxBase(object):
         at least part of the Dropbox API infrastructure is working and that the
         app key and secret valid.
 
-        :param str query: The string that you'd like to be echoed back to you.
+        :param query: The string that you'd like to be echoed back to you.
+        :type query: str
         :rtype: :class:`dropbox.check.EchoResult`
         :raises: :class:`.exceptions.ApiError`
 
@@ -261,7 +270,8 @@ class DropboxBase(object):
         Route attributes:
             scope: account_info.read
 
-        :param str query: The string that you'd like to be echoed back to you.
+        :param query: The string that you'd like to be echoed back to you.
+        :type query: str
         :rtype: :class:`dropbox.check.EchoResult`
         :raises: :class:`.exceptions.ApiError`
 
@@ -308,8 +318,8 @@ class DropboxBase(object):
         Route attributes:
             scope: contacts.write
 
-        :param List[str] email_addresses: List of manually added contacts to be
-            deleted.
+        :param email_addresses: List of manually added contacts to be deleted.
+        :type email_addresses: List[str]
         :rtype: None
         :raises: :class:`.exceptions.ApiError`
 
@@ -339,11 +349,12 @@ class DropboxBase(object):
         Route attributes:
             scope: files.metadata.write
 
-        :param str path: A unique identifier for the file or folder.
-        :param List[:class:`dropbox.file_properties.PropertyGroup`]
-            property_groups: The property groups which are to be added to a
+        :param path: A unique identifier for the file or folder.
+        :type path: str
+        :param property_groups: The property groups which are to be added to a
             Dropbox file. No two groups in the input should refer to the same
             template.
+        :type property_groups: List[:class:`dropbox.file_properties.PropertyGroup`]
         :rtype: None
         :raises: :class:`.exceptions.ApiError`
 
@@ -374,10 +385,11 @@ class DropboxBase(object):
         Route attributes:
             scope: files.metadata.write
 
-        :param str path: A unique identifier for the file or folder.
-        :param List[:class:`dropbox.file_properties.PropertyGroup`]
-            property_groups: The property groups "snapshot" updates to force
+        :param path: A unique identifier for the file or folder.
+        :type path: str
+        :param property_groups: The property groups "snapshot" updates to force
             apply. No two groups in the input should refer to the same template.
+        :type property_groups: List[:class:`dropbox.file_properties.PropertyGroup`]
         :rtype: None
         :raises: :class:`.exceptions.ApiError`
 
@@ -409,10 +421,12 @@ class DropboxBase(object):
         Route attributes:
             scope: files.metadata.write
 
-        :param str path: A unique identifier for the file or folder.
-        :param List[str] property_template_ids: A list of identifiers for a
-            template created by :meth:`file_properties_templates_add_for_user`
-            or :meth:`file_properties_templates_add_for_team`.
+        :param path: A unique identifier for the file or folder.
+        :type path: str
+        :param property_template_ids: A list of identifiers for a template
+            created by :meth:`file_properties_templates_add_for_user` or
+            :meth:`file_properties_templates_add_for_team`.
+        :type property_template_ids: List[str]
         :rtype: None
         :raises: :class:`.exceptions.ApiError`
 
@@ -438,8 +452,8 @@ class DropboxBase(object):
         Route attributes:
             scope: files.metadata.read
 
-        :param List[:class:`dropbox.file_properties.PropertiesSearchQuery`]
-            queries: Queries to search.
+        :param queries: Queries to search.
+        :type queries: List[:class:`dropbox.file_properties.PropertiesSearchQuery`]
         :param template_filter: Filter results to contain only properties
             associated with these template IDs.
         :type template_filter: :class:`dropbox.file_properties.TemplateFilter`
@@ -469,9 +483,10 @@ class DropboxBase(object):
         Route attributes:
             scope: files.metadata.read
 
-        :param str cursor: The cursor returned by your last call to
+        :param cursor: The cursor returned by your last call to
             :meth:`file_properties_properties_search` or
             :meth:`file_properties_properties_search_continue`.
+        :type cursor: str
         :rtype: :class:`dropbox.file_properties.PropertiesSearchResult`
         :raises: :class:`.exceptions.ApiError`
 
@@ -502,10 +517,11 @@ class DropboxBase(object):
         Route attributes:
             scope: files.metadata.write
 
-        :param str path: A unique identifier for the file or folder.
-        :param List[:class:`dropbox.file_properties.PropertyGroupUpdate`]
-            update_property_groups: The property groups "delta" updates to
+        :param path: A unique identifier for the file or folder.
+        :type path: str
+        :param update_property_groups: The property groups "delta" updates to
             apply.
+        :type update_property_groups: List[:class:`dropbox.file_properties.PropertyGroupUpdate`]
         :rtype: None
         :raises: :class:`.exceptions.ApiError`
 
@@ -560,9 +576,10 @@ class DropboxBase(object):
         Route attributes:
             scope: files.metadata.read
 
-        :param str template_id: An identifier for template added by route  See
+        :param template_id: An identifier for template added by route  See
             :meth:`file_properties_templates_add_for_user` or
             :meth:`file_properties_templates_add_for_team`.
+        :type template_id: str
         :rtype: :class:`dropbox.file_properties.GetTemplateResult`
         :raises: :class:`.exceptions.ApiError`
 
@@ -613,9 +630,10 @@ class DropboxBase(object):
         Route attributes:
             scope: files.metadata.write
 
-        :param str template_id: An identifier for a template created by
+        :param template_id: An identifier for a template created by
             :meth:`file_properties_templates_add_for_user` or
             :meth:`file_properties_templates_add_for_team`.
+        :type template_id: str
         :rtype: None
         :raises: :class:`.exceptions.ApiError`
 
@@ -645,17 +663,19 @@ class DropboxBase(object):
         Route attributes:
             scope: files.metadata.write
 
-        :param str template_id: An identifier for template added by  See
+        :param template_id: An identifier for template added by  See
             :meth:`file_properties_templates_add_for_user` or
             :meth:`file_properties_templates_add_for_team`.
-        :param Nullable[str] name: A display name for the template. template
-            names can be up to 256 bytes.
-        :param Nullable[str] description: Description for the new template.
-            Template descriptions can be up to 1024 bytes.
-        :param
-            Nullable[List[:class:`dropbox.file_properties.PropertyFieldTemplate`]]
-            add_fields: Property field templates to be added to the group
+        :type template_id: str
+        :param name: A display name for the template. template names can be up
+            to 256 bytes.
+        :type name: Nullable[str]
+        :param description: Description for the new template. Template
+            descriptions can be up to 1024 bytes.
+        :type description: Nullable[str]
+        :param add_fields: Property field templates to be added to the group
             template. There can be up to 32 properties in a single template.
+        :type add_fields: Nullable[List[:class:`dropbox.file_properties.PropertyFieldTemplate`]]
         :rtype: :class:`dropbox.file_properties.UpdateTemplateResult`
         :raises: :class:`.exceptions.ApiError`
 
@@ -709,19 +729,24 @@ class DropboxBase(object):
         Route attributes:
             scope: file_requests.write
 
-        :param str title: The title of the file request. Must not be empty.
-        :param str destination: The path of the folder in the Dropbox where
-            uploaded files will be sent. For apps with the app folder
-            permission, this will be relative to the app folder.
-        :param Nullable[:class:`dropbox.file_requests.FileRequestDeadline`]
-            deadline: The deadline for the file request. Deadlines can only be
-            set by Professional and Business accounts.
-        :param bool open: Whether or not the file request should be open. If the
-            file request is closed, it will not accept any file submissions, but
-            it can be opened later.
-        :param Nullable[str] description: A description of the file request.
-        :param Nullable[str] video_project_id: If this request was created from
-            video project, its id.
+        :param title: The title of the file request. Must not be empty.
+        :type title: str
+        :param destination: The path of the folder in the Dropbox where uploaded
+            files will be sent. For apps with the app folder permission, this
+            will be relative to the app folder.
+        :type destination: str
+        :param deadline: The deadline for the file request. Deadlines can only
+            be set by Professional and Business accounts.
+        :type deadline: Nullable[:class:`dropbox.file_requests.FileRequestDeadline`]
+        :param open: Whether or not the file request should be open. If the file
+            request is closed, it will not accept any file submissions, but it
+            can be opened later.
+        :type open: bool
+        :param description: A description of the file request.
+        :type description: Nullable[str]
+        :param video_project_id: If this request was created from video project,
+            its id.
+        :type video_project_id: Nullable[str]
         :rtype: :class:`dropbox.file_requests.FileRequest`
         :raises: :class:`.exceptions.ApiError`
 
@@ -750,7 +775,8 @@ class DropboxBase(object):
         Route attributes:
             scope: file_requests.write
 
-        :param List[str] ids: List IDs of the file requests to delete.
+        :param ids: List IDs of the file requests to delete.
+        :type ids: List[str]
         :rtype: :class:`dropbox.file_requests.DeleteFileRequestsResult`
         :raises: :class:`.exceptions.ApiError`
 
@@ -792,7 +818,8 @@ class DropboxBase(object):
         Route attributes:
             scope: file_requests.read
 
-        :param str id: The ID of the file request to retrieve.
+        :param id: The ID of the file request to retrieve.
+        :type id: str
         :rtype: :class:`dropbox.file_requests.FileRequest`
         """
         arg = file_requests.GetFileRequestArgs(id)
@@ -834,8 +861,9 @@ class DropboxBase(object):
         Route attributes:
             scope: file_requests.read
 
-        :param int limit: The maximum number of file requests that should be
+        :param limit: The maximum number of file requests that should be
             returned per request.
+        :type limit: int
         :rtype: :class:`dropbox.file_requests.ListFileRequestsV2Result`
         """
         arg = file_requests.ListFileRequestsArg(limit)
@@ -858,8 +886,9 @@ class DropboxBase(object):
         Route attributes:
             scope: file_requests.read
 
-        :param str cursor: The cursor returned by the previous API call
-            specified in the endpoint description.
+        :param cursor: The cursor returned by the previous API call specified in
+            the endpoint description.
+        :type cursor: str
         :rtype: :class:`dropbox.file_requests.ListFileRequestsV2Result`
         :raises: :class:`.exceptions.ApiError`
 
@@ -888,18 +917,21 @@ class DropboxBase(object):
         Route attributes:
             scope: file_requests.write
 
-        :param str id: The ID of the file request to update.
-        :param Nullable[str] title: The new title of the file request. Must not
-            be empty.
-        :param Nullable[str] destination: The new path of the folder in the
-            Dropbox where uploaded files will be sent. For apps with the app
-            folder permission, this will be relative to the app folder.
+        :param id: The ID of the file request to update.
+        :type id: str
+        :param title: The new title of the file request. Must not be empty.
+        :type title: Nullable[str]
+        :param destination: The new path of the folder in the Dropbox where
+            uploaded files will be sent. For apps with the app folder
+            permission, this will be relative to the app folder.
+        :type destination: Nullable[str]
         :param deadline: The new deadline for the file request. Deadlines can
             only be set by Professional and Business accounts.
         :type deadline: :class:`dropbox.file_requests.UpdateFileRequestDeadline`
-        :param Nullable[bool] open: Whether to set this file request as open or
-            closed.
-        :param Nullable[str] description: The description of the file request.
+        :param open: Whether to set this file request as open or closed.
+        :type open: Nullable[bool]
+        :param description: The description of the file request.
+        :type description: Nullable[str]
         :rtype: :class:`dropbox.file_requests.FileRequest`
         """
         arg = file_requests.UpdateFileRequestArgs(id,
@@ -934,10 +966,10 @@ class DropboxBase(object):
         Route attributes:
             scope: files.metadata.read
 
-        :param Nullable[List[str]] include_property_templates: Field is
-            deprecated. If set to a valid list of template IDs,
-            ``FileMetadata.property_groups`` is set for files with custom
-            properties.
+        :param include_property_templates: Field is deprecated. If set to a
+            valid list of template IDs, ``FileMetadata.property_groups`` is set
+            for files with custom properties.
+        :type include_property_templates: Nullable[List[str]]
         :rtype: :class:`dropbox.files.Metadata`
         :raises: :class:`.exceptions.ApiError`
 
@@ -982,11 +1014,11 @@ class DropboxBase(object):
             scope: files.content.write
 
         :param bytes f: Contents to upload.
-        :param Nullable[str] content_hash: A hash of the file content uploaded
-            in this call. If provided and the uploaded content does not match
-            this hash, an error will be returned. For more information see our
-            `Content hash
+        :param content_hash: A hash of the file content uploaded in this call.
+            If provided and the uploaded content does not match this hash, an
+            error will be returned. For more information see our `Content hash
             <https://www.dropbox.com/developers/reference/content-hash>`_ page.
+        :type content_hash: Nullable[str]
         :rtype: :class:`dropbox.files.FileMetadata`
         :raises: :class:`.exceptions.ApiError`
 
@@ -1026,13 +1058,16 @@ class DropboxBase(object):
         Route attributes:
             scope: files.content.write
 
-        :param bool allow_shared_folder: Field is deprecated. This flag has no
+        :param allow_shared_folder: Field is deprecated. This flag has no
             effect.
-        :param bool autorename: If there's a conflict, have the Dropbox server
-            try to autorename the file to avoid the conflict.
-        :param bool allow_ownership_transfer: Allow moves by owner even if it
-            would result in an ownership transfer for the content being moved.
-            This does not apply to copies.
+        :type allow_shared_folder: bool
+        :param autorename: If there's a conflict, have the Dropbox server try to
+            autorename the file to avoid the conflict.
+        :type autorename: bool
+        :param allow_ownership_transfer: Allow moves by owner even if it would
+            result in an ownership transfer for the content being moved. This
+            does not apply to copies.
+        :type allow_ownership_transfer: bool
         :rtype: :class:`dropbox.files.Metadata`
         :raises: :class:`.exceptions.ApiError`
 
@@ -1069,13 +1104,16 @@ class DropboxBase(object):
         Route attributes:
             scope: files.content.write
 
-        :param bool allow_shared_folder: Field is deprecated. This flag has no
+        :param allow_shared_folder: Field is deprecated. This flag has no
             effect.
-        :param bool autorename: If there's a conflict, have the Dropbox server
-            try to autorename the file to avoid the conflict.
-        :param bool allow_ownership_transfer: Allow moves by owner even if it
-            would result in an ownership transfer for the content being moved.
-            This does not apply to copies.
+        :type allow_shared_folder: bool
+        :param autorename: If there's a conflict, have the Dropbox server try to
+            autorename the file to avoid the conflict.
+        :type autorename: bool
+        :param allow_ownership_transfer: Allow moves by owner even if it would
+            result in an ownership transfer for the content being moved. This
+            does not apply to copies.
+        :type allow_ownership_transfer: bool
         :rtype: :class:`dropbox.files.RelocationResult`
         :raises: :class:`.exceptions.ApiError`
 
@@ -1109,11 +1147,13 @@ class DropboxBase(object):
         Route attributes:
             scope: files.content.write
 
-        :param bool allow_shared_folder: Field is deprecated. This flag has no
+        :param allow_shared_folder: Field is deprecated. This flag has no
             effect.
-        :param bool allow_ownership_transfer: Allow moves by owner even if it
-            would result in an ownership transfer for the content being moved.
-            This does not apply to copies.
+        :type allow_shared_folder: bool
+        :param allow_ownership_transfer: Allow moves by owner even if it would
+            result in an ownership transfer for the content being moved. This
+            does not apply to copies.
+        :type allow_ownership_transfer: bool
         :rtype: :class:`dropbox.files.RelocationBatchLaunch`
         """
         warnings.warn(
@@ -1147,11 +1187,12 @@ class DropboxBase(object):
         Route attributes:
             scope: files.content.write
 
-        :param List[:class:`dropbox.files.RelocationPath`] entries: List of
-            entries to be moved or copied. Each entry is
+        :param entries: List of entries to be moved or copied. Each entry is
             :class:`dropbox.files.RelocationPath`.
-        :param bool autorename: If there's a conflict with any file, have the
-            Dropbox server try to autorename that file to avoid the conflict.
+        :type entries: List[:class:`dropbox.files.RelocationPath`]
+        :param autorename: If there's a conflict with any file, have the Dropbox
+            server try to autorename that file to avoid the conflict.
+        :type autorename: bool
         :rtype: :class:`dropbox.files.RelocationBatchV2Launch`
         """
         arg = files.RelocationBatchArgBase(entries,
@@ -1173,13 +1214,14 @@ class DropboxBase(object):
         Route attributes:
             scope: files.content.write
 
-        :param str async_job_id: Id of the asynchronous job. This is the value
-            of a response returned from the method that launched the job.
+        :param async_job_id: Id of the asynchronous job. This is the value of a
+            response returned from the method that launched the job.
+        :type async_job_id: str
         :rtype: :class:`dropbox.files.RelocationBatchJobStatus`
         :raises: :class:`.exceptions.ApiError`
 
         If this raises, ApiError will contain:
-            :class:`dropbox.files.PollError`
+            :class:`dropbox.async_.PollError`
         """
         warnings.warn(
             'copy_batch/check is deprecated.',
@@ -1203,13 +1245,14 @@ class DropboxBase(object):
         Route attributes:
             scope: files.content.write
 
-        :param str async_job_id: Id of the asynchronous job. This is the value
-            of a response returned from the method that launched the job.
+        :param async_job_id: Id of the asynchronous job. This is the value of a
+            response returned from the method that launched the job.
+        :type async_job_id: str
         :rtype: :class:`dropbox.files.RelocationBatchV2JobStatus`
         :raises: :class:`.exceptions.ApiError`
 
         If this raises, ApiError will contain:
-            :class:`dropbox.files.PollError`
+            :class:`dropbox.async_.PollError`
         """
         arg = async_.PollArg(async_job_id)
         r = self.request(
@@ -1230,8 +1273,9 @@ class DropboxBase(object):
         Route attributes:
             scope: files.content.write
 
-        :param str path: The path to the file or folder you want to get a copy
+        :param path: The path to the file or folder you want to get a copy
             reference to.
+        :type path: str
         :rtype: :class:`dropbox.files.GetCopyReferenceResult`
         :raises: :class:`.exceptions.ApiError`
 
@@ -1257,9 +1301,11 @@ class DropboxBase(object):
         Route attributes:
             scope: files.content.write
 
-        :param str copy_reference: A copy reference returned by
+        :param copy_reference: A copy reference returned by
             :meth:`files_copy_reference_get`.
-        :param str path: Path in the user's Dropbox that is the destination.
+        :type copy_reference: str
+        :param path: Path in the user's Dropbox that is the destination.
+        :type path: str
         :rtype: :class:`dropbox.files.SaveCopyReferenceResult`
         :raises: :class:`.exceptions.ApiError`
 
@@ -1285,9 +1331,11 @@ class DropboxBase(object):
         Route attributes:
             scope: files.content.write
 
-        :param str path: Path in the user's Dropbox to create.
-        :param bool autorename: If there's a conflict, have the Dropbox server
-            try to autorename the folder to avoid the conflict.
+        :param path: Path in the user's Dropbox to create.
+        :type path: str
+        :param autorename: If there's a conflict, have the Dropbox server try to
+            autorename the folder to avoid the conflict.
+        :type autorename: bool
         :rtype: :class:`dropbox.files.FolderMetadata`
         :raises: :class:`.exceptions.ApiError`
 
@@ -1317,9 +1365,11 @@ class DropboxBase(object):
         Route attributes:
             scope: files.content.write
 
-        :param str path: Path in the user's Dropbox to create.
-        :param bool autorename: If there's a conflict, have the Dropbox server
-            try to autorename the folder to avoid the conflict.
+        :param path: Path in the user's Dropbox to create.
+        :type path: str
+        :param autorename: If there's a conflict, have the Dropbox server try to
+            autorename the folder to avoid the conflict.
+        :type autorename: bool
         :rtype: :class:`dropbox.files.CreateFolderResult`
         :raises: :class:`.exceptions.ApiError`
 
@@ -1351,13 +1401,15 @@ class DropboxBase(object):
         Route attributes:
             scope: files.content.write
 
-        :param List[str] paths: List of paths to be created in the user's
-            Dropbox. Duplicate path arguments in the batch are considered only
-            once.
-        :param bool autorename: If there's a conflict, have the Dropbox server
-            try to autorename the folder to avoid the conflict.
-        :param bool force_async: Whether to force the create to happen
+        :param paths: List of paths to be created in the user's Dropbox.
+            Duplicate path arguments in the batch are considered only once.
+        :type paths: List[str]
+        :param autorename: If there's a conflict, have the Dropbox server try to
+            autorename the folder to avoid the conflict.
+        :type autorename: bool
+        :param force_async: Whether to force the create to happen
             asynchronously.
+        :type force_async: bool
         :rtype: :class:`dropbox.files.CreateFolderBatchLaunch`
         """
         arg = files.CreateFolderBatchArg(paths,
@@ -1381,13 +1433,14 @@ class DropboxBase(object):
         Route attributes:
             scope: files.content.write
 
-        :param str async_job_id: Id of the asynchronous job. This is the value
-            of a response returned from the method that launched the job.
+        :param async_job_id: Id of the asynchronous job. This is the value of a
+            response returned from the method that launched the job.
+        :type async_job_id: str
         :rtype: :class:`dropbox.files.CreateFolderBatchJobStatus`
         :raises: :class:`.exceptions.ApiError`
 
         If this raises, ApiError will contain:
-            :class:`dropbox.files.PollError`
+            :class:`dropbox.async_.PollError`
         """
         arg = async_.PollArg(async_job_id)
         r = self.request(
@@ -1411,10 +1464,11 @@ class DropboxBase(object):
         Route attributes:
             scope: files.content.write
 
-        :param str path: Path in the user's Dropbox to delete.
-        :param Nullable[str] parent_rev: Perform delete if given "rev" matches
-            the existing file's latest "rev". This field does not support
-            deleting a folder.
+        :param path: Path in the user's Dropbox to delete.
+        :type path: str
+        :param parent_rev: Perform delete if given "rev" matches the existing
+            file's latest "rev". This field does not support deleting a folder.
+        :type parent_rev: Nullable[str]
         :rtype: :class:`dropbox.files.Metadata`
         :raises: :class:`.exceptions.ApiError`
 
@@ -1448,10 +1502,11 @@ class DropboxBase(object):
         Route attributes:
             scope: files.content.write
 
-        :param str path: Path in the user's Dropbox to delete.
-        :param Nullable[str] parent_rev: Perform delete if given "rev" matches
-            the existing file's latest "rev". This field does not support
-            deleting a folder.
+        :param path: Path in the user's Dropbox to delete.
+        :type path: str
+        :param parent_rev: Perform delete if given "rev" matches the existing
+            file's latest "rev". This field does not support deleting a folder.
+        :type parent_rev: Nullable[str]
         :rtype: :class:`dropbox.files.DeleteResult`
         :raises: :class:`.exceptions.ApiError`
 
@@ -1500,13 +1555,14 @@ class DropboxBase(object):
         Route attributes:
             scope: files.content.write
 
-        :param str async_job_id: Id of the asynchronous job. This is the value
-            of a response returned from the method that launched the job.
+        :param async_job_id: Id of the asynchronous job. This is the value of a
+            response returned from the method that launched the job.
+        :type async_job_id: str
         :rtype: :class:`dropbox.files.DeleteBatchJobStatus`
         :raises: :class:`.exceptions.ApiError`
 
         If this raises, ApiError will contain:
-            :class:`dropbox.files.PollError`
+            :class:`dropbox.async_.PollError`
         """
         arg = async_.PollArg(async_job_id)
         r = self.request(
@@ -1526,9 +1582,11 @@ class DropboxBase(object):
         Route attributes:
             scope: files.content.read
 
-        :param str path: The path of the file to download.
-        :param Nullable[str] rev: Field is deprecated. Please specify revision
-            in ``path`` instead.
+        :param path: The path of the file to download.
+        :type path: str
+        :param rev: Field is deprecated. Please specify revision in ``path``
+            instead.
+        :type rev: Nullable[str]
         :rtype: (:class:`dropbox.files.FileMetadata`,
                  :class:`requests.models.Response`)
         :raises: :class:`.exceptions.ApiError`
@@ -1563,9 +1621,11 @@ class DropboxBase(object):
             scope: files.content.read
 
         :param str download_path: Path on local machine to save file.
-        :param str path: The path of the file to download.
-        :param Nullable[str] rev: Field is deprecated. Please specify revision
-            in ``path`` instead.
+        :param path: The path of the file to download.
+        :type path: str
+        :param rev: Field is deprecated. Please specify revision in ``path``
+            instead.
+        :type rev: Nullable[str]
         :rtype: :class:`dropbox.files.FileMetadata`
         :raises: :class:`.exceptions.ApiError`
 
@@ -1596,7 +1656,8 @@ class DropboxBase(object):
         Route attributes:
             scope: files.content.read
 
-        :param str path: The path of the folder to download.
+        :param path: The path of the folder to download.
+        :type path: str
         :rtype: (:class:`dropbox.files.DownloadZipResult`,
                  :class:`requests.models.Response`)
         :raises: :class:`.exceptions.ApiError`
@@ -1634,7 +1695,8 @@ class DropboxBase(object):
             scope: files.content.read
 
         :param str download_path: Path on local machine to save file.
-        :param str path: The path of the folder to download.
+        :param path: The path of the folder to download.
+        :type path: str
         :rtype: :class:`dropbox.files.DownloadZipResult`
         :raises: :class:`.exceptions.ApiError`
 
@@ -1662,12 +1724,14 @@ class DropboxBase(object):
         Route attributes:
             scope: files.content.read
 
-        :param str path: The path of the file to be exported.
-        :param Nullable[str] export_format: The file format to which the file
-            should be exported. This must be one of the formats listed in the
-            file's export_options returned by :meth:`files_get_metadata`. If
-            none is specified, the default format (specified in export_as in
-            file metadata) will be used.
+        :param path: The path of the file to be exported.
+        :type path: str
+        :param export_format: The file format to which the file should be
+            exported. This must be one of the formats listed in the file's
+            export_options returned by :meth:`files_get_metadata`. If none is
+            specified, the default format (specified in export_as in file
+            metadata) will be used.
+        :type export_format: Nullable[str]
         :rtype: (:class:`dropbox.files.ExportResult`,
                  :class:`requests.models.Response`)
         :raises: :class:`.exceptions.ApiError`
@@ -1704,12 +1768,14 @@ class DropboxBase(object):
             scope: files.content.read
 
         :param str download_path: Path on local machine to save file.
-        :param str path: The path of the file to be exported.
-        :param Nullable[str] export_format: The file format to which the file
-            should be exported. This must be one of the formats listed in the
-            file's export_options returned by :meth:`files_get_metadata`. If
-            none is specified, the default format (specified in export_as in
-            file metadata) will be used.
+        :param path: The path of the file to be exported.
+        :type path: str
+        :param export_format: The file format to which the file should be
+            exported. This must be one of the formats listed in the file's
+            export_options returned by :meth:`files_get_metadata`. If none is
+            specified, the default format (specified in export_as in file
+            metadata) will be used.
+        :type export_format: Nullable[str]
         :rtype: :class:`dropbox.files.ExportResult`
         :raises: :class:`.exceptions.ApiError`
 
@@ -1735,10 +1801,10 @@ class DropboxBase(object):
         Route attributes:
             scope: files.content.read
 
-        :param List[:class:`dropbox.files.LockFileArg`] entries: List of
-            'entries'. Each 'entry' contains a path of the file which will be
-            locked or queried. Duplicate path arguments in the batch are
-            considered only once.
+        :param entries: List of 'entries'. Each 'entry' contains a path of the
+            file which will be locked or queried. Duplicate path arguments in
+            the batch are considered only once.
+        :type entries: List[:class:`dropbox.files.LockFileArg`]
         :rtype: :class:`dropbox.files.LockFileBatchResult`
         :raises: :class:`.exceptions.ApiError`
 
@@ -1767,20 +1833,23 @@ class DropboxBase(object):
         Route attributes:
             scope: files.metadata.read
 
-        :param str path: The path of a file or folder on Dropbox.
-        :param bool include_media_info: If true, ``FileMetadata.media_info`` is
-            set for photo and video.
-        :param bool include_deleted: If true,
-            :class:`dropbox.files.DeletedMetadata` will be returned for deleted
-            file or folder, otherwise ``LookupError.not_found`` will be
-            returned.
-        :param bool include_has_explicit_shared_members: If true, the results
-            will include a flag for each file indicating whether or not that
-            file has any explicit members.
-        :param Nullable[:class:`dropbox.files.TemplateFilterBase`]
-            include_property_groups: If set to a valid list of template IDs,
+        :param path: The path of a file or folder on Dropbox.
+        :type path: str
+        :param include_media_info: If true, ``FileMetadata.media_info`` is set
+            for photo and video.
+        :type include_media_info: bool
+        :param include_deleted: If true, :class:`dropbox.files.DeletedMetadata`
+            will be returned for deleted file or folder, otherwise
+            ``LookupError.not_found`` will be returned.
+        :type include_deleted: bool
+        :param include_has_explicit_shared_members: If true, the results will
+            include a flag for each file indicating whether or not that file has
+            any explicit members.
+        :type include_has_explicit_shared_members: bool
+        :param include_property_groups: If set to a valid list of template IDs,
             ``FileMetadata.property_groups`` is set if there exists property
             data associated with the file and each of the listed templates.
+        :type include_property_groups: Nullable[:class:`dropbox.file_properties.TemplateFilterBase`]
         :rtype: :class:`dropbox.files.Metadata`
         :raises: :class:`.exceptions.ApiError`
 
@@ -1813,9 +1882,11 @@ class DropboxBase(object):
         Route attributes:
             scope: files.content.read
 
-        :param str path: The path of the file to preview.
-        :param Nullable[str] rev: Field is deprecated. Please specify revision
-            in ``path`` instead.
+        :param path: The path of the file to preview.
+        :type path: str
+        :param rev: Field is deprecated. Please specify revision in ``path``
+            instead.
+        :type rev: Nullable[str]
         :rtype: (:class:`dropbox.files.FileMetadata`,
                  :class:`requests.models.Response`)
         :raises: :class:`.exceptions.ApiError`
@@ -1854,9 +1925,11 @@ class DropboxBase(object):
             scope: files.content.read
 
         :param str download_path: Path on local machine to save file.
-        :param str path: The path of the file to preview.
-        :param Nullable[str] rev: Field is deprecated. Please specify revision
-            in ``path`` instead.
+        :param path: The path of the file to preview.
+        :type path: str
+        :param rev: Field is deprecated. Please specify revision in ``path``
+            instead.
+        :type rev: Nullable[str]
         :rtype: :class:`dropbox.files.FileMetadata`
         :raises: :class:`.exceptions.ApiError`
 
@@ -1885,7 +1958,8 @@ class DropboxBase(object):
         Route attributes:
             scope: files.content.read
 
-        :param str path: The path to the file you want a temporary link to.
+        :param path: The path to the file you want a temporary link to.
+        :type path: str
         :rtype: :class:`dropbox.files.GetTemporaryLinkResult`
         :raises: :class:`.exceptions.ApiError`
 
@@ -1942,9 +2016,10 @@ class DropboxBase(object):
             the future upload commit. Equivalent to the parameters provided to
             :meth:`files_upload`.
         :type commit_info: :class:`dropbox.files.CommitInfo`
-        :param float duration: How long before this link expires, in seconds.
+        :param duration: How long before this link expires, in seconds.
             Attempting to start an upload with this link longer than this period
             of time after link creation will result in an error.
+        :type duration: float
         :rtype: :class:`dropbox.files.GetTemporaryUploadLinkResult`
         """
         arg = files.GetTemporaryUploadLinkArg(commit_info,
@@ -1973,7 +2048,8 @@ class DropboxBase(object):
         Route attributes:
             scope: files.content.read
 
-        :param str path: The path to the image file you want to thumbnail.
+        :param path: The path to the image file you want to thumbnail.
+        :type path: str
         :param format: The format for the thumbnail image, jpeg (default), png,
             or webp. For images that are photos, jpeg should be preferred, while
             png is better for screenshots and digital arts, and web for
@@ -1987,10 +2063,11 @@ class DropboxBase(object):
         :param quality: Field is only returned for "internal" callers. Quality
             of the thumbnail image.
         :type quality: :class:`dropbox.files.ThumbnailQuality`
-        :param Nullable[bool] exclude_media_info: Normally,
-            ``FileMetadata.media_info`` is set for photo and video. When this
-            flag is true, ``FileMetadata.media_info`` is not populated. This
-            improves latency for use cases where `media_info` is not needed.
+        :param exclude_media_info: Normally, ``FileMetadata.media_info`` is set
+            for photo and video. When this flag is true,
+            ``FileMetadata.media_info`` is not populated. This improves latency
+            for use cases where `media_info` is not needed.
+        :type exclude_media_info: Nullable[bool]
         :rtype: (:class:`dropbox.files.FileMetadata`,
                  :class:`requests.models.Response`)
         :raises: :class:`.exceptions.ApiError`
@@ -2036,7 +2113,8 @@ class DropboxBase(object):
             scope: files.content.read
 
         :param str download_path: Path on local machine to save file.
-        :param str path: The path to the image file you want to thumbnail.
+        :param path: The path to the image file you want to thumbnail.
+        :type path: str
         :param format: The format for the thumbnail image, jpeg (default), png,
             or webp. For images that are photos, jpeg should be preferred, while
             png is better for screenshots and digital arts, and web for
@@ -2050,10 +2128,11 @@ class DropboxBase(object):
         :param quality: Field is only returned for "internal" callers. Quality
             of the thumbnail image.
         :type quality: :class:`dropbox.files.ThumbnailQuality`
-        :param Nullable[bool] exclude_media_info: Normally,
-            ``FileMetadata.media_info`` is set for photo and video. When this
-            flag is true, ``FileMetadata.media_info`` is not populated. This
-            improves latency for use cases where `media_info` is not needed.
+        :param exclude_media_info: Normally, ``FileMetadata.media_info`` is set
+            for photo and video. When this flag is true,
+            ``FileMetadata.media_info`` is not populated. This improves latency
+            for use cases where `media_info` is not needed.
+        :type exclude_media_info: Nullable[bool]
         :rtype: :class:`dropbox.files.FileMetadata`
         :raises: :class:`.exceptions.ApiError`
 
@@ -2108,10 +2187,11 @@ class DropboxBase(object):
         :param quality: Field is only returned for "internal" callers. Quality
             of the thumbnail image.
         :type quality: :class:`dropbox.files.ThumbnailQuality`
-        :param Nullable[bool] exclude_media_info: Normally,
-            ``FileMetadata.media_info`` is set for photo and video. When this
-            flag is true, ``FileMetadata.media_info`` is not populated. This
-            improves latency for use cases where `media_info` is not needed.
+        :param exclude_media_info: Normally, ``FileMetadata.media_info`` is set
+            for photo and video. When this flag is true,
+            ``FileMetadata.media_info`` is not populated. This improves latency
+            for use cases where `media_info` is not needed.
+        :type exclude_media_info: Nullable[bool]
         :rtype: (:class:`dropbox.files.PreviewResult`,
                  :class:`requests.models.Response`)
         :raises: :class:`.exceptions.ApiError`
@@ -2174,10 +2254,11 @@ class DropboxBase(object):
         :param quality: Field is only returned for "internal" callers. Quality
             of the thumbnail image.
         :type quality: :class:`dropbox.files.ThumbnailQuality`
-        :param Nullable[bool] exclude_media_info: Normally,
-            ``FileMetadata.media_info`` is set for photo and video. When this
-            flag is true, ``FileMetadata.media_info`` is not populated. This
-            improves latency for use cases where `media_info` is not needed.
+        :param exclude_media_info: Normally, ``FileMetadata.media_info`` is set
+            for photo and video. When this flag is true,
+            ``FileMetadata.media_info`` is not populated. This improves latency
+            for use cases where `media_info` is not needed.
+        :type exclude_media_info: Nullable[bool]
         :rtype: :class:`dropbox.files.PreviewResult`
         :raises: :class:`.exceptions.ApiError`
 
@@ -2211,8 +2292,8 @@ class DropboxBase(object):
         Route attributes:
             scope: files.content.read
 
-        :param List[:class:`dropbox.files.ThumbnailArg`] entries: List of files
-            to get thumbnails.
+        :param entries: List of files to get thumbnails.
+        :type entries: List[:class:`dropbox.files.ThumbnailArg`]
         :rtype: :class:`dropbox.files.GetThumbnailBatchResult`
         :raises: :class:`.exceptions.ApiError`
 
@@ -2268,42 +2349,51 @@ class DropboxBase(object):
         Route attributes:
             scope: files.metadata.read
 
-        :param str path: A unique identifier for the file.
-        :param bool recursive: If true, the list folder operation will be
-            applied recursively to all subfolders and the response will contain
-            contents of all subfolders. In some cases, setting
+        :param path: A unique identifier for the file.
+        :type path: str
+        :param recursive: If true, the list folder operation will be applied
+            recursively to all subfolders and the response will contain contents
+            of all subfolders. In some cases, setting
             ``ListFolderArg.recursive`` to ``True`` may lead to performance
             issues or errors, especially when traversing folder structures with
             a large number of items. A workaround for such cases is to set
             ``ListFolderArg.recursive`` to ``False`` and traverse subfolders one
             at a time.
-        :param bool include_media_info: Field is deprecated. If true,
+        :type recursive: bool
+        :param include_media_info: Field is deprecated. If true,
             ``FileMetadata.media_info`` is set for photo and video. This
             parameter will no longer have an effect starting December 2, 2019.
-        :param bool include_deleted: If true, the results will include entries
-            for files and folders that used to exist but were deleted.
-        :param bool include_has_explicit_shared_members: If true, the results
-            will include a flag for each file indicating whether or not that
-            file has any explicit members.
-        :param bool include_mounted_folders: If true, the results will include
+        :type include_media_info: bool
+        :param include_deleted: If true, the results will include entries for
+            files and folders that used to exist but were deleted.
+        :type include_deleted: bool
+        :param include_has_explicit_shared_members: If true, the results will
+            include a flag for each file indicating whether or not that file has
+            any explicit members.
+        :type include_has_explicit_shared_members: bool
+        :param include_mounted_folders: If true, the results will include
             entries under mounted folders which includes app folder, shared
             folder and team folder.
-        :param Nullable[int] limit: The maximum number of results to return per
-            request. Note: This is an approximate number and there can be
-            slightly more entries returned in some cases.
-        :param Nullable[:class:`dropbox.files.SharedLink`] shared_link: A shared
-            link to list the contents of. If the link is password-protected, the
-            password must be provided. If this field is present,
-            ``ListFolderArg.path`` will be relative to root of the shared link.
-            Only non-recursive mode is supported for shared link.
-        :param Nullable[:class:`dropbox.files.TemplateFilterBase`]
-            include_property_groups: If set to a valid list of template IDs,
+        :type include_mounted_folders: bool
+        :param limit: The maximum number of results to return per request. Note:
+            This is an approximate number and there can be slightly more entries
+            returned in some cases.
+        :type limit: Nullable[int]
+        :param shared_link: A shared link to list the contents of. If the link
+            is password-protected, the password must be provided. If this field
+            is present, ``ListFolderArg.path`` will be relative to root of the
+            shared link. Only non-recursive mode is supported for shared link.
+        :type shared_link: Nullable[:class:`dropbox.files.SharedLink`]
+        :param include_property_groups: If set to a valid list of template IDs,
             ``FileMetadata.property_groups`` is set if there exists property
             data associated with the file and each of the listed templates.
-        :param bool include_non_downloadable_files: If true, include files that
-            are not downloadable, i.e. Google Docs.
-        :param bool include_restorable_info: If true, each returned deleted
-            entry will include whether that entry can be restored.
+        :type include_property_groups: Nullable[:class:`dropbox.file_properties.TemplateFilterBase`]
+        :param include_non_downloadable_files: If true, include files that are
+            not downloadable, i.e. Google Docs.
+        :type include_non_downloadable_files: bool
+        :param include_restorable_info: If true, each returned deleted entry
+            will include whether that entry can be restored.
+        :type include_restorable_info: bool
         :rtype: :class:`dropbox.files.ListFolderResult`
         :raises: :class:`.exceptions.ApiError`
 
@@ -2339,8 +2429,9 @@ class DropboxBase(object):
         Route attributes:
             scope: files.metadata.read
 
-        :param str cursor: The cursor returned by your last call to
+        :param cursor: The cursor returned by your last call to
             :meth:`files_list_folder` or :meth:`files_list_folder_continue`.
+        :type cursor: str
         :rtype: :class:`dropbox.files.ListFolderResult`
         :raises: :class:`.exceptions.ApiError`
 
@@ -2378,42 +2469,51 @@ class DropboxBase(object):
         Route attributes:
             scope: files.metadata.read
 
-        :param str path: A unique identifier for the file.
-        :param bool recursive: If true, the list folder operation will be
-            applied recursively to all subfolders and the response will contain
-            contents of all subfolders. In some cases, setting
+        :param path: A unique identifier for the file.
+        :type path: str
+        :param recursive: If true, the list folder operation will be applied
+            recursively to all subfolders and the response will contain contents
+            of all subfolders. In some cases, setting
             ``ListFolderArg.recursive`` to ``True`` may lead to performance
             issues or errors, especially when traversing folder structures with
             a large number of items. A workaround for such cases is to set
             ``ListFolderArg.recursive`` to ``False`` and traverse subfolders one
             at a time.
-        :param bool include_media_info: Field is deprecated. If true,
+        :type recursive: bool
+        :param include_media_info: Field is deprecated. If true,
             ``FileMetadata.media_info`` is set for photo and video. This
             parameter will no longer have an effect starting December 2, 2019.
-        :param bool include_deleted: If true, the results will include entries
-            for files and folders that used to exist but were deleted.
-        :param bool include_has_explicit_shared_members: If true, the results
-            will include a flag for each file indicating whether or not that
-            file has any explicit members.
-        :param bool include_mounted_folders: If true, the results will include
+        :type include_media_info: bool
+        :param include_deleted: If true, the results will include entries for
+            files and folders that used to exist but were deleted.
+        :type include_deleted: bool
+        :param include_has_explicit_shared_members: If true, the results will
+            include a flag for each file indicating whether or not that file has
+            any explicit members.
+        :type include_has_explicit_shared_members: bool
+        :param include_mounted_folders: If true, the results will include
             entries under mounted folders which includes app folder, shared
             folder and team folder.
-        :param Nullable[int] limit: The maximum number of results to return per
-            request. Note: This is an approximate number and there can be
-            slightly more entries returned in some cases.
-        :param Nullable[:class:`dropbox.files.SharedLink`] shared_link: A shared
-            link to list the contents of. If the link is password-protected, the
-            password must be provided. If this field is present,
-            ``ListFolderArg.path`` will be relative to root of the shared link.
-            Only non-recursive mode is supported for shared link.
-        :param Nullable[:class:`dropbox.files.TemplateFilterBase`]
-            include_property_groups: If set to a valid list of template IDs,
+        :type include_mounted_folders: bool
+        :param limit: The maximum number of results to return per request. Note:
+            This is an approximate number and there can be slightly more entries
+            returned in some cases.
+        :type limit: Nullable[int]
+        :param shared_link: A shared link to list the contents of. If the link
+            is password-protected, the password must be provided. If this field
+            is present, ``ListFolderArg.path`` will be relative to root of the
+            shared link. Only non-recursive mode is supported for shared link.
+        :type shared_link: Nullable[:class:`dropbox.files.SharedLink`]
+        :param include_property_groups: If set to a valid list of template IDs,
             ``FileMetadata.property_groups`` is set if there exists property
             data associated with the file and each of the listed templates.
-        :param bool include_non_downloadable_files: If true, include files that
-            are not downloadable, i.e. Google Docs.
-        :param bool include_restorable_info: If true, each returned deleted
-            entry will include whether that entry can be restored.
+        :type include_property_groups: Nullable[:class:`dropbox.file_properties.TemplateFilterBase`]
+        :param include_non_downloadable_files: If true, include files that are
+            not downloadable, i.e. Google Docs.
+        :type include_non_downloadable_files: bool
+        :param include_restorable_info: If true, each returned deleted entry
+            will include whether that entry can be restored.
+        :type include_restorable_info: bool
         :rtype: :class:`dropbox.files.ListFolderGetLatestCursorResult`
         :raises: :class:`.exceptions.ApiError`
 
@@ -2452,14 +2552,16 @@ class DropboxBase(object):
         Route attributes:
             scope: files.metadata.read
 
-        :param str cursor: A cursor as returned by :meth:`files_list_folder` or
+        :param cursor: A cursor as returned by :meth:`files_list_folder` or
             :meth:`files_list_folder_continue`. Cursors retrieved by setting
             ``ListFolderArg.include_media_info`` to ``True`` are not supported.
-        :param int timeout: A timeout in seconds. The request will block for at
-            most this length of time, plus up to 90 seconds of random jitter
-            added to avoid the thundering herd problem. Care should be taken
-            when using this parameter, as some network infrastructure does not
-            support long timeouts.
+        :type cursor: str
+        :param timeout: A timeout in seconds. The request will block for at most
+            this length of time, plus up to 90 seconds of random jitter added to
+            avoid the thundering herd problem. Care should be taken when using
+            this parameter, as some network infrastructure does not support long
+            timeouts.
+        :type timeout: int
         :rtype: :class:`dropbox.files.ListFolderLongpollResult`
         :raises: :class:`.exceptions.ApiError`
 
@@ -2496,17 +2598,21 @@ class DropboxBase(object):
         Route attributes:
             scope: files.metadata.read
 
-        :param str path: The path to the file you want to see the revisions of.
+        :param path: The path to the file you want to see the revisions of.
+        :type path: str
         :param mode: Determines the behavior of the API in listing the revisions
             for a given file path or id.
         :type mode: :class:`dropbox.files.ListRevisionsMode`
-        :param int limit: The maximum number of revision entries returned.
-        :param Nullable[str] before_rev: If set, ListRevisions will only return
-            revisions prior to before_rev. Can be set using the last revision
-            from a previous call to list_revisions to fetch the next page of
-            revisions. Only supported in path mode.
-        :param bool include_restorable_info: If true, each returned revision
-            will include whether that revision can be restored.
+        :param limit: The maximum number of revision entries returned.
+        :type limit: int
+        :param before_rev: If set, ListRevisions will only return revisions
+            prior to before_rev. Can be set using the last revision from a
+            previous call to list_revisions to fetch the next page of revisions.
+            Only supported in path mode.
+        :type before_rev: Nullable[str]
+        :param include_restorable_info: If true, each returned revision will
+            include whether that revision can be restored.
+        :type include_restorable_info: bool
         :rtype: :class:`dropbox.files.ListRevisionsResult`
         :raises: :class:`.exceptions.ApiError`
 
@@ -2537,10 +2643,10 @@ class DropboxBase(object):
         Route attributes:
             scope: files.content.write
 
-        :param List[:class:`dropbox.files.LockFileArg`] entries: List of
-            'entries'. Each 'entry' contains a path of the file which will be
-            locked or queried. Duplicate path arguments in the batch are
-            considered only once.
+        :param entries: List of 'entries'. Each 'entry' contains a path of the
+            file which will be locked or queried. Duplicate path arguments in
+            the batch are considered only once.
+        :type entries: List[:class:`dropbox.files.LockFileArg`]
         :rtype: :class:`dropbox.files.LockFileBatchResult`
         :raises: :class:`.exceptions.ApiError`
 
@@ -2569,13 +2675,16 @@ class DropboxBase(object):
         Route attributes:
             scope: files.content.write
 
-        :param bool allow_shared_folder: Field is deprecated. This flag has no
+        :param allow_shared_folder: Field is deprecated. This flag has no
             effect.
-        :param bool autorename: If there's a conflict, have the Dropbox server
-            try to autorename the file to avoid the conflict.
-        :param bool allow_ownership_transfer: Allow moves by owner even if it
-            would result in an ownership transfer for the content being moved.
-            This does not apply to copies.
+        :type allow_shared_folder: bool
+        :param autorename: If there's a conflict, have the Dropbox server try to
+            autorename the file to avoid the conflict.
+        :type autorename: bool
+        :param allow_ownership_transfer: Allow moves by owner even if it would
+            result in an ownership transfer for the content being moved. This
+            does not apply to copies.
+        :type allow_ownership_transfer: bool
         :rtype: :class:`dropbox.files.Metadata`
         :raises: :class:`.exceptions.ApiError`
 
@@ -2613,13 +2722,16 @@ class DropboxBase(object):
         Route attributes:
             scope: files.content.write
 
-        :param bool allow_shared_folder: Field is deprecated. This flag has no
+        :param allow_shared_folder: Field is deprecated. This flag has no
             effect.
-        :param bool autorename: If there's a conflict, have the Dropbox server
-            try to autorename the file to avoid the conflict.
-        :param bool allow_ownership_transfer: Allow moves by owner even if it
-            would result in an ownership transfer for the content being moved.
-            This does not apply to copies.
+        :type allow_shared_folder: bool
+        :param autorename: If there's a conflict, have the Dropbox server try to
+            autorename the file to avoid the conflict.
+        :type autorename: bool
+        :param allow_ownership_transfer: Allow moves by owner even if it would
+            result in an ownership transfer for the content being moved. This
+            does not apply to copies.
+        :type allow_ownership_transfer: bool
         :rtype: :class:`dropbox.files.RelocationResult`
         :raises: :class:`.exceptions.ApiError`
 
@@ -2653,11 +2765,13 @@ class DropboxBase(object):
         Route attributes:
             scope: files.content.write
 
-        :param bool allow_shared_folder: Field is deprecated. This flag has no
+        :param allow_shared_folder: Field is deprecated. This flag has no
             effect.
-        :param bool allow_ownership_transfer: Allow moves by owner even if it
-            would result in an ownership transfer for the content being moved.
-            This does not apply to copies.
+        :type allow_shared_folder: bool
+        :param allow_ownership_transfer: Allow moves by owner even if it would
+            result in an ownership transfer for the content being moved. This
+            does not apply to copies.
+        :type allow_ownership_transfer: bool
         :rtype: :class:`dropbox.files.RelocationBatchLaunch`
         """
         warnings.warn(
@@ -2693,9 +2807,10 @@ class DropboxBase(object):
         Route attributes:
             scope: files.content.write
 
-        :param bool allow_ownership_transfer: Allow moves by owner even if it
-            would result in an ownership transfer for the content being moved.
-            This does not apply to copies.
+        :param allow_ownership_transfer: Allow moves by owner even if it would
+            result in an ownership transfer for the content being moved. This
+            does not apply to copies.
+        :type allow_ownership_transfer: bool
         :rtype: :class:`dropbox.files.RelocationBatchV2Launch`
         """
         arg = files.MoveBatchArg(entries,
@@ -2718,13 +2833,14 @@ class DropboxBase(object):
         Route attributes:
             scope: files.content.write
 
-        :param str async_job_id: Id of the asynchronous job. This is the value
-            of a response returned from the method that launched the job.
+        :param async_job_id: Id of the asynchronous job. This is the value of a
+            response returned from the method that launched the job.
+        :type async_job_id: str
         :rtype: :class:`dropbox.files.RelocationBatchJobStatus`
         :raises: :class:`.exceptions.ApiError`
 
         If this raises, ApiError will contain:
-            :class:`dropbox.files.PollError`
+            :class:`dropbox.async_.PollError`
         """
         warnings.warn(
             'move_batch/check is deprecated.',
@@ -2748,13 +2864,14 @@ class DropboxBase(object):
         Route attributes:
             scope: files.content.write
 
-        :param str async_job_id: Id of the asynchronous job. This is the value
-            of a response returned from the method that launched the job.
+        :param async_job_id: Id of the asynchronous job. This is the value of a
+            response returned from the method that launched the job.
+        :type async_job_id: str
         :rtype: :class:`dropbox.files.RelocationBatchV2JobStatus`
         :raises: :class:`.exceptions.ApiError`
 
         If this raises, ApiError will contain:
-            :class:`dropbox.files.PollError`
+            :class:`dropbox.async_.PollError`
         """
         arg = async_.PollArg(async_job_id)
         r = self.request(
@@ -2776,9 +2893,10 @@ class DropboxBase(object):
             scope: files.content.write
 
         :param bytes f: Contents to upload.
-        :param str path: The fully qualified path to the location in the user's
+        :param path: The fully qualified path to the location in the user's
             Dropbox where the Paper Doc should be created. This should include
             the document's title and end with .paper.
+        :type path: str
         :param import_format: The format of the provided data.
         :type import_format: :class:`dropbox.files.ImportFormat`
         :rtype: :class:`dropbox.files.PaperCreateResult`
@@ -2810,16 +2928,18 @@ class DropboxBase(object):
             scope: files.content.write
 
         :param bytes f: Contents to upload.
-        :param str path: Path in the user's Dropbox to update. The path must
+        :param path: Path in the user's Dropbox to update. The path must
             correspond to a Paper doc or an error will be returned.
+        :type path: str
         :param import_format: The format of the provided data.
         :type import_format: :class:`dropbox.files.ImportFormat`
         :param doc_update_policy: How the provided content should be applied to
             the doc.
         :type doc_update_policy: :class:`dropbox.files.PaperDocUpdatePolicy`
-        :param Nullable[int] paper_revision: The latest doc revision. Required
-            when doc_update_policy is update. This value must match the current
+        :param paper_revision: The latest doc revision. Required when
+            doc_update_policy is update. This value must match the current
             revision of the doc or error revision_mismatch will be returned.
+        :type paper_revision: Nullable[int]
         :rtype: :class:`dropbox.files.PaperUpdateResult`
         :raises: :class:`.exceptions.ApiError`
 
@@ -2851,10 +2971,11 @@ class DropboxBase(object):
         Route attributes:
             scope: files.permanent_delete
 
-        :param str path: Path in the user's Dropbox to delete.
-        :param Nullable[str] parent_rev: Perform delete if given "rev" matches
-            the existing file's latest "rev". This field does not support
-            deleting a folder.
+        :param path: Path in the user's Dropbox to delete.
+        :type path: str
+        :param parent_rev: Perform delete if given "rev" matches the existing
+            file's latest "rev". This field does not support deleting a folder.
+        :type parent_rev: Nullable[str]
         :rtype: None
         :raises: :class:`.exceptions.ApiError`
 
@@ -2881,15 +3002,17 @@ class DropboxBase(object):
         Route attributes:
             scope: files.metadata.write
 
-        :param str path: A unique identifier for the file or folder.
-        :param List[:class:`dropbox.files.PropertyGroup`] property_groups: The
-            property groups which are to be added to a Dropbox file. No two
-            groups in the input should refer to the same template.
+        :param path: A unique identifier for the file or folder.
+        :type path: str
+        :param property_groups: The property groups which are to be added to a
+            Dropbox file. No two groups in the input should refer to the same
+            template.
+        :type property_groups: List[:class:`dropbox.file_properties.PropertyGroup`]
         :rtype: None
         :raises: :class:`.exceptions.ApiError`
 
         If this raises, ApiError will contain:
-            :class:`dropbox.files.AddPropertiesError`
+            :class:`dropbox.file_properties.AddPropertiesError`
         """
         warnings.warn(
             'properties/add is deprecated.',
@@ -2916,15 +3039,16 @@ class DropboxBase(object):
         Route attributes:
             scope: files.metadata.write
 
-        :param str path: A unique identifier for the file or folder.
-        :param List[:class:`dropbox.files.PropertyGroup`] property_groups: The
-            property groups "snapshot" updates to force apply. No two groups in
-            the input should refer to the same template.
+        :param path: A unique identifier for the file or folder.
+        :type path: str
+        :param property_groups: The property groups "snapshot" updates to force
+            apply. No two groups in the input should refer to the same template.
+        :type property_groups: List[:class:`dropbox.file_properties.PropertyGroup`]
         :rtype: None
         :raises: :class:`.exceptions.ApiError`
 
         If this raises, ApiError will contain:
-            :class:`dropbox.files.InvalidPropertyGroupError`
+            :class:`dropbox.file_properties.InvalidPropertyGroupError`
         """
         warnings.warn(
             'properties/overwrite is deprecated.',
@@ -2952,15 +3076,16 @@ class DropboxBase(object):
         Route attributes:
             scope: files.metadata.write
 
-        :param str path: A unique identifier for the file or folder.
-        :param List[:class:`dropbox.files.PropertyGroupUpdate`]
-            update_property_groups: The property groups "delta" updates to
+        :param path: A unique identifier for the file or folder.
+        :type path: str
+        :param update_property_groups: The property groups "delta" updates to
             apply.
+        :type update_property_groups: List[:class:`dropbox.file_properties.PropertyGroupUpdate`]
         :rtype: None
         :raises: :class:`.exceptions.ApiError`
 
         If this raises, ApiError will contain:
-            :class:`dropbox.files.UpdatePropertiesError`
+            :class:`dropbox.file_properties.UpdatePropertiesError`
         """
         warnings.warn(
             'properties/update is deprecated.',
@@ -2985,8 +3110,10 @@ class DropboxBase(object):
         Route attributes:
             scope: files.content.write
 
-        :param str path: The path to save the restored file.
-        :param str rev: The revision to restore.
+        :param path: The path to save the restored file.
+        :type path: str
+        :param rev: The revision to restore.
+        :type rev: str
         :rtype: :class:`dropbox.files.FileMetadata`
         :raises: :class:`.exceptions.ApiError`
 
@@ -3014,8 +3141,10 @@ class DropboxBase(object):
         Route attributes:
             scope: files.content.write
 
-        :param str path: The path in Dropbox where the URL will be saved to.
-        :param str url: The URL to be saved.
+        :param path: The path in Dropbox where the URL will be saved to.
+        :type path: str
+        :param url: The URL to be saved.
+        :type url: str
         :rtype: :class:`dropbox.files.SaveUrlResult`
         :raises: :class:`.exceptions.ApiError`
 
@@ -3040,13 +3169,14 @@ class DropboxBase(object):
         Route attributes:
             scope: files.content.write
 
-        :param str async_job_id: Id of the asynchronous job. This is the value
-            of a response returned from the method that launched the job.
+        :param async_job_id: Id of the asynchronous job. This is the value of a
+            response returned from the method that launched the job.
+        :type async_job_id: str
         :rtype: :class:`dropbox.files.SaveUrlJobStatus`
         :raises: :class:`.exceptions.ApiError`
 
         If this raises, ApiError will contain:
-            :class:`dropbox.files.PollError`
+            :class:`dropbox.async_.PollError`
         """
         arg = async_.PollArg(async_job_id)
         r = self.request(
@@ -3071,16 +3201,20 @@ class DropboxBase(object):
         Route attributes:
             scope: files.metadata.read
 
-        :param str path: The path in the user's Dropbox to search. Should
-            probably be a folder.
-        :param str query: The string to search for. Query string may be
-            rewritten to improve relevance of results. The string is split on
-            spaces into multiple tokens. For file name searching, the last token
-            is used for prefix matching (i.e. "bat c" matches "bat cave" but not
-            "batman car").
-        :param int start: The starting index within the search results (used for
+        :param path: The path in the user's Dropbox to search. Should probably
+            be a folder.
+        :type path: str
+        :param query: The string to search for. Query string may be rewritten to
+            improve relevance of results. The string is split on spaces into
+            multiple tokens. For file name searching, the last token is used for
+            prefix matching (i.e. "bat c" matches "bat cave" but not "batman
+            car").
+        :type query: str
+        :param start: The starting index within the search results (used for
             paging).
-        :param int max_results: The maximum number of search results to return.
+        :type start: int
+        :param max_results: The maximum number of search results to return.
+        :type max_results: int
         :param mode: The search mode (filename, filename_and_content, or
             deleted_filename). Note that searching file content is only
             available for Dropbox Business accounts.
@@ -3123,14 +3257,16 @@ class DropboxBase(object):
         Route attributes:
             scope: files.metadata.read
 
-        :param str query: The string to search for. May match across multiple
-            fields based on the request arguments.
-        :param Nullable[:class:`dropbox.files.SearchOptions`] options: Options
-            for more targeted search results.
-        :param Nullable[:class:`dropbox.files.SearchMatchFieldOptions`]
-            match_field_options: Options for search results match fields.
-        :param Nullable[bool] include_highlights: Field is deprecated.
-            Deprecated and moved this option to SearchMatchFieldOptions.
+        :param query: The string to search for. May match across multiple fields
+            based on the request arguments.
+        :type query: str
+        :param options: Options for more targeted search results.
+        :type options: Nullable[:class:`dropbox.files.SearchOptions`]
+        :param match_field_options: Options for search results match fields.
+        :type match_field_options: Nullable[:class:`dropbox.files.SearchMatchFieldOptions`]
+        :param include_highlights: Field is deprecated. Deprecated and moved
+            this option to SearchMatchFieldOptions.
+        :type include_highlights: Nullable[bool]
         :rtype: :class:`dropbox.files.SearchV2Result`
         :raises: :class:`.exceptions.ApiError`
 
@@ -3162,8 +3298,9 @@ class DropboxBase(object):
         Route attributes:
             scope: files.metadata.read
 
-        :param str cursor: The cursor returned by your last call to
+        :param cursor: The cursor returned by your last call to
             :meth:`files_search_v2`. Used to fetch the next page of results.
+        :type cursor: str
         :rtype: :class:`dropbox.files.SearchV2Result`
         :raises: :class:`.exceptions.ApiError`
 
@@ -3190,9 +3327,11 @@ class DropboxBase(object):
         Route attributes:
             scope: files.metadata.write
 
-        :param str path: Path to the item to be tagged.
-        :param str tag_text: The value of the tag to add. Will be automatically
+        :param path: Path to the item to be tagged.
+        :type path: str
+        :param tag_text: The value of the tag to add. Will be automatically
             converted to lowercase letters.
+        :type tag_text: str
         :rtype: None
         :raises: :class:`.exceptions.ApiError`
 
@@ -3217,7 +3356,8 @@ class DropboxBase(object):
         Route attributes:
             scope: files.metadata.read
 
-        :param List[str] paths: Path to the items.
+        :param paths: Path to the items.
+        :type paths: List[str]
         :rtype: :class:`dropbox.files.GetTagsResult`
         :raises: :class:`.exceptions.ApiError`
 
@@ -3242,9 +3382,11 @@ class DropboxBase(object):
         Route attributes:
             scope: files.metadata.write
 
-        :param str path: Path to the item to tag.
-        :param str tag_text: The tag to remove. Will be automatically converted
-            to lowercase letters.
+        :param path: Path to the item to tag.
+        :type path: str
+        :param tag_text: The tag to remove. Will be automatically converted to
+            lowercase letters.
+        :type tag_text: str
         :rtype: None
         :raises: :class:`.exceptions.ApiError`
 
@@ -3272,10 +3414,10 @@ class DropboxBase(object):
         Route attributes:
             scope: files.content.write
 
-        :param List[:class:`dropbox.files.UnlockFileArg`] entries: List of
-            'entries'. Each 'entry' contains a path of the file which will be
-            unlocked. Duplicate path arguments in the batch are considered only
-            once.
+        :param entries: List of 'entries'. Each 'entry' contains a path of the
+            file which will be unlocked. Duplicate path arguments in the batch
+            are considered only once.
+        :type entries: List[:class:`dropbox.files.UnlockFileArg`]
         :rtype: :class:`dropbox.files.LockFileBatchResult`
         :raises: :class:`.exceptions.ApiError`
 
@@ -3314,11 +3456,11 @@ class DropboxBase(object):
             scope: files.content.write
 
         :param bytes f: Contents to upload.
-        :param Nullable[str] content_hash: A hash of the file content uploaded
-            in this call. If provided and the uploaded content does not match
-            this hash, an error will be returned. For more information see our
-            `Content hash
+        :param content_hash: A hash of the file content uploaded in this call.
+            If provided and the uploaded content does not match this hash, an
+            error will be returned. For more information see our `Content hash
             <https://www.dropbox.com/developers/reference/content-hash>`_ page.
+        :type content_hash: Nullable[str]
         :rtype: :class:`dropbox.files.FileMetadata`
         :raises: :class:`.exceptions.ApiError`
 
@@ -3358,11 +3500,13 @@ class DropboxBase(object):
             scope: files.content.write
 
         :param bytes f: Contents to upload.
-        :param str session_id: The upload session ID (returned by
+        :param session_id: The upload session ID (returned by
             :meth:`files_upload_session_start`).
-        :param int offset: Offset in bytes at which data should be appended. We
-            use this to make sure upload data isn't lost or duplicated in the
-            event of a network error.
+        :type session_id: str
+        :param offset: Offset in bytes at which data should be appended. We use
+            this to make sure upload data isn't lost or duplicated in the event
+            of a network error.
+        :type offset: int
         :rtype: None
         :raises: :class:`.exceptions.ApiError`
 
@@ -3404,15 +3548,16 @@ class DropboxBase(object):
         :param bytes f: Contents to upload.
         :param cursor: Contains the upload session ID and the offset.
         :type cursor: :class:`dropbox.files.UploadSessionCursor`
-        :param bool close: If true, the current session will be closed, at which
+        :param close: If true, the current session will be closed, at which
             point you won't be able to call
             :meth:`files_upload_session_append_v2` anymore with the current
             session.
-        :param Nullable[str] content_hash: A hash of the file content uploaded
-            in this call. If provided and the uploaded content does not match
-            this hash, an error will be returned. For more information see our
-            `Content hash
+        :type close: bool
+        :param content_hash: A hash of the file content uploaded in this call.
+            If provided and the uploaded content does not match this hash, an
+            error will be returned. For more information see our `Content hash
             <https://www.dropbox.com/developers/reference/content-hash>`_ page.
+        :type content_hash: Nullable[str]
         :rtype: None
         :raises: :class:`.exceptions.ApiError`
 
@@ -3451,14 +3596,14 @@ class DropboxBase(object):
             scope: files.content.write
 
         :param bytes f: Contents to upload.
-        :param List[:class:`dropbox.files.UploadSessionAppendBatchArgEntry`]
-            entries: Append information for each file in the batch.
-        :param Nullable[str] content_hash: A hash of the entire request body
-            which is all the concatenated pieces of file content that were
-            uploaded in this call. If provided and the uploaded content does not
-            match this hash, an error will be returned. For more information see
-            our `Content hash
+        :param entries: Append information for each file in the batch.
+        :type entries: List[:class:`dropbox.files.UploadSessionAppendBatchArgEntry`]
+        :param content_hash: A hash of the entire request body which is all the
+            concatenated pieces of file content that were uploaded in this call.
+            If provided and the uploaded content does not match this hash, an
+            error will be returned. For more information see our `Content hash
             <https://www.dropbox.com/developers/reference/content-hash>`_ page.
+        :type content_hash: Nullable[str]
         :rtype: :class:`dropbox.files.UploadSessionAppendBatchResult`
         :raises: :class:`.exceptions.ApiError`
 
@@ -3499,11 +3644,11 @@ class DropboxBase(object):
         :param commit: Contains the path and other optional modifiers for the
             commit.
         :type commit: :class:`dropbox.files.CommitInfo`
-        :param Nullable[str] content_hash: A hash of the file content uploaded
-            in this call. If provided and the uploaded content does not match
-            this hash, an error will be returned. For more information see our
-            `Content hash
+        :param content_hash: A hash of the file content uploaded in this call.
+            If provided and the uploaded content does not match this hash, an
+            error will be returned. For more information see our `Content hash
             <https://www.dropbox.com/developers/reference/content-hash>`_ page.
+        :type content_hash: Nullable[str]
         :rtype: :class:`dropbox.files.FileMetadata`
         :raises: :class:`.exceptions.ApiError`
 
@@ -3549,8 +3694,8 @@ class DropboxBase(object):
         Route attributes:
             scope: files.content.write
 
-        :param List[:class:`dropbox.files.UploadSessionFinishArg`] entries:
-            Commit information for each file in the batch.
+        :param entries: Commit information for each file in the batch.
+        :type entries: List[:class:`dropbox.files.UploadSessionFinishArg`]
         :rtype: :class:`dropbox.files.UploadSessionFinishBatchLaunch`
         """
         warnings.warn(
@@ -3590,8 +3735,8 @@ class DropboxBase(object):
         Route attributes:
             scope: files.content.write
 
-        :param List[:class:`dropbox.files.UploadSessionFinishArg`] entries:
-            Commit information for each file in the batch.
+        :param entries: Commit information for each file in the batch.
+        :type entries: List[:class:`dropbox.files.UploadSessionFinishArg`]
         :rtype: :class:`dropbox.files.UploadSessionFinishBatchResult`
         """
         arg = files.UploadSessionFinishBatchArg(entries)
@@ -3613,13 +3758,14 @@ class DropboxBase(object):
         Route attributes:
             scope: files.content.write
 
-        :param str async_job_id: Id of the asynchronous job. This is the value
-            of a response returned from the method that launched the job.
+        :param async_job_id: Id of the asynchronous job. This is the value of a
+            response returned from the method that launched the job.
+        :type async_job_id: str
         :rtype: :class:`dropbox.files.UploadSessionFinishBatchJobStatus`
         :raises: :class:`.exceptions.ApiError`
 
         If this raises, ApiError will contain:
-            :class:`dropbox.files.PollError`
+            :class:`dropbox.async_.PollError`
         """
         arg = async_.PollArg(async_job_id)
         r = self.request(
@@ -3681,18 +3827,19 @@ class DropboxBase(object):
             scope: files.content.write
 
         :param bytes f: Contents to upload.
-        :param bool close: If true, the current session will be closed, at which
+        :param close: If true, the current session will be closed, at which
             point you won't be able to call
             :meth:`files_upload_session_append_v2` anymore with the current
             session.
-        :param Nullable[:class:`dropbox.files.UploadSessionType`] session_type:
-            Type of upload session you want to start. If not specified, default
-            is ``UploadSessionType.sequential``.
-        :param Nullable[str] content_hash: A hash of the file content uploaded
-            in this call. If provided and the uploaded content does not match
-            this hash, an error will be returned. For more information see our
-            `Content hash
+        :type close: bool
+        :param session_type: Type of upload session you want to start. If not
+            specified, default is ``UploadSessionType.sequential``.
+        :type session_type: Nullable[:class:`dropbox.files.UploadSessionType`]
+        :param content_hash: A hash of the file content uploaded in this call.
+            If provided and the uploaded content does not match this hash, an
+            error will be returned. For more information see our `Content hash
             <https://www.dropbox.com/developers/reference/content-hash>`_ page.
+        :type content_hash: Nullable[str]
         :rtype: :class:`dropbox.files.UploadSessionStartResult`
         :raises: :class:`.exceptions.ApiError`
 
@@ -3724,10 +3871,11 @@ class DropboxBase(object):
         Route attributes:
             scope: files.content.write
 
-        :param Nullable[:class:`dropbox.files.UploadSessionType`] session_type:
-            Type of upload session you want to start. If not specified, default
-            is ``UploadSessionType.sequential``.
-        :param int num_sessions: The number of upload sessions to start.
+        :param session_type: Type of upload session you want to start. If not
+            specified, default is ``UploadSessionType.sequential``.
+        :type session_type: Nullable[:class:`dropbox.files.UploadSessionType`]
+        :param num_sessions: The number of upload sessions to start.
+        :type num_sessions: int
         :rtype: :class:`dropbox.files.UploadSessionStartBatchResult`
         """
         arg = files.UploadSessionStartBatchArg(num_sessions,
@@ -3786,7 +3934,8 @@ class DropboxBase(object):
         Route attributes:
             scope: files.content.write
 
-        :param str doc_id: The Paper doc ID.
+        :param doc_id: The Paper doc ID.
+        :type doc_id: str
         :rtype: None
         :raises: :class:`.exceptions.ApiError`
 
@@ -3824,9 +3973,10 @@ class DropboxBase(object):
             scope: files.content.write
 
         :param bytes f: Contents to upload.
-        :param Nullable[str] parent_folder_id: The Paper folder ID where the
-            Paper document should be created. The API user has to have write
-            access to this folder or error is thrown.
+        :param parent_folder_id: The Paper folder ID where the Paper document
+            should be created. The API user has to have write access to this
+            folder or error is thrown.
+        :type parent_folder_id: Nullable[str]
         :param import_format: The format of provided data.
         :type import_format: :class:`dropbox.paper.ImportFormat`
         :rtype: :class:`dropbox.paper.PaperDocCreateUpdateResult`
@@ -3867,11 +4017,12 @@ class DropboxBase(object):
             scope: files.content.read
 
         :type export_format: :class:`dropbox.paper.ExportFormat`
-        :param bool include_comments: When true, export includes comment threads
+        :param include_comments: When true, export includes comment threads
             (e.g. markdown footnotes). When false or omitted, body only. Other
             formats may adopt this later; currently only markdown uses it. Plain
             bool (not optional): protoc-gen-godbx does not support proto3
             optional yet.
+        :type include_comments: bool
         :rtype: (:class:`dropbox.paper.PaperDocExportResult`,
                  :class:`requests.models.Response`)
         :raises: :class:`.exceptions.ApiError`
@@ -3920,11 +4071,12 @@ class DropboxBase(object):
 
         :param str download_path: Path on local machine to save file.
         :type export_format: :class:`dropbox.paper.ExportFormat`
-        :param bool include_comments: When true, export includes comment threads
+        :param include_comments: When true, export includes comment threads
             (e.g. markdown footnotes). When false or omitted, body only. Other
             formats may adopt this later; currently only markdown uses it. Plain
             bool (not optional): protoc-gen-godbx does not support proto3
             optional yet.
+        :type include_comments: bool
         :rtype: :class:`dropbox.paper.PaperDocExportResult`
         :raises: :class:`.exceptions.ApiError`
 
@@ -3966,9 +4118,10 @@ class DropboxBase(object):
         Route attributes:
             scope: sharing.read
 
-        :param int limit: Size limit per batch. The maximum number of users that
-            can be retrieved per batch is 1000. Higher value results in invalid
+        :param limit: Size limit per batch. The maximum number of users that can
+            be retrieved per batch is 1000. Higher value results in invalid
             arguments error.
+        :type limit: int
         :rtype: :class:`dropbox.paper.ListUsersOnFolderResponse`
         :raises: :class:`.exceptions.ApiError`
 
@@ -4006,10 +4159,11 @@ class DropboxBase(object):
         Route attributes:
             scope: sharing.read
 
-        :param str cursor: The cursor obtained from
+        :param cursor: The cursor obtained from
             :meth:`paper_docs_folder_users_list` or
             :meth:`paper_docs_folder_users_list_continue`. Allows for
             pagination.
+        :type cursor: str
         :rtype: :class:`dropbox.paper.ListUsersOnFolderResponse`
         :raises: :class:`.exceptions.ApiError`
 
@@ -4050,7 +4204,8 @@ class DropboxBase(object):
         Route attributes:
             scope: sharing.read
 
-        :param str doc_id: The Paper doc ID.
+        :param doc_id: The Paper doc ID.
+        :type doc_id: str
         :rtype: :class:`dropbox.paper.FoldersContainingPaperDoc`
         :raises: :class:`.exceptions.ApiError`
 
@@ -4079,9 +4234,10 @@ class DropboxBase(object):
         Route attributes:
             scope: files.metadata.read
 
-        :param Nullable[str] doc_id: Legacy Paper doc identifier.
-        :param Nullable[str] file_id: Dropbox file ID for Cloud Docs (post-PiFS
-            migration).
+        :param doc_id: Legacy Paper doc identifier.
+        :type doc_id: Nullable[str]
+        :param file_id: Dropbox file ID for Cloud Docs (post-PiFS migration).
+        :type file_id: Nullable[str]
         :rtype: :class:`dropbox.paper.PaperDocGetMetadataResult`
         :raises: :class:`.exceptions.ApiError`
 
@@ -4127,11 +4283,13 @@ class DropboxBase(object):
         :type sort_by: :class:`dropbox.paper.ListPaperDocsSortBy`
         :param sort_order: Allows user to specify the sort order of the result.
         :type sort_order: :class:`dropbox.paper.ListPaperDocsSortOrder`
-        :param int limit: Size limit per batch. The maximum number of docs that
-            can be retrieved per batch is 1000. Higher value results in invalid
+        :param limit: Size limit per batch. The maximum number of docs that can
+            be retrieved per batch is 1000. Higher value results in invalid
             arguments error.
-        :param Nullable[datetime] stop_at_date: Do not return results beyond
-            this date. Behavior depends on sort order.
+        :type limit: int
+        :param stop_at_date: Do not return results beyond this date. Behavior
+            depends on sort order.
+        :type stop_at_date: Nullable[datetime]
         :rtype: :class:`dropbox.paper.ListPaperDocsResponse`
         """
         warnings.warn(
@@ -4167,8 +4325,9 @@ class DropboxBase(object):
         Route attributes:
             scope: files.metadata.read
 
-        :param str cursor: The cursor obtained from :meth:`paper_docs_list` or
+        :param cursor: The cursor obtained from :meth:`paper_docs_list` or
             :meth:`paper_docs_list_continue`. Allows for pagination.
+        :type cursor: str
         :rtype: :class:`dropbox.paper.ListPaperDocsResponse`
         :raises: :class:`.exceptions.ApiError`
 
@@ -4204,7 +4363,8 @@ class DropboxBase(object):
         Route attributes:
             scope: files.permanent_delete
 
-        :param str doc_id: The Paper doc ID.
+        :param doc_id: The Paper doc ID.
+        :type doc_id: str
         :rtype: None
         :raises: :class:`.exceptions.ApiError`
 
@@ -4239,7 +4399,8 @@ class DropboxBase(object):
         Route attributes:
             scope: sharing.read
 
-        :param str doc_id: The Paper doc ID.
+        :param doc_id: The Paper doc ID.
+        :type doc_id: str
         :rtype: :class:`dropbox.paper.SharingPolicy`
         :raises: :class:`.exceptions.ApiError`
 
@@ -4323,9 +4484,10 @@ class DropboxBase(object):
         :param bytes f: Contents to upload.
         :param doc_update_policy: The policy used for the current update call.
         :type doc_update_policy: :class:`dropbox.paper.PaperDocUpdatePolicy`
-        :param int revision: The latest doc revision. This value must match the
-            head revision or an error code will be returned. This is to prevent
+        :param revision: The latest doc revision. This value must match the head
+            revision or an error code will be returned. This is to prevent
             colliding writes.
+        :type revision: int
         :param import_format: The format of provided data.
         :type import_format: :class:`dropbox.paper.ImportFormat`
         :rtype: :class:`dropbox.paper.PaperDocCreateUpdateResult`
@@ -4370,13 +4532,15 @@ class DropboxBase(object):
         Route attributes:
             scope: sharing.write
 
-        :param List[:class:`dropbox.paper.AddMember`] members: User which should
-            be added to the Paper doc. Specify only email address or Dropbox
-            account ID.
-        :param Nullable[str] custom_message: A personal message that will be
-            emailed to each successfully added member.
-        :param bool quiet: Clients should set this to true if no email message
-            shall be sent to added users.
+        :param members: User which should be added to the Paper doc. Specify
+            only email address or Dropbox account ID.
+        :type members: List[:class:`dropbox.paper.AddMember`]
+        :param custom_message: A personal message that will be emailed to each
+            successfully added member.
+        :type custom_message: Nullable[str]
+        :param quiet: Clients should set this to true if no email message shall
+            be sent to added users.
+        :type quiet: bool
         :rtype: List[:class:`dropbox.paper.AddPaperDocUserMemberResult`]
         :raises: :class:`.exceptions.ApiError`
 
@@ -4419,9 +4583,10 @@ class DropboxBase(object):
         Route attributes:
             scope: sharing.read
 
-        :param int limit: Size limit per batch. The maximum number of users that
-            can be retrieved per batch is 1000. Higher value results in invalid
+        :param limit: Size limit per batch. The maximum number of users that can
+            be retrieved per batch is 1000. Higher value results in invalid
             arguments error.
+        :type limit: int
         :param filter_by: Specify this attribute if you want to obtain users
             that have already accessed the Paper doc.
         :type filter_by: :class:`dropbox.paper.UserOnPaperDocFilter`
@@ -4463,9 +4628,9 @@ class DropboxBase(object):
         Route attributes:
             scope: sharing.read
 
-        :param str cursor: The cursor obtained from
-            :meth:`paper_docs_users_list` or
+        :param cursor: The cursor obtained from :meth:`paper_docs_users_list` or
             :meth:`paper_docs_users_list_continue`. Allows for pagination.
+        :type cursor: str
         :rtype: :class:`dropbox.paper.ListUsersOnPaperDocResponse`
         :raises: :class:`.exceptions.ApiError`
 
@@ -4505,7 +4670,7 @@ class DropboxBase(object):
 
         :param member: User which should be removed from the Paper doc. Specify
             only email address or Dropbox account ID.
-        :type member: :class:`dropbox.paper.MemberSelector`
+        :type member: :class:`dropbox.sharing.MemberSelector`
         :rtype: None
         :raises: :class:`.exceptions.ApiError`
 
@@ -4543,17 +4708,19 @@ class DropboxBase(object):
         Route attributes:
             scope: files.content.write
 
-        :param str name: The name of the new Paper folder.
-        :param Nullable[str] parent_folder_id: The encrypted Paper folder Id
-            where the new Paper folder should be created. The API user has to
-            have write access to this folder or error is thrown. If not
-            supplied, the new folder will be created at top level.
-        :param Nullable[bool] is_team_folder: Whether the folder to be created
-            should be a team folder. This value will be ignored if
-            parent_folder_id is supplied, as the new folder will inherit the
-            type (private or team folder) from its parent. We will by default
-            create a top-level private folder if both parent_folder_id and
-            is_team_folder are not supplied.
+        :param name: The name of the new Paper folder.
+        :type name: str
+        :param parent_folder_id: The encrypted Paper folder Id where the new
+            Paper folder should be created. The API user has to have write
+            access to this folder or error is thrown. If not supplied, the new
+            folder will be created at top level.
+        :type parent_folder_id: Nullable[str]
+        :param is_team_folder: Whether the folder to be created should be a team
+            folder. This value will be ignored if parent_folder_id is supplied,
+            as the new folder will inherit the type (private or team folder)
+            from its parent. We will by default create a top-level private
+            folder if both parent_folder_id and is_team_folder are not supplied.
+        :type is_team_folder: Nullable[bool]
         :rtype: :class:`dropbox.paper.PaperFolderCreateResult`
         :raises: :class:`.exceptions.ApiError`
 
@@ -4588,29 +4755,31 @@ class DropboxBase(object):
         Route attributes:
             scope: files.content.read
 
-        :param Nullable[:class:`dropbox.riviera.FileIdOrUrl`] file_id_or_url:
-            Identifier of the document to convert. Callers must set exactly one
-            of the oneof variants: - file_id: a Dropbox-issued file id (format:
-            "id:<id>") for a file the authenticated user has access to. - path:
-            an absolute Dropbox path, e.g. "/folder/report.docx". - url: either
-            a Dropbox shared link (www.dropbox.com) or an external HTTPS URL
-            pointing to a supported document file. - Dropbox shared links are
-            resolved internally using the caller's authenticated identity and
-            the link's visibility / download settings. They therefore require an
-            authenticated user context (anonymous `url` requests against Dropbox
-            links are rejected with an `ACCESS_ERROR`). Links protected by a
-            password are rejected with `shared_link_password_protected`; links
-            with downloads disabled are rejected with
-            `link_download_disabled_error`. - External URLs are fetched over
-            HTTPS through the backend's egress proxy and must point at a
-            supported document file extension. The referenced file must be a
-            document in a supported format; requests against unsupported formats
-            return `unsupported_format_error`.
-        :param bool enable_ocr: Enable OCR for PDF documents. Processing is
-            slower when enabled.
-        :param bool embed_images: When true, embed images as base64 data URIs in
-            the markdown output. This can significantly increase output size.
-        :rtype: :class:`dropbox.riviera.LaunchResultBase`
+        :param file_id_or_url: Identifier of the document to convert. Callers
+            must set exactly one of the oneof variants: - file_id: a
+            Dropbox-issued file id (format: "id:<id>") for a file the
+            authenticated user has access to. - path: an absolute Dropbox path,
+            e.g. "/folder/report.docx". - url: either a Dropbox shared link
+            (www.dropbox.com) or an external HTTPS URL pointing to a supported
+            document file. - Dropbox shared links are resolved internally using
+            the caller's authenticated identity and the link's visibility /
+            download settings. They therefore require an authenticated user
+            context (anonymous `url` requests against Dropbox links are rejected
+            with an `ACCESS_ERROR`). Links protected by a password are rejected
+            with `shared_link_password_protected`; links with downloads disabled
+            are rejected with `link_download_disabled_error`. - External URLs
+            are fetched over HTTPS through the backend's egress proxy and must
+            point at a supported document file extension. The referenced file
+            must be a document in a supported format; requests against
+            unsupported formats return `unsupported_format_error`.
+        :type file_id_or_url: Nullable[:class:`dropbox.riviera.FileIdOrUrl`]
+        :param enable_ocr: Enable OCR for PDF documents. Processing is slower
+            when enabled.
+        :type enable_ocr: bool
+        :param embed_images: When true, embed images as base64 data URIs in the
+            markdown output. This can significantly increase output size.
+        :type embed_images: bool
+        :rtype: :class:`dropbox.async_.LaunchResultBase`
         """
         arg = riviera.GetMarkdownArgs(file_id_or_url,
                                       enable_ocr,
@@ -4631,13 +4800,14 @@ class DropboxBase(object):
         Route attributes:
             scope: files.content.read
 
-        :param str async_job_id: Id of the asynchronous job. This is the value
-            of a response returned from the method that launched the job.
+        :param async_job_id: Id of the asynchronous job. This is the value of a
+            response returned from the method that launched the job.
+        :type async_job_id: str
         :rtype: :class:`dropbox.riviera.GetMarkdownAsyncCheckResult`
         :raises: :class:`.exceptions.ApiError`
 
         If this raises, ApiError will contain:
-            :class:`dropbox.riviera.PollError`
+            :class:`dropbox.async_.PollError`
         """
         arg = async_.PollArg(async_job_id)
         r = self.request(
@@ -4656,28 +4826,28 @@ class DropboxBase(object):
         Route attributes:
             scope: files.content.read
 
-        :param Nullable[:class:`dropbox.riviera.FileIdOrUrl`] file_id_or_url:
-            Identifier of the file to extract metadata from. Callers must set
-            exactly one of the oneof variants: - file_id: a Dropbox-issued file
-            id (format: "id:<id>") for a file the authenticated user has access
-            to. - path: an absolute Dropbox path, e.g. "/folder/photo.jpg". -
-            url: either a Dropbox shared link (www.dropbox.com) or an external
-            HTTPS URL pointing to a supported file. - Dropbox shared links are
-            resolved internally using the caller's authenticated identity and
-            the link's visibility / download settings. They therefore require an
-            authenticated user context (anonymous `url` requests against Dropbox
-            links are rejected with an `ACCESS_ERROR`). Links protected by a
-            password are rejected with `shared_link_password_protected`; links
-            with downloads disabled are rejected with
-            `link_download_disabled_error`. - External URLs are fetched over
-            HTTPS through the backend's egress proxy and must point at a
-            supported file extension. The kind of metadata returned is
+        :param file_id_or_url: Identifier of the file to extract metadata from.
+            Callers must set exactly one of the oneof variants: - file_id: a
+            Dropbox-issued file id (format: "id:<id>") for a file the
+            authenticated user has access to. - path: an absolute Dropbox path,
+            e.g. "/folder/photo.jpg". - url: either a Dropbox shared link
+            (www.dropbox.com) or an external HTTPS URL pointing to a supported
+            file. - Dropbox shared links are resolved internally using the
+            caller's authenticated identity and the link's visibility / download
+            settings. They therefore require an authenticated user context
+            (anonymous `url` requests against Dropbox links are rejected with an
+            `ACCESS_ERROR`). Links protected by a password are rejected with
+            `shared_link_password_protected`; links with downloads disabled are
+            rejected with `link_download_disabled_error`. - External URLs are
+            fetched over HTTPS through the backend's egress proxy and must point
+            at a supported file extension. The kind of metadata returned is
             determined by the file type: image files return EXIF metadata,
             audio/video files return media metadata, PDFs return PDF metadata,
             and MS Office documents (docx, pptx, xlsx) return Office metadata.
             Requests against unsupported formats return
             `unsupported_format_error`.
-        :rtype: :class:`dropbox.riviera.LaunchResultBase`
+        :type file_id_or_url: Nullable[:class:`dropbox.riviera.FileIdOrUrl`]
+        :rtype: :class:`dropbox.async_.LaunchResultBase`
         """
         arg = riviera.GetMetadataArgs(file_id_or_url)
         r = self.request(
@@ -4696,13 +4866,14 @@ class DropboxBase(object):
         Route attributes:
             scope: files.content.read
 
-        :param str async_job_id: Id of the asynchronous job. This is the value
-            of a response returned from the method that launched the job.
+        :param async_job_id: Id of the asynchronous job. This is the value of a
+            response returned from the method that launched the job.
+        :type async_job_id: str
         :rtype: :class:`dropbox.riviera.GetMetadataAsyncCheckResult`
         :raises: :class:`.exceptions.ApiError`
 
         If this raises, ApiError will contain:
-            :class:`dropbox.riviera.PollError`
+            :class:`dropbox.async_.PollError`
         """
         arg = async_.PollArg(async_job_id)
         r = self.request(
@@ -4724,40 +4895,42 @@ class DropboxBase(object):
         Route attributes:
             scope: files.content.read
 
-        :param Nullable[:class:`dropbox.riviera.FileIdOrUrl`] file_id_or_url:
-            Identifier of the media asset to transcribe. Callers must set
-            exactly one of the oneof variants: - file_id: a Dropbox-issued file
-            id (format: "id:<id>") for a file the authenticated user has access
-            to. - path: an absolute Dropbox path, e.g. "/folder/recording.mp4".
-            - url: either a Dropbox shared link (www.dropbox.com) or an external
-            HTTPS URL pointing to a supported audio/video file. - Dropbox shared
-            links are resolved internally using the caller's authenticated
-            identity and the link's visibility / download settings. They
-            therefore require an authenticated user context (anonymous `url`
-            requests against Dropbox links are rejected with an `ACCESS_ERROR`).
-            Links protected by a password are rejected with
-            `shared_link_password_protected`; links with downloads disabled are
-            rejected with `link_download_disabled_error`. - External URLs are
-            fetched over HTTPS through the backend's egress proxy and must point
-            at a supported audio/video file extension. The referenced asset must
-            be an audio or video file in a supported format; requests against
-            files with no audio track return a `no_audio_error`.
+        :param file_id_or_url: Identifier of the media asset to transcribe.
+            Callers must set exactly one of the oneof variants: - file_id: a
+            Dropbox-issued file id (format: "id:<id>") for a file the
+            authenticated user has access to. - path: an absolute Dropbox path,
+            e.g. "/folder/recording.mp4". - url: either a Dropbox shared link
+            (www.dropbox.com) or an external HTTPS URL pointing to a supported
+            audio/video file. - Dropbox shared links are resolved internally
+            using the caller's authenticated identity and the link's visibility
+            / download settings. They therefore require an authenticated user
+            context (anonymous `url` requests against Dropbox links are rejected
+            with an `ACCESS_ERROR`). Links protected by a password are rejected
+            with `shared_link_password_protected`; links with downloads disabled
+            are rejected with `link_download_disabled_error`. - External URLs
+            are fetched over HTTPS through the backend's egress proxy and must
+            point at a supported audio/video file extension. The referenced
+            asset must be an audio or video file in a supported format; requests
+            against files with no audio track return a `no_audio_error`.
+        :type file_id_or_url: Nullable[:class:`dropbox.riviera.FileIdOrUrl`]
         :param timestamp_level: Granularity of the time offsets returned for
             each transcript segment. Defaults to `SENTENCE. - SENTENCE: one
             segment per spoken sentence (recommended). - WORD: one segment per
             word, useful for fine-grained alignment such as captioning or
             highlight-as-you-listen experiences.
         :type timestamp_level: :class:`dropbox.riviera.TimestampLevel`
-        :param str included_special_words: Comma-delimited list of non-lexical
+        :param included_special_words: Comma-delimited list of non-lexical
             filler words to preserve in the transcript output, e.g. `"uh, ah,
             uhm"`. By default these fillers are stripped. Unrecognized tokens
             are ignored. Leave empty to use the default filtering behavior.
-        :param str audio_language: Optional ISO 639-1 two-letter language code
+        :type included_special_words: str
+        :param audio_language: Optional ISO 639-1 two-letter language code
             hinting the spoken language of the source audio (e.g. "en", "ja").
             When empty, the service auto-detects the language; supplying a hint
             improves accuracy and latency for short or ambiguous clips.
             Unsupported languages fall back to auto-detection.
-        :rtype: :class:`dropbox.riviera.LaunchResultBase`
+        :type audio_language: str
+        :rtype: :class:`dropbox.async_.LaunchResultBase`
         """
         arg = riviera.GetTranscriptArgs(file_id_or_url,
                                         timestamp_level,
@@ -4779,13 +4952,14 @@ class DropboxBase(object):
         Route attributes:
             scope: files.content.read
 
-        :param str async_job_id: Id of the asynchronous job. This is the value
-            of a response returned from the method that launched the job.
+        :param async_job_id: Id of the asynchronous job. This is the value of a
+            response returned from the method that launched the job.
+        :type async_job_id: str
         :rtype: :class:`dropbox.riviera.GetTranscriptAsyncCheckResult`
         :raises: :class:`.exceptions.ApiError`
 
         If this raises, ApiError will contain:
-            :class:`dropbox.riviera.PollError`
+            :class:`dropbox.async_.PollError`
         """
         arg = async_.PollArg(async_job_id)
         r = self.request(
@@ -4813,22 +4987,27 @@ class DropboxBase(object):
         Route attributes:
             scope: sharing.write
 
-        :param str file: File to which to add members.
-        :param List[:class:`dropbox.sharing.MemberSelector`] members: Members to
-            add. Note that even an email address is given, this may result in a
-            user being directly added to the membership if that email is the
-            user's main account email.
-        :param Nullable[str] custom_message: Message to send to added members in
-            their invitation.
-        :param bool quiet: Whether added members should be notified via email
-            and device notifications of their invitation.
-        :param Nullable[:class:`dropbox.sharing.AccessLevel`] access_level:
-            AccessLevel union object, describing what access level we want to
-            give new members.
-        :param bool add_message_as_comment: If the custom message should be
-            added as a comment on the file. Only meant for Paper files.
-        :param Nullable[str] fp_sealed_result: Field is only returned for
-            "internal" callers. The FingerprintJS Sealed Client Result value
+        :param file: File to which to add members.
+        :type file: str
+        :param members: Members to add. Note that even an email address is
+            given, this may result in a user being directly added to the
+            membership if that email is the user's main account email.
+        :type members: List[:class:`dropbox.sharing.MemberSelector`]
+        :param custom_message: Message to send to added members in their
+            invitation.
+        :type custom_message: Nullable[str]
+        :param quiet: Whether added members should be notified via email and
+            device notifications of their invitation.
+        :type quiet: bool
+        :param access_level: AccessLevel union object, describing what access
+            level we want to give new members.
+        :type access_level: Nullable[:class:`dropbox.sharing.AccessLevel`]
+        :param add_message_as_comment: If the custom message should be added as
+            a comment on the file. Only meant for Paper files.
+        :type add_message_as_comment: bool
+        :param fp_sealed_result: Field is only returned for "internal" callers.
+            The FingerprintJS Sealed Client Result value
+        :type fp_sealed_result: Nullable[str]
         :rtype: List[:class:`dropbox.sharing.FileMemberActionResult`]
         :raises: :class:`.exceptions.ApiError`
 
@@ -4865,16 +5044,20 @@ class DropboxBase(object):
         Route attributes:
             scope: sharing.write
 
-        :param str shared_folder_id: The ID for the shared folder.
-        :param List[:class:`dropbox.sharing.AddMember`] members: The intended
-            list of members to add.  Added members will receive invites to join
-            the shared folder.
-        :param bool quiet: Whether added members should be notified via email
-            and device notifications of their invite.
-        :param Nullable[str] custom_message: Optional message to display to
-            added members in their invitation.
-        :param Nullable[str] fp_sealed_result: Field is only returned for
-            "internal" callers. The FingerprintJS Sealed Client Result value
+        :param shared_folder_id: The ID for the shared folder.
+        :type shared_folder_id: str
+        :param members: The intended list of members to add.  Added members will
+            receive invites to join the shared folder.
+        :type members: List[:class:`dropbox.sharing.AddMember`]
+        :param quiet: Whether added members should be notified via email and
+            device notifications of their invite.
+        :type quiet: bool
+        :param custom_message: Optional message to display to added members in
+            their invitation.
+        :type custom_message: Nullable[str]
+        :param fp_sealed_result: Field is only returned for "internal" callers.
+            The FingerprintJS Sealed Client Result value
+        :type fp_sealed_result: Nullable[str]
         :rtype: None
         :raises: :class:`.exceptions.ApiError`
 
@@ -4902,13 +5085,14 @@ class DropboxBase(object):
         Route attributes:
             scope: sharing.write
 
-        :param str async_job_id: Id of the asynchronous job. This is the value
-            of a response returned from the method that launched the job.
+        :param async_job_id: Id of the asynchronous job. This is the value of a
+            response returned from the method that launched the job.
+        :type async_job_id: str
         :rtype: :class:`dropbox.sharing.JobStatus`
         :raises: :class:`.exceptions.ApiError`
 
         If this raises, ApiError will contain:
-            :class:`dropbox.sharing.PollError`
+            :class:`dropbox.async_.PollError`
         """
         arg = async_.PollArg(async_job_id)
         r = self.request(
@@ -4927,13 +5111,14 @@ class DropboxBase(object):
         Route attributes:
             scope: sharing.write
 
-        :param str async_job_id: Id of the asynchronous job. This is the value
-            of a response returned from the method that launched the job.
+        :param async_job_id: Id of the asynchronous job. This is the value of a
+            response returned from the method that launched the job.
+        :type async_job_id: str
         :rtype: :class:`dropbox.sharing.RemoveMemberJobStatus`
         :raises: :class:`.exceptions.ApiError`
 
         If this raises, ApiError will contain:
-            :class:`dropbox.sharing.PollError`
+            :class:`dropbox.async_.PollError`
         """
         arg = async_.PollArg(async_job_id)
         r = self.request(
@@ -4952,13 +5137,14 @@ class DropboxBase(object):
         Route attributes:
             scope: sharing.write
 
-        :param str async_job_id: Id of the asynchronous job. This is the value
-            of a response returned from the method that launched the job.
+        :param async_job_id: Id of the asynchronous job. This is the value of a
+            response returned from the method that launched the job.
+        :type async_job_id: str
         :rtype: :class:`dropbox.sharing.ShareFolderJobStatus`
         :raises: :class:`.exceptions.ApiError`
 
         If this raises, ApiError will contain:
-            :class:`dropbox.sharing.PollError`
+            :class:`dropbox.async_.PollError`
         """
         arg = async_.PollArg(async_job_id)
         r = self.request(
@@ -4985,13 +5171,15 @@ class DropboxBase(object):
         Route attributes:
             scope: sharing.write
 
-        :param str path: The path to share.
-        :param bool short_url: Field is deprecated. None
-        :param Nullable[:class:`dropbox.sharing.PendingUploadMode`]
-            pending_upload: If it's okay to share a path that does not yet
+        :param path: The path to share.
+        :type path: str
+        :param short_url: Field is deprecated. None
+        :type short_url: bool
+        :param pending_upload: If it's okay to share a path that does not yet
             exist, set this to either ``PendingUploadMode.file`` or
             ``PendingUploadMode.folder`` to indicate whether to assume it's a
             file or folder.
+        :type pending_upload: Nullable[:class:`dropbox.sharing.PendingUploadMode`]
         :rtype: :class:`dropbox.sharing.PathLinkMetadata`
         :raises: :class:`.exceptions.ApiError`
 
@@ -5025,9 +5213,11 @@ class DropboxBase(object):
         Route attributes:
             scope: sharing.write
 
-        :param str path: The path to be shared by the shared link.
-        :param Nullable[:class:`dropbox.sharing.SharedLinkSettings`] settings:
-            The requested settings for the newly created shared link.
+        :param path: The path to be shared by the shared link.
+        :type path: str
+        :param settings: The requested settings for the newly created shared
+            link.
+        :type settings: Nullable[:class:`dropbox.sharing.SharedLinkSettings`]
         :rtype: :class:`dropbox.sharing.SharedLinkMetadata`
         :raises: :class:`.exceptions.ApiError`
 
@@ -5053,12 +5243,13 @@ class DropboxBase(object):
         Route attributes:
             scope: sharing.read
 
-        :param str file: The file to query.
-        :param Nullable[List[:class:`dropbox.sharing.FileAction`]] actions: A
-            list of `FileAction`s corresponding to `FilePermission`s that should
-            appear in the response's ``SharedFileMetadata.permissions`` field
-            describing the actions the authenticated user can perform on the
-            file.
+        :param file: The file to query.
+        :type file: str
+        :param actions: A list of `FileAction`s corresponding to
+            `FilePermission`s that should appear in the response's
+            ``SharedFileMetadata.permissions`` field describing the actions the
+            authenticated user can perform on the file.
+        :type actions: Nullable[List[:class:`dropbox.sharing.FileAction`]]
         :rtype: :class:`dropbox.sharing.SharedFileMetadata`
         :raises: :class:`.exceptions.ApiError`
 
@@ -5084,12 +5275,13 @@ class DropboxBase(object):
         Route attributes:
             scope: sharing.read
 
-        :param List[str] files: The files to query.
-        :param Nullable[List[:class:`dropbox.sharing.FileAction`]] actions: A
-            list of `FileAction`s corresponding to `FilePermission`s that should
-            appear in the response's ``SharedFileMetadata.permissions`` field
-            describing the actions the authenticated user can perform on the
-            file.
+        :param files: The files to query.
+        :type files: List[str]
+        :param actions: A list of `FileAction`s corresponding to
+            `FilePermission`s that should appear in the response's
+            ``SharedFileMetadata.permissions`` field describing the actions the
+            authenticated user can perform on the file.
+        :type actions: Nullable[List[:class:`dropbox.sharing.FileAction`]]
         :rtype: List[:class:`dropbox.sharing.GetFileMetadataBatchResult`]
         :raises: :class:`.exceptions.ApiError`
 
@@ -5115,12 +5307,13 @@ class DropboxBase(object):
         Route attributes:
             scope: sharing.read
 
-        :param str shared_folder_id: The ID for the shared folder.
-        :param Nullable[List[:class:`dropbox.sharing.FolderAction`]] actions: A
-            list of `FolderAction`s corresponding to `FolderPermission`s that
-            should appear in the response's ``SharedFolderMetadata.permissions``
-            field describing the actions the authenticated user can perform on
-            the folder.
+        :param shared_folder_id: The ID for the shared folder.
+        :type shared_folder_id: str
+        :param actions: A list of `FolderAction`s corresponding to
+            `FolderPermission`s that should appear in the response's
+            ``SharedFolderMetadata.permissions`` field describing the actions
+            the authenticated user can perform on the folder.
+        :type actions: Nullable[List[:class:`dropbox.sharing.FolderAction`]]
         :rtype: :class:`dropbox.sharing.SharedFolderMetadata`
         :raises: :class:`.exceptions.ApiError`
 
@@ -5148,12 +5341,15 @@ class DropboxBase(object):
         Route attributes:
             scope: sharing.read
 
-        :param str url: URL of the shared link.
-        :param Nullable[str] path: If the shared link is to a folder, this
-            parameter can be used to retrieve the metadata for a specific file
-            or sub-folder in this folder. A relative path should be used.
-        :param Nullable[str] link_password: If the shared link has a password,
-            this parameter can be used.
+        :param url: URL of the shared link.
+        :type url: str
+        :param path: If the shared link is to a folder, this parameter can be
+            used to retrieve the metadata for a specific file or sub-folder in
+            this folder. A relative path should be used.
+        :type path: Nullable[str]
+        :param link_password: If the shared link has a password, this parameter
+            can be used.
+        :type link_password: Nullable[str]
         :rtype: (:class:`dropbox.sharing.SharedLinkMetadata`,
                  :class:`requests.models.Response`)
         :raises: :class:`.exceptions.ApiError`
@@ -5191,12 +5387,15 @@ class DropboxBase(object):
             scope: sharing.read
 
         :param str download_path: Path on local machine to save file.
-        :param str url: URL of the shared link.
-        :param Nullable[str] path: If the shared link is to a folder, this
-            parameter can be used to retrieve the metadata for a specific file
-            or sub-folder in this folder. A relative path should be used.
-        :param Nullable[str] link_password: If the shared link has a password,
-            this parameter can be used.
+        :param url: URL of the shared link.
+        :type url: str
+        :param path: If the shared link is to a folder, this parameter can be
+            used to retrieve the metadata for a specific file or sub-folder in
+            this folder. A relative path should be used.
+        :type path: Nullable[str]
+        :param link_password: If the shared link has a password, this parameter
+            can be used.
+        :type link_password: Nullable[str]
         :rtype: :class:`dropbox.sharing.SharedLinkMetadata`
         :raises: :class:`.exceptions.ApiError`
 
@@ -5225,12 +5424,15 @@ class DropboxBase(object):
         Route attributes:
             scope: sharing.read
 
-        :param str url: URL of the shared link.
-        :param Nullable[str] path: If the shared link is to a folder, this
-            parameter can be used to retrieve the metadata for a specific file
-            or sub-folder in this folder. A relative path should be used.
-        :param Nullable[str] link_password: If the shared link has a password,
-            this parameter can be used.
+        :param url: URL of the shared link.
+        :type url: str
+        :param path: If the shared link is to a folder, this parameter can be
+            used to retrieve the metadata for a specific file or sub-folder in
+            this folder. A relative path should be used.
+        :type path: Nullable[str]
+        :param link_password: If the shared link has a password, this parameter
+            can be used.
+        :type link_password: Nullable[str]
         :rtype: :class:`dropbox.sharing.SharedLinkMetadata`
         """
         arg = sharing.GetSharedLinkMetadataArg(url,
@@ -5258,8 +5460,8 @@ class DropboxBase(object):
         Route attributes:
             scope: sharing.read
 
-        :param Nullable[str] path: See :meth:`sharing_get_shared_links`
-            description.
+        :param path: See :meth:`sharing_get_shared_links` description.
+        :type path: Nullable[str]
         :rtype: :class:`dropbox.sharing.GetSharedLinksResult`
         :raises: :class:`.exceptions.ApiError`
 
@@ -5291,13 +5493,16 @@ class DropboxBase(object):
         Route attributes:
             scope: sharing.read
 
-        :param str file: The file for which you want to see members.
-        :param Nullable[List[:class:`dropbox.sharing.MemberAction`]] actions:
-            The actions for which to return permissions on a member.
-        :param bool include_inherited: Whether to include members who only have
+        :param file: The file for which you want to see members.
+        :type file: str
+        :param actions: The actions for which to return permissions on a member.
+        :type actions: Nullable[List[:class:`dropbox.sharing.MemberAction`]]
+        :param include_inherited: Whether to include members who only have
             access from a parent shared folder.
-        :param int limit: Number of members to return max per query. Defaults to
-            100 if no limit is specified.
+        :type include_inherited: bool
+        :param limit: Number of members to return max per query. Defaults to 100
+            if no limit is specified.
+        :type limit: int
         :rtype: :class:`dropbox.sharing.SharedFileMembers`
         :raises: :class:`.exceptions.ApiError`
 
@@ -5329,9 +5534,11 @@ class DropboxBase(object):
         Route attributes:
             scope: sharing.read
 
-        :param List[str] files: Files for which to return members.
-        :param int limit: Number of members to return max per query. Defaults to
+        :param files: Files for which to return members.
+        :type files: List[str]
+        :param limit: Number of members to return max per query. Defaults to
             1000 if no limit is specified.
+        :type limit: int
         :rtype: List[:class:`dropbox.sharing.ListFileMembersBatchResult`]
         :raises: :class:`.exceptions.ApiError`
 
@@ -5358,10 +5565,11 @@ class DropboxBase(object):
         Route attributes:
             scope: sharing.read
 
-        :param str cursor: The cursor returned by your last call to
+        :param cursor: The cursor returned by your last call to
             :meth:`sharing_list_file_members`,
             :meth:`sharing_list_file_members_continue`, or
             :meth:`sharing_list_file_members_batch`.
+        :type cursor: str
         :rtype: :class:`dropbox.sharing.SharedFileMembers`
         :raises: :class:`.exceptions.ApiError`
 
@@ -5388,12 +5596,14 @@ class DropboxBase(object):
         Route attributes:
             scope: sharing.read
 
-        :param str shared_folder_id: The ID for the shared folder. When path is
+        :param shared_folder_id: The ID for the shared folder. When path is
             provided, the folder ID will be extracted from the path instead.
-        :param Nullable[str] path: Optional path to get inherited members. When
-            omitted, uses shared_folder_id to return direct members. When
-            provided, extracts folder ID from this path and returns users who
-            have access through parent shared folder.
+        :type shared_folder_id: str
+        :param path: Optional path to get inherited members. When omitted, uses
+            shared_folder_id to return direct members. When provided, extracts
+            folder ID from this path and returns users who have access through
+            parent shared folder.
+        :type path: Nullable[str]
         :rtype: :class:`dropbox.sharing.SharedFolderMembers`
         :raises: :class:`.exceptions.ApiError`
 
@@ -5422,9 +5632,10 @@ class DropboxBase(object):
         Route attributes:
             scope: sharing.read
 
-        :param str cursor: The cursor returned by your last call to
+        :param cursor: The cursor returned by your last call to
             :meth:`sharing_list_folder_members` or
             :meth:`sharing_list_folder_members_continue`.
+        :type cursor: str
         :rtype: :class:`dropbox.sharing.SharedFolderMembers`
         :raises: :class:`.exceptions.ApiError`
 
@@ -5449,12 +5660,13 @@ class DropboxBase(object):
         Route attributes:
             scope: sharing.read
 
-        :param int limit: The maximum number of results to return per request.
-        :param Nullable[List[:class:`dropbox.sharing.FolderAction`]] actions: A
-            list of `FolderAction`s corresponding to `FolderPermission`s that
-            should appear in the response's ``SharedFolderMetadata.permissions``
-            field describing the actions the authenticated user can perform on
-            the folder.
+        :param limit: The maximum number of results to return per request.
+        :type limit: int
+        :param actions: A list of `FolderAction`s corresponding to
+            `FolderPermission`s that should appear in the response's
+            ``SharedFolderMetadata.permissions`` field describing the actions
+            the authenticated user can perform on the folder.
+        :type actions: Nullable[List[:class:`dropbox.sharing.FolderAction`]]
         :rtype: :class:`dropbox.sharing.ListFoldersResult`
         """
         arg = sharing.ListFoldersArgs(limit,
@@ -5478,8 +5690,9 @@ class DropboxBase(object):
         Route attributes:
             scope: sharing.read
 
-        :param str cursor: The cursor returned by the previous API call
-            specified in the endpoint description.
+        :param cursor: The cursor returned by the previous API call specified in
+            the endpoint description.
+        :type cursor: str
         :rtype: :class:`dropbox.sharing.ListFoldersResult`
         :raises: :class:`.exceptions.ApiError`
 
@@ -5505,12 +5718,13 @@ class DropboxBase(object):
         Route attributes:
             scope: sharing.read
 
-        :param int limit: The maximum number of results to return per request.
-        :param Nullable[List[:class:`dropbox.sharing.FolderAction`]] actions: A
-            list of `FolderAction`s corresponding to `FolderPermission`s that
-            should appear in the response's ``SharedFolderMetadata.permissions``
-            field describing the actions the authenticated user can perform on
-            the folder.
+        :param limit: The maximum number of results to return per request.
+        :type limit: int
+        :param actions: A list of `FolderAction`s corresponding to
+            `FolderPermission`s that should appear in the response's
+            ``SharedFolderMetadata.permissions`` field describing the actions
+            the authenticated user can perform on the folder.
+        :type actions: Nullable[List[:class:`dropbox.sharing.FolderAction`]]
         :rtype: :class:`dropbox.sharing.ListFoldersResult`
         """
         arg = sharing.ListFoldersArgs(limit,
@@ -5535,8 +5749,9 @@ class DropboxBase(object):
         Route attributes:
             scope: sharing.read
 
-        :param str cursor: The cursor returned by the previous API call
-            specified in the endpoint description.
+        :param cursor: The cursor returned by the previous API call specified in
+            the endpoint description.
+        :type cursor: str
         :rtype: :class:`dropbox.sharing.ListFoldersResult`
         :raises: :class:`.exceptions.ApiError`
 
@@ -5561,13 +5776,14 @@ class DropboxBase(object):
         Route attributes:
             scope: sharing.read
 
-        :param int limit: Number of files to return max per query. Defaults to
-            100 if no limit is specified.
-        :param Nullable[List[:class:`dropbox.sharing.FileAction`]] actions: A
-            list of `FileAction`s corresponding to `FilePermission`s that should
-            appear in the response's ``SharedFileMetadata.permissions`` field
-            describing the actions the authenticated user can perform on the
-            file.
+        :param limit: Number of files to return max per query. Defaults to 100
+            if no limit is specified.
+        :type limit: int
+        :param actions: A list of `FileAction`s corresponding to
+            `FilePermission`s that should appear in the response's
+            ``SharedFileMetadata.permissions`` field describing the actions the
+            authenticated user can perform on the file.
+        :type actions: Nullable[List[:class:`dropbox.sharing.FileAction`]]
         :rtype: :class:`dropbox.sharing.ListFilesResult`
         :raises: :class:`.exceptions.ApiError`
 
@@ -5592,7 +5808,8 @@ class DropboxBase(object):
         Route attributes:
             scope: sharing.read
 
-        :param str cursor: Cursor in ``ListFilesResult.cursor``.
+        :param cursor: Cursor in ``ListFilesResult.cursor``.
+        :type cursor: str
         :rtype: :class:`dropbox.sharing.ListFilesResult`
         :raises: :class:`.exceptions.ApiError`
 
@@ -5625,12 +5842,13 @@ class DropboxBase(object):
         Route attributes:
             scope: sharing.read
 
-        :param Nullable[str] path: See :meth:`sharing_list_shared_links`
-            description.
-        :param Nullable[str] cursor: The cursor returned by your last call to
+        :param path: See :meth:`sharing_list_shared_links` description.
+        :type path: Nullable[str]
+        :param cursor: The cursor returned by your last call to
             :meth:`sharing_list_shared_links`.
-        :param Nullable[bool] direct_only: See :meth:`sharing_list_shared_links`
-            description.
+        :type cursor: Nullable[str]
+        :param direct_only: See :meth:`sharing_list_shared_links` description.
+        :type direct_only: Nullable[bool]
         :rtype: :class:`dropbox.sharing.ListSharedLinksResult`
         :raises: :class:`.exceptions.ApiError`
 
@@ -5664,11 +5882,13 @@ class DropboxBase(object):
         Route attributes:
             scope: sharing.write
 
-        :param str url: URL of the shared link to change its settings.
+        :param url: URL of the shared link to change its settings.
+        :type url: str
         :param settings: Set of settings for the shared link.
         :type settings: :class:`dropbox.sharing.SharedLinkSettings`
-        :param bool remove_expiration: If set to true, removes the expiration of
-            the shared link.
+        :param remove_expiration: If set to true, removes the expiration of the
+            shared link.
+        :type remove_expiration: bool
         :rtype: :class:`dropbox.sharing.SharedLinkMetadata`
         :raises: :class:`.exceptions.ApiError`
 
@@ -5696,7 +5916,8 @@ class DropboxBase(object):
         Route attributes:
             scope: sharing.write
 
-        :param str shared_folder_id: The ID of the shared folder to mount.
+        :param shared_folder_id: The ID of the shared folder to mount.
+        :type shared_folder_id: str
         :rtype: :class:`dropbox.sharing.SharedFolderMetadata`
         :raises: :class:`.exceptions.ApiError`
 
@@ -5722,7 +5943,8 @@ class DropboxBase(object):
         Route attributes:
             scope: private:sharing.write
 
-        :param str file_id: The id for the file or folder.
+        :param file_id: The id for the file or folder.
+        :type file_id: str
         :rtype: :class:`dropbox.sharing.RelinquishAccessResult`
         :raises: :class:`.exceptions.ApiError`
 
@@ -5746,7 +5968,8 @@ class DropboxBase(object):
         Route attributes:
             scope: sharing.write
 
-        :param str file: The path or id for the file.
+        :param file: The path or id for the file.
+        :type file: str
         :rtype: None
         :raises: :class:`.exceptions.ApiError`
 
@@ -5775,11 +5998,13 @@ class DropboxBase(object):
         Route attributes:
             scope: sharing.write
 
-        :param str shared_folder_id: The ID for the shared folder.
-        :param bool leave_a_copy: Keep a copy of the folder's contents upon
+        :param shared_folder_id: The ID for the shared folder.
+        :type shared_folder_id: str
+        :param leave_a_copy: Keep a copy of the folder's contents upon
             relinquishing membership. This must be set to false when the folder
             is within a team folder or another shared folder.
-        :rtype: :class:`dropbox.sharing.LaunchEmptyResult`
+        :type leave_a_copy: bool
+        :rtype: :class:`dropbox.async_.LaunchEmptyResult`
         :raises: :class:`.exceptions.ApiError`
 
         If this raises, ApiError will contain:
@@ -5804,7 +6029,8 @@ class DropboxBase(object):
         Route attributes:
             scope: sharing.write
 
-        :param str file: File from which to remove members.
+        :param file: File from which to remove members.
+        :type file: str
         :param member: Member to remove from this file. Note that even if an
             email is specified, it may result in the removal of a user (not an
             invitee) if the user's main account corresponds to that email
@@ -5839,7 +6065,8 @@ class DropboxBase(object):
         Route attributes:
             scope: sharing.write
 
-        :param str file: File from which to remove members.
+        :param file: File from which to remove members.
+        :type file: str
         :param member: Member to remove from this file. Note that even if an
             email is specified, it may result in the removal of a user (not an
             invitee) if the user's main account corresponds to that email
@@ -5872,15 +6099,17 @@ class DropboxBase(object):
         Route attributes:
             scope: sharing.write
 
-        :param str shared_folder_id: The ID for the shared folder.
+        :param shared_folder_id: The ID for the shared folder.
+        :type shared_folder_id: str
         :param member: The member to remove from the folder.
         :type member: :class:`dropbox.sharing.MemberSelector`
-        :param bool leave_a_copy: If true, the removed user will keep their copy
-            of the folder after it's unshared, assuming it was mounted.
-            Otherwise, it will be removed from their Dropbox. This must be set
-            to false when removing a group, or when the folder is within a team
-            folder or another shared folder.
-        :rtype: :class:`dropbox.sharing.LaunchResultBase`
+        :param leave_a_copy: If true, the removed user will keep their copy of
+            the folder after it's unshared, assuming it was mounted. Otherwise,
+            it will be removed from their Dropbox. This must be set to false
+            when removing a group, or when the folder is within a team folder or
+            another shared folder.
+        :type leave_a_copy: bool
+        :rtype: :class:`dropbox.async_.LaunchResultBase`
         :raises: :class:`.exceptions.ApiError`
 
         If this raises, ApiError will contain:
@@ -5909,7 +6138,8 @@ class DropboxBase(object):
         Route attributes:
             scope: sharing.write
 
-        :param str url: URL of the shared link.
+        :param url: URL of the shared link.
+        :type url: str
         :rtype: None
         :raises: :class:`.exceptions.ApiError`
 
@@ -5941,7 +6171,8 @@ class DropboxBase(object):
         :param access_inheritance: The access inheritance settings for the
             folder.
         :type access_inheritance: :class:`dropbox.sharing.AccessInheritance`
-        :param str shared_folder_id: The ID for the shared folder.
+        :param shared_folder_id: The ID for the shared folder.
+        :type shared_folder_id: str
         :rtype: :class:`dropbox.sharing.ShareFolderLaunch`
         :raises: :class:`.exceptions.ApiError`
 
@@ -5979,13 +6210,13 @@ class DropboxBase(object):
         Route attributes:
             scope: sharing.write
 
-        :param Nullable[List[:class:`dropbox.sharing.FolderAction`]] actions: A
-            list of `FolderAction`s corresponding to `FolderPermission`s that
-            should appear in the response's ``SharedFolderMetadata.permissions``
-            field describing the actions the authenticated user can perform on
-            the folder.
-        :param Nullable[:class:`dropbox.sharing.LinkSettings`] link_settings:
-            Settings on the link for this folder.
+        :param actions: A list of `FolderAction`s corresponding to
+            `FolderPermission`s that should appear in the response's
+            ``SharedFolderMetadata.permissions`` field describing the actions
+            the authenticated user can perform on the folder.
+        :type actions: Nullable[List[:class:`dropbox.sharing.FolderAction`]]
+        :param link_settings: Settings on the link for this folder.
+        :type link_settings: Nullable[:class:`dropbox.sharing.LinkSettings`]
         :rtype: :class:`dropbox.sharing.ShareFolderLaunch`
         :raises: :class:`.exceptions.ApiError`
 
@@ -6020,9 +6251,11 @@ class DropboxBase(object):
         Route attributes:
             scope: sharing.write
 
-        :param str shared_folder_id: The ID for the shared folder.
-        :param str to_dropbox_id: A account or team member ID to transfer
-            ownership to.
+        :param shared_folder_id: The ID for the shared folder.
+        :type shared_folder_id: str
+        :param to_dropbox_id: A account or team member ID to transfer ownership
+            to.
+        :type to_dropbox_id: str
         :rtype: None
         :raises: :class:`.exceptions.ApiError`
 
@@ -6048,7 +6281,8 @@ class DropboxBase(object):
         Route attributes:
             scope: sharing.write
 
-        :param str shared_folder_id: The ID for the shared folder.
+        :param shared_folder_id: The ID for the shared folder.
+        :type shared_folder_id: str
         :rtype: None
         :raises: :class:`.exceptions.ApiError`
 
@@ -6072,7 +6306,8 @@ class DropboxBase(object):
         Route attributes:
             scope: sharing.write
 
-        :param str file: The file to unshare.
+        :param file: The file to unshare.
+        :type file: str
         :rtype: None
         :raises: :class:`.exceptions.ApiError`
 
@@ -6101,12 +6336,14 @@ class DropboxBase(object):
         Route attributes:
             scope: sharing.write
 
-        :param str shared_folder_id: The ID for the shared folder.
-        :param bool leave_a_copy: If true, members of this shared folder will
-            get a copy of this folder after it's unshared. Otherwise, it will be
+        :param shared_folder_id: The ID for the shared folder.
+        :type shared_folder_id: str
+        :param leave_a_copy: If true, members of this shared folder will get a
+            copy of this folder after it's unshared. Otherwise, it will be
             removed from their Dropbox. The current user, who is an owner, will
             always retain their copy.
-        :rtype: :class:`dropbox.sharing.LaunchEmptyResult`
+        :type leave_a_copy: bool
+        :rtype: :class:`dropbox.async_.LaunchEmptyResult`
         :raises: :class:`.exceptions.ApiError`
 
         If this raises, ApiError will contain:
@@ -6132,7 +6369,8 @@ class DropboxBase(object):
         Route attributes:
             scope: sharing.write
 
-        :param str file: File for which we are changing a member's access.
+        :param file: File for which we are changing a member's access.
+        :type file: str
         :param member: The member whose access we are changing.
         :type member: :class:`dropbox.sharing.MemberSelector`
         :param access_level: The new access level for the member.
@@ -6165,16 +6403,19 @@ class DropboxBase(object):
         Route attributes:
             scope: sharing.write
 
-        :param str file: File that we are changing the policy for.
-        :param Nullable[List[:class:`dropbox.sharing.FileAction`]] actions: A
-            list of `FileAction`s corresponding to `FilePermission`s that should
-            appear in the response's ``SharedFileMetadata.permissions`` field
-            describing the actions the authenticated user can perform on the
+        :param file: File that we are changing the policy for.
+        :type file: str
+        :param actions: A list of `FileAction`s corresponding to
+            `FilePermission`s that should appear in the response's
+            ``SharedFileMetadata.permissions`` field describing the actions the
+            authenticated user can perform on the file.
+        :type actions: Nullable[List[:class:`dropbox.sharing.FileAction`]]
+        :param link_settings: Field is deprecated. Settings on the link for the
             file.
-        :param Nullable[:class:`dropbox.sharing.LinkSettings`] link_settings:
-            Field is deprecated. Settings on the link for the file.
-        :param Nullable[:class:`dropbox.sharing.ViewerInfoPolicy`]
-            viewer_info_policy: The presence and seen state policy on the file.
+        :type link_settings: Nullable[:class:`dropbox.sharing.LinkSettings`]
+        :param viewer_info_policy: The presence and seen state policy on the
+            file.
+        :type viewer_info_policy: Nullable[:class:`dropbox.sharing.ViewerInfoPolicy`]
         :rtype: :class:`dropbox.sharing.SharedFileMetadata`
         :raises: :class:`.exceptions.ApiError`
 
@@ -6204,7 +6445,8 @@ class DropboxBase(object):
         Route attributes:
             scope: sharing.write
 
-        :param str shared_folder_id: The ID for the shared folder.
+        :param shared_folder_id: The ID for the shared folder.
+        :type shared_folder_id: str
         :param member: The member of the shared folder to update.  Only the
             ``MemberSelector.dropbox_id`` may be set at this time.
         :type member: :class:`dropbox.sharing.MemberSelector`
@@ -6244,27 +6486,28 @@ class DropboxBase(object):
         Route attributes:
             scope: sharing.write
 
-        :param str shared_folder_id: The ID for the shared folder.
-        :param Nullable[:class:`dropbox.sharing.MemberPolicy`] member_policy:
-            Who can be a member of this shared folder. Only applicable if the
-            current user is on a team.
-        :param Nullable[:class:`dropbox.sharing.AclUpdatePolicy`]
-            acl_update_policy: Who can add and remove members of this shared
+        :param shared_folder_id: The ID for the shared folder.
+        :type shared_folder_id: str
+        :param member_policy: Who can be a member of this shared folder. Only
+            applicable if the current user is on a team.
+        :type member_policy: Nullable[:class:`dropbox.sharing.MemberPolicy`]
+        :param acl_update_policy: Who can add and remove members of this shared
             folder.
-        :param Nullable[:class:`dropbox.sharing.ViewerInfoPolicy`]
-            viewer_info_policy: Who can enable/disable viewer info for this
+        :type acl_update_policy: Nullable[:class:`dropbox.sharing.AclUpdatePolicy`]
+        :param viewer_info_policy: Who can enable/disable viewer info for this
             shared folder.
-        :param Nullable[:class:`dropbox.sharing.SharedLinkPolicy`]
-            shared_link_policy: The policy to apply to shared links created for
-            content inside this shared folder. The current user must be on a
+        :type viewer_info_policy: Nullable[:class:`dropbox.sharing.ViewerInfoPolicy`]
+        :param shared_link_policy: The policy to apply to shared links created
+            for content inside this shared folder. The current user must be on a
             team to set this policy to ``SharedLinkPolicy.members``.
-        :param Nullable[:class:`dropbox.sharing.LinkSettings`] link_settings:
-            Settings on the link for this folder.
-        :param Nullable[List[:class:`dropbox.sharing.FolderAction`]] actions: A
-            list of `FolderAction`s corresponding to `FolderPermission`s that
-            should appear in the response's ``SharedFolderMetadata.permissions``
-            field describing the actions the authenticated user can perform on
-            the folder.
+        :type shared_link_policy: Nullable[:class:`dropbox.sharing.SharedLinkPolicy`]
+        :param link_settings: Settings on the link for this folder.
+        :type link_settings: Nullable[:class:`dropbox.sharing.LinkSettings`]
+        :param actions: A list of `FolderAction`s corresponding to
+            `FolderPermission`s that should appear in the response's
+            ``SharedFolderMetadata.permissions`` field describing the actions
+            the authenticated user can perform on the folder.
+        :type actions: Nullable[List[:class:`dropbox.sharing.FolderAction`]]
         :rtype: :class:`dropbox.sharing.SharedFolderMetadata`
         :raises: :class:`.exceptions.ApiError`
 
@@ -6304,10 +6547,10 @@ class DropboxBase(object):
         Route attributes:
             scope: account_info.read
 
-        :param List[:class:`dropbox.users.UserFeature`] features: A list of
-            features in :class:`dropbox.users.UserFeature`. If the list is
-            empty, this route will return
-            :class:`dropbox.users.UserFeaturesGetValuesBatchError`.
+        :param features: A list of features in
+            :class:`dropbox.users.UserFeature`. If the list is empty, this route
+            will return :class:`dropbox.users.UserFeaturesGetValuesBatchError`.
+        :type features: List[:class:`dropbox.users.UserFeature`]
         :rtype: :class:`dropbox.users.UserFeaturesGetValuesBatchResult`
         :raises: :class:`.exceptions.ApiError`
 
@@ -6331,7 +6574,8 @@ class DropboxBase(object):
         Route attributes:
             scope: sharing.read
 
-        :param str account_id: A user's account identifier.
+        :param account_id: A user's account identifier.
+        :type account_id: str
         :rtype: :class:`dropbox.users.BasicAccount`
         :raises: :class:`.exceptions.ApiError`
 
@@ -6356,8 +6600,9 @@ class DropboxBase(object):
         Route attributes:
             scope: sharing.read
 
-        :param List[str] account_ids: List of user account identifiers.  Should
-            not contain any duplicate account IDs.
+        :param account_ids: List of user account identifiers.  Should not
+            contain any duplicate account IDs.
+        :type account_ids: List[str]
         :rtype: List[:class:`dropbox.users.BasicAccount`]
         :raises: :class:`.exceptions.ApiError`
 

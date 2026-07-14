@@ -19,9 +19,10 @@ class LaunchResultBase(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar str async.LaunchResultBase.async_job_id: This response indicates that
-        the processing is asynchronous. The string is an id that can be used to
-        obtain the status of the asynchronous job.
+    :ivar LaunchResultBase.async_job_id:
+        This response indicates that the processing is asynchronous. The string
+        is an id that can be used to obtain the status of the asynchronous job.
+    :vartype LaunchResultBase.async_job_id: str
     """
 
     _catch_all = None
@@ -73,8 +74,8 @@ class LaunchEmptyResult(LaunchResultBase):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar async.LaunchEmptyResult.complete: The job finished synchronously and
-        successfully.
+    :ivar LaunchEmptyResult.complete:
+        The job finished synchronously and successfully.
     """
 
     # Attribute is overwritten below the class definition
@@ -97,8 +98,9 @@ class PollArg(bb.Struct):
     """
     Arguments for methods that poll the status of an asynchronous job.
 
-    :ivar async.PollArg.async_job_id: Id of the asynchronous job. This is the
-        value of a response returned from the method that launched the job.
+    :ivar PollArg.async_job_id:
+        Id of the asynchronous job. This is the value of a response returned
+        from the method that launched the job.
     """
 
     __slots__ = [
@@ -132,8 +134,8 @@ class PollResultBase(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar async.PollResultBase.in_progress: The asynchronous job is still in
-        progress.
+    :ivar PollResultBase.in_progress:
+        The asynchronous job is still in progress.
     """
 
     _catch_all = None
@@ -162,8 +164,8 @@ class PollEmptyResult(PollResultBase):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar async.PollEmptyResult.complete: The asynchronous job has completed
-        successfully.
+    :ivar PollEmptyResult.complete:
+        The asynchronous job has completed successfully.
     """
 
     # Attribute is overwritten below the class definition
@@ -190,10 +192,12 @@ class PollError(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar async.PollError.invalid_async_job_id: The job ID is invalid.
-    :ivar async.PollError.internal_error: Something went wrong with the job on
-        Dropbox's end. You'll need to verify that the action you were taking
-        succeeded, and if not, try again. This should happen very rarely.
+    :ivar PollError.invalid_async_job_id:
+        The job ID is invalid.
+    :ivar PollError.internal_error:
+        Something went wrong with the job on Dropbox's end. You'll need to
+        verify that the action you were taking succeeded, and if not, try again.
+        This should happen very rarely.
     """
 
     _catch_all = 'other'

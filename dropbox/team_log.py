@@ -24,16 +24,24 @@ class AccessMethodLogInfo(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar WebSessionLogInfo AccessMethodLogInfo.admin_console: Admin console
-        session details.
-    :ivar ApiSessionLogInfo AccessMethodLogInfo.api: Api session details.
-    :ivar WebSessionLogInfo AccessMethodLogInfo.content_manager: Content manager
-        session details.
-    :ivar SessionLogInfo AccessMethodLogInfo.end_user: End user session details.
-    :ivar WebSessionLogInfo AccessMethodLogInfo.enterprise_console: Enterprise
-        console session details.
-    :ivar WebSessionLogInfo AccessMethodLogInfo.sign_in_as: Sign in as session
-        details.
+    :ivar AccessMethodLogInfo.admin_console:
+        Admin console session details.
+    :vartype AccessMethodLogInfo.admin_console: WebSessionLogInfo
+    :ivar AccessMethodLogInfo.api:
+        Api session details.
+    :vartype AccessMethodLogInfo.api: ApiSessionLogInfo
+    :ivar AccessMethodLogInfo.content_manager:
+        Content manager session details.
+    :vartype AccessMethodLogInfo.content_manager: WebSessionLogInfo
+    :ivar AccessMethodLogInfo.end_user:
+        End user session details.
+    :vartype AccessMethodLogInfo.end_user: SessionLogInfo
+    :ivar AccessMethodLogInfo.enterprise_console:
+        Enterprise console session details.
+    :vartype AccessMethodLogInfo.enterprise_console: WebSessionLogInfo
+    :ivar AccessMethodLogInfo.sign_in_as:
+        Sign in as session details.
+    :vartype AccessMethodLogInfo.sign_in_as: WebSessionLogInfo
     """
 
     _catch_all = 'other'
@@ -287,9 +295,9 @@ class AccountCaptureChangeAvailabilityDetails(bb.Struct):
     """
     Granted/revoked option to enable account capture on team domains.
 
-    :ivar team_log.AccountCaptureChangeAvailabilityDetails.new_value: New
-        account capture availabilty value.
-    :ivar team_log.AccountCaptureChangeAvailabilityDetails.previous_value:
+    :ivar AccountCaptureChangeAvailabilityDetails.new_value:
+        New account capture availabilty value.
+    :ivar AccountCaptureChangeAvailabilityDetails.previous_value:
         Previous account capture availabilty value. Might be missing due to
         historical data gap.
     """
@@ -348,10 +356,11 @@ class AccountCaptureChangePolicyDetails(bb.Struct):
     """
     Changed account capture setting on team domain.
 
-    :ivar team_log.AccountCaptureChangePolicyDetails.new_value: New account
-        capture policy.
-    :ivar team_log.AccountCaptureChangePolicyDetails.previous_value: Previous
-        account capture policy. Might be missing due to historical data gap.
+    :ivar AccountCaptureChangePolicyDetails.new_value:
+        New account capture policy.
+    :ivar AccountCaptureChangePolicyDetails.previous_value:
+        Previous account capture policy. Might be missing due to historical data
+        gap.
     """
 
     __slots__ = [
@@ -408,7 +417,8 @@ class AccountCaptureMigrateAccountDetails(bb.Struct):
     """
     Account-captured user migrated account to team.
 
-    :ivar team_log.AccountCaptureMigrateAccountDetails.domain_name: Domain name.
+    :ivar AccountCaptureMigrateAccountDetails.domain_name:
+        Domain name.
     """
 
     __slots__ = [
@@ -457,10 +467,9 @@ class AccountCaptureNotificationEmailsSentDetails(bb.Struct):
     """
     Sent account capture email to all unmanaged members.
 
-    :ivar team_log.AccountCaptureNotificationEmailsSentDetails.domain_name:
+    :ivar AccountCaptureNotificationEmailsSentDetails.domain_name:
         Domain name.
-    :ivar
-        team_log.AccountCaptureNotificationEmailsSentDetails.notification_type:
+    :ivar AccountCaptureNotificationEmailsSentDetails.notification_type:
         Account-capture email notification type.
     """
 
@@ -616,8 +625,8 @@ class AccountCaptureRelinquishAccountDetails(bb.Struct):
     """
     Account-captured user changed account email to personal email.
 
-    :ivar team_log.AccountCaptureRelinquishAccountDetails.domain_name: Domain
-        name.
+    :ivar AccountCaptureRelinquishAccountDetails.domain_name:
+        Domain name.
     """
 
     __slots__ = [
@@ -666,10 +675,10 @@ class AccountLockOrUnlockedDetails(bb.Struct):
     """
     Unlocked/locked account after failed sign in attempts.
 
-    :ivar team_log.AccountLockOrUnlockedDetails.previous_value: The previous
-        account status.
-    :ivar team_log.AccountLockOrUnlockedDetails.new_value: The new account
-        status.
+    :ivar AccountLockOrUnlockedDetails.previous_value:
+        The previous account status.
+    :ivar AccountLockOrUnlockedDetails.new_value:
+        The new account status.
     """
 
     __slots__ = [
@@ -775,12 +784,15 @@ class ActionDetails(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar MemberRemoveActionType ActionDetails.remove_action: Define how the
-        user was removed from the team.
-    :ivar TeamInviteDetails ActionDetails.team_invite_details: Additional
-        information relevant when someone is invited to the team
-    :ivar JoinTeamDetails ActionDetails.team_join_details: Additional
-        information relevant when a new member joins the team.
+    :ivar ActionDetails.remove_action:
+        Define how the user was removed from the team.
+    :vartype ActionDetails.remove_action: MemberRemoveActionType
+    :ivar ActionDetails.team_invite_details:
+        Additional information relevant when someone is invited to the team
+    :vartype ActionDetails.team_invite_details: TeamInviteDetails
+    :ivar ActionDetails.team_join_details:
+        Additional information relevant when a new member joins the team.
+    :vartype ActionDetails.team_join_details: JoinTeamDetails
     """
 
     _catch_all = 'other'
@@ -901,12 +913,22 @@ class ActorLogInfo(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar UserLogInfo ActorLogInfo.admin: The admin who did the action.
-    :ivar team_log.ActorLogInfo.anonymous: Anonymous actor.
-    :ivar AppLogInfo ActorLogInfo.app: The application who did the action.
-    :ivar team_log.ActorLogInfo.dropbox: Action done by Dropbox.
-    :ivar ResellerLogInfo ActorLogInfo.reseller: Action done by reseller.
-    :ivar UserLogInfo ActorLogInfo.user: The user who did the action.
+    :ivar ActorLogInfo.admin:
+        The admin who did the action.
+    :vartype ActorLogInfo.admin: UserLogInfo
+    :ivar ActorLogInfo.anonymous:
+        Anonymous actor.
+    :ivar ActorLogInfo.app:
+        The application who did the action.
+    :vartype ActorLogInfo.app: AppLogInfo
+    :ivar ActorLogInfo.dropbox:
+        Action done by Dropbox.
+    :ivar ActorLogInfo.reseller:
+        Action done by reseller.
+    :vartype ActorLogInfo.reseller: ResellerLogInfo
+    :ivar ActorLogInfo.user:
+        The user who did the action.
+    :vartype ActorLogInfo.user: UserLogInfo
     """
 
     _catch_all = 'other'
@@ -1074,8 +1096,10 @@ class AddonAssignedDetails(bb.Struct):
     """
     Add-on Assigned.
 
-    :ivar team_log.AddonAssignedDetails.user_name: User's name.
-    :ivar team_log.AddonAssignedDetails.addon_name: Add-on name.
+    :ivar AddonAssignedDetails.user_name:
+        User's name.
+    :ivar AddonAssignedDetails.addon_name:
+        Add-on name.
     """
 
     __slots__ = [
@@ -1132,7 +1156,8 @@ class AddonLogInfo(bb.Struct):
     """
     Add-on logged information
 
-    :ivar team_log.AddonLogInfo.addon_name: Add-on name.
+    :ivar AddonLogInfo.addon_name:
+        Add-on name.
     """
 
     __slots__ = [
@@ -1159,8 +1184,10 @@ class AddonRemovedDetails(bb.Struct):
     """
     Add-on Removed.
 
-    :ivar team_log.AddonRemovedDetails.user_name: User's name.
-    :ivar team_log.AddonRemovedDetails.addon_name: Add-on name.
+    :ivar AddonRemovedDetails.user_name:
+        User's name.
+    :ivar AddonRemovedDetails.addon_name:
+        Add-on name.
     """
 
     __slots__ = [
@@ -1465,15 +1492,17 @@ class AdminAlertingAlertConfiguration(bb.Struct):
     """
     Alert configurations
 
-    :ivar team_log.AdminAlertingAlertConfiguration.alert_state: Alert state.
-    :ivar team_log.AdminAlertingAlertConfiguration.sensitivity_level:
+    :ivar AdminAlertingAlertConfiguration.alert_state:
+        Alert state.
+    :ivar AdminAlertingAlertConfiguration.sensitivity_level:
         Sensitivity level.
-    :ivar team_log.AdminAlertingAlertConfiguration.recipients_settings:
+    :ivar AdminAlertingAlertConfiguration.recipients_settings:
         Recipient settings.
-    :ivar team_log.AdminAlertingAlertConfiguration.text: Text.
-    :ivar team_log.AdminAlertingAlertConfiguration.excluded_file_extensions:
+    :ivar AdminAlertingAlertConfiguration.text:
+        Text.
+    :ivar AdminAlertingAlertConfiguration.excluded_file_extensions:
         Excluded file extensions.
-    :ivar team_log.AdminAlertingAlertConfiguration.malware_exclusion_state:
+    :ivar AdminAlertingAlertConfiguration.malware_exclusion_state:
         Malware exclusion list state.
     """
 
@@ -1627,17 +1656,18 @@ class AdminAlertingAlertStateChangedDetails(bb.Struct):
     """
     Changed an alert state.
 
-    :ivar team_log.AdminAlertingAlertStateChangedDetails.alert_name: Alert name.
-    :ivar team_log.AdminAlertingAlertStateChangedDetails.alert_severity: Alert
-        severity.
-    :ivar team_log.AdminAlertingAlertStateChangedDetails.alert_category: Alert
-        category.
-    :ivar team_log.AdminAlertingAlertStateChangedDetails.alert_instance_id:
+    :ivar AdminAlertingAlertStateChangedDetails.alert_name:
+        Alert name.
+    :ivar AdminAlertingAlertStateChangedDetails.alert_severity:
+        Alert severity.
+    :ivar AdminAlertingAlertStateChangedDetails.alert_category:
+        Alert category.
+    :ivar AdminAlertingAlertStateChangedDetails.alert_instance_id:
         Alert ID.
-    :ivar team_log.AdminAlertingAlertStateChangedDetails.previous_value: Alert
-        state before the change.
-    :ivar team_log.AdminAlertingAlertStateChangedDetails.new_value: Alert state
-        after the change.
+    :ivar AdminAlertingAlertStateChangedDetails.previous_value:
+        Alert state before the change.
+    :ivar AdminAlertingAlertStateChangedDetails.new_value:
+        Alert state after the change.
     """
 
     __slots__ = [
@@ -1772,12 +1802,12 @@ class AdminAlertingChangedAlertConfigDetails(bb.Struct):
     """
     Changed an alert setting.
 
-    :ivar team_log.AdminAlertingChangedAlertConfigDetails.alert_name: Alert
-        Name.
-    :ivar team_log.AdminAlertingChangedAlertConfigDetails.previous_alert_config:
+    :ivar AdminAlertingChangedAlertConfigDetails.alert_name:
+        Alert Name.
+    :ivar AdminAlertingChangedAlertConfigDetails.previous_alert_config:
         Previous alert configuration.
-    :ivar team_log.AdminAlertingChangedAlertConfigDetails.new_alert_config: New
-        alert configuration.
+    :ivar AdminAlertingChangedAlertConfigDetails.new_alert_config:
+        New alert configuration.
     """
 
     __slots__ = [
@@ -1842,13 +1872,14 @@ class AdminAlertingTriggeredAlertDetails(bb.Struct):
     """
     Triggered security alert.
 
-    :ivar team_log.AdminAlertingTriggeredAlertDetails.alert_name: Alert name.
-    :ivar team_log.AdminAlertingTriggeredAlertDetails.alert_severity: Alert
-        severity.
-    :ivar team_log.AdminAlertingTriggeredAlertDetails.alert_category: Alert
-        category.
-    :ivar team_log.AdminAlertingTriggeredAlertDetails.alert_instance_id: Alert
-        ID.
+    :ivar AdminAlertingTriggeredAlertDetails.alert_name:
+        Alert name.
+    :ivar AdminAlertingTriggeredAlertDetails.alert_severity:
+        Alert severity.
+    :ivar AdminAlertingTriggeredAlertDetails.alert_category:
+        Alert category.
+    :ivar AdminAlertingTriggeredAlertDetails.alert_instance_id:
+        Alert ID.
     """
 
     __slots__ = [
@@ -2019,8 +2050,10 @@ class AdminEmailRemindersChangedDetails(bb.Struct):
     """
     Changed admin reminder settings for requests to join the team.
 
-    :ivar team_log.AdminEmailRemindersChangedDetails.new_value: To.
-    :ivar team_log.AdminEmailRemindersChangedDetails.previous_value: From.
+    :ivar AdminEmailRemindersChangedDetails.new_value:
+        To.
+    :ivar AdminEmailRemindersChangedDetails.previous_value:
+        From.
     """
 
     __slots__ = [
@@ -2344,10 +2377,9 @@ class AiThirdPartySharingDropboxBasePolicyChangedDetails(bb.Struct):
     """
     Changed AI third party sharing policy for team.
 
-    :ivar team_log.AiThirdPartySharingDropboxBasePolicyChangedDetails.new_value:
+    :ivar AiThirdPartySharingDropboxBasePolicyChangedDetails.new_value:
         To.
-    :ivar
-        team_log.AiThirdPartySharingDropboxBasePolicyChangedDetails.previous_value:
+    :ivar AiThirdPartySharingDropboxBasePolicyChangedDetails.previous_value:
         From.
     """
 
@@ -2551,7 +2583,8 @@ class ApiSessionLogInfo(bb.Struct):
     """
     Api session.
 
-    :ivar team_log.ApiSessionLogInfo.request_id: Api request ID.
+    :ivar ApiSessionLogInfo.request_id:
+        Api request ID.
     """
 
     __slots__ = [
@@ -2578,8 +2611,8 @@ class AppBlockedByPermissionsDetails(bb.Struct):
     """
     Failed to connect app for member.
 
-    :ivar team_log.AppBlockedByPermissionsDetails.app_info: Relevant application
-        details.
+    :ivar AppBlockedByPermissionsDetails.app_info:
+        Relevant application details.
     """
 
     __slots__ = [
@@ -2628,7 +2661,8 @@ class AppLinkTeamDetails(bb.Struct):
     """
     Linked app for team.
 
-    :ivar team_log.AppLinkTeamDetails.app_info: Relevant application details.
+    :ivar AppLinkTeamDetails.app_info:
+        Relevant application details.
     """
 
     __slots__ = [
@@ -2677,7 +2711,8 @@ class AppLinkUserDetails(bb.Struct):
     """
     Linked app for member.
 
-    :ivar team_log.AppLinkUserDetails.app_info: Relevant application details.
+    :ivar AppLinkUserDetails.app_info:
+        Relevant application details.
     """
 
     __slots__ = [
@@ -2726,8 +2761,10 @@ class AppLogInfo(bb.Struct):
     """
     App's logged information.
 
-    :ivar team_log.AppLogInfo.app_id: App unique ID.
-    :ivar team_log.AppLogInfo.display_name: App display name.
+    :ivar AppLogInfo.app_id:
+        App unique ID.
+    :ivar AppLogInfo.display_name:
+        App display name.
     """
 
     __slots__ = [
@@ -2762,11 +2799,14 @@ class AppPermissionsChangedDetails(bb.Struct):
     """
     Changed app permissions.
 
-    :ivar team_log.AppPermissionsChangedDetails.app_name: Name of the app.
-    :ivar team_log.AppPermissionsChangedDetails.permission: Permission that was
-        changed.
-    :ivar team_log.AppPermissionsChangedDetails.previous_value: Previous policy.
-    :ivar team_log.AppPermissionsChangedDetails.new_value: New policy.
+    :ivar AppPermissionsChangedDetails.app_name:
+        Name of the app.
+    :ivar AppPermissionsChangedDetails.permission:
+        Permission that was changed.
+    :ivar AppPermissionsChangedDetails.previous_value:
+        Previous policy.
+    :ivar AppPermissionsChangedDetails.new_value:
+        New policy.
     """
 
     __slots__ = [
@@ -2839,7 +2879,8 @@ class AppUnlinkTeamDetails(bb.Struct):
     """
     Unlinked app for team.
 
-    :ivar team_log.AppUnlinkTeamDetails.app_info: Relevant application details.
+    :ivar AppUnlinkTeamDetails.app_info:
+        Relevant application details.
     """
 
     __slots__ = [
@@ -2888,7 +2929,8 @@ class AppUnlinkUserDetails(bb.Struct):
     """
     Unlinked app for member.
 
-    :ivar team_log.AppUnlinkUserDetails.app_info: Relevant application details.
+    :ivar AppUnlinkUserDetails.app_info:
+        Relevant application details.
     """
 
     __slots__ = [
@@ -2937,10 +2979,11 @@ class AppleLoginChangePolicyDetails(bb.Struct):
     """
     Enabled/disabled Apple login for team.
 
-    :ivar team_log.AppleLoginChangePolicyDetails.new_value: New Apple login
-        policy.
-    :ivar team_log.AppleLoginChangePolicyDetails.previous_value: Previous Apple
-        login policy. Might be missing due to historical data gap.
+    :ivar AppleLoginChangePolicyDetails.new_value:
+        New Apple login policy.
+    :ivar AppleLoginChangePolicyDetails.previous_value:
+        Previous Apple login policy. Might be missing due to historical data
+        gap.
     """
 
     __slots__ = [
@@ -3097,13 +3140,21 @@ class AssetLogInfo(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar FileLogInfo AssetLogInfo.file: File's details.
-    :ivar FolderLogInfo AssetLogInfo.folder: Folder's details.
-    :ivar PaperDocumentLogInfo AssetLogInfo.paper_document: Paper document's
-        details.
-    :ivar PaperFolderLogInfo AssetLogInfo.paper_folder: Paper folder's details.
-    :ivar ShowcaseDocumentLogInfo AssetLogInfo.showcase_document: Showcase
-        document's details.
+    :ivar AssetLogInfo.file:
+        File's details.
+    :vartype AssetLogInfo.file: FileLogInfo
+    :ivar AssetLogInfo.folder:
+        Folder's details.
+    :vartype AssetLogInfo.folder: FolderLogInfo
+    :ivar AssetLogInfo.paper_document:
+        Paper document's details.
+    :vartype AssetLogInfo.paper_document: PaperDocumentLogInfo
+    :ivar AssetLogInfo.paper_folder:
+        Paper folder's details.
+    :vartype AssetLogInfo.paper_folder: PaperFolderLogInfo
+    :ivar AssetLogInfo.showcase_document:
+        Showcase document's details.
+    :vartype AssetLogInfo.showcase_document: ShowcaseDocumentLogInfo
     """
 
     _catch_all = 'other'
@@ -3408,10 +3459,12 @@ class BinderAddPageDetails(bb.Struct):
     """
     Added Binder page.
 
-    :ivar team_log.BinderAddPageDetails.event_uuid: Event unique identifier.
-    :ivar team_log.BinderAddPageDetails.doc_title: Title of the Binder doc.
-    :ivar team_log.BinderAddPageDetails.binder_item_name: Name of the Binder
-        page/section.
+    :ivar BinderAddPageDetails.event_uuid:
+        Event unique identifier.
+    :ivar BinderAddPageDetails.doc_title:
+        Title of the Binder doc.
+    :ivar BinderAddPageDetails.binder_item_name:
+        Name of the Binder page/section.
     """
 
     __slots__ = [
@@ -3476,10 +3529,12 @@ class BinderAddSectionDetails(bb.Struct):
     """
     Added Binder section.
 
-    :ivar team_log.BinderAddSectionDetails.event_uuid: Event unique identifier.
-    :ivar team_log.BinderAddSectionDetails.doc_title: Title of the Binder doc.
-    :ivar team_log.BinderAddSectionDetails.binder_item_name: Name of the Binder
-        page/section.
+    :ivar BinderAddSectionDetails.event_uuid:
+        Event unique identifier.
+    :ivar BinderAddSectionDetails.doc_title:
+        Title of the Binder doc.
+    :ivar BinderAddSectionDetails.binder_item_name:
+        Name of the Binder page/section.
     """
 
     __slots__ = [
@@ -3544,10 +3599,12 @@ class BinderRemovePageDetails(bb.Struct):
     """
     Removed Binder page.
 
-    :ivar team_log.BinderRemovePageDetails.event_uuid: Event unique identifier.
-    :ivar team_log.BinderRemovePageDetails.doc_title: Title of the Binder doc.
-    :ivar team_log.BinderRemovePageDetails.binder_item_name: Name of the Binder
-        page/section.
+    :ivar BinderRemovePageDetails.event_uuid:
+        Event unique identifier.
+    :ivar BinderRemovePageDetails.doc_title:
+        Title of the Binder doc.
+    :ivar BinderRemovePageDetails.binder_item_name:
+        Name of the Binder page/section.
     """
 
     __slots__ = [
@@ -3612,12 +3669,12 @@ class BinderRemoveSectionDetails(bb.Struct):
     """
     Removed Binder section.
 
-    :ivar team_log.BinderRemoveSectionDetails.event_uuid: Event unique
-        identifier.
-    :ivar team_log.BinderRemoveSectionDetails.doc_title: Title of the Binder
-        doc.
-    :ivar team_log.BinderRemoveSectionDetails.binder_item_name: Name of the
-        Binder page/section.
+    :ivar BinderRemoveSectionDetails.event_uuid:
+        Event unique identifier.
+    :ivar BinderRemoveSectionDetails.doc_title:
+        Title of the Binder doc.
+    :ivar BinderRemoveSectionDetails.binder_item_name:
+        Name of the Binder page/section.
     """
 
     __slots__ = [
@@ -3682,12 +3739,14 @@ class BinderRenamePageDetails(bb.Struct):
     """
     Renamed Binder page.
 
-    :ivar team_log.BinderRenamePageDetails.event_uuid: Event unique identifier.
-    :ivar team_log.BinderRenamePageDetails.doc_title: Title of the Binder doc.
-    :ivar team_log.BinderRenamePageDetails.binder_item_name: Name of the Binder
-        page/section.
-    :ivar team_log.BinderRenamePageDetails.previous_binder_item_name: Previous
-        name of the Binder page/section.
+    :ivar BinderRenamePageDetails.event_uuid:
+        Event unique identifier.
+    :ivar BinderRenamePageDetails.doc_title:
+        Title of the Binder doc.
+    :ivar BinderRenamePageDetails.binder_item_name:
+        Name of the Binder page/section.
+    :ivar BinderRenamePageDetails.previous_binder_item_name:
+        Previous name of the Binder page/section.
     """
 
     __slots__ = [
@@ -3760,13 +3819,13 @@ class BinderRenameSectionDetails(bb.Struct):
     """
     Renamed Binder section.
 
-    :ivar team_log.BinderRenameSectionDetails.event_uuid: Event unique
-        identifier.
-    :ivar team_log.BinderRenameSectionDetails.doc_title: Title of the Binder
-        doc.
-    :ivar team_log.BinderRenameSectionDetails.binder_item_name: Name of the
-        Binder page/section.
-    :ivar team_log.BinderRenameSectionDetails.previous_binder_item_name:
+    :ivar BinderRenameSectionDetails.event_uuid:
+        Event unique identifier.
+    :ivar BinderRenameSectionDetails.doc_title:
+        Title of the Binder doc.
+    :ivar BinderRenameSectionDetails.binder_item_name:
+        Name of the Binder page/section.
+    :ivar BinderRenameSectionDetails.previous_binder_item_name:
         Previous name of the Binder page/section.
     """
 
@@ -3840,10 +3899,12 @@ class BinderReorderPageDetails(bb.Struct):
     """
     Reordered Binder page.
 
-    :ivar team_log.BinderReorderPageDetails.event_uuid: Event unique identifier.
-    :ivar team_log.BinderReorderPageDetails.doc_title: Title of the Binder doc.
-    :ivar team_log.BinderReorderPageDetails.binder_item_name: Name of the Binder
-        page/section.
+    :ivar BinderReorderPageDetails.event_uuid:
+        Event unique identifier.
+    :ivar BinderReorderPageDetails.doc_title:
+        Title of the Binder doc.
+    :ivar BinderReorderPageDetails.binder_item_name:
+        Name of the Binder page/section.
     """
 
     __slots__ = [
@@ -3908,12 +3969,12 @@ class BinderReorderSectionDetails(bb.Struct):
     """
     Reordered Binder section.
 
-    :ivar team_log.BinderReorderSectionDetails.event_uuid: Event unique
-        identifier.
-    :ivar team_log.BinderReorderSectionDetails.doc_title: Title of the Binder
-        doc.
-    :ivar team_log.BinderReorderSectionDetails.binder_item_name: Name of the
-        Binder page/section.
+    :ivar BinderReorderSectionDetails.event_uuid:
+        Event unique identifier.
+    :ivar BinderReorderSectionDetails.doc_title:
+        Title of the Binder doc.
+    :ivar BinderReorderSectionDetails.binder_item_name:
+        Name of the Binder page/section.
     """
 
     __slots__ = [
@@ -4024,10 +4085,10 @@ class CameraUploadsPolicyChangedDetails(bb.Struct):
     """
     Changed camera uploads setting for team.
 
-    :ivar team_log.CameraUploadsPolicyChangedDetails.new_value: New camera
-        uploads setting.
-    :ivar team_log.CameraUploadsPolicyChangedDetails.previous_value: Previous
-        camera uploads setting.
+    :ivar CameraUploadsPolicyChangedDetails.new_value:
+        New camera uploads setting.
+    :ivar CameraUploadsPolicyChangedDetails.previous_value:
+        Previous camera uploads setting.
     """
 
     __slots__ = [
@@ -4130,8 +4191,10 @@ class CaptureTeamSpacePolicyChangedDetails(bb.Struct):
     """
     Changed Capture team space policy for team.
 
-    :ivar team_log.CaptureTeamSpacePolicyChangedDetails.new_value: To.
-    :ivar team_log.CaptureTeamSpacePolicyChangedDetails.previous_value: From.
+    :ivar CaptureTeamSpacePolicyChangedDetails.new_value:
+        To.
+    :ivar CaptureTeamSpacePolicyChangedDetails.previous_value:
+        From.
     """
 
     __slots__ = [
@@ -4244,8 +4307,10 @@ class CaptureTranscriptPolicyChangedDetails(bb.Struct):
     """
     Changed Capture transcription policy for team.
 
-    :ivar team_log.CaptureTranscriptPolicyChangedDetails.new_value: To.
-    :ivar team_log.CaptureTranscriptPolicyChangedDetails.previous_value: From.
+    :ivar CaptureTranscriptPolicyChangedDetails.new_value:
+        To.
+    :ivar CaptureTranscriptPolicyChangedDetails.previous_value:
+        From.
     """
 
     __slots__ = [
@@ -4302,13 +4367,20 @@ class Certificate(bb.Struct):
     """
     Certificate details.
 
-    :ivar team_log.Certificate.subject: Certificate subject.
-    :ivar team_log.Certificate.issuer: Certificate issuer.
-    :ivar team_log.Certificate.issue_date: Certificate issue date.
-    :ivar team_log.Certificate.expiration_date: Certificate expiration date.
-    :ivar team_log.Certificate.serial_number: Certificate serial number.
-    :ivar team_log.Certificate.sha1_fingerprint: Certificate sha1 fingerprint.
-    :ivar team_log.Certificate.common_name: Certificate common name.
+    :ivar Certificate.subject:
+        Certificate subject.
+    :ivar Certificate.issuer:
+        Certificate issuer.
+    :ivar Certificate.issue_date:
+        Certificate issue date.
+    :ivar Certificate.expiration_date:
+        Certificate expiration date.
+    :ivar Certificate.serial_number:
+        Certificate serial number.
+    :ivar Certificate.sha1_fingerprint:
+        Certificate sha1 fingerprint.
+    :ivar Certificate.common_name:
+        Certificate common name.
     """
 
     __slots__ = [
@@ -4430,12 +4502,12 @@ class ChangedEnterpriseAdminRoleDetails(bb.Struct):
     """
     Changed enterprise admin role.
 
-    :ivar team_log.ChangedEnterpriseAdminRoleDetails.previous_value: The
-        member&#x2019s previous enterprise admin role.
-    :ivar team_log.ChangedEnterpriseAdminRoleDetails.new_value: The
-        member&#x2019s new enterprise admin role.
-    :ivar team_log.ChangedEnterpriseAdminRoleDetails.team_name: The name of the
-        member&#x2019s team.
+    :ivar ChangedEnterpriseAdminRoleDetails.previous_value:
+        The member&#x2019s previous enterprise admin role.
+    :ivar ChangedEnterpriseAdminRoleDetails.new_value:
+        The member&#x2019s new enterprise admin role.
+    :ivar ChangedEnterpriseAdminRoleDetails.team_name:
+        The name of the member&#x2019s team.
     """
 
     __slots__ = [
@@ -4500,14 +4572,14 @@ class ChangedEnterpriseConnectedTeamStatusDetails(bb.Struct):
     """
     Changed enterprise-connected team status.
 
-    :ivar team_log.ChangedEnterpriseConnectedTeamStatusDetails.action: The
-        preformed change in the team&#x2019s connection status.
-    :ivar team_log.ChangedEnterpriseConnectedTeamStatusDetails.additional_info:
+    :ivar ChangedEnterpriseConnectedTeamStatusDetails.action:
+        The preformed change in the team&#x2019s connection status.
+    :ivar ChangedEnterpriseConnectedTeamStatusDetails.additional_info:
         Additional information about the organization or team.
-    :ivar team_log.ChangedEnterpriseConnectedTeamStatusDetails.previous_value:
+    :ivar ChangedEnterpriseConnectedTeamStatusDetails.previous_value:
         Previous request state.
-    :ivar team_log.ChangedEnterpriseConnectedTeamStatusDetails.new_value: New
-        request state.
+    :ivar ChangedEnterpriseConnectedTeamStatusDetails.new_value:
+        New request state.
     """
 
     __slots__ = [
@@ -4580,12 +4652,12 @@ class ClassificationChangePolicyDetails(bb.Struct):
     """
     Changed classification policy for team.
 
-    :ivar team_log.ClassificationChangePolicyDetails.previous_value: Previous
-        classification policy.
-    :ivar team_log.ClassificationChangePolicyDetails.new_value: New
-        classification policy.
-    :ivar team_log.ClassificationChangePolicyDetails.classification_type: Policy
-        type.
+    :ivar ClassificationChangePolicyDetails.previous_value:
+        Previous classification policy.
+    :ivar ClassificationChangePolicyDetails.new_value:
+        New classification policy.
+    :ivar ClassificationChangePolicyDetails.classification_type:
+        Policy type.
     """
 
     __slots__ = [
@@ -4668,8 +4740,8 @@ class ClassificationCreateReportFailDetails(bb.Struct):
     """
     Couldn't create Classification report.
 
-    :ivar team_log.ClassificationCreateReportFailDetails.failure_reason: Failure
-        reason.
+    :ivar ClassificationCreateReportFailDetails.failure_reason:
+        Failure reason.
     """
 
     __slots__ = [
@@ -4852,7 +4924,8 @@ class CollectionShareDetails(bb.Struct):
     """
     Shared album.
 
-    :ivar team_log.CollectionShareDetails.album_name: Album name.
+    :ivar CollectionShareDetails.album_name:
+        Album name.
     """
 
     __slots__ = [
@@ -4957,10 +5030,10 @@ class ComputerBackupPolicyChangedDetails(bb.Struct):
     """
     Changed computer backup policy for team.
 
-    :ivar team_log.ComputerBackupPolicyChangedDetails.new_value: New computer
-        backup policy.
-    :ivar team_log.ComputerBackupPolicyChangedDetails.previous_value: Previous
-        computer backup policy.
+    :ivar ComputerBackupPolicyChangedDetails.new_value:
+        New computer backup policy.
+    :ivar ComputerBackupPolicyChangedDetails.previous_value:
+        Previous computer backup policy.
     """
 
     __slots__ = [
@@ -5017,7 +5090,8 @@ class ConnectedTeamName(bb.Struct):
     """
     The name of the team
 
-    :ivar team_log.ConnectedTeamName.team: The name of the team.
+    :ivar ConnectedTeamName.team:
+        The name of the team.
     """
 
     __slots__ = [
@@ -5044,9 +5118,9 @@ class ContentAdministrationPolicyChangedDetails(bb.Struct):
     """
     Changed content management setting.
 
-    :ivar team_log.ContentAdministrationPolicyChangedDetails.new_value: New
-        content administration policy.
-    :ivar team_log.ContentAdministrationPolicyChangedDetails.previous_value:
+    :ivar ContentAdministrationPolicyChangedDetails.new_value:
+        New content administration policy.
+    :ivar ContentAdministrationPolicyChangedDetails.previous_value:
         Previous content administration policy.
     """
 
@@ -5104,17 +5178,15 @@ class ContentDeletionProtectionChangePolicyDetails(bb.Struct):
     """
     Changed content deletion protection policy for team.
 
-    :ivar team_log.ContentDeletionProtectionChangePolicyDetails.new_value: New
-        content deletion protection policy.
-    :ivar
-        team_log.ContentDeletionProtectionChangePolicyDetails.new_threshold_bytes:
+    :ivar ContentDeletionProtectionChangePolicyDetails.new_value:
+        New content deletion protection policy.
+    :ivar ContentDeletionProtectionChangePolicyDetails.new_threshold_bytes:
         New threshold value in bytes (only present when new policy is
         on_above_threshold).
-    :ivar team_log.ContentDeletionProtectionChangePolicyDetails.previous_value:
+    :ivar ContentDeletionProtectionChangePolicyDetails.previous_value:
         Previous content deletion protection policy. Might be missing due to
         historical data gap.
-    :ivar
-        team_log.ContentDeletionProtectionChangePolicyDetails.previous_threshold_bytes:
+    :ivar ContentDeletionProtectionChangePolicyDetails.previous_threshold_bytes:
         Previous threshold value in bytes (only present when previous policy was
         on_above_threshold).
     """
@@ -5295,16 +5367,22 @@ class ContextLogInfo(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar team_log.ContextLogInfo.anonymous: Anonymous context.
-    :ivar NonTeamMemberLogInfo ContextLogInfo.non_team_member: Action was done
-        on behalf of a non team member.
-    :ivar TeamLogInfo ContextLogInfo.organization_team: Action was done on
-        behalf of a team that's part of an organization.
-    :ivar team_log.ContextLogInfo.team: Action was done on behalf of the team.
-    :ivar TeamMemberLogInfo ContextLogInfo.team_member: Action was done on
-        behalf of a team member.
-    :ivar TrustedNonTeamMemberLogInfo ContextLogInfo.trusted_non_team_member:
+    :ivar ContextLogInfo.anonymous:
+        Anonymous context.
+    :ivar ContextLogInfo.non_team_member:
+        Action was done on behalf of a non team member.
+    :vartype ContextLogInfo.non_team_member: NonTeamMemberLogInfo
+    :ivar ContextLogInfo.organization_team:
+        Action was done on behalf of a team that's part of an organization.
+    :vartype ContextLogInfo.organization_team: TeamLogInfo
+    :ivar ContextLogInfo.team:
+        Action was done on behalf of the team.
+    :ivar ContextLogInfo.team_member:
+        Action was done on behalf of a team member.
+    :vartype ContextLogInfo.team_member: TeamMemberLogInfo
+    :ivar ContextLogInfo.trusted_non_team_member:
         Action was done on behalf of a trusted non team member.
+    :vartype ContextLogInfo.trusted_non_team_member: TrustedNonTeamMemberLogInfo
     """
 
     _catch_all = 'other'
@@ -5512,10 +5590,10 @@ class CreateTeamInviteLinkDetails(bb.Struct):
     """
     Created team invite link.
 
-    :ivar team_log.CreateTeamInviteLinkDetails.link_url: The invite link url
-        that was created.
-    :ivar team_log.CreateTeamInviteLinkDetails.expiry_date: The expiration date
-        of the invite link.
+    :ivar CreateTeamInviteLinkDetails.link_url:
+        The invite link url that was created.
+    :ivar CreateTeamInviteLinkDetails.expiry_date:
+        The expiration date of the invite link.
     """
 
     __slots__ = [
@@ -5572,14 +5650,14 @@ class DashAddedCommentToStackDetails(bb.Struct):
     """
     Added a comment to a stack.
 
-    :ivar team_log.DashAddedCommentToStackDetails.stack_name: The name of the
-        stack where the comment exists.
-    :ivar team_log.DashAddedCommentToStackDetails.stack_item_name: The name of
-        the stack item that the comment is tied to.
-    :ivar team_log.DashAddedCommentToStackDetails.comment_text: The text of the
-        comment.
-    :ivar team_log.DashAddedCommentToStackDetails.stack_type: The type of stack
-        backend.
+    :ivar DashAddedCommentToStackDetails.stack_name:
+        The name of the stack where the comment exists.
+    :ivar DashAddedCommentToStackDetails.stack_item_name:
+        The name of the stack item that the comment is tied to.
+    :ivar DashAddedCommentToStackDetails.comment_text:
+        The text of the comment.
+    :ivar DashAddedCommentToStackDetails.stack_type:
+        The type of stack backend.
     """
 
     __slots__ = [
@@ -5652,10 +5730,10 @@ class DashAddedConnectorDetails(bb.Struct):
     """
     Connected to a user connector.
 
-    :ivar team_log.DashAddedConnectorDetails.connector_name: The name of the
-        Connector.
-    :ivar team_log.DashAddedConnectorDetails.connector_status: The status of the
-        Connector.
+    :ivar DashAddedConnectorDetails.connector_name:
+        The name of the Connector.
+    :ivar DashAddedConnectorDetails.connector_status:
+        The status of the Connector.
     """
 
     __slots__ = [
@@ -5712,12 +5790,12 @@ class DashAddedLinkToStackDetails(bb.Struct):
     """
     Added a link to a stack.
 
-    :ivar team_log.DashAddedLinkToStackDetails.stack_name: The name of the
-        stack.
-    :ivar team_log.DashAddedLinkToStackDetails.stack_item_link: The link to the
-        item in the stack.
-    :ivar team_log.DashAddedLinkToStackDetails.stack_type: The type of stack
-        backend.
+    :ivar DashAddedLinkToStackDetails.stack_name:
+        The name of the stack.
+    :ivar DashAddedLinkToStackDetails.stack_item_link:
+        The link to the item in the stack.
+    :ivar DashAddedLinkToStackDetails.stack_type:
+        The type of stack backend.
     """
 
     __slots__ = [
@@ -5782,8 +5860,8 @@ class DashAddedTeamEmailDomainAllowlistDetails(bb.Struct):
     """
     Admin added an email domain to the team allowlist.
 
-    :ivar team_log.DashAddedTeamEmailDomainAllowlistDetails.email_domain: The
-        email domain that gets added/removed from the team allowlist.
+    :ivar DashAddedTeamEmailDomainAllowlistDetails.email_domain:
+        The email domain that gets added/removed from the team allowlist.
     """
 
     __slots__ = [
@@ -5832,10 +5910,10 @@ class DashAdminAddedOrgWideConnectorDetails(bb.Struct):
     """
     Admin added an admin connector.
 
-    :ivar team_log.DashAdminAddedOrgWideConnectorDetails.connector_name: The
-        name of the Connector.
-    :ivar team_log.DashAdminAddedOrgWideConnectorDetails.connector_status: The
-        status of the Connector.
+    :ivar DashAdminAddedOrgWideConnectorDetails.connector_name:
+        The name of the Connector.
+    :ivar DashAdminAddedOrgWideConnectorDetails.connector_status:
+        The status of the Connector.
     """
 
     __slots__ = [
@@ -5892,10 +5970,10 @@ class DashAdminDisabledConnectorDetails(bb.Struct):
     """
     Admin disabled a user connector.
 
-    :ivar team_log.DashAdminDisabledConnectorDetails.connector_name: The name of
-        the Connector.
-    :ivar team_log.DashAdminDisabledConnectorDetails.connector_status: The
-        status of the Connector.
+    :ivar DashAdminDisabledConnectorDetails.connector_name:
+        The name of the Connector.
+    :ivar DashAdminDisabledConnectorDetails.connector_status:
+        The status of the Connector.
     """
 
     __slots__ = [
@@ -5952,10 +6030,10 @@ class DashAdminEnabledConnectorDetails(bb.Struct):
     """
     Admin enabled a user connector.
 
-    :ivar team_log.DashAdminEnabledConnectorDetails.connector_name: The name of
-        the Connector.
-    :ivar team_log.DashAdminEnabledConnectorDetails.connector_status: The status
-        of the Connector.
+    :ivar DashAdminEnabledConnectorDetails.connector_name:
+        The name of the Connector.
+    :ivar DashAdminEnabledConnectorDetails.connector_status:
+        The status of the Connector.
     """
 
     __slots__ = [
@@ -6012,10 +6090,10 @@ class DashAdminRemovedOrgWideConnectorDetails(bb.Struct):
     """
     Admin removed an admin connector.
 
-    :ivar team_log.DashAdminRemovedOrgWideConnectorDetails.connector_name: The
-        name of the Connector.
-    :ivar team_log.DashAdminRemovedOrgWideConnectorDetails.connector_status: The
-        status of the Connector.
+    :ivar DashAdminRemovedOrgWideConnectorDetails.connector_name:
+        The name of the Connector.
+    :ivar DashAdminRemovedOrgWideConnectorDetails.connector_status:
+        The status of the Connector.
     """
 
     __slots__ = [
@@ -6072,9 +6150,10 @@ class DashArchivedStackDetails(bb.Struct):
     """
     Archived a stack.
 
-    :ivar team_log.DashArchivedStackDetails.stack_name: The name of the stack.
-    :ivar team_log.DashArchivedStackDetails.stack_type: The type of stack
-        backend.
+    :ivar DashArchivedStackDetails.stack_name:
+        The name of the stack.
+    :ivar DashArchivedStackDetails.stack_type:
+        The type of stack backend.
     """
 
     __slots__ = [
@@ -6131,10 +6210,10 @@ class DashChangedAudienceOfSharedLinkToStackDetails(bb.Struct):
     """
     Changed the audience of a shared link to a stack.
 
-    :ivar team_log.DashChangedAudienceOfSharedLinkToStackDetails.stack_name: The
-        name of the stack.
-    :ivar team_log.DashChangedAudienceOfSharedLinkToStackDetails.stack_type: The
-        type of stack backend.
+    :ivar DashChangedAudienceOfSharedLinkToStackDetails.stack_name:
+        The name of the stack.
+    :ivar DashChangedAudienceOfSharedLinkToStackDetails.stack_type:
+        The type of stack backend.
     """
 
     __slots__ = [
@@ -6191,11 +6270,14 @@ class DashClonedStackDetails(bb.Struct):
     """
     Cloned stack.
 
-    :ivar team_log.DashClonedStackDetails.stack_name: The name of the stack.
-    :ivar team_log.DashClonedStackDetails.actor_email: Email of the actor.
-    :ivar team_log.DashClonedStackDetails.new_cloned_stack_name: New cloned
-        stack name.
-    :ivar team_log.DashClonedStackDetails.stack_type: The type of stack backend.
+    :ivar DashClonedStackDetails.stack_name:
+        The name of the stack.
+    :ivar DashClonedStackDetails.actor_email:
+        Email of the actor.
+    :ivar DashClonedStackDetails.new_cloned_stack_name:
+        New cloned stack name.
+    :ivar DashClonedStackDetails.stack_type:
+        The type of stack backend.
     """
 
     __slots__ = [
@@ -6314,12 +6396,12 @@ class DashConnectorToolsCallDetails(bb.Struct):
     """
     Called a tool on a connector.
 
-    :ivar team_log.DashConnectorToolsCallDetails.connector_name: The name of the
-        connector.
-    :ivar team_log.DashConnectorToolsCallDetails.tool_name: The name of the tool
-        that was called.
-    :ivar team_log.DashConnectorToolsCallDetails.surface: The surface from which
-        the tool was called.
+    :ivar DashConnectorToolsCallDetails.connector_name:
+        The name of the connector.
+    :ivar DashConnectorToolsCallDetails.tool_name:
+        The name of the tool that was called.
+    :ivar DashConnectorToolsCallDetails.surface:
+        The surface from which the tool was called.
     """
 
     __slots__ = [
@@ -6384,9 +6466,10 @@ class DashCreatedStackDetails(bb.Struct):
     """
     Created a stack.
 
-    :ivar team_log.DashCreatedStackDetails.stack_name: The name of the stack.
-    :ivar team_log.DashCreatedStackDetails.stack_type: The type of stack
-        backend.
+    :ivar DashCreatedStackDetails.stack_name:
+        The name of the stack.
+    :ivar DashCreatedStackDetails.stack_type:
+        The type of stack backend.
     """
 
     __slots__ = [
@@ -6443,12 +6526,12 @@ class DashDeletedCommentFromStackDetails(bb.Struct):
     """
     Deleted a comment from a stack.
 
-    :ivar team_log.DashDeletedCommentFromStackDetails.stack_name: The name of
-        the stack where the comment exists.
-    :ivar team_log.DashDeletedCommentFromStackDetails.stack_item_name: The name
-        of the stack item that the comment is tied to.
-    :ivar team_log.DashDeletedCommentFromStackDetails.stack_type: The type of
-        stack backend.
+    :ivar DashDeletedCommentFromStackDetails.stack_name:
+        The name of the stack where the comment exists.
+    :ivar DashDeletedCommentFromStackDetails.stack_item_name:
+        The name of the stack item that the comment is tied to.
+    :ivar DashDeletedCommentFromStackDetails.stack_type:
+        The type of stack backend.
     """
 
     __slots__ = [
@@ -6513,9 +6596,10 @@ class DashDeletedStackDetails(bb.Struct):
     """
     Deleted a stack.
 
-    :ivar team_log.DashDeletedStackDetails.stack_name: The name of the stack.
-    :ivar team_log.DashDeletedStackDetails.stack_type: The type of stack
-        backend.
+    :ivar DashDeletedStackDetails.stack_name:
+        The name of the stack.
+    :ivar DashDeletedStackDetails.stack_type:
+        The type of stack backend.
     """
 
     __slots__ = [
@@ -6572,14 +6656,14 @@ class DashEditedCommentInStackDetails(bb.Struct):
     """
     Edited a comment in a stack.
 
-    :ivar team_log.DashEditedCommentInStackDetails.stack_name: The name of the
-        stack where the comment exists.
-    :ivar team_log.DashEditedCommentInStackDetails.stack_item_name: The name of
-        the stack item that the comment is tied to.
-    :ivar team_log.DashEditedCommentInStackDetails.comment_text: The text of the
-        comment.
-    :ivar team_log.DashEditedCommentInStackDetails.stack_type: The type of stack
-        backend.
+    :ivar DashEditedCommentInStackDetails.stack_name:
+        The name of the stack where the comment exists.
+    :ivar DashEditedCommentInStackDetails.stack_item_name:
+        The name of the stack item that the comment is tied to.
+    :ivar DashEditedCommentInStackDetails.comment_text:
+        The text of the comment.
+    :ivar DashEditedCommentInStackDetails.stack_type:
+        The type of stack backend.
     """
 
     __slots__ = [
@@ -6708,8 +6792,10 @@ class DashExternalSharingPolicyChangedDetails(bb.Struct):
     """
     Changed Dash external sharing policy for team.
 
-    :ivar team_log.DashExternalSharingPolicyChangedDetails.new_value: To.
-    :ivar team_log.DashExternalSharingPolicyChangedDetails.previous_value: From.
+    :ivar DashExternalSharingPolicyChangedDetails.new_value:
+        To.
+    :ivar DashExternalSharingPolicyChangedDetails.previous_value:
+        From.
     """
 
     __slots__ = [
@@ -6766,18 +6852,18 @@ class DashExternalUserOpenedStackDetails(bb.Struct):
     """
     External user opened a stack.
 
-    :ivar team_log.DashExternalUserOpenedStackDetails.stack_name: The name of
-        the stack.
-    :ivar team_log.DashExternalUserOpenedStackDetails.stack_sharing_scope: The
-        sharing scope of the stack.
-    :ivar team_log.DashExternalUserOpenedStackDetails.is_invited: Whether the
-        user was invited to the stack.
-    :ivar team_log.DashExternalUserOpenedStackDetails.is_verified: Whether the
-        user has verified their email address.
-    :ivar team_log.DashExternalUserOpenedStackDetails.stack_owner_team_id: The
-        team ID of the stack owner.
-    :ivar team_log.DashExternalUserOpenedStackDetails.stack_type: The type of
-        stack backend.
+    :ivar DashExternalUserOpenedStackDetails.stack_name:
+        The name of the stack.
+    :ivar DashExternalUserOpenedStackDetails.stack_sharing_scope:
+        The sharing scope of the stack.
+    :ivar DashExternalUserOpenedStackDetails.is_invited:
+        Whether the user was invited to the stack.
+    :ivar DashExternalUserOpenedStackDetails.is_verified:
+        Whether the user has verified their email address.
+    :ivar DashExternalUserOpenedStackDetails.stack_owner_team_id:
+        The team ID of the stack owner.
+    :ivar DashExternalUserOpenedStackDetails.stack_type:
+        The type of stack backend.
     """
 
     __slots__ = [
@@ -6866,8 +6952,8 @@ class DashFirstLaunchedDesktopDetails(bb.Struct):
     """
     Opened the desktop app for the first time.
 
-    :ivar team_log.DashFirstLaunchedDesktopDetails.os_name: The name of the
-        operating system.
+    :ivar DashFirstLaunchedDesktopDetails.os_name:
+        The name of the operating system.
     """
 
     __slots__ = [
@@ -6916,8 +7002,8 @@ class DashFirstLaunchedExtensionDetails(bb.Struct):
     """
     Opened the extension for the first time.
 
-    :ivar team_log.DashFirstLaunchedExtensionDetails.browser_name: The name of
-        the web browser.
+    :ivar DashFirstLaunchedExtensionDetails.browser_name:
+        The name of the web browser.
     """
 
     __slots__ = [
@@ -6966,8 +7052,8 @@ class DashFirstLaunchedWebStartPageDetails(bb.Struct):
     """
     Opened the web Start Page for the first time.
 
-    :ivar team_log.DashFirstLaunchedWebStartPageDetails.browser_name: The name
-        of the web browser.
+    :ivar DashFirstLaunchedWebStartPageDetails.browser_name:
+        The name of the web browser.
     """
 
     __slots__ = [
@@ -7016,10 +7102,10 @@ class DashOpenedSharedLinkToStackDetails(bb.Struct):
     """
     Checked access permissions to a stack.
 
-    :ivar team_log.DashOpenedSharedLinkToStackDetails.stack_name: The name of
-        the stack.
-    :ivar team_log.DashOpenedSharedLinkToStackDetails.stack_type: The type of
-        stack backend.
+    :ivar DashOpenedSharedLinkToStackDetails.stack_name:
+        The name of the stack.
+    :ivar DashOpenedSharedLinkToStackDetails.stack_type:
+        The type of stack backend.
     """
 
     __slots__ = [
@@ -7076,8 +7162,10 @@ class DashOpenedStackDetails(bb.Struct):
     """
     Opened a stack.
 
-    :ivar team_log.DashOpenedStackDetails.stack_name: The name of the stack.
-    :ivar team_log.DashOpenedStackDetails.stack_type: The type of stack backend.
+    :ivar DashOpenedStackDetails.stack_name:
+        The name of the stack.
+    :ivar DashOpenedStackDetails.stack_type:
+        The type of stack backend.
     """
 
     __slots__ = [
@@ -7180,8 +7268,8 @@ class DashPreviewOptOutStatusChangedDetails(bb.Struct):
     """
     Changed the preview opt-out status.
 
-    :ivar team_log.DashPreviewOptOutStatusChangedDetails.opt_out_status: The new
-        preview opt-out status.
+    :ivar DashPreviewOptOutStatusChangedDetails.opt_out_status:
+        The new preview opt-out status.
     """
 
     __slots__ = [
@@ -7230,10 +7318,10 @@ class DashRemovedConnectorDetails(bb.Struct):
     """
     Disconnected a user connector.
 
-    :ivar team_log.DashRemovedConnectorDetails.connector_name: The name of the
-        Connector.
-    :ivar team_log.DashRemovedConnectorDetails.connector_status: The status of
-        the Connector.
+    :ivar DashRemovedConnectorDetails.connector_name:
+        The name of the Connector.
+    :ivar DashRemovedConnectorDetails.connector_status:
+        The status of the Connector.
     """
 
     __slots__ = [
@@ -7290,12 +7378,12 @@ class DashRemovedLinkFromStackDetails(bb.Struct):
     """
     Removed a link from a stack.
 
-    :ivar team_log.DashRemovedLinkFromStackDetails.stack_name: The name of the
-        stack.
-    :ivar team_log.DashRemovedLinkFromStackDetails.stack_item_link: The link to
-        the item in the stack.
-    :ivar team_log.DashRemovedLinkFromStackDetails.stack_type: The type of stack
-        backend.
+    :ivar DashRemovedLinkFromStackDetails.stack_name:
+        The name of the stack.
+    :ivar DashRemovedLinkFromStackDetails.stack_item_link:
+        The link to the item in the stack.
+    :ivar DashRemovedLinkFromStackDetails.stack_type:
+        The type of stack backend.
     """
 
     __slots__ = [
@@ -7360,10 +7448,10 @@ class DashRemovedSharedLinkToStackDetails(bb.Struct):
     """
     Removed a shared link to a stack.
 
-    :ivar team_log.DashRemovedSharedLinkToStackDetails.stack_name: The name of
-        the stack.
-    :ivar team_log.DashRemovedSharedLinkToStackDetails.stack_type: The type of
-        stack backend.
+    :ivar DashRemovedSharedLinkToStackDetails.stack_name:
+        The name of the stack.
+    :ivar DashRemovedSharedLinkToStackDetails.stack_type:
+        The type of stack backend.
     """
 
     __slots__ = [
@@ -7420,8 +7508,8 @@ class DashRemovedTeamEmailDomainAllowlistDetails(bb.Struct):
     """
     Admin removed an email domain from the team allowlist.
 
-    :ivar team_log.DashRemovedTeamEmailDomainAllowlistDetails.email_domain: The
-        email domain that gets added/removed from the team allowlist.
+    :ivar DashRemovedTeamEmailDomainAllowlistDetails.email_domain:
+        The email domain that gets added/removed from the team allowlist.
     """
 
     __slots__ = [
@@ -7470,10 +7558,12 @@ class DashRenamedStackDetails(bb.Struct):
     """
     Renamed a stack.
 
-    :ivar team_log.DashRenamedStackDetails.old_name: The old name of the stack.
-    :ivar team_log.DashRenamedStackDetails.new_name: The new name of the stack.
-    :ivar team_log.DashRenamedStackDetails.stack_type: The type of stack
-        backend.
+    :ivar DashRenamedStackDetails.old_name:
+        The old name of the stack.
+    :ivar DashRenamedStackDetails.new_name:
+        The new name of the stack.
+    :ivar DashRenamedStackDetails.stack_type:
+        The type of stack backend.
     """
 
     __slots__ = [
@@ -7538,10 +7628,10 @@ class DashSharedLinkToStackDetails(bb.Struct):
     """
     Shared a link to a stack.
 
-    :ivar team_log.DashSharedLinkToStackDetails.stack_name: The name of the
-        stack.
-    :ivar team_log.DashSharedLinkToStackDetails.stack_type: The type of stack
-        backend.
+    :ivar DashSharedLinkToStackDetails.stack_name:
+        The name of the stack.
+    :ivar DashSharedLinkToStackDetails.stack_type:
+        The type of stack backend.
     """
 
     __slots__ = [
@@ -7720,9 +7810,10 @@ class DashUnarchivedStackDetails(bb.Struct):
     """
     Unarchived a stack.
 
-    :ivar team_log.DashUnarchivedStackDetails.stack_name: The name of the stack.
-    :ivar team_log.DashUnarchivedStackDetails.stack_type: The type of stack
-        backend.
+    :ivar DashUnarchivedStackDetails.stack_name:
+        The name of the stack.
+    :ivar DashUnarchivedStackDetails.stack_type:
+        The type of stack backend.
     """
 
     __slots__ = [
@@ -7779,10 +7870,10 @@ class DashViewedCompanyStackDetails(bb.Struct):
     """
     Member viewed a company stack.
 
-    :ivar team_log.DashViewedCompanyStackDetails.stack_name: The name of the
-        stack.
-    :ivar team_log.DashViewedCompanyStackDetails.stack_type: The type of stack
-        backend.
+    :ivar DashViewedCompanyStackDetails.stack_name:
+        The name of the stack.
+    :ivar DashViewedCompanyStackDetails.stack_type:
+        The type of stack backend.
     """
 
     __slots__ = [
@@ -7879,10 +7970,10 @@ class DataPlacementRestrictionChangePolicyDetails(bb.Struct):
     """
     Set restrictions on data center locations where team data resides.
 
-    :ivar team_log.DataPlacementRestrictionChangePolicyDetails.previous_value:
+    :ivar DataPlacementRestrictionChangePolicyDetails.previous_value:
         Previous placement restriction.
-    :ivar team_log.DataPlacementRestrictionChangePolicyDetails.new_value: New
-        placement restriction.
+    :ivar DataPlacementRestrictionChangePolicyDetails.new_value:
+        New placement restriction.
     """
 
     __slots__ = [
@@ -7939,8 +8030,7 @@ class DataPlacementRestrictionSatisfyPolicyDetails(bb.Struct):
     """
     Completed restrictions on data center locations where team data resides.
 
-    :ivar
-        team_log.DataPlacementRestrictionSatisfyPolicyDetails.placement_restriction:
+    :ivar DataPlacementRestrictionSatisfyPolicyDetails.placement_restriction:
         Placement restriction.
     """
 
@@ -8177,8 +8267,8 @@ class DeleteTeamInviteLinkDetails(bb.Struct):
     """
     Deleted team invite link.
 
-    :ivar team_log.DeleteTeamInviteLinkDetails.link_url: The invite link url
-        that was deleted.
+    :ivar DeleteTeamInviteLinkDetails.link_url:
+        The invite link url that was deleted.
     """
 
     __slots__ = [
@@ -8227,12 +8317,12 @@ class DeviceSessionLogInfo(bb.Struct):
     """
     Device's session logged information.
 
-    :ivar team_log.DeviceSessionLogInfo.ip_address: The IP address of the last
-        activity from this session.
-    :ivar team_log.DeviceSessionLogInfo.created: The time this session was
-        created.
-    :ivar team_log.DeviceSessionLogInfo.updated: The time of the last activity
-        from this session.
+    :ivar DeviceSessionLogInfo.ip_address:
+        The IP address of the last activity from this session.
+    :ivar DeviceSessionLogInfo.created:
+        The time this session was created.
+    :ivar DeviceSessionLogInfo.updated:
+        The time of the last activity from this session.
     """
 
     __slots__ = [
@@ -8275,17 +8365,17 @@ class DesktopDeviceSessionLogInfo(DeviceSessionLogInfo):
     """
     Information about linked Dropbox desktop client sessions
 
-    :ivar team_log.DesktopDeviceSessionLogInfo.session_info: Desktop session
-        unique id.
-    :ivar team_log.DesktopDeviceSessionLogInfo.host_name: Name of the hosting
-        desktop.
-    :ivar team_log.DesktopDeviceSessionLogInfo.client_type: The Dropbox desktop
-        client type.
-    :ivar team_log.DesktopDeviceSessionLogInfo.client_version: The Dropbox
-        client version.
-    :ivar team_log.DesktopDeviceSessionLogInfo.platform: Information on the
-        hosting platform.
-    :ivar team_log.DesktopDeviceSessionLogInfo.is_delete_on_unlink_supported:
+    :ivar DesktopDeviceSessionLogInfo.session_info:
+        Desktop session unique id.
+    :ivar DesktopDeviceSessionLogInfo.host_name:
+        Name of the hosting desktop.
+    :ivar DesktopDeviceSessionLogInfo.client_type:
+        The Dropbox desktop client type.
+    :ivar DesktopDeviceSessionLogInfo.client_version:
+        The Dropbox client version.
+    :ivar DesktopDeviceSessionLogInfo.platform:
+        Information on the hosting platform.
+    :ivar DesktopDeviceSessionLogInfo.is_delete_on_unlink_supported:
         Whether itu2019s possible to delete all of the account files upon
         unlinking.
     """
@@ -8360,7 +8450,8 @@ class SessionLogInfo(bb.Struct):
     """
     Session's logged information.
 
-    :ivar team_log.SessionLogInfo.session_id: Session ID.
+    :ivar SessionLogInfo.session_id:
+        Session ID.
     """
 
     __slots__ = [
@@ -8447,10 +8538,10 @@ class DeviceApprovalsChangeDesktopPolicyDetails(bb.Struct):
     Set/removed limit on number of computers member can link to team Dropbox
     account.
 
-    :ivar team_log.DeviceApprovalsChangeDesktopPolicyDetails.new_value: New
-        desktop device approvals policy. Might be missing due to historical data
-        gap.
-    :ivar team_log.DeviceApprovalsChangeDesktopPolicyDetails.previous_value:
+    :ivar DeviceApprovalsChangeDesktopPolicyDetails.new_value:
+        New desktop device approvals policy. Might be missing due to historical
+        data gap.
+    :ivar DeviceApprovalsChangeDesktopPolicyDetails.previous_value:
         Previous desktop device approvals policy. Might be missing due to
         historical data gap.
     """
@@ -8510,10 +8601,10 @@ class DeviceApprovalsChangeMobilePolicyDetails(bb.Struct):
     Set/removed limit on number of mobile devices member can link to team
     Dropbox account.
 
-    :ivar team_log.DeviceApprovalsChangeMobilePolicyDetails.new_value: New
-        mobile device approvals policy. Might be missing due to historical data
-        gap.
-    :ivar team_log.DeviceApprovalsChangeMobilePolicyDetails.previous_value:
+    :ivar DeviceApprovalsChangeMobilePolicyDetails.new_value:
+        New mobile device approvals policy. Might be missing due to historical
+        data gap.
+    :ivar DeviceApprovalsChangeMobilePolicyDetails.previous_value:
         Previous mobile device approvals policy. Might be missing due to
         historical data gap.
     """
@@ -8572,9 +8663,9 @@ class DeviceApprovalsChangeOverageActionDetails(bb.Struct):
     """
     Changed device approvals setting when member is over limit.
 
-    :ivar team_log.DeviceApprovalsChangeOverageActionDetails.new_value: New over
-        the limits policy. Might be missing due to historical data gap.
-    :ivar team_log.DeviceApprovalsChangeOverageActionDetails.previous_value:
+    :ivar DeviceApprovalsChangeOverageActionDetails.new_value:
+        New over the limits policy. Might be missing due to historical data gap.
+    :ivar DeviceApprovalsChangeOverageActionDetails.previous_value:
         Previous over the limit policy. Might be missing due to historical data
         gap.
     """
@@ -8633,9 +8724,9 @@ class DeviceApprovalsChangeUnlinkActionDetails(bb.Struct):
     """
     Changed device approvals setting when member unlinks approved device.
 
-    :ivar team_log.DeviceApprovalsChangeUnlinkActionDetails.new_value: New
-        device unlink policy. Might be missing due to historical data gap.
-    :ivar team_log.DeviceApprovalsChangeUnlinkActionDetails.previous_value:
+    :ivar DeviceApprovalsChangeUnlinkActionDetails.new_value:
+        New device unlink policy. Might be missing due to historical data gap.
+    :ivar DeviceApprovalsChangeUnlinkActionDetails.previous_value:
         Previous device unlink policy. Might be missing due to historical data
         gap.
     """
@@ -8778,8 +8869,8 @@ class DeviceChangeIpDesktopDetails(bb.Struct):
     """
     Changed IP address associated with active desktop session.
 
-    :ivar team_log.DeviceChangeIpDesktopDetails.device_session_info: Device's
-        session logged information.
+    :ivar DeviceChangeIpDesktopDetails.device_session_info:
+        Device's session logged information.
     """
 
     __slots__ = [
@@ -8828,8 +8919,8 @@ class DeviceChangeIpMobileDetails(bb.Struct):
     """
     Changed IP address associated with active mobile session.
 
-    :ivar team_log.DeviceChangeIpMobileDetails.device_session_info: Device's
-        session logged information.
+    :ivar DeviceChangeIpMobileDetails.device_session_info:
+        Device's session logged information.
     """
 
     __slots__ = [
@@ -8878,7 +8969,8 @@ class DeviceChangeIpWebDetails(bb.Struct):
     """
     Changed IP address associated with active web session.
 
-    :ivar team_log.DeviceChangeIpWebDetails.user_agent: Web browser name.
+    :ivar DeviceChangeIpWebDetails.user_agent:
+        Web browser name.
     """
 
     __slots__ = [
@@ -8927,12 +9019,12 @@ class DeviceDeleteOnUnlinkFailDetails(bb.Struct):
     """
     Failed to delete all files from unlinked device.
 
-    :ivar team_log.DeviceDeleteOnUnlinkFailDetails.session_info: Session unique
-        id.
-    :ivar team_log.DeviceDeleteOnUnlinkFailDetails.display_name: The device
-        name. Might be missing due to historical data gap.
-    :ivar team_log.DeviceDeleteOnUnlinkFailDetails.num_failures: The number of
-        times that remote file deletion failed.
+    :ivar DeviceDeleteOnUnlinkFailDetails.session_info:
+        Session unique id.
+    :ivar DeviceDeleteOnUnlinkFailDetails.display_name:
+        The device name. Might be missing due to historical data gap.
+    :ivar DeviceDeleteOnUnlinkFailDetails.num_failures:
+        The number of times that remote file deletion failed.
     """
 
     __slots__ = [
@@ -8997,10 +9089,10 @@ class DeviceDeleteOnUnlinkSuccessDetails(bb.Struct):
     """
     Deleted all files from unlinked device.
 
-    :ivar team_log.DeviceDeleteOnUnlinkSuccessDetails.session_info: Session
-        unique id.
-    :ivar team_log.DeviceDeleteOnUnlinkSuccessDetails.display_name: The device
-        name. Might be missing due to historical data gap.
+    :ivar DeviceDeleteOnUnlinkSuccessDetails.session_info:
+        Session unique id.
+    :ivar DeviceDeleteOnUnlinkSuccessDetails.display_name:
+        The device name. Might be missing due to historical data gap.
     """
 
     __slots__ = [
@@ -9057,10 +9149,10 @@ class DeviceLinkFailDetails(bb.Struct):
     """
     Failed to link device.
 
-    :ivar team_log.DeviceLinkFailDetails.ip_address: IP address. Might be
-        missing due to historical data gap.
-    :ivar team_log.DeviceLinkFailDetails.device_type: A description of the
-        device used while user approval blocked.
+    :ivar DeviceLinkFailDetails.ip_address:
+        IP address. Might be missing due to historical data gap.
+    :ivar DeviceLinkFailDetails.device_type:
+        A description of the device used while user approval blocked.
     """
 
     __slots__ = [
@@ -9117,8 +9209,8 @@ class DeviceLinkSuccessDetails(bb.Struct):
     """
     Linked device.
 
-    :ivar team_log.DeviceLinkSuccessDetails.device_session_info: Device's
-        session logged information.
+    :ivar DeviceLinkSuccessDetails.device_session_info:
+        Device's session logged information.
     """
 
     __slots__ = [
@@ -9247,13 +9339,12 @@ class DeviceSyncBackupStatusChangedDetails(bb.Struct):
     """
     Enabled/disabled backup for computer.
 
-    :ivar
-        team_log.DeviceSyncBackupStatusChangedDetails.desktop_device_session_info:
+    :ivar DeviceSyncBackupStatusChangedDetails.desktop_device_session_info:
         Device's session logged information.
-    :ivar team_log.DeviceSyncBackupStatusChangedDetails.previous_value: Previous
-        status of computer backup on the device.
-    :ivar team_log.DeviceSyncBackupStatusChangedDetails.new_value: Next status
-        of computer backup on the device.
+    :ivar DeviceSyncBackupStatusChangedDetails.previous_value:
+        Previous status of computer backup on the device.
+    :ivar DeviceSyncBackupStatusChangedDetails.new_value:
+        Next status of computer backup on the device.
     """
 
     __slots__ = [
@@ -9362,11 +9453,13 @@ class DeviceUnlinkDetails(bb.Struct):
     """
     Disconnected device.
 
-    :ivar team_log.DeviceUnlinkDetails.session_info: Session unique id.
-    :ivar team_log.DeviceUnlinkDetails.display_name: The device name. Might be
-        missing due to historical data gap.
-    :ivar team_log.DeviceUnlinkDetails.delete_data: True if the user requested
-        to delete data after device unlink, false otherwise.
+    :ivar DeviceUnlinkDetails.session_info:
+        Session unique id.
+    :ivar DeviceUnlinkDetails.display_name:
+        The device name. Might be missing due to historical data gap.
+    :ivar DeviceUnlinkDetails.delete_data:
+        True if the user requested to delete data after device unlink, false
+        otherwise.
     """
 
     __slots__ = [
@@ -9719,10 +9812,10 @@ class DomainInvitesEmailExistingUsersDetails(bb.Struct):
     """
     Sent domain invites to existing domain accounts.
 
-    :ivar team_log.DomainInvitesEmailExistingUsersDetails.domain_name: Domain
-        names.
-    :ivar team_log.DomainInvitesEmailExistingUsersDetails.num_recipients: Number
-        of recipients.
+    :ivar DomainInvitesEmailExistingUsersDetails.domain_name:
+        Domain names.
+    :ivar DomainInvitesEmailExistingUsersDetails.num_recipients:
+        Number of recipients.
     """
 
     __slots__ = [
@@ -9899,9 +9992,9 @@ class DomainVerificationAddDomainFailDetails(bb.Struct):
     """
     Failed to verify team domain.
 
-    :ivar team_log.DomainVerificationAddDomainFailDetails.domain_name: Domain
-        name.
-    :ivar team_log.DomainVerificationAddDomainFailDetails.verification_method:
+    :ivar DomainVerificationAddDomainFailDetails.domain_name:
+        Domain name.
+    :ivar DomainVerificationAddDomainFailDetails.verification_method:
         Domain name verification method. Might be missing due to historical data
         gap.
     """
@@ -9960,10 +10053,9 @@ class DomainVerificationAddDomainSuccessDetails(bb.Struct):
     """
     Verified team domain.
 
-    :ivar team_log.DomainVerificationAddDomainSuccessDetails.domain_names:
+    :ivar DomainVerificationAddDomainSuccessDetails.domain_names:
         Domain names.
-    :ivar
-        team_log.DomainVerificationAddDomainSuccessDetails.verification_method:
+    :ivar DomainVerificationAddDomainSuccessDetails.verification_method:
         Domain name verification method. Might be missing due to historical data
         gap.
     """
@@ -10022,8 +10114,8 @@ class DomainVerificationRemoveDomainDetails(bb.Struct):
     """
     Removed domain from list of verified team domains.
 
-    :ivar team_log.DomainVerificationRemoveDomainDetails.domain_names: Domain
-        names.
+    :ivar DomainVerificationRemoveDomainDetails.domain_names:
+        Domain names.
     """
 
     __slots__ = [
@@ -10118,8 +10210,8 @@ class DropboxPasswordsExportedDetails(bb.Struct):
     """
     Exported passwords.
 
-    :ivar team_log.DropboxPasswordsExportedDetails.platform: The platform the
-        device runs export.
+    :ivar DropboxPasswordsExportedDetails.platform:
+        The platform the device runs export.
     """
 
     __slots__ = [
@@ -10168,10 +10260,10 @@ class DropboxPasswordsNewDeviceEnrolledDetails(bb.Struct):
     """
     Enrolled new Dropbox Passwords device.
 
-    :ivar team_log.DropboxPasswordsNewDeviceEnrolledDetails.is_first_device:
+    :ivar DropboxPasswordsNewDeviceEnrolledDetails.is_first_device:
         Whether it's a first device enrolled.
-    :ivar team_log.DropboxPasswordsNewDeviceEnrolledDetails.platform: The
-        platform the device is enrolled.
+    :ivar DropboxPasswordsNewDeviceEnrolledDetails.platform:
+        The platform the device is enrolled.
     """
 
     __slots__ = [
@@ -10284,8 +10376,10 @@ class DropboxPasswordsPolicyChangedDetails(bb.Struct):
     """
     Changed Dropbox Passwords policy for team.
 
-    :ivar team_log.DropboxPasswordsPolicyChangedDetails.new_value: To.
-    :ivar team_log.DropboxPasswordsPolicyChangedDetails.previous_value: From.
+    :ivar DropboxPasswordsPolicyChangedDetails.new_value:
+        To.
+    :ivar DropboxPasswordsPolicyChangedDetails.previous_value:
+        From.
     """
 
     __slots__ = [
@@ -10342,8 +10436,10 @@ class DurationLogInfo(bb.Struct):
     """
     Represents a time duration: unit and amount
 
-    :ivar team_log.DurationLogInfo.unit: Time unit.
-    :ivar team_log.DurationLogInfo.amount: Amount of time.
+    :ivar DurationLogInfo.unit:
+        Time unit.
+    :ivar DurationLogInfo.amount:
+        Amount of time.
     """
 
     __slots__ = [
@@ -10424,8 +10520,10 @@ class EmailIngestPolicyChangedDetails(bb.Struct):
     """
     Changed email to Dropbox policy for team.
 
-    :ivar team_log.EmailIngestPolicyChangedDetails.new_value: To.
-    :ivar team_log.EmailIngestPolicyChangedDetails.previous_value: From.
+    :ivar EmailIngestPolicyChangedDetails.new_value:
+        To.
+    :ivar EmailIngestPolicyChangedDetails.previous_value:
+        From.
     """
 
     __slots__ = [
@@ -10482,14 +10580,16 @@ class EmailIngestReceiveFileDetails(bb.Struct):
     """
     Received files via Email to Dropbox.
 
-    :ivar team_log.EmailIngestReceiveFileDetails.inbox_name: Inbox name.
-    :ivar team_log.EmailIngestReceiveFileDetails.attachment_names: Submitted
-        file names.
-    :ivar team_log.EmailIngestReceiveFileDetails.subject: Subject of the email.
-    :ivar team_log.EmailIngestReceiveFileDetails.from_name: The name as provided
-        by the submitter.
-    :ivar team_log.EmailIngestReceiveFileDetails.from_email: The email as
-        provided by the submitter.
+    :ivar EmailIngestReceiveFileDetails.inbox_name:
+        Inbox name.
+    :ivar EmailIngestReceiveFileDetails.attachment_names:
+        Submitted file names.
+    :ivar EmailIngestReceiveFileDetails.subject:
+        Subject of the email.
+    :ivar EmailIngestReceiveFileDetails.from_name:
+        The name as provided by the submitter.
+    :ivar EmailIngestReceiveFileDetails.from_email:
+        The email as provided by the submitter.
     """
 
     __slots__ = [
@@ -10610,10 +10710,11 @@ class EmmChangePolicyDetails(bb.Struct):
     """
     Enabled/disabled enterprise mobility management for members.
 
-    :ivar team_log.EmmChangePolicyDetails.new_value: New enterprise mobility
-        management policy.
-    :ivar team_log.EmmChangePolicyDetails.previous_value: Previous enterprise
-        mobility management policy. Might be missing due to historical data gap.
+    :ivar EmmChangePolicyDetails.new_value:
+        New enterprise mobility management policy.
+    :ivar EmmChangePolicyDetails.previous_value:
+        Previous enterprise mobility management policy. Might be missing due to
+        historical data gap.
     """
 
     __slots__ = [
@@ -10750,7 +10851,8 @@ class EmmErrorDetails(bb.Struct):
     """
     Failed to sign in via EMM.
 
-    :ivar team_log.EmmErrorDetails.error_details: Error details.
+    :ivar EmmErrorDetails.error_details:
+        Error details.
     """
 
     __slots__ = [
@@ -10919,7 +11021,7 @@ class EncryptedFolderCancelTeamKeyRotationDetails(bb.Struct):
     """
     Canceled team key rotation.
 
-    :ivar team_log.EncryptedFolderCancelTeamKeyRotationDetails.team_key_id:
+    :ivar EncryptedFolderCancelTeamKeyRotationDetails.team_key_id:
         Identifier of the team key.
     """
 
@@ -10969,7 +11071,7 @@ class EncryptedFolderEnrollBackupKeyDetails(bb.Struct):
     """
     Added recovery key.
 
-    :ivar team_log.EncryptedFolderEnrollBackupKeyDetails.backup_key_id:
+    :ivar EncryptedFolderEnrollBackupKeyDetails.backup_key_id:
         Identifier of the recovery key.
     """
 
@@ -11019,8 +11121,8 @@ class EncryptedFolderEnrollClientDetails(bb.Struct):
     """
     Enrolled device.
 
-    :ivar team_log.EncryptedFolderEnrollClientDetails.client_key_id: Identifier
-        of the client key.
+    :ivar EncryptedFolderEnrollClientDetails.client_key_id:
+        Identifier of the client key.
     """
 
     __slots__ = [
@@ -11149,7 +11251,7 @@ class EncryptedFolderInitTeamKeyRotationDetails(bb.Struct):
     """
     Initiated team key rotation.
 
-    :ivar team_log.EncryptedFolderInitTeamKeyRotationDetails.team_key_id:
+    :ivar EncryptedFolderInitTeamKeyRotationDetails.team_key_id:
         Identifier of the team key.
     """
 
@@ -11239,7 +11341,7 @@ class EncryptedFolderRemoveBackupKeyDetails(bb.Struct):
     """
     Removed recovery key.
 
-    :ivar team_log.EncryptedFolderRemoveBackupKeyDetails.backup_key_id:
+    :ivar EncryptedFolderRemoveBackupKeyDetails.backup_key_id:
         Identifier of the recovery key.
     """
 
@@ -11289,8 +11391,8 @@ class EncryptedFolderRotateTeamKeyDetails(bb.Struct):
     """
     Rotated team key.
 
-    :ivar team_log.EncryptedFolderRotateTeamKeyDetails.team_key_id: Identifier
-        of the team key.
+    :ivar EncryptedFolderRotateTeamKeyDetails.team_key_id:
+        Identifier of the team key.
     """
 
     __slots__ = [
@@ -11339,7 +11441,7 @@ class EncryptedFolderUnenrollClientDetails(bb.Struct):
     """
     Unenrolled device.
 
-    :ivar team_log.EncryptedFolderUnenrollClientDetails.client_key_id:
+    :ivar EncryptedFolderUnenrollClientDetails.client_key_id:
         Identifier of the client key.
     """
 
@@ -11389,8 +11491,7 @@ class EndedEnterpriseAdminSessionDeprecatedDetails(bb.Struct):
     """
     Ended enterprise admin session.
 
-    :ivar
-        team_log.EndedEnterpriseAdminSessionDeprecatedDetails.federation_extra_details:
+    :ivar EndedEnterpriseAdminSessionDeprecatedDetails.federation_extra_details:
         More information about the organization or team.
     """
 
@@ -11527,15 +11628,13 @@ class EnterpriseSettingsLockingDetails(bb.Struct):
     """
     Changed who can update a setting.
 
-    :ivar team_log.EnterpriseSettingsLockingDetails.team_name: The secondary
-        team name.
-    :ivar team_log.EnterpriseSettingsLockingDetails.settings_page_name: Settings
-        page name.
-    :ivar
-        team_log.EnterpriseSettingsLockingDetails.previous_settings_page_locking_state:
+    :ivar EnterpriseSettingsLockingDetails.team_name:
+        The secondary team name.
+    :ivar EnterpriseSettingsLockingDetails.settings_page_name:
+        Settings page name.
+    :ivar EnterpriseSettingsLockingDetails.previous_settings_page_locking_state:
         Previous locked settings page state.
-    :ivar
-        team_log.EnterpriseSettingsLockingDetails.new_settings_page_locking_state:
+    :ivar EnterpriseSettingsLockingDetails.new_settings_page_locking_state:
         New locked settings page state.
     """
 
@@ -11613,54 +11712,64 @@ class EventCategory(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar team_log.EventCategory.admin_alerting: Events that involve team
-        related alerts.
-    :ivar team_log.EventCategory.apps: Events that apply to management of linked
-        apps.
-    :ivar team_log.EventCategory.comments: Events that have to do with comments
-        on files and Paper documents.
-    :ivar team_log.EventCategory.dash: Events that apply to Dropbox Dash
-    :ivar team_log.EventCategory.data_governance: Events that involve data
-        governance actions
-    :ivar team_log.EventCategory.devices: Events that apply to linked devices on
-        mobile, desktop and Web platforms.
-    :ivar team_log.EventCategory.domains: Events that involve domain management
-        feature: domain verification, invite enforcement and account capture.
-    :ivar team_log.EventCategory.encryption: Events that involve encryption.
-    :ivar team_log.EventCategory.file_operations: Events that have to do with
-        filesystem operations on files and folders: copy, move, delete, etc.
-    :ivar team_log.EventCategory.file_requests: Events that apply to the file
-        requests feature.
-    :ivar team_log.EventCategory.groups: Events that involve group management.
-    :ivar team_log.EventCategory.logins: Events that involve users signing in to
-        or out of Dropbox.
-    :ivar team_log.EventCategory.members: Events that involve team member
-        management.
-    :ivar team_log.EventCategory.paper: Events that apply to Dropbox Paper.
-    :ivar team_log.EventCategory.passwords: Events that involve using, changing
-        or resetting passwords.
-    :ivar team_log.EventCategory.protect: Events that apply to Dropbox Protect
-    :ivar team_log.EventCategory.reports: Events that concern generation of
-        admin reports, including team activity and device usage.
-    :ivar team_log.EventCategory.sharing: Events that apply to all types of
-        sharing and collaboration.
-    :ivar team_log.EventCategory.showcase: Events that apply to Dropbox
-        Showcase.
-    :ivar team_log.EventCategory.signatures: Events that apply to Dropbox Sign
-    :ivar team_log.EventCategory.sso: Events that involve using or configuring
-        single sign-on as well as administrative policies concerning single
-        sign-on.
-    :ivar team_log.EventCategory.team_folders: Events that involve team folder
-        management.
-    :ivar team_log.EventCategory.team_policies: Events that involve a change in
-        team-wide policies.
-    :ivar team_log.EventCategory.team_profile: Events that involve a change in
-        the team profile.
-    :ivar team_log.EventCategory.tfa: Events that involve using or configuring
-        two factor authentication as well as administrative policies concerning
-        two factor authentication.
-    :ivar team_log.EventCategory.trusted_teams: Events that apply to cross-team
-        trust establishment.
+    :ivar EventCategory.admin_alerting:
+        Events that involve team related alerts.
+    :ivar EventCategory.apps:
+        Events that apply to management of linked apps.
+    :ivar EventCategory.comments:
+        Events that have to do with comments on files and Paper documents.
+    :ivar EventCategory.dash:
+        Events that apply to Dropbox Dash
+    :ivar EventCategory.data_governance:
+        Events that involve data governance actions
+    :ivar EventCategory.devices:
+        Events that apply to linked devices on mobile, desktop and Web
+        platforms.
+    :ivar EventCategory.domains:
+        Events that involve domain management feature: domain verification,
+        invite enforcement and account capture.
+    :ivar EventCategory.encryption:
+        Events that involve encryption.
+    :ivar EventCategory.file_operations:
+        Events that have to do with filesystem operations on files and folders:
+        copy, move, delete, etc.
+    :ivar EventCategory.file_requests:
+        Events that apply to the file requests feature.
+    :ivar EventCategory.groups:
+        Events that involve group management.
+    :ivar EventCategory.logins:
+        Events that involve users signing in to or out of Dropbox.
+    :ivar EventCategory.members:
+        Events that involve team member management.
+    :ivar EventCategory.paper:
+        Events that apply to Dropbox Paper.
+    :ivar EventCategory.passwords:
+        Events that involve using, changing or resetting passwords.
+    :ivar EventCategory.protect:
+        Events that apply to Dropbox Protect
+    :ivar EventCategory.reports:
+        Events that concern generation of admin reports, including team activity
+        and device usage.
+    :ivar EventCategory.sharing:
+        Events that apply to all types of sharing and collaboration.
+    :ivar EventCategory.showcase:
+        Events that apply to Dropbox Showcase.
+    :ivar EventCategory.signatures:
+        Events that apply to Dropbox Sign
+    :ivar EventCategory.sso:
+        Events that involve using or configuring single sign-on as well as
+        administrative policies concerning single sign-on.
+    :ivar EventCategory.team_folders:
+        Events that involve team folder management.
+    :ivar EventCategory.team_policies:
+        Events that involve a change in team-wide policies.
+    :ivar EventCategory.team_profile:
+        Events that involve a change in the team profile.
+    :ivar EventCategory.tfa:
+        Events that involve using or configuring two factor authentication as
+        well as administrative policies concerning two factor authentication.
+    :ivar EventCategory.trusted_teams:
+        Events that apply to cross-team trust establishment.
     """
 
     _catch_all = 'other'
@@ -11948,8 +12057,10 @@ class EventDetails(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar MissingDetails EventDetails.missing_details: Hints that this event was
-        returned with missing details due to an internal error.
+    :ivar EventDetails.missing_details:
+        Hints that this event was returned with missing details due to an
+        internal error.
+    :vartype EventDetails.missing_details: MissingDetails
     """
 
     _catch_all = 'other'
@@ -30023,1524 +30134,1947 @@ class EventType(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar AdminAlertingAlertStateChangedType
-        EventType.admin_alerting_alert_state_changed: (admin_alerting) Changed
-        an alert state
-    :ivar AdminAlertingChangedAlertConfigType
-        EventType.admin_alerting_changed_alert_config: (admin_alerting) Changed
-        an alert setting
-    :ivar AdminAlertingTriggeredAlertType
-        EventType.admin_alerting_triggered_alert: (admin_alerting) Triggered
-        security alert
-    :ivar RansomwareRestoreProcessCompletedType
-        EventType.ransomware_restore_process_completed: (admin_alerting)
-        Completed ransomware restore process
-    :ivar RansomwareRestoreProcessStartedType
-        EventType.ransomware_restore_process_started: (admin_alerting) Started
-        ransomware restore process
-    :ivar AppBlockedByPermissionsType EventType.app_blocked_by_permissions:
+    :ivar EventType.admin_alerting_alert_state_changed:
+        (admin_alerting) Changed an alert state
+    :vartype EventType.admin_alerting_alert_state_changed: AdminAlertingAlertStateChangedType
+    :ivar EventType.admin_alerting_changed_alert_config:
+        (admin_alerting) Changed an alert setting
+    :vartype EventType.admin_alerting_changed_alert_config: AdminAlertingChangedAlertConfigType
+    :ivar EventType.admin_alerting_triggered_alert:
+        (admin_alerting) Triggered security alert
+    :vartype EventType.admin_alerting_triggered_alert: AdminAlertingTriggeredAlertType
+    :ivar EventType.ransomware_restore_process_completed:
+        (admin_alerting) Completed ransomware restore process
+    :vartype EventType.ransomware_restore_process_completed: RansomwareRestoreProcessCompletedType
+    :ivar EventType.ransomware_restore_process_started:
+        (admin_alerting) Started ransomware restore process
+    :vartype EventType.ransomware_restore_process_started: RansomwareRestoreProcessStartedType
+    :ivar EventType.app_blocked_by_permissions:
         (apps) Failed to connect app for member
-    :ivar AppLinkTeamType EventType.app_link_team: (apps) Linked app for team
-    :ivar AppLinkUserType EventType.app_link_user: (apps) Linked app for member
-    :ivar AppUnlinkTeamType EventType.app_unlink_team: (apps) Unlinked app for
-        team
-    :ivar AppUnlinkUserType EventType.app_unlink_user: (apps) Unlinked app for
-        member
-    :ivar IntegrationConnectedType EventType.integration_connected: (apps)
-        Connected integration for member
-    :ivar IntegrationDisconnectedType EventType.integration_disconnected: (apps)
-        Disconnected integration for member
-    :ivar FileAddCommentType EventType.file_add_comment: (comments) Added file
-        comment
-    :ivar FileChangeCommentSubscriptionType
-        EventType.file_change_comment_subscription: (comments) Subscribed to or
-        unsubscribed from comment notifications for file
-    :ivar FileDeleteCommentType EventType.file_delete_comment: (comments)
-        Deleted file comment
-    :ivar FileEditCommentType EventType.file_edit_comment: (comments) Edited
-        file comment
-    :ivar FileLikeCommentType EventType.file_like_comment: (comments) Liked file
-        comment (deprecated, no longer logged)
-    :ivar FileResolveCommentType EventType.file_resolve_comment: (comments)
-        Resolved file comment
-    :ivar FileUnlikeCommentType EventType.file_unlike_comment: (comments)
-        Unliked file comment (deprecated, no longer logged)
-    :ivar FileUnresolveCommentType EventType.file_unresolve_comment: (comments)
-        Unresolved file comment
-    :ivar DashAddedCommentToStackType EventType.dash_added_comment_to_stack:
+    :vartype EventType.app_blocked_by_permissions: AppBlockedByPermissionsType
+    :ivar EventType.app_link_team:
+        (apps) Linked app for team
+    :vartype EventType.app_link_team: AppLinkTeamType
+    :ivar EventType.app_link_user:
+        (apps) Linked app for member
+    :vartype EventType.app_link_user: AppLinkUserType
+    :ivar EventType.app_unlink_team:
+        (apps) Unlinked app for team
+    :vartype EventType.app_unlink_team: AppUnlinkTeamType
+    :ivar EventType.app_unlink_user:
+        (apps) Unlinked app for member
+    :vartype EventType.app_unlink_user: AppUnlinkUserType
+    :ivar EventType.integration_connected:
+        (apps) Connected integration for member
+    :vartype EventType.integration_connected: IntegrationConnectedType
+    :ivar EventType.integration_disconnected:
+        (apps) Disconnected integration for member
+    :vartype EventType.integration_disconnected: IntegrationDisconnectedType
+    :ivar EventType.file_add_comment:
+        (comments) Added file comment
+    :vartype EventType.file_add_comment: FileAddCommentType
+    :ivar EventType.file_change_comment_subscription:
+        (comments) Subscribed to or unsubscribed from comment notifications for
+        file
+    :vartype EventType.file_change_comment_subscription: FileChangeCommentSubscriptionType
+    :ivar EventType.file_delete_comment:
+        (comments) Deleted file comment
+    :vartype EventType.file_delete_comment: FileDeleteCommentType
+    :ivar EventType.file_edit_comment:
+        (comments) Edited file comment
+    :vartype EventType.file_edit_comment: FileEditCommentType
+    :ivar EventType.file_like_comment:
+        (comments) Liked file comment (deprecated, no longer logged)
+    :vartype EventType.file_like_comment: FileLikeCommentType
+    :ivar EventType.file_resolve_comment:
+        (comments) Resolved file comment
+    :vartype EventType.file_resolve_comment: FileResolveCommentType
+    :ivar EventType.file_unlike_comment:
+        (comments) Unliked file comment (deprecated, no longer logged)
+    :vartype EventType.file_unlike_comment: FileUnlikeCommentType
+    :ivar EventType.file_unresolve_comment:
+        (comments) Unresolved file comment
+    :vartype EventType.file_unresolve_comment: FileUnresolveCommentType
+    :ivar EventType.dash_added_comment_to_stack:
         (dash) Added a comment to a stack
-    :ivar DashAddedConnectorType EventType.dash_added_connector: (dash)
-        Connected to a user connector
-    :ivar DashAddedLinkToStackType EventType.dash_added_link_to_stack: (dash)
-        Added a link to a stack
-    :ivar DashAddedTeamEmailDomainAllowlistType
-        EventType.dash_added_team_email_domain_allowlist: (dash) Admin added an
-        email domain to the team allowlist
-    :ivar DashAdminAddedOrgWideConnectorType
-        EventType.dash_admin_added_org_wide_connector: (dash) Admin added an
-        admin connector
-    :ivar DashAdminDisabledConnectorType
-        EventType.dash_admin_disabled_connector: (dash) Admin disabled a user
-        connector
-    :ivar DashAdminEnabledConnectorType EventType.dash_admin_enabled_connector:
+    :vartype EventType.dash_added_comment_to_stack: DashAddedCommentToStackType
+    :ivar EventType.dash_added_connector:
+        (dash) Connected to a user connector
+    :vartype EventType.dash_added_connector: DashAddedConnectorType
+    :ivar EventType.dash_added_link_to_stack:
+        (dash) Added a link to a stack
+    :vartype EventType.dash_added_link_to_stack: DashAddedLinkToStackType
+    :ivar EventType.dash_added_team_email_domain_allowlist:
+        (dash) Admin added an email domain to the team allowlist
+    :vartype EventType.dash_added_team_email_domain_allowlist: DashAddedTeamEmailDomainAllowlistType
+    :ivar EventType.dash_admin_added_org_wide_connector:
+        (dash) Admin added an admin connector
+    :vartype EventType.dash_admin_added_org_wide_connector: DashAdminAddedOrgWideConnectorType
+    :ivar EventType.dash_admin_disabled_connector:
+        (dash) Admin disabled a user connector
+    :vartype EventType.dash_admin_disabled_connector: DashAdminDisabledConnectorType
+    :ivar EventType.dash_admin_enabled_connector:
         (dash) Admin enabled a user connector
-    :ivar DashAdminRemovedOrgWideConnectorType
-        EventType.dash_admin_removed_org_wide_connector: (dash) Admin removed an
-        admin connector
-    :ivar DashArchivedStackType EventType.dash_archived_stack: (dash) Archived a
-        stack
-    :ivar DashChangedAudienceOfSharedLinkToStackType
-        EventType.dash_changed_audience_of_shared_link_to_stack: (dash) Changed
-        the audience of a shared link to a stack
-    :ivar DashClonedStackType EventType.dash_cloned_stack: (dash) Cloned stack
-    :ivar DashConnectorToolsCallType EventType.dash_connector_tools_call: (dash)
-        Called a tool on a connector
-    :ivar DashCreatedStackType EventType.dash_created_stack: (dash) Created a
-        stack
-    :ivar DashDeletedCommentFromStackType
-        EventType.dash_deleted_comment_from_stack: (dash) Deleted a comment from
-        a stack
-    :ivar DashDeletedStackType EventType.dash_deleted_stack: (dash) Deleted a
-        stack
-    :ivar DashEditedCommentInStackType EventType.dash_edited_comment_in_stack:
+    :vartype EventType.dash_admin_enabled_connector: DashAdminEnabledConnectorType
+    :ivar EventType.dash_admin_removed_org_wide_connector:
+        (dash) Admin removed an admin connector
+    :vartype EventType.dash_admin_removed_org_wide_connector: DashAdminRemovedOrgWideConnectorType
+    :ivar EventType.dash_archived_stack:
+        (dash) Archived a stack
+    :vartype EventType.dash_archived_stack: DashArchivedStackType
+    :ivar EventType.dash_changed_audience_of_shared_link_to_stack:
+        (dash) Changed the audience of a shared link to a stack
+    :vartype EventType.dash_changed_audience_of_shared_link_to_stack: DashChangedAudienceOfSharedLinkToStackType
+    :ivar EventType.dash_cloned_stack:
+        (dash) Cloned stack
+    :vartype EventType.dash_cloned_stack: DashClonedStackType
+    :ivar EventType.dash_connector_tools_call:
+        (dash) Called a tool on a connector
+    :vartype EventType.dash_connector_tools_call: DashConnectorToolsCallType
+    :ivar EventType.dash_created_stack:
+        (dash) Created a stack
+    :vartype EventType.dash_created_stack: DashCreatedStackType
+    :ivar EventType.dash_deleted_comment_from_stack:
+        (dash) Deleted a comment from a stack
+    :vartype EventType.dash_deleted_comment_from_stack: DashDeletedCommentFromStackType
+    :ivar EventType.dash_deleted_stack:
+        (dash) Deleted a stack
+    :vartype EventType.dash_deleted_stack: DashDeletedStackType
+    :ivar EventType.dash_edited_comment_in_stack:
         (dash) Edited a comment in a stack
-    :ivar DashExternalUserOpenedStackType
-        EventType.dash_external_user_opened_stack: (dash) External user opened a
-        stack
-    :ivar DashFirstLaunchedDesktopType EventType.dash_first_launched_desktop:
+    :vartype EventType.dash_edited_comment_in_stack: DashEditedCommentInStackType
+    :ivar EventType.dash_external_user_opened_stack:
+        (dash) External user opened a stack
+    :vartype EventType.dash_external_user_opened_stack: DashExternalUserOpenedStackType
+    :ivar EventType.dash_first_launched_desktop:
         (dash) Opened the desktop app for the first time
-    :ivar DashFirstLaunchedExtensionType
-        EventType.dash_first_launched_extension: (dash) Opened the extension for
-        the first time
-    :ivar DashFirstLaunchedWebStartPageType
-        EventType.dash_first_launched_web_start_page: (dash) Opened the web
-        Start Page for the first time
-    :ivar DashOpenedSharedLinkToStackType
-        EventType.dash_opened_shared_link_to_stack: (dash) Checked access
-        permissions to a stack
-    :ivar DashOpenedStackType EventType.dash_opened_stack: (dash) Opened a stack
-    :ivar DashPreviewOptOutStatusChangedType
-        EventType.dash_preview_opt_out_status_changed: (dash) Changed the
-        preview opt-out status
-    :ivar DashRemovedConnectorType EventType.dash_removed_connector: (dash)
-        Disconnected a user connector
-    :ivar DashRemovedLinkFromStackType EventType.dash_removed_link_from_stack:
+    :vartype EventType.dash_first_launched_desktop: DashFirstLaunchedDesktopType
+    :ivar EventType.dash_first_launched_extension:
+        (dash) Opened the extension for the first time
+    :vartype EventType.dash_first_launched_extension: DashFirstLaunchedExtensionType
+    :ivar EventType.dash_first_launched_web_start_page:
+        (dash) Opened the web Start Page for the first time
+    :vartype EventType.dash_first_launched_web_start_page: DashFirstLaunchedWebStartPageType
+    :ivar EventType.dash_opened_shared_link_to_stack:
+        (dash) Checked access permissions to a stack
+    :vartype EventType.dash_opened_shared_link_to_stack: DashOpenedSharedLinkToStackType
+    :ivar EventType.dash_opened_stack:
+        (dash) Opened a stack
+    :vartype EventType.dash_opened_stack: DashOpenedStackType
+    :ivar EventType.dash_preview_opt_out_status_changed:
+        (dash) Changed the preview opt-out status
+    :vartype EventType.dash_preview_opt_out_status_changed: DashPreviewOptOutStatusChangedType
+    :ivar EventType.dash_removed_connector:
+        (dash) Disconnected a user connector
+    :vartype EventType.dash_removed_connector: DashRemovedConnectorType
+    :ivar EventType.dash_removed_link_from_stack:
         (dash) Removed a link from a stack
-    :ivar DashRemovedSharedLinkToStackType
-        EventType.dash_removed_shared_link_to_stack: (dash) Removed a shared
-        link to a stack
-    :ivar DashRemovedTeamEmailDomainAllowlistType
-        EventType.dash_removed_team_email_domain_allowlist: (dash) Admin removed
-        an email domain from the team allowlist
-    :ivar DashRenamedStackType EventType.dash_renamed_stack: (dash) Renamed a
-        stack
-    :ivar DashSharedLinkToStackType EventType.dash_shared_link_to_stack: (dash)
-        Shared a link to a stack
-    :ivar DashUnarchivedStackType EventType.dash_unarchived_stack: (dash)
-        Unarchived a stack
-    :ivar DashViewedCompanyStackType EventType.dash_viewed_company_stack: (dash)
-        Member viewed a company stack
-    :ivar DashViewedExternalAiActivityReportType
-        EventType.dash_viewed_external_ai_activity_report: (dash) Admin viewed
-        the external AI activity report
-    :ivar GovernancePolicyAddFoldersType
-        EventType.governance_policy_add_folders: (data_governance) Added folders
-        to policy
-    :ivar GovernancePolicyAddFolderFailedType
-        EventType.governance_policy_add_folder_failed: (data_governance)
-        Couldn't add a folder to a policy
-    :ivar GovernancePolicyContentDisposedType
-        EventType.governance_policy_content_disposed: (data_governance) Content
-        disposed
-    :ivar GovernancePolicyCreateType EventType.governance_policy_create:
+    :vartype EventType.dash_removed_link_from_stack: DashRemovedLinkFromStackType
+    :ivar EventType.dash_removed_shared_link_to_stack:
+        (dash) Removed a shared link to a stack
+    :vartype EventType.dash_removed_shared_link_to_stack: DashRemovedSharedLinkToStackType
+    :ivar EventType.dash_removed_team_email_domain_allowlist:
+        (dash) Admin removed an email domain from the team allowlist
+    :vartype EventType.dash_removed_team_email_domain_allowlist: DashRemovedTeamEmailDomainAllowlistType
+    :ivar EventType.dash_renamed_stack:
+        (dash) Renamed a stack
+    :vartype EventType.dash_renamed_stack: DashRenamedStackType
+    :ivar EventType.dash_shared_link_to_stack:
+        (dash) Shared a link to a stack
+    :vartype EventType.dash_shared_link_to_stack: DashSharedLinkToStackType
+    :ivar EventType.dash_unarchived_stack:
+        (dash) Unarchived a stack
+    :vartype EventType.dash_unarchived_stack: DashUnarchivedStackType
+    :ivar EventType.dash_viewed_company_stack:
+        (dash) Member viewed a company stack
+    :vartype EventType.dash_viewed_company_stack: DashViewedCompanyStackType
+    :ivar EventType.dash_viewed_external_ai_activity_report:
+        (dash) Admin viewed the external AI activity report
+    :vartype EventType.dash_viewed_external_ai_activity_report: DashViewedExternalAiActivityReportType
+    :ivar EventType.governance_policy_add_folders:
+        (data_governance) Added folders to policy
+    :vartype EventType.governance_policy_add_folders: GovernancePolicyAddFoldersType
+    :ivar EventType.governance_policy_add_folder_failed:
+        (data_governance) Couldn't add a folder to a policy
+    :vartype EventType.governance_policy_add_folder_failed: GovernancePolicyAddFolderFailedType
+    :ivar EventType.governance_policy_content_disposed:
+        (data_governance) Content disposed
+    :vartype EventType.governance_policy_content_disposed: GovernancePolicyContentDisposedType
+    :ivar EventType.governance_policy_create:
         (data_governance) Activated a new policy
-    :ivar GovernancePolicyDeleteType EventType.governance_policy_delete:
+    :vartype EventType.governance_policy_create: GovernancePolicyCreateType
+    :ivar EventType.governance_policy_delete:
         (data_governance) Deleted a policy
-    :ivar GovernancePolicyEditDetailsType
-        EventType.governance_policy_edit_details: (data_governance) Edited
-        policy
-    :ivar GovernancePolicyEditDurationType
-        EventType.governance_policy_edit_duration: (data_governance) Changed
-        policy duration
-    :ivar GovernancePolicyExportCreatedType
-        EventType.governance_policy_export_created: (data_governance) Created a
-        policy download
-    :ivar GovernancePolicyExportRemovedType
-        EventType.governance_policy_export_removed: (data_governance) Removed a
-        policy download
-    :ivar GovernancePolicyRemoveFoldersType
-        EventType.governance_policy_remove_folders: (data_governance) Removed
-        folders from policy
-    :ivar GovernancePolicyReportCreatedType
-        EventType.governance_policy_report_created: (data_governance) Created a
-        summary report for a policy
-    :ivar GovernancePolicyZipPartDownloadedType
-        EventType.governance_policy_zip_part_downloaded: (data_governance)
-        Downloaded content from a policy
-    :ivar LegalHoldsActivateAHoldType EventType.legal_holds_activate_a_hold:
+    :vartype EventType.governance_policy_delete: GovernancePolicyDeleteType
+    :ivar EventType.governance_policy_edit_details:
+        (data_governance) Edited policy
+    :vartype EventType.governance_policy_edit_details: GovernancePolicyEditDetailsType
+    :ivar EventType.governance_policy_edit_duration:
+        (data_governance) Changed policy duration
+    :vartype EventType.governance_policy_edit_duration: GovernancePolicyEditDurationType
+    :ivar EventType.governance_policy_export_created:
+        (data_governance) Created a policy download
+    :vartype EventType.governance_policy_export_created: GovernancePolicyExportCreatedType
+    :ivar EventType.governance_policy_export_removed:
+        (data_governance) Removed a policy download
+    :vartype EventType.governance_policy_export_removed: GovernancePolicyExportRemovedType
+    :ivar EventType.governance_policy_remove_folders:
+        (data_governance) Removed folders from policy
+    :vartype EventType.governance_policy_remove_folders: GovernancePolicyRemoveFoldersType
+    :ivar EventType.governance_policy_report_created:
+        (data_governance) Created a summary report for a policy
+    :vartype EventType.governance_policy_report_created: GovernancePolicyReportCreatedType
+    :ivar EventType.governance_policy_zip_part_downloaded:
+        (data_governance) Downloaded content from a policy
+    :vartype EventType.governance_policy_zip_part_downloaded: GovernancePolicyZipPartDownloadedType
+    :ivar EventType.legal_holds_activate_a_hold:
         (data_governance) Activated a hold
-    :ivar LegalHoldsAddMembersType EventType.legal_holds_add_members:
+    :vartype EventType.legal_holds_activate_a_hold: LegalHoldsActivateAHoldType
+    :ivar EventType.legal_holds_add_members:
         (data_governance) Added members to a hold
-    :ivar LegalHoldsChangeHoldDetailsType
-        EventType.legal_holds_change_hold_details: (data_governance) Edited
-        details for a hold
-    :ivar LegalHoldsChangeHoldNameType EventType.legal_holds_change_hold_name:
+    :vartype EventType.legal_holds_add_members: LegalHoldsAddMembersType
+    :ivar EventType.legal_holds_change_hold_details:
+        (data_governance) Edited details for a hold
+    :vartype EventType.legal_holds_change_hold_details: LegalHoldsChangeHoldDetailsType
+    :ivar EventType.legal_holds_change_hold_name:
         (data_governance) Renamed a hold
-    :ivar LegalHoldsExportAHoldType EventType.legal_holds_export_a_hold:
+    :vartype EventType.legal_holds_change_hold_name: LegalHoldsChangeHoldNameType
+    :ivar EventType.legal_holds_export_a_hold:
         (data_governance) Exported hold
-    :ivar LegalHoldsExportCancelledType EventType.legal_holds_export_cancelled:
+    :vartype EventType.legal_holds_export_a_hold: LegalHoldsExportAHoldType
+    :ivar EventType.legal_holds_export_cancelled:
         (data_governance) Canceled export for a hold
-    :ivar LegalHoldsExportDownloadedType
-        EventType.legal_holds_export_downloaded: (data_governance) Downloaded
-        export for a hold
-    :ivar LegalHoldsExportRemovedType EventType.legal_holds_export_removed:
+    :vartype EventType.legal_holds_export_cancelled: LegalHoldsExportCancelledType
+    :ivar EventType.legal_holds_export_downloaded:
+        (data_governance) Downloaded export for a hold
+    :vartype EventType.legal_holds_export_downloaded: LegalHoldsExportDownloadedType
+    :ivar EventType.legal_holds_export_removed:
         (data_governance) Removed export for a hold
-    :ivar LegalHoldsReleaseAHoldType EventType.legal_holds_release_a_hold:
+    :vartype EventType.legal_holds_export_removed: LegalHoldsExportRemovedType
+    :ivar EventType.legal_holds_release_a_hold:
         (data_governance) Released a hold
-    :ivar LegalHoldsRemoveMembersType EventType.legal_holds_remove_members:
+    :vartype EventType.legal_holds_release_a_hold: LegalHoldsReleaseAHoldType
+    :ivar EventType.legal_holds_remove_members:
         (data_governance) Removed members from a hold
-    :ivar LegalHoldsReportAHoldType EventType.legal_holds_report_a_hold:
+    :vartype EventType.legal_holds_remove_members: LegalHoldsRemoveMembersType
+    :ivar EventType.legal_holds_report_a_hold:
         (data_governance) Created a summary report for a hold
-    :ivar DeviceChangeIpDesktopType EventType.device_change_ip_desktop:
+    :vartype EventType.legal_holds_report_a_hold: LegalHoldsReportAHoldType
+    :ivar EventType.device_change_ip_desktop:
         (devices) Changed IP address associated with active desktop session
-    :ivar DeviceChangeIpMobileType EventType.device_change_ip_mobile: (devices)
-        Changed IP address associated with active mobile session
-    :ivar DeviceChangeIpWebType EventType.device_change_ip_web: (devices)
-        Changed IP address associated with active web session
-    :ivar DeviceDeleteOnUnlinkFailType EventType.device_delete_on_unlink_fail:
+    :vartype EventType.device_change_ip_desktop: DeviceChangeIpDesktopType
+    :ivar EventType.device_change_ip_mobile:
+        (devices) Changed IP address associated with active mobile session
+    :vartype EventType.device_change_ip_mobile: DeviceChangeIpMobileType
+    :ivar EventType.device_change_ip_web:
+        (devices) Changed IP address associated with active web session
+    :vartype EventType.device_change_ip_web: DeviceChangeIpWebType
+    :ivar EventType.device_delete_on_unlink_fail:
         (devices) Failed to delete all files from unlinked device
-    :ivar DeviceDeleteOnUnlinkSuccessType
-        EventType.device_delete_on_unlink_success: (devices) Deleted all files
-        from unlinked device
-    :ivar DeviceLinkFailType EventType.device_link_fail: (devices) Failed to
-        link device
-    :ivar DeviceLinkSuccessType EventType.device_link_success: (devices) Linked
-        device
-    :ivar DeviceManagementDisabledType EventType.device_management_disabled:
+    :vartype EventType.device_delete_on_unlink_fail: DeviceDeleteOnUnlinkFailType
+    :ivar EventType.device_delete_on_unlink_success:
+        (devices) Deleted all files from unlinked device
+    :vartype EventType.device_delete_on_unlink_success: DeviceDeleteOnUnlinkSuccessType
+    :ivar EventType.device_link_fail:
+        (devices) Failed to link device
+    :vartype EventType.device_link_fail: DeviceLinkFailType
+    :ivar EventType.device_link_success:
+        (devices) Linked device
+    :vartype EventType.device_link_success: DeviceLinkSuccessType
+    :ivar EventType.device_management_disabled:
         (devices) Disabled device management (deprecated, no longer logged)
-    :ivar DeviceManagementEnabledType EventType.device_management_enabled:
+    :vartype EventType.device_management_disabled: DeviceManagementDisabledType
+    :ivar EventType.device_management_enabled:
         (devices) Enabled device management (deprecated, no longer logged)
-    :ivar DeviceSyncBackupStatusChangedType
-        EventType.device_sync_backup_status_changed: (devices) Enabled/disabled
-        backup for computer
-    :ivar DeviceUnlinkType EventType.device_unlink: (devices) Disconnected
-        device
-    :ivar DropboxPasswordsExportedType EventType.dropbox_passwords_exported:
+    :vartype EventType.device_management_enabled: DeviceManagementEnabledType
+    :ivar EventType.device_sync_backup_status_changed:
+        (devices) Enabled/disabled backup for computer
+    :vartype EventType.device_sync_backup_status_changed: DeviceSyncBackupStatusChangedType
+    :ivar EventType.device_unlink:
+        (devices) Disconnected device
+    :vartype EventType.device_unlink: DeviceUnlinkType
+    :ivar EventType.dropbox_passwords_exported:
         (devices) Exported passwords
-    :ivar DropboxPasswordsNewDeviceEnrolledType
-        EventType.dropbox_passwords_new_device_enrolled: (devices) Enrolled new
-        Dropbox Passwords device
-    :ivar EmmRefreshAuthTokenType EventType.emm_refresh_auth_token: (devices)
-        Refreshed auth token used for setting up EMM
-    :ivar ExternalDriveBackupEligibilityStatusCheckedType
-        EventType.external_drive_backup_eligibility_status_checked: (devices)
-        Checked external drive backup eligibility status
-    :ivar ExternalDriveBackupStatusChangedType
-        EventType.external_drive_backup_status_changed: (devices) Modified
-        external drive backup
-    :ivar AccountCaptureChangeAvailabilityType
-        EventType.account_capture_change_availability: (domains) Granted/revoked
-        option to enable account capture on team domains
-    :ivar AccountCaptureMigrateAccountType
-        EventType.account_capture_migrate_account: (domains) Account-captured
-        user migrated account to team
-    :ivar AccountCaptureNotificationEmailsSentType
-        EventType.account_capture_notification_emails_sent: (domains) Sent
-        account capture email to all unmanaged members
-    :ivar AccountCaptureRelinquishAccountType
-        EventType.account_capture_relinquish_account: (domains) Account-captured
-        user changed account email to personal email
-    :ivar DisabledDomainInvitesType EventType.disabled_domain_invites: (domains)
-        Disabled domain invites (deprecated, no longer logged)
-    :ivar DomainInvitesApproveRequestToJoinTeamType
-        EventType.domain_invites_approve_request_to_join_team: (domains)
-        Approved user's request to join team
-    :ivar DomainInvitesDeclineRequestToJoinTeamType
-        EventType.domain_invites_decline_request_to_join_team: (domains)
-        Declined user's request to join team
-    :ivar DomainInvitesEmailExistingUsersType
-        EventType.domain_invites_email_existing_users: (domains) Sent domain
-        invites to existing domain accounts (deprecated, no longer logged)
-    :ivar DomainInvitesRequestToJoinTeamType
-        EventType.domain_invites_request_to_join_team: (domains) Requested to
-        join team
-    :ivar DomainInvitesSetInviteNewUserPrefToNoType
-        EventType.domain_invites_set_invite_new_user_pref_to_no: (domains)
-        Disabled "Automatically invite new users" (deprecated, no longer logged)
-    :ivar DomainInvitesSetInviteNewUserPrefToYesType
-        EventType.domain_invites_set_invite_new_user_pref_to_yes: (domains)
-        Enabled "Automatically invite new users" (deprecated, no longer logged)
-    :ivar DomainVerificationAddDomainFailType
-        EventType.domain_verification_add_domain_fail: (domains) Failed to
-        verify team domain
-    :ivar DomainVerificationAddDomainSuccessType
-        EventType.domain_verification_add_domain_success: (domains) Verified
-        team domain
-    :ivar DomainVerificationRemoveDomainType
-        EventType.domain_verification_remove_domain: (domains) Removed domain
-        from list of verified team domains
-    :ivar EnabledDomainInvitesType EventType.enabled_domain_invites: (domains)
-        Enabled domain invites (deprecated, no longer logged)
-    :ivar EncryptedFolderCancelTeamKeyRotationType
-        EventType.encrypted_folder_cancel_team_key_rotation: (encryption)
-        Canceled team key rotation
-    :ivar EncryptedFolderEnrollBackupKeyType
-        EventType.encrypted_folder_enroll_backup_key: (encryption) Added
-        recovery key
-    :ivar EncryptedFolderEnrollClientType
-        EventType.encrypted_folder_enroll_client: (encryption) Enrolled device
-    :ivar EncryptedFolderEnrollTeamType EventType.encrypted_folder_enroll_team:
+    :vartype EventType.dropbox_passwords_exported: DropboxPasswordsExportedType
+    :ivar EventType.dropbox_passwords_new_device_enrolled:
+        (devices) Enrolled new Dropbox Passwords device
+    :vartype EventType.dropbox_passwords_new_device_enrolled: DropboxPasswordsNewDeviceEnrolledType
+    :ivar EventType.emm_refresh_auth_token:
+        (devices) Refreshed auth token used for setting up EMM
+    :vartype EventType.emm_refresh_auth_token: EmmRefreshAuthTokenType
+    :ivar EventType.external_drive_backup_eligibility_status_checked:
+        (devices) Checked external drive backup eligibility status
+    :vartype EventType.external_drive_backup_eligibility_status_checked: ExternalDriveBackupEligibilityStatusCheckedType
+    :ivar EventType.external_drive_backup_status_changed:
+        (devices) Modified external drive backup
+    :vartype EventType.external_drive_backup_status_changed: ExternalDriveBackupStatusChangedType
+    :ivar EventType.account_capture_change_availability:
+        (domains) Granted/revoked option to enable account capture on team
+        domains
+    :vartype EventType.account_capture_change_availability: AccountCaptureChangeAvailabilityType
+    :ivar EventType.account_capture_migrate_account:
+        (domains) Account-captured user migrated account to team
+    :vartype EventType.account_capture_migrate_account: AccountCaptureMigrateAccountType
+    :ivar EventType.account_capture_notification_emails_sent:
+        (domains) Sent account capture email to all unmanaged members
+    :vartype EventType.account_capture_notification_emails_sent: AccountCaptureNotificationEmailsSentType
+    :ivar EventType.account_capture_relinquish_account:
+        (domains) Account-captured user changed account email to personal email
+    :vartype EventType.account_capture_relinquish_account: AccountCaptureRelinquishAccountType
+    :ivar EventType.disabled_domain_invites:
+        (domains) Disabled domain invites (deprecated, no longer logged)
+    :vartype EventType.disabled_domain_invites: DisabledDomainInvitesType
+    :ivar EventType.domain_invites_approve_request_to_join_team:
+        (domains) Approved user's request to join team
+    :vartype EventType.domain_invites_approve_request_to_join_team: DomainInvitesApproveRequestToJoinTeamType
+    :ivar EventType.domain_invites_decline_request_to_join_team:
+        (domains) Declined user's request to join team
+    :vartype EventType.domain_invites_decline_request_to_join_team: DomainInvitesDeclineRequestToJoinTeamType
+    :ivar EventType.domain_invites_email_existing_users:
+        (domains) Sent domain invites to existing domain accounts (deprecated,
+        no longer logged)
+    :vartype EventType.domain_invites_email_existing_users: DomainInvitesEmailExistingUsersType
+    :ivar EventType.domain_invites_request_to_join_team:
+        (domains) Requested to join team
+    :vartype EventType.domain_invites_request_to_join_team: DomainInvitesRequestToJoinTeamType
+    :ivar EventType.domain_invites_set_invite_new_user_pref_to_no:
+        (domains) Disabled "Automatically invite new users" (deprecated, no
+        longer logged)
+    :vartype EventType.domain_invites_set_invite_new_user_pref_to_no: DomainInvitesSetInviteNewUserPrefToNoType
+    :ivar EventType.domain_invites_set_invite_new_user_pref_to_yes:
+        (domains) Enabled "Automatically invite new users" (deprecated, no
+        longer logged)
+    :vartype EventType.domain_invites_set_invite_new_user_pref_to_yes: DomainInvitesSetInviteNewUserPrefToYesType
+    :ivar EventType.domain_verification_add_domain_fail:
+        (domains) Failed to verify team domain
+    :vartype EventType.domain_verification_add_domain_fail: DomainVerificationAddDomainFailType
+    :ivar EventType.domain_verification_add_domain_success:
+        (domains) Verified team domain
+    :vartype EventType.domain_verification_add_domain_success: DomainVerificationAddDomainSuccessType
+    :ivar EventType.domain_verification_remove_domain:
+        (domains) Removed domain from list of verified team domains
+    :vartype EventType.domain_verification_remove_domain: DomainVerificationRemoveDomainType
+    :ivar EventType.enabled_domain_invites:
+        (domains) Enabled domain invites (deprecated, no longer logged)
+    :vartype EventType.enabled_domain_invites: EnabledDomainInvitesType
+    :ivar EventType.encrypted_folder_cancel_team_key_rotation:
+        (encryption) Canceled team key rotation
+    :vartype EventType.encrypted_folder_cancel_team_key_rotation: EncryptedFolderCancelTeamKeyRotationType
+    :ivar EventType.encrypted_folder_enroll_backup_key:
+        (encryption) Added recovery key
+    :vartype EventType.encrypted_folder_enroll_backup_key: EncryptedFolderEnrollBackupKeyType
+    :ivar EventType.encrypted_folder_enroll_client:
+        (encryption) Enrolled device
+    :vartype EventType.encrypted_folder_enroll_client: EncryptedFolderEnrollClientType
+    :ivar EventType.encrypted_folder_enroll_team:
         (encryption) Activated team folder encryption
-    :ivar EncryptedFolderFinishTeamUnenrollmentType
-        EventType.encrypted_folder_finish_team_unenrollment: (encryption)
-        Deactivated team folder encryption
-    :ivar EncryptedFolderInitTeamKeyRotationType
-        EventType.encrypted_folder_init_team_key_rotation: (encryption)
-        Initiated team key rotation
-    :ivar EncryptedFolderInitTeamUnenrollmentType
-        EventType.encrypted_folder_init_team_unenrollment: (encryption)
-        Initiated deactivation of team folder encryption
-    :ivar EncryptedFolderRemoveBackupKeyType
-        EventType.encrypted_folder_remove_backup_key: (encryption) Removed
-        recovery key
-    :ivar EncryptedFolderRotateTeamKeyType
-        EventType.encrypted_folder_rotate_team_key: (encryption) Rotated team
-        key
-    :ivar EncryptedFolderUnenrollClientType
-        EventType.encrypted_folder_unenroll_client: (encryption) Unenrolled
-        device
-    :ivar TeamEncryptionKeyActivateKeyType
-        EventType.team_encryption_key_activate_key: (encryption) Activated team
-        encryption key
-    :ivar TeamEncryptionKeyCancelKeyDeletionType
-        EventType.team_encryption_key_cancel_key_deletion: (encryption) Canceled
-        team encryption key deletion
-    :ivar TeamEncryptionKeyCreateKeyType
-        EventType.team_encryption_key_create_key: (encryption) Created team
-        encryption key
-    :ivar TeamEncryptionKeyDeactivateKeyType
-        EventType.team_encryption_key_deactivate_key: (encryption) Deactivated
-        team encryption key
-    :ivar TeamEncryptionKeyDeleteKeyType
-        EventType.team_encryption_key_delete_key: (encryption) Deleted team
-        encryption key
-    :ivar TeamEncryptionKeyDisableKeyType
-        EventType.team_encryption_key_disable_key: (encryption) Disabled team
-        encryption key
-    :ivar TeamEncryptionKeyEnableKeyType
-        EventType.team_encryption_key_enable_key: (encryption) Enabled team
-        encryption key
-    :ivar TeamEncryptionKeyRotateKeyType
-        EventType.team_encryption_key_rotate_key: (encryption) Rotated team
-        encryption key (deprecated, no longer logged)
-    :ivar TeamEncryptionKeyScheduleKeyDeletionType
-        EventType.team_encryption_key_schedule_key_deletion: (encryption)
-        Scheduled encryption key deletion
-    :ivar ApplyNamingConventionType EventType.apply_naming_convention:
+    :vartype EventType.encrypted_folder_enroll_team: EncryptedFolderEnrollTeamType
+    :ivar EventType.encrypted_folder_finish_team_unenrollment:
+        (encryption) Deactivated team folder encryption
+    :vartype EventType.encrypted_folder_finish_team_unenrollment: EncryptedFolderFinishTeamUnenrollmentType
+    :ivar EventType.encrypted_folder_init_team_key_rotation:
+        (encryption) Initiated team key rotation
+    :vartype EventType.encrypted_folder_init_team_key_rotation: EncryptedFolderInitTeamKeyRotationType
+    :ivar EventType.encrypted_folder_init_team_unenrollment:
+        (encryption) Initiated deactivation of team folder encryption
+    :vartype EventType.encrypted_folder_init_team_unenrollment: EncryptedFolderInitTeamUnenrollmentType
+    :ivar EventType.encrypted_folder_remove_backup_key:
+        (encryption) Removed recovery key
+    :vartype EventType.encrypted_folder_remove_backup_key: EncryptedFolderRemoveBackupKeyType
+    :ivar EventType.encrypted_folder_rotate_team_key:
+        (encryption) Rotated team key
+    :vartype EventType.encrypted_folder_rotate_team_key: EncryptedFolderRotateTeamKeyType
+    :ivar EventType.encrypted_folder_unenroll_client:
+        (encryption) Unenrolled device
+    :vartype EventType.encrypted_folder_unenroll_client: EncryptedFolderUnenrollClientType
+    :ivar EventType.team_encryption_key_activate_key:
+        (encryption) Activated team encryption key
+    :vartype EventType.team_encryption_key_activate_key: TeamEncryptionKeyActivateKeyType
+    :ivar EventType.team_encryption_key_cancel_key_deletion:
+        (encryption) Canceled team encryption key deletion
+    :vartype EventType.team_encryption_key_cancel_key_deletion: TeamEncryptionKeyCancelKeyDeletionType
+    :ivar EventType.team_encryption_key_create_key:
+        (encryption) Created team encryption key
+    :vartype EventType.team_encryption_key_create_key: TeamEncryptionKeyCreateKeyType
+    :ivar EventType.team_encryption_key_deactivate_key:
+        (encryption) Deactivated team encryption key
+    :vartype EventType.team_encryption_key_deactivate_key: TeamEncryptionKeyDeactivateKeyType
+    :ivar EventType.team_encryption_key_delete_key:
+        (encryption) Deleted team encryption key
+    :vartype EventType.team_encryption_key_delete_key: TeamEncryptionKeyDeleteKeyType
+    :ivar EventType.team_encryption_key_disable_key:
+        (encryption) Disabled team encryption key
+    :vartype EventType.team_encryption_key_disable_key: TeamEncryptionKeyDisableKeyType
+    :ivar EventType.team_encryption_key_enable_key:
+        (encryption) Enabled team encryption key
+    :vartype EventType.team_encryption_key_enable_key: TeamEncryptionKeyEnableKeyType
+    :ivar EventType.team_encryption_key_rotate_key:
+        (encryption) Rotated team encryption key (deprecated, no longer logged)
+    :vartype EventType.team_encryption_key_rotate_key: TeamEncryptionKeyRotateKeyType
+    :ivar EventType.team_encryption_key_schedule_key_deletion:
+        (encryption) Scheduled encryption key deletion
+    :vartype EventType.team_encryption_key_schedule_key_deletion: TeamEncryptionKeyScheduleKeyDeletionType
+    :ivar EventType.apply_naming_convention:
         (file_operations) Applied naming convention
-    :ivar CreateFolderType EventType.create_folder: (file_operations) Created
-        folders (deprecated, no longer logged)
-    :ivar FileAddType EventType.file_add: (file_operations) Added files and/or
-        folders
-    :ivar FileAddFromAutomationType EventType.file_add_from_automation:
+    :vartype EventType.apply_naming_convention: ApplyNamingConventionType
+    :ivar EventType.create_folder:
+        (file_operations) Created folders (deprecated, no longer logged)
+    :vartype EventType.create_folder: CreateFolderType
+    :ivar EventType.file_add:
+        (file_operations) Added files and/or folders
+    :vartype EventType.file_add: FileAddType
+    :ivar EventType.file_add_from_automation:
         (file_operations) Added files and/or folders from automation
-    :ivar FileCopyType EventType.file_copy: (file_operations) Copied files
-        and/or folders
-    :ivar FileDeleteType EventType.file_delete: (file_operations) Deleted files
-        and/or folders
-    :ivar FileDownloadType EventType.file_download: (file_operations) Downloaded
-        files and/or folders
-    :ivar FileEditType EventType.file_edit: (file_operations) Edited files
-    :ivar FileGetCopyReferenceType EventType.file_get_copy_reference:
+    :vartype EventType.file_add_from_automation: FileAddFromAutomationType
+    :ivar EventType.file_copy:
+        (file_operations) Copied files and/or folders
+    :vartype EventType.file_copy: FileCopyType
+    :ivar EventType.file_delete:
+        (file_operations) Deleted files and/or folders
+    :vartype EventType.file_delete: FileDeleteType
+    :ivar EventType.file_download:
+        (file_operations) Downloaded files and/or folders
+    :vartype EventType.file_download: FileDownloadType
+    :ivar EventType.file_edit:
+        (file_operations) Edited files
+    :vartype EventType.file_edit: FileEditType
+    :ivar EventType.file_get_copy_reference:
         (file_operations) Created copy reference to file/folder
-    :ivar FileLockingLockStatusChangedType
-        EventType.file_locking_lock_status_changed: (file_operations)
-        Locked/unlocked editing for a file
-    :ivar FileMoveType EventType.file_move: (file_operations) Moved files and/or
-        folders
-    :ivar FilePermanentlyDeleteType EventType.file_permanently_delete:
+    :vartype EventType.file_get_copy_reference: FileGetCopyReferenceType
+    :ivar EventType.file_locking_lock_status_changed:
+        (file_operations) Locked/unlocked editing for a file
+    :vartype EventType.file_locking_lock_status_changed: FileLockingLockStatusChangedType
+    :ivar EventType.file_move:
+        (file_operations) Moved files and/or folders
+    :vartype EventType.file_move: FileMoveType
+    :ivar EventType.file_permanently_delete:
         (file_operations) Permanently deleted files and/or folders
-    :ivar FilePreviewType EventType.file_preview: (file_operations) Previewed
-        files and/or folders
-    :ivar FileRenameType EventType.file_rename: (file_operations) Renamed files
-        and/or folders
-    :ivar FileRestoreType EventType.file_restore: (file_operations) Restored
-        deleted files and/or folders
-    :ivar FileRevertType EventType.file_revert: (file_operations) Reverted files
-        to previous version
-    :ivar FileRollbackChangesType EventType.file_rollback_changes:
+    :vartype EventType.file_permanently_delete: FilePermanentlyDeleteType
+    :ivar EventType.file_preview:
+        (file_operations) Previewed files and/or folders
+    :vartype EventType.file_preview: FilePreviewType
+    :ivar EventType.file_rename:
+        (file_operations) Renamed files and/or folders
+    :vartype EventType.file_rename: FileRenameType
+    :ivar EventType.file_restore:
+        (file_operations) Restored deleted files and/or folders
+    :vartype EventType.file_restore: FileRestoreType
+    :ivar EventType.file_revert:
+        (file_operations) Reverted files to previous version
+    :vartype EventType.file_revert: FileRevertType
+    :ivar EventType.file_rollback_changes:
         (file_operations) Rolled back file actions
-    :ivar FileSaveCopyReferenceType EventType.file_save_copy_reference:
+    :vartype EventType.file_rollback_changes: FileRollbackChangesType
+    :ivar EventType.file_save_copy_reference:
         (file_operations) Saved file/folder using copy reference
-    :ivar FolderOverviewDescriptionChangedType
-        EventType.folder_overview_description_changed: (file_operations) Updated
-        folder overview
-    :ivar FolderOverviewItemPinnedType EventType.folder_overview_item_pinned:
+    :vartype EventType.file_save_copy_reference: FileSaveCopyReferenceType
+    :ivar EventType.folder_overview_description_changed:
+        (file_operations) Updated folder overview
+    :vartype EventType.folder_overview_description_changed: FolderOverviewDescriptionChangedType
+    :ivar EventType.folder_overview_item_pinned:
         (file_operations) Pinned item to folder overview
-    :ivar FolderOverviewItemUnpinnedType
-        EventType.folder_overview_item_unpinned: (file_operations) Unpinned item
-        from folder overview
-    :ivar MediaHubFileDownloadedType EventType.media_hub_file_downloaded:
+    :vartype EventType.folder_overview_item_pinned: FolderOverviewItemPinnedType
+    :ivar EventType.folder_overview_item_unpinned:
+        (file_operations) Unpinned item from folder overview
+    :vartype EventType.folder_overview_item_unpinned: FolderOverviewItemUnpinnedType
+    :ivar EventType.media_hub_file_downloaded:
         (file_operations) Downloaded files in Media Hub
-    :ivar ObjectLabelAddedType EventType.object_label_added: (file_operations)
-        Added a label
-    :ivar ObjectLabelRemovedType EventType.object_label_removed:
+    :vartype EventType.media_hub_file_downloaded: MediaHubFileDownloadedType
+    :ivar EventType.object_label_added:
+        (file_operations) Added a label
+    :vartype EventType.object_label_added: ObjectLabelAddedType
+    :ivar EventType.object_label_removed:
         (file_operations) Removed a label
-    :ivar ObjectLabelUpdatedValueType EventType.object_label_updated_value:
+    :vartype EventType.object_label_removed: ObjectLabelRemovedType
+    :ivar EventType.object_label_updated_value:
         (file_operations) Updated a label's value
-    :ivar OrganizeFolderWithTidyType EventType.organize_folder_with_tidy:
+    :vartype EventType.object_label_updated_value: ObjectLabelUpdatedValueType
+    :ivar EventType.organize_folder_with_tidy:
         (file_operations) Organized a folder with multi-file organize
-    :ivar ReplayFileDeleteType EventType.replay_file_delete: (file_operations)
-        Deleted files in Replay
-    :ivar ReplayFileDownloadedType EventType.replay_file_downloaded:
+    :vartype EventType.organize_folder_with_tidy: OrganizeFolderWithTidyType
+    :ivar EventType.replay_file_delete:
+        (file_operations) Deleted files in Replay
+    :vartype EventType.replay_file_delete: ReplayFileDeleteType
+    :ivar EventType.replay_file_downloaded:
         (file_operations) Downloaded files in Replay
-    :ivar ReplayTeamProjectCreatedType EventType.replay_team_project_created:
+    :vartype EventType.replay_file_downloaded: ReplayFileDownloadedType
+    :ivar EventType.replay_team_project_created:
         (file_operations) Created a team project in Replay
-    :ivar RewindFolderType EventType.rewind_folder: (file_operations) Rewound a
-        folder
-    :ivar UndoNamingConventionType EventType.undo_naming_convention:
+    :vartype EventType.replay_team_project_created: ReplayTeamProjectCreatedType
+    :ivar EventType.rewind_folder:
+        (file_operations) Rewound a folder
+    :vartype EventType.rewind_folder: RewindFolderType
+    :ivar EventType.undo_naming_convention:
         (file_operations) Reverted naming convention
-    :ivar UndoOrganizeFolderWithTidyType
-        EventType.undo_organize_folder_with_tidy: (file_operations) Removed
-        multi-file organize
-    :ivar UserTagsAddedType EventType.user_tags_added: (file_operations) Tagged
-        a file
-    :ivar UserTagsRemovedType EventType.user_tags_removed: (file_operations)
-        Removed tags
-    :ivar EmailIngestReceiveFileType EventType.email_ingest_receive_file:
+    :vartype EventType.undo_naming_convention: UndoNamingConventionType
+    :ivar EventType.undo_organize_folder_with_tidy:
+        (file_operations) Removed multi-file organize
+    :vartype EventType.undo_organize_folder_with_tidy: UndoOrganizeFolderWithTidyType
+    :ivar EventType.user_tags_added:
+        (file_operations) Tagged a file
+    :vartype EventType.user_tags_added: UserTagsAddedType
+    :ivar EventType.user_tags_removed:
+        (file_operations) Removed tags
+    :vartype EventType.user_tags_removed: UserTagsRemovedType
+    :ivar EventType.email_ingest_receive_file:
         (file_requests) Received files via Email to Dropbox
-    :ivar FileRequestAutoCloseType EventType.file_request_auto_close:
+    :vartype EventType.email_ingest_receive_file: EmailIngestReceiveFileType
+    :ivar EventType.file_request_auto_close:
         (file_requests) Auto closed file request
-    :ivar FileRequestChangeType EventType.file_request_change: (file_requests)
-        Changed file request
-    :ivar FileRequestCloseType EventType.file_request_close: (file_requests)
-        Closed file request
-    :ivar FileRequestCreateType EventType.file_request_create: (file_requests)
-        Created file request
-    :ivar FileRequestDeleteType EventType.file_request_delete: (file_requests)
-        Delete file request
-    :ivar FileRequestReceiveFileType EventType.file_request_receive_file:
+    :vartype EventType.file_request_auto_close: FileRequestAutoCloseType
+    :ivar EventType.file_request_change:
+        (file_requests) Changed file request
+    :vartype EventType.file_request_change: FileRequestChangeType
+    :ivar EventType.file_request_close:
+        (file_requests) Closed file request
+    :vartype EventType.file_request_close: FileRequestCloseType
+    :ivar EventType.file_request_create:
+        (file_requests) Created file request
+    :vartype EventType.file_request_create: FileRequestCreateType
+    :ivar EventType.file_request_delete:
+        (file_requests) Delete file request
+    :vartype EventType.file_request_delete: FileRequestDeleteType
+    :ivar EventType.file_request_receive_file:
         (file_requests) Received files for file request
-    :ivar GroupAddExternalIdType EventType.group_add_external_id: (groups) Added
-        external ID for group
-    :ivar GroupAddMemberType EventType.group_add_member: (groups) Added team
-        members to group
-    :ivar GroupChangeExternalIdType EventType.group_change_external_id: (groups)
-        Changed external ID for group
-    :ivar GroupChangeManagementTypeType EventType.group_change_management_type:
+    :vartype EventType.file_request_receive_file: FileRequestReceiveFileType
+    :ivar EventType.group_add_external_id:
+        (groups) Added external ID for group
+    :vartype EventType.group_add_external_id: GroupAddExternalIdType
+    :ivar EventType.group_add_member:
+        (groups) Added team members to group
+    :vartype EventType.group_add_member: GroupAddMemberType
+    :ivar EventType.group_change_external_id:
+        (groups) Changed external ID for group
+    :vartype EventType.group_change_external_id: GroupChangeExternalIdType
+    :ivar EventType.group_change_management_type:
         (groups) Changed group management type
-    :ivar GroupChangeMemberRoleType EventType.group_change_member_role: (groups)
-        Changed manager permissions of group member
-    :ivar GroupCreateType EventType.group_create: (groups) Created group
-    :ivar GroupDeleteType EventType.group_delete: (groups) Deleted group
-    :ivar GroupDescriptionUpdatedType EventType.group_description_updated:
+    :vartype EventType.group_change_management_type: GroupChangeManagementTypeType
+    :ivar EventType.group_change_member_role:
+        (groups) Changed manager permissions of group member
+    :vartype EventType.group_change_member_role: GroupChangeMemberRoleType
+    :ivar EventType.group_create:
+        (groups) Created group
+    :vartype EventType.group_create: GroupCreateType
+    :ivar EventType.group_delete:
+        (groups) Deleted group
+    :vartype EventType.group_delete: GroupDeleteType
+    :ivar EventType.group_description_updated:
         (groups) Updated group (deprecated, no longer logged)
-    :ivar GroupExternalSharingSettingOverrideChangedType
-        EventType.group_external_sharing_setting_override_changed: (groups)
-        Changed group's external sharing setting
-    :ivar GroupJoinPolicyUpdatedType EventType.group_join_policy_updated:
+    :vartype EventType.group_description_updated: GroupDescriptionUpdatedType
+    :ivar EventType.group_external_sharing_setting_override_changed:
+        (groups) Changed group's external sharing setting
+    :vartype EventType.group_external_sharing_setting_override_changed: GroupExternalSharingSettingOverrideChangedType
+    :ivar EventType.group_join_policy_updated:
         (groups) Updated group join policy (deprecated, no longer logged)
-    :ivar GroupMovedType EventType.group_moved: (groups) Moved group
-        (deprecated, no longer logged)
-    :ivar GroupRemoveExternalIdType EventType.group_remove_external_id: (groups)
-        Removed external ID for group
-    :ivar GroupRemoveMemberType EventType.group_remove_member: (groups) Removed
-        team members from group
-    :ivar GroupRenameType EventType.group_rename: (groups) Renamed group
-    :ivar AccountLockOrUnlockedType EventType.account_lock_or_unlocked: (logins)
-        Unlocked/locked account after failed sign in attempts
-    :ivar EmmErrorType EventType.emm_error: (logins) Failed to sign in via EMM
-        (deprecated, replaced by 'Failed to sign in')
-    :ivar GuestAdminSignedInViaTrustedTeamsType
-        EventType.guest_admin_signed_in_via_trusted_teams: (logins) Started
-        trusted team admin session
-    :ivar GuestAdminSignedOutViaTrustedTeamsType
-        EventType.guest_admin_signed_out_via_trusted_teams: (logins) Ended
-        trusted team admin session
-    :ivar LoginFailType EventType.login_fail: (logins) Failed to sign in
-    :ivar LoginSuccessType EventType.login_success: (logins) Signed in
-    :ivar LogoutType EventType.logout: (logins) Signed out
-    :ivar ResellerSupportSessionEndType EventType.reseller_support_session_end:
+    :vartype EventType.group_join_policy_updated: GroupJoinPolicyUpdatedType
+    :ivar EventType.group_moved:
+        (groups) Moved group (deprecated, no longer logged)
+    :vartype EventType.group_moved: GroupMovedType
+    :ivar EventType.group_remove_external_id:
+        (groups) Removed external ID for group
+    :vartype EventType.group_remove_external_id: GroupRemoveExternalIdType
+    :ivar EventType.group_remove_member:
+        (groups) Removed team members from group
+    :vartype EventType.group_remove_member: GroupRemoveMemberType
+    :ivar EventType.group_rename:
+        (groups) Renamed group
+    :vartype EventType.group_rename: GroupRenameType
+    :ivar EventType.account_lock_or_unlocked:
+        (logins) Unlocked/locked account after failed sign in attempts
+    :vartype EventType.account_lock_or_unlocked: AccountLockOrUnlockedType
+    :ivar EventType.emm_error:
+        (logins) Failed to sign in via EMM (deprecated, replaced by 'Failed to
+        sign in')
+    :vartype EventType.emm_error: EmmErrorType
+    :ivar EventType.guest_admin_signed_in_via_trusted_teams:
+        (logins) Started trusted team admin session
+    :vartype EventType.guest_admin_signed_in_via_trusted_teams: GuestAdminSignedInViaTrustedTeamsType
+    :ivar EventType.guest_admin_signed_out_via_trusted_teams:
+        (logins) Ended trusted team admin session
+    :vartype EventType.guest_admin_signed_out_via_trusted_teams: GuestAdminSignedOutViaTrustedTeamsType
+    :ivar EventType.login_fail:
+        (logins) Failed to sign in
+    :vartype EventType.login_fail: LoginFailType
+    :ivar EventType.login_success:
+        (logins) Signed in
+    :vartype EventType.login_success: LoginSuccessType
+    :ivar EventType.logout:
+        (logins) Signed out
+    :vartype EventType.logout: LogoutType
+    :ivar EventType.reseller_support_session_end:
         (logins) Ended reseller support session
-    :ivar ResellerSupportSessionStartType
-        EventType.reseller_support_session_start: (logins) Started reseller
-        support session
-    :ivar SignInAsSessionEndType EventType.sign_in_as_session_end: (logins)
-        Ended admin sign-in-as session
-    :ivar SignInAsSessionStartType EventType.sign_in_as_session_start: (logins)
-        Started admin sign-in-as session
-    :ivar SsoErrorType EventType.sso_error: (logins) Failed to sign in via SSO
-        (deprecated, replaced by 'Failed to sign in')
-    :ivar AddonAssignedType EventType.addon_assigned: (members) Add-on Assigned
-    :ivar AddonRemovedType EventType.addon_removed: (members) Add-on Removed
-    :ivar BackupAdminInvitationSentType EventType.backup_admin_invitation_sent:
+    :vartype EventType.reseller_support_session_end: ResellerSupportSessionEndType
+    :ivar EventType.reseller_support_session_start:
+        (logins) Started reseller support session
+    :vartype EventType.reseller_support_session_start: ResellerSupportSessionStartType
+    :ivar EventType.sign_in_as_session_end:
+        (logins) Ended admin sign-in-as session
+    :vartype EventType.sign_in_as_session_end: SignInAsSessionEndType
+    :ivar EventType.sign_in_as_session_start:
+        (logins) Started admin sign-in-as session
+    :vartype EventType.sign_in_as_session_start: SignInAsSessionStartType
+    :ivar EventType.sso_error:
+        (logins) Failed to sign in via SSO (deprecated, replaced by 'Failed to
+        sign in')
+    :vartype EventType.sso_error: SsoErrorType
+    :ivar EventType.addon_assigned:
+        (members) Add-on Assigned
+    :vartype EventType.addon_assigned: AddonAssignedType
+    :ivar EventType.addon_removed:
+        (members) Add-on Removed
+    :vartype EventType.addon_removed: AddonRemovedType
+    :ivar EventType.backup_admin_invitation_sent:
         (members) Invited members to activate Backup
-    :ivar BackupInvitationOpenedType EventType.backup_invitation_opened:
+    :vartype EventType.backup_admin_invitation_sent: BackupAdminInvitationSentType
+    :ivar EventType.backup_invitation_opened:
         (members) Opened Backup invite
-    :ivar CreateTeamInviteLinkType EventType.create_team_invite_link: (members)
-        Created team invite link
-    :ivar DeleteTeamInviteLinkType EventType.delete_team_invite_link: (members)
-        Deleted team invite link
-    :ivar MemberAddExternalIdType EventType.member_add_external_id: (members)
-        Added an external ID for team member
-    :ivar MemberAddNameType EventType.member_add_name: (members) Added team
-        member name
-    :ivar MemberChangeAdminRoleType EventType.member_change_admin_role:
+    :vartype EventType.backup_invitation_opened: BackupInvitationOpenedType
+    :ivar EventType.create_team_invite_link:
+        (members) Created team invite link
+    :vartype EventType.create_team_invite_link: CreateTeamInviteLinkType
+    :ivar EventType.delete_team_invite_link:
+        (members) Deleted team invite link
+    :vartype EventType.delete_team_invite_link: DeleteTeamInviteLinkType
+    :ivar EventType.member_add_external_id:
+        (members) Added an external ID for team member
+    :vartype EventType.member_add_external_id: MemberAddExternalIdType
+    :ivar EventType.member_add_name:
+        (members) Added team member name
+    :vartype EventType.member_add_name: MemberAddNameType
+    :ivar EventType.member_change_admin_role:
         (members) Changed team member admin role
-    :ivar MemberChangeEmailType EventType.member_change_email: (members) Changed
-        team member email
-    :ivar MemberChangeExternalIdType EventType.member_change_external_id:
+    :vartype EventType.member_change_admin_role: MemberChangeAdminRoleType
+    :ivar EventType.member_change_email:
+        (members) Changed team member email
+    :vartype EventType.member_change_email: MemberChangeEmailType
+    :ivar EventType.member_change_external_id:
         (members) Changed the external ID for team member
-    :ivar MemberChangeMembershipTypeType
-        EventType.member_change_membership_type: (members) Changed membership
-        type (limited/full) of member (deprecated, no longer logged)
-    :ivar MemberChangeNameType EventType.member_change_name: (members) Changed
-        team member name
-    :ivar MemberChangeResellerRoleType EventType.member_change_reseller_role:
+    :vartype EventType.member_change_external_id: MemberChangeExternalIdType
+    :ivar EventType.member_change_membership_type:
+        (members) Changed membership type (limited/full) of member (deprecated,
+        no longer logged)
+    :vartype EventType.member_change_membership_type: MemberChangeMembershipTypeType
+    :ivar EventType.member_change_name:
+        (members) Changed team member name
+    :vartype EventType.member_change_name: MemberChangeNameType
+    :ivar EventType.member_change_reseller_role:
         (members) Changed team member reseller role
-    :ivar MemberChangeStatusType EventType.member_change_status: (members)
-        Changed member status (invited, joined, suspended, etc.)
-    :ivar MemberDeleteManualContactsType
-        EventType.member_delete_manual_contacts: (members) Cleared manually
-        added contacts
-    :ivar MemberDeleteProfilePhotoType EventType.member_delete_profile_photo:
+    :vartype EventType.member_change_reseller_role: MemberChangeResellerRoleType
+    :ivar EventType.member_change_status:
+        (members) Changed member status (invited, joined, suspended, etc.)
+    :vartype EventType.member_change_status: MemberChangeStatusType
+    :ivar EventType.member_delete_manual_contacts:
+        (members) Cleared manually added contacts
+    :vartype EventType.member_delete_manual_contacts: MemberDeleteManualContactsType
+    :ivar EventType.member_delete_profile_photo:
         (members) Deleted team member profile photo
-    :ivar MemberPermanentlyDeleteAccountContentsType
-        EventType.member_permanently_delete_account_contents: (members)
-        Permanently deleted contents of deleted team member account
-    :ivar MemberRemoveExternalIdType EventType.member_remove_external_id:
+    :vartype EventType.member_delete_profile_photo: MemberDeleteProfilePhotoType
+    :ivar EventType.member_permanently_delete_account_contents:
+        (members) Permanently deleted contents of deleted team member account
+    :vartype EventType.member_permanently_delete_account_contents: MemberPermanentlyDeleteAccountContentsType
+    :ivar EventType.member_remove_external_id:
         (members) Removed the external ID for team member
-    :ivar MemberSetProfilePhotoType EventType.member_set_profile_photo:
+    :vartype EventType.member_remove_external_id: MemberRemoveExternalIdType
+    :ivar EventType.member_set_profile_photo:
         (members) Set team member profile photo
-    :ivar MemberSpaceLimitsAddCustomQuotaType
-        EventType.member_space_limits_add_custom_quota: (members) Set custom
-        member space limit
-    :ivar MemberSpaceLimitsChangeCustomQuotaType
-        EventType.member_space_limits_change_custom_quota: (members) Changed
-        custom member space limit
-    :ivar MemberSpaceLimitsChangeStatusType
-        EventType.member_space_limits_change_status: (members) Changed space
-        limit status
-    :ivar MemberSpaceLimitsRemoveCustomQuotaType
-        EventType.member_space_limits_remove_custom_quota: (members) Removed
-        custom member space limit
-    :ivar MemberSuggestType EventType.member_suggest: (members) Suggested person
-        to add to team
-    :ivar MemberTransferAccountContentsType
-        EventType.member_transfer_account_contents: (members) Transferred
-        contents of deleted member account to another member
-    :ivar PendingSecondaryEmailAddedType
-        EventType.pending_secondary_email_added: (members) Added pending
-        secondary email
-    :ivar ProductAssignedToMemberType EventType.product_assigned_to_member:
+    :vartype EventType.member_set_profile_photo: MemberSetProfilePhotoType
+    :ivar EventType.member_space_limits_add_custom_quota:
+        (members) Set custom member space limit
+    :vartype EventType.member_space_limits_add_custom_quota: MemberSpaceLimitsAddCustomQuotaType
+    :ivar EventType.member_space_limits_change_custom_quota:
+        (members) Changed custom member space limit
+    :vartype EventType.member_space_limits_change_custom_quota: MemberSpaceLimitsChangeCustomQuotaType
+    :ivar EventType.member_space_limits_change_status:
+        (members) Changed space limit status
+    :vartype EventType.member_space_limits_change_status: MemberSpaceLimitsChangeStatusType
+    :ivar EventType.member_space_limits_remove_custom_quota:
+        (members) Removed custom member space limit
+    :vartype EventType.member_space_limits_remove_custom_quota: MemberSpaceLimitsRemoveCustomQuotaType
+    :ivar EventType.member_suggest:
+        (members) Suggested person to add to team
+    :vartype EventType.member_suggest: MemberSuggestType
+    :ivar EventType.member_transfer_account_contents:
+        (members) Transferred contents of deleted member account to another
+        member
+    :vartype EventType.member_transfer_account_contents: MemberTransferAccountContentsType
+    :ivar EventType.pending_secondary_email_added:
+        (members) Added pending secondary email
+    :vartype EventType.pending_secondary_email_added: PendingSecondaryEmailAddedType
+    :ivar EventType.product_assigned_to_member:
         (members) Product assigned to team member
-    :ivar ProductRemovedFromMemberType EventType.product_removed_from_member:
+    :vartype EventType.product_assigned_to_member: ProductAssignedToMemberType
+    :ivar EventType.product_removed_from_member:
         (members) Product removed from team member
-    :ivar SecondaryEmailDeletedType EventType.secondary_email_deleted: (members)
-        Deleted secondary email
-    :ivar SecondaryEmailVerifiedType EventType.secondary_email_verified:
+    :vartype EventType.product_removed_from_member: ProductRemovedFromMemberType
+    :ivar EventType.secondary_email_deleted:
+        (members) Deleted secondary email
+    :vartype EventType.secondary_email_deleted: SecondaryEmailDeletedType
+    :ivar EventType.secondary_email_verified:
         (members) Verified secondary email
-    :ivar SecondaryMailsPolicyChangedType
-        EventType.secondary_mails_policy_changed: (members) Secondary mails
-        policy changed
-    :ivar BinderAddPageType EventType.binder_add_page: (paper) Added Binder page
-        (deprecated, replaced by 'Edited files')
-    :ivar BinderAddSectionType EventType.binder_add_section: (paper) Added
-        Binder section (deprecated, replaced by 'Edited files')
-    :ivar BinderRemovePageType EventType.binder_remove_page: (paper) Removed
-        Binder page (deprecated, replaced by 'Edited files')
-    :ivar BinderRemoveSectionType EventType.binder_remove_section: (paper)
-        Removed Binder section (deprecated, replaced by 'Edited files')
-    :ivar BinderRenamePageType EventType.binder_rename_page: (paper) Renamed
-        Binder page (deprecated, replaced by 'Edited files')
-    :ivar BinderRenameSectionType EventType.binder_rename_section: (paper)
-        Renamed Binder section (deprecated, replaced by 'Edited files')
-    :ivar BinderReorderPageType EventType.binder_reorder_page: (paper) Reordered
-        Binder page (deprecated, replaced by 'Edited files')
-    :ivar BinderReorderSectionType EventType.binder_reorder_section: (paper)
-        Reordered Binder section (deprecated, replaced by 'Edited files')
-    :ivar PaperContentAddMemberType EventType.paper_content_add_member: (paper)
-        Added users and/or groups to Paper doc/folder
-    :ivar PaperContentAddToFolderType EventType.paper_content_add_to_folder:
+    :vartype EventType.secondary_email_verified: SecondaryEmailVerifiedType
+    :ivar EventType.secondary_mails_policy_changed:
+        (members) Secondary mails policy changed
+    :vartype EventType.secondary_mails_policy_changed: SecondaryMailsPolicyChangedType
+    :ivar EventType.binder_add_page:
+        (paper) Added Binder page (deprecated, replaced by 'Edited files')
+    :vartype EventType.binder_add_page: BinderAddPageType
+    :ivar EventType.binder_add_section:
+        (paper) Added Binder section (deprecated, replaced by 'Edited files')
+    :vartype EventType.binder_add_section: BinderAddSectionType
+    :ivar EventType.binder_remove_page:
+        (paper) Removed Binder page (deprecated, replaced by 'Edited files')
+    :vartype EventType.binder_remove_page: BinderRemovePageType
+    :ivar EventType.binder_remove_section:
+        (paper) Removed Binder section (deprecated, replaced by 'Edited files')
+    :vartype EventType.binder_remove_section: BinderRemoveSectionType
+    :ivar EventType.binder_rename_page:
+        (paper) Renamed Binder page (deprecated, replaced by 'Edited files')
+    :vartype EventType.binder_rename_page: BinderRenamePageType
+    :ivar EventType.binder_rename_section:
+        (paper) Renamed Binder section (deprecated, replaced by 'Edited files')
+    :vartype EventType.binder_rename_section: BinderRenameSectionType
+    :ivar EventType.binder_reorder_page:
+        (paper) Reordered Binder page (deprecated, replaced by 'Edited files')
+    :vartype EventType.binder_reorder_page: BinderReorderPageType
+    :ivar EventType.binder_reorder_section:
+        (paper) Reordered Binder section (deprecated, replaced by 'Edited
+        files')
+    :vartype EventType.binder_reorder_section: BinderReorderSectionType
+    :ivar EventType.paper_content_add_member:
+        (paper) Added users and/or groups to Paper doc/folder
+    :vartype EventType.paper_content_add_member: PaperContentAddMemberType
+    :ivar EventType.paper_content_add_to_folder:
         (paper) Added Paper doc/folder to folder
-    :ivar PaperContentArchiveType EventType.paper_content_archive: (paper)
-        Archived Paper doc/folder
-    :ivar PaperContentCreateType EventType.paper_content_create: (paper) Created
-        Paper doc/folder
-    :ivar PaperContentPermanentlyDeleteType
-        EventType.paper_content_permanently_delete: (paper) Permanently deleted
-        Paper doc/folder
-    :ivar PaperContentRemoveFromFolderType
-        EventType.paper_content_remove_from_folder: (paper) Removed Paper
-        doc/folder from folder
-    :ivar PaperContentRemoveMemberType EventType.paper_content_remove_member:
+    :vartype EventType.paper_content_add_to_folder: PaperContentAddToFolderType
+    :ivar EventType.paper_content_archive:
+        (paper) Archived Paper doc/folder
+    :vartype EventType.paper_content_archive: PaperContentArchiveType
+    :ivar EventType.paper_content_create:
+        (paper) Created Paper doc/folder
+    :vartype EventType.paper_content_create: PaperContentCreateType
+    :ivar EventType.paper_content_permanently_delete:
+        (paper) Permanently deleted Paper doc/folder
+    :vartype EventType.paper_content_permanently_delete: PaperContentPermanentlyDeleteType
+    :ivar EventType.paper_content_remove_from_folder:
+        (paper) Removed Paper doc/folder from folder
+    :vartype EventType.paper_content_remove_from_folder: PaperContentRemoveFromFolderType
+    :ivar EventType.paper_content_remove_member:
         (paper) Removed users and/or groups from Paper doc/folder
-    :ivar PaperContentRenameType EventType.paper_content_rename: (paper) Renamed
-        Paper doc/folder
-    :ivar PaperContentRestoreType EventType.paper_content_restore: (paper)
-        Restored archived Paper doc/folder
-    :ivar PaperDocAddCommentType EventType.paper_doc_add_comment: (paper) Added
-        Paper doc comment
-    :ivar PaperDocChangeMemberRoleType EventType.paper_doc_change_member_role:
+    :vartype EventType.paper_content_remove_member: PaperContentRemoveMemberType
+    :ivar EventType.paper_content_rename:
+        (paper) Renamed Paper doc/folder
+    :vartype EventType.paper_content_rename: PaperContentRenameType
+    :ivar EventType.paper_content_restore:
+        (paper) Restored archived Paper doc/folder
+    :vartype EventType.paper_content_restore: PaperContentRestoreType
+    :ivar EventType.paper_doc_add_comment:
+        (paper) Added Paper doc comment
+    :vartype EventType.paper_doc_add_comment: PaperDocAddCommentType
+    :ivar EventType.paper_doc_change_member_role:
         (paper) Changed member permissions for Paper doc
-    :ivar PaperDocChangeSharingPolicyType
-        EventType.paper_doc_change_sharing_policy: (paper) Changed sharing
-        setting for Paper doc
-    :ivar PaperDocChangeSubscriptionType
-        EventType.paper_doc_change_subscription: (paper) Followed/unfollowed
-        Paper doc
-    :ivar PaperDocDeletedType EventType.paper_doc_deleted: (paper) Archived
-        Paper doc (deprecated, no longer logged)
-    :ivar PaperDocDeleteCommentType EventType.paper_doc_delete_comment: (paper)
-        Deleted Paper doc comment
-    :ivar PaperDocDownloadType EventType.paper_doc_download: (paper) Downloaded
-        Paper doc in specific format
-    :ivar PaperDocEditType EventType.paper_doc_edit: (paper) Edited Paper doc
-    :ivar PaperDocEditCommentType EventType.paper_doc_edit_comment: (paper)
-        Edited Paper doc comment
-    :ivar PaperDocFollowedType EventType.paper_doc_followed: (paper) Followed
-        Paper doc (deprecated, replaced by 'Followed/unfollowed Paper doc')
-    :ivar PaperDocMentionType EventType.paper_doc_mention: (paper) Mentioned
-        user in Paper doc
-    :ivar PaperDocOwnershipChangedType EventType.paper_doc_ownership_changed:
+    :vartype EventType.paper_doc_change_member_role: PaperDocChangeMemberRoleType
+    :ivar EventType.paper_doc_change_sharing_policy:
+        (paper) Changed sharing setting for Paper doc
+    :vartype EventType.paper_doc_change_sharing_policy: PaperDocChangeSharingPolicyType
+    :ivar EventType.paper_doc_change_subscription:
+        (paper) Followed/unfollowed Paper doc
+    :vartype EventType.paper_doc_change_subscription: PaperDocChangeSubscriptionType
+    :ivar EventType.paper_doc_deleted:
+        (paper) Archived Paper doc (deprecated, no longer logged)
+    :vartype EventType.paper_doc_deleted: PaperDocDeletedType
+    :ivar EventType.paper_doc_delete_comment:
+        (paper) Deleted Paper doc comment
+    :vartype EventType.paper_doc_delete_comment: PaperDocDeleteCommentType
+    :ivar EventType.paper_doc_download:
+        (paper) Downloaded Paper doc in specific format
+    :vartype EventType.paper_doc_download: PaperDocDownloadType
+    :ivar EventType.paper_doc_edit:
+        (paper) Edited Paper doc
+    :vartype EventType.paper_doc_edit: PaperDocEditType
+    :ivar EventType.paper_doc_edit_comment:
+        (paper) Edited Paper doc comment
+    :vartype EventType.paper_doc_edit_comment: PaperDocEditCommentType
+    :ivar EventType.paper_doc_followed:
+        (paper) Followed Paper doc (deprecated, replaced by 'Followed/unfollowed
+        Paper doc')
+    :vartype EventType.paper_doc_followed: PaperDocFollowedType
+    :ivar EventType.paper_doc_mention:
+        (paper) Mentioned user in Paper doc
+    :vartype EventType.paper_doc_mention: PaperDocMentionType
+    :ivar EventType.paper_doc_ownership_changed:
         (paper) Transferred ownership of Paper doc
-    :ivar PaperDocRequestAccessType EventType.paper_doc_request_access: (paper)
-        Requested access to Paper doc
-    :ivar PaperDocResolveCommentType EventType.paper_doc_resolve_comment:
+    :vartype EventType.paper_doc_ownership_changed: PaperDocOwnershipChangedType
+    :ivar EventType.paper_doc_request_access:
+        (paper) Requested access to Paper doc
+    :vartype EventType.paper_doc_request_access: PaperDocRequestAccessType
+    :ivar EventType.paper_doc_resolve_comment:
         (paper) Resolved Paper doc comment
-    :ivar PaperDocRevertType EventType.paper_doc_revert: (paper) Restored Paper
-        doc to previous version
-    :ivar PaperDocSlackShareType EventType.paper_doc_slack_share: (paper) Shared
-        Paper doc via Slack
-    :ivar PaperDocTeamInviteType EventType.paper_doc_team_invite: (paper) Shared
-        Paper doc with users and/or groups (deprecated, no longer logged)
-    :ivar PaperDocTrashedType EventType.paper_doc_trashed: (paper) Deleted Paper
-        doc
-    :ivar PaperDocUnresolveCommentType EventType.paper_doc_unresolve_comment:
+    :vartype EventType.paper_doc_resolve_comment: PaperDocResolveCommentType
+    :ivar EventType.paper_doc_revert:
+        (paper) Restored Paper doc to previous version
+    :vartype EventType.paper_doc_revert: PaperDocRevertType
+    :ivar EventType.paper_doc_slack_share:
+        (paper) Shared Paper doc via Slack
+    :vartype EventType.paper_doc_slack_share: PaperDocSlackShareType
+    :ivar EventType.paper_doc_team_invite:
+        (paper) Shared Paper doc with users and/or groups (deprecated, no longer
+        logged)
+    :vartype EventType.paper_doc_team_invite: PaperDocTeamInviteType
+    :ivar EventType.paper_doc_trashed:
+        (paper) Deleted Paper doc
+    :vartype EventType.paper_doc_trashed: PaperDocTrashedType
+    :ivar EventType.paper_doc_unresolve_comment:
         (paper) Unresolved Paper doc comment
-    :ivar PaperDocUntrashedType EventType.paper_doc_untrashed: (paper) Restored
-        Paper doc
-    :ivar PaperDocViewType EventType.paper_doc_view: (paper) Viewed Paper doc
-    :ivar PaperExternalViewAllowType EventType.paper_external_view_allow:
+    :vartype EventType.paper_doc_unresolve_comment: PaperDocUnresolveCommentType
+    :ivar EventType.paper_doc_untrashed:
+        (paper) Restored Paper doc
+    :vartype EventType.paper_doc_untrashed: PaperDocUntrashedType
+    :ivar EventType.paper_doc_view:
+        (paper) Viewed Paper doc
+    :vartype EventType.paper_doc_view: PaperDocViewType
+    :ivar EventType.paper_external_view_allow:
         (paper) Changed Paper external sharing setting to anyone (deprecated, no
         longer logged)
-    :ivar PaperExternalViewDefaultTeamType
-        EventType.paper_external_view_default_team: (paper) Changed Paper
-        external sharing setting to default team (deprecated, no longer logged)
-    :ivar PaperExternalViewForbidType EventType.paper_external_view_forbid:
+    :vartype EventType.paper_external_view_allow: PaperExternalViewAllowType
+    :ivar EventType.paper_external_view_default_team:
+        (paper) Changed Paper external sharing setting to default team
+        (deprecated, no longer logged)
+    :vartype EventType.paper_external_view_default_team: PaperExternalViewDefaultTeamType
+    :ivar EventType.paper_external_view_forbid:
         (paper) Changed Paper external sharing setting to team-only (deprecated,
         no longer logged)
-    :ivar PaperFolderChangeSubscriptionType
-        EventType.paper_folder_change_subscription: (paper) Followed/unfollowed
-        Paper folder
-    :ivar PaperFolderDeletedType EventType.paper_folder_deleted: (paper)
-        Archived Paper folder (deprecated, no longer logged)
-    :ivar PaperFolderFollowedType EventType.paper_folder_followed: (paper)
-        Followed Paper folder (deprecated, replaced by 'Followed/unfollowed
-        Paper folder')
-    :ivar PaperFolderTeamInviteType EventType.paper_folder_team_invite: (paper)
-        Shared Paper folder with users and/or groups (deprecated, no longer
-        logged)
-    :ivar PaperPublishedLinkChangePermissionType
-        EventType.paper_published_link_change_permission: (paper) Changed
-        permissions for published doc
-    :ivar PaperPublishedLinkCreateType EventType.paper_published_link_create:
+    :vartype EventType.paper_external_view_forbid: PaperExternalViewForbidType
+    :ivar EventType.paper_folder_change_subscription:
+        (paper) Followed/unfollowed Paper folder
+    :vartype EventType.paper_folder_change_subscription: PaperFolderChangeSubscriptionType
+    :ivar EventType.paper_folder_deleted:
+        (paper) Archived Paper folder (deprecated, no longer logged)
+    :vartype EventType.paper_folder_deleted: PaperFolderDeletedType
+    :ivar EventType.paper_folder_followed:
+        (paper) Followed Paper folder (deprecated, replaced by
+        'Followed/unfollowed Paper folder')
+    :vartype EventType.paper_folder_followed: PaperFolderFollowedType
+    :ivar EventType.paper_folder_team_invite:
+        (paper) Shared Paper folder with users and/or groups (deprecated, no
+        longer logged)
+    :vartype EventType.paper_folder_team_invite: PaperFolderTeamInviteType
+    :ivar EventType.paper_published_link_change_permission:
+        (paper) Changed permissions for published doc
+    :vartype EventType.paper_published_link_change_permission: PaperPublishedLinkChangePermissionType
+    :ivar EventType.paper_published_link_create:
         (paper) Published doc
-    :ivar PaperPublishedLinkDisabledType
-        EventType.paper_published_link_disabled: (paper) Unpublished doc
-    :ivar PaperPublishedLinkViewType EventType.paper_published_link_view:
+    :vartype EventType.paper_published_link_create: PaperPublishedLinkCreateType
+    :ivar EventType.paper_published_link_disabled:
+        (paper) Unpublished doc
+    :vartype EventType.paper_published_link_disabled: PaperPublishedLinkDisabledType
+    :ivar EventType.paper_published_link_view:
         (paper) Viewed published doc
-    :ivar PasswordChangeType EventType.password_change: (passwords) Changed
-        password
-    :ivar PasswordResetType EventType.password_reset: (passwords) Reset password
-    :ivar PasswordResetAllType EventType.password_reset_all: (passwords) Reset
-        all team member passwords
-    :ivar ProtectInternalDomainsChangedType
-        EventType.protect_internal_domains_changed: (protect) Modified Protect
-        internal domains list
-    :ivar ClassificationCreateReportType EventType.classification_create_report:
+    :vartype EventType.paper_published_link_view: PaperPublishedLinkViewType
+    :ivar EventType.password_change:
+        (passwords) Changed password
+    :vartype EventType.password_change: PasswordChangeType
+    :ivar EventType.password_reset:
+        (passwords) Reset password
+    :vartype EventType.password_reset: PasswordResetType
+    :ivar EventType.password_reset_all:
+        (passwords) Reset all team member passwords
+    :vartype EventType.password_reset_all: PasswordResetAllType
+    :ivar EventType.protect_internal_domains_changed:
+        (protect) Modified Protect internal domains list
+    :vartype EventType.protect_internal_domains_changed: ProtectInternalDomainsChangedType
+    :ivar EventType.classification_create_report:
         (reports) Created Classification report
-    :ivar ClassificationCreateReportFailType
-        EventType.classification_create_report_fail: (reports) Couldn't create
-        Classification report
-    :ivar EmmCreateExceptionsReportType EventType.emm_create_exceptions_report:
+    :vartype EventType.classification_create_report: ClassificationCreateReportType
+    :ivar EventType.classification_create_report_fail:
+        (reports) Couldn't create Classification report
+    :vartype EventType.classification_create_report_fail: ClassificationCreateReportFailType
+    :ivar EventType.emm_create_exceptions_report:
         (reports) Created EMM-excluded users report
-    :ivar EmmCreateUsageReportType EventType.emm_create_usage_report: (reports)
-        Created EMM mobile app usage report
-    :ivar ExportMembersReportType EventType.export_members_report: (reports)
-        Created member data report
-    :ivar ExportMembersReportFailType EventType.export_members_report_fail:
+    :vartype EventType.emm_create_exceptions_report: EmmCreateExceptionsReportType
+    :ivar EventType.emm_create_usage_report:
+        (reports) Created EMM mobile app usage report
+    :vartype EventType.emm_create_usage_report: EmmCreateUsageReportType
+    :ivar EventType.export_members_report:
+        (reports) Created member data report
+    :vartype EventType.export_members_report: ExportMembersReportType
+    :ivar EventType.export_members_report_fail:
         (reports) Failed to create members data report
-    :ivar ExternalSharingCreateReportType
-        EventType.external_sharing_create_report: (reports) Created External
-        sharing report
-    :ivar ExternalSharingReportFailedType
-        EventType.external_sharing_report_failed: (reports) Couldn't create
-        External sharing report
-    :ivar MemberAccessDetailsCreateReportType
-        EventType.member_access_details_create_report: (reports) Created member
-        access report
-    :ivar MemberAccessDetailsCreateReportFailedType
-        EventType.member_access_details_create_report_failed: (reports) Couldn't
-        generate member access report
-    :ivar NoExpirationLinkGenCreateReportType
-        EventType.no_expiration_link_gen_create_report: (reports) Report
-        created: Links created with no expiration
-    :ivar NoExpirationLinkGenReportFailedType
-        EventType.no_expiration_link_gen_report_failed: (reports) Couldn't
-        create report: Links created with no expiration
-    :ivar NoPasswordLinkGenCreateReportType
-        EventType.no_password_link_gen_create_report: (reports) Report created:
-        Links created without passwords
-    :ivar NoPasswordLinkGenReportFailedType
-        EventType.no_password_link_gen_report_failed: (reports) Couldn't create
-        report: Links created without passwords
-    :ivar NoPasswordLinkViewCreateReportType
-        EventType.no_password_link_view_create_report: (reports) Report created:
-        Views of links without passwords
-    :ivar NoPasswordLinkViewReportFailedType
-        EventType.no_password_link_view_report_failed: (reports) Couldn't create
-        report: Views of links without passwords
-    :ivar OutdatedLinkViewCreateReportType
-        EventType.outdated_link_view_create_report: (reports) Report created:
-        Views of old links
-    :ivar OutdatedLinkViewReportFailedType
-        EventType.outdated_link_view_report_failed: (reports) Couldn't create
-        report: Views of old links
-    :ivar PaperAdminExportStartType EventType.paper_admin_export_start:
+    :vartype EventType.export_members_report_fail: ExportMembersReportFailType
+    :ivar EventType.external_sharing_create_report:
+        (reports) Created External sharing report
+    :vartype EventType.external_sharing_create_report: ExternalSharingCreateReportType
+    :ivar EventType.external_sharing_report_failed:
+        (reports) Couldn't create External sharing report
+    :vartype EventType.external_sharing_report_failed: ExternalSharingReportFailedType
+    :ivar EventType.member_access_details_create_report:
+        (reports) Created member access report
+    :vartype EventType.member_access_details_create_report: MemberAccessDetailsCreateReportType
+    :ivar EventType.member_access_details_create_report_failed:
+        (reports) Couldn't generate member access report
+    :vartype EventType.member_access_details_create_report_failed: MemberAccessDetailsCreateReportFailedType
+    :ivar EventType.no_expiration_link_gen_create_report:
+        (reports) Report created: Links created with no expiration
+    :vartype EventType.no_expiration_link_gen_create_report: NoExpirationLinkGenCreateReportType
+    :ivar EventType.no_expiration_link_gen_report_failed:
+        (reports) Couldn't create report: Links created with no expiration
+    :vartype EventType.no_expiration_link_gen_report_failed: NoExpirationLinkGenReportFailedType
+    :ivar EventType.no_password_link_gen_create_report:
+        (reports) Report created: Links created without passwords
+    :vartype EventType.no_password_link_gen_create_report: NoPasswordLinkGenCreateReportType
+    :ivar EventType.no_password_link_gen_report_failed:
+        (reports) Couldn't create report: Links created without passwords
+    :vartype EventType.no_password_link_gen_report_failed: NoPasswordLinkGenReportFailedType
+    :ivar EventType.no_password_link_view_create_report:
+        (reports) Report created: Views of links without passwords
+    :vartype EventType.no_password_link_view_create_report: NoPasswordLinkViewCreateReportType
+    :ivar EventType.no_password_link_view_report_failed:
+        (reports) Couldn't create report: Views of links without passwords
+    :vartype EventType.no_password_link_view_report_failed: NoPasswordLinkViewReportFailedType
+    :ivar EventType.outdated_link_view_create_report:
+        (reports) Report created: Views of old links
+    :vartype EventType.outdated_link_view_create_report: OutdatedLinkViewCreateReportType
+    :ivar EventType.outdated_link_view_report_failed:
+        (reports) Couldn't create report: Views of old links
+    :vartype EventType.outdated_link_view_report_failed: OutdatedLinkViewReportFailedType
+    :ivar EventType.paper_admin_export_start:
         (reports) Exported all team Paper docs
-    :ivar RansomwareAlertCreateReportType
-        EventType.ransomware_alert_create_report: (reports) Created ransomware
-        report
-    :ivar RansomwareAlertCreateReportFailedType
-        EventType.ransomware_alert_create_report_failed: (reports) Couldn't
-        generate ransomware report
-    :ivar SharedFoldersCreateReportType EventType.shared_folders_create_report:
+    :vartype EventType.paper_admin_export_start: PaperAdminExportStartType
+    :ivar EventType.ransomware_alert_create_report:
+        (reports) Created ransomware report
+    :vartype EventType.ransomware_alert_create_report: RansomwareAlertCreateReportType
+    :ivar EventType.ransomware_alert_create_report_failed:
+        (reports) Couldn't generate ransomware report
+    :vartype EventType.ransomware_alert_create_report_failed: RansomwareAlertCreateReportFailedType
+    :ivar EventType.shared_folders_create_report:
         (reports) Created shared folders report
-    :ivar SharedFoldersCreateReportFailedType
-        EventType.shared_folders_create_report_failed: (reports) Couldn't
-        generate shared folders report
-    :ivar SmartSyncCreateAdminPrivilegeReportType
-        EventType.smart_sync_create_admin_privilege_report: (reports) Created
-        Smart Sync non-admin devices report
-    :ivar TeamActivityCreateReportType EventType.team_activity_create_report:
+    :vartype EventType.shared_folders_create_report: SharedFoldersCreateReportType
+    :ivar EventType.shared_folders_create_report_failed:
+        (reports) Couldn't generate shared folders report
+    :vartype EventType.shared_folders_create_report_failed: SharedFoldersCreateReportFailedType
+    :ivar EventType.smart_sync_create_admin_privilege_report:
+        (reports) Created Smart Sync non-admin devices report
+    :vartype EventType.smart_sync_create_admin_privilege_report: SmartSyncCreateAdminPrivilegeReportType
+    :ivar EventType.team_activity_create_report:
         (reports) Created team activity report
-    :ivar TeamActivityCreateReportFailType
-        EventType.team_activity_create_report_fail: (reports) Couldn't generate
-        team activity report
-    :ivar TeamFoldersCreateReportType EventType.team_folders_create_report:
+    :vartype EventType.team_activity_create_report: TeamActivityCreateReportType
+    :ivar EventType.team_activity_create_report_fail:
+        (reports) Couldn't generate team activity report
+    :vartype EventType.team_activity_create_report_fail: TeamActivityCreateReportFailType
+    :ivar EventType.team_folders_create_report:
         (reports) Created team folders report
-    :ivar TeamFoldersCreateReportFailedType
-        EventType.team_folders_create_report_failed: (reports) Couldn't generate
-        team folders report
-    :ivar TeamStorageCreateReportType EventType.team_storage_create_report:
+    :vartype EventType.team_folders_create_report: TeamFoldersCreateReportType
+    :ivar EventType.team_folders_create_report_failed:
+        (reports) Couldn't generate team folders report
+    :vartype EventType.team_folders_create_report_failed: TeamFoldersCreateReportFailedType
+    :ivar EventType.team_storage_create_report:
         (reports) Created team storage report
-    :ivar TeamStorageCreateReportFailedType
-        EventType.team_storage_create_report_failed: (reports) Couldn't generate
-        team storage report
-    :ivar CollectionShareType EventType.collection_share: (sharing) Shared album
-    :ivar FileTransfersFileAddType EventType.file_transfers_file_add: (sharing)
-        Transfer files added
-    :ivar FileTransfersTransferDeleteType
-        EventType.file_transfers_transfer_delete: (sharing) Deleted transfer
-    :ivar FileTransfersTransferDownloadType
-        EventType.file_transfers_transfer_download: (sharing) Transfer
-        downloaded
-    :ivar FileTransfersTransferSendType EventType.file_transfers_transfer_send:
+    :vartype EventType.team_storage_create_report: TeamStorageCreateReportType
+    :ivar EventType.team_storage_create_report_failed:
+        (reports) Couldn't generate team storage report
+    :vartype EventType.team_storage_create_report_failed: TeamStorageCreateReportFailedType
+    :ivar EventType.collection_share:
+        (sharing) Shared album
+    :vartype EventType.collection_share: CollectionShareType
+    :ivar EventType.file_transfers_file_add:
+        (sharing) Transfer files added
+    :vartype EventType.file_transfers_file_add: FileTransfersFileAddType
+    :ivar EventType.file_transfers_transfer_delete:
+        (sharing) Deleted transfer
+    :vartype EventType.file_transfers_transfer_delete: FileTransfersTransferDeleteType
+    :ivar EventType.file_transfers_transfer_download:
+        (sharing) Transfer downloaded
+    :vartype EventType.file_transfers_transfer_download: FileTransfersTransferDownloadType
+    :ivar EventType.file_transfers_transfer_send:
         (sharing) Sent transfer
-    :ivar FileTransfersTransferViewType EventType.file_transfers_transfer_view:
+    :vartype EventType.file_transfers_transfer_send: FileTransfersTransferSendType
+    :ivar EventType.file_transfers_transfer_view:
         (sharing) Viewed transfer
-    :ivar MediaHubProjectTeamAddType EventType.media_hub_project_team_add:
+    :vartype EventType.file_transfers_transfer_view: FileTransfersTransferViewType
+    :ivar EventType.media_hub_project_team_add:
         (sharing) Added member to Media Hub project
-    :ivar MediaHubProjectTeamDeleteType EventType.media_hub_project_team_delete:
+    :vartype EventType.media_hub_project_team_add: MediaHubProjectTeamAddType
+    :ivar EventType.media_hub_project_team_delete:
         (sharing) Removed member from Media Hub project
-    :ivar MediaHubProjectTeamRoleChangedType
-        EventType.media_hub_project_team_role_changed: (sharing) Changed member
-        role in Media Hub project
-    :ivar MediaHubSharedLinkAudienceChangedType
-        EventType.media_hub_shared_link_audience_changed: (sharing) Changed
-        Media Hub shared link audience
-    :ivar MediaHubSharedLinkCreatedType EventType.media_hub_shared_link_created:
+    :vartype EventType.media_hub_project_team_delete: MediaHubProjectTeamDeleteType
+    :ivar EventType.media_hub_project_team_role_changed:
+        (sharing) Changed member role in Media Hub project
+    :vartype EventType.media_hub_project_team_role_changed: MediaHubProjectTeamRoleChangedType
+    :ivar EventType.media_hub_shared_link_audience_changed:
+        (sharing) Changed Media Hub shared link audience
+    :vartype EventType.media_hub_shared_link_audience_changed: MediaHubSharedLinkAudienceChangedType
+    :ivar EventType.media_hub_shared_link_created:
         (sharing) Created Media Hub shared link
-    :ivar MediaHubSharedLinkDownloadSettingChangedType
-        EventType.media_hub_shared_link_download_setting_changed: (sharing)
-        Changed Media Hub shared link download setting
-    :ivar MediaHubSharedLinkRevokedType EventType.media_hub_shared_link_revoked:
+    :vartype EventType.media_hub_shared_link_created: MediaHubSharedLinkCreatedType
+    :ivar EventType.media_hub_shared_link_download_setting_changed:
+        (sharing) Changed Media Hub shared link download setting
+    :vartype EventType.media_hub_shared_link_download_setting_changed: MediaHubSharedLinkDownloadSettingChangedType
+    :ivar EventType.media_hub_shared_link_revoked:
         (sharing) Revoked Media Hub shared link
-    :ivar NoteAclInviteOnlyType EventType.note_acl_invite_only: (sharing)
-        Changed Paper doc to invite-only (deprecated, no longer logged)
-    :ivar NoteAclLinkType EventType.note_acl_link: (sharing) Changed Paper doc
-        to link-accessible (deprecated, no longer logged)
-    :ivar NoteAclTeamLinkType EventType.note_acl_team_link: (sharing) Changed
-        Paper doc to link-accessible for team (deprecated, no longer logged)
-    :ivar NoteSharedType EventType.note_shared: (sharing) Shared Paper doc
-        (deprecated, no longer logged)
-    :ivar NoteShareReceiveType EventType.note_share_receive: (sharing) Shared
-        received Paper doc (deprecated, no longer logged)
-    :ivar OpenNoteSharedType EventType.open_note_shared: (sharing) Opened shared
-        Paper doc (deprecated, no longer logged)
-    :ivar ReplayFileSharedLinkCreatedType
-        EventType.replay_file_shared_link_created: (sharing) Created shared link
-        in Replay
-    :ivar ReplayFileSharedLinkModifiedType
-        EventType.replay_file_shared_link_modified: (sharing) Changed shared
-        link in Replay
-    :ivar ReplayProjectTeamAddType EventType.replay_project_team_add: (sharing)
-        Added member to Replay Project
-    :ivar ReplayProjectTeamDeleteType EventType.replay_project_team_delete:
-        (sharing) Removed member from Replay Project
-    :ivar SendAndTrackFileAddedType EventType.send_and_track_file_added:
-        (sharing) File added to Send and Track
-    :ivar SendAndTrackFileRenamedType EventType.send_and_track_file_renamed:
-        (sharing) File renamed in Send and Track
-    :ivar SendAndTrackFileUpdatedType EventType.send_and_track_file_updated:
-        (sharing) File updated in Send and Track
-    :ivar SendAndTrackLinkCreatedType EventType.send_and_track_link_created:
-        (sharing) Link created in Send and Track
-    :ivar SendAndTrackLinkDeletedType EventType.send_and_track_link_deleted:
-        (sharing) Link deleted in Send and Track
-    :ivar SendAndTrackLinkUpdatedType EventType.send_and_track_link_updated:
-        (sharing) Send and Track Link Updated
-    :ivar SendAndTrackLinkViewedType EventType.send_and_track_link_viewed:
-        (sharing) Send and Track Link Visited
-    :ivar SendAndTrackRemovedFileAndAssociatedLinksType
-        EventType.send_and_track_removed_file_and_associated_links: (sharing)
-        Send and Track file and associated links deleted
-    :ivar SfAddGroupType EventType.sf_add_group: (sharing) Added team to shared
-        folder (deprecated, no longer logged)
-    :ivar SfAllowNonMembersToViewSharedLinksType
-        EventType.sf_allow_non_members_to_view_shared_links: (sharing) Allowed
-        non-collaborators to view links to files in shared folder (deprecated,
-        no longer logged)
-    :ivar SfExternalInviteWarnType EventType.sf_external_invite_warn: (sharing)
-        Set team members to see warning before sharing folders outside team
-        (deprecated, no longer logged)
-    :ivar SfFbInviteType EventType.sf_fb_invite: (sharing) Invited Facebook
-        users to shared folder (deprecated, no longer logged)
-    :ivar SfFbInviteChangeRoleType EventType.sf_fb_invite_change_role: (sharing)
-        Changed Facebook user's role in shared folder (deprecated, no longer
+    :vartype EventType.media_hub_shared_link_revoked: MediaHubSharedLinkRevokedType
+    :ivar EventType.note_acl_invite_only:
+        (sharing) Changed Paper doc to invite-only (deprecated, no longer
         logged)
-    :ivar SfFbUninviteType EventType.sf_fb_uninvite: (sharing) Uninvited
-        Facebook user from shared folder (deprecated, no longer logged)
-    :ivar SfInviteGroupType EventType.sf_invite_group: (sharing) Invited group
-        to shared folder (deprecated, no longer logged)
-    :ivar SfTeamGrantAccessType EventType.sf_team_grant_access: (sharing)
-        Granted access to shared folder (deprecated, no longer logged)
-    :ivar SfTeamInviteType EventType.sf_team_invite: (sharing) Invited team
-        members to shared folder (deprecated, replaced by 'Invited user to
-        Dropbox and added them to shared file/folder')
-    :ivar SfTeamInviteChangeRoleType EventType.sf_team_invite_change_role:
+    :vartype EventType.note_acl_invite_only: NoteAclInviteOnlyType
+    :ivar EventType.note_acl_link:
+        (sharing) Changed Paper doc to link-accessible (deprecated, no longer
+        logged)
+    :vartype EventType.note_acl_link: NoteAclLinkType
+    :ivar EventType.note_acl_team_link:
+        (sharing) Changed Paper doc to link-accessible for team (deprecated, no
+        longer logged)
+    :vartype EventType.note_acl_team_link: NoteAclTeamLinkType
+    :ivar EventType.note_shared:
+        (sharing) Shared Paper doc (deprecated, no longer logged)
+    :vartype EventType.note_shared: NoteSharedType
+    :ivar EventType.note_share_receive:
+        (sharing) Shared received Paper doc (deprecated, no longer logged)
+    :vartype EventType.note_share_receive: NoteShareReceiveType
+    :ivar EventType.open_note_shared:
+        (sharing) Opened shared Paper doc (deprecated, no longer logged)
+    :vartype EventType.open_note_shared: OpenNoteSharedType
+    :ivar EventType.replay_file_shared_link_created:
+        (sharing) Created shared link in Replay
+    :vartype EventType.replay_file_shared_link_created: ReplayFileSharedLinkCreatedType
+    :ivar EventType.replay_file_shared_link_modified:
+        (sharing) Changed shared link in Replay
+    :vartype EventType.replay_file_shared_link_modified: ReplayFileSharedLinkModifiedType
+    :ivar EventType.replay_project_team_add:
+        (sharing) Added member to Replay Project
+    :vartype EventType.replay_project_team_add: ReplayProjectTeamAddType
+    :ivar EventType.replay_project_team_delete:
+        (sharing) Removed member from Replay Project
+    :vartype EventType.replay_project_team_delete: ReplayProjectTeamDeleteType
+    :ivar EventType.send_and_track_file_added:
+        (sharing) File added to Send and Track
+    :vartype EventType.send_and_track_file_added: SendAndTrackFileAddedType
+    :ivar EventType.send_and_track_file_renamed:
+        (sharing) File renamed in Send and Track
+    :vartype EventType.send_and_track_file_renamed: SendAndTrackFileRenamedType
+    :ivar EventType.send_and_track_file_updated:
+        (sharing) File updated in Send and Track
+    :vartype EventType.send_and_track_file_updated: SendAndTrackFileUpdatedType
+    :ivar EventType.send_and_track_link_created:
+        (sharing) Link created in Send and Track
+    :vartype EventType.send_and_track_link_created: SendAndTrackLinkCreatedType
+    :ivar EventType.send_and_track_link_deleted:
+        (sharing) Link deleted in Send and Track
+    :vartype EventType.send_and_track_link_deleted: SendAndTrackLinkDeletedType
+    :ivar EventType.send_and_track_link_updated:
+        (sharing) Send and Track Link Updated
+    :vartype EventType.send_and_track_link_updated: SendAndTrackLinkUpdatedType
+    :ivar EventType.send_and_track_link_viewed:
+        (sharing) Send and Track Link Visited
+    :vartype EventType.send_and_track_link_viewed: SendAndTrackLinkViewedType
+    :ivar EventType.send_and_track_removed_file_and_associated_links:
+        (sharing) Send and Track file and associated links deleted
+    :vartype EventType.send_and_track_removed_file_and_associated_links: SendAndTrackRemovedFileAndAssociatedLinksType
+    :ivar EventType.sf_add_group:
+        (sharing) Added team to shared folder (deprecated, no longer logged)
+    :vartype EventType.sf_add_group: SfAddGroupType
+    :ivar EventType.sf_allow_non_members_to_view_shared_links:
+        (sharing) Allowed non-collaborators to view links to files in shared
+        folder (deprecated, no longer logged)
+    :vartype EventType.sf_allow_non_members_to_view_shared_links: SfAllowNonMembersToViewSharedLinksType
+    :ivar EventType.sf_external_invite_warn:
+        (sharing) Set team members to see warning before sharing folders outside
+        team (deprecated, no longer logged)
+    :vartype EventType.sf_external_invite_warn: SfExternalInviteWarnType
+    :ivar EventType.sf_fb_invite:
+        (sharing) Invited Facebook users to shared folder (deprecated, no longer
+        logged)
+    :vartype EventType.sf_fb_invite: SfFbInviteType
+    :ivar EventType.sf_fb_invite_change_role:
+        (sharing) Changed Facebook user's role in shared folder (deprecated, no
+        longer logged)
+    :vartype EventType.sf_fb_invite_change_role: SfFbInviteChangeRoleType
+    :ivar EventType.sf_fb_uninvite:
+        (sharing) Uninvited Facebook user from shared folder (deprecated, no
+        longer logged)
+    :vartype EventType.sf_fb_uninvite: SfFbUninviteType
+    :ivar EventType.sf_invite_group:
+        (sharing) Invited group to shared folder (deprecated, no longer logged)
+    :vartype EventType.sf_invite_group: SfInviteGroupType
+    :ivar EventType.sf_team_grant_access:
+        (sharing) Granted access to shared folder (deprecated, no longer logged)
+    :vartype EventType.sf_team_grant_access: SfTeamGrantAccessType
+    :ivar EventType.sf_team_invite:
+        (sharing) Invited team members to shared folder (deprecated, replaced by
+        'Invited user to Dropbox and added them to shared file/folder')
+    :vartype EventType.sf_team_invite: SfTeamInviteType
+    :ivar EventType.sf_team_invite_change_role:
         (sharing) Changed team member's role in shared folder (deprecated, no
         longer logged)
-    :ivar SfTeamJoinType EventType.sf_team_join: (sharing) Joined team member's
-        shared folder (deprecated, no longer logged)
-    :ivar SfTeamJoinFromOobLinkType EventType.sf_team_join_from_oob_link:
+    :vartype EventType.sf_team_invite_change_role: SfTeamInviteChangeRoleType
+    :ivar EventType.sf_team_join:
+        (sharing) Joined team member's shared folder (deprecated, no longer
+        logged)
+    :vartype EventType.sf_team_join: SfTeamJoinType
+    :ivar EventType.sf_team_join_from_oob_link:
         (sharing) Joined team member's shared folder from link (deprecated, no
         longer logged)
-    :ivar SfTeamUninviteType EventType.sf_team_uninvite: (sharing) Unshared
-        folder with team member (deprecated, replaced by 'Removed invitee from
-        shared file/folder before invite was accepted')
-    :ivar SharedContentAddInviteesType EventType.shared_content_add_invitees:
+    :vartype EventType.sf_team_join_from_oob_link: SfTeamJoinFromOobLinkType
+    :ivar EventType.sf_team_uninvite:
+        (sharing) Unshared folder with team member (deprecated, replaced by
+        'Removed invitee from shared file/folder before invite was accepted')
+    :vartype EventType.sf_team_uninvite: SfTeamUninviteType
+    :ivar EventType.shared_content_add_invitees:
         (sharing) Invited user to Dropbox and added them to shared file/folder
-    :ivar SharedContentAddLinkExpiryType
-        EventType.shared_content_add_link_expiry: (sharing) Added expiration
-        date to link for shared file/folder (deprecated, no longer logged)
-    :ivar SharedContentAddLinkPasswordType
-        EventType.shared_content_add_link_password: (sharing) Added password to
-        link for shared file/folder (deprecated, no longer logged)
-    :ivar SharedContentAddMemberType EventType.shared_content_add_member:
+    :vartype EventType.shared_content_add_invitees: SharedContentAddInviteesType
+    :ivar EventType.shared_content_add_link_expiry:
+        (sharing) Added expiration date to link for shared file/folder
+        (deprecated, no longer logged)
+    :vartype EventType.shared_content_add_link_expiry: SharedContentAddLinkExpiryType
+    :ivar EventType.shared_content_add_link_password:
+        (sharing) Added password to link for shared file/folder (deprecated, no
+        longer logged)
+    :vartype EventType.shared_content_add_link_password: SharedContentAddLinkPasswordType
+    :ivar EventType.shared_content_add_member:
         (sharing) Added users and/or groups to shared file/folder
-    :ivar SharedContentChangeDownloadsPolicyType
-        EventType.shared_content_change_downloads_policy: (sharing) Changed
-        whether members can download shared file/folder (deprecated, no longer
-        logged)
-    :ivar SharedContentChangeInviteeRoleType
-        EventType.shared_content_change_invitee_role: (sharing) Changed access
-        type of invitee to shared file/folder before invite was accepted
-    :ivar SharedContentChangeLinkAudienceType
-        EventType.shared_content_change_link_audience: (sharing) Changed link
-        audience of shared file/folder (deprecated, no longer logged)
-    :ivar SharedContentChangeLinkExpiryType
-        EventType.shared_content_change_link_expiry: (sharing) Changed link
-        expiration of shared file/folder (deprecated, no longer logged)
-    :ivar SharedContentChangeLinkPasswordType
-        EventType.shared_content_change_link_password: (sharing) Changed link
-        password of shared file/folder (deprecated, no longer logged)
-    :ivar SharedContentChangeMemberRoleType
-        EventType.shared_content_change_member_role: (sharing) Changed access
-        type of shared file/folder member
-    :ivar SharedContentChangeViewerInfoPolicyType
-        EventType.shared_content_change_viewer_info_policy: (sharing) Changed
-        whether members can see who viewed shared file/folder
-    :ivar SharedContentClaimInvitationType
-        EventType.shared_content_claim_invitation: (sharing) Acquired membership
-        of shared file/folder by accepting invite
-    :ivar SharedContentCopyType EventType.shared_content_copy: (sharing) Copied
-        shared file/folder to own Dropbox
-    :ivar SharedContentDownloadType EventType.shared_content_download: (sharing)
-        Downloaded shared file/folder
-    :ivar SharedContentRelinquishMembershipType
-        EventType.shared_content_relinquish_membership: (sharing) Left shared
-        file/folder
-    :ivar SharedContentRemoveInviteesType
-        EventType.shared_content_remove_invitees: (sharing) Removed invitee from
-        shared file/folder before invite was accepted
-    :ivar SharedContentRemoveLinkExpiryType
-        EventType.shared_content_remove_link_expiry: (sharing) Removed link
-        expiration date of shared file/folder (deprecated, no longer logged)
-    :ivar SharedContentRemoveLinkPasswordType
-        EventType.shared_content_remove_link_password: (sharing) Removed link
-        password of shared file/folder (deprecated, no longer logged)
-    :ivar SharedContentRemoveMemberType EventType.shared_content_remove_member:
+    :vartype EventType.shared_content_add_member: SharedContentAddMemberType
+    :ivar EventType.shared_content_change_downloads_policy:
+        (sharing) Changed whether members can download shared file/folder
+        (deprecated, no longer logged)
+    :vartype EventType.shared_content_change_downloads_policy: SharedContentChangeDownloadsPolicyType
+    :ivar EventType.shared_content_change_invitee_role:
+        (sharing) Changed access type of invitee to shared file/folder before
+        invite was accepted
+    :vartype EventType.shared_content_change_invitee_role: SharedContentChangeInviteeRoleType
+    :ivar EventType.shared_content_change_link_audience:
+        (sharing) Changed link audience of shared file/folder (deprecated, no
+        longer logged)
+    :vartype EventType.shared_content_change_link_audience: SharedContentChangeLinkAudienceType
+    :ivar EventType.shared_content_change_link_expiry:
+        (sharing) Changed link expiration of shared file/folder (deprecated, no
+        longer logged)
+    :vartype EventType.shared_content_change_link_expiry: SharedContentChangeLinkExpiryType
+    :ivar EventType.shared_content_change_link_password:
+        (sharing) Changed link password of shared file/folder (deprecated, no
+        longer logged)
+    :vartype EventType.shared_content_change_link_password: SharedContentChangeLinkPasswordType
+    :ivar EventType.shared_content_change_member_role:
+        (sharing) Changed access type of shared file/folder member
+    :vartype EventType.shared_content_change_member_role: SharedContentChangeMemberRoleType
+    :ivar EventType.shared_content_change_viewer_info_policy:
+        (sharing) Changed whether members can see who viewed shared file/folder
+    :vartype EventType.shared_content_change_viewer_info_policy: SharedContentChangeViewerInfoPolicyType
+    :ivar EventType.shared_content_claim_invitation:
+        (sharing) Acquired membership of shared file/folder by accepting invite
+    :vartype EventType.shared_content_claim_invitation: SharedContentClaimInvitationType
+    :ivar EventType.shared_content_copy:
+        (sharing) Copied shared file/folder to own Dropbox
+    :vartype EventType.shared_content_copy: SharedContentCopyType
+    :ivar EventType.shared_content_download:
+        (sharing) Downloaded shared file/folder
+    :vartype EventType.shared_content_download: SharedContentDownloadType
+    :ivar EventType.shared_content_relinquish_membership:
+        (sharing) Left shared file/folder
+    :vartype EventType.shared_content_relinquish_membership: SharedContentRelinquishMembershipType
+    :ivar EventType.shared_content_remove_invitees:
+        (sharing) Removed invitee from shared file/folder before invite was
+        accepted
+    :vartype EventType.shared_content_remove_invitees: SharedContentRemoveInviteesType
+    :ivar EventType.shared_content_remove_link_expiry:
+        (sharing) Removed link expiration date of shared file/folder
+        (deprecated, no longer logged)
+    :vartype EventType.shared_content_remove_link_expiry: SharedContentRemoveLinkExpiryType
+    :ivar EventType.shared_content_remove_link_password:
+        (sharing) Removed link password of shared file/folder (deprecated, no
+        longer logged)
+    :vartype EventType.shared_content_remove_link_password: SharedContentRemoveLinkPasswordType
+    :ivar EventType.shared_content_remove_member:
         (sharing) Removed user/group from shared file/folder
-    :ivar SharedContentRequestAccessType
-        EventType.shared_content_request_access: (sharing) Requested access to
-        shared file/folder
-    :ivar SharedContentRestoreInviteesType
-        EventType.shared_content_restore_invitees: (sharing) Restored shared
-        file/folder invitees
-    :ivar SharedContentRestoreMemberType
-        EventType.shared_content_restore_member: (sharing) Restored users and/or
-        groups to membership of shared file/folder
-    :ivar SharedContentUnshareType EventType.shared_content_unshare: (sharing)
-        Unshared file/folder by clearing membership
-    :ivar SharedContentViewType EventType.shared_content_view: (sharing)
-        Previewed shared file/folder
-    :ivar SharedFolderChangeLinkPolicyType
-        EventType.shared_folder_change_link_policy: (sharing) Changed who can
-        access shared folder via link
-    :ivar SharedFolderChangeMembersInheritancePolicyType
-        EventType.shared_folder_change_members_inheritance_policy: (sharing)
-        Changed whether shared folder inherits members from parent folder
-    :ivar SharedFolderChangeMembersManagementPolicyType
-        EventType.shared_folder_change_members_management_policy: (sharing)
-        Changed who can add/remove members of shared folder
-    :ivar SharedFolderChangeMembersPolicyType
-        EventType.shared_folder_change_members_policy: (sharing) Changed who can
-        become member of shared folder
-    :ivar SharedFolderCreateType EventType.shared_folder_create: (sharing)
-        Created shared folder
-    :ivar SharedFolderDeclineInvitationType
-        EventType.shared_folder_decline_invitation: (sharing) Declined team
-        member's invite to shared folder
-    :ivar SharedFolderMountType EventType.shared_folder_mount: (sharing) Added
-        shared folder to own Dropbox
-    :ivar SharedFolderNestType EventType.shared_folder_nest: (sharing) Changed
-        parent of shared folder
-    :ivar SharedFolderTransferOwnershipType
-        EventType.shared_folder_transfer_ownership: (sharing) Transferred
-        ownership of shared folder to another member
-    :ivar SharedFolderUnmountType EventType.shared_folder_unmount: (sharing)
-        Deleted shared folder from Dropbox
-    :ivar SharedLinkAddExpiryType EventType.shared_link_add_expiry: (sharing)
-        Added shared link expiration date
-    :ivar SharedLinkChangeExpiryType EventType.shared_link_change_expiry:
+    :vartype EventType.shared_content_remove_member: SharedContentRemoveMemberType
+    :ivar EventType.shared_content_request_access:
+        (sharing) Requested access to shared file/folder
+    :vartype EventType.shared_content_request_access: SharedContentRequestAccessType
+    :ivar EventType.shared_content_restore_invitees:
+        (sharing) Restored shared file/folder invitees
+    :vartype EventType.shared_content_restore_invitees: SharedContentRestoreInviteesType
+    :ivar EventType.shared_content_restore_member:
+        (sharing) Restored users and/or groups to membership of shared
+        file/folder
+    :vartype EventType.shared_content_restore_member: SharedContentRestoreMemberType
+    :ivar EventType.shared_content_unshare:
+        (sharing) Unshared file/folder by clearing membership
+    :vartype EventType.shared_content_unshare: SharedContentUnshareType
+    :ivar EventType.shared_content_view:
+        (sharing) Previewed shared file/folder
+    :vartype EventType.shared_content_view: SharedContentViewType
+    :ivar EventType.shared_folder_change_link_policy:
+        (sharing) Changed who can access shared folder via link
+    :vartype EventType.shared_folder_change_link_policy: SharedFolderChangeLinkPolicyType
+    :ivar EventType.shared_folder_change_members_inheritance_policy:
+        (sharing) Changed whether shared folder inherits members from parent
+        folder
+    :vartype EventType.shared_folder_change_members_inheritance_policy: SharedFolderChangeMembersInheritancePolicyType
+    :ivar EventType.shared_folder_change_members_management_policy:
+        (sharing) Changed who can add/remove members of shared folder
+    :vartype EventType.shared_folder_change_members_management_policy: SharedFolderChangeMembersManagementPolicyType
+    :ivar EventType.shared_folder_change_members_policy:
+        (sharing) Changed who can become member of shared folder
+    :vartype EventType.shared_folder_change_members_policy: SharedFolderChangeMembersPolicyType
+    :ivar EventType.shared_folder_create:
+        (sharing) Created shared folder
+    :vartype EventType.shared_folder_create: SharedFolderCreateType
+    :ivar EventType.shared_folder_decline_invitation:
+        (sharing) Declined team member's invite to shared folder
+    :vartype EventType.shared_folder_decline_invitation: SharedFolderDeclineInvitationType
+    :ivar EventType.shared_folder_mount:
+        (sharing) Added shared folder to own Dropbox
+    :vartype EventType.shared_folder_mount: SharedFolderMountType
+    :ivar EventType.shared_folder_nest:
+        (sharing) Changed parent of shared folder
+    :vartype EventType.shared_folder_nest: SharedFolderNestType
+    :ivar EventType.shared_folder_transfer_ownership:
+        (sharing) Transferred ownership of shared folder to another member
+    :vartype EventType.shared_folder_transfer_ownership: SharedFolderTransferOwnershipType
+    :ivar EventType.shared_folder_unmount:
+        (sharing) Deleted shared folder from Dropbox
+    :vartype EventType.shared_folder_unmount: SharedFolderUnmountType
+    :ivar EventType.shared_link_add_expiry:
+        (sharing) Added shared link expiration date
+    :vartype EventType.shared_link_add_expiry: SharedLinkAddExpiryType
+    :ivar EventType.shared_link_change_expiry:
         (sharing) Changed shared link expiration date
-    :ivar SharedLinkChangeVisibilityType
-        EventType.shared_link_change_visibility: (sharing) Changed visibility of
-        shared link
-    :ivar SharedLinkCopyType EventType.shared_link_copy: (sharing) Added
-        file/folder to Dropbox from shared link
-    :ivar SharedLinkCreateType EventType.shared_link_create: (sharing) Created
-        shared link
-    :ivar SharedLinkDisableType EventType.shared_link_disable: (sharing) Removed
-        shared link
-    :ivar SharedLinkDownloadType EventType.shared_link_download: (sharing)
-        Downloaded file/folder from shared link
-    :ivar SharedLinkRemoveExpiryType EventType.shared_link_remove_expiry:
+    :vartype EventType.shared_link_change_expiry: SharedLinkChangeExpiryType
+    :ivar EventType.shared_link_change_visibility:
+        (sharing) Changed visibility of shared link
+    :vartype EventType.shared_link_change_visibility: SharedLinkChangeVisibilityType
+    :ivar EventType.shared_link_copy:
+        (sharing) Added file/folder to Dropbox from shared link
+    :vartype EventType.shared_link_copy: SharedLinkCopyType
+    :ivar EventType.shared_link_create:
+        (sharing) Created shared link
+    :vartype EventType.shared_link_create: SharedLinkCreateType
+    :ivar EventType.shared_link_disable:
+        (sharing) Removed shared link
+    :vartype EventType.shared_link_disable: SharedLinkDisableType
+    :ivar EventType.shared_link_download:
+        (sharing) Downloaded file/folder from shared link
+    :vartype EventType.shared_link_download: SharedLinkDownloadType
+    :ivar EventType.shared_link_remove_expiry:
         (sharing) Removed shared link expiration date
-    :ivar SharedLinkRemoveVisitorType EventType.shared_link_remove_visitor:
+    :vartype EventType.shared_link_remove_expiry: SharedLinkRemoveExpiryType
+    :ivar EventType.shared_link_remove_visitor:
         (sharing) Removed link visitor
-    :ivar SharedLinkSettingsAddExpirationType
-        EventType.shared_link_settings_add_expiration: (sharing) Added an
-        expiration date to the shared link
-    :ivar SharedLinkSettingsAddPasswordType
-        EventType.shared_link_settings_add_password: (sharing) Added a password
-        to the shared link
-    :ivar SharedLinkSettingsAllowDownloadDisabledType
-        EventType.shared_link_settings_allow_download_disabled: (sharing)
-        Disabled downloads
-    :ivar SharedLinkSettingsAllowDownloadEnabledType
-        EventType.shared_link_settings_allow_download_enabled: (sharing) Enabled
-        downloads
-    :ivar SharedLinkSettingsChangeAudienceType
-        EventType.shared_link_settings_change_audience: (sharing) Changed the
-        audience of the shared link
-    :ivar SharedLinkSettingsChangeExpirationType
-        EventType.shared_link_settings_change_expiration: (sharing) Changed the
-        expiration date of the shared link
-    :ivar SharedLinkSettingsChangePasswordType
-        EventType.shared_link_settings_change_password: (sharing) Changed the
-        password of the shared link
-    :ivar SharedLinkSettingsRemoveExpirationType
-        EventType.shared_link_settings_remove_expiration: (sharing) Removed the
-        expiration date from the shared link
-    :ivar SharedLinkSettingsRemovePasswordType
-        EventType.shared_link_settings_remove_password: (sharing) Removed the
-        password from the shared link
-    :ivar SharedLinkShareType EventType.shared_link_share: (sharing) Added
-        members as audience of shared link
-    :ivar SharedLinkViewType EventType.shared_link_view: (sharing) Opened shared
-        link
-    :ivar SharedNoteOpenedType EventType.shared_note_opened: (sharing) Opened
-        shared Paper doc (deprecated, no longer logged)
-    :ivar ShmodelDisableDownloadsType EventType.shmodel_disable_downloads:
+    :vartype EventType.shared_link_remove_visitor: SharedLinkRemoveVisitorType
+    :ivar EventType.shared_link_settings_add_expiration:
+        (sharing) Added an expiration date to the shared link
+    :vartype EventType.shared_link_settings_add_expiration: SharedLinkSettingsAddExpirationType
+    :ivar EventType.shared_link_settings_add_password:
+        (sharing) Added a password to the shared link
+    :vartype EventType.shared_link_settings_add_password: SharedLinkSettingsAddPasswordType
+    :ivar EventType.shared_link_settings_allow_download_disabled:
+        (sharing) Disabled downloads
+    :vartype EventType.shared_link_settings_allow_download_disabled: SharedLinkSettingsAllowDownloadDisabledType
+    :ivar EventType.shared_link_settings_allow_download_enabled:
+        (sharing) Enabled downloads
+    :vartype EventType.shared_link_settings_allow_download_enabled: SharedLinkSettingsAllowDownloadEnabledType
+    :ivar EventType.shared_link_settings_change_audience:
+        (sharing) Changed the audience of the shared link
+    :vartype EventType.shared_link_settings_change_audience: SharedLinkSettingsChangeAudienceType
+    :ivar EventType.shared_link_settings_change_expiration:
+        (sharing) Changed the expiration date of the shared link
+    :vartype EventType.shared_link_settings_change_expiration: SharedLinkSettingsChangeExpirationType
+    :ivar EventType.shared_link_settings_change_password:
+        (sharing) Changed the password of the shared link
+    :vartype EventType.shared_link_settings_change_password: SharedLinkSettingsChangePasswordType
+    :ivar EventType.shared_link_settings_remove_expiration:
+        (sharing) Removed the expiration date from the shared link
+    :vartype EventType.shared_link_settings_remove_expiration: SharedLinkSettingsRemoveExpirationType
+    :ivar EventType.shared_link_settings_remove_password:
+        (sharing) Removed the password from the shared link
+    :vartype EventType.shared_link_settings_remove_password: SharedLinkSettingsRemovePasswordType
+    :ivar EventType.shared_link_share:
+        (sharing) Added members as audience of shared link
+    :vartype EventType.shared_link_share: SharedLinkShareType
+    :ivar EventType.shared_link_view:
+        (sharing) Opened shared link
+    :vartype EventType.shared_link_view: SharedLinkViewType
+    :ivar EventType.shared_note_opened:
+        (sharing) Opened shared Paper doc (deprecated, no longer logged)
+    :vartype EventType.shared_note_opened: SharedNoteOpenedType
+    :ivar EventType.shmodel_disable_downloads:
         (sharing) Disabled downloads for link (deprecated, no longer logged)
-    :ivar ShmodelEnableDownloadsType EventType.shmodel_enable_downloads:
+    :vartype EventType.shmodel_disable_downloads: ShmodelDisableDownloadsType
+    :ivar EventType.shmodel_enable_downloads:
         (sharing) Enabled downloads for link (deprecated, no longer logged)
-    :ivar ShmodelGroupShareType EventType.shmodel_group_share: (sharing) Shared
-        link with group (deprecated, no longer logged)
-    :ivar ShowcaseAccessGrantedType EventType.showcase_access_granted:
+    :vartype EventType.shmodel_enable_downloads: ShmodelEnableDownloadsType
+    :ivar EventType.shmodel_group_share:
+        (sharing) Shared link with group (deprecated, no longer logged)
+    :vartype EventType.shmodel_group_share: ShmodelGroupShareType
+    :ivar EventType.showcase_access_granted:
         (showcase) Granted access to showcase
-    :ivar ShowcaseAddMemberType EventType.showcase_add_member: (showcase) Added
-        member to showcase
-    :ivar ShowcaseArchivedType EventType.showcase_archived: (showcase) Archived
-        showcase
-    :ivar ShowcaseCreatedType EventType.showcase_created: (showcase) Created
-        showcase
-    :ivar ShowcaseDeleteCommentType EventType.showcase_delete_comment:
+    :vartype EventType.showcase_access_granted: ShowcaseAccessGrantedType
+    :ivar EventType.showcase_add_member:
+        (showcase) Added member to showcase
+    :vartype EventType.showcase_add_member: ShowcaseAddMemberType
+    :ivar EventType.showcase_archived:
+        (showcase) Archived showcase
+    :vartype EventType.showcase_archived: ShowcaseArchivedType
+    :ivar EventType.showcase_created:
+        (showcase) Created showcase
+    :vartype EventType.showcase_created: ShowcaseCreatedType
+    :ivar EventType.showcase_delete_comment:
         (showcase) Deleted showcase comment
-    :ivar ShowcaseEditedType EventType.showcase_edited: (showcase) Edited
-        showcase
-    :ivar ShowcaseEditCommentType EventType.showcase_edit_comment: (showcase)
-        Edited showcase comment
-    :ivar ShowcaseFileAddedType EventType.showcase_file_added: (showcase) Added
-        file to showcase
-    :ivar ShowcaseFileDownloadType EventType.showcase_file_download: (showcase)
-        Downloaded file from showcase
-    :ivar ShowcaseFileRemovedType EventType.showcase_file_removed: (showcase)
-        Removed file from showcase
-    :ivar ShowcaseFileViewType EventType.showcase_file_view: (showcase) Viewed
-        file in showcase
-    :ivar ShowcasePermanentlyDeletedType EventType.showcase_permanently_deleted:
+    :vartype EventType.showcase_delete_comment: ShowcaseDeleteCommentType
+    :ivar EventType.showcase_edited:
+        (showcase) Edited showcase
+    :vartype EventType.showcase_edited: ShowcaseEditedType
+    :ivar EventType.showcase_edit_comment:
+        (showcase) Edited showcase comment
+    :vartype EventType.showcase_edit_comment: ShowcaseEditCommentType
+    :ivar EventType.showcase_file_added:
+        (showcase) Added file to showcase
+    :vartype EventType.showcase_file_added: ShowcaseFileAddedType
+    :ivar EventType.showcase_file_download:
+        (showcase) Downloaded file from showcase
+    :vartype EventType.showcase_file_download: ShowcaseFileDownloadType
+    :ivar EventType.showcase_file_removed:
+        (showcase) Removed file from showcase
+    :vartype EventType.showcase_file_removed: ShowcaseFileRemovedType
+    :ivar EventType.showcase_file_view:
+        (showcase) Viewed file in showcase
+    :vartype EventType.showcase_file_view: ShowcaseFileViewType
+    :ivar EventType.showcase_permanently_deleted:
         (showcase) Permanently deleted showcase
-    :ivar ShowcasePostCommentType EventType.showcase_post_comment: (showcase)
-        Added showcase comment
-    :ivar ShowcaseRemoveMemberType EventType.showcase_remove_member: (showcase)
-        Removed member from showcase
-    :ivar ShowcaseRenamedType EventType.showcase_renamed: (showcase) Renamed
-        showcase
-    :ivar ShowcaseRequestAccessType EventType.showcase_request_access:
+    :vartype EventType.showcase_permanently_deleted: ShowcasePermanentlyDeletedType
+    :ivar EventType.showcase_post_comment:
+        (showcase) Added showcase comment
+    :vartype EventType.showcase_post_comment: ShowcasePostCommentType
+    :ivar EventType.showcase_remove_member:
+        (showcase) Removed member from showcase
+    :vartype EventType.showcase_remove_member: ShowcaseRemoveMemberType
+    :ivar EventType.showcase_renamed:
+        (showcase) Renamed showcase
+    :vartype EventType.showcase_renamed: ShowcaseRenamedType
+    :ivar EventType.showcase_request_access:
         (showcase) Requested access to showcase
-    :ivar ShowcaseResolveCommentType EventType.showcase_resolve_comment:
+    :vartype EventType.showcase_request_access: ShowcaseRequestAccessType
+    :ivar EventType.showcase_resolve_comment:
         (showcase) Resolved showcase comment
-    :ivar ShowcaseRestoredType EventType.showcase_restored: (showcase)
-        Unarchived showcase
-    :ivar ShowcaseTrashedType EventType.showcase_trashed: (showcase) Deleted
-        showcase
-    :ivar ShowcaseTrashedDeprecatedType EventType.showcase_trashed_deprecated:
+    :vartype EventType.showcase_resolve_comment: ShowcaseResolveCommentType
+    :ivar EventType.showcase_restored:
+        (showcase) Unarchived showcase
+    :vartype EventType.showcase_restored: ShowcaseRestoredType
+    :ivar EventType.showcase_trashed:
+        (showcase) Deleted showcase
+    :vartype EventType.showcase_trashed: ShowcaseTrashedType
+    :ivar EventType.showcase_trashed_deprecated:
         (showcase) Deleted showcase (old version) (deprecated, replaced by
         'Deleted showcase')
-    :ivar ShowcaseUnresolveCommentType EventType.showcase_unresolve_comment:
+    :vartype EventType.showcase_trashed_deprecated: ShowcaseTrashedDeprecatedType
+    :ivar EventType.showcase_unresolve_comment:
         (showcase) Unresolved showcase comment
-    :ivar ShowcaseUntrashedType EventType.showcase_untrashed: (showcase)
-        Restored showcase
-    :ivar ShowcaseUntrashedDeprecatedType
-        EventType.showcase_untrashed_deprecated: (showcase) Restored showcase
-        (old version) (deprecated, replaced by 'Restored showcase')
-    :ivar ShowcaseViewType EventType.showcase_view: (showcase) Viewed showcase
-    :ivar SignSignatureRequestCanceledType
-        EventType.sign_signature_request_canceled: (signatures) Canceled
-        signature request
-    :ivar SignSignatureRequestCompletedType
-        EventType.sign_signature_request_completed: (signatures) Completed
-        signature request
-    :ivar SignSignatureRequestDeclinedType
-        EventType.sign_signature_request_declined: (signatures) Declined
-        signature request
-    :ivar SignSignatureRequestOpenedType
-        EventType.sign_signature_request_opened: (signatures) Opened signature
-        request
-    :ivar SignSignatureRequestReminderSentType
-        EventType.sign_signature_request_reminder_sent: (signatures) Sent
-        signature request reminder
-    :ivar SignSignatureRequestSentType EventType.sign_signature_request_sent:
+    :vartype EventType.showcase_unresolve_comment: ShowcaseUnresolveCommentType
+    :ivar EventType.showcase_untrashed:
+        (showcase) Restored showcase
+    :vartype EventType.showcase_untrashed: ShowcaseUntrashedType
+    :ivar EventType.showcase_untrashed_deprecated:
+        (showcase) Restored showcase (old version) (deprecated, replaced by
+        'Restored showcase')
+    :vartype EventType.showcase_untrashed_deprecated: ShowcaseUntrashedDeprecatedType
+    :ivar EventType.showcase_view:
+        (showcase) Viewed showcase
+    :vartype EventType.showcase_view: ShowcaseViewType
+    :ivar EventType.sign_signature_request_canceled:
+        (signatures) Canceled signature request
+    :vartype EventType.sign_signature_request_canceled: SignSignatureRequestCanceledType
+    :ivar EventType.sign_signature_request_completed:
+        (signatures) Completed signature request
+    :vartype EventType.sign_signature_request_completed: SignSignatureRequestCompletedType
+    :ivar EventType.sign_signature_request_declined:
+        (signatures) Declined signature request
+    :vartype EventType.sign_signature_request_declined: SignSignatureRequestDeclinedType
+    :ivar EventType.sign_signature_request_opened:
+        (signatures) Opened signature request
+    :vartype EventType.sign_signature_request_opened: SignSignatureRequestOpenedType
+    :ivar EventType.sign_signature_request_reminder_sent:
+        (signatures) Sent signature request reminder
+    :vartype EventType.sign_signature_request_reminder_sent: SignSignatureRequestReminderSentType
+    :ivar EventType.sign_signature_request_sent:
         (signatures) Sent signature request
-    :ivar SignTemplateCreatedType EventType.sign_template_created: (signatures)
-        Created template
-    :ivar SignTemplateSharedType EventType.sign_template_shared: (signatures)
-        Shared template
-    :ivar RiscSecurityEventType EventType.risc_security_event: (sso) RISC
-        security event received from external provider
-    :ivar SsoAddCertType EventType.sso_add_cert: (sso) Added X.509 certificate
-        for SSO
-    :ivar SsoAddLoginUrlType EventType.sso_add_login_url: (sso) Added sign-in
-        URL for SSO
-    :ivar SsoAddLogoutUrlType EventType.sso_add_logout_url: (sso) Added sign-out
-        URL for SSO
-    :ivar SsoChangeCertType EventType.sso_change_cert: (sso) Changed X.509
-        certificate for SSO
-    :ivar SsoChangeLoginUrlType EventType.sso_change_login_url: (sso) Changed
-        sign-in URL for SSO
-    :ivar SsoChangeLogoutUrlType EventType.sso_change_logout_url: (sso) Changed
-        sign-out URL for SSO
-    :ivar SsoChangeSamlIdentityModeType EventType.sso_change_saml_identity_mode:
+    :vartype EventType.sign_signature_request_sent: SignSignatureRequestSentType
+    :ivar EventType.sign_template_created:
+        (signatures) Created template
+    :vartype EventType.sign_template_created: SignTemplateCreatedType
+    :ivar EventType.sign_template_shared:
+        (signatures) Shared template
+    :vartype EventType.sign_template_shared: SignTemplateSharedType
+    :ivar EventType.risc_security_event:
+        (sso) RISC security event received from external provider
+    :vartype EventType.risc_security_event: RiscSecurityEventType
+    :ivar EventType.sso_add_cert:
+        (sso) Added X.509 certificate for SSO
+    :vartype EventType.sso_add_cert: SsoAddCertType
+    :ivar EventType.sso_add_login_url:
+        (sso) Added sign-in URL for SSO
+    :vartype EventType.sso_add_login_url: SsoAddLoginUrlType
+    :ivar EventType.sso_add_logout_url:
+        (sso) Added sign-out URL for SSO
+    :vartype EventType.sso_add_logout_url: SsoAddLogoutUrlType
+    :ivar EventType.sso_change_cert:
+        (sso) Changed X.509 certificate for SSO
+    :vartype EventType.sso_change_cert: SsoChangeCertType
+    :ivar EventType.sso_change_login_url:
+        (sso) Changed sign-in URL for SSO
+    :vartype EventType.sso_change_login_url: SsoChangeLoginUrlType
+    :ivar EventType.sso_change_logout_url:
+        (sso) Changed sign-out URL for SSO
+    :vartype EventType.sso_change_logout_url: SsoChangeLogoutUrlType
+    :ivar EventType.sso_change_saml_identity_mode:
         (sso) Changed SAML identity mode for SSO
-    :ivar SsoRemoveCertType EventType.sso_remove_cert: (sso) Removed X.509
-        certificate for SSO
-    :ivar SsoRemoveLoginUrlType EventType.sso_remove_login_url: (sso) Removed
-        sign-in URL for SSO
-    :ivar SsoRemoveLogoutUrlType EventType.sso_remove_logout_url: (sso) Removed
-        sign-out URL for SSO
-    :ivar TeamFolderChangeStatusType EventType.team_folder_change_status:
+    :vartype EventType.sso_change_saml_identity_mode: SsoChangeSamlIdentityModeType
+    :ivar EventType.sso_remove_cert:
+        (sso) Removed X.509 certificate for SSO
+    :vartype EventType.sso_remove_cert: SsoRemoveCertType
+    :ivar EventType.sso_remove_login_url:
+        (sso) Removed sign-in URL for SSO
+    :vartype EventType.sso_remove_login_url: SsoRemoveLoginUrlType
+    :ivar EventType.sso_remove_logout_url:
+        (sso) Removed sign-out URL for SSO
+    :vartype EventType.sso_remove_logout_url: SsoRemoveLogoutUrlType
+    :ivar EventType.team_folder_change_status:
         (team_folders) Changed archival status of team folder
-    :ivar TeamFolderCreateType EventType.team_folder_create: (team_folders)
-        Created team folder in active status
-    :ivar TeamFolderDowngradeType EventType.team_folder_downgrade:
+    :vartype EventType.team_folder_change_status: TeamFolderChangeStatusType
+    :ivar EventType.team_folder_create:
+        (team_folders) Created team folder in active status
+    :vartype EventType.team_folder_create: TeamFolderCreateType
+    :ivar EventType.team_folder_downgrade:
         (team_folders) Downgraded team folder to regular shared folder
-    :ivar TeamFolderPermanentlyDeleteType
-        EventType.team_folder_permanently_delete: (team_folders) Permanently
-        deleted archived team folder
-    :ivar TeamFolderRenameType EventType.team_folder_rename: (team_folders)
-        Renamed active/archived team folder
-    :ivar TeamFolderSpaceLimitsChangeCapsTypeType
-        EventType.team_folder_space_limits_change_caps_type: (team_folders)
-        Changed team folder space limit enforcement type
-    :ivar TeamFolderSpaceLimitsChangeLimitType
-        EventType.team_folder_space_limits_change_limit: (team_folders) Changed
-        team folder space limit
-    :ivar TeamFolderSpaceLimitsChangeNotificationTargetType
-        EventType.team_folder_space_limits_change_notification_target:
+    :vartype EventType.team_folder_downgrade: TeamFolderDowngradeType
+    :ivar EventType.team_folder_permanently_delete:
+        (team_folders) Permanently deleted archived team folder
+    :vartype EventType.team_folder_permanently_delete: TeamFolderPermanentlyDeleteType
+    :ivar EventType.team_folder_rename:
+        (team_folders) Renamed active/archived team folder
+    :vartype EventType.team_folder_rename: TeamFolderRenameType
+    :ivar EventType.team_folder_space_limits_change_caps_type:
+        (team_folders) Changed team folder space limit enforcement type
+    :vartype EventType.team_folder_space_limits_change_caps_type: TeamFolderSpaceLimitsChangeCapsTypeType
+    :ivar EventType.team_folder_space_limits_change_limit:
+        (team_folders) Changed team folder space limit
+    :vartype EventType.team_folder_space_limits_change_limit: TeamFolderSpaceLimitsChangeLimitType
+    :ivar EventType.team_folder_space_limits_change_notification_target:
         (team_folders) Changed team folder space limit notification target
-    :ivar TeamSelectiveSyncSettingsChangedType
-        EventType.team_selective_sync_settings_changed: (team_folders) Changed
-        sync default
-    :ivar AccountCaptureChangePolicyType
-        EventType.account_capture_change_policy: (team_policies) Changed account
-        capture setting on team domain
-    :ivar AdminEmailRemindersChangedType
-        EventType.admin_email_reminders_changed: (team_policies) Changed admin
-        reminder settings for requests to join the team
-    :ivar AiThirdPartySharingDropboxBasePolicyChangedType
-        EventType.ai_third_party_sharing_dropbox_base_policy_changed:
+    :vartype EventType.team_folder_space_limits_change_notification_target: TeamFolderSpaceLimitsChangeNotificationTargetType
+    :ivar EventType.team_selective_sync_settings_changed:
+        (team_folders) Changed sync default
+    :vartype EventType.team_selective_sync_settings_changed: TeamSelectiveSyncSettingsChangedType
+    :ivar EventType.account_capture_change_policy:
+        (team_policies) Changed account capture setting on team domain
+    :vartype EventType.account_capture_change_policy: AccountCaptureChangePolicyType
+    :ivar EventType.admin_email_reminders_changed:
+        (team_policies) Changed admin reminder settings for requests to join the
+        team
+    :vartype EventType.admin_email_reminders_changed: AdminEmailRemindersChangedType
+    :ivar EventType.ai_third_party_sharing_dropbox_base_policy_changed:
         (team_policies) Changed AI third party sharing policy for team
-    :ivar AllowDownloadDisabledType EventType.allow_download_disabled:
+    :vartype EventType.ai_third_party_sharing_dropbox_base_policy_changed: AiThirdPartySharingDropboxBasePolicyChangedType
+    :ivar EventType.allow_download_disabled:
         (team_policies) Disabled downloads (deprecated, no longer logged)
-    :ivar AllowDownloadEnabledType EventType.allow_download_enabled:
+    :vartype EventType.allow_download_disabled: AllowDownloadDisabledType
+    :ivar EventType.allow_download_enabled:
         (team_policies) Enabled downloads (deprecated, no longer logged)
-    :ivar AppleLoginChangePolicyType EventType.apple_login_change_policy:
+    :vartype EventType.allow_download_enabled: AllowDownloadEnabledType
+    :ivar EventType.apple_login_change_policy:
         (team_policies) Enabled/disabled Apple login for team
-    :ivar AppPermissionsChangedType EventType.app_permissions_changed:
+    :vartype EventType.apple_login_change_policy: AppleLoginChangePolicyType
+    :ivar EventType.app_permissions_changed:
         (team_policies) Changed app permissions
-    :ivar CameraUploadsPolicyChangedType
-        EventType.camera_uploads_policy_changed: (team_policies) Changed camera
-        uploads setting for team
-    :ivar CaptureTeamSpacePolicyChangedType
-        EventType.capture_team_space_policy_changed: (team_policies) Changed
-        Capture team space policy for team
-    :ivar CaptureTranscriptPolicyChangedType
-        EventType.capture_transcript_policy_changed: (team_policies) Changed
-        Capture transcription policy for team
-    :ivar ClassificationChangePolicyType EventType.classification_change_policy:
+    :vartype EventType.app_permissions_changed: AppPermissionsChangedType
+    :ivar EventType.camera_uploads_policy_changed:
+        (team_policies) Changed camera uploads setting for team
+    :vartype EventType.camera_uploads_policy_changed: CameraUploadsPolicyChangedType
+    :ivar EventType.capture_team_space_policy_changed:
+        (team_policies) Changed Capture team space policy for team
+    :vartype EventType.capture_team_space_policy_changed: CaptureTeamSpacePolicyChangedType
+    :ivar EventType.capture_transcript_policy_changed:
+        (team_policies) Changed Capture transcription policy for team
+    :vartype EventType.capture_transcript_policy_changed: CaptureTranscriptPolicyChangedType
+    :ivar EventType.classification_change_policy:
         (team_policies) Changed classification policy for team
-    :ivar ComputerBackupPolicyChangedType
-        EventType.computer_backup_policy_changed: (team_policies) Changed
-        computer backup policy for team
-    :ivar ContentAdministrationPolicyChangedType
-        EventType.content_administration_policy_changed: (team_policies) Changed
-        content management setting
-    :ivar ContentDeletionProtectionChangePolicyType
-        EventType.content_deletion_protection_change_policy: (team_policies)
-        Changed content deletion protection policy for team
-    :ivar DashExternalSharingPolicyChangedType
-        EventType.dash_external_sharing_policy_changed: (team_policies) Changed
-        Dash external sharing policy for team
-    :ivar DataPlacementRestrictionChangePolicyType
-        EventType.data_placement_restriction_change_policy: (team_policies) Set
-        restrictions on data center locations where team data resides
-    :ivar DataPlacementRestrictionSatisfyPolicyType
-        EventType.data_placement_restriction_satisfy_policy: (team_policies)
-        Completed restrictions on data center locations where team data resides
-    :ivar DeviceApprovalsAddExceptionType
-        EventType.device_approvals_add_exception: (team_policies) Added members
-        to device approvals exception list
-    :ivar DeviceApprovalsChangeDesktopPolicyType
-        EventType.device_approvals_change_desktop_policy: (team_policies)
-        Set/removed limit on number of computers member can link to team Dropbox
-        account
-    :ivar DeviceApprovalsChangeMobilePolicyType
-        EventType.device_approvals_change_mobile_policy: (team_policies)
-        Set/removed limit on number of mobile devices member can link to team
-        Dropbox account
-    :ivar DeviceApprovalsChangeOverageActionType
-        EventType.device_approvals_change_overage_action: (team_policies)
-        Changed device approvals setting when member is over limit
-    :ivar DeviceApprovalsChangeUnlinkActionType
-        EventType.device_approvals_change_unlink_action: (team_policies) Changed
-        device approvals setting when member unlinks approved device
-    :ivar DeviceApprovalsRemoveExceptionType
-        EventType.device_approvals_remove_exception: (team_policies) Removed
-        members from device approvals exception list
-    :ivar DirectoryRestrictionsAddMembersType
-        EventType.directory_restrictions_add_members: (team_policies) Added
-        members to directory restrictions list
-    :ivar DirectoryRestrictionsRemoveMembersType
-        EventType.directory_restrictions_remove_members: (team_policies) Removed
-        members from directory restrictions list
-    :ivar DropboxPasswordsPolicyChangedType
-        EventType.dropbox_passwords_policy_changed: (team_policies) Changed
-        Dropbox Passwords policy for team
-    :ivar EmailIngestPolicyChangedType EventType.email_ingest_policy_changed:
+    :vartype EventType.classification_change_policy: ClassificationChangePolicyType
+    :ivar EventType.computer_backup_policy_changed:
+        (team_policies) Changed computer backup policy for team
+    :vartype EventType.computer_backup_policy_changed: ComputerBackupPolicyChangedType
+    :ivar EventType.content_administration_policy_changed:
+        (team_policies) Changed content management setting
+    :vartype EventType.content_administration_policy_changed: ContentAdministrationPolicyChangedType
+    :ivar EventType.content_deletion_protection_change_policy:
+        (team_policies) Changed content deletion protection policy for team
+    :vartype EventType.content_deletion_protection_change_policy: ContentDeletionProtectionChangePolicyType
+    :ivar EventType.dash_external_sharing_policy_changed:
+        (team_policies) Changed Dash external sharing policy for team
+    :vartype EventType.dash_external_sharing_policy_changed: DashExternalSharingPolicyChangedType
+    :ivar EventType.data_placement_restriction_change_policy:
+        (team_policies) Set restrictions on data center locations where team
+        data resides
+    :vartype EventType.data_placement_restriction_change_policy: DataPlacementRestrictionChangePolicyType
+    :ivar EventType.data_placement_restriction_satisfy_policy:
+        (team_policies) Completed restrictions on data center locations where
+        team data resides
+    :vartype EventType.data_placement_restriction_satisfy_policy: DataPlacementRestrictionSatisfyPolicyType
+    :ivar EventType.device_approvals_add_exception:
+        (team_policies) Added members to device approvals exception list
+    :vartype EventType.device_approvals_add_exception: DeviceApprovalsAddExceptionType
+    :ivar EventType.device_approvals_change_desktop_policy:
+        (team_policies) Set/removed limit on number of computers member can link
+        to team Dropbox account
+    :vartype EventType.device_approvals_change_desktop_policy: DeviceApprovalsChangeDesktopPolicyType
+    :ivar EventType.device_approvals_change_mobile_policy:
+        (team_policies) Set/removed limit on number of mobile devices member can
+        link to team Dropbox account
+    :vartype EventType.device_approvals_change_mobile_policy: DeviceApprovalsChangeMobilePolicyType
+    :ivar EventType.device_approvals_change_overage_action:
+        (team_policies) Changed device approvals setting when member is over
+        limit
+    :vartype EventType.device_approvals_change_overage_action: DeviceApprovalsChangeOverageActionType
+    :ivar EventType.device_approvals_change_unlink_action:
+        (team_policies) Changed device approvals setting when member unlinks
+        approved device
+    :vartype EventType.device_approvals_change_unlink_action: DeviceApprovalsChangeUnlinkActionType
+    :ivar EventType.device_approvals_remove_exception:
+        (team_policies) Removed members from device approvals exception list
+    :vartype EventType.device_approvals_remove_exception: DeviceApprovalsRemoveExceptionType
+    :ivar EventType.directory_restrictions_add_members:
+        (team_policies) Added members to directory restrictions list
+    :vartype EventType.directory_restrictions_add_members: DirectoryRestrictionsAddMembersType
+    :ivar EventType.directory_restrictions_remove_members:
+        (team_policies) Removed members from directory restrictions list
+    :vartype EventType.directory_restrictions_remove_members: DirectoryRestrictionsRemoveMembersType
+    :ivar EventType.dropbox_passwords_policy_changed:
+        (team_policies) Changed Dropbox Passwords policy for team
+    :vartype EventType.dropbox_passwords_policy_changed: DropboxPasswordsPolicyChangedType
+    :ivar EventType.email_ingest_policy_changed:
         (team_policies) Changed email to Dropbox policy for team
-    :ivar EmmAddExceptionType EventType.emm_add_exception: (team_policies) Added
-        members to EMM exception list
-    :ivar EmmChangePolicyType EventType.emm_change_policy: (team_policies)
-        Enabled/disabled enterprise mobility management for members
-    :ivar EmmRemoveExceptionType EventType.emm_remove_exception: (team_policies)
-        Removed members from EMM exception list
-    :ivar ExtendedVersionHistoryChangePolicyType
-        EventType.extended_version_history_change_policy: (team_policies)
-        Accepted/opted out of extended version history
-    :ivar ExternalDriveBackupPolicyChangedType
-        EventType.external_drive_backup_policy_changed: (team_policies) Changed
-        external drive backup policy for team
-    :ivar FileCommentsChangePolicyType EventType.file_comments_change_policy:
+    :vartype EventType.email_ingest_policy_changed: EmailIngestPolicyChangedType
+    :ivar EventType.emm_add_exception:
+        (team_policies) Added members to EMM exception list
+    :vartype EventType.emm_add_exception: EmmAddExceptionType
+    :ivar EventType.emm_change_policy:
+        (team_policies) Enabled/disabled enterprise mobility management for
+        members
+    :vartype EventType.emm_change_policy: EmmChangePolicyType
+    :ivar EventType.emm_remove_exception:
+        (team_policies) Removed members from EMM exception list
+    :vartype EventType.emm_remove_exception: EmmRemoveExceptionType
+    :ivar EventType.extended_version_history_change_policy:
+        (team_policies) Accepted/opted out of extended version history
+    :vartype EventType.extended_version_history_change_policy: ExtendedVersionHistoryChangePolicyType
+    :ivar EventType.external_drive_backup_policy_changed:
+        (team_policies) Changed external drive backup policy for team
+    :vartype EventType.external_drive_backup_policy_changed: ExternalDriveBackupPolicyChangedType
+    :ivar EventType.file_comments_change_policy:
         (team_policies) Enabled/disabled commenting on team files
-    :ivar FileLockingPolicyChangedType EventType.file_locking_policy_changed:
+    :vartype EventType.file_comments_change_policy: FileCommentsChangePolicyType
+    :ivar EventType.file_locking_policy_changed:
         (team_policies) Changed file locking policy for team
-    :ivar FileProviderMigrationPolicyChangedType
-        EventType.file_provider_migration_policy_changed: (team_policies)
-        Changed File Provider Migration policy for team
-    :ivar FileRequestsChangePolicyType EventType.file_requests_change_policy:
+    :vartype EventType.file_locking_policy_changed: FileLockingPolicyChangedType
+    :ivar EventType.file_provider_migration_policy_changed:
+        (team_policies) Changed File Provider Migration policy for team
+    :vartype EventType.file_provider_migration_policy_changed: FileProviderMigrationPolicyChangedType
+    :ivar EventType.file_requests_change_policy:
         (team_policies) Enabled/disabled file requests
-    :ivar FileRequestsEmailsEnabledType EventType.file_requests_emails_enabled:
+    :vartype EventType.file_requests_change_policy: FileRequestsChangePolicyType
+    :ivar EventType.file_requests_emails_enabled:
         (team_policies) Enabled file request emails for everyone (deprecated, no
         longer logged)
-    :ivar FileRequestsEmailsRestrictedToTeamOnlyType
-        EventType.file_requests_emails_restricted_to_team_only: (team_policies)
-        Enabled file request emails for team (deprecated, no longer logged)
-    :ivar FileTransfersPolicyChangedType
-        EventType.file_transfers_policy_changed: (team_policies) Changed file
-        transfers policy for team
-    :ivar FlexibleFileNamesPolicyChangedType
-        EventType.flexible_file_names_policy_changed: (team_policies) Changed
-        flexible file names policy for team
-    :ivar FolderLinkRestrictionPolicyChangedType
-        EventType.folder_link_restriction_policy_changed: (team_policies)
-        Changed folder link restrictions policy for team
-    :ivar GoogleSsoChangePolicyType EventType.google_sso_change_policy:
+    :vartype EventType.file_requests_emails_enabled: FileRequestsEmailsEnabledType
+    :ivar EventType.file_requests_emails_restricted_to_team_only:
+        (team_policies) Enabled file request emails for team (deprecated, no
+        longer logged)
+    :vartype EventType.file_requests_emails_restricted_to_team_only: FileRequestsEmailsRestrictedToTeamOnlyType
+    :ivar EventType.file_transfers_policy_changed:
+        (team_policies) Changed file transfers policy for team
+    :vartype EventType.file_transfers_policy_changed: FileTransfersPolicyChangedType
+    :ivar EventType.flexible_file_names_policy_changed:
+        (team_policies) Changed flexible file names policy for team
+    :vartype EventType.flexible_file_names_policy_changed: FlexibleFileNamesPolicyChangedType
+    :ivar EventType.folder_link_restriction_policy_changed:
+        (team_policies) Changed folder link restrictions policy for team
+    :vartype EventType.folder_link_restriction_policy_changed: FolderLinkRestrictionPolicyChangedType
+    :ivar EventType.google_sso_change_policy:
         (team_policies) Enabled/disabled Google single sign-on for team
-    :ivar GroupUserManagementChangePolicyType
-        EventType.group_user_management_change_policy: (team_policies) Changed
-        who can create groups
-    :ivar IntegrationPolicyChangedType EventType.integration_policy_changed:
+    :vartype EventType.google_sso_change_policy: GoogleSsoChangePolicyType
+    :ivar EventType.group_user_management_change_policy:
+        (team_policies) Changed who can create groups
+    :vartype EventType.group_user_management_change_policy: GroupUserManagementChangePolicyType
+    :ivar EventType.integration_policy_changed:
         (team_policies) Changed integration policy for team
-    :ivar InviteAcceptanceEmailPolicyChangedType
-        EventType.invite_acceptance_email_policy_changed: (team_policies)
-        Changed invite accept email policy for team
-    :ivar MediaHubAddingPeoplePolicyChangedType
-        EventType.media_hub_adding_people_policy_changed: (team_policies)
-        Changed the policy for adding people to Media Hub content
-    :ivar MediaHubDownloadPolicyChangedType
-        EventType.media_hub_download_policy_changed: (team_policies) Changed the
-        policy for downloading Media Hub content
-    :ivar MediaHubLinkSharingPolicyChangedType
-        EventType.media_hub_link_sharing_policy_changed: (team_policies) Changed
-        the policy for sharing Media Hub content
-    :ivar MemberRequestsChangePolicyType
-        EventType.member_requests_change_policy: (team_policies) Changed whether
-        users can find team when not invited
-    :ivar MemberSendInvitePolicyChangedType
-        EventType.member_send_invite_policy_changed: (team_policies) Changed
-        member send invite policy for team
-    :ivar MemberSpaceLimitsAddExceptionType
-        EventType.member_space_limits_add_exception: (team_policies) Added
-        members to member space limit exception list
-    :ivar MemberSpaceLimitsChangeCapsTypePolicyType
-        EventType.member_space_limits_change_caps_type_policy: (team_policies)
-        Changed member space limit type for team
-    :ivar MemberSpaceLimitsChangePolicyType
-        EventType.member_space_limits_change_policy: (team_policies) Changed
-        team default member space limit
-    :ivar MemberSpaceLimitsRemoveExceptionType
-        EventType.member_space_limits_remove_exception: (team_policies) Removed
-        members from member space limit exception list
-    :ivar MemberSuggestionsChangePolicyType
-        EventType.member_suggestions_change_policy: (team_policies)
-        Enabled/disabled option for team members to suggest people to add to
-        team
-    :ivar MicrosoftLoginChangePolicyType
-        EventType.microsoft_login_change_policy: (team_policies)
-        Enabled/disabled Microsoft login for team
-    :ivar MicrosoftOfficeAddinChangePolicyType
-        EventType.microsoft_office_addin_change_policy: (team_policies)
-        Enabled/disabled Microsoft Office add-in
-    :ivar MultiTeamIdentityPolicyChangedType
-        EventType.multi_team_identity_policy_changed: (team_policies) Changed
-        multi-team identity policy for team
-    :ivar NetworkControlChangePolicyType
-        EventType.network_control_change_policy: (team_policies)
-        Enabled/disabled network control
-    :ivar PaperChangeDeploymentPolicyType
-        EventType.paper_change_deployment_policy: (team_policies) Changed
-        whether Dropbox Paper, when enabled, is deployed to all members or to
-        specific members
-    :ivar PaperChangeMemberLinkPolicyType
-        EventType.paper_change_member_link_policy: (team_policies) Changed
-        whether non-members can view Paper docs with link (deprecated, no longer
-        logged)
-    :ivar PaperChangeMemberPolicyType EventType.paper_change_member_policy:
+    :vartype EventType.integration_policy_changed: IntegrationPolicyChangedType
+    :ivar EventType.invite_acceptance_email_policy_changed:
+        (team_policies) Changed invite accept email policy for team
+    :vartype EventType.invite_acceptance_email_policy_changed: InviteAcceptanceEmailPolicyChangedType
+    :ivar EventType.media_hub_adding_people_policy_changed:
+        (team_policies) Changed the policy for adding people to Media Hub
+        content
+    :vartype EventType.media_hub_adding_people_policy_changed: MediaHubAddingPeoplePolicyChangedType
+    :ivar EventType.media_hub_download_policy_changed:
+        (team_policies) Changed the policy for downloading Media Hub content
+    :vartype EventType.media_hub_download_policy_changed: MediaHubDownloadPolicyChangedType
+    :ivar EventType.media_hub_link_sharing_policy_changed:
+        (team_policies) Changed the policy for sharing Media Hub content
+    :vartype EventType.media_hub_link_sharing_policy_changed: MediaHubLinkSharingPolicyChangedType
+    :ivar EventType.member_requests_change_policy:
+        (team_policies) Changed whether users can find team when not invited
+    :vartype EventType.member_requests_change_policy: MemberRequestsChangePolicyType
+    :ivar EventType.member_send_invite_policy_changed:
+        (team_policies) Changed member send invite policy for team
+    :vartype EventType.member_send_invite_policy_changed: MemberSendInvitePolicyChangedType
+    :ivar EventType.member_space_limits_add_exception:
+        (team_policies) Added members to member space limit exception list
+    :vartype EventType.member_space_limits_add_exception: MemberSpaceLimitsAddExceptionType
+    :ivar EventType.member_space_limits_change_caps_type_policy:
+        (team_policies) Changed member space limit type for team
+    :vartype EventType.member_space_limits_change_caps_type_policy: MemberSpaceLimitsChangeCapsTypePolicyType
+    :ivar EventType.member_space_limits_change_policy:
+        (team_policies) Changed team default member space limit
+    :vartype EventType.member_space_limits_change_policy: MemberSpaceLimitsChangePolicyType
+    :ivar EventType.member_space_limits_remove_exception:
+        (team_policies) Removed members from member space limit exception list
+    :vartype EventType.member_space_limits_remove_exception: MemberSpaceLimitsRemoveExceptionType
+    :ivar EventType.member_suggestions_change_policy:
+        (team_policies) Enabled/disabled option for team members to suggest
+        people to add to team
+    :vartype EventType.member_suggestions_change_policy: MemberSuggestionsChangePolicyType
+    :ivar EventType.microsoft_login_change_policy:
+        (team_policies) Enabled/disabled Microsoft login for team
+    :vartype EventType.microsoft_login_change_policy: MicrosoftLoginChangePolicyType
+    :ivar EventType.microsoft_office_addin_change_policy:
+        (team_policies) Enabled/disabled Microsoft Office add-in
+    :vartype EventType.microsoft_office_addin_change_policy: MicrosoftOfficeAddinChangePolicyType
+    :ivar EventType.multi_team_identity_policy_changed:
+        (team_policies) Changed multi-team identity policy for team
+    :vartype EventType.multi_team_identity_policy_changed: MultiTeamIdentityPolicyChangedType
+    :ivar EventType.network_control_change_policy:
+        (team_policies) Enabled/disabled network control
+    :vartype EventType.network_control_change_policy: NetworkControlChangePolicyType
+    :ivar EventType.paper_change_deployment_policy:
+        (team_policies) Changed whether Dropbox Paper, when enabled, is deployed
+        to all members or to specific members
+    :vartype EventType.paper_change_deployment_policy: PaperChangeDeploymentPolicyType
+    :ivar EventType.paper_change_member_link_policy:
+        (team_policies) Changed whether non-members can view Paper docs with
+        link (deprecated, no longer logged)
+    :vartype EventType.paper_change_member_link_policy: PaperChangeMemberLinkPolicyType
+    :ivar EventType.paper_change_member_policy:
         (team_policies) Changed whether members can share Paper docs outside
         team, and if docs are accessible only by team members or anyone by
         default
-    :ivar PaperChangePolicyType EventType.paper_change_policy: (team_policies)
-        Enabled/disabled Dropbox Paper for team
-    :ivar PaperDefaultFolderPolicyChangedType
-        EventType.paper_default_folder_policy_changed: (team_policies) Changed
-        Paper Default Folder Policy setting for team
-    :ivar PaperDesktopPolicyChangedType EventType.paper_desktop_policy_changed:
+    :vartype EventType.paper_change_member_policy: PaperChangeMemberPolicyType
+    :ivar EventType.paper_change_policy:
+        (team_policies) Enabled/disabled Dropbox Paper for team
+    :vartype EventType.paper_change_policy: PaperChangePolicyType
+    :ivar EventType.paper_default_folder_policy_changed:
+        (team_policies) Changed Paper Default Folder Policy setting for team
+    :vartype EventType.paper_default_folder_policy_changed: PaperDefaultFolderPolicyChangedType
+    :ivar EventType.paper_desktop_policy_changed:
         (team_policies) Enabled/disabled Paper Desktop for team
-    :ivar PaperEnabledUsersGroupAdditionType
-        EventType.paper_enabled_users_group_addition: (team_policies) Added
-        users to Paper-enabled users list
-    :ivar PaperEnabledUsersGroupRemovalType
-        EventType.paper_enabled_users_group_removal: (team_policies) Removed
-        users from Paper-enabled users list
-    :ivar PasskeyLoginPolicyChangedType EventType.passkey_login_policy_changed:
+    :vartype EventType.paper_desktop_policy_changed: PaperDesktopPolicyChangedType
+    :ivar EventType.paper_enabled_users_group_addition:
+        (team_policies) Added users to Paper-enabled users list
+    :vartype EventType.paper_enabled_users_group_addition: PaperEnabledUsersGroupAdditionType
+    :ivar EventType.paper_enabled_users_group_removal:
+        (team_policies) Removed users from Paper-enabled users list
+    :vartype EventType.paper_enabled_users_group_removal: PaperEnabledUsersGroupRemovalType
+    :ivar EventType.passkey_login_policy_changed:
         (team_policies) Changed passkey login policy for team
-    :ivar PasswordStrengthRequirementsChangePolicyType
-        EventType.password_strength_requirements_change_policy: (team_policies)
-        Changed team password strength requirements
-    :ivar PermanentDeleteChangePolicyType
-        EventType.permanent_delete_change_policy: (team_policies)
-        Enabled/disabled ability of team members to permanently delete content
-    :ivar PreviewsAiPolicyChangedType EventType.previews_ai_policy_changed:
+    :vartype EventType.passkey_login_policy_changed: PasskeyLoginPolicyChangedType
+    :ivar EventType.password_strength_requirements_change_policy:
+        (team_policies) Changed team password strength requirements
+    :vartype EventType.password_strength_requirements_change_policy: PasswordStrengthRequirementsChangePolicyType
+    :ivar EventType.permanent_delete_change_policy:
+        (team_policies) Enabled/disabled ability of team members to permanently
+        delete content
+    :vartype EventType.permanent_delete_change_policy: PermanentDeleteChangePolicyType
+    :ivar EventType.previews_ai_policy_changed:
         (team_policies) Changed Dropbox AI policy for team
-    :ivar ReplayAddingPeoplePolicyChangedType
-        EventType.replay_adding_people_policy_changed: (team_policies) Changed
-        the policy for adding people to Replay content
-    :ivar ReplaySharingPolicyChangedType
-        EventType.replay_sharing_policy_changed: (team_policies) Changed the
-        policy for sharing Replay content
-    :ivar ResellerSupportChangePolicyType
-        EventType.reseller_support_change_policy: (team_policies)
-        Enabled/disabled reseller support
-    :ivar RewindPolicyChangedType EventType.rewind_policy_changed:
+    :vartype EventType.previews_ai_policy_changed: PreviewsAiPolicyChangedType
+    :ivar EventType.replay_adding_people_policy_changed:
+        (team_policies) Changed the policy for adding people to Replay content
+    :vartype EventType.replay_adding_people_policy_changed: ReplayAddingPeoplePolicyChangedType
+    :ivar EventType.replay_sharing_policy_changed:
+        (team_policies) Changed the policy for sharing Replay content
+    :vartype EventType.replay_sharing_policy_changed: ReplaySharingPolicyChangedType
+    :ivar EventType.reseller_support_change_policy:
+        (team_policies) Enabled/disabled reseller support
+    :vartype EventType.reseller_support_change_policy: ResellerSupportChangePolicyType
+    :ivar EventType.rewind_policy_changed:
         (team_policies) Changed Rewind policy for team
-    :ivar SendAndTrackPolicyChangedType EventType.send_and_track_policy_changed:
+    :vartype EventType.rewind_policy_changed: RewindPolicyChangedType
+    :ivar EventType.send_and_track_policy_changed:
         (team_policies) Changed “Send and track” policy for team
-    :ivar SendExternalSharingPolicyChangedType
-        EventType.send_external_sharing_policy_changed: (team_policies) Changed
-        “Send and track” external sharing policy for team
-    :ivar SendForSignaturePolicyChangedType
-        EventType.send_for_signature_policy_changed: (team_policies) Changed
-        send for signature policy for team
-    :ivar SharedLinkDefaultPermissionsPolicyChangedType
-        EventType.shared_link_default_permissions_policy_changed:
+    :vartype EventType.send_and_track_policy_changed: SendAndTrackPolicyChangedType
+    :ivar EventType.send_external_sharing_policy_changed:
+        (team_policies) Changed “Send and track” external sharing policy for
+        team
+    :vartype EventType.send_external_sharing_policy_changed: SendExternalSharingPolicyChangedType
+    :ivar EventType.send_for_signature_policy_changed:
+        (team_policies) Changed send for signature policy for team
+    :vartype EventType.send_for_signature_policy_changed: SendForSignaturePolicyChangedType
+    :ivar EventType.shared_link_default_permissions_policy_changed:
         (team_policies) Changed shared link default permissions policy for team
-    :ivar SharingChangeFolderJoinPolicyType
-        EventType.sharing_change_folder_join_policy: (team_policies) Changed
-        whether team members can join shared folders owned outside team
-    :ivar SharingChangeLinkAllowChangeExpirationPolicyType
-        EventType.sharing_change_link_allow_change_expiration_policy:
+    :vartype EventType.shared_link_default_permissions_policy_changed: SharedLinkDefaultPermissionsPolicyChangedType
+    :ivar EventType.sharing_change_folder_join_policy:
+        (team_policies) Changed whether team members can join shared folders
+        owned outside team
+    :vartype EventType.sharing_change_folder_join_policy: SharingChangeFolderJoinPolicyType
+    :ivar EventType.sharing_change_link_allow_change_expiration_policy:
         (team_policies) Changed the allow remove or change expiration policy for
         the links shared outside of the team
-    :ivar SharingChangeLinkDefaultExpirationPolicyType
-        EventType.sharing_change_link_default_expiration_policy: (team_policies)
-        Changed the default expiration for the links shared outside of the team
-    :ivar SharingChangeLinkEnforcePasswordPolicyType
-        EventType.sharing_change_link_enforce_password_policy: (team_policies)
-        Changed the password requirement for the links shared outside of the
-        team
-    :ivar SharingChangeLinkPolicyType EventType.sharing_change_link_policy:
+    :vartype EventType.sharing_change_link_allow_change_expiration_policy: SharingChangeLinkAllowChangeExpirationPolicyType
+    :ivar EventType.sharing_change_link_default_expiration_policy:
+        (team_policies) Changed the default expiration for the links shared
+        outside of the team
+    :vartype EventType.sharing_change_link_default_expiration_policy: SharingChangeLinkDefaultExpirationPolicyType
+    :ivar EventType.sharing_change_link_enforce_password_policy:
+        (team_policies) Changed the password requirement for the links shared
+        outside of the team
+    :vartype EventType.sharing_change_link_enforce_password_policy: SharingChangeLinkEnforcePasswordPolicyType
+    :ivar EventType.sharing_change_link_policy:
         (team_policies) Changed whether members can share links outside team,
         and if links are accessible only by team members or anyone by default
-    :ivar SharingChangeMemberPolicyType EventType.sharing_change_member_policy:
+    :vartype EventType.sharing_change_link_policy: SharingChangeLinkPolicyType
+    :ivar EventType.sharing_change_member_policy:
         (team_policies) Changed whether members can share files/folders outside
         team
-    :ivar ShowcaseChangeDownloadPolicyType
-        EventType.showcase_change_download_policy: (team_policies)
-        Enabled/disabled downloading files from Dropbox Showcase for team
-    :ivar ShowcaseChangeEnabledPolicyType
-        EventType.showcase_change_enabled_policy: (team_policies)
-        Enabled/disabled Dropbox Showcase for team
-    :ivar ShowcaseChangeExternalSharingPolicyType
-        EventType.showcase_change_external_sharing_policy: (team_policies)
-        Enabled/disabled sharing Dropbox Showcase externally for team
-    :ivar SignExternalSharingPolicyChangedType
-        EventType.sign_external_sharing_policy_changed: (team_policies) Changed
-        Signatures external sharing policy for team
-    :ivar SignTemplateCreationPermissionChangedType
-        EventType.sign_template_creation_permission_changed: (team_policies)
-        Changed template creation permission
-    :ivar SmarterSmartSyncPolicyChangedType
-        EventType.smarter_smart_sync_policy_changed: (team_policies) Changed
-        automatic Smart Sync setting for team
-    :ivar SmartSyncChangePolicyType EventType.smart_sync_change_policy:
+    :vartype EventType.sharing_change_member_policy: SharingChangeMemberPolicyType
+    :ivar EventType.showcase_change_download_policy:
+        (team_policies) Enabled/disabled downloading files from Dropbox Showcase
+        for team
+    :vartype EventType.showcase_change_download_policy: ShowcaseChangeDownloadPolicyType
+    :ivar EventType.showcase_change_enabled_policy:
+        (team_policies) Enabled/disabled Dropbox Showcase for team
+    :vartype EventType.showcase_change_enabled_policy: ShowcaseChangeEnabledPolicyType
+    :ivar EventType.showcase_change_external_sharing_policy:
+        (team_policies) Enabled/disabled sharing Dropbox Showcase externally for
+        team
+    :vartype EventType.showcase_change_external_sharing_policy: ShowcaseChangeExternalSharingPolicyType
+    :ivar EventType.sign_external_sharing_policy_changed:
+        (team_policies) Changed Signatures external sharing policy for team
+    :vartype EventType.sign_external_sharing_policy_changed: SignExternalSharingPolicyChangedType
+    :ivar EventType.sign_template_creation_permission_changed:
+        (team_policies) Changed template creation permission
+    :vartype EventType.sign_template_creation_permission_changed: SignTemplateCreationPermissionChangedType
+    :ivar EventType.smarter_smart_sync_policy_changed:
+        (team_policies) Changed automatic Smart Sync setting for team
+    :vartype EventType.smarter_smart_sync_policy_changed: SmarterSmartSyncPolicyChangedType
+    :ivar EventType.smart_sync_change_policy:
         (team_policies) Changed default Smart Sync setting for team members
-    :ivar SmartSyncNotOptOutType EventType.smart_sync_not_opt_out:
+    :vartype EventType.smart_sync_change_policy: SmartSyncChangePolicyType
+    :ivar EventType.smart_sync_not_opt_out:
         (team_policies) Opted team into Smart Sync
-    :ivar SmartSyncOptOutType EventType.smart_sync_opt_out: (team_policies)
-        Opted team out of Smart Sync
-    :ivar SsoChangePolicyType EventType.sso_change_policy: (team_policies)
-        Changed single sign-on setting for team
-    :ivar StackCrossTeamAccessPolicyChangedType
-        EventType.stack_cross_team_access_policy_changed: (team_policies)
-        Changed cross-team Stack access policy for team
-    :ivar TeamBrandingPolicyChangedType EventType.team_branding_policy_changed:
+    :vartype EventType.smart_sync_not_opt_out: SmartSyncNotOptOutType
+    :ivar EventType.smart_sync_opt_out:
+        (team_policies) Opted team out of Smart Sync
+    :vartype EventType.smart_sync_opt_out: SmartSyncOptOutType
+    :ivar EventType.sso_change_policy:
+        (team_policies) Changed single sign-on setting for team
+    :vartype EventType.sso_change_policy: SsoChangePolicyType
+    :ivar EventType.stack_cross_team_access_policy_changed:
+        (team_policies) Changed cross-team Stack access policy for team
+    :vartype EventType.stack_cross_team_access_policy_changed: StackCrossTeamAccessPolicyChangedType
+    :ivar EventType.team_branding_policy_changed:
         (team_policies) Changed team branding policy for team
-    :ivar TeamExtensionsPolicyChangedType
-        EventType.team_extensions_policy_changed: (team_policies) Changed App
-        Integrations setting for team
-    :ivar TeamMemberStorageRequestPolicyChangedType
-        EventType.team_member_storage_request_policy_changed: (team_policies)
-        Changed team member storage request policy for team
-    :ivar TeamSelectiveSyncPolicyChangedType
-        EventType.team_selective_sync_policy_changed: (team_policies)
-        Enabled/disabled Team Selective Sync for team
-    :ivar TeamSharingWhitelistSubjectsChangedType
-        EventType.team_sharing_whitelist_subjects_changed: (team_policies)
-        Edited the approved list for sharing externally
-    :ivar TfaAddExceptionType EventType.tfa_add_exception: (team_policies) Added
-        members to two factor authentication exception list
-    :ivar TfaChangePolicyType EventType.tfa_change_policy: (team_policies)
-        Changed two-factor authentication setting for team
-    :ivar TfaRemoveExceptionType EventType.tfa_remove_exception: (team_policies)
-        Removed members from two factor authentication exception list
-    :ivar TopLevelContentPolicyChangedType
-        EventType.top_level_content_policy_changed: (team_policies) Changed top
-        level content setting for team
-    :ivar TwoAccountChangePolicyType EventType.two_account_change_policy:
+    :vartype EventType.team_branding_policy_changed: TeamBrandingPolicyChangedType
+    :ivar EventType.team_extensions_policy_changed:
+        (team_policies) Changed App Integrations setting for team
+    :vartype EventType.team_extensions_policy_changed: TeamExtensionsPolicyChangedType
+    :ivar EventType.team_member_storage_request_policy_changed:
+        (team_policies) Changed team member storage request policy for team
+    :vartype EventType.team_member_storage_request_policy_changed: TeamMemberStorageRequestPolicyChangedType
+    :ivar EventType.team_selective_sync_policy_changed:
+        (team_policies) Enabled/disabled Team Selective Sync for team
+    :vartype EventType.team_selective_sync_policy_changed: TeamSelectiveSyncPolicyChangedType
+    :ivar EventType.team_sharing_whitelist_subjects_changed:
+        (team_policies) Edited the approved list for sharing externally
+    :vartype EventType.team_sharing_whitelist_subjects_changed: TeamSharingWhitelistSubjectsChangedType
+    :ivar EventType.tfa_add_exception:
+        (team_policies) Added members to two factor authentication exception
+        list
+    :vartype EventType.tfa_add_exception: TfaAddExceptionType
+    :ivar EventType.tfa_change_policy:
+        (team_policies) Changed two-factor authentication setting for team
+    :vartype EventType.tfa_change_policy: TfaChangePolicyType
+    :ivar EventType.tfa_remove_exception:
+        (team_policies) Removed members from two factor authentication exception
+        list
+    :vartype EventType.tfa_remove_exception: TfaRemoveExceptionType
+    :ivar EventType.top_level_content_policy_changed:
+        (team_policies) Changed top level content setting for team
+    :vartype EventType.top_level_content_policy_changed: TopLevelContentPolicyChangedType
+    :ivar EventType.two_account_change_policy:
         (team_policies) Enabled/disabled option for members to link personal
         Dropbox account and team account to same computer
-    :ivar ViewerInfoPolicyChangedType EventType.viewer_info_policy_changed:
+    :vartype EventType.two_account_change_policy: TwoAccountChangePolicyType
+    :ivar EventType.viewer_info_policy_changed:
         (team_policies) Changed team policy for viewer info
-    :ivar WatermarkingPolicyChangedType EventType.watermarking_policy_changed:
+    :vartype EventType.viewer_info_policy_changed: ViewerInfoPolicyChangedType
+    :ivar EventType.watermarking_policy_changed:
         (team_policies) Changed watermarking policy for team
-    :ivar WebSessionsChangeActiveSessionLimitType
-        EventType.web_sessions_change_active_session_limit: (team_policies)
-        Changed limit on active sessions per member
-    :ivar WebSessionsChangeFixedLengthPolicyType
-        EventType.web_sessions_change_fixed_length_policy: (team_policies)
-        Changed how long members can stay signed in to Dropbox.com
-    :ivar WebSessionsChangeIdleLengthPolicyType
-        EventType.web_sessions_change_idle_length_policy: (team_policies)
-        Changed how long team members can be idle while signed in to Dropbox.com
-    :ivar DataResidencyMigrationRequestSuccessfulType
-        EventType.data_residency_migration_request_successful: (team_profile)
-        Requested data residency migration for team data
-    :ivar DataResidencyMigrationRequestUnsuccessfulType
-        EventType.data_residency_migration_request_unsuccessful: (team_profile)
-        Request for data residency migration for team data has failed
-    :ivar TeamMergeFromType EventType.team_merge_from: (team_profile) Merged
-        another team into this team
-    :ivar TeamMergeToType EventType.team_merge_to: (team_profile) Merged this
-        team into another team
-    :ivar TeamProfileAddBackgroundType EventType.team_profile_add_background:
+    :vartype EventType.watermarking_policy_changed: WatermarkingPolicyChangedType
+    :ivar EventType.web_sessions_change_active_session_limit:
+        (team_policies) Changed limit on active sessions per member
+    :vartype EventType.web_sessions_change_active_session_limit: WebSessionsChangeActiveSessionLimitType
+    :ivar EventType.web_sessions_change_fixed_length_policy:
+        (team_policies) Changed how long members can stay signed in to
+        Dropbox.com
+    :vartype EventType.web_sessions_change_fixed_length_policy: WebSessionsChangeFixedLengthPolicyType
+    :ivar EventType.web_sessions_change_idle_length_policy:
+        (team_policies) Changed how long team members can be idle while signed
+        in to Dropbox.com
+    :vartype EventType.web_sessions_change_idle_length_policy: WebSessionsChangeIdleLengthPolicyType
+    :ivar EventType.data_residency_migration_request_successful:
+        (team_profile) Requested data residency migration for team data
+    :vartype EventType.data_residency_migration_request_successful: DataResidencyMigrationRequestSuccessfulType
+    :ivar EventType.data_residency_migration_request_unsuccessful:
+        (team_profile) Request for data residency migration for team data has
+        failed
+    :vartype EventType.data_residency_migration_request_unsuccessful: DataResidencyMigrationRequestUnsuccessfulType
+    :ivar EventType.team_merge_from:
+        (team_profile) Merged another team into this team
+    :vartype EventType.team_merge_from: TeamMergeFromType
+    :ivar EventType.team_merge_to:
+        (team_profile) Merged this team into another team
+    :vartype EventType.team_merge_to: TeamMergeToType
+    :ivar EventType.team_profile_add_background:
         (team_profile) Added team background to display on shared link headers
-    :ivar TeamProfileAddLogoType EventType.team_profile_add_logo: (team_profile)
-        Added team logo to display on shared link headers
-    :ivar TeamProfileChangeBackgroundType
-        EventType.team_profile_change_background: (team_profile) Changed team
-        background displayed on shared link headers
-    :ivar TeamProfileChangeDefaultLanguageType
-        EventType.team_profile_change_default_language: (team_profile) Changed
-        default language for team
-    :ivar TeamProfileChangeLogoType EventType.team_profile_change_logo:
+    :vartype EventType.team_profile_add_background: TeamProfileAddBackgroundType
+    :ivar EventType.team_profile_add_logo:
+        (team_profile) Added team logo to display on shared link headers
+    :vartype EventType.team_profile_add_logo: TeamProfileAddLogoType
+    :ivar EventType.team_profile_change_background:
+        (team_profile) Changed team background displayed on shared link headers
+    :vartype EventType.team_profile_change_background: TeamProfileChangeBackgroundType
+    :ivar EventType.team_profile_change_default_language:
+        (team_profile) Changed default language for team
+    :vartype EventType.team_profile_change_default_language: TeamProfileChangeDefaultLanguageType
+    :ivar EventType.team_profile_change_logo:
         (team_profile) Changed team logo displayed on shared link headers
-    :ivar TeamProfileChangeNameType EventType.team_profile_change_name:
+    :vartype EventType.team_profile_change_logo: TeamProfileChangeLogoType
+    :ivar EventType.team_profile_change_name:
         (team_profile) Changed team name
-    :ivar TeamProfileRemoveBackgroundType
-        EventType.team_profile_remove_background: (team_profile) Removed team
-        background displayed on shared link headers
-    :ivar TeamProfileRemoveLogoType EventType.team_profile_remove_logo:
+    :vartype EventType.team_profile_change_name: TeamProfileChangeNameType
+    :ivar EventType.team_profile_remove_background:
+        (team_profile) Removed team background displayed on shared link headers
+    :vartype EventType.team_profile_remove_background: TeamProfileRemoveBackgroundType
+    :ivar EventType.team_profile_remove_logo:
         (team_profile) Removed team logo displayed on shared link headers
-    :ivar PasskeyAddType EventType.passkey_add: (tfa) Added passkey for login
-    :ivar PasskeyRemoveType EventType.passkey_remove: (tfa) Removed passkey for
-        login
-    :ivar TfaAddBackupPhoneType EventType.tfa_add_backup_phone: (tfa) Added
-        backup phone for two-factor authentication
-    :ivar TfaAddSecurityKeyType EventType.tfa_add_security_key: (tfa) Added
-        security key for two-factor authentication
-    :ivar TfaChangeBackupPhoneType EventType.tfa_change_backup_phone: (tfa)
-        Changed backup phone for two-factor authentication
-    :ivar TfaChangeStatusType EventType.tfa_change_status: (tfa)
-        Enabled/disabled/changed two-factor authentication setting
-    :ivar TfaRemoveBackupPhoneType EventType.tfa_remove_backup_phone: (tfa)
-        Removed backup phone for two-factor authentication
-    :ivar TfaRemoveSecurityKeyType EventType.tfa_remove_security_key: (tfa)
-        Removed security key for two-factor authentication
-    :ivar TfaResetType EventType.tfa_reset: (tfa) Reset two-factor
-        authentication for team member
-    :ivar ChangedEnterpriseAdminRoleType
-        EventType.changed_enterprise_admin_role: (trusted_teams) Changed
-        enterprise admin role
-    :ivar ChangedEnterpriseConnectedTeamStatusType
-        EventType.changed_enterprise_connected_team_status: (trusted_teams)
-        Changed enterprise-connected team status
-    :ivar EndedEnterpriseAdminSessionType
-        EventType.ended_enterprise_admin_session: (trusted_teams) Ended
-        enterprise admin session
-    :ivar EndedEnterpriseAdminSessionDeprecatedType
-        EventType.ended_enterprise_admin_session_deprecated: (trusted_teams)
-        Ended enterprise admin session (deprecated, replaced by 'Ended
-        enterprise admin session')
-    :ivar EnterpriseSettingsLockingType EventType.enterprise_settings_locking:
+    :vartype EventType.team_profile_remove_logo: TeamProfileRemoveLogoType
+    :ivar EventType.passkey_add:
+        (tfa) Added passkey for login
+    :vartype EventType.passkey_add: PasskeyAddType
+    :ivar EventType.passkey_remove:
+        (tfa) Removed passkey for login
+    :vartype EventType.passkey_remove: PasskeyRemoveType
+    :ivar EventType.tfa_add_backup_phone:
+        (tfa) Added backup phone for two-factor authentication
+    :vartype EventType.tfa_add_backup_phone: TfaAddBackupPhoneType
+    :ivar EventType.tfa_add_security_key:
+        (tfa) Added security key for two-factor authentication
+    :vartype EventType.tfa_add_security_key: TfaAddSecurityKeyType
+    :ivar EventType.tfa_change_backup_phone:
+        (tfa) Changed backup phone for two-factor authentication
+    :vartype EventType.tfa_change_backup_phone: TfaChangeBackupPhoneType
+    :ivar EventType.tfa_change_status:
+        (tfa) Enabled/disabled/changed two-factor authentication setting
+    :vartype EventType.tfa_change_status: TfaChangeStatusType
+    :ivar EventType.tfa_remove_backup_phone:
+        (tfa) Removed backup phone for two-factor authentication
+    :vartype EventType.tfa_remove_backup_phone: TfaRemoveBackupPhoneType
+    :ivar EventType.tfa_remove_security_key:
+        (tfa) Removed security key for two-factor authentication
+    :vartype EventType.tfa_remove_security_key: TfaRemoveSecurityKeyType
+    :ivar EventType.tfa_reset:
+        (tfa) Reset two-factor authentication for team member
+    :vartype EventType.tfa_reset: TfaResetType
+    :ivar EventType.changed_enterprise_admin_role:
+        (trusted_teams) Changed enterprise admin role
+    :vartype EventType.changed_enterprise_admin_role: ChangedEnterpriseAdminRoleType
+    :ivar EventType.changed_enterprise_connected_team_status:
+        (trusted_teams) Changed enterprise-connected team status
+    :vartype EventType.changed_enterprise_connected_team_status: ChangedEnterpriseConnectedTeamStatusType
+    :ivar EventType.ended_enterprise_admin_session:
+        (trusted_teams) Ended enterprise admin session
+    :vartype EventType.ended_enterprise_admin_session: EndedEnterpriseAdminSessionType
+    :ivar EventType.ended_enterprise_admin_session_deprecated:
+        (trusted_teams) Ended enterprise admin session (deprecated, replaced by
+        'Ended enterprise admin session')
+    :vartype EventType.ended_enterprise_admin_session_deprecated: EndedEnterpriseAdminSessionDeprecatedType
+    :ivar EventType.enterprise_settings_locking:
         (trusted_teams) Changed who can update a setting
-    :ivar GuestAdminChangeStatusType EventType.guest_admin_change_status:
+    :vartype EventType.enterprise_settings_locking: EnterpriseSettingsLockingType
+    :ivar EventType.guest_admin_change_status:
         (trusted_teams) Changed guest team admin status
-    :ivar StartedEnterpriseAdminSessionType
-        EventType.started_enterprise_admin_session: (trusted_teams) Started
-        enterprise admin session
-    :ivar TeamMergeRequestAcceptedType EventType.team_merge_request_accepted:
+    :vartype EventType.guest_admin_change_status: GuestAdminChangeStatusType
+    :ivar EventType.started_enterprise_admin_session:
+        (trusted_teams) Started enterprise admin session
+    :vartype EventType.started_enterprise_admin_session: StartedEnterpriseAdminSessionType
+    :ivar EventType.team_merge_request_accepted:
         (trusted_teams) Accepted a team merge request
-    :ivar TeamMergeRequestAcceptedShownToPrimaryTeamType
-        EventType.team_merge_request_accepted_shown_to_primary_team:
+    :vartype EventType.team_merge_request_accepted: TeamMergeRequestAcceptedType
+    :ivar EventType.team_merge_request_accepted_shown_to_primary_team:
         (trusted_teams) Accepted a team merge request (deprecated, replaced by
         'Accepted a team merge request')
-    :ivar TeamMergeRequestAcceptedShownToSecondaryTeamType
-        EventType.team_merge_request_accepted_shown_to_secondary_team:
+    :vartype EventType.team_merge_request_accepted_shown_to_primary_team: TeamMergeRequestAcceptedShownToPrimaryTeamType
+    :ivar EventType.team_merge_request_accepted_shown_to_secondary_team:
         (trusted_teams) Accepted a team merge request (deprecated, replaced by
         'Accepted a team merge request')
-    :ivar TeamMergeRequestAutoCanceledType
-        EventType.team_merge_request_auto_canceled: (trusted_teams)
-        Automatically canceled team merge request
-    :ivar TeamMergeRequestCanceledType EventType.team_merge_request_canceled:
+    :vartype EventType.team_merge_request_accepted_shown_to_secondary_team: TeamMergeRequestAcceptedShownToSecondaryTeamType
+    :ivar EventType.team_merge_request_auto_canceled:
+        (trusted_teams) Automatically canceled team merge request
+    :vartype EventType.team_merge_request_auto_canceled: TeamMergeRequestAutoCanceledType
+    :ivar EventType.team_merge_request_canceled:
         (trusted_teams) Canceled a team merge request
-    :ivar TeamMergeRequestCanceledShownToPrimaryTeamType
-        EventType.team_merge_request_canceled_shown_to_primary_team:
+    :vartype EventType.team_merge_request_canceled: TeamMergeRequestCanceledType
+    :ivar EventType.team_merge_request_canceled_shown_to_primary_team:
         (trusted_teams) Canceled a team merge request (deprecated, replaced by
         'Canceled a team merge request')
-    :ivar TeamMergeRequestCanceledShownToSecondaryTeamType
-        EventType.team_merge_request_canceled_shown_to_secondary_team:
+    :vartype EventType.team_merge_request_canceled_shown_to_primary_team: TeamMergeRequestCanceledShownToPrimaryTeamType
+    :ivar EventType.team_merge_request_canceled_shown_to_secondary_team:
         (trusted_teams) Canceled a team merge request (deprecated, replaced by
         'Canceled a team merge request')
-    :ivar TeamMergeRequestExpiredType EventType.team_merge_request_expired:
+    :vartype EventType.team_merge_request_canceled_shown_to_secondary_team: TeamMergeRequestCanceledShownToSecondaryTeamType
+    :ivar EventType.team_merge_request_expired:
         (trusted_teams) Team merge request expired
-    :ivar TeamMergeRequestExpiredShownToPrimaryTeamType
-        EventType.team_merge_request_expired_shown_to_primary_team:
+    :vartype EventType.team_merge_request_expired: TeamMergeRequestExpiredType
+    :ivar EventType.team_merge_request_expired_shown_to_primary_team:
         (trusted_teams) Team merge request expired (deprecated, replaced by
         'Team merge request expired')
-    :ivar TeamMergeRequestExpiredShownToSecondaryTeamType
-        EventType.team_merge_request_expired_shown_to_secondary_team:
+    :vartype EventType.team_merge_request_expired_shown_to_primary_team: TeamMergeRequestExpiredShownToPrimaryTeamType
+    :ivar EventType.team_merge_request_expired_shown_to_secondary_team:
         (trusted_teams) Team merge request expired (deprecated, replaced by
         'Team merge request expired')
-    :ivar TeamMergeRequestRejectedShownToPrimaryTeamType
-        EventType.team_merge_request_rejected_shown_to_primary_team:
+    :vartype EventType.team_merge_request_expired_shown_to_secondary_team: TeamMergeRequestExpiredShownToSecondaryTeamType
+    :ivar EventType.team_merge_request_rejected_shown_to_primary_team:
         (trusted_teams) Rejected a team merge request (deprecated, no longer
         logged)
-    :ivar TeamMergeRequestRejectedShownToSecondaryTeamType
-        EventType.team_merge_request_rejected_shown_to_secondary_team:
+    :vartype EventType.team_merge_request_rejected_shown_to_primary_team: TeamMergeRequestRejectedShownToPrimaryTeamType
+    :ivar EventType.team_merge_request_rejected_shown_to_secondary_team:
         (trusted_teams) Rejected a team merge request (deprecated, no longer
         logged)
-    :ivar TeamMergeRequestReminderType EventType.team_merge_request_reminder:
+    :vartype EventType.team_merge_request_rejected_shown_to_secondary_team: TeamMergeRequestRejectedShownToSecondaryTeamType
+    :ivar EventType.team_merge_request_reminder:
         (trusted_teams) Sent a team merge request reminder
-    :ivar TeamMergeRequestReminderShownToPrimaryTeamType
-        EventType.team_merge_request_reminder_shown_to_primary_team:
+    :vartype EventType.team_merge_request_reminder: TeamMergeRequestReminderType
+    :ivar EventType.team_merge_request_reminder_shown_to_primary_team:
         (trusted_teams) Sent a team merge request reminder (deprecated, replaced
         by 'Sent a team merge request reminder')
-    :ivar TeamMergeRequestReminderShownToSecondaryTeamType
-        EventType.team_merge_request_reminder_shown_to_secondary_team:
+    :vartype EventType.team_merge_request_reminder_shown_to_primary_team: TeamMergeRequestReminderShownToPrimaryTeamType
+    :ivar EventType.team_merge_request_reminder_shown_to_secondary_team:
         (trusted_teams) Sent a team merge request reminder (deprecated, replaced
         by 'Sent a team merge request reminder')
-    :ivar TeamMergeRequestRevokedType EventType.team_merge_request_revoked:
+    :vartype EventType.team_merge_request_reminder_shown_to_secondary_team: TeamMergeRequestReminderShownToSecondaryTeamType
+    :ivar EventType.team_merge_request_revoked:
         (trusted_teams) Canceled the team merge
-    :ivar TeamMergeRequestSentShownToPrimaryTeamType
-        EventType.team_merge_request_sent_shown_to_primary_team: (trusted_teams)
-        Requested to merge their Dropbox team into yours
-    :ivar TeamMergeRequestSentShownToSecondaryTeamType
-        EventType.team_merge_request_sent_shown_to_secondary_team:
+    :vartype EventType.team_merge_request_revoked: TeamMergeRequestRevokedType
+    :ivar EventType.team_merge_request_sent_shown_to_primary_team:
+        (trusted_teams) Requested to merge their Dropbox team into yours
+    :vartype EventType.team_merge_request_sent_shown_to_primary_team: TeamMergeRequestSentShownToPrimaryTeamType
+    :ivar EventType.team_merge_request_sent_shown_to_secondary_team:
         (trusted_teams) Requested to merge your team into another Dropbox team
+    :vartype EventType.team_merge_request_sent_shown_to_secondary_team: TeamMergeRequestSentShownToSecondaryTeamType
     """
 
     _catch_all = 'other'
@@ -50840,1269 +51374,1328 @@ class EventTypeArg(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar team_log.EventTypeArg.admin_alerting_alert_state_changed:
+    :ivar EventTypeArg.admin_alerting_alert_state_changed:
         (admin_alerting) Changed an alert state
-    :ivar team_log.EventTypeArg.admin_alerting_changed_alert_config:
+    :ivar EventTypeArg.admin_alerting_changed_alert_config:
         (admin_alerting) Changed an alert setting
-    :ivar team_log.EventTypeArg.admin_alerting_triggered_alert: (admin_alerting)
-        Triggered security alert
-    :ivar team_log.EventTypeArg.ransomware_restore_process_completed:
+    :ivar EventTypeArg.admin_alerting_triggered_alert:
+        (admin_alerting) Triggered security alert
+    :ivar EventTypeArg.ransomware_restore_process_completed:
         (admin_alerting) Completed ransomware restore process
-    :ivar team_log.EventTypeArg.ransomware_restore_process_started:
+    :ivar EventTypeArg.ransomware_restore_process_started:
         (admin_alerting) Started ransomware restore process
-    :ivar team_log.EventTypeArg.app_blocked_by_permissions: (apps) Failed to
-        connect app for member
-    :ivar team_log.EventTypeArg.app_link_team: (apps) Linked app for team
-    :ivar team_log.EventTypeArg.app_link_user: (apps) Linked app for member
-    :ivar team_log.EventTypeArg.app_unlink_team: (apps) Unlinked app for team
-    :ivar team_log.EventTypeArg.app_unlink_user: (apps) Unlinked app for member
-    :ivar team_log.EventTypeArg.integration_connected: (apps) Connected
-        integration for member
-    :ivar team_log.EventTypeArg.integration_disconnected: (apps) Disconnected
-        integration for member
-    :ivar team_log.EventTypeArg.file_add_comment: (comments) Added file comment
-    :ivar team_log.EventTypeArg.file_change_comment_subscription: (comments)
-        Subscribed to or unsubscribed from comment notifications for file
-    :ivar team_log.EventTypeArg.file_delete_comment: (comments) Deleted file
-        comment
-    :ivar team_log.EventTypeArg.file_edit_comment: (comments) Edited file
-        comment
-    :ivar team_log.EventTypeArg.file_like_comment: (comments) Liked file comment
-        (deprecated, no longer logged)
-    :ivar team_log.EventTypeArg.file_resolve_comment: (comments) Resolved file
-        comment
-    :ivar team_log.EventTypeArg.file_unlike_comment: (comments) Unliked file
-        comment (deprecated, no longer logged)
-    :ivar team_log.EventTypeArg.file_unresolve_comment: (comments) Unresolved
-        file comment
-    :ivar team_log.EventTypeArg.dash_added_comment_to_stack: (dash) Added a
-        comment to a stack
-    :ivar team_log.EventTypeArg.dash_added_connector: (dash) Connected to a user
-        connector
-    :ivar team_log.EventTypeArg.dash_added_link_to_stack: (dash) Added a link to
-        a stack
-    :ivar team_log.EventTypeArg.dash_added_team_email_domain_allowlist: (dash)
-        Admin added an email domain to the team allowlist
-    :ivar team_log.EventTypeArg.dash_admin_added_org_wide_connector: (dash)
-        Admin added an admin connector
-    :ivar team_log.EventTypeArg.dash_admin_disabled_connector: (dash) Admin
-        disabled a user connector
-    :ivar team_log.EventTypeArg.dash_admin_enabled_connector: (dash) Admin
-        enabled a user connector
-    :ivar team_log.EventTypeArg.dash_admin_removed_org_wide_connector: (dash)
-        Admin removed an admin connector
-    :ivar team_log.EventTypeArg.dash_archived_stack: (dash) Archived a stack
-    :ivar team_log.EventTypeArg.dash_changed_audience_of_shared_link_to_stack:
+    :ivar EventTypeArg.app_blocked_by_permissions:
+        (apps) Failed to connect app for member
+    :ivar EventTypeArg.app_link_team:
+        (apps) Linked app for team
+    :ivar EventTypeArg.app_link_user:
+        (apps) Linked app for member
+    :ivar EventTypeArg.app_unlink_team:
+        (apps) Unlinked app for team
+    :ivar EventTypeArg.app_unlink_user:
+        (apps) Unlinked app for member
+    :ivar EventTypeArg.integration_connected:
+        (apps) Connected integration for member
+    :ivar EventTypeArg.integration_disconnected:
+        (apps) Disconnected integration for member
+    :ivar EventTypeArg.file_add_comment:
+        (comments) Added file comment
+    :ivar EventTypeArg.file_change_comment_subscription:
+        (comments) Subscribed to or unsubscribed from comment notifications for
+        file
+    :ivar EventTypeArg.file_delete_comment:
+        (comments) Deleted file comment
+    :ivar EventTypeArg.file_edit_comment:
+        (comments) Edited file comment
+    :ivar EventTypeArg.file_like_comment:
+        (comments) Liked file comment (deprecated, no longer logged)
+    :ivar EventTypeArg.file_resolve_comment:
+        (comments) Resolved file comment
+    :ivar EventTypeArg.file_unlike_comment:
+        (comments) Unliked file comment (deprecated, no longer logged)
+    :ivar EventTypeArg.file_unresolve_comment:
+        (comments) Unresolved file comment
+    :ivar EventTypeArg.dash_added_comment_to_stack:
+        (dash) Added a comment to a stack
+    :ivar EventTypeArg.dash_added_connector:
+        (dash) Connected to a user connector
+    :ivar EventTypeArg.dash_added_link_to_stack:
+        (dash) Added a link to a stack
+    :ivar EventTypeArg.dash_added_team_email_domain_allowlist:
+        (dash) Admin added an email domain to the team allowlist
+    :ivar EventTypeArg.dash_admin_added_org_wide_connector:
+        (dash) Admin added an admin connector
+    :ivar EventTypeArg.dash_admin_disabled_connector:
+        (dash) Admin disabled a user connector
+    :ivar EventTypeArg.dash_admin_enabled_connector:
+        (dash) Admin enabled a user connector
+    :ivar EventTypeArg.dash_admin_removed_org_wide_connector:
+        (dash) Admin removed an admin connector
+    :ivar EventTypeArg.dash_archived_stack:
+        (dash) Archived a stack
+    :ivar EventTypeArg.dash_changed_audience_of_shared_link_to_stack:
         (dash) Changed the audience of a shared link to a stack
-    :ivar team_log.EventTypeArg.dash_cloned_stack: (dash) Cloned stack
-    :ivar team_log.EventTypeArg.dash_connector_tools_call: (dash) Called a tool
-        on a connector
-    :ivar team_log.EventTypeArg.dash_created_stack: (dash) Created a stack
-    :ivar team_log.EventTypeArg.dash_deleted_comment_from_stack: (dash) Deleted
-        a comment from a stack
-    :ivar team_log.EventTypeArg.dash_deleted_stack: (dash) Deleted a stack
-    :ivar team_log.EventTypeArg.dash_edited_comment_in_stack: (dash) Edited a
-        comment in a stack
-    :ivar team_log.EventTypeArg.dash_external_user_opened_stack: (dash) External
-        user opened a stack
-    :ivar team_log.EventTypeArg.dash_first_launched_desktop: (dash) Opened the
-        desktop app for the first time
-    :ivar team_log.EventTypeArg.dash_first_launched_extension: (dash) Opened the
-        extension for the first time
-    :ivar team_log.EventTypeArg.dash_first_launched_web_start_page: (dash)
-        Opened the web Start Page for the first time
-    :ivar team_log.EventTypeArg.dash_opened_shared_link_to_stack: (dash) Checked
-        access permissions to a stack
-    :ivar team_log.EventTypeArg.dash_opened_stack: (dash) Opened a stack
-    :ivar team_log.EventTypeArg.dash_preview_opt_out_status_changed: (dash)
-        Changed the preview opt-out status
-    :ivar team_log.EventTypeArg.dash_removed_connector: (dash) Disconnected a
-        user connector
-    :ivar team_log.EventTypeArg.dash_removed_link_from_stack: (dash) Removed a
-        link from a stack
-    :ivar team_log.EventTypeArg.dash_removed_shared_link_to_stack: (dash)
-        Removed a shared link to a stack
-    :ivar team_log.EventTypeArg.dash_removed_team_email_domain_allowlist: (dash)
-        Admin removed an email domain from the team allowlist
-    :ivar team_log.EventTypeArg.dash_renamed_stack: (dash) Renamed a stack
-    :ivar team_log.EventTypeArg.dash_shared_link_to_stack: (dash) Shared a link
-        to a stack
-    :ivar team_log.EventTypeArg.dash_unarchived_stack: (dash) Unarchived a stack
-    :ivar team_log.EventTypeArg.dash_viewed_company_stack: (dash) Member viewed
-        a company stack
-    :ivar team_log.EventTypeArg.dash_viewed_external_ai_activity_report: (dash)
-        Admin viewed the external AI activity report
-    :ivar team_log.EventTypeArg.governance_policy_add_folders: (data_governance)
-        Added folders to policy
-    :ivar team_log.EventTypeArg.governance_policy_add_folder_failed:
+    :ivar EventTypeArg.dash_cloned_stack:
+        (dash) Cloned stack
+    :ivar EventTypeArg.dash_connector_tools_call:
+        (dash) Called a tool on a connector
+    :ivar EventTypeArg.dash_created_stack:
+        (dash) Created a stack
+    :ivar EventTypeArg.dash_deleted_comment_from_stack:
+        (dash) Deleted a comment from a stack
+    :ivar EventTypeArg.dash_deleted_stack:
+        (dash) Deleted a stack
+    :ivar EventTypeArg.dash_edited_comment_in_stack:
+        (dash) Edited a comment in a stack
+    :ivar EventTypeArg.dash_external_user_opened_stack:
+        (dash) External user opened a stack
+    :ivar EventTypeArg.dash_first_launched_desktop:
+        (dash) Opened the desktop app for the first time
+    :ivar EventTypeArg.dash_first_launched_extension:
+        (dash) Opened the extension for the first time
+    :ivar EventTypeArg.dash_first_launched_web_start_page:
+        (dash) Opened the web Start Page for the first time
+    :ivar EventTypeArg.dash_opened_shared_link_to_stack:
+        (dash) Checked access permissions to a stack
+    :ivar EventTypeArg.dash_opened_stack:
+        (dash) Opened a stack
+    :ivar EventTypeArg.dash_preview_opt_out_status_changed:
+        (dash) Changed the preview opt-out status
+    :ivar EventTypeArg.dash_removed_connector:
+        (dash) Disconnected a user connector
+    :ivar EventTypeArg.dash_removed_link_from_stack:
+        (dash) Removed a link from a stack
+    :ivar EventTypeArg.dash_removed_shared_link_to_stack:
+        (dash) Removed a shared link to a stack
+    :ivar EventTypeArg.dash_removed_team_email_domain_allowlist:
+        (dash) Admin removed an email domain from the team allowlist
+    :ivar EventTypeArg.dash_renamed_stack:
+        (dash) Renamed a stack
+    :ivar EventTypeArg.dash_shared_link_to_stack:
+        (dash) Shared a link to a stack
+    :ivar EventTypeArg.dash_unarchived_stack:
+        (dash) Unarchived a stack
+    :ivar EventTypeArg.dash_viewed_company_stack:
+        (dash) Member viewed a company stack
+    :ivar EventTypeArg.dash_viewed_external_ai_activity_report:
+        (dash) Admin viewed the external AI activity report
+    :ivar EventTypeArg.governance_policy_add_folders:
+        (data_governance) Added folders to policy
+    :ivar EventTypeArg.governance_policy_add_folder_failed:
         (data_governance) Couldn't add a folder to a policy
-    :ivar team_log.EventTypeArg.governance_policy_content_disposed:
+    :ivar EventTypeArg.governance_policy_content_disposed:
         (data_governance) Content disposed
-    :ivar team_log.EventTypeArg.governance_policy_create: (data_governance)
-        Activated a new policy
-    :ivar team_log.EventTypeArg.governance_policy_delete: (data_governance)
-        Deleted a policy
-    :ivar team_log.EventTypeArg.governance_policy_edit_details:
+    :ivar EventTypeArg.governance_policy_create:
+        (data_governance) Activated a new policy
+    :ivar EventTypeArg.governance_policy_delete:
+        (data_governance) Deleted a policy
+    :ivar EventTypeArg.governance_policy_edit_details:
         (data_governance) Edited policy
-    :ivar team_log.EventTypeArg.governance_policy_edit_duration:
+    :ivar EventTypeArg.governance_policy_edit_duration:
         (data_governance) Changed policy duration
-    :ivar team_log.EventTypeArg.governance_policy_export_created:
+    :ivar EventTypeArg.governance_policy_export_created:
         (data_governance) Created a policy download
-    :ivar team_log.EventTypeArg.governance_policy_export_removed:
+    :ivar EventTypeArg.governance_policy_export_removed:
         (data_governance) Removed a policy download
-    :ivar team_log.EventTypeArg.governance_policy_remove_folders:
+    :ivar EventTypeArg.governance_policy_remove_folders:
         (data_governance) Removed folders from policy
-    :ivar team_log.EventTypeArg.governance_policy_report_created:
+    :ivar EventTypeArg.governance_policy_report_created:
         (data_governance) Created a summary report for a policy
-    :ivar team_log.EventTypeArg.governance_policy_zip_part_downloaded:
+    :ivar EventTypeArg.governance_policy_zip_part_downloaded:
         (data_governance) Downloaded content from a policy
-    :ivar team_log.EventTypeArg.legal_holds_activate_a_hold: (data_governance)
-        Activated a hold
-    :ivar team_log.EventTypeArg.legal_holds_add_members: (data_governance) Added
-        members to a hold
-    :ivar team_log.EventTypeArg.legal_holds_change_hold_details:
+    :ivar EventTypeArg.legal_holds_activate_a_hold:
+        (data_governance) Activated a hold
+    :ivar EventTypeArg.legal_holds_add_members:
+        (data_governance) Added members to a hold
+    :ivar EventTypeArg.legal_holds_change_hold_details:
         (data_governance) Edited details for a hold
-    :ivar team_log.EventTypeArg.legal_holds_change_hold_name: (data_governance)
-        Renamed a hold
-    :ivar team_log.EventTypeArg.legal_holds_export_a_hold: (data_governance)
-        Exported hold
-    :ivar team_log.EventTypeArg.legal_holds_export_cancelled: (data_governance)
-        Canceled export for a hold
-    :ivar team_log.EventTypeArg.legal_holds_export_downloaded: (data_governance)
-        Downloaded export for a hold
-    :ivar team_log.EventTypeArg.legal_holds_export_removed: (data_governance)
-        Removed export for a hold
-    :ivar team_log.EventTypeArg.legal_holds_release_a_hold: (data_governance)
-        Released a hold
-    :ivar team_log.EventTypeArg.legal_holds_remove_members: (data_governance)
-        Removed members from a hold
-    :ivar team_log.EventTypeArg.legal_holds_report_a_hold: (data_governance)
-        Created a summary report for a hold
-    :ivar team_log.EventTypeArg.device_change_ip_desktop: (devices) Changed IP
-        address associated with active desktop session
-    :ivar team_log.EventTypeArg.device_change_ip_mobile: (devices) Changed IP
-        address associated with active mobile session
-    :ivar team_log.EventTypeArg.device_change_ip_web: (devices) Changed IP
-        address associated with active web session
-    :ivar team_log.EventTypeArg.device_delete_on_unlink_fail: (devices) Failed
-        to delete all files from unlinked device
-    :ivar team_log.EventTypeArg.device_delete_on_unlink_success: (devices)
-        Deleted all files from unlinked device
-    :ivar team_log.EventTypeArg.device_link_fail: (devices) Failed to link
-        device
-    :ivar team_log.EventTypeArg.device_link_success: (devices) Linked device
-    :ivar team_log.EventTypeArg.device_management_disabled: (devices) Disabled
-        device management (deprecated, no longer logged)
-    :ivar team_log.EventTypeArg.device_management_enabled: (devices) Enabled
-        device management (deprecated, no longer logged)
-    :ivar team_log.EventTypeArg.device_sync_backup_status_changed: (devices)
-        Enabled/disabled backup for computer
-    :ivar team_log.EventTypeArg.device_unlink: (devices) Disconnected device
-    :ivar team_log.EventTypeArg.dropbox_passwords_exported: (devices) Exported
-        passwords
-    :ivar team_log.EventTypeArg.dropbox_passwords_new_device_enrolled: (devices)
-        Enrolled new Dropbox Passwords device
-    :ivar team_log.EventTypeArg.emm_refresh_auth_token: (devices) Refreshed auth
-        token used for setting up EMM
-    :ivar
-        team_log.EventTypeArg.external_drive_backup_eligibility_status_checked:
+    :ivar EventTypeArg.legal_holds_change_hold_name:
+        (data_governance) Renamed a hold
+    :ivar EventTypeArg.legal_holds_export_a_hold:
+        (data_governance) Exported hold
+    :ivar EventTypeArg.legal_holds_export_cancelled:
+        (data_governance) Canceled export for a hold
+    :ivar EventTypeArg.legal_holds_export_downloaded:
+        (data_governance) Downloaded export for a hold
+    :ivar EventTypeArg.legal_holds_export_removed:
+        (data_governance) Removed export for a hold
+    :ivar EventTypeArg.legal_holds_release_a_hold:
+        (data_governance) Released a hold
+    :ivar EventTypeArg.legal_holds_remove_members:
+        (data_governance) Removed members from a hold
+    :ivar EventTypeArg.legal_holds_report_a_hold:
+        (data_governance) Created a summary report for a hold
+    :ivar EventTypeArg.device_change_ip_desktop:
+        (devices) Changed IP address associated with active desktop session
+    :ivar EventTypeArg.device_change_ip_mobile:
+        (devices) Changed IP address associated with active mobile session
+    :ivar EventTypeArg.device_change_ip_web:
+        (devices) Changed IP address associated with active web session
+    :ivar EventTypeArg.device_delete_on_unlink_fail:
+        (devices) Failed to delete all files from unlinked device
+    :ivar EventTypeArg.device_delete_on_unlink_success:
+        (devices) Deleted all files from unlinked device
+    :ivar EventTypeArg.device_link_fail:
+        (devices) Failed to link device
+    :ivar EventTypeArg.device_link_success:
+        (devices) Linked device
+    :ivar EventTypeArg.device_management_disabled:
+        (devices) Disabled device management (deprecated, no longer logged)
+    :ivar EventTypeArg.device_management_enabled:
+        (devices) Enabled device management (deprecated, no longer logged)
+    :ivar EventTypeArg.device_sync_backup_status_changed:
+        (devices) Enabled/disabled backup for computer
+    :ivar EventTypeArg.device_unlink:
+        (devices) Disconnected device
+    :ivar EventTypeArg.dropbox_passwords_exported:
+        (devices) Exported passwords
+    :ivar EventTypeArg.dropbox_passwords_new_device_enrolled:
+        (devices) Enrolled new Dropbox Passwords device
+    :ivar EventTypeArg.emm_refresh_auth_token:
+        (devices) Refreshed auth token used for setting up EMM
+    :ivar EventTypeArg.external_drive_backup_eligibility_status_checked:
         (devices) Checked external drive backup eligibility status
-    :ivar team_log.EventTypeArg.external_drive_backup_status_changed: (devices)
-        Modified external drive backup
-    :ivar team_log.EventTypeArg.account_capture_change_availability: (domains)
-        Granted/revoked option to enable account capture on team domains
-    :ivar team_log.EventTypeArg.account_capture_migrate_account: (domains)
-        Account-captured user migrated account to team
-    :ivar team_log.EventTypeArg.account_capture_notification_emails_sent:
+    :ivar EventTypeArg.external_drive_backup_status_changed:
+        (devices) Modified external drive backup
+    :ivar EventTypeArg.account_capture_change_availability:
+        (domains) Granted/revoked option to enable account capture on team
+        domains
+    :ivar EventTypeArg.account_capture_migrate_account:
+        (domains) Account-captured user migrated account to team
+    :ivar EventTypeArg.account_capture_notification_emails_sent:
         (domains) Sent account capture email to all unmanaged members
-    :ivar team_log.EventTypeArg.account_capture_relinquish_account: (domains)
-        Account-captured user changed account email to personal email
-    :ivar team_log.EventTypeArg.disabled_domain_invites: (domains) Disabled
-        domain invites (deprecated, no longer logged)
-    :ivar team_log.EventTypeArg.domain_invites_approve_request_to_join_team:
+    :ivar EventTypeArg.account_capture_relinquish_account:
+        (domains) Account-captured user changed account email to personal email
+    :ivar EventTypeArg.disabled_domain_invites:
+        (domains) Disabled domain invites (deprecated, no longer logged)
+    :ivar EventTypeArg.domain_invites_approve_request_to_join_team:
         (domains) Approved user's request to join team
-    :ivar team_log.EventTypeArg.domain_invites_decline_request_to_join_team:
+    :ivar EventTypeArg.domain_invites_decline_request_to_join_team:
         (domains) Declined user's request to join team
-    :ivar team_log.EventTypeArg.domain_invites_email_existing_users: (domains)
-        Sent domain invites to existing domain accounts (deprecated, no longer
-        logged)
-    :ivar team_log.EventTypeArg.domain_invites_request_to_join_team: (domains)
-        Requested to join team
-    :ivar team_log.EventTypeArg.domain_invites_set_invite_new_user_pref_to_no:
+    :ivar EventTypeArg.domain_invites_email_existing_users:
+        (domains) Sent domain invites to existing domain accounts (deprecated,
+        no longer logged)
+    :ivar EventTypeArg.domain_invites_request_to_join_team:
+        (domains) Requested to join team
+    :ivar EventTypeArg.domain_invites_set_invite_new_user_pref_to_no:
         (domains) Disabled "Automatically invite new users" (deprecated, no
         longer logged)
-    :ivar team_log.EventTypeArg.domain_invites_set_invite_new_user_pref_to_yes:
+    :ivar EventTypeArg.domain_invites_set_invite_new_user_pref_to_yes:
         (domains) Enabled "Automatically invite new users" (deprecated, no
         longer logged)
-    :ivar team_log.EventTypeArg.domain_verification_add_domain_fail: (domains)
-        Failed to verify team domain
-    :ivar team_log.EventTypeArg.domain_verification_add_domain_success:
+    :ivar EventTypeArg.domain_verification_add_domain_fail:
+        (domains) Failed to verify team domain
+    :ivar EventTypeArg.domain_verification_add_domain_success:
         (domains) Verified team domain
-    :ivar team_log.EventTypeArg.domain_verification_remove_domain: (domains)
-        Removed domain from list of verified team domains
-    :ivar team_log.EventTypeArg.enabled_domain_invites: (domains) Enabled domain
-        invites (deprecated, no longer logged)
-    :ivar team_log.EventTypeArg.encrypted_folder_cancel_team_key_rotation:
+    :ivar EventTypeArg.domain_verification_remove_domain:
+        (domains) Removed domain from list of verified team domains
+    :ivar EventTypeArg.enabled_domain_invites:
+        (domains) Enabled domain invites (deprecated, no longer logged)
+    :ivar EventTypeArg.encrypted_folder_cancel_team_key_rotation:
         (encryption) Canceled team key rotation
-    :ivar team_log.EventTypeArg.encrypted_folder_enroll_backup_key: (encryption)
-        Added recovery key
-    :ivar team_log.EventTypeArg.encrypted_folder_enroll_client: (encryption)
-        Enrolled device
-    :ivar team_log.EventTypeArg.encrypted_folder_enroll_team: (encryption)
-        Activated team folder encryption
-    :ivar team_log.EventTypeArg.encrypted_folder_finish_team_unenrollment:
+    :ivar EventTypeArg.encrypted_folder_enroll_backup_key:
+        (encryption) Added recovery key
+    :ivar EventTypeArg.encrypted_folder_enroll_client:
+        (encryption) Enrolled device
+    :ivar EventTypeArg.encrypted_folder_enroll_team:
+        (encryption) Activated team folder encryption
+    :ivar EventTypeArg.encrypted_folder_finish_team_unenrollment:
         (encryption) Deactivated team folder encryption
-    :ivar team_log.EventTypeArg.encrypted_folder_init_team_key_rotation:
+    :ivar EventTypeArg.encrypted_folder_init_team_key_rotation:
         (encryption) Initiated team key rotation
-    :ivar team_log.EventTypeArg.encrypted_folder_init_team_unenrollment:
+    :ivar EventTypeArg.encrypted_folder_init_team_unenrollment:
         (encryption) Initiated deactivation of team folder encryption
-    :ivar team_log.EventTypeArg.encrypted_folder_remove_backup_key: (encryption)
-        Removed recovery key
-    :ivar team_log.EventTypeArg.encrypted_folder_rotate_team_key: (encryption)
-        Rotated team key
-    :ivar team_log.EventTypeArg.encrypted_folder_unenroll_client: (encryption)
-        Unenrolled device
-    :ivar team_log.EventTypeArg.team_encryption_key_activate_key: (encryption)
-        Activated team encryption key
-    :ivar team_log.EventTypeArg.team_encryption_key_cancel_key_deletion:
+    :ivar EventTypeArg.encrypted_folder_remove_backup_key:
+        (encryption) Removed recovery key
+    :ivar EventTypeArg.encrypted_folder_rotate_team_key:
+        (encryption) Rotated team key
+    :ivar EventTypeArg.encrypted_folder_unenroll_client:
+        (encryption) Unenrolled device
+    :ivar EventTypeArg.team_encryption_key_activate_key:
+        (encryption) Activated team encryption key
+    :ivar EventTypeArg.team_encryption_key_cancel_key_deletion:
         (encryption) Canceled team encryption key deletion
-    :ivar team_log.EventTypeArg.team_encryption_key_create_key: (encryption)
-        Created team encryption key
-    :ivar team_log.EventTypeArg.team_encryption_key_deactivate_key: (encryption)
-        Deactivated team encryption key
-    :ivar team_log.EventTypeArg.team_encryption_key_delete_key: (encryption)
-        Deleted team encryption key
-    :ivar team_log.EventTypeArg.team_encryption_key_disable_key: (encryption)
-        Disabled team encryption key
-    :ivar team_log.EventTypeArg.team_encryption_key_enable_key: (encryption)
-        Enabled team encryption key
-    :ivar team_log.EventTypeArg.team_encryption_key_rotate_key: (encryption)
-        Rotated team encryption key (deprecated, no longer logged)
-    :ivar team_log.EventTypeArg.team_encryption_key_schedule_key_deletion:
+    :ivar EventTypeArg.team_encryption_key_create_key:
+        (encryption) Created team encryption key
+    :ivar EventTypeArg.team_encryption_key_deactivate_key:
+        (encryption) Deactivated team encryption key
+    :ivar EventTypeArg.team_encryption_key_delete_key:
+        (encryption) Deleted team encryption key
+    :ivar EventTypeArg.team_encryption_key_disable_key:
+        (encryption) Disabled team encryption key
+    :ivar EventTypeArg.team_encryption_key_enable_key:
+        (encryption) Enabled team encryption key
+    :ivar EventTypeArg.team_encryption_key_rotate_key:
+        (encryption) Rotated team encryption key (deprecated, no longer logged)
+    :ivar EventTypeArg.team_encryption_key_schedule_key_deletion:
         (encryption) Scheduled encryption key deletion
-    :ivar team_log.EventTypeArg.apply_naming_convention: (file_operations)
-        Applied naming convention
-    :ivar team_log.EventTypeArg.create_folder: (file_operations) Created folders
-        (deprecated, no longer logged)
-    :ivar team_log.EventTypeArg.file_add: (file_operations) Added files and/or
-        folders
-    :ivar team_log.EventTypeArg.file_add_from_automation: (file_operations)
-        Added files and/or folders from automation
-    :ivar team_log.EventTypeArg.file_copy: (file_operations) Copied files and/or
-        folders
-    :ivar team_log.EventTypeArg.file_delete: (file_operations) Deleted files
-        and/or folders
-    :ivar team_log.EventTypeArg.file_download: (file_operations) Downloaded
-        files and/or folders
-    :ivar team_log.EventTypeArg.file_edit: (file_operations) Edited files
-    :ivar team_log.EventTypeArg.file_get_copy_reference: (file_operations)
-        Created copy reference to file/folder
-    :ivar team_log.EventTypeArg.file_locking_lock_status_changed:
+    :ivar EventTypeArg.apply_naming_convention:
+        (file_operations) Applied naming convention
+    :ivar EventTypeArg.create_folder:
+        (file_operations) Created folders (deprecated, no longer logged)
+    :ivar EventTypeArg.file_add:
+        (file_operations) Added files and/or folders
+    :ivar EventTypeArg.file_add_from_automation:
+        (file_operations) Added files and/or folders from automation
+    :ivar EventTypeArg.file_copy:
+        (file_operations) Copied files and/or folders
+    :ivar EventTypeArg.file_delete:
+        (file_operations) Deleted files and/or folders
+    :ivar EventTypeArg.file_download:
+        (file_operations) Downloaded files and/or folders
+    :ivar EventTypeArg.file_edit:
+        (file_operations) Edited files
+    :ivar EventTypeArg.file_get_copy_reference:
+        (file_operations) Created copy reference to file/folder
+    :ivar EventTypeArg.file_locking_lock_status_changed:
         (file_operations) Locked/unlocked editing for a file
-    :ivar team_log.EventTypeArg.file_move: (file_operations) Moved files and/or
-        folders
-    :ivar team_log.EventTypeArg.file_permanently_delete: (file_operations)
-        Permanently deleted files and/or folders
-    :ivar team_log.EventTypeArg.file_preview: (file_operations) Previewed files
-        and/or folders
-    :ivar team_log.EventTypeArg.file_rename: (file_operations) Renamed files
-        and/or folders
-    :ivar team_log.EventTypeArg.file_restore: (file_operations) Restored deleted
-        files and/or folders
-    :ivar team_log.EventTypeArg.file_revert: (file_operations) Reverted files to
-        previous version
-    :ivar team_log.EventTypeArg.file_rollback_changes: (file_operations) Rolled
-        back file actions
-    :ivar team_log.EventTypeArg.file_save_copy_reference: (file_operations)
-        Saved file/folder using copy reference
-    :ivar team_log.EventTypeArg.folder_overview_description_changed:
+    :ivar EventTypeArg.file_move:
+        (file_operations) Moved files and/or folders
+    :ivar EventTypeArg.file_permanently_delete:
+        (file_operations) Permanently deleted files and/or folders
+    :ivar EventTypeArg.file_preview:
+        (file_operations) Previewed files and/or folders
+    :ivar EventTypeArg.file_rename:
+        (file_operations) Renamed files and/or folders
+    :ivar EventTypeArg.file_restore:
+        (file_operations) Restored deleted files and/or folders
+    :ivar EventTypeArg.file_revert:
+        (file_operations) Reverted files to previous version
+    :ivar EventTypeArg.file_rollback_changes:
+        (file_operations) Rolled back file actions
+    :ivar EventTypeArg.file_save_copy_reference:
+        (file_operations) Saved file/folder using copy reference
+    :ivar EventTypeArg.folder_overview_description_changed:
         (file_operations) Updated folder overview
-    :ivar team_log.EventTypeArg.folder_overview_item_pinned: (file_operations)
-        Pinned item to folder overview
-    :ivar team_log.EventTypeArg.folder_overview_item_unpinned: (file_operations)
-        Unpinned item from folder overview
-    :ivar team_log.EventTypeArg.media_hub_file_downloaded: (file_operations)
-        Downloaded files in Media Hub
-    :ivar team_log.EventTypeArg.object_label_added: (file_operations) Added a
-        label
-    :ivar team_log.EventTypeArg.object_label_removed: (file_operations) Removed
-        a label
-    :ivar team_log.EventTypeArg.object_label_updated_value: (file_operations)
-        Updated a label's value
-    :ivar team_log.EventTypeArg.organize_folder_with_tidy: (file_operations)
-        Organized a folder with multi-file organize
-    :ivar team_log.EventTypeArg.replay_file_delete: (file_operations) Deleted
-        files in Replay
-    :ivar team_log.EventTypeArg.replay_file_downloaded: (file_operations)
-        Downloaded files in Replay
-    :ivar team_log.EventTypeArg.replay_team_project_created: (file_operations)
-        Created a team project in Replay
-    :ivar team_log.EventTypeArg.rewind_folder: (file_operations) Rewound a
-        folder
-    :ivar team_log.EventTypeArg.undo_naming_convention: (file_operations)
-        Reverted naming convention
-    :ivar team_log.EventTypeArg.undo_organize_folder_with_tidy:
+    :ivar EventTypeArg.folder_overview_item_pinned:
+        (file_operations) Pinned item to folder overview
+    :ivar EventTypeArg.folder_overview_item_unpinned:
+        (file_operations) Unpinned item from folder overview
+    :ivar EventTypeArg.media_hub_file_downloaded:
+        (file_operations) Downloaded files in Media Hub
+    :ivar EventTypeArg.object_label_added:
+        (file_operations) Added a label
+    :ivar EventTypeArg.object_label_removed:
+        (file_operations) Removed a label
+    :ivar EventTypeArg.object_label_updated_value:
+        (file_operations) Updated a label's value
+    :ivar EventTypeArg.organize_folder_with_tidy:
+        (file_operations) Organized a folder with multi-file organize
+    :ivar EventTypeArg.replay_file_delete:
+        (file_operations) Deleted files in Replay
+    :ivar EventTypeArg.replay_file_downloaded:
+        (file_operations) Downloaded files in Replay
+    :ivar EventTypeArg.replay_team_project_created:
+        (file_operations) Created a team project in Replay
+    :ivar EventTypeArg.rewind_folder:
+        (file_operations) Rewound a folder
+    :ivar EventTypeArg.undo_naming_convention:
+        (file_operations) Reverted naming convention
+    :ivar EventTypeArg.undo_organize_folder_with_tidy:
         (file_operations) Removed multi-file organize
-    :ivar team_log.EventTypeArg.user_tags_added: (file_operations) Tagged a file
-    :ivar team_log.EventTypeArg.user_tags_removed: (file_operations) Removed
-        tags
-    :ivar team_log.EventTypeArg.email_ingest_receive_file: (file_requests)
-        Received files via Email to Dropbox
-    :ivar team_log.EventTypeArg.file_request_auto_close: (file_requests) Auto
-        closed file request
-    :ivar team_log.EventTypeArg.file_request_change: (file_requests) Changed
-        file request
-    :ivar team_log.EventTypeArg.file_request_close: (file_requests) Closed file
-        request
-    :ivar team_log.EventTypeArg.file_request_create: (file_requests) Created
-        file request
-    :ivar team_log.EventTypeArg.file_request_delete: (file_requests) Delete file
-        request
-    :ivar team_log.EventTypeArg.file_request_receive_file: (file_requests)
-        Received files for file request
-    :ivar team_log.EventTypeArg.group_add_external_id: (groups) Added external
-        ID for group
-    :ivar team_log.EventTypeArg.group_add_member: (groups) Added team members to
-        group
-    :ivar team_log.EventTypeArg.group_change_external_id: (groups) Changed
-        external ID for group
-    :ivar team_log.EventTypeArg.group_change_management_type: (groups) Changed
-        group management type
-    :ivar team_log.EventTypeArg.group_change_member_role: (groups) Changed
-        manager permissions of group member
-    :ivar team_log.EventTypeArg.group_create: (groups) Created group
-    :ivar team_log.EventTypeArg.group_delete: (groups) Deleted group
-    :ivar team_log.EventTypeArg.group_description_updated: (groups) Updated
-        group (deprecated, no longer logged)
-    :ivar team_log.EventTypeArg.group_external_sharing_setting_override_changed:
+    :ivar EventTypeArg.user_tags_added:
+        (file_operations) Tagged a file
+    :ivar EventTypeArg.user_tags_removed:
+        (file_operations) Removed tags
+    :ivar EventTypeArg.email_ingest_receive_file:
+        (file_requests) Received files via Email to Dropbox
+    :ivar EventTypeArg.file_request_auto_close:
+        (file_requests) Auto closed file request
+    :ivar EventTypeArg.file_request_change:
+        (file_requests) Changed file request
+    :ivar EventTypeArg.file_request_close:
+        (file_requests) Closed file request
+    :ivar EventTypeArg.file_request_create:
+        (file_requests) Created file request
+    :ivar EventTypeArg.file_request_delete:
+        (file_requests) Delete file request
+    :ivar EventTypeArg.file_request_receive_file:
+        (file_requests) Received files for file request
+    :ivar EventTypeArg.group_add_external_id:
+        (groups) Added external ID for group
+    :ivar EventTypeArg.group_add_member:
+        (groups) Added team members to group
+    :ivar EventTypeArg.group_change_external_id:
+        (groups) Changed external ID for group
+    :ivar EventTypeArg.group_change_management_type:
+        (groups) Changed group management type
+    :ivar EventTypeArg.group_change_member_role:
+        (groups) Changed manager permissions of group member
+    :ivar EventTypeArg.group_create:
+        (groups) Created group
+    :ivar EventTypeArg.group_delete:
+        (groups) Deleted group
+    :ivar EventTypeArg.group_description_updated:
+        (groups) Updated group (deprecated, no longer logged)
+    :ivar EventTypeArg.group_external_sharing_setting_override_changed:
         (groups) Changed group's external sharing setting
-    :ivar team_log.EventTypeArg.group_join_policy_updated: (groups) Updated
-        group join policy (deprecated, no longer logged)
-    :ivar team_log.EventTypeArg.group_moved: (groups) Moved group (deprecated,
-        no longer logged)
-    :ivar team_log.EventTypeArg.group_remove_external_id: (groups) Removed
-        external ID for group
-    :ivar team_log.EventTypeArg.group_remove_member: (groups) Removed team
-        members from group
-    :ivar team_log.EventTypeArg.group_rename: (groups) Renamed group
-    :ivar team_log.EventTypeArg.account_lock_or_unlocked: (logins)
-        Unlocked/locked account after failed sign in attempts
-    :ivar team_log.EventTypeArg.emm_error: (logins) Failed to sign in via EMM
-        (deprecated, replaced by 'Failed to sign in')
-    :ivar team_log.EventTypeArg.guest_admin_signed_in_via_trusted_teams:
+    :ivar EventTypeArg.group_join_policy_updated:
+        (groups) Updated group join policy (deprecated, no longer logged)
+    :ivar EventTypeArg.group_moved:
+        (groups) Moved group (deprecated, no longer logged)
+    :ivar EventTypeArg.group_remove_external_id:
+        (groups) Removed external ID for group
+    :ivar EventTypeArg.group_remove_member:
+        (groups) Removed team members from group
+    :ivar EventTypeArg.group_rename:
+        (groups) Renamed group
+    :ivar EventTypeArg.account_lock_or_unlocked:
+        (logins) Unlocked/locked account after failed sign in attempts
+    :ivar EventTypeArg.emm_error:
+        (logins) Failed to sign in via EMM (deprecated, replaced by 'Failed to
+        sign in')
+    :ivar EventTypeArg.guest_admin_signed_in_via_trusted_teams:
         (logins) Started trusted team admin session
-    :ivar team_log.EventTypeArg.guest_admin_signed_out_via_trusted_teams:
+    :ivar EventTypeArg.guest_admin_signed_out_via_trusted_teams:
         (logins) Ended trusted team admin session
-    :ivar team_log.EventTypeArg.login_fail: (logins) Failed to sign in
-    :ivar team_log.EventTypeArg.login_success: (logins) Signed in
-    :ivar team_log.EventTypeArg.logout: (logins) Signed out
-    :ivar team_log.EventTypeArg.reseller_support_session_end: (logins) Ended
-        reseller support session
-    :ivar team_log.EventTypeArg.reseller_support_session_start: (logins) Started
-        reseller support session
-    :ivar team_log.EventTypeArg.sign_in_as_session_end: (logins) Ended admin
-        sign-in-as session
-    :ivar team_log.EventTypeArg.sign_in_as_session_start: (logins) Started admin
-        sign-in-as session
-    :ivar team_log.EventTypeArg.sso_error: (logins) Failed to sign in via SSO
-        (deprecated, replaced by 'Failed to sign in')
-    :ivar team_log.EventTypeArg.addon_assigned: (members) Add-on Assigned
-    :ivar team_log.EventTypeArg.addon_removed: (members) Add-on Removed
-    :ivar team_log.EventTypeArg.backup_admin_invitation_sent: (members) Invited
-        members to activate Backup
-    :ivar team_log.EventTypeArg.backup_invitation_opened: (members) Opened
-        Backup invite
-    :ivar team_log.EventTypeArg.create_team_invite_link: (members) Created team
-        invite link
-    :ivar team_log.EventTypeArg.delete_team_invite_link: (members) Deleted team
-        invite link
-    :ivar team_log.EventTypeArg.member_add_external_id: (members) Added an
-        external ID for team member
-    :ivar team_log.EventTypeArg.member_add_name: (members) Added team member
-        name
-    :ivar team_log.EventTypeArg.member_change_admin_role: (members) Changed team
-        member admin role
-    :ivar team_log.EventTypeArg.member_change_email: (members) Changed team
-        member email
-    :ivar team_log.EventTypeArg.member_change_external_id: (members) Changed the
-        external ID for team member
-    :ivar team_log.EventTypeArg.member_change_membership_type: (members) Changed
-        membership type (limited/full) of member (deprecated, no longer logged)
-    :ivar team_log.EventTypeArg.member_change_name: (members) Changed team
-        member name
-    :ivar team_log.EventTypeArg.member_change_reseller_role: (members) Changed
-        team member reseller role
-    :ivar team_log.EventTypeArg.member_change_status: (members) Changed member
-        status (invited, joined, suspended, etc.)
-    :ivar team_log.EventTypeArg.member_delete_manual_contacts: (members) Cleared
-        manually added contacts
-    :ivar team_log.EventTypeArg.member_delete_profile_photo: (members) Deleted
-        team member profile photo
-    :ivar team_log.EventTypeArg.member_permanently_delete_account_contents:
+    :ivar EventTypeArg.login_fail:
+        (logins) Failed to sign in
+    :ivar EventTypeArg.login_success:
+        (logins) Signed in
+    :ivar EventTypeArg.logout:
+        (logins) Signed out
+    :ivar EventTypeArg.reseller_support_session_end:
+        (logins) Ended reseller support session
+    :ivar EventTypeArg.reseller_support_session_start:
+        (logins) Started reseller support session
+    :ivar EventTypeArg.sign_in_as_session_end:
+        (logins) Ended admin sign-in-as session
+    :ivar EventTypeArg.sign_in_as_session_start:
+        (logins) Started admin sign-in-as session
+    :ivar EventTypeArg.sso_error:
+        (logins) Failed to sign in via SSO (deprecated, replaced by 'Failed to
+        sign in')
+    :ivar EventTypeArg.addon_assigned:
+        (members) Add-on Assigned
+    :ivar EventTypeArg.addon_removed:
+        (members) Add-on Removed
+    :ivar EventTypeArg.backup_admin_invitation_sent:
+        (members) Invited members to activate Backup
+    :ivar EventTypeArg.backup_invitation_opened:
+        (members) Opened Backup invite
+    :ivar EventTypeArg.create_team_invite_link:
+        (members) Created team invite link
+    :ivar EventTypeArg.delete_team_invite_link:
+        (members) Deleted team invite link
+    :ivar EventTypeArg.member_add_external_id:
+        (members) Added an external ID for team member
+    :ivar EventTypeArg.member_add_name:
+        (members) Added team member name
+    :ivar EventTypeArg.member_change_admin_role:
+        (members) Changed team member admin role
+    :ivar EventTypeArg.member_change_email:
+        (members) Changed team member email
+    :ivar EventTypeArg.member_change_external_id:
+        (members) Changed the external ID for team member
+    :ivar EventTypeArg.member_change_membership_type:
+        (members) Changed membership type (limited/full) of member (deprecated,
+        no longer logged)
+    :ivar EventTypeArg.member_change_name:
+        (members) Changed team member name
+    :ivar EventTypeArg.member_change_reseller_role:
+        (members) Changed team member reseller role
+    :ivar EventTypeArg.member_change_status:
+        (members) Changed member status (invited, joined, suspended, etc.)
+    :ivar EventTypeArg.member_delete_manual_contacts:
+        (members) Cleared manually added contacts
+    :ivar EventTypeArg.member_delete_profile_photo:
+        (members) Deleted team member profile photo
+    :ivar EventTypeArg.member_permanently_delete_account_contents:
         (members) Permanently deleted contents of deleted team member account
-    :ivar team_log.EventTypeArg.member_remove_external_id: (members) Removed the
-        external ID for team member
-    :ivar team_log.EventTypeArg.member_set_profile_photo: (members) Set team
-        member profile photo
-    :ivar team_log.EventTypeArg.member_space_limits_add_custom_quota: (members)
-        Set custom member space limit
-    :ivar team_log.EventTypeArg.member_space_limits_change_custom_quota:
+    :ivar EventTypeArg.member_remove_external_id:
+        (members) Removed the external ID for team member
+    :ivar EventTypeArg.member_set_profile_photo:
+        (members) Set team member profile photo
+    :ivar EventTypeArg.member_space_limits_add_custom_quota:
+        (members) Set custom member space limit
+    :ivar EventTypeArg.member_space_limits_change_custom_quota:
         (members) Changed custom member space limit
-    :ivar team_log.EventTypeArg.member_space_limits_change_status: (members)
-        Changed space limit status
-    :ivar team_log.EventTypeArg.member_space_limits_remove_custom_quota:
+    :ivar EventTypeArg.member_space_limits_change_status:
+        (members) Changed space limit status
+    :ivar EventTypeArg.member_space_limits_remove_custom_quota:
         (members) Removed custom member space limit
-    :ivar team_log.EventTypeArg.member_suggest: (members) Suggested person to
-        add to team
-    :ivar team_log.EventTypeArg.member_transfer_account_contents: (members)
-        Transferred contents of deleted member account to another member
-    :ivar team_log.EventTypeArg.pending_secondary_email_added: (members) Added
-        pending secondary email
-    :ivar team_log.EventTypeArg.product_assigned_to_member: (members) Product
-        assigned to team member
-    :ivar team_log.EventTypeArg.product_removed_from_member: (members) Product
-        removed from team member
-    :ivar team_log.EventTypeArg.secondary_email_deleted: (members) Deleted
-        secondary email
-    :ivar team_log.EventTypeArg.secondary_email_verified: (members) Verified
-        secondary email
-    :ivar team_log.EventTypeArg.secondary_mails_policy_changed: (members)
-        Secondary mails policy changed
-    :ivar team_log.EventTypeArg.binder_add_page: (paper) Added Binder page
-        (deprecated, replaced by 'Edited files')
-    :ivar team_log.EventTypeArg.binder_add_section: (paper) Added Binder section
-        (deprecated, replaced by 'Edited files')
-    :ivar team_log.EventTypeArg.binder_remove_page: (paper) Removed Binder page
-        (deprecated, replaced by 'Edited files')
-    :ivar team_log.EventTypeArg.binder_remove_section: (paper) Removed Binder
-        section (deprecated, replaced by 'Edited files')
-    :ivar team_log.EventTypeArg.binder_rename_page: (paper) Renamed Binder page
-        (deprecated, replaced by 'Edited files')
-    :ivar team_log.EventTypeArg.binder_rename_section: (paper) Renamed Binder
-        section (deprecated, replaced by 'Edited files')
-    :ivar team_log.EventTypeArg.binder_reorder_page: (paper) Reordered Binder
-        page (deprecated, replaced by 'Edited files')
-    :ivar team_log.EventTypeArg.binder_reorder_section: (paper) Reordered Binder
-        section (deprecated, replaced by 'Edited files')
-    :ivar team_log.EventTypeArg.paper_content_add_member: (paper) Added users
-        and/or groups to Paper doc/folder
-    :ivar team_log.EventTypeArg.paper_content_add_to_folder: (paper) Added Paper
-        doc/folder to folder
-    :ivar team_log.EventTypeArg.paper_content_archive: (paper) Archived Paper
-        doc/folder
-    :ivar team_log.EventTypeArg.paper_content_create: (paper) Created Paper
-        doc/folder
-    :ivar team_log.EventTypeArg.paper_content_permanently_delete: (paper)
-        Permanently deleted Paper doc/folder
-    :ivar team_log.EventTypeArg.paper_content_remove_from_folder: (paper)
-        Removed Paper doc/folder from folder
-    :ivar team_log.EventTypeArg.paper_content_remove_member: (paper) Removed
-        users and/or groups from Paper doc/folder
-    :ivar team_log.EventTypeArg.paper_content_rename: (paper) Renamed Paper
-        doc/folder
-    :ivar team_log.EventTypeArg.paper_content_restore: (paper) Restored archived
-        Paper doc/folder
-    :ivar team_log.EventTypeArg.paper_doc_add_comment: (paper) Added Paper doc
-        comment
-    :ivar team_log.EventTypeArg.paper_doc_change_member_role: (paper) Changed
-        member permissions for Paper doc
-    :ivar team_log.EventTypeArg.paper_doc_change_sharing_policy: (paper) Changed
-        sharing setting for Paper doc
-    :ivar team_log.EventTypeArg.paper_doc_change_subscription: (paper)
-        Followed/unfollowed Paper doc
-    :ivar team_log.EventTypeArg.paper_doc_deleted: (paper) Archived Paper doc
-        (deprecated, no longer logged)
-    :ivar team_log.EventTypeArg.paper_doc_delete_comment: (paper) Deleted Paper
-        doc comment
-    :ivar team_log.EventTypeArg.paper_doc_download: (paper) Downloaded Paper doc
-        in specific format
-    :ivar team_log.EventTypeArg.paper_doc_edit: (paper) Edited Paper doc
-    :ivar team_log.EventTypeArg.paper_doc_edit_comment: (paper) Edited Paper doc
-        comment
-    :ivar team_log.EventTypeArg.paper_doc_followed: (paper) Followed Paper doc
-        (deprecated, replaced by 'Followed/unfollowed Paper doc')
-    :ivar team_log.EventTypeArg.paper_doc_mention: (paper) Mentioned user in
-        Paper doc
-    :ivar team_log.EventTypeArg.paper_doc_ownership_changed: (paper) Transferred
-        ownership of Paper doc
-    :ivar team_log.EventTypeArg.paper_doc_request_access: (paper) Requested
-        access to Paper doc
-    :ivar team_log.EventTypeArg.paper_doc_resolve_comment: (paper) Resolved
-        Paper doc comment
-    :ivar team_log.EventTypeArg.paper_doc_revert: (paper) Restored Paper doc to
-        previous version
-    :ivar team_log.EventTypeArg.paper_doc_slack_share: (paper) Shared Paper doc
-        via Slack
-    :ivar team_log.EventTypeArg.paper_doc_team_invite: (paper) Shared Paper doc
-        with users and/or groups (deprecated, no longer logged)
-    :ivar team_log.EventTypeArg.paper_doc_trashed: (paper) Deleted Paper doc
-    :ivar team_log.EventTypeArg.paper_doc_unresolve_comment: (paper) Unresolved
-        Paper doc comment
-    :ivar team_log.EventTypeArg.paper_doc_untrashed: (paper) Restored Paper doc
-    :ivar team_log.EventTypeArg.paper_doc_view: (paper) Viewed Paper doc
-    :ivar team_log.EventTypeArg.paper_external_view_allow: (paper) Changed Paper
-        external sharing setting to anyone (deprecated, no longer logged)
-    :ivar team_log.EventTypeArg.paper_external_view_default_team: (paper)
-        Changed Paper external sharing setting to default team (deprecated, no
-        longer logged)
-    :ivar team_log.EventTypeArg.paper_external_view_forbid: (paper) Changed
-        Paper external sharing setting to team-only (deprecated, no longer
+    :ivar EventTypeArg.member_suggest:
+        (members) Suggested person to add to team
+    :ivar EventTypeArg.member_transfer_account_contents:
+        (members) Transferred contents of deleted member account to another
+        member
+    :ivar EventTypeArg.pending_secondary_email_added:
+        (members) Added pending secondary email
+    :ivar EventTypeArg.product_assigned_to_member:
+        (members) Product assigned to team member
+    :ivar EventTypeArg.product_removed_from_member:
+        (members) Product removed from team member
+    :ivar EventTypeArg.secondary_email_deleted:
+        (members) Deleted secondary email
+    :ivar EventTypeArg.secondary_email_verified:
+        (members) Verified secondary email
+    :ivar EventTypeArg.secondary_mails_policy_changed:
+        (members) Secondary mails policy changed
+    :ivar EventTypeArg.binder_add_page:
+        (paper) Added Binder page (deprecated, replaced by 'Edited files')
+    :ivar EventTypeArg.binder_add_section:
+        (paper) Added Binder section (deprecated, replaced by 'Edited files')
+    :ivar EventTypeArg.binder_remove_page:
+        (paper) Removed Binder page (deprecated, replaced by 'Edited files')
+    :ivar EventTypeArg.binder_remove_section:
+        (paper) Removed Binder section (deprecated, replaced by 'Edited files')
+    :ivar EventTypeArg.binder_rename_page:
+        (paper) Renamed Binder page (deprecated, replaced by 'Edited files')
+    :ivar EventTypeArg.binder_rename_section:
+        (paper) Renamed Binder section (deprecated, replaced by 'Edited files')
+    :ivar EventTypeArg.binder_reorder_page:
+        (paper) Reordered Binder page (deprecated, replaced by 'Edited files')
+    :ivar EventTypeArg.binder_reorder_section:
+        (paper) Reordered Binder section (deprecated, replaced by 'Edited
+        files')
+    :ivar EventTypeArg.paper_content_add_member:
+        (paper) Added users and/or groups to Paper doc/folder
+    :ivar EventTypeArg.paper_content_add_to_folder:
+        (paper) Added Paper doc/folder to folder
+    :ivar EventTypeArg.paper_content_archive:
+        (paper) Archived Paper doc/folder
+    :ivar EventTypeArg.paper_content_create:
+        (paper) Created Paper doc/folder
+    :ivar EventTypeArg.paper_content_permanently_delete:
+        (paper) Permanently deleted Paper doc/folder
+    :ivar EventTypeArg.paper_content_remove_from_folder:
+        (paper) Removed Paper doc/folder from folder
+    :ivar EventTypeArg.paper_content_remove_member:
+        (paper) Removed users and/or groups from Paper doc/folder
+    :ivar EventTypeArg.paper_content_rename:
+        (paper) Renamed Paper doc/folder
+    :ivar EventTypeArg.paper_content_restore:
+        (paper) Restored archived Paper doc/folder
+    :ivar EventTypeArg.paper_doc_add_comment:
+        (paper) Added Paper doc comment
+    :ivar EventTypeArg.paper_doc_change_member_role:
+        (paper) Changed member permissions for Paper doc
+    :ivar EventTypeArg.paper_doc_change_sharing_policy:
+        (paper) Changed sharing setting for Paper doc
+    :ivar EventTypeArg.paper_doc_change_subscription:
+        (paper) Followed/unfollowed Paper doc
+    :ivar EventTypeArg.paper_doc_deleted:
+        (paper) Archived Paper doc (deprecated, no longer logged)
+    :ivar EventTypeArg.paper_doc_delete_comment:
+        (paper) Deleted Paper doc comment
+    :ivar EventTypeArg.paper_doc_download:
+        (paper) Downloaded Paper doc in specific format
+    :ivar EventTypeArg.paper_doc_edit:
+        (paper) Edited Paper doc
+    :ivar EventTypeArg.paper_doc_edit_comment:
+        (paper) Edited Paper doc comment
+    :ivar EventTypeArg.paper_doc_followed:
+        (paper) Followed Paper doc (deprecated, replaced by 'Followed/unfollowed
+        Paper doc')
+    :ivar EventTypeArg.paper_doc_mention:
+        (paper) Mentioned user in Paper doc
+    :ivar EventTypeArg.paper_doc_ownership_changed:
+        (paper) Transferred ownership of Paper doc
+    :ivar EventTypeArg.paper_doc_request_access:
+        (paper) Requested access to Paper doc
+    :ivar EventTypeArg.paper_doc_resolve_comment:
+        (paper) Resolved Paper doc comment
+    :ivar EventTypeArg.paper_doc_revert:
+        (paper) Restored Paper doc to previous version
+    :ivar EventTypeArg.paper_doc_slack_share:
+        (paper) Shared Paper doc via Slack
+    :ivar EventTypeArg.paper_doc_team_invite:
+        (paper) Shared Paper doc with users and/or groups (deprecated, no longer
         logged)
-    :ivar team_log.EventTypeArg.paper_folder_change_subscription: (paper)
-        Followed/unfollowed Paper folder
-    :ivar team_log.EventTypeArg.paper_folder_deleted: (paper) Archived Paper
-        folder (deprecated, no longer logged)
-    :ivar team_log.EventTypeArg.paper_folder_followed: (paper) Followed Paper
-        folder (deprecated, replaced by 'Followed/unfollowed Paper folder')
-    :ivar team_log.EventTypeArg.paper_folder_team_invite: (paper) Shared Paper
-        folder with users and/or groups (deprecated, no longer logged)
-    :ivar team_log.EventTypeArg.paper_published_link_change_permission: (paper)
-        Changed permissions for published doc
-    :ivar team_log.EventTypeArg.paper_published_link_create: (paper) Published
-        doc
-    :ivar team_log.EventTypeArg.paper_published_link_disabled: (paper)
-        Unpublished doc
-    :ivar team_log.EventTypeArg.paper_published_link_view: (paper) Viewed
-        published doc
-    :ivar team_log.EventTypeArg.password_change: (passwords) Changed password
-    :ivar team_log.EventTypeArg.password_reset: (passwords) Reset password
-    :ivar team_log.EventTypeArg.password_reset_all: (passwords) Reset all team
-        member passwords
-    :ivar team_log.EventTypeArg.protect_internal_domains_changed: (protect)
-        Modified Protect internal domains list
-    :ivar team_log.EventTypeArg.classification_create_report: (reports) Created
-        Classification report
-    :ivar team_log.EventTypeArg.classification_create_report_fail: (reports)
-        Couldn't create Classification report
-    :ivar team_log.EventTypeArg.emm_create_exceptions_report: (reports) Created
-        EMM-excluded users report
-    :ivar team_log.EventTypeArg.emm_create_usage_report: (reports) Created EMM
-        mobile app usage report
-    :ivar team_log.EventTypeArg.export_members_report: (reports) Created member
-        data report
-    :ivar team_log.EventTypeArg.export_members_report_fail: (reports) Failed to
-        create members data report
-    :ivar team_log.EventTypeArg.external_sharing_create_report: (reports)
-        Created External sharing report
-    :ivar team_log.EventTypeArg.external_sharing_report_failed: (reports)
-        Couldn't create External sharing report
-    :ivar team_log.EventTypeArg.member_access_details_create_report: (reports)
-        Created member access report
-    :ivar team_log.EventTypeArg.member_access_details_create_report_failed:
-        (reports) Couldn't generate member access report
-    :ivar team_log.EventTypeArg.no_expiration_link_gen_create_report: (reports)
-        Report created: Links created with no expiration
-    :ivar team_log.EventTypeArg.no_expiration_link_gen_report_failed: (reports)
-        Couldn't create report: Links created with no expiration
-    :ivar team_log.EventTypeArg.no_password_link_gen_create_report: (reports)
-        Report created: Links created without passwords
-    :ivar team_log.EventTypeArg.no_password_link_gen_report_failed: (reports)
-        Couldn't create report: Links created without passwords
-    :ivar team_log.EventTypeArg.no_password_link_view_create_report: (reports)
-        Report created: Views of links without passwords
-    :ivar team_log.EventTypeArg.no_password_link_view_report_failed: (reports)
-        Couldn't create report: Views of links without passwords
-    :ivar team_log.EventTypeArg.outdated_link_view_create_report: (reports)
-        Report created: Views of old links
-    :ivar team_log.EventTypeArg.outdated_link_view_report_failed: (reports)
-        Couldn't create report: Views of old links
-    :ivar team_log.EventTypeArg.paper_admin_export_start: (reports) Exported all
-        team Paper docs
-    :ivar team_log.EventTypeArg.ransomware_alert_create_report: (reports)
-        Created ransomware report
-    :ivar team_log.EventTypeArg.ransomware_alert_create_report_failed: (reports)
-        Couldn't generate ransomware report
-    :ivar team_log.EventTypeArg.shared_folders_create_report: (reports) Created
-        shared folders report
-    :ivar team_log.EventTypeArg.shared_folders_create_report_failed: (reports)
-        Couldn't generate shared folders report
-    :ivar team_log.EventTypeArg.smart_sync_create_admin_privilege_report:
-        (reports) Created Smart Sync non-admin devices report
-    :ivar team_log.EventTypeArg.team_activity_create_report: (reports) Created
-        team activity report
-    :ivar team_log.EventTypeArg.team_activity_create_report_fail: (reports)
-        Couldn't generate team activity report
-    :ivar team_log.EventTypeArg.team_folders_create_report: (reports) Created
-        team folders report
-    :ivar team_log.EventTypeArg.team_folders_create_report_failed: (reports)
-        Couldn't generate team folders report
-    :ivar team_log.EventTypeArg.team_storage_create_report: (reports) Created
-        team storage report
-    :ivar team_log.EventTypeArg.team_storage_create_report_failed: (reports)
-        Couldn't generate team storage report
-    :ivar team_log.EventTypeArg.collection_share: (sharing) Shared album
-    :ivar team_log.EventTypeArg.file_transfers_file_add: (sharing) Transfer
-        files added
-    :ivar team_log.EventTypeArg.file_transfers_transfer_delete: (sharing)
-        Deleted transfer
-    :ivar team_log.EventTypeArg.file_transfers_transfer_download: (sharing)
-        Transfer downloaded
-    :ivar team_log.EventTypeArg.file_transfers_transfer_send: (sharing) Sent
-        transfer
-    :ivar team_log.EventTypeArg.file_transfers_transfer_view: (sharing) Viewed
-        transfer
-    :ivar team_log.EventTypeArg.media_hub_project_team_add: (sharing) Added
-        member to Media Hub project
-    :ivar team_log.EventTypeArg.media_hub_project_team_delete: (sharing) Removed
-        member from Media Hub project
-    :ivar team_log.EventTypeArg.media_hub_project_team_role_changed: (sharing)
-        Changed member role in Media Hub project
-    :ivar team_log.EventTypeArg.media_hub_shared_link_audience_changed:
-        (sharing) Changed Media Hub shared link audience
-    :ivar team_log.EventTypeArg.media_hub_shared_link_created: (sharing) Created
-        Media Hub shared link
-    :ivar team_log.EventTypeArg.media_hub_shared_link_download_setting_changed:
-        (sharing) Changed Media Hub shared link download setting
-    :ivar team_log.EventTypeArg.media_hub_shared_link_revoked: (sharing) Revoked
-        Media Hub shared link
-    :ivar team_log.EventTypeArg.note_acl_invite_only: (sharing) Changed Paper
-        doc to invite-only (deprecated, no longer logged)
-    :ivar team_log.EventTypeArg.note_acl_link: (sharing) Changed Paper doc to
-        link-accessible (deprecated, no longer logged)
-    :ivar team_log.EventTypeArg.note_acl_team_link: (sharing) Changed Paper doc
-        to link-accessible for team (deprecated, no longer logged)
-    :ivar team_log.EventTypeArg.note_shared: (sharing) Shared Paper doc
+    :ivar EventTypeArg.paper_doc_trashed:
+        (paper) Deleted Paper doc
+    :ivar EventTypeArg.paper_doc_unresolve_comment:
+        (paper) Unresolved Paper doc comment
+    :ivar EventTypeArg.paper_doc_untrashed:
+        (paper) Restored Paper doc
+    :ivar EventTypeArg.paper_doc_view:
+        (paper) Viewed Paper doc
+    :ivar EventTypeArg.paper_external_view_allow:
+        (paper) Changed Paper external sharing setting to anyone (deprecated, no
+        longer logged)
+    :ivar EventTypeArg.paper_external_view_default_team:
+        (paper) Changed Paper external sharing setting to default team
         (deprecated, no longer logged)
-    :ivar team_log.EventTypeArg.note_share_receive: (sharing) Shared received
-        Paper doc (deprecated, no longer logged)
-    :ivar team_log.EventTypeArg.open_note_shared: (sharing) Opened shared Paper
-        doc (deprecated, no longer logged)
-    :ivar team_log.EventTypeArg.replay_file_shared_link_created: (sharing)
-        Created shared link in Replay
-    :ivar team_log.EventTypeArg.replay_file_shared_link_modified: (sharing)
-        Changed shared link in Replay
-    :ivar team_log.EventTypeArg.replay_project_team_add: (sharing) Added member
-        to Replay Project
-    :ivar team_log.EventTypeArg.replay_project_team_delete: (sharing) Removed
-        member from Replay Project
-    :ivar team_log.EventTypeArg.send_and_track_file_added: (sharing) File added
-        to Send and Track
-    :ivar team_log.EventTypeArg.send_and_track_file_renamed: (sharing) File
-        renamed in Send and Track
-    :ivar team_log.EventTypeArg.send_and_track_file_updated: (sharing) File
-        updated in Send and Track
-    :ivar team_log.EventTypeArg.send_and_track_link_created: (sharing) Link
-        created in Send and Track
-    :ivar team_log.EventTypeArg.send_and_track_link_deleted: (sharing) Link
-        deleted in Send and Track
-    :ivar team_log.EventTypeArg.send_and_track_link_updated: (sharing) Send and
-        Track Link Updated
-    :ivar team_log.EventTypeArg.send_and_track_link_viewed: (sharing) Send and
-        Track Link Visited
-    :ivar
-        team_log.EventTypeArg.send_and_track_removed_file_and_associated_links:
+    :ivar EventTypeArg.paper_external_view_forbid:
+        (paper) Changed Paper external sharing setting to team-only (deprecated,
+        no longer logged)
+    :ivar EventTypeArg.paper_folder_change_subscription:
+        (paper) Followed/unfollowed Paper folder
+    :ivar EventTypeArg.paper_folder_deleted:
+        (paper) Archived Paper folder (deprecated, no longer logged)
+    :ivar EventTypeArg.paper_folder_followed:
+        (paper) Followed Paper folder (deprecated, replaced by
+        'Followed/unfollowed Paper folder')
+    :ivar EventTypeArg.paper_folder_team_invite:
+        (paper) Shared Paper folder with users and/or groups (deprecated, no
+        longer logged)
+    :ivar EventTypeArg.paper_published_link_change_permission:
+        (paper) Changed permissions for published doc
+    :ivar EventTypeArg.paper_published_link_create:
+        (paper) Published doc
+    :ivar EventTypeArg.paper_published_link_disabled:
+        (paper) Unpublished doc
+    :ivar EventTypeArg.paper_published_link_view:
+        (paper) Viewed published doc
+    :ivar EventTypeArg.password_change:
+        (passwords) Changed password
+    :ivar EventTypeArg.password_reset:
+        (passwords) Reset password
+    :ivar EventTypeArg.password_reset_all:
+        (passwords) Reset all team member passwords
+    :ivar EventTypeArg.protect_internal_domains_changed:
+        (protect) Modified Protect internal domains list
+    :ivar EventTypeArg.classification_create_report:
+        (reports) Created Classification report
+    :ivar EventTypeArg.classification_create_report_fail:
+        (reports) Couldn't create Classification report
+    :ivar EventTypeArg.emm_create_exceptions_report:
+        (reports) Created EMM-excluded users report
+    :ivar EventTypeArg.emm_create_usage_report:
+        (reports) Created EMM mobile app usage report
+    :ivar EventTypeArg.export_members_report:
+        (reports) Created member data report
+    :ivar EventTypeArg.export_members_report_fail:
+        (reports) Failed to create members data report
+    :ivar EventTypeArg.external_sharing_create_report:
+        (reports) Created External sharing report
+    :ivar EventTypeArg.external_sharing_report_failed:
+        (reports) Couldn't create External sharing report
+    :ivar EventTypeArg.member_access_details_create_report:
+        (reports) Created member access report
+    :ivar EventTypeArg.member_access_details_create_report_failed:
+        (reports) Couldn't generate member access report
+    :ivar EventTypeArg.no_expiration_link_gen_create_report:
+        (reports) Report created: Links created with no expiration
+    :ivar EventTypeArg.no_expiration_link_gen_report_failed:
+        (reports) Couldn't create report: Links created with no expiration
+    :ivar EventTypeArg.no_password_link_gen_create_report:
+        (reports) Report created: Links created without passwords
+    :ivar EventTypeArg.no_password_link_gen_report_failed:
+        (reports) Couldn't create report: Links created without passwords
+    :ivar EventTypeArg.no_password_link_view_create_report:
+        (reports) Report created: Views of links without passwords
+    :ivar EventTypeArg.no_password_link_view_report_failed:
+        (reports) Couldn't create report: Views of links without passwords
+    :ivar EventTypeArg.outdated_link_view_create_report:
+        (reports) Report created: Views of old links
+    :ivar EventTypeArg.outdated_link_view_report_failed:
+        (reports) Couldn't create report: Views of old links
+    :ivar EventTypeArg.paper_admin_export_start:
+        (reports) Exported all team Paper docs
+    :ivar EventTypeArg.ransomware_alert_create_report:
+        (reports) Created ransomware report
+    :ivar EventTypeArg.ransomware_alert_create_report_failed:
+        (reports) Couldn't generate ransomware report
+    :ivar EventTypeArg.shared_folders_create_report:
+        (reports) Created shared folders report
+    :ivar EventTypeArg.shared_folders_create_report_failed:
+        (reports) Couldn't generate shared folders report
+    :ivar EventTypeArg.smart_sync_create_admin_privilege_report:
+        (reports) Created Smart Sync non-admin devices report
+    :ivar EventTypeArg.team_activity_create_report:
+        (reports) Created team activity report
+    :ivar EventTypeArg.team_activity_create_report_fail:
+        (reports) Couldn't generate team activity report
+    :ivar EventTypeArg.team_folders_create_report:
+        (reports) Created team folders report
+    :ivar EventTypeArg.team_folders_create_report_failed:
+        (reports) Couldn't generate team folders report
+    :ivar EventTypeArg.team_storage_create_report:
+        (reports) Created team storage report
+    :ivar EventTypeArg.team_storage_create_report_failed:
+        (reports) Couldn't generate team storage report
+    :ivar EventTypeArg.collection_share:
+        (sharing) Shared album
+    :ivar EventTypeArg.file_transfers_file_add:
+        (sharing) Transfer files added
+    :ivar EventTypeArg.file_transfers_transfer_delete:
+        (sharing) Deleted transfer
+    :ivar EventTypeArg.file_transfers_transfer_download:
+        (sharing) Transfer downloaded
+    :ivar EventTypeArg.file_transfers_transfer_send:
+        (sharing) Sent transfer
+    :ivar EventTypeArg.file_transfers_transfer_view:
+        (sharing) Viewed transfer
+    :ivar EventTypeArg.media_hub_project_team_add:
+        (sharing) Added member to Media Hub project
+    :ivar EventTypeArg.media_hub_project_team_delete:
+        (sharing) Removed member from Media Hub project
+    :ivar EventTypeArg.media_hub_project_team_role_changed:
+        (sharing) Changed member role in Media Hub project
+    :ivar EventTypeArg.media_hub_shared_link_audience_changed:
+        (sharing) Changed Media Hub shared link audience
+    :ivar EventTypeArg.media_hub_shared_link_created:
+        (sharing) Created Media Hub shared link
+    :ivar EventTypeArg.media_hub_shared_link_download_setting_changed:
+        (sharing) Changed Media Hub shared link download setting
+    :ivar EventTypeArg.media_hub_shared_link_revoked:
+        (sharing) Revoked Media Hub shared link
+    :ivar EventTypeArg.note_acl_invite_only:
+        (sharing) Changed Paper doc to invite-only (deprecated, no longer
+        logged)
+    :ivar EventTypeArg.note_acl_link:
+        (sharing) Changed Paper doc to link-accessible (deprecated, no longer
+        logged)
+    :ivar EventTypeArg.note_acl_team_link:
+        (sharing) Changed Paper doc to link-accessible for team (deprecated, no
+        longer logged)
+    :ivar EventTypeArg.note_shared:
+        (sharing) Shared Paper doc (deprecated, no longer logged)
+    :ivar EventTypeArg.note_share_receive:
+        (sharing) Shared received Paper doc (deprecated, no longer logged)
+    :ivar EventTypeArg.open_note_shared:
+        (sharing) Opened shared Paper doc (deprecated, no longer logged)
+    :ivar EventTypeArg.replay_file_shared_link_created:
+        (sharing) Created shared link in Replay
+    :ivar EventTypeArg.replay_file_shared_link_modified:
+        (sharing) Changed shared link in Replay
+    :ivar EventTypeArg.replay_project_team_add:
+        (sharing) Added member to Replay Project
+    :ivar EventTypeArg.replay_project_team_delete:
+        (sharing) Removed member from Replay Project
+    :ivar EventTypeArg.send_and_track_file_added:
+        (sharing) File added to Send and Track
+    :ivar EventTypeArg.send_and_track_file_renamed:
+        (sharing) File renamed in Send and Track
+    :ivar EventTypeArg.send_and_track_file_updated:
+        (sharing) File updated in Send and Track
+    :ivar EventTypeArg.send_and_track_link_created:
+        (sharing) Link created in Send and Track
+    :ivar EventTypeArg.send_and_track_link_deleted:
+        (sharing) Link deleted in Send and Track
+    :ivar EventTypeArg.send_and_track_link_updated:
+        (sharing) Send and Track Link Updated
+    :ivar EventTypeArg.send_and_track_link_viewed:
+        (sharing) Send and Track Link Visited
+    :ivar EventTypeArg.send_and_track_removed_file_and_associated_links:
         (sharing) Send and Track file and associated links deleted
-    :ivar team_log.EventTypeArg.sf_add_group: (sharing) Added team to shared
-        folder (deprecated, no longer logged)
-    :ivar team_log.EventTypeArg.sf_allow_non_members_to_view_shared_links:
+    :ivar EventTypeArg.sf_add_group:
+        (sharing) Added team to shared folder (deprecated, no longer logged)
+    :ivar EventTypeArg.sf_allow_non_members_to_view_shared_links:
         (sharing) Allowed non-collaborators to view links to files in shared
         folder (deprecated, no longer logged)
-    :ivar team_log.EventTypeArg.sf_external_invite_warn: (sharing) Set team
-        members to see warning before sharing folders outside team (deprecated,
-        no longer logged)
-    :ivar team_log.EventTypeArg.sf_fb_invite: (sharing) Invited Facebook users
-        to shared folder (deprecated, no longer logged)
-    :ivar team_log.EventTypeArg.sf_fb_invite_change_role: (sharing) Changed
-        Facebook user's role in shared folder (deprecated, no longer logged)
-    :ivar team_log.EventTypeArg.sf_fb_uninvite: (sharing) Uninvited Facebook
-        user from shared folder (deprecated, no longer logged)
-    :ivar team_log.EventTypeArg.sf_invite_group: (sharing) Invited group to
-        shared folder (deprecated, no longer logged)
-    :ivar team_log.EventTypeArg.sf_team_grant_access: (sharing) Granted access
-        to shared folder (deprecated, no longer logged)
-    :ivar team_log.EventTypeArg.sf_team_invite: (sharing) Invited team members
-        to shared folder (deprecated, replaced by 'Invited user to Dropbox and
-        added them to shared file/folder')
-    :ivar team_log.EventTypeArg.sf_team_invite_change_role: (sharing) Changed
-        team member's role in shared folder (deprecated, no longer logged)
-    :ivar team_log.EventTypeArg.sf_team_join: (sharing) Joined team member's
-        shared folder (deprecated, no longer logged)
-    :ivar team_log.EventTypeArg.sf_team_join_from_oob_link: (sharing) Joined
-        team member's shared folder from link (deprecated, no longer logged)
-    :ivar team_log.EventTypeArg.sf_team_uninvite: (sharing) Unshared folder with
-        team member (deprecated, replaced by 'Removed invitee from shared
-        file/folder before invite was accepted')
-    :ivar team_log.EventTypeArg.shared_content_add_invitees: (sharing) Invited
-        user to Dropbox and added them to shared file/folder
-    :ivar team_log.EventTypeArg.shared_content_add_link_expiry: (sharing) Added
-        expiration date to link for shared file/folder (deprecated, no longer
+    :ivar EventTypeArg.sf_external_invite_warn:
+        (sharing) Set team members to see warning before sharing folders outside
+        team (deprecated, no longer logged)
+    :ivar EventTypeArg.sf_fb_invite:
+        (sharing) Invited Facebook users to shared folder (deprecated, no longer
         logged)
-    :ivar team_log.EventTypeArg.shared_content_add_link_password: (sharing)
-        Added password to link for shared file/folder (deprecated, no longer
+    :ivar EventTypeArg.sf_fb_invite_change_role:
+        (sharing) Changed Facebook user's role in shared folder (deprecated, no
+        longer logged)
+    :ivar EventTypeArg.sf_fb_uninvite:
+        (sharing) Uninvited Facebook user from shared folder (deprecated, no
+        longer logged)
+    :ivar EventTypeArg.sf_invite_group:
+        (sharing) Invited group to shared folder (deprecated, no longer logged)
+    :ivar EventTypeArg.sf_team_grant_access:
+        (sharing) Granted access to shared folder (deprecated, no longer logged)
+    :ivar EventTypeArg.sf_team_invite:
+        (sharing) Invited team members to shared folder (deprecated, replaced by
+        'Invited user to Dropbox and added them to shared file/folder')
+    :ivar EventTypeArg.sf_team_invite_change_role:
+        (sharing) Changed team member's role in shared folder (deprecated, no
+        longer logged)
+    :ivar EventTypeArg.sf_team_join:
+        (sharing) Joined team member's shared folder (deprecated, no longer
         logged)
-    :ivar team_log.EventTypeArg.shared_content_add_member: (sharing) Added users
-        and/or groups to shared file/folder
-    :ivar team_log.EventTypeArg.shared_content_change_downloads_policy:
+    :ivar EventTypeArg.sf_team_join_from_oob_link:
+        (sharing) Joined team member's shared folder from link (deprecated, no
+        longer logged)
+    :ivar EventTypeArg.sf_team_uninvite:
+        (sharing) Unshared folder with team member (deprecated, replaced by
+        'Removed invitee from shared file/folder before invite was accepted')
+    :ivar EventTypeArg.shared_content_add_invitees:
+        (sharing) Invited user to Dropbox and added them to shared file/folder
+    :ivar EventTypeArg.shared_content_add_link_expiry:
+        (sharing) Added expiration date to link for shared file/folder
+        (deprecated, no longer logged)
+    :ivar EventTypeArg.shared_content_add_link_password:
+        (sharing) Added password to link for shared file/folder (deprecated, no
+        longer logged)
+    :ivar EventTypeArg.shared_content_add_member:
+        (sharing) Added users and/or groups to shared file/folder
+    :ivar EventTypeArg.shared_content_change_downloads_policy:
         (sharing) Changed whether members can download shared file/folder
         (deprecated, no longer logged)
-    :ivar team_log.EventTypeArg.shared_content_change_invitee_role: (sharing)
-        Changed access type of invitee to shared file/folder before invite was
-        accepted
-    :ivar team_log.EventTypeArg.shared_content_change_link_audience: (sharing)
-        Changed link audience of shared file/folder (deprecated, no longer
-        logged)
-    :ivar team_log.EventTypeArg.shared_content_change_link_expiry: (sharing)
-        Changed link expiration of shared file/folder (deprecated, no longer
-        logged)
-    :ivar team_log.EventTypeArg.shared_content_change_link_password: (sharing)
-        Changed link password of shared file/folder (deprecated, no longer
-        logged)
-    :ivar team_log.EventTypeArg.shared_content_change_member_role: (sharing)
-        Changed access type of shared file/folder member
-    :ivar team_log.EventTypeArg.shared_content_change_viewer_info_policy:
-        (sharing) Changed whether members can see who viewed shared file/folder
-    :ivar team_log.EventTypeArg.shared_content_claim_invitation: (sharing)
-        Acquired membership of shared file/folder by accepting invite
-    :ivar team_log.EventTypeArg.shared_content_copy: (sharing) Copied shared
-        file/folder to own Dropbox
-    :ivar team_log.EventTypeArg.shared_content_download: (sharing) Downloaded
-        shared file/folder
-    :ivar team_log.EventTypeArg.shared_content_relinquish_membership: (sharing)
-        Left shared file/folder
-    :ivar team_log.EventTypeArg.shared_content_remove_invitees: (sharing)
-        Removed invitee from shared file/folder before invite was accepted
-    :ivar team_log.EventTypeArg.shared_content_remove_link_expiry: (sharing)
-        Removed link expiration date of shared file/folder (deprecated, no
+    :ivar EventTypeArg.shared_content_change_invitee_role:
+        (sharing) Changed access type of invitee to shared file/folder before
+        invite was accepted
+    :ivar EventTypeArg.shared_content_change_link_audience:
+        (sharing) Changed link audience of shared file/folder (deprecated, no
         longer logged)
-    :ivar team_log.EventTypeArg.shared_content_remove_link_password: (sharing)
-        Removed link password of shared file/folder (deprecated, no longer
-        logged)
-    :ivar team_log.EventTypeArg.shared_content_remove_member: (sharing) Removed
-        user/group from shared file/folder
-    :ivar team_log.EventTypeArg.shared_content_request_access: (sharing)
-        Requested access to shared file/folder
-    :ivar team_log.EventTypeArg.shared_content_restore_invitees: (sharing)
-        Restored shared file/folder invitees
-    :ivar team_log.EventTypeArg.shared_content_restore_member: (sharing)
-        Restored users and/or groups to membership of shared file/folder
-    :ivar team_log.EventTypeArg.shared_content_unshare: (sharing) Unshared
-        file/folder by clearing membership
-    :ivar team_log.EventTypeArg.shared_content_view: (sharing) Previewed shared
+    :ivar EventTypeArg.shared_content_change_link_expiry:
+        (sharing) Changed link expiration of shared file/folder (deprecated, no
+        longer logged)
+    :ivar EventTypeArg.shared_content_change_link_password:
+        (sharing) Changed link password of shared file/folder (deprecated, no
+        longer logged)
+    :ivar EventTypeArg.shared_content_change_member_role:
+        (sharing) Changed access type of shared file/folder member
+    :ivar EventTypeArg.shared_content_change_viewer_info_policy:
+        (sharing) Changed whether members can see who viewed shared file/folder
+    :ivar EventTypeArg.shared_content_claim_invitation:
+        (sharing) Acquired membership of shared file/folder by accepting invite
+    :ivar EventTypeArg.shared_content_copy:
+        (sharing) Copied shared file/folder to own Dropbox
+    :ivar EventTypeArg.shared_content_download:
+        (sharing) Downloaded shared file/folder
+    :ivar EventTypeArg.shared_content_relinquish_membership:
+        (sharing) Left shared file/folder
+    :ivar EventTypeArg.shared_content_remove_invitees:
+        (sharing) Removed invitee from shared file/folder before invite was
+        accepted
+    :ivar EventTypeArg.shared_content_remove_link_expiry:
+        (sharing) Removed link expiration date of shared file/folder
+        (deprecated, no longer logged)
+    :ivar EventTypeArg.shared_content_remove_link_password:
+        (sharing) Removed link password of shared file/folder (deprecated, no
+        longer logged)
+    :ivar EventTypeArg.shared_content_remove_member:
+        (sharing) Removed user/group from shared file/folder
+    :ivar EventTypeArg.shared_content_request_access:
+        (sharing) Requested access to shared file/folder
+    :ivar EventTypeArg.shared_content_restore_invitees:
+        (sharing) Restored shared file/folder invitees
+    :ivar EventTypeArg.shared_content_restore_member:
+        (sharing) Restored users and/or groups to membership of shared
         file/folder
-    :ivar team_log.EventTypeArg.shared_folder_change_link_policy: (sharing)
-        Changed who can access shared folder via link
-    :ivar team_log.EventTypeArg.shared_folder_change_members_inheritance_policy:
+    :ivar EventTypeArg.shared_content_unshare:
+        (sharing) Unshared file/folder by clearing membership
+    :ivar EventTypeArg.shared_content_view:
+        (sharing) Previewed shared file/folder
+    :ivar EventTypeArg.shared_folder_change_link_policy:
+        (sharing) Changed who can access shared folder via link
+    :ivar EventTypeArg.shared_folder_change_members_inheritance_policy:
         (sharing) Changed whether shared folder inherits members from parent
         folder
-    :ivar team_log.EventTypeArg.shared_folder_change_members_management_policy:
+    :ivar EventTypeArg.shared_folder_change_members_management_policy:
         (sharing) Changed who can add/remove members of shared folder
-    :ivar team_log.EventTypeArg.shared_folder_change_members_policy: (sharing)
-        Changed who can become member of shared folder
-    :ivar team_log.EventTypeArg.shared_folder_create: (sharing) Created shared
-        folder
-    :ivar team_log.EventTypeArg.shared_folder_decline_invitation: (sharing)
-        Declined team member's invite to shared folder
-    :ivar team_log.EventTypeArg.shared_folder_mount: (sharing) Added shared
-        folder to own Dropbox
-    :ivar team_log.EventTypeArg.shared_folder_nest: (sharing) Changed parent of
-        shared folder
-    :ivar team_log.EventTypeArg.shared_folder_transfer_ownership: (sharing)
-        Transferred ownership of shared folder to another member
-    :ivar team_log.EventTypeArg.shared_folder_unmount: (sharing) Deleted shared
-        folder from Dropbox
-    :ivar team_log.EventTypeArg.shared_link_add_expiry: (sharing) Added shared
-        link expiration date
-    :ivar team_log.EventTypeArg.shared_link_change_expiry: (sharing) Changed
-        shared link expiration date
-    :ivar team_log.EventTypeArg.shared_link_change_visibility: (sharing) Changed
-        visibility of shared link
-    :ivar team_log.EventTypeArg.shared_link_copy: (sharing) Added file/folder to
-        Dropbox from shared link
-    :ivar team_log.EventTypeArg.shared_link_create: (sharing) Created shared
-        link
-    :ivar team_log.EventTypeArg.shared_link_disable: (sharing) Removed shared
-        link
-    :ivar team_log.EventTypeArg.shared_link_download: (sharing) Downloaded
-        file/folder from shared link
-    :ivar team_log.EventTypeArg.shared_link_remove_expiry: (sharing) Removed
-        shared link expiration date
-    :ivar team_log.EventTypeArg.shared_link_remove_visitor: (sharing) Removed
-        link visitor
-    :ivar team_log.EventTypeArg.shared_link_settings_add_expiration: (sharing)
-        Added an expiration date to the shared link
-    :ivar team_log.EventTypeArg.shared_link_settings_add_password: (sharing)
-        Added a password to the shared link
-    :ivar team_log.EventTypeArg.shared_link_settings_allow_download_disabled:
+    :ivar EventTypeArg.shared_folder_change_members_policy:
+        (sharing) Changed who can become member of shared folder
+    :ivar EventTypeArg.shared_folder_create:
+        (sharing) Created shared folder
+    :ivar EventTypeArg.shared_folder_decline_invitation:
+        (sharing) Declined team member's invite to shared folder
+    :ivar EventTypeArg.shared_folder_mount:
+        (sharing) Added shared folder to own Dropbox
+    :ivar EventTypeArg.shared_folder_nest:
+        (sharing) Changed parent of shared folder
+    :ivar EventTypeArg.shared_folder_transfer_ownership:
+        (sharing) Transferred ownership of shared folder to another member
+    :ivar EventTypeArg.shared_folder_unmount:
+        (sharing) Deleted shared folder from Dropbox
+    :ivar EventTypeArg.shared_link_add_expiry:
+        (sharing) Added shared link expiration date
+    :ivar EventTypeArg.shared_link_change_expiry:
+        (sharing) Changed shared link expiration date
+    :ivar EventTypeArg.shared_link_change_visibility:
+        (sharing) Changed visibility of shared link
+    :ivar EventTypeArg.shared_link_copy:
+        (sharing) Added file/folder to Dropbox from shared link
+    :ivar EventTypeArg.shared_link_create:
+        (sharing) Created shared link
+    :ivar EventTypeArg.shared_link_disable:
+        (sharing) Removed shared link
+    :ivar EventTypeArg.shared_link_download:
+        (sharing) Downloaded file/folder from shared link
+    :ivar EventTypeArg.shared_link_remove_expiry:
+        (sharing) Removed shared link expiration date
+    :ivar EventTypeArg.shared_link_remove_visitor:
+        (sharing) Removed link visitor
+    :ivar EventTypeArg.shared_link_settings_add_expiration:
+        (sharing) Added an expiration date to the shared link
+    :ivar EventTypeArg.shared_link_settings_add_password:
+        (sharing) Added a password to the shared link
+    :ivar EventTypeArg.shared_link_settings_allow_download_disabled:
         (sharing) Disabled downloads
-    :ivar team_log.EventTypeArg.shared_link_settings_allow_download_enabled:
+    :ivar EventTypeArg.shared_link_settings_allow_download_enabled:
         (sharing) Enabled downloads
-    :ivar team_log.EventTypeArg.shared_link_settings_change_audience: (sharing)
-        Changed the audience of the shared link
-    :ivar team_log.EventTypeArg.shared_link_settings_change_expiration:
+    :ivar EventTypeArg.shared_link_settings_change_audience:
+        (sharing) Changed the audience of the shared link
+    :ivar EventTypeArg.shared_link_settings_change_expiration:
         (sharing) Changed the expiration date of the shared link
-    :ivar team_log.EventTypeArg.shared_link_settings_change_password: (sharing)
-        Changed the password of the shared link
-    :ivar team_log.EventTypeArg.shared_link_settings_remove_expiration:
+    :ivar EventTypeArg.shared_link_settings_change_password:
+        (sharing) Changed the password of the shared link
+    :ivar EventTypeArg.shared_link_settings_remove_expiration:
         (sharing) Removed the expiration date from the shared link
-    :ivar team_log.EventTypeArg.shared_link_settings_remove_password: (sharing)
-        Removed the password from the shared link
-    :ivar team_log.EventTypeArg.shared_link_share: (sharing) Added members as
-        audience of shared link
-    :ivar team_log.EventTypeArg.shared_link_view: (sharing) Opened shared link
-    :ivar team_log.EventTypeArg.shared_note_opened: (sharing) Opened shared
-        Paper doc (deprecated, no longer logged)
-    :ivar team_log.EventTypeArg.shmodel_disable_downloads: (sharing) Disabled
-        downloads for link (deprecated, no longer logged)
-    :ivar team_log.EventTypeArg.shmodel_enable_downloads: (sharing) Enabled
-        downloads for link (deprecated, no longer logged)
-    :ivar team_log.EventTypeArg.shmodel_group_share: (sharing) Shared link with
-        group (deprecated, no longer logged)
-    :ivar team_log.EventTypeArg.showcase_access_granted: (showcase) Granted
-        access to showcase
-    :ivar team_log.EventTypeArg.showcase_add_member: (showcase) Added member to
-        showcase
-    :ivar team_log.EventTypeArg.showcase_archived: (showcase) Archived showcase
-    :ivar team_log.EventTypeArg.showcase_created: (showcase) Created showcase
-    :ivar team_log.EventTypeArg.showcase_delete_comment: (showcase) Deleted
-        showcase comment
-    :ivar team_log.EventTypeArg.showcase_edited: (showcase) Edited showcase
-    :ivar team_log.EventTypeArg.showcase_edit_comment: (showcase) Edited
-        showcase comment
-    :ivar team_log.EventTypeArg.showcase_file_added: (showcase) Added file to
-        showcase
-    :ivar team_log.EventTypeArg.showcase_file_download: (showcase) Downloaded
-        file from showcase
-    :ivar team_log.EventTypeArg.showcase_file_removed: (showcase) Removed file
-        from showcase
-    :ivar team_log.EventTypeArg.showcase_file_view: (showcase) Viewed file in
-        showcase
-    :ivar team_log.EventTypeArg.showcase_permanently_deleted: (showcase)
-        Permanently deleted showcase
-    :ivar team_log.EventTypeArg.showcase_post_comment: (showcase) Added showcase
-        comment
-    :ivar team_log.EventTypeArg.showcase_remove_member: (showcase) Removed
-        member from showcase
-    :ivar team_log.EventTypeArg.showcase_renamed: (showcase) Renamed showcase
-    :ivar team_log.EventTypeArg.showcase_request_access: (showcase) Requested
-        access to showcase
-    :ivar team_log.EventTypeArg.showcase_resolve_comment: (showcase) Resolved
-        showcase comment
-    :ivar team_log.EventTypeArg.showcase_restored: (showcase) Unarchived
-        showcase
-    :ivar team_log.EventTypeArg.showcase_trashed: (showcase) Deleted showcase
-    :ivar team_log.EventTypeArg.showcase_trashed_deprecated: (showcase) Deleted
-        showcase (old version) (deprecated, replaced by 'Deleted showcase')
-    :ivar team_log.EventTypeArg.showcase_unresolve_comment: (showcase)
-        Unresolved showcase comment
-    :ivar team_log.EventTypeArg.showcase_untrashed: (showcase) Restored showcase
-    :ivar team_log.EventTypeArg.showcase_untrashed_deprecated: (showcase)
-        Restored showcase (old version) (deprecated, replaced by 'Restored
-        showcase')
-    :ivar team_log.EventTypeArg.showcase_view: (showcase) Viewed showcase
-    :ivar team_log.EventTypeArg.sign_signature_request_canceled: (signatures)
-        Canceled signature request
-    :ivar team_log.EventTypeArg.sign_signature_request_completed: (signatures)
-        Completed signature request
-    :ivar team_log.EventTypeArg.sign_signature_request_declined: (signatures)
-        Declined signature request
-    :ivar team_log.EventTypeArg.sign_signature_request_opened: (signatures)
-        Opened signature request
-    :ivar team_log.EventTypeArg.sign_signature_request_reminder_sent:
+    :ivar EventTypeArg.shared_link_settings_remove_password:
+        (sharing) Removed the password from the shared link
+    :ivar EventTypeArg.shared_link_share:
+        (sharing) Added members as audience of shared link
+    :ivar EventTypeArg.shared_link_view:
+        (sharing) Opened shared link
+    :ivar EventTypeArg.shared_note_opened:
+        (sharing) Opened shared Paper doc (deprecated, no longer logged)
+    :ivar EventTypeArg.shmodel_disable_downloads:
+        (sharing) Disabled downloads for link (deprecated, no longer logged)
+    :ivar EventTypeArg.shmodel_enable_downloads:
+        (sharing) Enabled downloads for link (deprecated, no longer logged)
+    :ivar EventTypeArg.shmodel_group_share:
+        (sharing) Shared link with group (deprecated, no longer logged)
+    :ivar EventTypeArg.showcase_access_granted:
+        (showcase) Granted access to showcase
+    :ivar EventTypeArg.showcase_add_member:
+        (showcase) Added member to showcase
+    :ivar EventTypeArg.showcase_archived:
+        (showcase) Archived showcase
+    :ivar EventTypeArg.showcase_created:
+        (showcase) Created showcase
+    :ivar EventTypeArg.showcase_delete_comment:
+        (showcase) Deleted showcase comment
+    :ivar EventTypeArg.showcase_edited:
+        (showcase) Edited showcase
+    :ivar EventTypeArg.showcase_edit_comment:
+        (showcase) Edited showcase comment
+    :ivar EventTypeArg.showcase_file_added:
+        (showcase) Added file to showcase
+    :ivar EventTypeArg.showcase_file_download:
+        (showcase) Downloaded file from showcase
+    :ivar EventTypeArg.showcase_file_removed:
+        (showcase) Removed file from showcase
+    :ivar EventTypeArg.showcase_file_view:
+        (showcase) Viewed file in showcase
+    :ivar EventTypeArg.showcase_permanently_deleted:
+        (showcase) Permanently deleted showcase
+    :ivar EventTypeArg.showcase_post_comment:
+        (showcase) Added showcase comment
+    :ivar EventTypeArg.showcase_remove_member:
+        (showcase) Removed member from showcase
+    :ivar EventTypeArg.showcase_renamed:
+        (showcase) Renamed showcase
+    :ivar EventTypeArg.showcase_request_access:
+        (showcase) Requested access to showcase
+    :ivar EventTypeArg.showcase_resolve_comment:
+        (showcase) Resolved showcase comment
+    :ivar EventTypeArg.showcase_restored:
+        (showcase) Unarchived showcase
+    :ivar EventTypeArg.showcase_trashed:
+        (showcase) Deleted showcase
+    :ivar EventTypeArg.showcase_trashed_deprecated:
+        (showcase) Deleted showcase (old version) (deprecated, replaced by
+        'Deleted showcase')
+    :ivar EventTypeArg.showcase_unresolve_comment:
+        (showcase) Unresolved showcase comment
+    :ivar EventTypeArg.showcase_untrashed:
+        (showcase) Restored showcase
+    :ivar EventTypeArg.showcase_untrashed_deprecated:
+        (showcase) Restored showcase (old version) (deprecated, replaced by
+        'Restored showcase')
+    :ivar EventTypeArg.showcase_view:
+        (showcase) Viewed showcase
+    :ivar EventTypeArg.sign_signature_request_canceled:
+        (signatures) Canceled signature request
+    :ivar EventTypeArg.sign_signature_request_completed:
+        (signatures) Completed signature request
+    :ivar EventTypeArg.sign_signature_request_declined:
+        (signatures) Declined signature request
+    :ivar EventTypeArg.sign_signature_request_opened:
+        (signatures) Opened signature request
+    :ivar EventTypeArg.sign_signature_request_reminder_sent:
         (signatures) Sent signature request reminder
-    :ivar team_log.EventTypeArg.sign_signature_request_sent: (signatures) Sent
-        signature request
-    :ivar team_log.EventTypeArg.sign_template_created: (signatures) Created
-        template
-    :ivar team_log.EventTypeArg.sign_template_shared: (signatures) Shared
-        template
-    :ivar team_log.EventTypeArg.risc_security_event: (sso) RISC security event
-        received from external provider
-    :ivar team_log.EventTypeArg.sso_add_cert: (sso) Added X.509 certificate for
-        SSO
-    :ivar team_log.EventTypeArg.sso_add_login_url: (sso) Added sign-in URL for
-        SSO
-    :ivar team_log.EventTypeArg.sso_add_logout_url: (sso) Added sign-out URL for
-        SSO
-    :ivar team_log.EventTypeArg.sso_change_cert: (sso) Changed X.509 certificate
-        for SSO
-    :ivar team_log.EventTypeArg.sso_change_login_url: (sso) Changed sign-in URL
-        for SSO
-    :ivar team_log.EventTypeArg.sso_change_logout_url: (sso) Changed sign-out
-        URL for SSO
-    :ivar team_log.EventTypeArg.sso_change_saml_identity_mode: (sso) Changed
-        SAML identity mode for SSO
-    :ivar team_log.EventTypeArg.sso_remove_cert: (sso) Removed X.509 certificate
-        for SSO
-    :ivar team_log.EventTypeArg.sso_remove_login_url: (sso) Removed sign-in URL
-        for SSO
-    :ivar team_log.EventTypeArg.sso_remove_logout_url: (sso) Removed sign-out
-        URL for SSO
-    :ivar team_log.EventTypeArg.team_folder_change_status: (team_folders)
-        Changed archival status of team folder
-    :ivar team_log.EventTypeArg.team_folder_create: (team_folders) Created team
-        folder in active status
-    :ivar team_log.EventTypeArg.team_folder_downgrade: (team_folders) Downgraded
-        team folder to regular shared folder
-    :ivar team_log.EventTypeArg.team_folder_permanently_delete: (team_folders)
-        Permanently deleted archived team folder
-    :ivar team_log.EventTypeArg.team_folder_rename: (team_folders) Renamed
-        active/archived team folder
-    :ivar team_log.EventTypeArg.team_folder_space_limits_change_caps_type:
+    :ivar EventTypeArg.sign_signature_request_sent:
+        (signatures) Sent signature request
+    :ivar EventTypeArg.sign_template_created:
+        (signatures) Created template
+    :ivar EventTypeArg.sign_template_shared:
+        (signatures) Shared template
+    :ivar EventTypeArg.risc_security_event:
+        (sso) RISC security event received from external provider
+    :ivar EventTypeArg.sso_add_cert:
+        (sso) Added X.509 certificate for SSO
+    :ivar EventTypeArg.sso_add_login_url:
+        (sso) Added sign-in URL for SSO
+    :ivar EventTypeArg.sso_add_logout_url:
+        (sso) Added sign-out URL for SSO
+    :ivar EventTypeArg.sso_change_cert:
+        (sso) Changed X.509 certificate for SSO
+    :ivar EventTypeArg.sso_change_login_url:
+        (sso) Changed sign-in URL for SSO
+    :ivar EventTypeArg.sso_change_logout_url:
+        (sso) Changed sign-out URL for SSO
+    :ivar EventTypeArg.sso_change_saml_identity_mode:
+        (sso) Changed SAML identity mode for SSO
+    :ivar EventTypeArg.sso_remove_cert:
+        (sso) Removed X.509 certificate for SSO
+    :ivar EventTypeArg.sso_remove_login_url:
+        (sso) Removed sign-in URL for SSO
+    :ivar EventTypeArg.sso_remove_logout_url:
+        (sso) Removed sign-out URL for SSO
+    :ivar EventTypeArg.team_folder_change_status:
+        (team_folders) Changed archival status of team folder
+    :ivar EventTypeArg.team_folder_create:
+        (team_folders) Created team folder in active status
+    :ivar EventTypeArg.team_folder_downgrade:
+        (team_folders) Downgraded team folder to regular shared folder
+    :ivar EventTypeArg.team_folder_permanently_delete:
+        (team_folders) Permanently deleted archived team folder
+    :ivar EventTypeArg.team_folder_rename:
+        (team_folders) Renamed active/archived team folder
+    :ivar EventTypeArg.team_folder_space_limits_change_caps_type:
         (team_folders) Changed team folder space limit enforcement type
-    :ivar team_log.EventTypeArg.team_folder_space_limits_change_limit:
+    :ivar EventTypeArg.team_folder_space_limits_change_limit:
         (team_folders) Changed team folder space limit
-    :ivar
-        team_log.EventTypeArg.team_folder_space_limits_change_notification_target:
+    :ivar EventTypeArg.team_folder_space_limits_change_notification_target:
         (team_folders) Changed team folder space limit notification target
-    :ivar team_log.EventTypeArg.team_selective_sync_settings_changed:
+    :ivar EventTypeArg.team_selective_sync_settings_changed:
         (team_folders) Changed sync default
-    :ivar team_log.EventTypeArg.account_capture_change_policy: (team_policies)
-        Changed account capture setting on team domain
-    :ivar team_log.EventTypeArg.admin_email_reminders_changed: (team_policies)
-        Changed admin reminder settings for requests to join the team
-    :ivar
-        team_log.EventTypeArg.ai_third_party_sharing_dropbox_base_policy_changed:
+    :ivar EventTypeArg.account_capture_change_policy:
+        (team_policies) Changed account capture setting on team domain
+    :ivar EventTypeArg.admin_email_reminders_changed:
+        (team_policies) Changed admin reminder settings for requests to join the
+        team
+    :ivar EventTypeArg.ai_third_party_sharing_dropbox_base_policy_changed:
         (team_policies) Changed AI third party sharing policy for team
-    :ivar team_log.EventTypeArg.allow_download_disabled: (team_policies)
-        Disabled downloads (deprecated, no longer logged)
-    :ivar team_log.EventTypeArg.allow_download_enabled: (team_policies) Enabled
-        downloads (deprecated, no longer logged)
-    :ivar team_log.EventTypeArg.apple_login_change_policy: (team_policies)
-        Enabled/disabled Apple login for team
-    :ivar team_log.EventTypeArg.app_permissions_changed: (team_policies) Changed
-        app permissions
-    :ivar team_log.EventTypeArg.camera_uploads_policy_changed: (team_policies)
-        Changed camera uploads setting for team
-    :ivar team_log.EventTypeArg.capture_team_space_policy_changed:
+    :ivar EventTypeArg.allow_download_disabled:
+        (team_policies) Disabled downloads (deprecated, no longer logged)
+    :ivar EventTypeArg.allow_download_enabled:
+        (team_policies) Enabled downloads (deprecated, no longer logged)
+    :ivar EventTypeArg.apple_login_change_policy:
+        (team_policies) Enabled/disabled Apple login for team
+    :ivar EventTypeArg.app_permissions_changed:
+        (team_policies) Changed app permissions
+    :ivar EventTypeArg.camera_uploads_policy_changed:
+        (team_policies) Changed camera uploads setting for team
+    :ivar EventTypeArg.capture_team_space_policy_changed:
         (team_policies) Changed Capture team space policy for team
-    :ivar team_log.EventTypeArg.capture_transcript_policy_changed:
+    :ivar EventTypeArg.capture_transcript_policy_changed:
         (team_policies) Changed Capture transcription policy for team
-    :ivar team_log.EventTypeArg.classification_change_policy: (team_policies)
-        Changed classification policy for team
-    :ivar team_log.EventTypeArg.computer_backup_policy_changed: (team_policies)
-        Changed computer backup policy for team
-    :ivar team_log.EventTypeArg.content_administration_policy_changed:
+    :ivar EventTypeArg.classification_change_policy:
+        (team_policies) Changed classification policy for team
+    :ivar EventTypeArg.computer_backup_policy_changed:
+        (team_policies) Changed computer backup policy for team
+    :ivar EventTypeArg.content_administration_policy_changed:
         (team_policies) Changed content management setting
-    :ivar team_log.EventTypeArg.content_deletion_protection_change_policy:
+    :ivar EventTypeArg.content_deletion_protection_change_policy:
         (team_policies) Changed content deletion protection policy for team
-    :ivar team_log.EventTypeArg.dash_external_sharing_policy_changed:
+    :ivar EventTypeArg.dash_external_sharing_policy_changed:
         (team_policies) Changed Dash external sharing policy for team
-    :ivar team_log.EventTypeArg.data_placement_restriction_change_policy:
+    :ivar EventTypeArg.data_placement_restriction_change_policy:
         (team_policies) Set restrictions on data center locations where team
         data resides
-    :ivar team_log.EventTypeArg.data_placement_restriction_satisfy_policy:
+    :ivar EventTypeArg.data_placement_restriction_satisfy_policy:
         (team_policies) Completed restrictions on data center locations where
         team data resides
-    :ivar team_log.EventTypeArg.device_approvals_add_exception: (team_policies)
-        Added members to device approvals exception list
-    :ivar team_log.EventTypeArg.device_approvals_change_desktop_policy:
+    :ivar EventTypeArg.device_approvals_add_exception:
+        (team_policies) Added members to device approvals exception list
+    :ivar EventTypeArg.device_approvals_change_desktop_policy:
         (team_policies) Set/removed limit on number of computers member can link
         to team Dropbox account
-    :ivar team_log.EventTypeArg.device_approvals_change_mobile_policy:
+    :ivar EventTypeArg.device_approvals_change_mobile_policy:
         (team_policies) Set/removed limit on number of mobile devices member can
         link to team Dropbox account
-    :ivar team_log.EventTypeArg.device_approvals_change_overage_action:
+    :ivar EventTypeArg.device_approvals_change_overage_action:
         (team_policies) Changed device approvals setting when member is over
         limit
-    :ivar team_log.EventTypeArg.device_approvals_change_unlink_action:
+    :ivar EventTypeArg.device_approvals_change_unlink_action:
         (team_policies) Changed device approvals setting when member unlinks
         approved device
-    :ivar team_log.EventTypeArg.device_approvals_remove_exception:
+    :ivar EventTypeArg.device_approvals_remove_exception:
         (team_policies) Removed members from device approvals exception list
-    :ivar team_log.EventTypeArg.directory_restrictions_add_members:
+    :ivar EventTypeArg.directory_restrictions_add_members:
         (team_policies) Added members to directory restrictions list
-    :ivar team_log.EventTypeArg.directory_restrictions_remove_members:
+    :ivar EventTypeArg.directory_restrictions_remove_members:
         (team_policies) Removed members from directory restrictions list
-    :ivar team_log.EventTypeArg.dropbox_passwords_policy_changed:
+    :ivar EventTypeArg.dropbox_passwords_policy_changed:
         (team_policies) Changed Dropbox Passwords policy for team
-    :ivar team_log.EventTypeArg.email_ingest_policy_changed: (team_policies)
-        Changed email to Dropbox policy for team
-    :ivar team_log.EventTypeArg.emm_add_exception: (team_policies) Added members
-        to EMM exception list
-    :ivar team_log.EventTypeArg.emm_change_policy: (team_policies)
-        Enabled/disabled enterprise mobility management for members
-    :ivar team_log.EventTypeArg.emm_remove_exception: (team_policies) Removed
-        members from EMM exception list
-    :ivar team_log.EventTypeArg.extended_version_history_change_policy:
+    :ivar EventTypeArg.email_ingest_policy_changed:
+        (team_policies) Changed email to Dropbox policy for team
+    :ivar EventTypeArg.emm_add_exception:
+        (team_policies) Added members to EMM exception list
+    :ivar EventTypeArg.emm_change_policy:
+        (team_policies) Enabled/disabled enterprise mobility management for
+        members
+    :ivar EventTypeArg.emm_remove_exception:
+        (team_policies) Removed members from EMM exception list
+    :ivar EventTypeArg.extended_version_history_change_policy:
         (team_policies) Accepted/opted out of extended version history
-    :ivar team_log.EventTypeArg.external_drive_backup_policy_changed:
+    :ivar EventTypeArg.external_drive_backup_policy_changed:
         (team_policies) Changed external drive backup policy for team
-    :ivar team_log.EventTypeArg.file_comments_change_policy: (team_policies)
-        Enabled/disabled commenting on team files
-    :ivar team_log.EventTypeArg.file_locking_policy_changed: (team_policies)
-        Changed file locking policy for team
-    :ivar team_log.EventTypeArg.file_provider_migration_policy_changed:
+    :ivar EventTypeArg.file_comments_change_policy:
+        (team_policies) Enabled/disabled commenting on team files
+    :ivar EventTypeArg.file_locking_policy_changed:
+        (team_policies) Changed file locking policy for team
+    :ivar EventTypeArg.file_provider_migration_policy_changed:
         (team_policies) Changed File Provider Migration policy for team
-    :ivar team_log.EventTypeArg.file_requests_change_policy: (team_policies)
-        Enabled/disabled file requests
-    :ivar team_log.EventTypeArg.file_requests_emails_enabled: (team_policies)
-        Enabled file request emails for everyone (deprecated, no longer logged)
-    :ivar team_log.EventTypeArg.file_requests_emails_restricted_to_team_only:
+    :ivar EventTypeArg.file_requests_change_policy:
+        (team_policies) Enabled/disabled file requests
+    :ivar EventTypeArg.file_requests_emails_enabled:
+        (team_policies) Enabled file request emails for everyone (deprecated, no
+        longer logged)
+    :ivar EventTypeArg.file_requests_emails_restricted_to_team_only:
         (team_policies) Enabled file request emails for team (deprecated, no
         longer logged)
-    :ivar team_log.EventTypeArg.file_transfers_policy_changed: (team_policies)
-        Changed file transfers policy for team
-    :ivar team_log.EventTypeArg.flexible_file_names_policy_changed:
+    :ivar EventTypeArg.file_transfers_policy_changed:
+        (team_policies) Changed file transfers policy for team
+    :ivar EventTypeArg.flexible_file_names_policy_changed:
         (team_policies) Changed flexible file names policy for team
-    :ivar team_log.EventTypeArg.folder_link_restriction_policy_changed:
+    :ivar EventTypeArg.folder_link_restriction_policy_changed:
         (team_policies) Changed folder link restrictions policy for team
-    :ivar team_log.EventTypeArg.google_sso_change_policy: (team_policies)
-        Enabled/disabled Google single sign-on for team
-    :ivar team_log.EventTypeArg.group_user_management_change_policy:
+    :ivar EventTypeArg.google_sso_change_policy:
+        (team_policies) Enabled/disabled Google single sign-on for team
+    :ivar EventTypeArg.group_user_management_change_policy:
         (team_policies) Changed who can create groups
-    :ivar team_log.EventTypeArg.integration_policy_changed: (team_policies)
-        Changed integration policy for team
-    :ivar team_log.EventTypeArg.invite_acceptance_email_policy_changed:
+    :ivar EventTypeArg.integration_policy_changed:
+        (team_policies) Changed integration policy for team
+    :ivar EventTypeArg.invite_acceptance_email_policy_changed:
         (team_policies) Changed invite accept email policy for team
-    :ivar team_log.EventTypeArg.media_hub_adding_people_policy_changed:
+    :ivar EventTypeArg.media_hub_adding_people_policy_changed:
         (team_policies) Changed the policy for adding people to Media Hub
         content
-    :ivar team_log.EventTypeArg.media_hub_download_policy_changed:
+    :ivar EventTypeArg.media_hub_download_policy_changed:
         (team_policies) Changed the policy for downloading Media Hub content
-    :ivar team_log.EventTypeArg.media_hub_link_sharing_policy_changed:
+    :ivar EventTypeArg.media_hub_link_sharing_policy_changed:
         (team_policies) Changed the policy for sharing Media Hub content
-    :ivar team_log.EventTypeArg.member_requests_change_policy: (team_policies)
-        Changed whether users can find team when not invited
-    :ivar team_log.EventTypeArg.member_send_invite_policy_changed:
+    :ivar EventTypeArg.member_requests_change_policy:
+        (team_policies) Changed whether users can find team when not invited
+    :ivar EventTypeArg.member_send_invite_policy_changed:
         (team_policies) Changed member send invite policy for team
-    :ivar team_log.EventTypeArg.member_space_limits_add_exception:
+    :ivar EventTypeArg.member_space_limits_add_exception:
         (team_policies) Added members to member space limit exception list
-    :ivar team_log.EventTypeArg.member_space_limits_change_caps_type_policy:
+    :ivar EventTypeArg.member_space_limits_change_caps_type_policy:
         (team_policies) Changed member space limit type for team
-    :ivar team_log.EventTypeArg.member_space_limits_change_policy:
+    :ivar EventTypeArg.member_space_limits_change_policy:
         (team_policies) Changed team default member space limit
-    :ivar team_log.EventTypeArg.member_space_limits_remove_exception:
+    :ivar EventTypeArg.member_space_limits_remove_exception:
         (team_policies) Removed members from member space limit exception list
-    :ivar team_log.EventTypeArg.member_suggestions_change_policy:
+    :ivar EventTypeArg.member_suggestions_change_policy:
         (team_policies) Enabled/disabled option for team members to suggest
         people to add to team
-    :ivar team_log.EventTypeArg.microsoft_login_change_policy: (team_policies)
-        Enabled/disabled Microsoft login for team
-    :ivar team_log.EventTypeArg.microsoft_office_addin_change_policy:
+    :ivar EventTypeArg.microsoft_login_change_policy:
+        (team_policies) Enabled/disabled Microsoft login for team
+    :ivar EventTypeArg.microsoft_office_addin_change_policy:
         (team_policies) Enabled/disabled Microsoft Office add-in
-    :ivar team_log.EventTypeArg.multi_team_identity_policy_changed:
+    :ivar EventTypeArg.multi_team_identity_policy_changed:
         (team_policies) Changed multi-team identity policy for team
-    :ivar team_log.EventTypeArg.network_control_change_policy: (team_policies)
-        Enabled/disabled network control
-    :ivar team_log.EventTypeArg.paper_change_deployment_policy: (team_policies)
-        Changed whether Dropbox Paper, when enabled, is deployed to all members
-        or to specific members
-    :ivar team_log.EventTypeArg.paper_change_member_link_policy: (team_policies)
-        Changed whether non-members can view Paper docs with link (deprecated,
-        no longer logged)
-    :ivar team_log.EventTypeArg.paper_change_member_policy: (team_policies)
-        Changed whether members can share Paper docs outside team, and if docs
-        are accessible only by team members or anyone by default
-    :ivar team_log.EventTypeArg.paper_change_policy: (team_policies)
-        Enabled/disabled Dropbox Paper for team
-    :ivar team_log.EventTypeArg.paper_default_folder_policy_changed:
+    :ivar EventTypeArg.network_control_change_policy:
+        (team_policies) Enabled/disabled network control
+    :ivar EventTypeArg.paper_change_deployment_policy:
+        (team_policies) Changed whether Dropbox Paper, when enabled, is deployed
+        to all members or to specific members
+    :ivar EventTypeArg.paper_change_member_link_policy:
+        (team_policies) Changed whether non-members can view Paper docs with
+        link (deprecated, no longer logged)
+    :ivar EventTypeArg.paper_change_member_policy:
+        (team_policies) Changed whether members can share Paper docs outside
+        team, and if docs are accessible only by team members or anyone by
+        default
+    :ivar EventTypeArg.paper_change_policy:
+        (team_policies) Enabled/disabled Dropbox Paper for team
+    :ivar EventTypeArg.paper_default_folder_policy_changed:
         (team_policies) Changed Paper Default Folder Policy setting for team
-    :ivar team_log.EventTypeArg.paper_desktop_policy_changed: (team_policies)
-        Enabled/disabled Paper Desktop for team
-    :ivar team_log.EventTypeArg.paper_enabled_users_group_addition:
+    :ivar EventTypeArg.paper_desktop_policy_changed:
+        (team_policies) Enabled/disabled Paper Desktop for team
+    :ivar EventTypeArg.paper_enabled_users_group_addition:
         (team_policies) Added users to Paper-enabled users list
-    :ivar team_log.EventTypeArg.paper_enabled_users_group_removal:
+    :ivar EventTypeArg.paper_enabled_users_group_removal:
         (team_policies) Removed users from Paper-enabled users list
-    :ivar team_log.EventTypeArg.passkey_login_policy_changed: (team_policies)
-        Changed passkey login policy for team
-    :ivar team_log.EventTypeArg.password_strength_requirements_change_policy:
+    :ivar EventTypeArg.passkey_login_policy_changed:
+        (team_policies) Changed passkey login policy for team
+    :ivar EventTypeArg.password_strength_requirements_change_policy:
         (team_policies) Changed team password strength requirements
-    :ivar team_log.EventTypeArg.permanent_delete_change_policy: (team_policies)
-        Enabled/disabled ability of team members to permanently delete content
-    :ivar team_log.EventTypeArg.previews_ai_policy_changed: (team_policies)
-        Changed Dropbox AI policy for team
-    :ivar team_log.EventTypeArg.replay_adding_people_policy_changed:
+    :ivar EventTypeArg.permanent_delete_change_policy:
+        (team_policies) Enabled/disabled ability of team members to permanently
+        delete content
+    :ivar EventTypeArg.previews_ai_policy_changed:
+        (team_policies) Changed Dropbox AI policy for team
+    :ivar EventTypeArg.replay_adding_people_policy_changed:
         (team_policies) Changed the policy for adding people to Replay content
-    :ivar team_log.EventTypeArg.replay_sharing_policy_changed: (team_policies)
-        Changed the policy for sharing Replay content
-    :ivar team_log.EventTypeArg.reseller_support_change_policy: (team_policies)
-        Enabled/disabled reseller support
-    :ivar team_log.EventTypeArg.rewind_policy_changed: (team_policies) Changed
-        Rewind policy for team
-    :ivar team_log.EventTypeArg.send_and_track_policy_changed: (team_policies)
-        Changed “Send and track” policy for team
-    :ivar team_log.EventTypeArg.send_external_sharing_policy_changed:
+    :ivar EventTypeArg.replay_sharing_policy_changed:
+        (team_policies) Changed the policy for sharing Replay content
+    :ivar EventTypeArg.reseller_support_change_policy:
+        (team_policies) Enabled/disabled reseller support
+    :ivar EventTypeArg.rewind_policy_changed:
+        (team_policies) Changed Rewind policy for team
+    :ivar EventTypeArg.send_and_track_policy_changed:
+        (team_policies) Changed “Send and track” policy for team
+    :ivar EventTypeArg.send_external_sharing_policy_changed:
         (team_policies) Changed “Send and track” external sharing policy for
         team
-    :ivar team_log.EventTypeArg.send_for_signature_policy_changed:
+    :ivar EventTypeArg.send_for_signature_policy_changed:
         (team_policies) Changed send for signature policy for team
-    :ivar team_log.EventTypeArg.shared_link_default_permissions_policy_changed:
+    :ivar EventTypeArg.shared_link_default_permissions_policy_changed:
         (team_policies) Changed shared link default permissions policy for team
-    :ivar team_log.EventTypeArg.sharing_change_folder_join_policy:
+    :ivar EventTypeArg.sharing_change_folder_join_policy:
         (team_policies) Changed whether team members can join shared folders
         owned outside team
-    :ivar
-        team_log.EventTypeArg.sharing_change_link_allow_change_expiration_policy:
+    :ivar EventTypeArg.sharing_change_link_allow_change_expiration_policy:
         (team_policies) Changed the allow remove or change expiration policy for
         the links shared outside of the team
-    :ivar team_log.EventTypeArg.sharing_change_link_default_expiration_policy:
+    :ivar EventTypeArg.sharing_change_link_default_expiration_policy:
         (team_policies) Changed the default expiration for the links shared
         outside of the team
-    :ivar team_log.EventTypeArg.sharing_change_link_enforce_password_policy:
+    :ivar EventTypeArg.sharing_change_link_enforce_password_policy:
         (team_policies) Changed the password requirement for the links shared
         outside of the team
-    :ivar team_log.EventTypeArg.sharing_change_link_policy: (team_policies)
-        Changed whether members can share links outside team, and if links are
-        accessible only by team members or anyone by default
-    :ivar team_log.EventTypeArg.sharing_change_member_policy: (team_policies)
-        Changed whether members can share files/folders outside team
-    :ivar team_log.EventTypeArg.showcase_change_download_policy: (team_policies)
-        Enabled/disabled downloading files from Dropbox Showcase for team
-    :ivar team_log.EventTypeArg.showcase_change_enabled_policy: (team_policies)
-        Enabled/disabled Dropbox Showcase for team
-    :ivar team_log.EventTypeArg.showcase_change_external_sharing_policy:
+    :ivar EventTypeArg.sharing_change_link_policy:
+        (team_policies) Changed whether members can share links outside team,
+        and if links are accessible only by team members or anyone by default
+    :ivar EventTypeArg.sharing_change_member_policy:
+        (team_policies) Changed whether members can share files/folders outside
+        team
+    :ivar EventTypeArg.showcase_change_download_policy:
+        (team_policies) Enabled/disabled downloading files from Dropbox Showcase
+        for team
+    :ivar EventTypeArg.showcase_change_enabled_policy:
+        (team_policies) Enabled/disabled Dropbox Showcase for team
+    :ivar EventTypeArg.showcase_change_external_sharing_policy:
         (team_policies) Enabled/disabled sharing Dropbox Showcase externally for
         team
-    :ivar team_log.EventTypeArg.sign_external_sharing_policy_changed:
+    :ivar EventTypeArg.sign_external_sharing_policy_changed:
         (team_policies) Changed Signatures external sharing policy for team
-    :ivar team_log.EventTypeArg.sign_template_creation_permission_changed:
+    :ivar EventTypeArg.sign_template_creation_permission_changed:
         (team_policies) Changed template creation permission
-    :ivar team_log.EventTypeArg.smarter_smart_sync_policy_changed:
+    :ivar EventTypeArg.smarter_smart_sync_policy_changed:
         (team_policies) Changed automatic Smart Sync setting for team
-    :ivar team_log.EventTypeArg.smart_sync_change_policy: (team_policies)
-        Changed default Smart Sync setting for team members
-    :ivar team_log.EventTypeArg.smart_sync_not_opt_out: (team_policies) Opted
-        team into Smart Sync
-    :ivar team_log.EventTypeArg.smart_sync_opt_out: (team_policies) Opted team
-        out of Smart Sync
-    :ivar team_log.EventTypeArg.sso_change_policy: (team_policies) Changed
-        single sign-on setting for team
-    :ivar team_log.EventTypeArg.stack_cross_team_access_policy_changed:
+    :ivar EventTypeArg.smart_sync_change_policy:
+        (team_policies) Changed default Smart Sync setting for team members
+    :ivar EventTypeArg.smart_sync_not_opt_out:
+        (team_policies) Opted team into Smart Sync
+    :ivar EventTypeArg.smart_sync_opt_out:
+        (team_policies) Opted team out of Smart Sync
+    :ivar EventTypeArg.sso_change_policy:
+        (team_policies) Changed single sign-on setting for team
+    :ivar EventTypeArg.stack_cross_team_access_policy_changed:
         (team_policies) Changed cross-team Stack access policy for team
-    :ivar team_log.EventTypeArg.team_branding_policy_changed: (team_policies)
-        Changed team branding policy for team
-    :ivar team_log.EventTypeArg.team_extensions_policy_changed: (team_policies)
-        Changed App Integrations setting for team
-    :ivar team_log.EventTypeArg.team_member_storage_request_policy_changed:
+    :ivar EventTypeArg.team_branding_policy_changed:
+        (team_policies) Changed team branding policy for team
+    :ivar EventTypeArg.team_extensions_policy_changed:
+        (team_policies) Changed App Integrations setting for team
+    :ivar EventTypeArg.team_member_storage_request_policy_changed:
         (team_policies) Changed team member storage request policy for team
-    :ivar team_log.EventTypeArg.team_selective_sync_policy_changed:
+    :ivar EventTypeArg.team_selective_sync_policy_changed:
         (team_policies) Enabled/disabled Team Selective Sync for team
-    :ivar team_log.EventTypeArg.team_sharing_whitelist_subjects_changed:
+    :ivar EventTypeArg.team_sharing_whitelist_subjects_changed:
         (team_policies) Edited the approved list for sharing externally
-    :ivar team_log.EventTypeArg.tfa_add_exception: (team_policies) Added members
-        to two factor authentication exception list
-    :ivar team_log.EventTypeArg.tfa_change_policy: (team_policies) Changed
-        two-factor authentication setting for team
-    :ivar team_log.EventTypeArg.tfa_remove_exception: (team_policies) Removed
-        members from two factor authentication exception list
-    :ivar team_log.EventTypeArg.top_level_content_policy_changed:
+    :ivar EventTypeArg.tfa_add_exception:
+        (team_policies) Added members to two factor authentication exception
+        list
+    :ivar EventTypeArg.tfa_change_policy:
+        (team_policies) Changed two-factor authentication setting for team
+    :ivar EventTypeArg.tfa_remove_exception:
+        (team_policies) Removed members from two factor authentication exception
+        list
+    :ivar EventTypeArg.top_level_content_policy_changed:
         (team_policies) Changed top level content setting for team
-    :ivar team_log.EventTypeArg.two_account_change_policy: (team_policies)
-        Enabled/disabled option for members to link personal Dropbox account and
-        team account to same computer
-    :ivar team_log.EventTypeArg.viewer_info_policy_changed: (team_policies)
-        Changed team policy for viewer info
-    :ivar team_log.EventTypeArg.watermarking_policy_changed: (team_policies)
-        Changed watermarking policy for team
-    :ivar team_log.EventTypeArg.web_sessions_change_active_session_limit:
+    :ivar EventTypeArg.two_account_change_policy:
+        (team_policies) Enabled/disabled option for members to link personal
+        Dropbox account and team account to same computer
+    :ivar EventTypeArg.viewer_info_policy_changed:
+        (team_policies) Changed team policy for viewer info
+    :ivar EventTypeArg.watermarking_policy_changed:
+        (team_policies) Changed watermarking policy for team
+    :ivar EventTypeArg.web_sessions_change_active_session_limit:
         (team_policies) Changed limit on active sessions per member
-    :ivar team_log.EventTypeArg.web_sessions_change_fixed_length_policy:
+    :ivar EventTypeArg.web_sessions_change_fixed_length_policy:
         (team_policies) Changed how long members can stay signed in to
         Dropbox.com
-    :ivar team_log.EventTypeArg.web_sessions_change_idle_length_policy:
+    :ivar EventTypeArg.web_sessions_change_idle_length_policy:
         (team_policies) Changed how long team members can be idle while signed
         in to Dropbox.com
-    :ivar team_log.EventTypeArg.data_residency_migration_request_successful:
+    :ivar EventTypeArg.data_residency_migration_request_successful:
         (team_profile) Requested data residency migration for team data
-    :ivar team_log.EventTypeArg.data_residency_migration_request_unsuccessful:
+    :ivar EventTypeArg.data_residency_migration_request_unsuccessful:
         (team_profile) Request for data residency migration for team data has
         failed
-    :ivar team_log.EventTypeArg.team_merge_from: (team_profile) Merged another
-        team into this team
-    :ivar team_log.EventTypeArg.team_merge_to: (team_profile) Merged this team
-        into another team
-    :ivar team_log.EventTypeArg.team_profile_add_background: (team_profile)
-        Added team background to display on shared link headers
-    :ivar team_log.EventTypeArg.team_profile_add_logo: (team_profile) Added team
-        logo to display on shared link headers
-    :ivar team_log.EventTypeArg.team_profile_change_background: (team_profile)
-        Changed team background displayed on shared link headers
-    :ivar team_log.EventTypeArg.team_profile_change_default_language:
+    :ivar EventTypeArg.team_merge_from:
+        (team_profile) Merged another team into this team
+    :ivar EventTypeArg.team_merge_to:
+        (team_profile) Merged this team into another team
+    :ivar EventTypeArg.team_profile_add_background:
+        (team_profile) Added team background to display on shared link headers
+    :ivar EventTypeArg.team_profile_add_logo:
+        (team_profile) Added team logo to display on shared link headers
+    :ivar EventTypeArg.team_profile_change_background:
+        (team_profile) Changed team background displayed on shared link headers
+    :ivar EventTypeArg.team_profile_change_default_language:
         (team_profile) Changed default language for team
-    :ivar team_log.EventTypeArg.team_profile_change_logo: (team_profile) Changed
-        team logo displayed on shared link headers
-    :ivar team_log.EventTypeArg.team_profile_change_name: (team_profile) Changed
-        team name
-    :ivar team_log.EventTypeArg.team_profile_remove_background: (team_profile)
-        Removed team background displayed on shared link headers
-    :ivar team_log.EventTypeArg.team_profile_remove_logo: (team_profile) Removed
-        team logo displayed on shared link headers
-    :ivar team_log.EventTypeArg.passkey_add: (tfa) Added passkey for login
-    :ivar team_log.EventTypeArg.passkey_remove: (tfa) Removed passkey for login
-    :ivar team_log.EventTypeArg.tfa_add_backup_phone: (tfa) Added backup phone
-        for two-factor authentication
-    :ivar team_log.EventTypeArg.tfa_add_security_key: (tfa) Added security key
-        for two-factor authentication
-    :ivar team_log.EventTypeArg.tfa_change_backup_phone: (tfa) Changed backup
-        phone for two-factor authentication
-    :ivar team_log.EventTypeArg.tfa_change_status: (tfa)
-        Enabled/disabled/changed two-factor authentication setting
-    :ivar team_log.EventTypeArg.tfa_remove_backup_phone: (tfa) Removed backup
-        phone for two-factor authentication
-    :ivar team_log.EventTypeArg.tfa_remove_security_key: (tfa) Removed security
-        key for two-factor authentication
-    :ivar team_log.EventTypeArg.tfa_reset: (tfa) Reset two-factor authentication
-        for team member
-    :ivar team_log.EventTypeArg.changed_enterprise_admin_role: (trusted_teams)
-        Changed enterprise admin role
-    :ivar team_log.EventTypeArg.changed_enterprise_connected_team_status:
+    :ivar EventTypeArg.team_profile_change_logo:
+        (team_profile) Changed team logo displayed on shared link headers
+    :ivar EventTypeArg.team_profile_change_name:
+        (team_profile) Changed team name
+    :ivar EventTypeArg.team_profile_remove_background:
+        (team_profile) Removed team background displayed on shared link headers
+    :ivar EventTypeArg.team_profile_remove_logo:
+        (team_profile) Removed team logo displayed on shared link headers
+    :ivar EventTypeArg.passkey_add:
+        (tfa) Added passkey for login
+    :ivar EventTypeArg.passkey_remove:
+        (tfa) Removed passkey for login
+    :ivar EventTypeArg.tfa_add_backup_phone:
+        (tfa) Added backup phone for two-factor authentication
+    :ivar EventTypeArg.tfa_add_security_key:
+        (tfa) Added security key for two-factor authentication
+    :ivar EventTypeArg.tfa_change_backup_phone:
+        (tfa) Changed backup phone for two-factor authentication
+    :ivar EventTypeArg.tfa_change_status:
+        (tfa) Enabled/disabled/changed two-factor authentication setting
+    :ivar EventTypeArg.tfa_remove_backup_phone:
+        (tfa) Removed backup phone for two-factor authentication
+    :ivar EventTypeArg.tfa_remove_security_key:
+        (tfa) Removed security key for two-factor authentication
+    :ivar EventTypeArg.tfa_reset:
+        (tfa) Reset two-factor authentication for team member
+    :ivar EventTypeArg.changed_enterprise_admin_role:
+        (trusted_teams) Changed enterprise admin role
+    :ivar EventTypeArg.changed_enterprise_connected_team_status:
         (trusted_teams) Changed enterprise-connected team status
-    :ivar team_log.EventTypeArg.ended_enterprise_admin_session: (trusted_teams)
-        Ended enterprise admin session
-    :ivar team_log.EventTypeArg.ended_enterprise_admin_session_deprecated:
+    :ivar EventTypeArg.ended_enterprise_admin_session:
+        (trusted_teams) Ended enterprise admin session
+    :ivar EventTypeArg.ended_enterprise_admin_session_deprecated:
         (trusted_teams) Ended enterprise admin session (deprecated, replaced by
         'Ended enterprise admin session')
-    :ivar team_log.EventTypeArg.enterprise_settings_locking: (trusted_teams)
-        Changed who can update a setting
-    :ivar team_log.EventTypeArg.guest_admin_change_status: (trusted_teams)
-        Changed guest team admin status
-    :ivar team_log.EventTypeArg.started_enterprise_admin_session:
+    :ivar EventTypeArg.enterprise_settings_locking:
+        (trusted_teams) Changed who can update a setting
+    :ivar EventTypeArg.guest_admin_change_status:
+        (trusted_teams) Changed guest team admin status
+    :ivar EventTypeArg.started_enterprise_admin_session:
         (trusted_teams) Started enterprise admin session
-    :ivar team_log.EventTypeArg.team_merge_request_accepted: (trusted_teams)
-        Accepted a team merge request
-    :ivar
-        team_log.EventTypeArg.team_merge_request_accepted_shown_to_primary_team:
+    :ivar EventTypeArg.team_merge_request_accepted:
+        (trusted_teams) Accepted a team merge request
+    :ivar EventTypeArg.team_merge_request_accepted_shown_to_primary_team:
         (trusted_teams) Accepted a team merge request (deprecated, replaced by
         'Accepted a team merge request')
-    :ivar
-        team_log.EventTypeArg.team_merge_request_accepted_shown_to_secondary_team:
+    :ivar EventTypeArg.team_merge_request_accepted_shown_to_secondary_team:
         (trusted_teams) Accepted a team merge request (deprecated, replaced by
         'Accepted a team merge request')
-    :ivar team_log.EventTypeArg.team_merge_request_auto_canceled:
+    :ivar EventTypeArg.team_merge_request_auto_canceled:
         (trusted_teams) Automatically canceled team merge request
-    :ivar team_log.EventTypeArg.team_merge_request_canceled: (trusted_teams)
-        Canceled a team merge request
-    :ivar
-        team_log.EventTypeArg.team_merge_request_canceled_shown_to_primary_team:
+    :ivar EventTypeArg.team_merge_request_canceled:
+        (trusted_teams) Canceled a team merge request
+    :ivar EventTypeArg.team_merge_request_canceled_shown_to_primary_team:
         (trusted_teams) Canceled a team merge request (deprecated, replaced by
         'Canceled a team merge request')
-    :ivar
-        team_log.EventTypeArg.team_merge_request_canceled_shown_to_secondary_team:
+    :ivar EventTypeArg.team_merge_request_canceled_shown_to_secondary_team:
         (trusted_teams) Canceled a team merge request (deprecated, replaced by
         'Canceled a team merge request')
-    :ivar team_log.EventTypeArg.team_merge_request_expired: (trusted_teams) Team
-        merge request expired
-    :ivar
-        team_log.EventTypeArg.team_merge_request_expired_shown_to_primary_team:
+    :ivar EventTypeArg.team_merge_request_expired:
+        (trusted_teams) Team merge request expired
+    :ivar EventTypeArg.team_merge_request_expired_shown_to_primary_team:
         (trusted_teams) Team merge request expired (deprecated, replaced by
         'Team merge request expired')
-    :ivar
-        team_log.EventTypeArg.team_merge_request_expired_shown_to_secondary_team:
+    :ivar EventTypeArg.team_merge_request_expired_shown_to_secondary_team:
         (trusted_teams) Team merge request expired (deprecated, replaced by
         'Team merge request expired')
-    :ivar
-        team_log.EventTypeArg.team_merge_request_rejected_shown_to_primary_team:
+    :ivar EventTypeArg.team_merge_request_rejected_shown_to_primary_team:
         (trusted_teams) Rejected a team merge request (deprecated, no longer
         logged)
-    :ivar
-        team_log.EventTypeArg.team_merge_request_rejected_shown_to_secondary_team:
+    :ivar EventTypeArg.team_merge_request_rejected_shown_to_secondary_team:
         (trusted_teams) Rejected a team merge request (deprecated, no longer
         logged)
-    :ivar team_log.EventTypeArg.team_merge_request_reminder: (trusted_teams)
-        Sent a team merge request reminder
-    :ivar
-        team_log.EventTypeArg.team_merge_request_reminder_shown_to_primary_team:
+    :ivar EventTypeArg.team_merge_request_reminder:
+        (trusted_teams) Sent a team merge request reminder
+    :ivar EventTypeArg.team_merge_request_reminder_shown_to_primary_team:
         (trusted_teams) Sent a team merge request reminder (deprecated, replaced
         by 'Sent a team merge request reminder')
-    :ivar
-        team_log.EventTypeArg.team_merge_request_reminder_shown_to_secondary_team:
+    :ivar EventTypeArg.team_merge_request_reminder_shown_to_secondary_team:
         (trusted_teams) Sent a team merge request reminder (deprecated, replaced
         by 'Sent a team merge request reminder')
-    :ivar team_log.EventTypeArg.team_merge_request_revoked: (trusted_teams)
-        Canceled the team merge
-    :ivar team_log.EventTypeArg.team_merge_request_sent_shown_to_primary_team:
+    :ivar EventTypeArg.team_merge_request_revoked:
+        (trusted_teams) Canceled the team merge
+    :ivar EventTypeArg.team_merge_request_sent_shown_to_primary_team:
         (trusted_teams) Requested to merge their Dropbox team into yours
-    :ivar team_log.EventTypeArg.team_merge_request_sent_shown_to_secondary_team:
+    :ivar EventTypeArg.team_merge_request_sent_shown_to_secondary_team:
         (trusted_teams) Requested to merge your team into another Dropbox team
     """
 
@@ -58325,8 +58918,8 @@ class ExportMembersReportFailDetails(bb.Struct):
     """
     Failed to create members data report.
 
-    :ivar team_log.ExportMembersReportFailDetails.failure_reason: Failure
-        reason.
+    :ivar ExportMembersReportFailDetails.failure_reason:
+        Failure reason.
     """
 
     __slots__ = [
@@ -58397,9 +58990,9 @@ class ExtendedVersionHistoryChangePolicyDetails(bb.Struct):
     """
     Accepted/opted out of extended version history.
 
-    :ivar team_log.ExtendedVersionHistoryChangePolicyDetails.new_value: New
-        extended version history policy.
-    :ivar team_log.ExtendedVersionHistoryChangePolicyDetails.previous_value:
+    :ivar ExtendedVersionHistoryChangePolicyDetails.new_value:
+        New extended version history policy.
+    :ivar ExtendedVersionHistoryChangePolicyDetails.previous_value:
         Previous extended version history policy. Might be missing due to
         historical data gap.
     """
@@ -58578,13 +59171,11 @@ class ExternalDriveBackupEligibilityStatusCheckedDetails(bb.Struct):
     """
     Checked external drive backup eligibility status.
 
-    :ivar
-        team_log.ExternalDriveBackupEligibilityStatusCheckedDetails.desktop_device_session_info:
+    :ivar ExternalDriveBackupEligibilityStatusCheckedDetails.desktop_device_session_info:
         Device's session logged information.
-    :ivar team_log.ExternalDriveBackupEligibilityStatusCheckedDetails.status:
+    :ivar ExternalDriveBackupEligibilityStatusCheckedDetails.status:
         Current eligibility status of external drive backup.
-    :ivar
-        team_log.ExternalDriveBackupEligibilityStatusCheckedDetails.number_of_external_drive_backup:
+    :ivar ExternalDriveBackupEligibilityStatusCheckedDetails.number_of_external_drive_backup:
         Total number of valid external drive backup for all the team members.
     """
 
@@ -58706,9 +59297,9 @@ class ExternalDriveBackupPolicyChangedDetails(bb.Struct):
     """
     Changed external drive backup policy for team.
 
-    :ivar team_log.ExternalDriveBackupPolicyChangedDetails.new_value: New
-        external drive backup policy.
-    :ivar team_log.ExternalDriveBackupPolicyChangedDetails.previous_value:
+    :ivar ExternalDriveBackupPolicyChangedDetails.new_value:
+        New external drive backup policy.
+    :ivar ExternalDriveBackupPolicyChangedDetails.previous_value:
         Previous external drive backup policy.
     """
 
@@ -58852,13 +59443,12 @@ class ExternalDriveBackupStatusChangedDetails(bb.Struct):
     """
     Modified external drive backup.
 
-    :ivar
-        team_log.ExternalDriveBackupStatusChangedDetails.desktop_device_session_info:
+    :ivar ExternalDriveBackupStatusChangedDetails.desktop_device_session_info:
         Device's session logged information.
-    :ivar team_log.ExternalDriveBackupStatusChangedDetails.previous_value:
+    :ivar ExternalDriveBackupStatusChangedDetails.previous_value:
         Previous status of this external drive backup.
-    :ivar team_log.ExternalDriveBackupStatusChangedDetails.new_value: Next
-        status of this external drive backup.
+    :ivar ExternalDriveBackupStatusChangedDetails.new_value:
+        Next status of this external drive backup.
     """
 
     __slots__ = [
@@ -58963,8 +59553,8 @@ class ExternalSharingReportFailedDetails(bb.Struct):
     """
     Couldn't create External sharing report.
 
-    :ivar team_log.ExternalSharingReportFailedDetails.failure_reason: Failure
-        reason.
+    :ivar ExternalSharingReportFailedDetails.failure_reason:
+        Failure reason.
     """
 
     __slots__ = [
@@ -59069,9 +59659,10 @@ class ExternalUserLogInfo(bb.Struct):
     """
     A user without a Dropbox account.
 
-    :ivar team_log.ExternalUserLogInfo.user_identifier: An external user
-        identifier.
-    :ivar team_log.ExternalUserLogInfo.identifier_type: Identifier type.
+    :ivar ExternalUserLogInfo.user_identifier:
+        An external user identifier.
+    :ivar ExternalUserLogInfo.identifier_type:
+        Identifier type.
     """
 
     __slots__ = [
@@ -59106,10 +59697,10 @@ class FailureDetailsLogInfo(bb.Struct):
     """
     Provides details about a failure
 
-    :ivar team_log.FailureDetailsLogInfo.user_friendly_message: A user friendly
-        explanation of the error.
-    :ivar team_log.FailureDetailsLogInfo.technical_error_message: A technical
-        explanation of the error. This is relevant for some errors.
+    :ivar FailureDetailsLogInfo.user_friendly_message:
+        A user friendly explanation of the error.
+    :ivar FailureDetailsLogInfo.technical_error_message:
+        A technical explanation of the error. This is relevant for some errors.
     """
 
     __slots__ = [
@@ -59192,9 +59783,12 @@ class FedExtraDetails(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar OrganizationDetails FedExtraDetails.organization: More details about
-        the organization.
-    :ivar TeamDetails FedExtraDetails.team: More details about the team.
+    :ivar FedExtraDetails.organization:
+        More details about the organization.
+    :vartype FedExtraDetails.organization: OrganizationDetails
+    :ivar FedExtraDetails.team:
+        More details about the team.
+    :vartype FedExtraDetails.team: TeamDetails
     """
 
     _catch_all = 'other'
@@ -59368,15 +59962,15 @@ class FederationStatusChangeAdditionalInfo(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar ConnectedTeamName
-        FederationStatusChangeAdditionalInfo.connected_team_name: The name of
-        the team
-    :ivar NonTrustedTeamDetails
-        FederationStatusChangeAdditionalInfo.non_trusted_team_details: The email
-        to which the request was sent
-    :ivar OrganizationName
-        FederationStatusChangeAdditionalInfo.organization_name: The name of the
-        organization
+    :ivar FederationStatusChangeAdditionalInfo.connected_team_name:
+        The name of the team
+    :vartype FederationStatusChangeAdditionalInfo.connected_team_name: ConnectedTeamName
+    :ivar FederationStatusChangeAdditionalInfo.non_trusted_team_details:
+        The email to which the request was sent
+    :vartype FederationStatusChangeAdditionalInfo.non_trusted_team_details: NonTrustedTeamDetails
+    :ivar FederationStatusChangeAdditionalInfo.organization_name:
+        The name of the organization
+    :vartype FederationStatusChangeAdditionalInfo.organization_name: OrganizationName
     """
 
     _catch_all = 'other'
@@ -59493,7 +60087,8 @@ class FileAddCommentDetails(bb.Struct):
     """
     Added file comment.
 
-    :ivar team_log.FileAddCommentDetails.comment_text: Comment text.
+    :ivar FileAddCommentDetails.comment_text:
+        Comment text.
     """
 
     __slots__ = [
@@ -59622,10 +60217,11 @@ class FileChangeCommentSubscriptionDetails(bb.Struct):
     """
     Subscribed to or unsubscribed from comment notifications for file.
 
-    :ivar team_log.FileChangeCommentSubscriptionDetails.new_value: New file
-        comment subscription.
-    :ivar team_log.FileChangeCommentSubscriptionDetails.previous_value: Previous
-        file comment subscription. Might be missing due to historical data gap.
+    :ivar FileChangeCommentSubscriptionDetails.new_value:
+        New file comment subscription.
+    :ivar FileChangeCommentSubscriptionDetails.previous_value:
+        Previous file comment subscription. Might be missing due to historical
+        data gap.
     """
 
     __slots__ = [
@@ -59728,11 +60324,11 @@ class FileCommentsChangePolicyDetails(bb.Struct):
     """
     Enabled/disabled commenting on team files.
 
-    :ivar team_log.FileCommentsChangePolicyDetails.new_value: New commenting on
-        team files policy.
-    :ivar team_log.FileCommentsChangePolicyDetails.previous_value: Previous
-        commenting on team files policy. Might be missing due to historical data
-        gap.
+    :ivar FileCommentsChangePolicyDetails.new_value:
+        New commenting on team files policy.
+    :ivar FileCommentsChangePolicyDetails.previous_value:
+        Previous commenting on team files policy. Might be missing due to
+        historical data gap.
     """
 
     __slots__ = [
@@ -59835,8 +60431,8 @@ class FileCopyDetails(bb.Struct):
     """
     Copied files and/or folders.
 
-    :ivar team_log.FileCopyDetails.relocate_action_details: Relocate action
-        details.
+    :ivar FileCopyDetails.relocate_action_details:
+        Relocate action details.
     """
 
     __slots__ = [
@@ -59885,7 +60481,8 @@ class FileDeleteCommentDetails(bb.Struct):
     """
     Deleted file comment.
 
-    :ivar team_log.FileDeleteCommentDetails.comment_text: Comment text.
+    :ivar FileDeleteCommentDetails.comment_text:
+        Comment text.
     """
 
     __slots__ = [
@@ -60014,9 +60611,10 @@ class FileEditCommentDetails(bb.Struct):
     """
     Edited file comment.
 
-    :ivar team_log.FileEditCommentDetails.comment_text: Comment text.
-    :ivar team_log.FileEditCommentDetails.previous_comment_text: Previous
-        comment text.
+    :ivar FileEditCommentDetails.comment_text:
+        Comment text.
+    :ivar FileEditCommentDetails.previous_comment_text:
+        Previous comment text.
     """
 
     __slots__ = [
@@ -60153,7 +60751,8 @@ class FileLikeCommentDetails(bb.Struct):
     """
     Liked file comment.
 
-    :ivar team_log.FileLikeCommentDetails.comment_text: Comment text.
+    :ivar FileLikeCommentDetails.comment_text:
+        Comment text.
     """
 
     __slots__ = [
@@ -60202,10 +60801,10 @@ class FileLockingLockStatusChangedDetails(bb.Struct):
     """
     Locked/unlocked editing for a file.
 
-    :ivar team_log.FileLockingLockStatusChangedDetails.previous_value: Previous
-        lock status of the file.
-    :ivar team_log.FileLockingLockStatusChangedDetails.new_value: New lock
-        status of the file.
+    :ivar FileLockingLockStatusChangedDetails.previous_value:
+        Previous lock status of the file.
+    :ivar FileLockingLockStatusChangedDetails.new_value:
+        New lock status of the file.
     """
 
     __slots__ = [
@@ -60262,10 +60861,10 @@ class FileLockingPolicyChangedDetails(bb.Struct):
     """
     Changed file locking policy for team.
 
-    :ivar team_log.FileLockingPolicyChangedDetails.new_value: New file locking
-        policy.
-    :ivar team_log.FileLockingPolicyChangedDetails.previous_value: Previous file
-        locking policy.
+    :ivar FileLockingPolicyChangedDetails.new_value:
+        New file locking policy.
+    :ivar FileLockingPolicyChangedDetails.previous_value:
+        Previous file locking policy.
     """
 
     __slots__ = [
@@ -60322,10 +60921,14 @@ class FileOrFolderLogInfo(bb.Struct):
     """
     Generic information relevant both for files and folders
 
-    :ivar team_log.FileOrFolderLogInfo.path: Path relative to event context.
-    :ivar team_log.FileOrFolderLogInfo.display_name: Display name.
-    :ivar team_log.FileOrFolderLogInfo.file_id: Unique ID.
-    :ivar team_log.FileOrFolderLogInfo.file_size: File or folder size in bytes.
+    :ivar FileOrFolderLogInfo.path:
+        Path relative to event context.
+    :ivar FileOrFolderLogInfo.display_name:
+        Display name.
+    :ivar FileOrFolderLogInfo.file_id:
+        Unique ID.
+    :ivar FileOrFolderLogInfo.file_size:
+        File or folder size in bytes.
     """
 
     __slots__ = [
@@ -60401,8 +61004,8 @@ class FileMoveDetails(bb.Struct):
     """
     Moved files and/or folders.
 
-    :ivar team_log.FileMoveDetails.relocate_action_details: Relocate action
-        details.
+    :ivar FileMoveDetails.relocate_action_details:
+        Relocate action details.
     """
 
     __slots__ = [
@@ -60531,8 +61134,9 @@ class FileProviderMigrationPolicyChangedDetails(bb.Struct):
     """
     Changed File Provider Migration policy for team.
 
-    :ivar team_log.FileProviderMigrationPolicyChangedDetails.new_value: To.
-    :ivar team_log.FileProviderMigrationPolicyChangedDetails.previous_value:
+    :ivar FileProviderMigrationPolicyChangedDetails.new_value:
+        To.
+    :ivar FileProviderMigrationPolicyChangedDetails.previous_value:
         From.
     """
 
@@ -60590,8 +61194,8 @@ class FileRenameDetails(bb.Struct):
     """
     Renamed files and/or folders.
 
-    :ivar team_log.FileRenameDetails.relocate_action_details: Relocate action
-        details.
+    :ivar FileRenameDetails.relocate_action_details:
+        Relocate action details.
     """
 
     __slots__ = [
@@ -60640,12 +61244,13 @@ class FileRequestAutoCloseDetails(bb.Struct):
     """
     Auto closed file request.
 
-    :ivar team_log.FileRequestAutoCloseDetails.file_request_id: File request id.
-        Might be missing due to historical data gap.
-    :ivar team_log.FileRequestAutoCloseDetails.reason: Reason for the auto
-        close.
-    :ivar team_log.FileRequestAutoCloseDetails.previous_details: Previous file
-        request details. Might be missing due to historical data gap.
+    :ivar FileRequestAutoCloseDetails.file_request_id:
+        File request id. Might be missing due to historical data gap.
+    :ivar FileRequestAutoCloseDetails.reason:
+        Reason for the auto close.
+    :ivar FileRequestAutoCloseDetails.previous_details:
+        Previous file request details. Might be missing due to historical data
+        gap.
     """
 
     __slots__ = [
@@ -60710,12 +61315,13 @@ class FileRequestChangeDetails(bb.Struct):
     """
     Changed file request.
 
-    :ivar team_log.FileRequestChangeDetails.file_request_id: File request id.
-        Might be missing due to historical data gap.
-    :ivar team_log.FileRequestChangeDetails.previous_details: Previous file
-        request details. Might be missing due to historical data gap.
-    :ivar team_log.FileRequestChangeDetails.new_details: New file request
-        details.
+    :ivar FileRequestChangeDetails.file_request_id:
+        File request id. Might be missing due to historical data gap.
+    :ivar FileRequestChangeDetails.previous_details:
+        Previous file request details. Might be missing due to historical data
+        gap.
+    :ivar FileRequestChangeDetails.new_details:
+        New file request details.
     """
 
     __slots__ = [
@@ -60780,10 +61386,11 @@ class FileRequestCloseDetails(bb.Struct):
     """
     Closed file request.
 
-    :ivar team_log.FileRequestCloseDetails.file_request_id: File request id.
-        Might be missing due to historical data gap.
-    :ivar team_log.FileRequestCloseDetails.previous_details: Previous file
-        request details. Might be missing due to historical data gap.
+    :ivar FileRequestCloseDetails.file_request_id:
+        File request id. Might be missing due to historical data gap.
+    :ivar FileRequestCloseDetails.previous_details:
+        Previous file request details. Might be missing due to historical data
+        gap.
     """
 
     __slots__ = [
@@ -60840,10 +61447,10 @@ class FileRequestCreateDetails(bb.Struct):
     """
     Created file request.
 
-    :ivar team_log.FileRequestCreateDetails.file_request_id: File request id.
-        Might be missing due to historical data gap.
-    :ivar team_log.FileRequestCreateDetails.request_details: File request
-        details. Might be missing due to historical data gap.
+    :ivar FileRequestCreateDetails.file_request_id:
+        File request id. Might be missing due to historical data gap.
+    :ivar FileRequestCreateDetails.request_details:
+        File request details. Might be missing due to historical data gap.
     """
 
     __slots__ = [
@@ -60900,10 +61507,11 @@ class FileRequestDeadline(bb.Struct):
     """
     File request deadline
 
-    :ivar team_log.FileRequestDeadline.deadline: The deadline for this file
-        request. Might be missing due to historical data gap.
-    :ivar team_log.FileRequestDeadline.allow_late_uploads: If set, allow uploads
-        after the deadline has passed.
+    :ivar FileRequestDeadline.deadline:
+        The deadline for this file request. Might be missing due to historical
+        data gap.
+    :ivar FileRequestDeadline.allow_late_uploads:
+        If set, allow uploads after the deadline has passed.
     """
 
     __slots__ = [
@@ -60938,10 +61546,11 @@ class FileRequestDeleteDetails(bb.Struct):
     """
     Delete file request.
 
-    :ivar team_log.FileRequestDeleteDetails.file_request_id: File request id.
-        Might be missing due to historical data gap.
-    :ivar team_log.FileRequestDeleteDetails.previous_details: Previous file
-        request details. Might be missing due to historical data gap.
+    :ivar FileRequestDeleteDetails.file_request_id:
+        File request id. Might be missing due to historical data gap.
+    :ivar FileRequestDeleteDetails.previous_details:
+        Previous file request details. Might be missing due to historical data
+        gap.
     """
 
     __slots__ = [
@@ -60998,11 +61607,12 @@ class FileRequestDetails(bb.Struct):
     """
     File request details
 
-    :ivar team_log.FileRequestDetails.asset_index: Asset position in the Assets
-        list.
-    :ivar team_log.FileRequestDetails.deadline: File request deadline.
-    :ivar team_log.FileRequestDetails.has_password: Flag represents if this file
-        request has password.
+    :ivar FileRequestDetails.asset_index:
+        Asset position in the Assets list.
+    :ivar FileRequestDetails.deadline:
+        File request deadline.
+    :ivar FileRequestDetails.has_password:
+        Flag represents if this file request has password.
     """
 
     __slots__ = [
@@ -61045,16 +61655,16 @@ class FileRequestReceiveFileDetails(bb.Struct):
     """
     Received files for file request.
 
-    :ivar team_log.FileRequestReceiveFileDetails.file_request_id: File request
-        id. Might be missing due to historical data gap.
-    :ivar team_log.FileRequestReceiveFileDetails.file_request_details: File
-        request details. Might be missing due to historical data gap.
-    :ivar team_log.FileRequestReceiveFileDetails.submitted_file_names: Submitted
-        file names.
-    :ivar team_log.FileRequestReceiveFileDetails.submitter_name: The name as
-        provided by the submitter.
-    :ivar team_log.FileRequestReceiveFileDetails.submitter_email: The email as
-        provided by the submitter.
+    :ivar FileRequestReceiveFileDetails.file_request_id:
+        File request id. Might be missing due to historical data gap.
+    :ivar FileRequestReceiveFileDetails.file_request_details:
+        File request details. Might be missing due to historical data gap.
+    :ivar FileRequestReceiveFileDetails.submitted_file_names:
+        Submitted file names.
+    :ivar FileRequestReceiveFileDetails.submitter_name:
+        The name as provided by the submitter.
+    :ivar FileRequestReceiveFileDetails.submitter_email:
+        The email as provided by the submitter.
     """
 
     __slots__ = [
@@ -61135,10 +61745,11 @@ class FileRequestsChangePolicyDetails(bb.Struct):
     """
     Enabled/disabled file requests.
 
-    :ivar team_log.FileRequestsChangePolicyDetails.new_value: New file requests
-        policy.
-    :ivar team_log.FileRequestsChangePolicyDetails.previous_value: Previous file
-        requests policy. Might be missing due to historical data gap.
+    :ivar FileRequestsChangePolicyDetails.new_value:
+        New file requests policy.
+    :ivar FileRequestsChangePolicyDetails.previous_value:
+        Previous file requests policy. Might be missing due to historical data
+        gap.
     """
 
     __slots__ = [
@@ -61321,7 +61932,8 @@ class FileResolveCommentDetails(bb.Struct):
     """
     Resolved file comment.
 
-    :ivar team_log.FileResolveCommentDetails.comment_text: Comment text.
+    :ivar FileResolveCommentDetails.comment_text:
+        Comment text.
     """
 
     __slots__ = [
@@ -61490,7 +62102,7 @@ class FileSaveCopyReferenceDetails(bb.Struct):
     """
     Saved file/folder using copy reference.
 
-    :ivar team_log.FileSaveCopyReferenceDetails.relocate_action_details:
+    :ivar FileSaveCopyReferenceDetails.relocate_action_details:
         Relocate action details.
     """
 
@@ -61540,7 +62152,8 @@ class FileTransfersFileAddDetails(bb.Struct):
     """
     Transfer files added.
 
-    :ivar team_log.FileTransfersFileAddDetails.file_transfer_id: Transfer id.
+    :ivar FileTransfersFileAddDetails.file_transfer_id:
+        Transfer id.
     """
 
     __slots__ = [
@@ -61635,10 +62248,10 @@ class FileTransfersPolicyChangedDetails(bb.Struct):
     """
     Changed file transfers policy for team.
 
-    :ivar team_log.FileTransfersPolicyChangedDetails.new_value: New file
-        transfers policy.
-    :ivar team_log.FileTransfersPolicyChangedDetails.previous_value: Previous
-        file transfers policy.
+    :ivar FileTransfersPolicyChangedDetails.new_value:
+        New file transfers policy.
+    :ivar FileTransfersPolicyChangedDetails.previous_value:
+        Previous file transfers policy.
     """
 
     __slots__ = [
@@ -61695,8 +62308,8 @@ class FileTransfersTransferDeleteDetails(bb.Struct):
     """
     Deleted transfer.
 
-    :ivar team_log.FileTransfersTransferDeleteDetails.file_transfer_id: Transfer
-        id.
+    :ivar FileTransfersTransferDeleteDetails.file_transfer_id:
+        Transfer id.
     """
 
     __slots__ = [
@@ -61745,7 +62358,7 @@ class FileTransfersTransferDownloadDetails(bb.Struct):
     """
     Transfer downloaded.
 
-    :ivar team_log.FileTransfersTransferDownloadDetails.file_transfer_id:
+    :ivar FileTransfersTransferDownloadDetails.file_transfer_id:
         Transfer id.
     """
 
@@ -61795,8 +62408,8 @@ class FileTransfersTransferSendDetails(bb.Struct):
     """
     Sent transfer.
 
-    :ivar team_log.FileTransfersTransferSendDetails.file_transfer_id: Transfer
-        id.
+    :ivar FileTransfersTransferSendDetails.file_transfer_id:
+        Transfer id.
     """
 
     __slots__ = [
@@ -61845,8 +62458,8 @@ class FileTransfersTransferViewDetails(bb.Struct):
     """
     Viewed transfer.
 
-    :ivar team_log.FileTransfersTransferViewDetails.file_transfer_id: Transfer
-        id.
+    :ivar FileTransfersTransferViewDetails.file_transfer_id:
+        Transfer id.
     """
 
     __slots__ = [
@@ -61895,7 +62508,8 @@ class FileUnlikeCommentDetails(bb.Struct):
     """
     Unliked file comment.
 
-    :ivar team_log.FileUnlikeCommentDetails.comment_text: Comment text.
+    :ivar FileUnlikeCommentDetails.comment_text:
+        Comment text.
     """
 
     __slots__ = [
@@ -61944,7 +62558,8 @@ class FileUnresolveCommentDetails(bb.Struct):
     """
     Unresolved file comment.
 
-    :ivar team_log.FileUnresolveCommentDetails.comment_text: Comment text.
+    :ivar FileUnresolveCommentDetails.comment_text:
+        Comment text.
     """
 
     __slots__ = [
@@ -62079,9 +62694,9 @@ class FlexibleFileNamesPolicyChangedDetails(bb.Struct):
     """
     Changed flexible file names policy for team.
 
-    :ivar team_log.FlexibleFileNamesPolicyChangedDetails.new_value: New flexible
-        file names policy.
-    :ivar team_log.FlexibleFileNamesPolicyChangedDetails.previous_value:
+    :ivar FlexibleFileNamesPolicyChangedDetails.new_value:
+        New flexible file names policy.
+    :ivar FlexibleFileNamesPolicyChangedDetails.previous_value:
         Previous flexible file names policy. Might be missing due to historical
         data gap.
     """
@@ -62187,8 +62802,9 @@ class FolderLinkRestrictionPolicyChangedDetails(bb.Struct):
     """
     Changed folder link restrictions policy for team.
 
-    :ivar team_log.FolderLinkRestrictionPolicyChangedDetails.new_value: To.
-    :ivar team_log.FolderLinkRestrictionPolicyChangedDetails.previous_value:
+    :ivar FolderLinkRestrictionPolicyChangedDetails.new_value:
+        To.
+    :ivar FolderLinkRestrictionPolicyChangedDetails.previous_value:
         From.
     """
 
@@ -62246,7 +62862,8 @@ class FolderLogInfo(FileOrFolderLogInfo):
     """
     Folder's logged information.
 
-    :ivar team_log.FolderLogInfo.file_count: Number of files within the folder.
+    :ivar FolderLogInfo.file_count:
+        Number of files within the folder.
     """
 
     __slots__ = [
@@ -62281,8 +62898,7 @@ class FolderOverviewDescriptionChangedDetails(bb.Struct):
     """
     Updated folder overview.
 
-    :ivar
-        team_log.FolderOverviewDescriptionChangedDetails.folder_overview_location_asset:
+    :ivar FolderOverviewDescriptionChangedDetails.folder_overview_location_asset:
         Folder Overview location position in the Assets list.
     """
 
@@ -62332,10 +62948,9 @@ class FolderOverviewItemPinnedDetails(bb.Struct):
     """
     Pinned item to folder overview.
 
-    :ivar
-        team_log.FolderOverviewItemPinnedDetails.folder_overview_location_asset:
+    :ivar FolderOverviewItemPinnedDetails.folder_overview_location_asset:
         Folder Overview location position in the Assets list.
-    :ivar team_log.FolderOverviewItemPinnedDetails.pinned_items_asset_indices:
+    :ivar FolderOverviewItemPinnedDetails.pinned_items_asset_indices:
         Pinned items positions in the Assets list.
     """
 
@@ -62393,10 +63008,9 @@ class FolderOverviewItemUnpinnedDetails(bb.Struct):
     """
     Unpinned item from folder overview.
 
-    :ivar
-        team_log.FolderOverviewItemUnpinnedDetails.folder_overview_location_asset:
+    :ivar FolderOverviewItemUnpinnedDetails.folder_overview_location_asset:
         Folder Overview location position in the Assets list.
-    :ivar team_log.FolderOverviewItemUnpinnedDetails.pinned_items_asset_indices:
+    :ivar FolderOverviewItemUnpinnedDetails.pinned_items_asset_indices:
         Pinned items positions in the Assets list.
     """
 
@@ -62454,10 +63068,14 @@ class GeoLocationLogInfo(bb.Struct):
     """
     Geographic location details.
 
-    :ivar team_log.GeoLocationLogInfo.city: City name.
-    :ivar team_log.GeoLocationLogInfo.region: Region name.
-    :ivar team_log.GeoLocationLogInfo.country: Country code.
-    :ivar team_log.GeoLocationLogInfo.ip_address: IP address.
+    :ivar GeoLocationLogInfo.city:
+        City name.
+    :ivar GeoLocationLogInfo.region:
+        Region name.
+    :ivar GeoLocationLogInfo.country:
+        Country code.
+    :ivar GeoLocationLogInfo.ip_address:
+        IP address.
     """
 
     __slots__ = [
@@ -62506,21 +63124,23 @@ GeoLocationLogInfo_validator = bv.Struct(GeoLocationLogInfo)
 
 class GetTeamEventsArg(bb.Struct):
     """
-    :ivar team_log.GetTeamEventsArg.limit: The maximal number of results to
-        return per call. Note that some calls may not return ``limit`` number of
-        events, and may even return no events, even with `has_more` set to true.
-        In this case, callers should fetch again using
+    :ivar GetTeamEventsArg.limit:
+        The maximal number of results to return per call. Note that some calls
+        may not return ``limit`` number of events, and may even return no
+        events, even with `has_more` set to true. In this case, callers should
+        fetch again using
         :meth:`dropbox.dropbox_client.Dropbox.team_log_get_events_continue`.
-    :ivar team_log.GetTeamEventsArg.account_id: Filter the events by account ID.
-        Return only events with this account_id as either Actor, Context, or
-        Participants.
-    :ivar team_log.GetTeamEventsArg.time: Filter by time range.
-    :ivar team_log.GetTeamEventsArg.category: Filter the returned events to a
-        single category. Note that category shouldn't be provided together with
-        event_type.
-    :ivar team_log.GetTeamEventsArg.event_type: Filter the returned events to a
-        single event type. Note that event_type shouldn't be provided together
-        with category.
+    :ivar GetTeamEventsArg.account_id:
+        Filter the events by account ID. Return only events with this account_id
+        as either Actor, Context, or Participants.
+    :ivar GetTeamEventsArg.time:
+        Filter by time range.
+    :ivar GetTeamEventsArg.category:
+        Filter the returned events to a single category. Note that category
+        shouldn't be provided together with event_type.
+    :ivar GetTeamEventsArg.event_type:
+        Filter the returned events to a single event type. Note that event_type
+        shouldn't be provided together with category.
     """
 
     __slots__ = [
@@ -62577,8 +63197,8 @@ GetTeamEventsArg_validator = bv.Struct(GetTeamEventsArg)
 
 class GetTeamEventsContinueArg(bb.Struct):
     """
-    :ivar team_log.GetTeamEventsContinueArg.cursor: Indicates from what point to
-        get the next set of events.
+    :ivar GetTeamEventsContinueArg.cursor:
+        Indicates from what point to get the next set of events.
     """
 
     __slots__ = [
@@ -62610,15 +63230,18 @@ class GetTeamEventsContinueError(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar team_log.GetTeamEventsContinueError.bad_cursor: Bad cursor.
-    :ivar datetime.datetime team_log.GetTeamEventsContinueError.reset: Cursors
-        are intended to be used quickly. Individual cursor values are normally
-        valid for days, but in rare cases may be reset sooner. Cursor reset
-        errors should be handled by fetching a new cursor from
-        :route:`get_events`. The associated value is the approximate timestamp
-        of the most recent event returned by the cursor. This should be used as
-        a resumption point when calling :route:`get_events` to obtain a new
-        cursor.
+    :ivar GetTeamEventsContinueError.bad_cursor:
+        Bad cursor.
+    :ivar GetTeamEventsContinueError.reset:
+        Cursors are intended to be used quickly. Individual cursor values are
+        normally valid for days, but in rare cases may be reset sooner. Cursor
+        reset errors should be handled by fetching a new cursor from
+        :meth:`dropbox.dropbox_client.Dropbox.team_log_get_events`. The
+        associated value is the approximate timestamp of the most recent event
+        returned by the cursor. This should be used as a resumption point when
+        calling :meth:`dropbox.dropbox_client.Dropbox.team_log_get_events` to
+        obtain a new cursor.
+    :vartype GetTeamEventsContinueError.reset: datetime.datetime
     """
 
     _catch_all = 'other'
@@ -62695,11 +63318,13 @@ class GetTeamEventsError(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar team_log.GetTeamEventsError.account_id_not_found: No user found
-        matching the provided account_id.
-    :ivar team_log.GetTeamEventsError.invalid_time_range: Invalid time range.
-    :ivar team_log.GetTeamEventsError.invalid_filters: Invalid filters. Do not
-        specify both event_type and category parameters for the same call.
+    :ivar GetTeamEventsError.account_id_not_found:
+        No user found matching the provided account_id.
+    :ivar GetTeamEventsError.invalid_time_range:
+        Invalid time range.
+    :ivar GetTeamEventsError.invalid_filters:
+        Invalid filters. Do not specify both event_type and category parameters
+        for the same call.
     """
 
     _catch_all = 'other'
@@ -62751,9 +63376,11 @@ GetTeamEventsError_validator = bv.Union(GetTeamEventsError)
 
 class GetTeamEventsResult(bb.Struct):
     """
-    :ivar team_log.GetTeamEventsResult.events: List of events. Note that events
-        are not guaranteed to be sorted by their timestamp value.
-    :ivar team_log.GetTeamEventsResult.cursor: Pass the cursor into
+    :ivar GetTeamEventsResult.events:
+        List of events. Note that events are not guaranteed to be sorted by
+        their timestamp value.
+    :ivar GetTeamEventsResult.cursor:
+        Pass the cursor into
         :meth:`dropbox.dropbox_client.Dropbox.team_log_get_events_continue` to
         obtain additional events. The value of ``cursor`` may change for each
         response from
@@ -62763,8 +63390,9 @@ class GetTeamEventsResult(bb.Struct):
         on the latest value of ``cursor`` after each call, and poll regularly if
         they wish to poll for new events. Callers should handle reset exceptions
         for expired cursors.
-    :ivar team_log.GetTeamEventsResult.has_more: Is true if there may be
-        additional events that have not been returned yet. An additional call to
+    :ivar GetTeamEventsResult.has_more:
+        Is true if there may be additional events that have not been returned
+        yet. An additional call to
         :meth:`dropbox.dropbox_client.Dropbox.team_log_get_events_continue` can
         retrieve them. Note that ``has_more`` may be ``True``, even if
         ``events`` is empty.
@@ -62810,10 +63438,11 @@ class GoogleSsoChangePolicyDetails(bb.Struct):
     """
     Enabled/disabled Google single sign-on for team.
 
-    :ivar team_log.GoogleSsoChangePolicyDetails.new_value: New Google single
-        sign-on policy.
-    :ivar team_log.GoogleSsoChangePolicyDetails.previous_value: Previous Google
-        single sign-on policy. Might be missing due to historical data gap.
+    :ivar GoogleSsoChangePolicyDetails.new_value:
+        New Google single sign-on policy.
+    :ivar GoogleSsoChangePolicyDetails.previous_value:
+        Previous Google single sign-on policy. Might be missing due to
+        historical data gap.
     """
 
     __slots__ = [
@@ -62916,13 +63545,16 @@ class GovernancePolicyAddFolderFailedDetails(bb.Struct):
     """
     Couldn't add a folder to a policy.
 
-    :ivar team_log.GovernancePolicyAddFolderFailedDetails.governance_policy_id:
+    :ivar GovernancePolicyAddFolderFailedDetails.governance_policy_id:
         Policy ID.
-    :ivar team_log.GovernancePolicyAddFolderFailedDetails.name: Policy name.
-    :ivar team_log.GovernancePolicyAddFolderFailedDetails.policy_type: Policy
-        type.
-    :ivar team_log.GovernancePolicyAddFolderFailedDetails.folder: Folder.
-    :ivar team_log.GovernancePolicyAddFolderFailedDetails.reason: Reason.
+    :ivar GovernancePolicyAddFolderFailedDetails.name:
+        Policy name.
+    :ivar GovernancePolicyAddFolderFailedDetails.policy_type:
+        Policy type.
+    :ivar GovernancePolicyAddFolderFailedDetails.folder:
+        Folder.
+    :ivar GovernancePolicyAddFolderFailedDetails.reason:
+        Reason.
     """
 
     __slots__ = [
@@ -63003,11 +63635,14 @@ class GovernancePolicyAddFoldersDetails(bb.Struct):
     """
     Added folders to policy.
 
-    :ivar team_log.GovernancePolicyAddFoldersDetails.governance_policy_id:
+    :ivar GovernancePolicyAddFoldersDetails.governance_policy_id:
         Policy ID.
-    :ivar team_log.GovernancePolicyAddFoldersDetails.name: Policy name.
-    :ivar team_log.GovernancePolicyAddFoldersDetails.policy_type: Policy type.
-    :ivar team_log.GovernancePolicyAddFoldersDetails.folders: Folders.
+    :ivar GovernancePolicyAddFoldersDetails.name:
+        Policy name.
+    :ivar GovernancePolicyAddFoldersDetails.policy_type:
+        Policy type.
+    :ivar GovernancePolicyAddFoldersDetails.folders:
+        Folders.
     """
 
     __slots__ = [
@@ -63080,12 +63715,13 @@ class GovernancePolicyContentDisposedDetails(bb.Struct):
     """
     Content disposed.
 
-    :ivar team_log.GovernancePolicyContentDisposedDetails.governance_policy_id:
+    :ivar GovernancePolicyContentDisposedDetails.governance_policy_id:
         Policy ID.
-    :ivar team_log.GovernancePolicyContentDisposedDetails.name: Policy name.
-    :ivar team_log.GovernancePolicyContentDisposedDetails.policy_type: Policy
-        type.
-    :ivar team_log.GovernancePolicyContentDisposedDetails.disposition_type:
+    :ivar GovernancePolicyContentDisposedDetails.name:
+        Policy name.
+    :ivar GovernancePolicyContentDisposedDetails.policy_type:
+        Policy type.
+    :ivar GovernancePolicyContentDisposedDetails.disposition_type:
         Disposition type.
     """
 
@@ -63159,12 +63795,16 @@ class GovernancePolicyCreateDetails(bb.Struct):
     """
     Activated a new policy.
 
-    :ivar team_log.GovernancePolicyCreateDetails.governance_policy_id: Policy
-        ID.
-    :ivar team_log.GovernancePolicyCreateDetails.name: Policy name.
-    :ivar team_log.GovernancePolicyCreateDetails.policy_type: Policy type.
-    :ivar team_log.GovernancePolicyCreateDetails.duration: Duration in days.
-    :ivar team_log.GovernancePolicyCreateDetails.folders: Folders.
+    :ivar GovernancePolicyCreateDetails.governance_policy_id:
+        Policy ID.
+    :ivar GovernancePolicyCreateDetails.name:
+        Policy name.
+    :ivar GovernancePolicyCreateDetails.policy_type:
+        Policy type.
+    :ivar GovernancePolicyCreateDetails.duration:
+        Duration in days.
+    :ivar GovernancePolicyCreateDetails.folders:
+        Folders.
     """
 
     __slots__ = [
@@ -63245,10 +63885,12 @@ class GovernancePolicyDeleteDetails(bb.Struct):
     """
     Deleted a policy.
 
-    :ivar team_log.GovernancePolicyDeleteDetails.governance_policy_id: Policy
-        ID.
-    :ivar team_log.GovernancePolicyDeleteDetails.name: Policy name.
-    :ivar team_log.GovernancePolicyDeleteDetails.policy_type: Policy type.
+    :ivar GovernancePolicyDeleteDetails.governance_policy_id:
+        Policy ID.
+    :ivar GovernancePolicyDeleteDetails.name:
+        Policy name.
+    :ivar GovernancePolicyDeleteDetails.policy_type:
+        Policy type.
     """
 
     __slots__ = [
@@ -63313,13 +63955,18 @@ class GovernancePolicyEditDetailsDetails(bb.Struct):
     """
     Edited policy.
 
-    :ivar team_log.GovernancePolicyEditDetailsDetails.governance_policy_id:
+    :ivar GovernancePolicyEditDetailsDetails.governance_policy_id:
         Policy ID.
-    :ivar team_log.GovernancePolicyEditDetailsDetails.name: Policy name.
-    :ivar team_log.GovernancePolicyEditDetailsDetails.policy_type: Policy type.
-    :ivar team_log.GovernancePolicyEditDetailsDetails.attribute: Attribute.
-    :ivar team_log.GovernancePolicyEditDetailsDetails.previous_value: From.
-    :ivar team_log.GovernancePolicyEditDetailsDetails.new_value: To.
+    :ivar GovernancePolicyEditDetailsDetails.name:
+        Policy name.
+    :ivar GovernancePolicyEditDetailsDetails.policy_type:
+        Policy type.
+    :ivar GovernancePolicyEditDetailsDetails.attribute:
+        Attribute.
+    :ivar GovernancePolicyEditDetailsDetails.previous_value:
+        From.
+    :ivar GovernancePolicyEditDetailsDetails.new_value:
+        To.
     """
 
     __slots__ = [
@@ -63408,12 +64055,16 @@ class GovernancePolicyEditDurationDetails(bb.Struct):
     """
     Changed policy duration.
 
-    :ivar team_log.GovernancePolicyEditDurationDetails.governance_policy_id:
+    :ivar GovernancePolicyEditDurationDetails.governance_policy_id:
         Policy ID.
-    :ivar team_log.GovernancePolicyEditDurationDetails.name: Policy name.
-    :ivar team_log.GovernancePolicyEditDurationDetails.policy_type: Policy type.
-    :ivar team_log.GovernancePolicyEditDurationDetails.previous_value: From.
-    :ivar team_log.GovernancePolicyEditDurationDetails.new_value: To.
+    :ivar GovernancePolicyEditDurationDetails.name:
+        Policy name.
+    :ivar GovernancePolicyEditDurationDetails.policy_type:
+        Policy type.
+    :ivar GovernancePolicyEditDurationDetails.previous_value:
+        From.
+    :ivar GovernancePolicyEditDurationDetails.new_value:
+        To.
     """
 
     __slots__ = [
@@ -63494,13 +64145,14 @@ class GovernancePolicyExportCreatedDetails(bb.Struct):
     """
     Created a policy download.
 
-    :ivar team_log.GovernancePolicyExportCreatedDetails.governance_policy_id:
+    :ivar GovernancePolicyExportCreatedDetails.governance_policy_id:
         Policy ID.
-    :ivar team_log.GovernancePolicyExportCreatedDetails.name: Policy name.
-    :ivar team_log.GovernancePolicyExportCreatedDetails.policy_type: Policy
-        type.
-    :ivar team_log.GovernancePolicyExportCreatedDetails.export_name: Export
-        name.
+    :ivar GovernancePolicyExportCreatedDetails.name:
+        Policy name.
+    :ivar GovernancePolicyExportCreatedDetails.policy_type:
+        Policy type.
+    :ivar GovernancePolicyExportCreatedDetails.export_name:
+        Export name.
     """
 
     __slots__ = [
@@ -63573,13 +64225,14 @@ class GovernancePolicyExportRemovedDetails(bb.Struct):
     """
     Removed a policy download.
 
-    :ivar team_log.GovernancePolicyExportRemovedDetails.governance_policy_id:
+    :ivar GovernancePolicyExportRemovedDetails.governance_policy_id:
         Policy ID.
-    :ivar team_log.GovernancePolicyExportRemovedDetails.name: Policy name.
-    :ivar team_log.GovernancePolicyExportRemovedDetails.policy_type: Policy
-        type.
-    :ivar team_log.GovernancePolicyExportRemovedDetails.export_name: Export
-        name.
+    :ivar GovernancePolicyExportRemovedDetails.name:
+        Policy name.
+    :ivar GovernancePolicyExportRemovedDetails.policy_type:
+        Policy type.
+    :ivar GovernancePolicyExportRemovedDetails.export_name:
+        Export name.
     """
 
     __slots__ = [
@@ -63652,13 +64305,16 @@ class GovernancePolicyRemoveFoldersDetails(bb.Struct):
     """
     Removed folders from policy.
 
-    :ivar team_log.GovernancePolicyRemoveFoldersDetails.governance_policy_id:
+    :ivar GovernancePolicyRemoveFoldersDetails.governance_policy_id:
         Policy ID.
-    :ivar team_log.GovernancePolicyRemoveFoldersDetails.name: Policy name.
-    :ivar team_log.GovernancePolicyRemoveFoldersDetails.policy_type: Policy
-        type.
-    :ivar team_log.GovernancePolicyRemoveFoldersDetails.folders: Folders.
-    :ivar team_log.GovernancePolicyRemoveFoldersDetails.reason: Reason.
+    :ivar GovernancePolicyRemoveFoldersDetails.name:
+        Policy name.
+    :ivar GovernancePolicyRemoveFoldersDetails.policy_type:
+        Policy type.
+    :ivar GovernancePolicyRemoveFoldersDetails.folders:
+        Folders.
+    :ivar GovernancePolicyRemoveFoldersDetails.reason:
+        Reason.
     """
 
     __slots__ = [
@@ -63739,11 +64395,12 @@ class GovernancePolicyReportCreatedDetails(bb.Struct):
     """
     Created a summary report for a policy.
 
-    :ivar team_log.GovernancePolicyReportCreatedDetails.governance_policy_id:
+    :ivar GovernancePolicyReportCreatedDetails.governance_policy_id:
         Policy ID.
-    :ivar team_log.GovernancePolicyReportCreatedDetails.name: Policy name.
-    :ivar team_log.GovernancePolicyReportCreatedDetails.policy_type: Policy
-        type.
+    :ivar GovernancePolicyReportCreatedDetails.name:
+        Policy name.
+    :ivar GovernancePolicyReportCreatedDetails.policy_type:
+        Policy type.
     """
 
     __slots__ = [
@@ -63808,15 +64465,16 @@ class GovernancePolicyZipPartDownloadedDetails(bb.Struct):
     """
     Downloaded content from a policy.
 
-    :ivar
-        team_log.GovernancePolicyZipPartDownloadedDetails.governance_policy_id:
+    :ivar GovernancePolicyZipPartDownloadedDetails.governance_policy_id:
         Policy ID.
-    :ivar team_log.GovernancePolicyZipPartDownloadedDetails.name: Policy name.
-    :ivar team_log.GovernancePolicyZipPartDownloadedDetails.policy_type: Policy
-        type.
-    :ivar team_log.GovernancePolicyZipPartDownloadedDetails.export_name: Export
-        name.
-    :ivar team_log.GovernancePolicyZipPartDownloadedDetails.part: Part.
+    :ivar GovernancePolicyZipPartDownloadedDetails.name:
+        Policy name.
+    :ivar GovernancePolicyZipPartDownloadedDetails.policy_type:
+        Policy type.
+    :ivar GovernancePolicyZipPartDownloadedDetails.export_name:
+        Export name.
+    :ivar GovernancePolicyZipPartDownloadedDetails.part:
+        Part.
     """
 
     __slots__ = [
@@ -63897,7 +64555,8 @@ class GroupAddExternalIdDetails(bb.Struct):
     """
     Added external ID for group.
 
-    :ivar team_log.GroupAddExternalIdDetails.new_value: Current external id.
+    :ivar GroupAddExternalIdDetails.new_value:
+        Current external id.
     """
 
     __slots__ = [
@@ -63946,7 +64605,8 @@ class GroupAddMemberDetails(bb.Struct):
     """
     Added team members to group.
 
-    :ivar team_log.GroupAddMemberDetails.is_group_owner: Is group owner.
+    :ivar GroupAddMemberDetails.is_group_owner:
+        Is group owner.
     """
 
     __slots__ = [
@@ -63995,8 +64655,10 @@ class GroupChangeExternalIdDetails(bb.Struct):
     """
     Changed external ID for group.
 
-    :ivar team_log.GroupChangeExternalIdDetails.new_value: Current external id.
-    :ivar team_log.GroupChangeExternalIdDetails.previous_value: Old external id.
+    :ivar GroupChangeExternalIdDetails.new_value:
+        Current external id.
+    :ivar GroupChangeExternalIdDetails.previous_value:
+        Old external id.
     """
 
     __slots__ = [
@@ -64053,10 +64715,11 @@ class GroupChangeManagementTypeDetails(bb.Struct):
     """
     Changed group management type.
 
-    :ivar team_log.GroupChangeManagementTypeDetails.new_value: New group
-        management type.
-    :ivar team_log.GroupChangeManagementTypeDetails.previous_value: Previous
-        group management type. Might be missing due to historical data gap.
+    :ivar GroupChangeManagementTypeDetails.new_value:
+        New group management type.
+    :ivar GroupChangeManagementTypeDetails.previous_value:
+        Previous group management type. Might be missing due to historical data
+        gap.
     """
 
     __slots__ = [
@@ -64113,7 +64776,8 @@ class GroupChangeMemberRoleDetails(bb.Struct):
     """
     Changed manager permissions of group member.
 
-    :ivar team_log.GroupChangeMemberRoleDetails.is_group_owner: Is group owner.
+    :ivar GroupChangeMemberRoleDetails.is_group_owner:
+        Is group owner.
     """
 
     __slots__ = [
@@ -64162,9 +64826,10 @@ class GroupCreateDetails(bb.Struct):
     """
     Created group.
 
-    :ivar team_log.GroupCreateDetails.is_company_managed: Is company managed
-        group.
-    :ivar team_log.GroupCreateDetails.join_policy: Group join policy.
+    :ivar GroupCreateDetails.is_company_managed:
+        Is company managed group.
+    :ivar GroupCreateDetails.join_policy:
+        Group join policy.
     """
 
     __slots__ = [
@@ -64221,8 +64886,8 @@ class GroupDeleteDetails(bb.Struct):
     """
     Deleted group.
 
-    :ivar team_log.GroupDeleteDetails.is_company_managed: Is company managed
-        group.
+    :ivar GroupDeleteDetails.is_company_managed:
+        Is company managed group.
     """
 
     __slots__ = [
@@ -64311,10 +64976,9 @@ class GroupExternalSharingSettingOverrideChangedDetails(bb.Struct):
     """
     Changed group's external sharing setting.
 
-    :ivar team_log.GroupExternalSharingSettingOverrideChangedDetails.new_value:
+    :ivar GroupExternalSharingSettingOverrideChangedDetails.new_value:
         New external sharing setting.
-    :ivar
-        team_log.GroupExternalSharingSettingOverrideChangedDetails.previous_value:
+    :ivar GroupExternalSharingSettingOverrideChangedDetails.previous_value:
         Previous external sharing setting.
     """
 
@@ -64416,9 +65080,10 @@ class GroupJoinPolicyUpdatedDetails(bb.Struct):
     """
     Updated group join policy.
 
-    :ivar team_log.GroupJoinPolicyUpdatedDetails.is_company_managed: Is company
-        managed group.
-    :ivar team_log.GroupJoinPolicyUpdatedDetails.join_policy: Group join policy.
+    :ivar GroupJoinPolicyUpdatedDetails.is_company_managed:
+        Is company managed group.
+    :ivar GroupJoinPolicyUpdatedDetails.join_policy:
+        Group join policy.
     """
 
     __slots__ = [
@@ -64475,9 +65140,12 @@ class GroupLogInfo(bb.Struct):
     """
     Group's logged information.
 
-    :ivar team_log.GroupLogInfo.group_id: The unique id of this group.
-    :ivar team_log.GroupLogInfo.display_name: The name of this group.
-    :ivar team_log.GroupLogInfo.external_id: External group ID.
+    :ivar GroupLogInfo.group_id:
+        The unique id of this group.
+    :ivar GroupLogInfo.display_name:
+        The name of this group.
+    :ivar GroupLogInfo.external_id:
+        External group ID.
     """
 
     __slots__ = [
@@ -64560,7 +65228,8 @@ class GroupRemoveExternalIdDetails(bb.Struct):
     """
     Removed external ID for group.
 
-    :ivar team_log.GroupRemoveExternalIdDetails.previous_value: Old external id.
+    :ivar GroupRemoveExternalIdDetails.previous_value:
+        Old external id.
     """
 
     __slots__ = [
@@ -64649,8 +65318,10 @@ class GroupRenameDetails(bb.Struct):
     """
     Renamed group.
 
-    :ivar team_log.GroupRenameDetails.previous_value: Previous display name.
-    :ivar team_log.GroupRenameDetails.new_value: New display name.
+    :ivar GroupRenameDetails.previous_value:
+        Previous display name.
+    :ivar GroupRenameDetails.new_value:
+        New display name.
     """
 
     __slots__ = [
@@ -64707,9 +65378,9 @@ class GroupUserManagementChangePolicyDetails(bb.Struct):
     """
     Changed who can create groups.
 
-    :ivar team_log.GroupUserManagementChangePolicyDetails.new_value: New group
-        users management policy.
-    :ivar team_log.GroupUserManagementChangePolicyDetails.previous_value:
+    :ivar GroupUserManagementChangePolicyDetails.new_value:
+        New group users management policy.
+    :ivar GroupUserManagementChangePolicyDetails.previous_value:
         Previous group users management policy. Might be missing due to
         historical data gap.
     """
@@ -64768,16 +65439,18 @@ class GuestAdminChangeStatusDetails(bb.Struct):
     """
     Changed guest team admin status.
 
-    :ivar team_log.GuestAdminChangeStatusDetails.is_guest: True for guest, false
-        for host.
-    :ivar team_log.GuestAdminChangeStatusDetails.guest_team_name: The name of
-        the guest team.
-    :ivar team_log.GuestAdminChangeStatusDetails.host_team_name: The name of the
-        host team.
-    :ivar team_log.GuestAdminChangeStatusDetails.previous_value: Previous
-        request state.
-    :ivar team_log.GuestAdminChangeStatusDetails.new_value: New request state.
-    :ivar team_log.GuestAdminChangeStatusDetails.action_details: Action details.
+    :ivar GuestAdminChangeStatusDetails.is_guest:
+        True for guest, false for host.
+    :ivar GuestAdminChangeStatusDetails.guest_team_name:
+        The name of the guest team.
+    :ivar GuestAdminChangeStatusDetails.host_team_name:
+        The name of the host team.
+    :ivar GuestAdminChangeStatusDetails.previous_value:
+        Previous request state.
+    :ivar GuestAdminChangeStatusDetails.new_value:
+        New request state.
+    :ivar GuestAdminChangeStatusDetails.action_details:
+        Action details.
     """
 
     __slots__ = [
@@ -64866,9 +65539,9 @@ class GuestAdminSignedInViaTrustedTeamsDetails(bb.Struct):
     """
     Started trusted team admin session.
 
-    :ivar team_log.GuestAdminSignedInViaTrustedTeamsDetails.team_name: Host team
-        name.
-    :ivar team_log.GuestAdminSignedInViaTrustedTeamsDetails.trusted_team_name:
+    :ivar GuestAdminSignedInViaTrustedTeamsDetails.team_name:
+        Host team name.
+    :ivar GuestAdminSignedInViaTrustedTeamsDetails.trusted_team_name:
         Trusted team name.
     """
 
@@ -64926,9 +65599,9 @@ class GuestAdminSignedOutViaTrustedTeamsDetails(bb.Struct):
     """
     Ended trusted team admin session.
 
-    :ivar team_log.GuestAdminSignedOutViaTrustedTeamsDetails.team_name: Host
-        team name.
-    :ivar team_log.GuestAdminSignedOutViaTrustedTeamsDetails.trusted_team_name:
+    :ivar GuestAdminSignedOutViaTrustedTeamsDetails.team_name:
+        Host team name.
+    :ivar GuestAdminSignedOutViaTrustedTeamsDetails.trusted_team_name:
         Trusted team name.
     """
 
@@ -65030,8 +65703,8 @@ class IntegrationConnectedDetails(bb.Struct):
     """
     Connected integration for member.
 
-    :ivar team_log.IntegrationConnectedDetails.integration_name: Name of the
-        third-party integration.
+    :ivar IntegrationConnectedDetails.integration_name:
+        Name of the third-party integration.
     """
 
     __slots__ = [
@@ -65080,8 +65753,8 @@ class IntegrationDisconnectedDetails(bb.Struct):
     """
     Disconnected integration for member.
 
-    :ivar team_log.IntegrationDisconnectedDetails.integration_name: Name of the
-        third-party integration.
+    :ivar IntegrationDisconnectedDetails.integration_name:
+        Name of the third-party integration.
     """
 
     __slots__ = [
@@ -65177,12 +65850,12 @@ class IntegrationPolicyChangedDetails(bb.Struct):
     """
     Changed integration policy for team.
 
-    :ivar team_log.IntegrationPolicyChangedDetails.integration_name: Name of the
-        third-party integration.
-    :ivar team_log.IntegrationPolicyChangedDetails.new_value: New integration
-        policy.
-    :ivar team_log.IntegrationPolicyChangedDetails.previous_value: Previous
-        integration policy.
+    :ivar IntegrationPolicyChangedDetails.integration_name:
+        Name of the third-party integration.
+    :ivar IntegrationPolicyChangedDetails.new_value:
+        New integration policy.
+    :ivar IntegrationPolicyChangedDetails.previous_value:
+        Previous integration policy.
     """
 
     __slots__ = [
@@ -65294,8 +65967,9 @@ class InviteAcceptanceEmailPolicyChangedDetails(bb.Struct):
     """
     Changed invite accept email policy for team.
 
-    :ivar team_log.InviteAcceptanceEmailPolicyChangedDetails.new_value: To.
-    :ivar team_log.InviteAcceptanceEmailPolicyChangedDetails.previous_value:
+    :ivar InviteAcceptanceEmailPolicyChangedDetails.new_value:
+        To.
+    :ivar InviteAcceptanceEmailPolicyChangedDetails.previous_value:
         From.
     """
 
@@ -65417,30 +66091,30 @@ class JoinTeamDetails(bb.Struct):
     """
     Additional information relevant when a new member joins the team.
 
-    :ivar team_log.JoinTeamDetails.linked_apps: Field is deprecated. Linked
-        applications. (Deprecated) Please use has_linked_apps boolean field
-        instead.
-    :ivar team_log.JoinTeamDetails.linked_devices: Field is deprecated. Linked
-        devices. (Deprecated) Please use has_linked_devices boolean field
-        instead.
-    :ivar team_log.JoinTeamDetails.linked_shared_folders: Field is deprecated.
-        Linked shared folders. (Deprecated) Please use has_linked_shared_folders
-        boolean field instead.
-    :ivar team_log.JoinTeamDetails.was_linked_apps_truncated: Field is
-        deprecated. (Deprecated) True if the linked_apps list was truncated to
-        the maximum supported length (50).
-    :ivar team_log.JoinTeamDetails.was_linked_devices_truncated: Field is
-        deprecated. (Deprecated) True if the linked_devices list was truncated
-        to the maximum supported length (50).
-    :ivar team_log.JoinTeamDetails.was_linked_shared_folders_truncated: Field is
-        deprecated. (Deprecated) True if the linked_shared_folders list was
+    :ivar JoinTeamDetails.linked_apps:
+        Field is deprecated. Linked applications. (Deprecated) Please use
+        has_linked_apps boolean field instead.
+    :ivar JoinTeamDetails.linked_devices:
+        Field is deprecated. Linked devices. (Deprecated) Please use
+        has_linked_devices boolean field instead.
+    :ivar JoinTeamDetails.linked_shared_folders:
+        Field is deprecated. Linked shared folders. (Deprecated) Please use
+        has_linked_shared_folders boolean field instead.
+    :ivar JoinTeamDetails.was_linked_apps_truncated:
+        Field is deprecated. (Deprecated) True if the linked_apps list was
         truncated to the maximum supported length (50).
-    :ivar team_log.JoinTeamDetails.has_linked_apps: True if the user had linked
-        apps at event time.
-    :ivar team_log.JoinTeamDetails.has_linked_devices: True if the user had
-        linked apps at event time.
-    :ivar team_log.JoinTeamDetails.has_linked_shared_folders: True if the user
-        had linked shared folders at event time.
+    :ivar JoinTeamDetails.was_linked_devices_truncated:
+        Field is deprecated. (Deprecated) True if the linked_devices list was
+        truncated to the maximum supported length (50).
+    :ivar JoinTeamDetails.was_linked_shared_folders_truncated:
+        Field is deprecated. (Deprecated) True if the linked_shared_folders list
+        was truncated to the maximum supported length (50).
+    :ivar JoinTeamDetails.has_linked_apps:
+        True if the user had linked apps at event time.
+    :ivar JoinTeamDetails.has_linked_devices:
+        True if the user had linked apps at event time.
+    :ivar JoinTeamDetails.has_linked_shared_folders:
+        True if the user had linked shared folders at event time.
     """
 
     __slots__ = [
@@ -65587,25 +66261,28 @@ class LegacyDeviceSessionLogInfo(DeviceSessionLogInfo):
     """
     Information on sessions, in legacy format
 
-    :ivar team_log.LegacyDeviceSessionLogInfo.session_info: Session unique id.
-    :ivar team_log.LegacyDeviceSessionLogInfo.display_name: The device name.
-        Might be missing due to historical data gap.
-    :ivar team_log.LegacyDeviceSessionLogInfo.is_emm_managed: Is device managed
-        by emm. Might be missing due to historical data gap.
-    :ivar team_log.LegacyDeviceSessionLogInfo.platform: Information on the
-        hosting platform. Might be missing due to historical data gap.
-    :ivar team_log.LegacyDeviceSessionLogInfo.mac_address: The mac address of
-        the last activity from this session. Might be missing due to historical
+    :ivar LegacyDeviceSessionLogInfo.session_info:
+        Session unique id.
+    :ivar LegacyDeviceSessionLogInfo.display_name:
+        The device name. Might be missing due to historical data gap.
+    :ivar LegacyDeviceSessionLogInfo.is_emm_managed:
+        Is device managed by emm. Might be missing due to historical data gap.
+    :ivar LegacyDeviceSessionLogInfo.platform:
+        Information on the hosting platform. Might be missing due to historical
         data gap.
-    :ivar team_log.LegacyDeviceSessionLogInfo.os_version: The hosting OS
-        version. Might be missing due to historical data gap.
-    :ivar team_log.LegacyDeviceSessionLogInfo.device_type: Information on the
-        hosting device type. Might be missing due to historical data gap.
-    :ivar team_log.LegacyDeviceSessionLogInfo.client_version: The Dropbox client
-        version. Might be missing due to historical data gap.
-    :ivar team_log.LegacyDeviceSessionLogInfo.legacy_uniq_id: Alternative unique
-        device session id, instead of session id field. Might be missing due to
+    :ivar LegacyDeviceSessionLogInfo.mac_address:
+        The mac address of the last activity from this session. Might be missing
+        due to historical data gap.
+    :ivar LegacyDeviceSessionLogInfo.os_version:
+        The hosting OS version. Might be missing due to historical data gap.
+    :ivar LegacyDeviceSessionLogInfo.device_type:
+        Information on the hosting device type. Might be missing due to
         historical data gap.
+    :ivar LegacyDeviceSessionLogInfo.client_version:
+        The Dropbox client version. Might be missing due to historical data gap.
+    :ivar LegacyDeviceSessionLogInfo.legacy_uniq_id:
+        Alternative unique device session id, instead of session id field. Might
+        be missing due to historical data gap.
     """
 
     __slots__ = [
@@ -65702,10 +66379,14 @@ class LegalHoldsActivateAHoldDetails(bb.Struct):
     """
     Activated a hold.
 
-    :ivar team_log.LegalHoldsActivateAHoldDetails.legal_hold_id: Hold ID.
-    :ivar team_log.LegalHoldsActivateAHoldDetails.name: Hold name.
-    :ivar team_log.LegalHoldsActivateAHoldDetails.start_date: Hold start date.
-    :ivar team_log.LegalHoldsActivateAHoldDetails.end_date: Hold end date.
+    :ivar LegalHoldsActivateAHoldDetails.legal_hold_id:
+        Hold ID.
+    :ivar LegalHoldsActivateAHoldDetails.name:
+        Hold name.
+    :ivar LegalHoldsActivateAHoldDetails.start_date:
+        Hold start date.
+    :ivar LegalHoldsActivateAHoldDetails.end_date:
+        Hold end date.
     """
 
     __slots__ = [
@@ -65778,8 +66459,10 @@ class LegalHoldsAddMembersDetails(bb.Struct):
     """
     Added members to a hold.
 
-    :ivar team_log.LegalHoldsAddMembersDetails.legal_hold_id: Hold ID.
-    :ivar team_log.LegalHoldsAddMembersDetails.name: Hold name.
+    :ivar LegalHoldsAddMembersDetails.legal_hold_id:
+        Hold ID.
+    :ivar LegalHoldsAddMembersDetails.name:
+        Hold name.
     """
 
     __slots__ = [
@@ -65836,11 +66519,14 @@ class LegalHoldsChangeHoldDetailsDetails(bb.Struct):
     """
     Edited details for a hold.
 
-    :ivar team_log.LegalHoldsChangeHoldDetailsDetails.legal_hold_id: Hold ID.
-    :ivar team_log.LegalHoldsChangeHoldDetailsDetails.name: Hold name.
-    :ivar team_log.LegalHoldsChangeHoldDetailsDetails.previous_value: Previous
-        details.
-    :ivar team_log.LegalHoldsChangeHoldDetailsDetails.new_value: New details.
+    :ivar LegalHoldsChangeHoldDetailsDetails.legal_hold_id:
+        Hold ID.
+    :ivar LegalHoldsChangeHoldDetailsDetails.name:
+        Hold name.
+    :ivar LegalHoldsChangeHoldDetailsDetails.previous_value:
+        Previous details.
+    :ivar LegalHoldsChangeHoldDetailsDetails.new_value:
+        New details.
     """
 
     __slots__ = [
@@ -65913,10 +66599,12 @@ class LegalHoldsChangeHoldNameDetails(bb.Struct):
     """
     Renamed a hold.
 
-    :ivar team_log.LegalHoldsChangeHoldNameDetails.legal_hold_id: Hold ID.
-    :ivar team_log.LegalHoldsChangeHoldNameDetails.previous_value: Previous
-        Name.
-    :ivar team_log.LegalHoldsChangeHoldNameDetails.new_value: New Name.
+    :ivar LegalHoldsChangeHoldNameDetails.legal_hold_id:
+        Hold ID.
+    :ivar LegalHoldsChangeHoldNameDetails.previous_value:
+        Previous Name.
+    :ivar LegalHoldsChangeHoldNameDetails.new_value:
+        New Name.
     """
 
     __slots__ = [
@@ -65981,9 +66669,12 @@ class LegalHoldsExportAHoldDetails(bb.Struct):
     """
     Exported hold.
 
-    :ivar team_log.LegalHoldsExportAHoldDetails.legal_hold_id: Hold ID.
-    :ivar team_log.LegalHoldsExportAHoldDetails.name: Hold name.
-    :ivar team_log.LegalHoldsExportAHoldDetails.export_name: Export name.
+    :ivar LegalHoldsExportAHoldDetails.legal_hold_id:
+        Hold ID.
+    :ivar LegalHoldsExportAHoldDetails.name:
+        Hold name.
+    :ivar LegalHoldsExportAHoldDetails.export_name:
+        Export name.
     """
 
     __slots__ = [
@@ -66048,9 +66739,12 @@ class LegalHoldsExportCancelledDetails(bb.Struct):
     """
     Canceled export for a hold.
 
-    :ivar team_log.LegalHoldsExportCancelledDetails.legal_hold_id: Hold ID.
-    :ivar team_log.LegalHoldsExportCancelledDetails.name: Hold name.
-    :ivar team_log.LegalHoldsExportCancelledDetails.export_name: Export name.
+    :ivar LegalHoldsExportCancelledDetails.legal_hold_id:
+        Hold ID.
+    :ivar LegalHoldsExportCancelledDetails.name:
+        Hold name.
+    :ivar LegalHoldsExportCancelledDetails.export_name:
+        Export name.
     """
 
     __slots__ = [
@@ -66115,11 +66809,16 @@ class LegalHoldsExportDownloadedDetails(bb.Struct):
     """
     Downloaded export for a hold.
 
-    :ivar team_log.LegalHoldsExportDownloadedDetails.legal_hold_id: Hold ID.
-    :ivar team_log.LegalHoldsExportDownloadedDetails.name: Hold name.
-    :ivar team_log.LegalHoldsExportDownloadedDetails.export_name: Export name.
-    :ivar team_log.LegalHoldsExportDownloadedDetails.part: Part.
-    :ivar team_log.LegalHoldsExportDownloadedDetails.file_name: Filename.
+    :ivar LegalHoldsExportDownloadedDetails.legal_hold_id:
+        Hold ID.
+    :ivar LegalHoldsExportDownloadedDetails.name:
+        Hold name.
+    :ivar LegalHoldsExportDownloadedDetails.export_name:
+        Export name.
+    :ivar LegalHoldsExportDownloadedDetails.part:
+        Part.
+    :ivar LegalHoldsExportDownloadedDetails.file_name:
+        Filename.
     """
 
     __slots__ = [
@@ -66200,9 +66899,12 @@ class LegalHoldsExportRemovedDetails(bb.Struct):
     """
     Removed export for a hold.
 
-    :ivar team_log.LegalHoldsExportRemovedDetails.legal_hold_id: Hold ID.
-    :ivar team_log.LegalHoldsExportRemovedDetails.name: Hold name.
-    :ivar team_log.LegalHoldsExportRemovedDetails.export_name: Export name.
+    :ivar LegalHoldsExportRemovedDetails.legal_hold_id:
+        Hold ID.
+    :ivar LegalHoldsExportRemovedDetails.name:
+        Hold name.
+    :ivar LegalHoldsExportRemovedDetails.export_name:
+        Export name.
     """
 
     __slots__ = [
@@ -66267,8 +66969,10 @@ class LegalHoldsReleaseAHoldDetails(bb.Struct):
     """
     Released a hold.
 
-    :ivar team_log.LegalHoldsReleaseAHoldDetails.legal_hold_id: Hold ID.
-    :ivar team_log.LegalHoldsReleaseAHoldDetails.name: Hold name.
+    :ivar LegalHoldsReleaseAHoldDetails.legal_hold_id:
+        Hold ID.
+    :ivar LegalHoldsReleaseAHoldDetails.name:
+        Hold name.
     """
 
     __slots__ = [
@@ -66325,8 +67029,10 @@ class LegalHoldsRemoveMembersDetails(bb.Struct):
     """
     Removed members from a hold.
 
-    :ivar team_log.LegalHoldsRemoveMembersDetails.legal_hold_id: Hold ID.
-    :ivar team_log.LegalHoldsRemoveMembersDetails.name: Hold name.
+    :ivar LegalHoldsRemoveMembersDetails.legal_hold_id:
+        Hold ID.
+    :ivar LegalHoldsRemoveMembersDetails.name:
+        Hold name.
     """
 
     __slots__ = [
@@ -66383,8 +67089,10 @@ class LegalHoldsReportAHoldDetails(bb.Struct):
     """
     Created a summary report for a hold.
 
-    :ivar team_log.LegalHoldsReportAHoldDetails.legal_hold_id: Hold ID.
-    :ivar team_log.LegalHoldsReportAHoldDetails.name: Hold name.
+    :ivar LegalHoldsReportAHoldDetails.legal_hold_id:
+        Hold ID.
+    :ivar LegalHoldsReportAHoldDetails.name:
+        Hold name.
     """
 
     __slots__ = [
@@ -66441,12 +67149,18 @@ class LinkSettingsLogInfo(bb.Struct):
     """
     Link Settings
 
-    :ivar team_log.LinkSettingsLogInfo.name: Link Name.
-    :ivar team_log.LinkSettingsLogInfo.require_email: Email Required.
-    :ivar team_log.LinkSettingsLogInfo.downloadable: Downloadable.
-    :ivar team_log.LinkSettingsLogInfo.expire_at: Expires at.
-    :ivar team_log.LinkSettingsLogInfo.password_required: Password required.
-    :ivar team_log.LinkSettingsLogInfo.url: Link URL.
+    :ivar LinkSettingsLogInfo.name:
+        Link Name.
+    :ivar LinkSettingsLogInfo.require_email:
+        Email Required.
+    :ivar LinkSettingsLogInfo.downloadable:
+        Downloadable.
+    :ivar LinkSettingsLogInfo.expire_at:
+        Expires at.
+    :ivar LinkSettingsLogInfo.password_required:
+        Password required.
+    :ivar LinkSettingsLogInfo.url:
+        Link URL.
     """
 
     __slots__ = [
@@ -66517,15 +67231,18 @@ class LinkedDeviceLogInfo(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar DesktopDeviceSessionLogInfo
-        LinkedDeviceLogInfo.desktop_device_session: desktop device session's
-        details.
-    :ivar LegacyDeviceSessionLogInfo LinkedDeviceLogInfo.legacy_device_session:
+    :ivar LinkedDeviceLogInfo.desktop_device_session:
+        desktop device session's details.
+    :vartype LinkedDeviceLogInfo.desktop_device_session: DesktopDeviceSessionLogInfo
+    :ivar LinkedDeviceLogInfo.legacy_device_session:
         legacy device session's details.
-    :ivar MobileDeviceSessionLogInfo LinkedDeviceLogInfo.mobile_device_session:
+    :vartype LinkedDeviceLogInfo.legacy_device_session: LegacyDeviceSessionLogInfo
+    :ivar LinkedDeviceLogInfo.mobile_device_session:
         mobile device session's details.
-    :ivar WebDeviceSessionLogInfo LinkedDeviceLogInfo.web_device_session: web
-        device session's details.
+    :vartype LinkedDeviceLogInfo.mobile_device_session: MobileDeviceSessionLogInfo
+    :ivar LinkedDeviceLogInfo.web_device_session:
+        web device session's details.
+    :vartype LinkedDeviceLogInfo.web_device_session: WebDeviceSessionLogInfo
     """
 
     _catch_all = 'other'
@@ -66719,10 +67436,13 @@ class LoginFailDetails(bb.Struct):
     """
     Failed to sign in.
 
-    :ivar team_log.LoginFailDetails.is_emm_managed: Tells if the login device is
-        EMM managed. Might be missing due to historical data gap.
-    :ivar team_log.LoginFailDetails.login_method: Login method.
-    :ivar team_log.LoginFailDetails.error_details: Error details.
+    :ivar LoginFailDetails.is_emm_managed:
+        Tells if the login device is EMM managed. Might be missing due to
+        historical data gap.
+    :ivar LoginFailDetails.login_method:
+        Login method.
+    :ivar LoginFailDetails.error_details:
+        Error details.
     """
 
     __slots__ = [
@@ -66931,9 +67651,11 @@ class LoginSuccessDetails(bb.Struct):
     """
     Signed in.
 
-    :ivar team_log.LoginSuccessDetails.is_emm_managed: Tells if the login device
-        is EMM managed. Might be missing due to historical data gap.
-    :ivar team_log.LoginSuccessDetails.login_method: Login method.
+    :ivar LoginSuccessDetails.is_emm_managed:
+        Tells if the login device is EMM managed. Might be missing due to
+        historical data gap.
+    :ivar LoginSuccessDetails.login_method:
+        Login method.
     """
 
     __slots__ = [
@@ -66990,7 +67712,8 @@ class LogoutDetails(bb.Struct):
     """
     Signed out.
 
-    :ivar team_log.LogoutDetails.login_id: Login session id.
+    :ivar LogoutDetails.login_id:
+        Login session id.
     """
 
     __slots__ = [
@@ -67039,12 +67762,13 @@ class MalwareExclusionState(bb.Struct):
     """
     Malware exclusion list state
 
-    :ivar team_log.MalwareExclusionState.excluded_file_hashes_count: The number
-        of files that are excluded from the monitoring for malware alerts.
-    :ivar team_log.MalwareExclusionState.file_path_from_last_exclusion: The file
-        path of the last exclusion operation.
-    :ivar team_log.MalwareExclusionState.file_path_from_last_inclusion: The file
-        path of the last inclusion operation.
+    :ivar MalwareExclusionState.excluded_file_hashes_count:
+        The number of files that are excluded from the monitoring for malware
+        alerts.
+    :ivar MalwareExclusionState.file_path_from_last_exclusion:
+        The file path of the last exclusion operation.
+    :ivar MalwareExclusionState.file_path_from_last_inclusion:
+        The file path of the last inclusion operation.
     """
 
     __slots__ = [
@@ -67133,8 +67857,9 @@ class MediaHubAddingPeoplePolicyChangedDetails(bb.Struct):
     """
     Changed the policy for adding people to Media Hub content.
 
-    :ivar team_log.MediaHubAddingPeoplePolicyChangedDetails.new_value: To.
-    :ivar team_log.MediaHubAddingPeoplePolicyChangedDetails.previous_value:
+    :ivar MediaHubAddingPeoplePolicyChangedDetails.new_value:
+        To.
+    :ivar MediaHubAddingPeoplePolicyChangedDetails.previous_value:
         From.
     """
 
@@ -67238,8 +67963,10 @@ class MediaHubDownloadPolicyChangedDetails(bb.Struct):
     """
     Changed the policy for downloading Media Hub content.
 
-    :ivar team_log.MediaHubDownloadPolicyChangedDetails.new_value: To.
-    :ivar team_log.MediaHubDownloadPolicyChangedDetails.previous_value: From.
+    :ivar MediaHubDownloadPolicyChangedDetails.new_value:
+        To.
+    :ivar MediaHubDownloadPolicyChangedDetails.previous_value:
+        From.
     """
 
     __slots__ = [
@@ -67392,8 +68119,10 @@ class MediaHubLinkSharingPolicyChangedDetails(bb.Struct):
     """
     Changed the policy for sharing Media Hub content.
 
-    :ivar team_log.MediaHubLinkSharingPolicyChangedDetails.new_value: To.
-    :ivar team_log.MediaHubLinkSharingPolicyChangedDetails.previous_value: From.
+    :ivar MediaHubLinkSharingPolicyChangedDetails.new_value:
+        To.
+    :ivar MediaHubLinkSharingPolicyChangedDetails.previous_value:
+        From.
     """
 
     __slots__ = [
@@ -67586,10 +68315,10 @@ class MediaHubProjectTeamRoleChangedDetails(bb.Struct):
     """
     Changed member role in Media Hub project.
 
-    :ivar team_log.MediaHubProjectTeamRoleChangedDetails.previous_role: Previous
-        Media Hub project role.
-    :ivar team_log.MediaHubProjectTeamRoleChangedDetails.new_role: New Media Hub
-        project role.
+    :ivar MediaHubProjectTeamRoleChangedDetails.previous_role:
+        Previous Media Hub project role.
+    :ivar MediaHubProjectTeamRoleChangedDetails.new_role:
+        New Media Hub project role.
     """
 
     __slots__ = [
@@ -67702,12 +68431,12 @@ class MediaHubSharedLinkAudienceChangedDetails(bb.Struct):
     """
     Changed Media Hub shared link audience.
 
-    :ivar team_log.MediaHubSharedLinkAudienceChangedDetails.target_type: Media
-        Hub shared link target type.
-    :ivar team_log.MediaHubSharedLinkAudienceChangedDetails.previous_value:
+    :ivar MediaHubSharedLinkAudienceChangedDetails.target_type:
+        Media Hub shared link target type.
+    :ivar MediaHubSharedLinkAudienceChangedDetails.previous_value:
         Previous Media Hub shared link audience.
-    :ivar team_log.MediaHubSharedLinkAudienceChangedDetails.new_value: New Media
-        Hub shared link audience.
+    :ivar MediaHubSharedLinkAudienceChangedDetails.new_value:
+        New Media Hub shared link audience.
     """
 
     __slots__ = [
@@ -67772,10 +68501,10 @@ class MediaHubSharedLinkCreatedDetails(bb.Struct):
     """
     Created Media Hub shared link.
 
-    :ivar team_log.MediaHubSharedLinkCreatedDetails.target_type: Media Hub
-        shared link target type.
-    :ivar team_log.MediaHubSharedLinkCreatedDetails.audience: Media Hub shared
-        link audience.
+    :ivar MediaHubSharedLinkCreatedDetails.target_type:
+        Media Hub shared link target type.
+    :ivar MediaHubSharedLinkCreatedDetails.audience:
+        Media Hub shared link audience.
     """
 
     __slots__ = [
@@ -67878,12 +68607,11 @@ class MediaHubSharedLinkDownloadSettingChangedDetails(bb.Struct):
     """
     Changed Media Hub shared link download setting.
 
-    :ivar team_log.MediaHubSharedLinkDownloadSettingChangedDetails.target_type:
+    :ivar MediaHubSharedLinkDownloadSettingChangedDetails.target_type:
         Media Hub shared link target type.
-    :ivar
-        team_log.MediaHubSharedLinkDownloadSettingChangedDetails.previous_value:
+    :ivar MediaHubSharedLinkDownloadSettingChangedDetails.previous_value:
         Previous Media Hub shared link download setting.
-    :ivar team_log.MediaHubSharedLinkDownloadSettingChangedDetails.new_value:
+    :ivar MediaHubSharedLinkDownloadSettingChangedDetails.new_value:
         New Media Hub shared link download setting.
     """
 
@@ -67949,8 +68677,8 @@ class MediaHubSharedLinkRevokedDetails(bb.Struct):
     """
     Revoked Media Hub shared link.
 
-    :ivar team_log.MediaHubSharedLinkRevokedDetails.target_type: Media Hub
-        shared link target type.
+    :ivar MediaHubSharedLinkRevokedDetails.target_type:
+        Media Hub shared link target type.
     """
 
     __slots__ = [
@@ -68063,7 +68791,7 @@ class MemberAccessDetailsCreateReportFailedDetails(bb.Struct):
     """
     Couldn't generate member access report.
 
-    :ivar team_log.MemberAccessDetailsCreateReportFailedDetails.failure_reason:
+    :ivar MemberAccessDetailsCreateReportFailedDetails.failure_reason:
         Failure reason.
     """
 
@@ -68135,7 +68863,8 @@ class MemberAddExternalIdDetails(bb.Struct):
     """
     Added an external ID for team member.
 
-    :ivar team_log.MemberAddExternalIdDetails.new_value: Current external id.
+    :ivar MemberAddExternalIdDetails.new_value:
+        Current external id.
     """
 
     __slots__ = [
@@ -68184,7 +68913,8 @@ class MemberAddNameDetails(bb.Struct):
     """
     Added team member name.
 
-    :ivar team_log.MemberAddNameDetails.new_value: New user's name.
+    :ivar MemberAddNameDetails.new_value:
+        New user's name.
     """
 
     __slots__ = [
@@ -68233,12 +68963,12 @@ class MemberChangeAdminRoleDetails(bb.Struct):
     """
     Changed team member admin role.
 
-    :ivar team_log.MemberChangeAdminRoleDetails.new_value: New admin role. This
-        field is relevant when the admin role is changed or whenthe user role
-        changes from no admin rights to with admin rights.
-    :ivar team_log.MemberChangeAdminRoleDetails.previous_value: Previous admin
-        role. This field is relevant when the admin role is changed or when the
-        admin role is removed.
+    :ivar MemberChangeAdminRoleDetails.new_value:
+        New admin role. This field is relevant when the admin role is changed or
+        whenthe user role changes from no admin rights to with admin rights.
+    :ivar MemberChangeAdminRoleDetails.previous_value:
+        Previous admin role. This field is relevant when the admin role is
+        changed or when the admin role is removed.
     """
 
     __slots__ = [
@@ -68295,9 +69025,10 @@ class MemberChangeEmailDetails(bb.Struct):
     """
     Changed team member email.
 
-    :ivar team_log.MemberChangeEmailDetails.new_value: New email.
-    :ivar team_log.MemberChangeEmailDetails.previous_value: Previous email.
-        Might be missing due to historical data gap.
+    :ivar MemberChangeEmailDetails.new_value:
+        New email.
+    :ivar MemberChangeEmailDetails.previous_value:
+        Previous email. Might be missing due to historical data gap.
     """
 
     __slots__ = [
@@ -68354,9 +69085,10 @@ class MemberChangeExternalIdDetails(bb.Struct):
     """
     Changed the external ID for team member.
 
-    :ivar team_log.MemberChangeExternalIdDetails.new_value: Current external id.
-    :ivar team_log.MemberChangeExternalIdDetails.previous_value: Old external
-        id.
+    :ivar MemberChangeExternalIdDetails.new_value:
+        Current external id.
+    :ivar MemberChangeExternalIdDetails.previous_value:
+        Old external id.
     """
 
     __slots__ = [
@@ -68413,10 +69145,10 @@ class MemberChangeMembershipTypeDetails(bb.Struct):
     """
     Changed membership type (limited/full) of member.
 
-    :ivar team_log.MemberChangeMembershipTypeDetails.prev_value: Previous
-        membership type.
-    :ivar team_log.MemberChangeMembershipTypeDetails.new_value: New membership
-        type.
+    :ivar MemberChangeMembershipTypeDetails.prev_value:
+        Previous membership type.
+    :ivar MemberChangeMembershipTypeDetails.new_value:
+        New membership type.
     """
 
     __slots__ = [
@@ -68473,9 +69205,10 @@ class MemberChangeNameDetails(bb.Struct):
     """
     Changed team member name.
 
-    :ivar team_log.MemberChangeNameDetails.new_value: New user's name.
-    :ivar team_log.MemberChangeNameDetails.previous_value: Previous user's name.
-        Might be missing due to historical data gap.
+    :ivar MemberChangeNameDetails.new_value:
+        New user's name.
+    :ivar MemberChangeNameDetails.previous_value:
+        Previous user's name. Might be missing due to historical data gap.
     """
 
     __slots__ = [
@@ -68532,11 +69265,12 @@ class MemberChangeResellerRoleDetails(bb.Struct):
     """
     Changed team member reseller role.
 
-    :ivar team_log.MemberChangeResellerRoleDetails.new_value: New reseller role.
-        This field is relevant when the reseller role is changed.
-    :ivar team_log.MemberChangeResellerRoleDetails.previous_value: Previous
-        reseller role. This field is relevant when the reseller role is changed
-        or when the reseller role is removed.
+    :ivar MemberChangeResellerRoleDetails.new_value:
+        New reseller role. This field is relevant when the reseller role is
+        changed.
+    :ivar MemberChangeResellerRoleDetails.previous_value:
+        Previous reseller role. This field is relevant when the reseller role is
+        changed or when the reseller role is removed.
     """
 
     __slots__ = [
@@ -68593,16 +69327,19 @@ class MemberChangeStatusDetails(bb.Struct):
     """
     Changed member status (invited, joined, suspended, etc.).
 
-    :ivar team_log.MemberChangeStatusDetails.previous_value: Previous member
-        status. Might be missing due to historical data gap.
-    :ivar team_log.MemberChangeStatusDetails.new_value: New member status.
-    :ivar team_log.MemberChangeStatusDetails.action: Additional information
-        indicating the action taken that caused status change.
-    :ivar team_log.MemberChangeStatusDetails.new_team: The user's new team name.
-        This field is relevant when the user is transferred off the team.
-    :ivar team_log.MemberChangeStatusDetails.previous_team: The user's previous
-        team name. This field is relevant when the user is transferred onto the
-        team.
+    :ivar MemberChangeStatusDetails.previous_value:
+        Previous member status. Might be missing due to historical data gap.
+    :ivar MemberChangeStatusDetails.new_value:
+        New member status.
+    :ivar MemberChangeStatusDetails.action:
+        Additional information indicating the action taken that caused status
+        change.
+    :ivar MemberChangeStatusDetails.new_team:
+        The user's new team name. This field is relevant when the user is
+        transferred off the team.
+    :ivar MemberChangeStatusDetails.previous_team:
+        The user's previous team name. This field is relevant when the user is
+        transferred onto the team.
     """
 
     __slots__ = [
@@ -68867,8 +69604,8 @@ class MemberRemoveExternalIdDetails(bb.Struct):
     """
     Removed the external ID for team member.
 
-    :ivar team_log.MemberRemoveExternalIdDetails.previous_value: Old external
-        id.
+    :ivar MemberRemoveExternalIdDetails.previous_value:
+        Old external id.
     """
 
     __slots__ = [
@@ -68917,11 +69654,11 @@ class MemberRequestsChangePolicyDetails(bb.Struct):
     """
     Changed whether users can find team when not invited.
 
-    :ivar team_log.MemberRequestsChangePolicyDetails.new_value: New member
-        change requests policy.
-    :ivar team_log.MemberRequestsChangePolicyDetails.previous_value: Previous
-        member change requests policy. Might be missing due to historical data
-        gap.
+    :ivar MemberRequestsChangePolicyDetails.new_value:
+        New member change requests policy.
+    :ivar MemberRequestsChangePolicyDetails.previous_value:
+        Previous member change requests policy. Might be missing due to
+        historical data gap.
     """
 
     __slots__ = [
@@ -69088,10 +69825,10 @@ class MemberSendInvitePolicyChangedDetails(bb.Struct):
     """
     Changed member send invite policy for team.
 
-    :ivar team_log.MemberSendInvitePolicyChangedDetails.new_value: New team
-        member send invite policy.
-    :ivar team_log.MemberSendInvitePolicyChangedDetails.previous_value: Previous
-        team member send invite policy.
+    :ivar MemberSendInvitePolicyChangedDetails.new_value:
+        New team member send invite policy.
+    :ivar MemberSendInvitePolicyChangedDetails.previous_value:
+        Previous team member send invite policy.
     """
 
     __slots__ = [
@@ -69188,8 +69925,8 @@ class MemberSpaceLimitsAddCustomQuotaDetails(bb.Struct):
     """
     Set custom member space limit.
 
-    :ivar team_log.MemberSpaceLimitsAddCustomQuotaDetails.new_value: New custom
-        quota value in bytes.
+    :ivar MemberSpaceLimitsAddCustomQuotaDetails.new_value:
+        New custom quota value in bytes.
     """
 
     __slots__ = [
@@ -69278,10 +70015,10 @@ class MemberSpaceLimitsChangeCapsTypePolicyDetails(bb.Struct):
     """
     Changed member space limit type for team.
 
-    :ivar team_log.MemberSpaceLimitsChangeCapsTypePolicyDetails.previous_value:
+    :ivar MemberSpaceLimitsChangeCapsTypePolicyDetails.previous_value:
         Previous space limit type.
-    :ivar team_log.MemberSpaceLimitsChangeCapsTypePolicyDetails.new_value: New
-        space limit type.
+    :ivar MemberSpaceLimitsChangeCapsTypePolicyDetails.new_value:
+        New space limit type.
     """
 
     __slots__ = [
@@ -69338,10 +70075,10 @@ class MemberSpaceLimitsChangeCustomQuotaDetails(bb.Struct):
     """
     Changed custom member space limit.
 
-    :ivar team_log.MemberSpaceLimitsChangeCustomQuotaDetails.previous_value:
+    :ivar MemberSpaceLimitsChangeCustomQuotaDetails.previous_value:
         Previous custom quota value in bytes.
-    :ivar team_log.MemberSpaceLimitsChangeCustomQuotaDetails.new_value: New
-        custom quota value in bytes.
+    :ivar MemberSpaceLimitsChangeCustomQuotaDetails.new_value:
+        New custom quota value in bytes.
     """
 
     __slots__ = [
@@ -69398,12 +70135,12 @@ class MemberSpaceLimitsChangePolicyDetails(bb.Struct):
     """
     Changed team default member space limit.
 
-    :ivar team_log.MemberSpaceLimitsChangePolicyDetails.previous_value: Previous
-        team default limit value in bytes. Might be missing due to historical
-        data gap.
-    :ivar team_log.MemberSpaceLimitsChangePolicyDetails.new_value: New team
-        default limit value in bytes. Might be missing due to historical data
-        gap.
+    :ivar MemberSpaceLimitsChangePolicyDetails.previous_value:
+        Previous team default limit value in bytes. Might be missing due to
+        historical data gap.
+    :ivar MemberSpaceLimitsChangePolicyDetails.new_value:
+        New team default limit value in bytes. Might be missing due to
+        historical data gap.
     """
 
     __slots__ = [
@@ -69460,10 +70197,10 @@ class MemberSpaceLimitsChangeStatusDetails(bb.Struct):
     """
     Changed space limit status.
 
-    :ivar team_log.MemberSpaceLimitsChangeStatusDetails.previous_value: Previous
-        storage quota status.
-    :ivar team_log.MemberSpaceLimitsChangeStatusDetails.new_value: New storage
-        quota status.
+    :ivar MemberSpaceLimitsChangeStatusDetails.previous_value:
+        Previous storage quota status.
+    :ivar MemberSpaceLimitsChangeStatusDetails.new_value:
+        New storage quota status.
     """
 
     __slots__ = [
@@ -69684,8 +70421,8 @@ class MemberSuggestDetails(bb.Struct):
     """
     Suggested person to add to team.
 
-    :ivar team_log.MemberSuggestDetails.suggested_members: suggested users
-        emails.
+    :ivar MemberSuggestDetails.suggested_members:
+        suggested users emails.
     """
 
     __slots__ = [
@@ -69734,11 +70471,11 @@ class MemberSuggestionsChangePolicyDetails(bb.Struct):
     """
     Enabled/disabled option for team members to suggest people to add to team.
 
-    :ivar team_log.MemberSuggestionsChangePolicyDetails.new_value: New team
-        member suggestions policy.
-    :ivar team_log.MemberSuggestionsChangePolicyDetails.previous_value: Previous
-        team member suggestions policy. Might be missing due to historical data
-        gap.
+    :ivar MemberSuggestionsChangePolicyDetails.new_value:
+        New team member suggestions policy.
+    :ivar MemberSuggestionsChangePolicyDetails.previous_value:
+        Previous team member suggestions policy. Might be missing due to
+        historical data gap.
     """
 
     __slots__ = [
@@ -69881,10 +70618,10 @@ class MemberTransferredInternalFields(bb.Struct):
     """
     Internal only - fields for target team computations
 
-    :ivar team_log.MemberTransferredInternalFields.source_team_id: Internal only
-        - team user was moved from.
-    :ivar team_log.MemberTransferredInternalFields.target_team_id: Internal only
-        - team user was moved to.
+    :ivar MemberTransferredInternalFields.source_team_id:
+        Internal only - team user was moved from.
+    :ivar MemberTransferredInternalFields.target_team_id:
+        Internal only - team user was moved to.
     """
 
     __slots__ = [
@@ -69919,10 +70656,11 @@ class MicrosoftLoginChangePolicyDetails(bb.Struct):
     """
     Enabled/disabled Microsoft login for team.
 
-    :ivar team_log.MicrosoftLoginChangePolicyDetails.new_value: New Microsoft
-        login policy.
-    :ivar team_log.MicrosoftLoginChangePolicyDetails.previous_value: Previous
-        Microsoft login policy. Might be missing due to historical data gap.
+    :ivar MicrosoftLoginChangePolicyDetails.new_value:
+        New Microsoft login policy.
+    :ivar MicrosoftLoginChangePolicyDetails.previous_value:
+        Previous Microsoft login policy. Might be missing due to historical data
+        gap.
     """
 
     __slots__ = [
@@ -70035,9 +70773,9 @@ class MicrosoftOfficeAddinChangePolicyDetails(bb.Struct):
     """
     Enabled/disabled Microsoft Office add-in.
 
-    :ivar team_log.MicrosoftOfficeAddinChangePolicyDetails.new_value: New
-        Microsoft Office addin policy.
-    :ivar team_log.MicrosoftOfficeAddinChangePolicyDetails.previous_value:
+    :ivar MicrosoftOfficeAddinChangePolicyDetails.new_value:
+        New Microsoft Office addin policy.
+    :ivar MicrosoftOfficeAddinChangePolicyDetails.previous_value:
         Previous Microsoft Office addin policy. Might be missing due to
         historical data gap.
     """
@@ -70143,8 +70881,9 @@ class MissingDetails(bb.Struct):
     An indication that an error occurred while retrieving the event. Some
     attributes of the event may be omitted as a result.
 
-    :ivar team_log.MissingDetails.source_event_fields: All the data that could
-        be retrieved and converted from the source event.
+    :ivar MissingDetails.source_event_fields:
+        All the data that could be retrieved and converted from the source
+        event.
     """
 
     __slots__ = [
@@ -70171,17 +70910,18 @@ class MobileDeviceSessionLogInfo(DeviceSessionLogInfo):
     """
     Information about linked Dropbox mobile client sessions
 
-    :ivar team_log.MobileDeviceSessionLogInfo.session_info: Mobile session
-        unique id.
-    :ivar team_log.MobileDeviceSessionLogInfo.device_name: The device name.
-    :ivar team_log.MobileDeviceSessionLogInfo.client_type: The mobile
-        application type.
-    :ivar team_log.MobileDeviceSessionLogInfo.client_version: The Dropbox client
-        version.
-    :ivar team_log.MobileDeviceSessionLogInfo.os_version: The hosting OS
-        version.
-    :ivar team_log.MobileDeviceSessionLogInfo.last_carrier: last carrier used by
-        the device.
+    :ivar MobileDeviceSessionLogInfo.session_info:
+        Mobile session unique id.
+    :ivar MobileDeviceSessionLogInfo.device_name:
+        The device name.
+    :ivar MobileDeviceSessionLogInfo.client_type:
+        The mobile application type.
+    :ivar MobileDeviceSessionLogInfo.client_version:
+        The Dropbox client version.
+    :ivar MobileDeviceSessionLogInfo.os_version:
+        The hosting OS version.
+    :ivar MobileDeviceSessionLogInfo.last_carrier:
+        last carrier used by the device.
     """
 
     __slots__ = [
@@ -70329,9 +71069,9 @@ class MultiTeamIdentityPolicyChangedDetails(bb.Struct):
     """
     Changed multi-team identity policy for team.
 
-    :ivar team_log.MultiTeamIdentityPolicyChangedDetails.new_value: New
-        multi-team identity policy.
-    :ivar team_log.MultiTeamIdentityPolicyChangedDetails.previous_value:
+    :ivar MultiTeamIdentityPolicyChangedDetails.new_value:
+        New multi-team identity policy.
+    :ivar MultiTeamIdentityPolicyChangedDetails.previous_value:
         Previous multi-team identity policy. Might be missing due to historical
         data gap.
     """
@@ -70390,11 +71130,12 @@ class NamespaceRelativePathLogInfo(bb.Struct):
     """
     Namespace relative path details.
 
-    :ivar team_log.NamespaceRelativePathLogInfo.ns_id: Namespace ID.
-    :ivar team_log.NamespaceRelativePathLogInfo.relative_path: A path relative
-        to the specified namespace ID.
-    :ivar team_log.NamespaceRelativePathLogInfo.is_shared_namespace: True if the
-        namespace is shared.
+    :ivar NamespaceRelativePathLogInfo.ns_id:
+        Namespace ID.
+    :ivar NamespaceRelativePathLogInfo.relative_path:
+        A path relative to the specified namespace ID.
+    :ivar NamespaceRelativePathLogInfo.is_shared_namespace:
+        True if the namespace is shared.
     """
 
     __slots__ = [
@@ -70437,10 +71178,11 @@ class NetworkControlChangePolicyDetails(bb.Struct):
     """
     Enabled/disabled network control.
 
-    :ivar team_log.NetworkControlChangePolicyDetails.new_value: New network
-        control policy.
-    :ivar team_log.NetworkControlChangePolicyDetails.previous_value: Previous
-        network control policy. Might be missing due to historical data gap.
+    :ivar NetworkControlChangePolicyDetails.new_value:
+        New network control policy.
+    :ivar NetworkControlChangePolicyDetails.previous_value:
+        Previous network control policy. Might be missing due to historical data
+        gap.
     """
 
     __slots__ = [
@@ -70543,10 +71285,10 @@ class NoExpirationLinkGenCreateReportDetails(bb.Struct):
     """
     Report created: Links created with no expiration.
 
-    :ivar team_log.NoExpirationLinkGenCreateReportDetails.start_date: Report
-        start date.
-    :ivar team_log.NoExpirationLinkGenCreateReportDetails.end_date: Report end
-        date.
+    :ivar NoExpirationLinkGenCreateReportDetails.start_date:
+        Report start date.
+    :ivar NoExpirationLinkGenCreateReportDetails.end_date:
+        Report end date.
     """
 
     __slots__ = [
@@ -70603,7 +71345,7 @@ class NoExpirationLinkGenReportFailedDetails(bb.Struct):
     """
     Couldn't create report: Links created with no expiration.
 
-    :ivar team_log.NoExpirationLinkGenReportFailedDetails.failure_reason:
+    :ivar NoExpirationLinkGenReportFailedDetails.failure_reason:
         Failure reason.
     """
 
@@ -70653,10 +71395,10 @@ class NoPasswordLinkGenCreateReportDetails(bb.Struct):
     """
     Report created: Links created without passwords.
 
-    :ivar team_log.NoPasswordLinkGenCreateReportDetails.start_date: Report start
-        date.
-    :ivar team_log.NoPasswordLinkGenCreateReportDetails.end_date: Report end
-        date.
+    :ivar NoPasswordLinkGenCreateReportDetails.start_date:
+        Report start date.
+    :ivar NoPasswordLinkGenCreateReportDetails.end_date:
+        Report end date.
     """
 
     __slots__ = [
@@ -70713,8 +71455,8 @@ class NoPasswordLinkGenReportFailedDetails(bb.Struct):
     """
     Couldn't create report: Links created without passwords.
 
-    :ivar team_log.NoPasswordLinkGenReportFailedDetails.failure_reason: Failure
-        reason.
+    :ivar NoPasswordLinkGenReportFailedDetails.failure_reason:
+        Failure reason.
     """
 
     __slots__ = [
@@ -70763,10 +71505,10 @@ class NoPasswordLinkViewCreateReportDetails(bb.Struct):
     """
     Report created: Views of links without passwords.
 
-    :ivar team_log.NoPasswordLinkViewCreateReportDetails.start_date: Report
-        start date.
-    :ivar team_log.NoPasswordLinkViewCreateReportDetails.end_date: Report end
-        date.
+    :ivar NoPasswordLinkViewCreateReportDetails.start_date:
+        Report start date.
+    :ivar NoPasswordLinkViewCreateReportDetails.end_date:
+        Report end date.
     """
 
     __slots__ = [
@@ -70823,8 +71565,8 @@ class NoPasswordLinkViewReportFailedDetails(bb.Struct):
     """
     Couldn't create report: Views of links without passwords.
 
-    :ivar team_log.NoPasswordLinkViewReportFailedDetails.failure_reason: Failure
-        reason.
+    :ivar NoPasswordLinkViewReportFailedDetails.failure_reason:
+        Failure reason.
     """
 
     __slots__ = [
@@ -70873,9 +71615,12 @@ class UserLogInfo(bb.Struct):
     """
     User's logged information.
 
-    :ivar team_log.UserLogInfo.account_id: User unique ID.
-    :ivar team_log.UserLogInfo.display_name: User display name.
-    :ivar team_log.UserLogInfo.email: User email address.
+    :ivar UserLogInfo.account_id:
+        User unique ID.
+    :ivar UserLogInfo.display_name:
+        User display name.
+    :ivar UserLogInfo.email:
+        User email address.
     """
 
     __slots__ = [
@@ -70941,8 +71686,8 @@ class NonTrustedTeamDetails(bb.Struct):
     """
     The email to which the request was sent
 
-    :ivar team_log.NonTrustedTeamDetails.team: The email to which the request
-        was sent.
+    :ivar NonTrustedTeamDetails.team:
+        The email to which the request was sent.
     """
 
     __slots__ = [
@@ -71169,8 +71914,8 @@ class ObjectLabelAddedDetails(bb.Struct):
     """
     Added a label.
 
-    :ivar team_log.ObjectLabelAddedDetails.label_type: Labels mark a file or
-        folder.
+    :ivar ObjectLabelAddedDetails.label_type:
+        Labels mark a file or folder.
     """
 
     __slots__ = [
@@ -71219,8 +71964,8 @@ class ObjectLabelRemovedDetails(bb.Struct):
     """
     Removed a label.
 
-    :ivar team_log.ObjectLabelRemovedDetails.label_type: Labels mark a file or
-        folder.
+    :ivar ObjectLabelRemovedDetails.label_type:
+        Labels mark a file or folder.
     """
 
     __slots__ = [
@@ -71269,8 +72014,8 @@ class ObjectLabelUpdatedValueDetails(bb.Struct):
     """
     Updated a label's value.
 
-    :ivar team_log.ObjectLabelUpdatedValueDetails.label_type: Labels mark a file
-        or folder.
+    :ivar ObjectLabelUpdatedValueDetails.label_type:
+        Labels mark a file or folder.
     """
 
     __slots__ = [
@@ -71359,8 +72104,8 @@ class OrganizationDetails(bb.Struct):
     """
     More details about the organization.
 
-    :ivar team_log.OrganizationDetails.organization: The name of the
-        organization.
+    :ivar OrganizationDetails.organization:
+        The name of the organization.
     """
 
     __slots__ = [
@@ -71387,7 +72132,8 @@ class OrganizationName(bb.Struct):
     """
     The name of the organization
 
-    :ivar team_log.OrganizationName.organization: The name of the organization.
+    :ivar OrganizationName.organization:
+        The name of the organization.
     """
 
     __slots__ = [
@@ -71454,9 +72200,10 @@ class OriginLogInfo(bb.Struct):
     """
     The origin from which the actor performed the action.
 
-    :ivar team_log.OriginLogInfo.geo_location: Geographic location details.
-    :ivar team_log.OriginLogInfo.access_method: The method that was used to
-        perform the action.
+    :ivar OriginLogInfo.geo_location:
+        Geographic location details.
+    :ivar OriginLogInfo.access_method:
+        The method that was used to perform the action.
     """
 
     __slots__ = [
@@ -71491,10 +72238,10 @@ class OutdatedLinkViewCreateReportDetails(bb.Struct):
     """
     Report created: Views of old links.
 
-    :ivar team_log.OutdatedLinkViewCreateReportDetails.start_date: Report start
-        date.
-    :ivar team_log.OutdatedLinkViewCreateReportDetails.end_date: Report end
-        date.
+    :ivar OutdatedLinkViewCreateReportDetails.start_date:
+        Report start date.
+    :ivar OutdatedLinkViewCreateReportDetails.end_date:
+        Report end date.
     """
 
     __slots__ = [
@@ -71551,8 +72298,8 @@ class OutdatedLinkViewReportFailedDetails(bb.Struct):
     """
     Couldn't create report: Views of old links.
 
-    :ivar team_log.OutdatedLinkViewReportFailedDetails.failure_reason: Failure
-        reason.
+    :ivar OutdatedLinkViewReportFailedDetails.failure_reason:
+        Failure reason.
     """
 
     __slots__ = [
@@ -71696,11 +72443,11 @@ class PaperChangeDeploymentPolicyDetails(bb.Struct):
     Changed whether Dropbox Paper, when enabled, is deployed to all members or
     to specific members.
 
-    :ivar team_log.PaperChangeDeploymentPolicyDetails.new_value: New Dropbox
-        Paper deployment policy.
-    :ivar team_log.PaperChangeDeploymentPolicyDetails.previous_value: Previous
-        Dropbox Paper deployment policy. Might be missing due to historical data
-        gap.
+    :ivar PaperChangeDeploymentPolicyDetails.new_value:
+        New Dropbox Paper deployment policy.
+    :ivar PaperChangeDeploymentPolicyDetails.previous_value:
+        Previous Dropbox Paper deployment policy. Might be missing due to
+        historical data gap.
     """
 
     __slots__ = [
@@ -71757,8 +72504,8 @@ class PaperChangeMemberLinkPolicyDetails(bb.Struct):
     """
     Changed whether non-members can view Paper docs with link.
 
-    :ivar team_log.PaperChangeMemberLinkPolicyDetails.new_value: New paper
-        external link accessibility policy.
+    :ivar PaperChangeMemberLinkPolicyDetails.new_value:
+        New paper external link accessibility policy.
     """
 
     __slots__ = [
@@ -71808,11 +72555,11 @@ class PaperChangeMemberPolicyDetails(bb.Struct):
     Changed whether members can share Paper docs outside team, and if docs are
     accessible only by team members or anyone by default.
 
-    :ivar team_log.PaperChangeMemberPolicyDetails.new_value: New paper external
-        accessibility policy.
-    :ivar team_log.PaperChangeMemberPolicyDetails.previous_value: Previous paper
-        external accessibility policy. Might be missing due to historical data
-        gap.
+    :ivar PaperChangeMemberPolicyDetails.new_value:
+        New paper external accessibility policy.
+    :ivar PaperChangeMemberPolicyDetails.previous_value:
+        Previous paper external accessibility policy. Might be missing due to
+        historical data gap.
     """
 
     __slots__ = [
@@ -71869,9 +72616,11 @@ class PaperChangePolicyDetails(bb.Struct):
     """
     Enabled/disabled Dropbox Paper for team.
 
-    :ivar team_log.PaperChangePolicyDetails.new_value: New Dropbox Paper policy.
-    :ivar team_log.PaperChangePolicyDetails.previous_value: Previous Dropbox
-        Paper policy. Might be missing due to historical data gap.
+    :ivar PaperChangePolicyDetails.new_value:
+        New Dropbox Paper policy.
+    :ivar PaperChangePolicyDetails.previous_value:
+        Previous Dropbox Paper policy. Might be missing due to historical data
+        gap.
     """
 
     __slots__ = [
@@ -71928,8 +72677,8 @@ class PaperContentAddMemberDetails(bb.Struct):
     """
     Added users and/or groups to Paper doc/folder.
 
-    :ivar team_log.PaperContentAddMemberDetails.event_uuid: Event unique
-        identifier.
+    :ivar PaperContentAddMemberDetails.event_uuid:
+        Event unique identifier.
     """
 
     __slots__ = [
@@ -71978,12 +72727,12 @@ class PaperContentAddToFolderDetails(bb.Struct):
     """
     Added Paper doc/folder to folder.
 
-    :ivar team_log.PaperContentAddToFolderDetails.event_uuid: Event unique
-        identifier.
-    :ivar team_log.PaperContentAddToFolderDetails.target_asset_index: Target
-        asset position in the Assets list.
-    :ivar team_log.PaperContentAddToFolderDetails.parent_asset_index: Parent
-        asset position in the Assets list.
+    :ivar PaperContentAddToFolderDetails.event_uuid:
+        Event unique identifier.
+    :ivar PaperContentAddToFolderDetails.target_asset_index:
+        Target asset position in the Assets list.
+    :ivar PaperContentAddToFolderDetails.parent_asset_index:
+        Parent asset position in the Assets list.
     """
 
     __slots__ = [
@@ -72048,8 +72797,8 @@ class PaperContentArchiveDetails(bb.Struct):
     """
     Archived Paper doc/folder.
 
-    :ivar team_log.PaperContentArchiveDetails.event_uuid: Event unique
-        identifier.
+    :ivar PaperContentArchiveDetails.event_uuid:
+        Event unique identifier.
     """
 
     __slots__ = [
@@ -72098,8 +72847,8 @@ class PaperContentCreateDetails(bb.Struct):
     """
     Created Paper doc/folder.
 
-    :ivar team_log.PaperContentCreateDetails.event_uuid: Event unique
-        identifier.
+    :ivar PaperContentCreateDetails.event_uuid:
+        Event unique identifier.
     """
 
     __slots__ = [
@@ -72148,8 +72897,8 @@ class PaperContentPermanentlyDeleteDetails(bb.Struct):
     """
     Permanently deleted Paper doc/folder.
 
-    :ivar team_log.PaperContentPermanentlyDeleteDetails.event_uuid: Event unique
-        identifier.
+    :ivar PaperContentPermanentlyDeleteDetails.event_uuid:
+        Event unique identifier.
     """
 
     __slots__ = [
@@ -72198,11 +72947,11 @@ class PaperContentRemoveFromFolderDetails(bb.Struct):
     """
     Removed Paper doc/folder from folder.
 
-    :ivar team_log.PaperContentRemoveFromFolderDetails.event_uuid: Event unique
-        identifier.
-    :ivar team_log.PaperContentRemoveFromFolderDetails.target_asset_index:
+    :ivar PaperContentRemoveFromFolderDetails.event_uuid:
+        Event unique identifier.
+    :ivar PaperContentRemoveFromFolderDetails.target_asset_index:
         Target asset position in the Assets list.
-    :ivar team_log.PaperContentRemoveFromFolderDetails.parent_asset_index:
+    :ivar PaperContentRemoveFromFolderDetails.parent_asset_index:
         Parent asset position in the Assets list.
     """
 
@@ -72268,8 +73017,8 @@ class PaperContentRemoveMemberDetails(bb.Struct):
     """
     Removed users and/or groups from Paper doc/folder.
 
-    :ivar team_log.PaperContentRemoveMemberDetails.event_uuid: Event unique
-        identifier.
+    :ivar PaperContentRemoveMemberDetails.event_uuid:
+        Event unique identifier.
     """
 
     __slots__ = [
@@ -72318,8 +73067,8 @@ class PaperContentRenameDetails(bb.Struct):
     """
     Renamed Paper doc/folder.
 
-    :ivar team_log.PaperContentRenameDetails.event_uuid: Event unique
-        identifier.
+    :ivar PaperContentRenameDetails.event_uuid:
+        Event unique identifier.
     """
 
     __slots__ = [
@@ -72368,8 +73117,8 @@ class PaperContentRestoreDetails(bb.Struct):
     """
     Restored archived Paper doc/folder.
 
-    :ivar team_log.PaperContentRestoreDetails.event_uuid: Event unique
-        identifier.
+    :ivar PaperContentRestoreDetails.event_uuid:
+        Event unique identifier.
     """
 
     __slots__ = [
@@ -72464,9 +73213,9 @@ class PaperDefaultFolderPolicyChangedDetails(bb.Struct):
     """
     Changed Paper Default Folder Policy setting for team.
 
-    :ivar team_log.PaperDefaultFolderPolicyChangedDetails.new_value: New Paper
-        Default Folder Policy.
-    :ivar team_log.PaperDefaultFolderPolicyChangedDetails.previous_value:
+    :ivar PaperDefaultFolderPolicyChangedDetails.new_value:
+        New Paper Default Folder Policy.
+    :ivar PaperDefaultFolderPolicyChangedDetails.previous_value:
         Previous Paper Default Folder Policy.
     """
 
@@ -72570,10 +73319,10 @@ class PaperDesktopPolicyChangedDetails(bb.Struct):
     """
     Enabled/disabled Paper Desktop for team.
 
-    :ivar team_log.PaperDesktopPolicyChangedDetails.new_value: New Paper Desktop
-        policy.
-    :ivar team_log.PaperDesktopPolicyChangedDetails.previous_value: Previous
-        Paper Desktop policy.
+    :ivar PaperDesktopPolicyChangedDetails.new_value:
+        New Paper Desktop policy.
+    :ivar PaperDesktopPolicyChangedDetails.previous_value:
+        Previous Paper Desktop policy.
     """
 
     __slots__ = [
@@ -72630,9 +73379,10 @@ class PaperDocAddCommentDetails(bb.Struct):
     """
     Added Paper doc comment.
 
-    :ivar team_log.PaperDocAddCommentDetails.event_uuid: Event unique
-        identifier.
-    :ivar team_log.PaperDocAddCommentDetails.comment_text: Comment text.
+    :ivar PaperDocAddCommentDetails.event_uuid:
+        Event unique identifier.
+    :ivar PaperDocAddCommentDetails.comment_text:
+        Comment text.
     """
 
     __slots__ = [
@@ -72689,10 +73439,10 @@ class PaperDocChangeMemberRoleDetails(bb.Struct):
     """
     Changed member permissions for Paper doc.
 
-    :ivar team_log.PaperDocChangeMemberRoleDetails.event_uuid: Event unique
-        identifier.
-    :ivar team_log.PaperDocChangeMemberRoleDetails.access_type: Paper doc access
-        type.
+    :ivar PaperDocChangeMemberRoleDetails.event_uuid:
+        Event unique identifier.
+    :ivar PaperDocChangeMemberRoleDetails.access_type:
+        Paper doc access type.
     """
 
     __slots__ = [
@@ -72749,11 +73499,11 @@ class PaperDocChangeSharingPolicyDetails(bb.Struct):
     """
     Changed sharing setting for Paper doc.
 
-    :ivar team_log.PaperDocChangeSharingPolicyDetails.event_uuid: Event unique
-        identifier.
-    :ivar team_log.PaperDocChangeSharingPolicyDetails.public_sharing_policy:
+    :ivar PaperDocChangeSharingPolicyDetails.event_uuid:
+        Event unique identifier.
+    :ivar PaperDocChangeSharingPolicyDetails.public_sharing_policy:
         Sharing policy with external users.
-    :ivar team_log.PaperDocChangeSharingPolicyDetails.team_sharing_policy:
+    :ivar PaperDocChangeSharingPolicyDetails.team_sharing_policy:
         Sharing policy with team.
     """
 
@@ -72819,12 +73569,11 @@ class PaperDocChangeSubscriptionDetails(bb.Struct):
     """
     Followed/unfollowed Paper doc.
 
-    :ivar team_log.PaperDocChangeSubscriptionDetails.event_uuid: Event unique
-        identifier.
-    :ivar team_log.PaperDocChangeSubscriptionDetails.new_subscription_level: New
-        doc subscription level.
-    :ivar
-        team_log.PaperDocChangeSubscriptionDetails.previous_subscription_level:
+    :ivar PaperDocChangeSubscriptionDetails.event_uuid:
+        Event unique identifier.
+    :ivar PaperDocChangeSubscriptionDetails.new_subscription_level:
+        New doc subscription level.
+    :ivar PaperDocChangeSubscriptionDetails.previous_subscription_level:
         Previous doc subscription level. Might be missing due to historical data
         gap.
     """
@@ -72891,9 +73640,10 @@ class PaperDocDeleteCommentDetails(bb.Struct):
     """
     Deleted Paper doc comment.
 
-    :ivar team_log.PaperDocDeleteCommentDetails.event_uuid: Event unique
-        identifier.
-    :ivar team_log.PaperDocDeleteCommentDetails.comment_text: Comment text.
+    :ivar PaperDocDeleteCommentDetails.event_uuid:
+        Event unique identifier.
+    :ivar PaperDocDeleteCommentDetails.comment_text:
+        Comment text.
     """
 
     __slots__ = [
@@ -72950,7 +73700,8 @@ class PaperDocDeletedDetails(bb.Struct):
     """
     Archived Paper doc.
 
-    :ivar team_log.PaperDocDeletedDetails.event_uuid: Event unique identifier.
+    :ivar PaperDocDeletedDetails.event_uuid:
+        Event unique identifier.
     """
 
     __slots__ = [
@@ -72999,9 +73750,10 @@ class PaperDocDownloadDetails(bb.Struct):
     """
     Downloaded Paper doc in specific format.
 
-    :ivar team_log.PaperDocDownloadDetails.event_uuid: Event unique identifier.
-    :ivar team_log.PaperDocDownloadDetails.export_file_format: Export file
-        format.
+    :ivar PaperDocDownloadDetails.event_uuid:
+        Event unique identifier.
+    :ivar PaperDocDownloadDetails.export_file_format:
+        Export file format.
     """
 
     __slots__ = [
@@ -73058,9 +73810,10 @@ class PaperDocEditCommentDetails(bb.Struct):
     """
     Edited Paper doc comment.
 
-    :ivar team_log.PaperDocEditCommentDetails.event_uuid: Event unique
-        identifier.
-    :ivar team_log.PaperDocEditCommentDetails.comment_text: Comment text.
+    :ivar PaperDocEditCommentDetails.event_uuid:
+        Event unique identifier.
+    :ivar PaperDocEditCommentDetails.comment_text:
+        Comment text.
     """
 
     __slots__ = [
@@ -73117,7 +73870,8 @@ class PaperDocEditDetails(bb.Struct):
     """
     Edited Paper doc.
 
-    :ivar team_log.PaperDocEditDetails.event_uuid: Event unique identifier.
+    :ivar PaperDocEditDetails.event_uuid:
+        Event unique identifier.
     """
 
     __slots__ = [
@@ -73166,7 +73920,8 @@ class PaperDocFollowedDetails(bb.Struct):
     """
     Followed Paper doc.
 
-    :ivar team_log.PaperDocFollowedDetails.event_uuid: Event unique identifier.
+    :ivar PaperDocFollowedDetails.event_uuid:
+        Event unique identifier.
     """
 
     __slots__ = [
@@ -73215,7 +73970,8 @@ class PaperDocMentionDetails(bb.Struct):
     """
     Mentioned user in Paper doc.
 
-    :ivar team_log.PaperDocMentionDetails.event_uuid: Event unique identifier.
+    :ivar PaperDocMentionDetails.event_uuid:
+        Event unique identifier.
     """
 
     __slots__ = [
@@ -73264,11 +74020,12 @@ class PaperDocOwnershipChangedDetails(bb.Struct):
     """
     Transferred ownership of Paper doc.
 
-    :ivar team_log.PaperDocOwnershipChangedDetails.event_uuid: Event unique
-        identifier.
-    :ivar team_log.PaperDocOwnershipChangedDetails.old_owner_user_id: Previous
-        owner.
-    :ivar team_log.PaperDocOwnershipChangedDetails.new_owner_user_id: New owner.
+    :ivar PaperDocOwnershipChangedDetails.event_uuid:
+        Event unique identifier.
+    :ivar PaperDocOwnershipChangedDetails.old_owner_user_id:
+        Previous owner.
+    :ivar PaperDocOwnershipChangedDetails.new_owner_user_id:
+        New owner.
     """
 
     __slots__ = [
@@ -73333,8 +74090,8 @@ class PaperDocRequestAccessDetails(bb.Struct):
     """
     Requested access to Paper doc.
 
-    :ivar team_log.PaperDocRequestAccessDetails.event_uuid: Event unique
-        identifier.
+    :ivar PaperDocRequestAccessDetails.event_uuid:
+        Event unique identifier.
     """
 
     __slots__ = [
@@ -73383,9 +74140,10 @@ class PaperDocResolveCommentDetails(bb.Struct):
     """
     Resolved Paper doc comment.
 
-    :ivar team_log.PaperDocResolveCommentDetails.event_uuid: Event unique
-        identifier.
-    :ivar team_log.PaperDocResolveCommentDetails.comment_text: Comment text.
+    :ivar PaperDocResolveCommentDetails.event_uuid:
+        Event unique identifier.
+    :ivar PaperDocResolveCommentDetails.comment_text:
+        Comment text.
     """
 
     __slots__ = [
@@ -73442,7 +74200,8 @@ class PaperDocRevertDetails(bb.Struct):
     """
     Restored Paper doc to previous version.
 
-    :ivar team_log.PaperDocRevertDetails.event_uuid: Event unique identifier.
+    :ivar PaperDocRevertDetails.event_uuid:
+        Event unique identifier.
     """
 
     __slots__ = [
@@ -73491,8 +74250,8 @@ class PaperDocSlackShareDetails(bb.Struct):
     """
     Shared Paper doc via Slack.
 
-    :ivar team_log.PaperDocSlackShareDetails.event_uuid: Event unique
-        identifier.
+    :ivar PaperDocSlackShareDetails.event_uuid:
+        Event unique identifier.
     """
 
     __slots__ = [
@@ -73541,8 +74300,8 @@ class PaperDocTeamInviteDetails(bb.Struct):
     """
     Shared Paper doc with users and/or groups.
 
-    :ivar team_log.PaperDocTeamInviteDetails.event_uuid: Event unique
-        identifier.
+    :ivar PaperDocTeamInviteDetails.event_uuid:
+        Event unique identifier.
     """
 
     __slots__ = [
@@ -73591,7 +74350,8 @@ class PaperDocTrashedDetails(bb.Struct):
     """
     Deleted Paper doc.
 
-    :ivar team_log.PaperDocTrashedDetails.event_uuid: Event unique identifier.
+    :ivar PaperDocTrashedDetails.event_uuid:
+        Event unique identifier.
     """
 
     __slots__ = [
@@ -73640,9 +74400,10 @@ class PaperDocUnresolveCommentDetails(bb.Struct):
     """
     Unresolved Paper doc comment.
 
-    :ivar team_log.PaperDocUnresolveCommentDetails.event_uuid: Event unique
-        identifier.
-    :ivar team_log.PaperDocUnresolveCommentDetails.comment_text: Comment text.
+    :ivar PaperDocUnresolveCommentDetails.event_uuid:
+        Event unique identifier.
+    :ivar PaperDocUnresolveCommentDetails.comment_text:
+        Comment text.
     """
 
     __slots__ = [
@@ -73699,7 +74460,8 @@ class PaperDocUntrashedDetails(bb.Struct):
     """
     Restored Paper doc.
 
-    :ivar team_log.PaperDocUntrashedDetails.event_uuid: Event unique identifier.
+    :ivar PaperDocUntrashedDetails.event_uuid:
+        Event unique identifier.
     """
 
     __slots__ = [
@@ -73748,7 +74510,8 @@ class PaperDocViewDetails(bb.Struct):
     """
     Viewed Paper doc.
 
-    :ivar team_log.PaperDocViewDetails.event_uuid: Event unique identifier.
+    :ivar PaperDocViewDetails.event_uuid:
+        Event unique identifier.
     """
 
     __slots__ = [
@@ -73797,8 +74560,10 @@ class PaperDocumentLogInfo(bb.Struct):
     """
     Paper document's logged information.
 
-    :ivar team_log.PaperDocumentLogInfo.doc_id: Papers document Id.
-    :ivar team_log.PaperDocumentLogInfo.doc_title: Paper document title.
+    :ivar PaperDocumentLogInfo.doc_id:
+        Papers document Id.
+    :ivar PaperDocumentLogInfo.doc_title:
+        Paper document title.
     """
 
     __slots__ = [
@@ -73977,8 +74742,8 @@ class PaperExternalViewAllowDetails(bb.Struct):
     """
     Changed Paper external sharing setting to anyone.
 
-    :ivar team_log.PaperExternalViewAllowDetails.event_uuid: Event unique
-        identifier.
+    :ivar PaperExternalViewAllowDetails.event_uuid:
+        Event unique identifier.
     """
 
     __slots__ = [
@@ -74027,8 +74792,8 @@ class PaperExternalViewDefaultTeamDetails(bb.Struct):
     """
     Changed Paper external sharing setting to default team.
 
-    :ivar team_log.PaperExternalViewDefaultTeamDetails.event_uuid: Event unique
-        identifier.
+    :ivar PaperExternalViewDefaultTeamDetails.event_uuid:
+        Event unique identifier.
     """
 
     __slots__ = [
@@ -74077,8 +74842,8 @@ class PaperExternalViewForbidDetails(bb.Struct):
     """
     Changed Paper external sharing setting to team-only.
 
-    :ivar team_log.PaperExternalViewForbidDetails.event_uuid: Event unique
-        identifier.
+    :ivar PaperExternalViewForbidDetails.event_uuid:
+        Event unique identifier.
     """
 
     __slots__ = [
@@ -74127,12 +74892,11 @@ class PaperFolderChangeSubscriptionDetails(bb.Struct):
     """
     Followed/unfollowed Paper folder.
 
-    :ivar team_log.PaperFolderChangeSubscriptionDetails.event_uuid: Event unique
-        identifier.
-    :ivar team_log.PaperFolderChangeSubscriptionDetails.new_subscription_level:
+    :ivar PaperFolderChangeSubscriptionDetails.event_uuid:
+        Event unique identifier.
+    :ivar PaperFolderChangeSubscriptionDetails.new_subscription_level:
         New folder subscription level.
-    :ivar
-        team_log.PaperFolderChangeSubscriptionDetails.previous_subscription_level:
+    :ivar PaperFolderChangeSubscriptionDetails.previous_subscription_level:
         Previous folder subscription level. Might be missing due to historical
         data gap.
     """
@@ -74199,8 +74963,8 @@ class PaperFolderDeletedDetails(bb.Struct):
     """
     Archived Paper folder.
 
-    :ivar team_log.PaperFolderDeletedDetails.event_uuid: Event unique
-        identifier.
+    :ivar PaperFolderDeletedDetails.event_uuid:
+        Event unique identifier.
     """
 
     __slots__ = [
@@ -74249,8 +75013,8 @@ class PaperFolderFollowedDetails(bb.Struct):
     """
     Followed Paper folder.
 
-    :ivar team_log.PaperFolderFollowedDetails.event_uuid: Event unique
-        identifier.
+    :ivar PaperFolderFollowedDetails.event_uuid:
+        Event unique identifier.
     """
 
     __slots__ = [
@@ -74299,8 +75063,10 @@ class PaperFolderLogInfo(bb.Struct):
     """
     Paper folder's logged information.
 
-    :ivar team_log.PaperFolderLogInfo.folder_id: Papers folder Id.
-    :ivar team_log.PaperFolderLogInfo.folder_name: Paper folder name.
+    :ivar PaperFolderLogInfo.folder_id:
+        Papers folder Id.
+    :ivar PaperFolderLogInfo.folder_name:
+        Paper folder name.
     """
 
     __slots__ = [
@@ -74335,8 +75101,8 @@ class PaperFolderTeamInviteDetails(bb.Struct):
     """
     Shared Paper folder with users and/or groups.
 
-    :ivar team_log.PaperFolderTeamInviteDetails.event_uuid: Event unique
-        identifier.
+    :ivar PaperFolderTeamInviteDetails.event_uuid:
+        Event unique identifier.
     """
 
     __slots__ = [
@@ -74441,13 +75207,11 @@ class PaperPublishedLinkChangePermissionDetails(bb.Struct):
     """
     Changed permissions for published doc.
 
-    :ivar team_log.PaperPublishedLinkChangePermissionDetails.event_uuid: Event
-        unique identifier.
-    :ivar
-        team_log.PaperPublishedLinkChangePermissionDetails.new_permission_level:
+    :ivar PaperPublishedLinkChangePermissionDetails.event_uuid:
+        Event unique identifier.
+    :ivar PaperPublishedLinkChangePermissionDetails.new_permission_level:
         New permission level.
-    :ivar
-        team_log.PaperPublishedLinkChangePermissionDetails.previous_permission_level:
+    :ivar PaperPublishedLinkChangePermissionDetails.previous_permission_level:
         Previous permission level.
     """
 
@@ -74513,8 +75277,8 @@ class PaperPublishedLinkCreateDetails(bb.Struct):
     """
     Published doc.
 
-    :ivar team_log.PaperPublishedLinkCreateDetails.event_uuid: Event unique
-        identifier.
+    :ivar PaperPublishedLinkCreateDetails.event_uuid:
+        Event unique identifier.
     """
 
     __slots__ = [
@@ -74563,8 +75327,8 @@ class PaperPublishedLinkDisabledDetails(bb.Struct):
     """
     Unpublished doc.
 
-    :ivar team_log.PaperPublishedLinkDisabledDetails.event_uuid: Event unique
-        identifier.
+    :ivar PaperPublishedLinkDisabledDetails.event_uuid:
+        Event unique identifier.
     """
 
     __slots__ = [
@@ -74613,8 +75377,8 @@ class PaperPublishedLinkViewDetails(bb.Struct):
     """
     Viewed published doc.
 
-    :ivar team_log.PaperPublishedLinkViewDetails.event_uuid: Event unique
-        identifier.
+    :ivar PaperPublishedLinkViewDetails.event_uuid:
+        Event unique identifier.
     """
 
     __slots__ = [
@@ -74667,8 +75431,12 @@ class ParticipantLogInfo(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar GroupLogInfo ParticipantLogInfo.group: Group details.
-    :ivar UserLogInfo ParticipantLogInfo.user: A user with a Dropbox account.
+    :ivar ParticipantLogInfo.group:
+        Group details.
+    :vartype ParticipantLogInfo.group: GroupLogInfo
+    :ivar ParticipantLogInfo.user:
+        A user with a Dropbox account.
+    :vartype ParticipantLogInfo.user: UserLogInfo
     """
 
     _catch_all = 'other'
@@ -74904,10 +75672,11 @@ class PasskeyLoginPolicyChangedDetails(bb.Struct):
     """
     Changed passkey login policy for team.
 
-    :ivar team_log.PasskeyLoginPolicyChangedDetails.new_value: New passkey login
-        policy.
-    :ivar team_log.PasskeyLoginPolicyChangedDetails.previous_value: Previous
-        passkey login policy. Might be missing due to historical data gap.
+    :ivar PasskeyLoginPolicyChangedDetails.new_value:
+        New passkey login policy.
+    :ivar PasskeyLoginPolicyChangedDetails.previous_value:
+        Previous passkey login policy. Might be missing due to historical data
+        gap.
     """
 
     __slots__ = [
@@ -75124,10 +75893,9 @@ class PasswordStrengthRequirementsChangePolicyDetails(bb.Struct):
     """
     Changed team password strength requirements.
 
-    :ivar
-        team_log.PasswordStrengthRequirementsChangePolicyDetails.previous_value:
+    :ivar PasswordStrengthRequirementsChangePolicyDetails.previous_value:
         Old password strength policy.
-    :ivar team_log.PasswordStrengthRequirementsChangePolicyDetails.new_value:
+    :ivar PasswordStrengthRequirementsChangePolicyDetails.new_value:
         New password strength policy.
     """
 
@@ -75185,10 +75953,10 @@ class PathLogInfo(bb.Struct):
     """
     Path's details.
 
-    :ivar team_log.PathLogInfo.contextual: Fully qualified path relative to
-        event's context.
-    :ivar team_log.PathLogInfo.namespace_relative: Path relative to the
-        namespace containing the content.
+    :ivar PathLogInfo.contextual:
+        Fully qualified path relative to event's context.
+    :ivar PathLogInfo.namespace_relative:
+        Path relative to the namespace containing the content.
     """
 
     __slots__ = [
@@ -75223,8 +75991,8 @@ class PendingSecondaryEmailAddedDetails(bb.Struct):
     """
     Added pending secondary email.
 
-    :ivar team_log.PendingSecondaryEmailAddedDetails.secondary_email: New
-        pending secondary email.
+    :ivar PendingSecondaryEmailAddedDetails.secondary_email:
+        New pending secondary email.
     """
 
     __slots__ = [
@@ -75273,11 +76041,11 @@ class PermanentDeleteChangePolicyDetails(bb.Struct):
     """
     Enabled/disabled ability of team members to permanently delete content.
 
-    :ivar team_log.PermanentDeleteChangePolicyDetails.new_value: New permanent
-        delete content policy.
-    :ivar team_log.PermanentDeleteChangePolicyDetails.previous_value: Previous
-        permanent delete content policy. Might be missing due to historical data
-        gap.
+    :ivar PermanentDeleteChangePolicyDetails.new_value:
+        New permanent delete content policy.
+    :ivar PermanentDeleteChangePolicyDetails.previous_value:
+        Previous permanent delete content policy. Might be missing due to
+        historical data gap.
     """
 
     __slots__ = [
@@ -75528,8 +76296,10 @@ class PreviewsAiPolicyChangedDetails(bb.Struct):
     """
     Changed Dropbox AI policy for team.
 
-    :ivar team_log.PreviewsAiPolicyChangedDetails.new_value: To.
-    :ivar team_log.PreviewsAiPolicyChangedDetails.previous_value: From.
+    :ivar PreviewsAiPolicyChangedDetails.new_value:
+        To.
+    :ivar PreviewsAiPolicyChangedDetails.previous_value:
+        From.
     """
 
     __slots__ = [
@@ -75586,10 +76356,10 @@ class PrimaryTeamRequestAcceptedDetails(bb.Struct):
     """
     Team merge request acceptance details shown to the primary team
 
-    :ivar team_log.PrimaryTeamRequestAcceptedDetails.secondary_team: The
-        secondary team name.
-    :ivar team_log.PrimaryTeamRequestAcceptedDetails.sent_by: The name of the
-        secondary team admin who sent the request originally.
+    :ivar PrimaryTeamRequestAcceptedDetails.secondary_team:
+        The secondary team name.
+    :ivar PrimaryTeamRequestAcceptedDetails.sent_by:
+        The name of the secondary team admin who sent the request originally.
     """
 
     __slots__ = [
@@ -75624,10 +76394,10 @@ class PrimaryTeamRequestCanceledDetails(bb.Struct):
     """
     Team merge request cancellation details shown to the primary team
 
-    :ivar team_log.PrimaryTeamRequestCanceledDetails.secondary_team: The
-        secondary team name.
-    :ivar team_log.PrimaryTeamRequestCanceledDetails.sent_by: The name of the
-        secondary team admin who sent the request originally.
+    :ivar PrimaryTeamRequestCanceledDetails.secondary_team:
+        The secondary team name.
+    :ivar PrimaryTeamRequestCanceledDetails.sent_by:
+        The name of the secondary team admin who sent the request originally.
     """
 
     __slots__ = [
@@ -75662,10 +76432,10 @@ class PrimaryTeamRequestExpiredDetails(bb.Struct):
     """
     Team merge request expiration details shown to the primary team
 
-    :ivar team_log.PrimaryTeamRequestExpiredDetails.secondary_team: The
-        secondary team name.
-    :ivar team_log.PrimaryTeamRequestExpiredDetails.sent_by: The name of the
-        secondary team admin who sent the request originally.
+    :ivar PrimaryTeamRequestExpiredDetails.secondary_team:
+        The secondary team name.
+    :ivar PrimaryTeamRequestExpiredDetails.sent_by:
+        The name of the secondary team admin who sent the request originally.
     """
 
     __slots__ = [
@@ -75700,10 +76470,10 @@ class PrimaryTeamRequestReminderDetails(bb.Struct):
     """
     Team merge request reminder details shown to the primary team
 
-    :ivar team_log.PrimaryTeamRequestReminderDetails.secondary_team: The
-        secondary team name.
-    :ivar team_log.PrimaryTeamRequestReminderDetails.sent_to: The name of the
-        primary team admin the request was sent to.
+    :ivar PrimaryTeamRequestReminderDetails.secondary_team:
+        The secondary team name.
+    :ivar PrimaryTeamRequestReminderDetails.sent_to:
+        The name of the primary team admin the request was sent to.
     """
 
     __slots__ = [
@@ -75738,8 +76508,10 @@ class ProductAssignedToMemberDetails(bb.Struct):
     """
     Product assigned to team member.
 
-    :ivar team_log.ProductAssignedToMemberDetails.user_name: User's name.
-    :ivar team_log.ProductAssignedToMemberDetails.product_name: Product name.
+    :ivar ProductAssignedToMemberDetails.user_name:
+        User's name.
+    :ivar ProductAssignedToMemberDetails.product_name:
+        Product name.
     """
 
     __slots__ = [
@@ -75796,7 +76568,8 @@ class ProductLogInfo(bb.Struct):
     """
     Product logged information
 
-    :ivar team_log.ProductLogInfo.product_name: Product name.
+    :ivar ProductLogInfo.product_name:
+        Product name.
     """
 
     __slots__ = [
@@ -75823,8 +76596,10 @@ class ProductRemovedFromMemberDetails(bb.Struct):
     """
     Product removed from team member.
 
-    :ivar team_log.ProductRemovedFromMemberDetails.user_name: User's name.
-    :ivar team_log.ProductRemovedFromMemberDetails.product_name: Product name.
+    :ivar ProductRemovedFromMemberDetails.user_name:
+        User's name.
+    :ivar ProductRemovedFromMemberDetails.product_name:
+        Product name.
     """
 
     __slots__ = [
@@ -75881,10 +76656,10 @@ class ProtectInternalDomainsChangedDetails(bb.Struct):
     """
     Modified Protect internal domains list.
 
-    :ivar team_log.ProtectInternalDomainsChangedDetails.domains_added: Domains
-        added to the internal domains list.
-    :ivar team_log.ProtectInternalDomainsChangedDetails.domains_removed: Domains
-        removed from the internal domains list.
+    :ivar ProtectInternalDomainsChangedDetails.domains_added:
+        Domains added to the internal domains list.
+    :ivar ProtectInternalDomainsChangedDetails.domains_removed:
+        Domains removed from the internal domains list.
     """
 
     __slots__ = [
@@ -76045,7 +76820,7 @@ class RansomwareAlertCreateReportFailedDetails(bb.Struct):
     """
     Couldn't generate ransomware report.
 
-    :ivar team_log.RansomwareAlertCreateReportFailedDetails.failure_reason:
+    :ivar RansomwareAlertCreateReportFailedDetails.failure_reason:
         Failure reason.
     """
 
@@ -76117,13 +76892,11 @@ class RansomwareRestoreProcessCompletedDetails(bb.Struct):
     """
     Completed ransomware restore process.
 
-    :ivar team_log.RansomwareRestoreProcessCompletedDetails.status: The status
-        of the restore process.
-    :ivar
-        team_log.RansomwareRestoreProcessCompletedDetails.restored_files_count:
+    :ivar RansomwareRestoreProcessCompletedDetails.status:
+        The status of the restore process.
+    :ivar RansomwareRestoreProcessCompletedDetails.restored_files_count:
         Restored files count.
-    :ivar
-        team_log.RansomwareRestoreProcessCompletedDetails.restored_files_failed_count:
+    :ivar RansomwareRestoreProcessCompletedDetails.restored_files_failed_count:
         Restored files failed count.
     """
 
@@ -76189,8 +76962,8 @@ class RansomwareRestoreProcessStartedDetails(bb.Struct):
     """
     Started ransomware restore process.
 
-    :ivar team_log.RansomwareRestoreProcessStartedDetails.extension: Ransomware
-        filename extension.
+    :ivar RansomwareRestoreProcessStartedDetails.extension:
+        Ransomware filename extension.
     """
 
     __slots__ = [
@@ -76239,11 +77012,12 @@ class RecipientsConfiguration(bb.Struct):
     """
     Recipients Configuration
 
-    :ivar team_log.RecipientsConfiguration.recipient_setting_type: Recipients
-        setting type.
-    :ivar team_log.RecipientsConfiguration.emails: A list of user emails to
-        notify.
-    :ivar team_log.RecipientsConfiguration.groups: A list of groups to notify.
+    :ivar RecipientsConfiguration.recipient_setting_type:
+        Recipients setting type.
+    :ivar RecipientsConfiguration.emails:
+        A list of user emails to notify.
+    :ivar RecipientsConfiguration.groups:
+        A list of groups to notify.
     """
 
     __slots__ = [
@@ -76287,10 +77061,10 @@ class RelocateAssetReferencesLogInfo(bb.Struct):
     Provides the indices of the source asset and the destination asset for a
     relocate action.
 
-    :ivar team_log.RelocateAssetReferencesLogInfo.src_asset_index: Source asset
-        position in the Assets list.
-    :ivar team_log.RelocateAssetReferencesLogInfo.dest_asset_index: Destination
-        asset position in the Assets list.
+    :ivar RelocateAssetReferencesLogInfo.src_asset_index:
+        Source asset position in the Assets list.
+    :ivar RelocateAssetReferencesLogInfo.dest_asset_index:
+        Destination asset position in the Assets list.
     """
 
     __slots__ = [
@@ -76381,8 +77155,10 @@ class ReplayAddingPeoplePolicyChangedDetails(bb.Struct):
     """
     Changed the policy for adding people to Replay content.
 
-    :ivar team_log.ReplayAddingPeoplePolicyChangedDetails.new_value: To.
-    :ivar team_log.ReplayAddingPeoplePolicyChangedDetails.previous_value: From.
+    :ivar ReplayAddingPeoplePolicyChangedDetails.new_value:
+        To.
+    :ivar ReplayAddingPeoplePolicyChangedDetails.previous_value:
+        From.
     """
 
     __slots__ = [
@@ -76519,11 +77295,11 @@ class ReplayFileSharedLinkCreatedDetails(bb.Struct):
     """
     Created shared link in Replay.
 
-    :ivar team_log.ReplayFileSharedLinkCreatedDetails.is_watermarked: Indicates
-        whether it was a watermark share link.
-    :ivar team_log.ReplayFileSharedLinkCreatedDetails.access: The Replay sharing
-        policy in place when the link was created. Might be missing due to
-        historical data gap.
+    :ivar ReplayFileSharedLinkCreatedDetails.is_watermarked:
+        Indicates whether it was a watermark share link.
+    :ivar ReplayFileSharedLinkCreatedDetails.access:
+        The Replay sharing policy in place when the link was created. Might be
+        missing due to historical data gap.
     """
 
     __slots__ = [
@@ -76580,11 +77356,11 @@ class ReplayFileSharedLinkModifiedDetails(bb.Struct):
     """
     Changed shared link in Replay.
 
-    :ivar team_log.ReplayFileSharedLinkModifiedDetails.is_watermarked: Indicates
-        whether it was a watermark share link.
-    :ivar team_log.ReplayFileSharedLinkModifiedDetails.access: The Replay
-        sharing policy in place when the link was modified. Might be missing due
-        to historical data gap.
+    :ivar ReplayFileSharedLinkModifiedDetails.is_watermarked:
+        Indicates whether it was a watermark share link.
+    :ivar ReplayFileSharedLinkModifiedDetails.access:
+        The Replay sharing policy in place when the link was modified. Might be
+        missing due to historical data gap.
     """
 
     __slots__ = [
@@ -76843,8 +77619,10 @@ class ReplaySharingPolicyChangedDetails(bb.Struct):
     """
     Changed the policy for sharing Replay content.
 
-    :ivar team_log.ReplaySharingPolicyChangedDetails.new_value: To.
-    :ivar team_log.ReplaySharingPolicyChangedDetails.previous_value: From.
+    :ivar ReplaySharingPolicyChangedDetails.new_value:
+        To.
+    :ivar ReplaySharingPolicyChangedDetails.previous_value:
+        From.
     """
 
     __slots__ = [
@@ -76901,8 +77679,8 @@ class ReplayTeamProjectCreatedDetails(bb.Struct):
     """
     Created a team project in Replay.
 
-    :ivar team_log.ReplayTeamProjectCreatedDetails.name: Name of the newly
-        created team project.
+    :ivar ReplayTeamProjectCreatedDetails.name:
+        Name of the newly created team project.
     """
 
     __slots__ = [
@@ -76951,8 +77729,10 @@ class ResellerLogInfo(bb.Struct):
     """
     Reseller information.
 
-    :ivar team_log.ResellerLogInfo.reseller_name: Reseller name.
-    :ivar team_log.ResellerLogInfo.reseller_email: Reseller email.
+    :ivar ResellerLogInfo.reseller_name:
+        Reseller name.
+    :ivar ResellerLogInfo.reseller_email:
+        Reseller email.
     """
 
     __slots__ = [
@@ -77031,10 +77811,10 @@ class ResellerSupportChangePolicyDetails(bb.Struct):
     """
     Enabled/disabled reseller support.
 
-    :ivar team_log.ResellerSupportChangePolicyDetails.new_value: New Reseller
-        support policy.
-    :ivar team_log.ResellerSupportChangePolicyDetails.previous_value: Previous
-        Reseller support policy.
+    :ivar ResellerSupportChangePolicyDetails.new_value:
+        New Reseller support policy.
+    :ivar ResellerSupportChangePolicyDetails.previous_value:
+        Previous Reseller support policy.
     """
 
     __slots__ = [
@@ -77218,8 +77998,8 @@ class RewindFolderDetails(bb.Struct):
     """
     Rewound a folder.
 
-    :ivar team_log.RewindFolderDetails.rewind_folder_target_ts_ms: Folder was
-        Rewound to this date.
+    :ivar RewindFolderDetails.rewind_folder_target_ts_ms:
+        Folder was Rewound to this date.
     """
 
     __slots__ = [
@@ -77314,10 +78094,10 @@ class RewindPolicyChangedDetails(bb.Struct):
     """
     Changed Rewind policy for team.
 
-    :ivar team_log.RewindPolicyChangedDetails.new_value: New Dropbox Rewind
-        policy.
-    :ivar team_log.RewindPolicyChangedDetails.previous_value: Previous Dropbox
-        Rewind policy.
+    :ivar RewindPolicyChangedDetails.new_value:
+        New Dropbox Rewind policy.
+    :ivar RewindPolicyChangedDetails.previous_value:
+        Previous Dropbox Rewind policy.
     """
 
     __slots__ = [
@@ -77374,11 +78154,12 @@ class RiscSecurityEventDetails(bb.Struct):
     """
     RISC security event received from external provider.
 
-    :ivar team_log.RiscSecurityEventDetails.event_type: RISC event type (e.g.,
-        account-disabled, token-revoked).
-    :ivar team_log.RiscSecurityEventDetails.reason: Reason for the RISC event.
-    :ivar team_log.RiscSecurityEventDetails.issuer: Identity provider issuer
-        (e.g., https://accounts.google.com).
+    :ivar RiscSecurityEventDetails.event_type:
+        RISC event type (e.g., account-disabled, token-revoked).
+    :ivar RiscSecurityEventDetails.reason:
+        Reason for the RISC event.
+    :ivar RiscSecurityEventDetails.issuer:
+        Identity provider issuer (e.g., https://accounts.google.com).
     """
 
     __slots__ = [
@@ -77443,8 +78224,8 @@ class SecondaryEmailDeletedDetails(bb.Struct):
     """
     Deleted secondary email.
 
-    :ivar team_log.SecondaryEmailDeletedDetails.secondary_email: Deleted
-        secondary email.
+    :ivar SecondaryEmailDeletedDetails.secondary_email:
+        Deleted secondary email.
     """
 
     __slots__ = [
@@ -77493,8 +78274,8 @@ class SecondaryEmailVerifiedDetails(bb.Struct):
     """
     Verified secondary email.
 
-    :ivar team_log.SecondaryEmailVerifiedDetails.secondary_email: Verified
-        secondary email.
+    :ivar SecondaryEmailVerifiedDetails.secondary_email:
+        Verified secondary email.
     """
 
     __slots__ = [
@@ -77587,10 +78368,10 @@ class SecondaryMailsPolicyChangedDetails(bb.Struct):
     """
     Secondary mails policy changed.
 
-    :ivar team_log.SecondaryMailsPolicyChangedDetails.previous_value: Previous
-        secondary mails policy.
-    :ivar team_log.SecondaryMailsPolicyChangedDetails.new_value: New secondary
-        mails policy.
+    :ivar SecondaryMailsPolicyChangedDetails.previous_value:
+        Previous secondary mails policy.
+    :ivar SecondaryMailsPolicyChangedDetails.new_value:
+        New secondary mails policy.
     """
 
     __slots__ = [
@@ -77647,10 +78428,10 @@ class SecondaryTeamRequestAcceptedDetails(bb.Struct):
     """
     Team merge request acceptance details shown to the secondary team
 
-    :ivar team_log.SecondaryTeamRequestAcceptedDetails.primary_team: The primary
-        team name.
-    :ivar team_log.SecondaryTeamRequestAcceptedDetails.sent_by: The name of the
-        secondary team admin who sent the request originally.
+    :ivar SecondaryTeamRequestAcceptedDetails.primary_team:
+        The primary team name.
+    :ivar SecondaryTeamRequestAcceptedDetails.sent_by:
+        The name of the secondary team admin who sent the request originally.
     """
 
     __slots__ = [
@@ -77685,10 +78466,10 @@ class SecondaryTeamRequestCanceledDetails(bb.Struct):
     """
     Team merge request cancellation details shown to the secondary team
 
-    :ivar team_log.SecondaryTeamRequestCanceledDetails.sent_to: The email of the
-        primary team admin that the request was sent to.
-    :ivar team_log.SecondaryTeamRequestCanceledDetails.sent_by: The name of the
-        secondary team admin who sent the request originally.
+    :ivar SecondaryTeamRequestCanceledDetails.sent_to:
+        The email of the primary team admin that the request was sent to.
+    :ivar SecondaryTeamRequestCanceledDetails.sent_by:
+        The name of the secondary team admin who sent the request originally.
     """
 
     __slots__ = [
@@ -77723,8 +78504,8 @@ class SecondaryTeamRequestExpiredDetails(bb.Struct):
     """
     Team merge request expiration details shown to the secondary team
 
-    :ivar team_log.SecondaryTeamRequestExpiredDetails.sent_to: The email of the
-        primary team admin the request was sent to.
+    :ivar SecondaryTeamRequestExpiredDetails.sent_to:
+        The email of the primary team admin the request was sent to.
     """
 
     __slots__ = [
@@ -77751,8 +78532,8 @@ class SecondaryTeamRequestReminderDetails(bb.Struct):
     """
     Team merge request reminder details shown to the secondary team
 
-    :ivar team_log.SecondaryTeamRequestReminderDetails.sent_to: The email of the
-        primary team admin the request was sent to.
+    :ivar SecondaryTeamRequestReminderDetails.sent_to:
+        The email of the primary team admin the request was sent to.
     """
 
     __slots__ = [
@@ -77819,8 +78600,8 @@ class SendAndTrackFileRenamedDetails(bb.Struct):
     """
     File renamed in Send and Track.
 
-    :ivar team_log.SendAndTrackFileRenamedDetails.previous_value: Previous file
-        name.
+    :ivar SendAndTrackFileRenamedDetails.previous_value:
+        Previous file name.
     """
 
     __slots__ = [
@@ -77909,7 +78690,8 @@ class SendAndTrackLinkCreatedDetails(bb.Struct):
     """
     Link created in Send and Track.
 
-    :ivar team_log.SendAndTrackLinkCreatedDetails.link_settings: Link Settings.
+    :ivar SendAndTrackLinkCreatedDetails.link_settings:
+        Link Settings.
     """
 
     __slots__ = [
@@ -77958,8 +78740,8 @@ class SendAndTrackLinkDeletedDetails(bb.Struct):
     """
     Link deleted in Send and Track.
 
-    :ivar team_log.SendAndTrackLinkDeletedDetails.shared_content_link: Shared
-        content link.
+    :ivar SendAndTrackLinkDeletedDetails.shared_content_link:
+        Shared content link.
     """
 
     __slots__ = [
@@ -78008,9 +78790,10 @@ class SendAndTrackLinkUpdatedDetails(bb.Struct):
     """
     Send and Track Link Updated.
 
-    :ivar team_log.SendAndTrackLinkUpdatedDetails.link_settings: Link Settings.
-    :ivar team_log.SendAndTrackLinkUpdatedDetails.previous_link_name: Previous
-        link name.
+    :ivar SendAndTrackLinkUpdatedDetails.link_settings:
+        Link Settings.
+    :ivar SendAndTrackLinkUpdatedDetails.previous_link_name:
+        Previous link name.
     """
 
     __slots__ = [
@@ -78067,10 +78850,12 @@ class SendAndTrackLinkViewedDetails(bb.Struct):
     """
     Send and Track Link Visited.
 
-    :ivar team_log.SendAndTrackLinkViewedDetails.link_settings: Link Settings.
-    :ivar team_log.SendAndTrackLinkViewedDetails.email_address: Visitor Email
-        address.
-    :ivar team_log.SendAndTrackLinkViewedDetails.link_owner: Link Owner.
+    :ivar SendAndTrackLinkViewedDetails.link_settings:
+        Link Settings.
+    :ivar SendAndTrackLinkViewedDetails.email_address:
+        Visitor Email address.
+    :ivar SendAndTrackLinkViewedDetails.link_owner:
+        Link Owner.
     """
 
     __slots__ = [
@@ -78191,8 +78976,10 @@ class SendAndTrackPolicyChangedDetails(bb.Struct):
     """
     Changed “Send and track” policy for team.
 
-    :ivar team_log.SendAndTrackPolicyChangedDetails.new_value: To.
-    :ivar team_log.SendAndTrackPolicyChangedDetails.previous_value: From.
+    :ivar SendAndTrackPolicyChangedDetails.new_value:
+        To.
+    :ivar SendAndTrackPolicyChangedDetails.previous_value:
+        From.
     """
 
     __slots__ = [
@@ -78345,8 +79132,10 @@ class SendExternalSharingPolicyChangedDetails(bb.Struct):
     """
     Changed “Send and track” external sharing policy for team.
 
-    :ivar team_log.SendExternalSharingPolicyChangedDetails.new_value: To.
-    :ivar team_log.SendExternalSharingPolicyChangedDetails.previous_value: From.
+    :ivar SendExternalSharingPolicyChangedDetails.new_value:
+        To.
+    :ivar SendExternalSharingPolicyChangedDetails.previous_value:
+        From.
     """
 
     __slots__ = [
@@ -78449,10 +79238,10 @@ class SendForSignaturePolicyChangedDetails(bb.Struct):
     """
     Changed send for signature policy for team.
 
-    :ivar team_log.SendForSignaturePolicyChangedDetails.new_value: New send for
-        signature policy.
-    :ivar team_log.SendForSignaturePolicyChangedDetails.previous_value: Previous
-        send for signature policy.
+    :ivar SendForSignaturePolicyChangedDetails.new_value:
+        New send for signature policy.
+    :ivar SendForSignaturePolicyChangedDetails.previous_value:
+        Previous send for signature policy.
     """
 
     __slots__ = [
@@ -78509,12 +79298,14 @@ class SfAddGroupDetails(bb.Struct):
     """
     Added team to shared folder.
 
-    :ivar team_log.SfAddGroupDetails.target_asset_index: Target asset position
-        in the Assets list.
-    :ivar team_log.SfAddGroupDetails.original_folder_name: Original shared
-        folder name.
-    :ivar team_log.SfAddGroupDetails.sharing_permission: Sharing permission.
-    :ivar team_log.SfAddGroupDetails.team_name: Team name.
+    :ivar SfAddGroupDetails.target_asset_index:
+        Target asset position in the Assets list.
+    :ivar SfAddGroupDetails.original_folder_name:
+        Original shared folder name.
+    :ivar SfAddGroupDetails.sharing_permission:
+        Sharing permission.
+    :ivar SfAddGroupDetails.team_name:
+        Team name.
     """
 
     __slots__ = [
@@ -78587,12 +79378,11 @@ class SfAllowNonMembersToViewSharedLinksDetails(bb.Struct):
     """
     Allowed non-collaborators to view links to files in shared folder.
 
-    :ivar team_log.SfAllowNonMembersToViewSharedLinksDetails.target_asset_index:
+    :ivar SfAllowNonMembersToViewSharedLinksDetails.target_asset_index:
         Target asset position in the Assets list.
-    :ivar
-        team_log.SfAllowNonMembersToViewSharedLinksDetails.original_folder_name:
+    :ivar SfAllowNonMembersToViewSharedLinksDetails.original_folder_name:
         Original shared folder name.
-    :ivar team_log.SfAllowNonMembersToViewSharedLinksDetails.shared_folder_type:
+    :ivar SfAllowNonMembersToViewSharedLinksDetails.shared_folder_type:
         Shared folder type.
     """
 
@@ -78658,13 +79448,13 @@ class SfExternalInviteWarnDetails(bb.Struct):
     """
     Set team members to see warning before sharing folders outside team.
 
-    :ivar team_log.SfExternalInviteWarnDetails.target_asset_index: Target asset
-        position in the Assets list.
-    :ivar team_log.SfExternalInviteWarnDetails.original_folder_name: Original
-        shared folder name.
-    :ivar team_log.SfExternalInviteWarnDetails.new_sharing_permission: New
-        sharing permission.
-    :ivar team_log.SfExternalInviteWarnDetails.previous_sharing_permission:
+    :ivar SfExternalInviteWarnDetails.target_asset_index:
+        Target asset position in the Assets list.
+    :ivar SfExternalInviteWarnDetails.original_folder_name:
+        Original shared folder name.
+    :ivar SfExternalInviteWarnDetails.new_sharing_permission:
+        New sharing permission.
+    :ivar SfExternalInviteWarnDetails.previous_sharing_permission:
         Previous sharing permission.
     """
 
@@ -78738,14 +79528,14 @@ class SfFbInviteChangeRoleDetails(bb.Struct):
     """
     Changed Facebook user's role in shared folder.
 
-    :ivar team_log.SfFbInviteChangeRoleDetails.target_asset_index: Target asset
-        position in the Assets list.
-    :ivar team_log.SfFbInviteChangeRoleDetails.original_folder_name: Original
-        shared folder name.
-    :ivar team_log.SfFbInviteChangeRoleDetails.previous_sharing_permission:
+    :ivar SfFbInviteChangeRoleDetails.target_asset_index:
+        Target asset position in the Assets list.
+    :ivar SfFbInviteChangeRoleDetails.original_folder_name:
+        Original shared folder name.
+    :ivar SfFbInviteChangeRoleDetails.previous_sharing_permission:
         Previous sharing permission.
-    :ivar team_log.SfFbInviteChangeRoleDetails.new_sharing_permission: New
-        sharing permission.
+    :ivar SfFbInviteChangeRoleDetails.new_sharing_permission:
+        New sharing permission.
     """
 
     __slots__ = [
@@ -78818,11 +79608,12 @@ class SfFbInviteDetails(bb.Struct):
     """
     Invited Facebook users to shared folder.
 
-    :ivar team_log.SfFbInviteDetails.target_asset_index: Target asset position
-        in the Assets list.
-    :ivar team_log.SfFbInviteDetails.original_folder_name: Original shared
-        folder name.
-    :ivar team_log.SfFbInviteDetails.sharing_permission: Sharing permission.
+    :ivar SfFbInviteDetails.target_asset_index:
+        Target asset position in the Assets list.
+    :ivar SfFbInviteDetails.original_folder_name:
+        Original shared folder name.
+    :ivar SfFbInviteDetails.sharing_permission:
+        Sharing permission.
     """
 
     __slots__ = [
@@ -78887,10 +79678,10 @@ class SfFbUninviteDetails(bb.Struct):
     """
     Uninvited Facebook user from shared folder.
 
-    :ivar team_log.SfFbUninviteDetails.target_asset_index: Target asset position
-        in the Assets list.
-    :ivar team_log.SfFbUninviteDetails.original_folder_name: Original shared
-        folder name.
+    :ivar SfFbUninviteDetails.target_asset_index:
+        Target asset position in the Assets list.
+    :ivar SfFbUninviteDetails.original_folder_name:
+        Original shared folder name.
     """
 
     __slots__ = [
@@ -78947,8 +79738,8 @@ class SfInviteGroupDetails(bb.Struct):
     """
     Invited group to shared folder.
 
-    :ivar team_log.SfInviteGroupDetails.target_asset_index: Target asset
-        position in the Assets list.
+    :ivar SfInviteGroupDetails.target_asset_index:
+        Target asset position in the Assets list.
     """
 
     __slots__ = [
@@ -78997,10 +79788,10 @@ class SfTeamGrantAccessDetails(bb.Struct):
     """
     Granted access to shared folder.
 
-    :ivar team_log.SfTeamGrantAccessDetails.target_asset_index: Target asset
-        position in the Assets list.
-    :ivar team_log.SfTeamGrantAccessDetails.original_folder_name: Original
-        shared folder name.
+    :ivar SfTeamGrantAccessDetails.target_asset_index:
+        Target asset position in the Assets list.
+    :ivar SfTeamGrantAccessDetails.original_folder_name:
+        Original shared folder name.
     """
 
     __slots__ = [
@@ -79057,13 +79848,13 @@ class SfTeamInviteChangeRoleDetails(bb.Struct):
     """
     Changed team member's role in shared folder.
 
-    :ivar team_log.SfTeamInviteChangeRoleDetails.target_asset_index: Target
-        asset position in the Assets list.
-    :ivar team_log.SfTeamInviteChangeRoleDetails.original_folder_name: Original
-        shared folder name.
-    :ivar team_log.SfTeamInviteChangeRoleDetails.new_sharing_permission: New
-        sharing permission.
-    :ivar team_log.SfTeamInviteChangeRoleDetails.previous_sharing_permission:
+    :ivar SfTeamInviteChangeRoleDetails.target_asset_index:
+        Target asset position in the Assets list.
+    :ivar SfTeamInviteChangeRoleDetails.original_folder_name:
+        Original shared folder name.
+    :ivar SfTeamInviteChangeRoleDetails.new_sharing_permission:
+        New sharing permission.
+    :ivar SfTeamInviteChangeRoleDetails.previous_sharing_permission:
         Previous sharing permission.
     """
 
@@ -79137,11 +79928,12 @@ class SfTeamInviteDetails(bb.Struct):
     """
     Invited team members to shared folder.
 
-    :ivar team_log.SfTeamInviteDetails.target_asset_index: Target asset position
-        in the Assets list.
-    :ivar team_log.SfTeamInviteDetails.original_folder_name: Original shared
-        folder name.
-    :ivar team_log.SfTeamInviteDetails.sharing_permission: Sharing permission.
+    :ivar SfTeamInviteDetails.target_asset_index:
+        Target asset position in the Assets list.
+    :ivar SfTeamInviteDetails.original_folder_name:
+        Original shared folder name.
+    :ivar SfTeamInviteDetails.sharing_permission:
+        Sharing permission.
     """
 
     __slots__ = [
@@ -79206,10 +79998,10 @@ class SfTeamJoinDetails(bb.Struct):
     """
     Joined team member's shared folder.
 
-    :ivar team_log.SfTeamJoinDetails.target_asset_index: Target asset position
-        in the Assets list.
-    :ivar team_log.SfTeamJoinDetails.original_folder_name: Original shared
-        folder name.
+    :ivar SfTeamJoinDetails.target_asset_index:
+        Target asset position in the Assets list.
+    :ivar SfTeamJoinDetails.original_folder_name:
+        Original shared folder name.
     """
 
     __slots__ = [
@@ -79244,14 +80036,14 @@ class SfTeamJoinFromOobLinkDetails(bb.Struct):
     """
     Joined team member's shared folder from link.
 
-    :ivar team_log.SfTeamJoinFromOobLinkDetails.target_asset_index: Target asset
-        position in the Assets list.
-    :ivar team_log.SfTeamJoinFromOobLinkDetails.original_folder_name: Original
-        shared folder name.
-    :ivar team_log.SfTeamJoinFromOobLinkDetails.token_key: Shared link token
-        key.
-    :ivar team_log.SfTeamJoinFromOobLinkDetails.sharing_permission: Sharing
-        permission.
+    :ivar SfTeamJoinFromOobLinkDetails.target_asset_index:
+        Target asset position in the Assets list.
+    :ivar SfTeamJoinFromOobLinkDetails.original_folder_name:
+        Original shared folder name.
+    :ivar SfTeamJoinFromOobLinkDetails.token_key:
+        Shared link token key.
+    :ivar SfTeamJoinFromOobLinkDetails.sharing_permission:
+        Sharing permission.
     """
 
     __slots__ = [
@@ -79346,10 +80138,10 @@ class SfTeamUninviteDetails(bb.Struct):
     """
     Unshared folder with team member.
 
-    :ivar team_log.SfTeamUninviteDetails.target_asset_index: Target asset
-        position in the Assets list.
-    :ivar team_log.SfTeamUninviteDetails.original_folder_name: Original shared
-        folder name.
+    :ivar SfTeamUninviteDetails.target_asset_index:
+        Target asset position in the Assets list.
+    :ivar SfTeamUninviteDetails.original_folder_name:
+        Original shared folder name.
     """
 
     __slots__ = [
@@ -79406,9 +80198,10 @@ class SharedContentAddInviteesDetails(bb.Struct):
     """
     Invited user to Dropbox and added them to shared file/folder.
 
-    :ivar team_log.SharedContentAddInviteesDetails.shared_content_access_level:
+    :ivar SharedContentAddInviteesDetails.shared_content_access_level:
         Shared content access level.
-    :ivar team_log.SharedContentAddInviteesDetails.invitees: A list of invitees.
+    :ivar SharedContentAddInviteesDetails.invitees:
+        A list of invitees.
     """
 
     __slots__ = [
@@ -79465,9 +80258,9 @@ class SharedContentAddLinkExpiryDetails(bb.Struct):
     """
     Added expiration date to link for shared file/folder.
 
-    :ivar team_log.SharedContentAddLinkExpiryDetails.new_value: New shared
-        content link expiration date. Might be missing due to historical data
-        gap.
+    :ivar SharedContentAddLinkExpiryDetails.new_value:
+        New shared content link expiration date. Might be missing due to
+        historical data gap.
     """
 
     __slots__ = [
@@ -79556,7 +80349,7 @@ class SharedContentAddMemberDetails(bb.Struct):
     """
     Added users and/or groups to shared file/folder.
 
-    :ivar team_log.SharedContentAddMemberDetails.shared_content_access_level:
+    :ivar SharedContentAddMemberDetails.shared_content_access_level:
         Shared content access level.
     """
 
@@ -79606,9 +80399,9 @@ class SharedContentChangeDownloadsPolicyDetails(bb.Struct):
     """
     Changed whether members can download shared file/folder.
 
-    :ivar team_log.SharedContentChangeDownloadsPolicyDetails.new_value: New
-        downloads policy.
-    :ivar team_log.SharedContentChangeDownloadsPolicyDetails.previous_value:
+    :ivar SharedContentChangeDownloadsPolicyDetails.new_value:
+        New downloads policy.
+    :ivar SharedContentChangeDownloadsPolicyDetails.previous_value:
         Previous downloads policy. Might be missing due to historical data gap.
     """
 
@@ -79667,12 +80460,12 @@ class SharedContentChangeInviteeRoleDetails(bb.Struct):
     Changed access type of invitee to shared file/folder before invite was
     accepted.
 
-    :ivar team_log.SharedContentChangeInviteeRoleDetails.previous_access_level:
+    :ivar SharedContentChangeInviteeRoleDetails.previous_access_level:
         Previous access level. Might be missing due to historical data gap.
-    :ivar team_log.SharedContentChangeInviteeRoleDetails.new_access_level: New
-        access level.
-    :ivar team_log.SharedContentChangeInviteeRoleDetails.invitee: The invitee
-        whose role was changed.
+    :ivar SharedContentChangeInviteeRoleDetails.new_access_level:
+        New access level.
+    :ivar SharedContentChangeInviteeRoleDetails.invitee:
+        The invitee whose role was changed.
     """
 
     __slots__ = [
@@ -79737,9 +80530,9 @@ class SharedContentChangeLinkAudienceDetails(bb.Struct):
     """
     Changed link audience of shared file/folder.
 
-    :ivar team_log.SharedContentChangeLinkAudienceDetails.new_value: New link
-        audience value.
-    :ivar team_log.SharedContentChangeLinkAudienceDetails.previous_value:
+    :ivar SharedContentChangeLinkAudienceDetails.new_value:
+        New link audience value.
+    :ivar SharedContentChangeLinkAudienceDetails.previous_value:
         Previous link audience value.
     """
 
@@ -79797,12 +80590,12 @@ class SharedContentChangeLinkExpiryDetails(bb.Struct):
     """
     Changed link expiration of shared file/folder.
 
-    :ivar team_log.SharedContentChangeLinkExpiryDetails.new_value: New shared
-        content link expiration date. Might be missing due to historical data
-        gap.
-    :ivar team_log.SharedContentChangeLinkExpiryDetails.previous_value: Previous
-        shared content link expiration date. Might be missing due to historical
-        data gap.
+    :ivar SharedContentChangeLinkExpiryDetails.new_value:
+        New shared content link expiration date. Might be missing due to
+        historical data gap.
+    :ivar SharedContentChangeLinkExpiryDetails.previous_value:
+        Previous shared content link expiration date. Might be missing due to
+        historical data gap.
     """
 
     __slots__ = [
@@ -79899,10 +80692,10 @@ class SharedContentChangeMemberRoleDetails(bb.Struct):
     """
     Changed access type of shared file/folder member.
 
-    :ivar team_log.SharedContentChangeMemberRoleDetails.previous_access_level:
+    :ivar SharedContentChangeMemberRoleDetails.previous_access_level:
         Previous access level. Might be missing due to historical data gap.
-    :ivar team_log.SharedContentChangeMemberRoleDetails.new_access_level: New
-        access level.
+    :ivar SharedContentChangeMemberRoleDetails.new_access_level:
+        New access level.
     """
 
     __slots__ = [
@@ -79959,9 +80752,9 @@ class SharedContentChangeViewerInfoPolicyDetails(bb.Struct):
     """
     Changed whether members can see who viewed shared file/folder.
 
-    :ivar team_log.SharedContentChangeViewerInfoPolicyDetails.new_value: New
-        viewer info policy.
-    :ivar team_log.SharedContentChangeViewerInfoPolicyDetails.previous_value:
+    :ivar SharedContentChangeViewerInfoPolicyDetails.new_value:
+        New viewer info policy.
+    :ivar SharedContentChangeViewerInfoPolicyDetails.previous_value:
         Previous view info policy.
     """
 
@@ -80019,7 +80812,7 @@ class SharedContentClaimInvitationDetails(bb.Struct):
     """
     Acquired membership of shared file/folder by accepting invite.
 
-    :ivar team_log.SharedContentClaimInvitationDetails.shared_content_link:
+    :ivar SharedContentClaimInvitationDetails.shared_content_link:
         Shared content link.
     """
 
@@ -80069,14 +80862,14 @@ class SharedContentCopyDetails(bb.Struct):
     """
     Copied shared file/folder to own Dropbox.
 
-    :ivar team_log.SharedContentCopyDetails.shared_content_link: Shared content
-        link.
-    :ivar team_log.SharedContentCopyDetails.shared_content_owner: The shared
-        content owner.
-    :ivar team_log.SharedContentCopyDetails.shared_content_access_level: Shared
-        content access level.
-    :ivar team_log.SharedContentCopyDetails.destination_path: The path where the
-        member saved the content.
+    :ivar SharedContentCopyDetails.shared_content_link:
+        Shared content link.
+    :ivar SharedContentCopyDetails.shared_content_owner:
+        The shared content owner.
+    :ivar SharedContentCopyDetails.shared_content_access_level:
+        Shared content access level.
+    :ivar SharedContentCopyDetails.destination_path:
+        The path where the member saved the content.
     """
 
     __slots__ = [
@@ -80149,11 +80942,11 @@ class SharedContentDownloadDetails(bb.Struct):
     """
     Downloaded shared file/folder.
 
-    :ivar team_log.SharedContentDownloadDetails.shared_content_link: Shared
-        content link.
-    :ivar team_log.SharedContentDownloadDetails.shared_content_owner: The shared
-        content owner.
-    :ivar team_log.SharedContentDownloadDetails.shared_content_access_level:
+    :ivar SharedContentDownloadDetails.shared_content_link:
+        Shared content link.
+    :ivar SharedContentDownloadDetails.shared_content_owner:
+        The shared content owner.
+    :ivar SharedContentDownloadDetails.shared_content_access_level:
         Shared content access level.
     """
 
@@ -80259,8 +81052,8 @@ class SharedContentRemoveInviteesDetails(bb.Struct):
     """
     Removed invitee from shared file/folder before invite was accepted.
 
-    :ivar team_log.SharedContentRemoveInviteesDetails.invitees: A list of
-        invitees.
+    :ivar SharedContentRemoveInviteesDetails.invitees:
+        A list of invitees.
     """
 
     __slots__ = [
@@ -80309,9 +81102,9 @@ class SharedContentRemoveLinkExpiryDetails(bb.Struct):
     """
     Removed link expiration date of shared file/folder.
 
-    :ivar team_log.SharedContentRemoveLinkExpiryDetails.previous_value: Previous
-        shared content link expiration date. Might be missing due to historical
-        data gap.
+    :ivar SharedContentRemoveLinkExpiryDetails.previous_value:
+        Previous shared content link expiration date. Might be missing due to
+        historical data gap.
     """
 
     __slots__ = [
@@ -80400,7 +81193,7 @@ class SharedContentRemoveMemberDetails(bb.Struct):
     """
     Removed user/group from shared file/folder.
 
-    :ivar team_log.SharedContentRemoveMemberDetails.shared_content_access_level:
+    :ivar SharedContentRemoveMemberDetails.shared_content_access_level:
         Shared content access level.
     """
 
@@ -80450,8 +81243,8 @@ class SharedContentRequestAccessDetails(bb.Struct):
     """
     Requested access to shared file/folder.
 
-    :ivar team_log.SharedContentRequestAccessDetails.shared_content_link: Shared
-        content link.
+    :ivar SharedContentRequestAccessDetails.shared_content_link:
+        Shared content link.
     """
 
     __slots__ = [
@@ -80500,11 +81293,10 @@ class SharedContentRestoreInviteesDetails(bb.Struct):
     """
     Restored shared file/folder invitees.
 
-    :ivar
-        team_log.SharedContentRestoreInviteesDetails.shared_content_access_level:
+    :ivar SharedContentRestoreInviteesDetails.shared_content_access_level:
         Shared content access level.
-    :ivar team_log.SharedContentRestoreInviteesDetails.invitees: A list of
-        invitees.
+    :ivar SharedContentRestoreInviteesDetails.invitees:
+        A list of invitees.
     """
 
     __slots__ = [
@@ -80561,8 +81353,7 @@ class SharedContentRestoreMemberDetails(bb.Struct):
     """
     Restored users and/or groups to membership of shared file/folder.
 
-    :ivar
-        team_log.SharedContentRestoreMemberDetails.shared_content_access_level:
+    :ivar SharedContentRestoreMemberDetails.shared_content_access_level:
         Shared content access level.
     """
 
@@ -80652,12 +81443,12 @@ class SharedContentViewDetails(bb.Struct):
     """
     Previewed shared file/folder.
 
-    :ivar team_log.SharedContentViewDetails.shared_content_link: Shared content
-        link.
-    :ivar team_log.SharedContentViewDetails.shared_content_owner: The shared
-        content owner.
-    :ivar team_log.SharedContentViewDetails.shared_content_access_level: Shared
-        content access level.
+    :ivar SharedContentViewDetails.shared_content_link:
+        Shared content link.
+    :ivar SharedContentViewDetails.shared_content_owner:
+        The shared content owner.
+    :ivar SharedContentViewDetails.shared_content_access_level:
+        Shared content access level.
     """
 
     __slots__ = [
@@ -80722,10 +81513,11 @@ class SharedFolderChangeLinkPolicyDetails(bb.Struct):
     """
     Changed who can access shared folder via link.
 
-    :ivar team_log.SharedFolderChangeLinkPolicyDetails.new_value: New shared
-        folder link policy.
-    :ivar team_log.SharedFolderChangeLinkPolicyDetails.previous_value: Previous
-        shared folder link policy. Might be missing due to historical data gap.
+    :ivar SharedFolderChangeLinkPolicyDetails.new_value:
+        New shared folder link policy.
+    :ivar SharedFolderChangeLinkPolicyDetails.previous_value:
+        Previous shared folder link policy. Might be missing due to historical
+        data gap.
     """
 
     __slots__ = [
@@ -80782,10 +81574,9 @@ class SharedFolderChangeMembersInheritancePolicyDetails(bb.Struct):
     """
     Changed whether shared folder inherits members from parent folder.
 
-    :ivar team_log.SharedFolderChangeMembersInheritancePolicyDetails.new_value:
+    :ivar SharedFolderChangeMembersInheritancePolicyDetails.new_value:
         New member inheritance policy.
-    :ivar
-        team_log.SharedFolderChangeMembersInheritancePolicyDetails.previous_value:
+    :ivar SharedFolderChangeMembersInheritancePolicyDetails.previous_value:
         Previous member inheritance policy. Might be missing due to historical
         data gap.
     """
@@ -80844,10 +81635,9 @@ class SharedFolderChangeMembersManagementPolicyDetails(bb.Struct):
     """
     Changed who can add/remove members of shared folder.
 
-    :ivar team_log.SharedFolderChangeMembersManagementPolicyDetails.new_value:
+    :ivar SharedFolderChangeMembersManagementPolicyDetails.new_value:
         New members management policy.
-    :ivar
-        team_log.SharedFolderChangeMembersManagementPolicyDetails.previous_value:
+    :ivar SharedFolderChangeMembersManagementPolicyDetails.previous_value:
         Previous members management policy. Might be missing due to historical
         data gap.
     """
@@ -80906,9 +81696,9 @@ class SharedFolderChangeMembersPolicyDetails(bb.Struct):
     """
     Changed who can become member of shared folder.
 
-    :ivar team_log.SharedFolderChangeMembersPolicyDetails.new_value: New
-        external invite policy.
-    :ivar team_log.SharedFolderChangeMembersPolicyDetails.previous_value:
+    :ivar SharedFolderChangeMembersPolicyDetails.new_value:
+        New external invite policy.
+    :ivar SharedFolderChangeMembersPolicyDetails.previous_value:
         Previous external invite policy. Might be missing due to historical data
         gap.
     """
@@ -80967,7 +81757,8 @@ class SharedFolderCreateDetails(bb.Struct):
     """
     Created shared folder.
 
-    :ivar team_log.SharedFolderCreateDetails.target_ns_id: Target namespace ID.
+    :ivar SharedFolderCreateDetails.target_ns_id:
+        Target namespace ID.
     """
 
     __slots__ = [
@@ -81142,13 +81933,14 @@ class SharedFolderNestDetails(bb.Struct):
     """
     Changed parent of shared folder.
 
-    :ivar team_log.SharedFolderNestDetails.previous_parent_ns_id: Previous
-        parent namespace ID.
-    :ivar team_log.SharedFolderNestDetails.new_parent_ns_id: New parent
-        namespace ID.
-    :ivar team_log.SharedFolderNestDetails.previous_ns_path: Previous namespace
-        path.
-    :ivar team_log.SharedFolderNestDetails.new_ns_path: New namespace path.
+    :ivar SharedFolderNestDetails.previous_parent_ns_id:
+        Previous parent namespace ID.
+    :ivar SharedFolderNestDetails.new_parent_ns_id:
+        New parent namespace ID.
+    :ivar SharedFolderNestDetails.previous_ns_path:
+        Previous namespace path.
+    :ivar SharedFolderNestDetails.new_ns_path:
+        New namespace path.
     """
 
     __slots__ = [
@@ -81221,10 +82013,10 @@ class SharedFolderTransferOwnershipDetails(bb.Struct):
     """
     Transferred ownership of shared folder to another member.
 
-    :ivar team_log.SharedFolderTransferOwnershipDetails.previous_owner_email:
+    :ivar SharedFolderTransferOwnershipDetails.previous_owner_email:
         The email address of the previous shared folder owner.
-    :ivar team_log.SharedFolderTransferOwnershipDetails.new_owner_email: The
-        email address of the new shared folder owner.
+    :ivar SharedFolderTransferOwnershipDetails.new_owner_email:
+        The email address of the new shared folder owner.
     """
 
     __slots__ = [
@@ -81339,7 +82131,7 @@ class SharedFoldersCreateReportFailedDetails(bb.Struct):
     """
     Couldn't generate shared folders report.
 
-    :ivar team_log.SharedFoldersCreateReportFailedDetails.failure_reason:
+    :ivar SharedFoldersCreateReportFailedDetails.failure_reason:
         Failure reason.
     """
 
@@ -81467,10 +82259,10 @@ class SharedLinkAddExpiryDetails(bb.Struct):
     """
     Added shared link expiration date.
 
-    :ivar team_log.SharedLinkAddExpiryDetails.new_value: New shared link
-        expiration date.
-    :ivar team_log.SharedLinkAddExpiryDetails.is_consolidation_action: Indicates
-        whether this was a consolidation action by system.
+    :ivar SharedLinkAddExpiryDetails.new_value:
+        New shared link expiration date.
+    :ivar SharedLinkAddExpiryDetails.is_consolidation_action:
+        Indicates whether this was a consolidation action by system.
     """
 
     __slots__ = [
@@ -81527,11 +82319,13 @@ class SharedLinkChangeExpiryDetails(bb.Struct):
     """
     Changed shared link expiration date.
 
-    :ivar team_log.SharedLinkChangeExpiryDetails.new_value: New shared link
-        expiration date. Might be missing due to historical data gap.
-    :ivar team_log.SharedLinkChangeExpiryDetails.previous_value: Previous shared
-        link expiration date. Might be missing due to historical data gap.
-    :ivar team_log.SharedLinkChangeExpiryDetails.is_consolidation_action:
+    :ivar SharedLinkChangeExpiryDetails.new_value:
+        New shared link expiration date. Might be missing due to historical data
+        gap.
+    :ivar SharedLinkChangeExpiryDetails.previous_value:
+        Previous shared link expiration date. Might be missing due to historical
+        data gap.
+    :ivar SharedLinkChangeExpiryDetails.is_consolidation_action:
         Indicates whether this was a consolidation action by system.
     """
 
@@ -81597,11 +82391,12 @@ class SharedLinkChangeVisibilityDetails(bb.Struct):
     """
     Changed visibility of shared link.
 
-    :ivar team_log.SharedLinkChangeVisibilityDetails.new_value: New shared link
-        visibility.
-    :ivar team_log.SharedLinkChangeVisibilityDetails.previous_value: Previous
-        shared link visibility. Might be missing due to historical data gap.
-    :ivar team_log.SharedLinkChangeVisibilityDetails.is_consolidation_action:
+    :ivar SharedLinkChangeVisibilityDetails.new_value:
+        New shared link visibility.
+    :ivar SharedLinkChangeVisibilityDetails.previous_value:
+        Previous shared link visibility. Might be missing due to historical data
+        gap.
+    :ivar SharedLinkChangeVisibilityDetails.is_consolidation_action:
         Indicates whether this was a consolidation action by system.
     """
 
@@ -81667,8 +82462,8 @@ class SharedLinkCopyDetails(bb.Struct):
     """
     Added file/folder to Dropbox from shared link.
 
-    :ivar team_log.SharedLinkCopyDetails.shared_link_owner: Shared link owner
-        details. Might be missing due to historical data gap.
+    :ivar SharedLinkCopyDetails.shared_link_owner:
+        Shared link owner details. Might be missing due to historical data gap.
     """
 
     __slots__ = [
@@ -81717,8 +82512,9 @@ class SharedLinkCreateDetails(bb.Struct):
     """
     Created shared link.
 
-    :ivar team_log.SharedLinkCreateDetails.shared_link_access_level: Defines who
-        can access the shared link. Might be missing due to historical data gap.
+    :ivar SharedLinkCreateDetails.shared_link_access_level:
+        Defines who can access the shared link. Might be missing due to
+        historical data gap.
     """
 
     __slots__ = [
@@ -81823,10 +82619,9 @@ class SharedLinkDefaultPermissionsPolicyChangedDetails(bb.Struct):
     """
     Changed shared link default permissions policy for team.
 
-    :ivar team_log.SharedLinkDefaultPermissionsPolicyChangedDetails.new_value:
+    :ivar SharedLinkDefaultPermissionsPolicyChangedDetails.new_value:
         To.
-    :ivar
-        team_log.SharedLinkDefaultPermissionsPolicyChangedDetails.previous_value:
+    :ivar SharedLinkDefaultPermissionsPolicyChangedDetails.previous_value:
         From.
     """
 
@@ -81884,8 +82679,8 @@ class SharedLinkDisableDetails(bb.Struct):
     """
     Removed shared link.
 
-    :ivar team_log.SharedLinkDisableDetails.shared_link_owner: Shared link owner
-        details. Might be missing due to historical data gap.
+    :ivar SharedLinkDisableDetails.shared_link_owner:
+        Shared link owner details. Might be missing due to historical data gap.
     """
 
     __slots__ = [
@@ -81934,8 +82729,8 @@ class SharedLinkDownloadDetails(bb.Struct):
     """
     Downloaded file/folder from shared link.
 
-    :ivar team_log.SharedLinkDownloadDetails.shared_link_owner: Shared link
-        owner details. Might be missing due to historical data gap.
+    :ivar SharedLinkDownloadDetails.shared_link_owner:
+        Shared link owner details. Might be missing due to historical data gap.
     """
 
     __slots__ = [
@@ -81984,8 +82779,9 @@ class SharedLinkRemoveExpiryDetails(bb.Struct):
     """
     Removed shared link expiration date.
 
-    :ivar team_log.SharedLinkRemoveExpiryDetails.previous_value: Previous shared
-        link expiration date. Might be missing due to historical data gap.
+    :ivar SharedLinkRemoveExpiryDetails.previous_value:
+        Previous shared link expiration date. Might be missing due to historical
+        data gap.
     """
 
     __slots__ = [
@@ -82074,14 +82870,13 @@ class SharedLinkSettingsAddExpirationDetails(bb.Struct):
     """
     Added an expiration date to the shared link.
 
-    :ivar
-        team_log.SharedLinkSettingsAddExpirationDetails.shared_content_access_level:
+    :ivar SharedLinkSettingsAddExpirationDetails.shared_content_access_level:
         Shared content access level.
-    :ivar team_log.SharedLinkSettingsAddExpirationDetails.shared_content_link:
+    :ivar SharedLinkSettingsAddExpirationDetails.shared_content_link:
         Shared content link.
-    :ivar team_log.SharedLinkSettingsAddExpirationDetails.new_value: New shared
-        content link expiration date. Might be missing due to historical data
-        gap.
+    :ivar SharedLinkSettingsAddExpirationDetails.new_value:
+        New shared content link expiration date. Might be missing due to
+        historical data gap.
     """
 
     __slots__ = [
@@ -82146,10 +82941,9 @@ class SharedLinkSettingsAddPasswordDetails(bb.Struct):
     """
     Added a password to the shared link.
 
-    :ivar
-        team_log.SharedLinkSettingsAddPasswordDetails.shared_content_access_level:
+    :ivar SharedLinkSettingsAddPasswordDetails.shared_content_access_level:
         Shared content access level.
-    :ivar team_log.SharedLinkSettingsAddPasswordDetails.shared_content_link:
+    :ivar SharedLinkSettingsAddPasswordDetails.shared_content_link:
         Shared content link.
     """
 
@@ -82207,11 +83001,9 @@ class SharedLinkSettingsAllowDownloadDisabledDetails(bb.Struct):
     """
     Disabled downloads.
 
-    :ivar
-        team_log.SharedLinkSettingsAllowDownloadDisabledDetails.shared_content_access_level:
+    :ivar SharedLinkSettingsAllowDownloadDisabledDetails.shared_content_access_level:
         Shared content access level.
-    :ivar
-        team_log.SharedLinkSettingsAllowDownloadDisabledDetails.shared_content_link:
+    :ivar SharedLinkSettingsAllowDownloadDisabledDetails.shared_content_link:
         Shared content link.
     """
 
@@ -82269,11 +83061,9 @@ class SharedLinkSettingsAllowDownloadEnabledDetails(bb.Struct):
     """
     Enabled downloads.
 
-    :ivar
-        team_log.SharedLinkSettingsAllowDownloadEnabledDetails.shared_content_access_level:
+    :ivar SharedLinkSettingsAllowDownloadEnabledDetails.shared_content_access_level:
         Shared content access level.
-    :ivar
-        team_log.SharedLinkSettingsAllowDownloadEnabledDetails.shared_content_link:
+    :ivar SharedLinkSettingsAllowDownloadEnabledDetails.shared_content_link:
         Shared content link.
     """
 
@@ -82331,14 +83121,13 @@ class SharedLinkSettingsChangeAudienceDetails(bb.Struct):
     """
     Changed the audience of the shared link.
 
-    :ivar
-        team_log.SharedLinkSettingsChangeAudienceDetails.shared_content_access_level:
+    :ivar SharedLinkSettingsChangeAudienceDetails.shared_content_access_level:
         Shared content access level.
-    :ivar team_log.SharedLinkSettingsChangeAudienceDetails.shared_content_link:
+    :ivar SharedLinkSettingsChangeAudienceDetails.shared_content_link:
         Shared content link.
-    :ivar team_log.SharedLinkSettingsChangeAudienceDetails.new_value: New link
-        audience value.
-    :ivar team_log.SharedLinkSettingsChangeAudienceDetails.previous_value:
+    :ivar SharedLinkSettingsChangeAudienceDetails.new_value:
+        New link audience value.
+    :ivar SharedLinkSettingsChangeAudienceDetails.previous_value:
         Previous link audience value.
     """
 
@@ -82412,16 +83201,14 @@ class SharedLinkSettingsChangeExpirationDetails(bb.Struct):
     """
     Changed the expiration date of the shared link.
 
-    :ivar
-        team_log.SharedLinkSettingsChangeExpirationDetails.shared_content_access_level:
+    :ivar SharedLinkSettingsChangeExpirationDetails.shared_content_access_level:
         Shared content access level.
-    :ivar
-        team_log.SharedLinkSettingsChangeExpirationDetails.shared_content_link:
+    :ivar SharedLinkSettingsChangeExpirationDetails.shared_content_link:
         Shared content link.
-    :ivar team_log.SharedLinkSettingsChangeExpirationDetails.new_value: New
-        shared content link expiration date. Might be missing due to historical
-        data gap.
-    :ivar team_log.SharedLinkSettingsChangeExpirationDetails.previous_value:
+    :ivar SharedLinkSettingsChangeExpirationDetails.new_value:
+        New shared content link expiration date. Might be missing due to
+        historical data gap.
+    :ivar SharedLinkSettingsChangeExpirationDetails.previous_value:
         Previous shared content link expiration date. Might be missing due to
         historical data gap.
     """
@@ -82496,10 +83283,9 @@ class SharedLinkSettingsChangePasswordDetails(bb.Struct):
     """
     Changed the password of the shared link.
 
-    :ivar
-        team_log.SharedLinkSettingsChangePasswordDetails.shared_content_access_level:
+    :ivar SharedLinkSettingsChangePasswordDetails.shared_content_access_level:
         Shared content access level.
-    :ivar team_log.SharedLinkSettingsChangePasswordDetails.shared_content_link:
+    :ivar SharedLinkSettingsChangePasswordDetails.shared_content_link:
         Shared content link.
     """
 
@@ -82557,13 +83343,11 @@ class SharedLinkSettingsRemoveExpirationDetails(bb.Struct):
     """
     Removed the expiration date from the shared link.
 
-    :ivar
-        team_log.SharedLinkSettingsRemoveExpirationDetails.shared_content_access_level:
+    :ivar SharedLinkSettingsRemoveExpirationDetails.shared_content_access_level:
         Shared content access level.
-    :ivar
-        team_log.SharedLinkSettingsRemoveExpirationDetails.shared_content_link:
+    :ivar SharedLinkSettingsRemoveExpirationDetails.shared_content_link:
         Shared content link.
-    :ivar team_log.SharedLinkSettingsRemoveExpirationDetails.previous_value:
+    :ivar SharedLinkSettingsRemoveExpirationDetails.previous_value:
         Previous shared link expiration date. Might be missing due to historical
         data gap.
     """
@@ -82630,10 +83414,9 @@ class SharedLinkSettingsRemovePasswordDetails(bb.Struct):
     """
     Removed the password from the shared link.
 
-    :ivar
-        team_log.SharedLinkSettingsRemovePasswordDetails.shared_content_access_level:
+    :ivar SharedLinkSettingsRemovePasswordDetails.shared_content_access_level:
         Shared content access level.
-    :ivar team_log.SharedLinkSettingsRemovePasswordDetails.shared_content_link:
+    :ivar SharedLinkSettingsRemovePasswordDetails.shared_content_link:
         Shared content link.
     """
 
@@ -82691,10 +83474,10 @@ class SharedLinkShareDetails(bb.Struct):
     """
     Added members as audience of shared link.
 
-    :ivar team_log.SharedLinkShareDetails.shared_link_owner: Shared link owner
-        details. Might be missing due to historical data gap.
-    :ivar team_log.SharedLinkShareDetails.external_users: Users without a
-        Dropbox account that were added as shared link audience.
+    :ivar SharedLinkShareDetails.shared_link_owner:
+        Shared link owner details. Might be missing due to historical data gap.
+    :ivar SharedLinkShareDetails.external_users:
+        Users without a Dropbox account that were added as shared link audience.
     """
 
     __slots__ = [
@@ -82751,8 +83534,8 @@ class SharedLinkViewDetails(bb.Struct):
     """
     Opened shared link.
 
-    :ivar team_log.SharedLinkViewDetails.shared_link_owner: Shared link owner
-        details. Might be missing due to historical data gap.
+    :ivar SharedLinkViewDetails.shared_link_owner:
+        Shared link owner details. Might be missing due to historical data gap.
     """
 
     __slots__ = [
@@ -82907,10 +83690,11 @@ class SharingChangeFolderJoinPolicyDetails(bb.Struct):
     """
     Changed whether team members can join shared folders owned outside team.
 
-    :ivar team_log.SharingChangeFolderJoinPolicyDetails.new_value: New external
-        join policy.
-    :ivar team_log.SharingChangeFolderJoinPolicyDetails.previous_value: Previous
-        external join policy. Might be missing due to historical data gap.
+    :ivar SharingChangeFolderJoinPolicyDetails.new_value:
+        New external join policy.
+    :ivar SharingChangeFolderJoinPolicyDetails.previous_value:
+        Previous external join policy. Might be missing due to historical data
+        gap.
     """
 
     __slots__ = [
@@ -82968,11 +83752,9 @@ class SharingChangeLinkAllowChangeExpirationPolicyDetails(bb.Struct):
     Changed the allow remove or change expiration policy for the links shared
     outside of the team.
 
-    :ivar
-        team_log.SharingChangeLinkAllowChangeExpirationPolicyDetails.new_value:
+    :ivar SharingChangeLinkAllowChangeExpirationPolicyDetails.new_value:
         To.
-    :ivar
-        team_log.SharingChangeLinkAllowChangeExpirationPolicyDetails.previous_value:
+    :ivar SharingChangeLinkAllowChangeExpirationPolicyDetails.previous_value:
         From.
     """
 
@@ -83030,10 +83812,9 @@ class SharingChangeLinkDefaultExpirationPolicyDetails(bb.Struct):
     """
     Changed the default expiration for the links shared outside of the team.
 
-    :ivar team_log.SharingChangeLinkDefaultExpirationPolicyDetails.new_value:
+    :ivar SharingChangeLinkDefaultExpirationPolicyDetails.new_value:
         To.
-    :ivar
-        team_log.SharingChangeLinkDefaultExpirationPolicyDetails.previous_value:
+    :ivar SharingChangeLinkDefaultExpirationPolicyDetails.previous_value:
         From.
     """
 
@@ -83091,8 +83872,9 @@ class SharingChangeLinkEnforcePasswordPolicyDetails(bb.Struct):
     """
     Changed the password requirement for the links shared outside of the team.
 
-    :ivar team_log.SharingChangeLinkEnforcePasswordPolicyDetails.new_value: To.
-    :ivar team_log.SharingChangeLinkEnforcePasswordPolicyDetails.previous_value:
+    :ivar SharingChangeLinkEnforcePasswordPolicyDetails.new_value:
+        To.
+    :ivar SharingChangeLinkEnforcePasswordPolicyDetails.previous_value:
         From.
     """
 
@@ -83151,11 +83933,11 @@ class SharingChangeLinkPolicyDetails(bb.Struct):
     Changed whether members can share links outside team, and if links are
     accessible only by team members or anyone by default.
 
-    :ivar team_log.SharingChangeLinkPolicyDetails.new_value: New external link
-        accessibility policy.
-    :ivar team_log.SharingChangeLinkPolicyDetails.previous_value: Previous
-        external link accessibility policy. Might be missing due to historical
-        data gap.
+    :ivar SharingChangeLinkPolicyDetails.new_value:
+        New external link accessibility policy.
+    :ivar SharingChangeLinkPolicyDetails.previous_value:
+        Previous external link accessibility policy. Might be missing due to
+        historical data gap.
     """
 
     __slots__ = [
@@ -83212,10 +83994,11 @@ class SharingChangeMemberPolicyDetails(bb.Struct):
     """
     Changed whether members can share files/folders outside team.
 
-    :ivar team_log.SharingChangeMemberPolicyDetails.new_value: New external
-        invite policy.
-    :ivar team_log.SharingChangeMemberPolicyDetails.previous_value: Previous
-        external invite policy. Might be missing due to historical data gap.
+    :ivar SharingChangeMemberPolicyDetails.new_value:
+        New external invite policy.
+    :ivar SharingChangeMemberPolicyDetails.previous_value:
+        Previous external invite policy. Might be missing due to historical data
+        gap.
     """
 
     __slots__ = [
@@ -83441,8 +84224,8 @@ class ShmodelDisableDownloadsDetails(bb.Struct):
     """
     Disabled downloads for link.
 
-    :ivar team_log.ShmodelDisableDownloadsDetails.shared_link_owner: Shared link
-        owner details. Might be missing due to historical data gap.
+    :ivar ShmodelDisableDownloadsDetails.shared_link_owner:
+        Shared link owner details. Might be missing due to historical data gap.
     """
 
     __slots__ = [
@@ -83491,8 +84274,8 @@ class ShmodelEnableDownloadsDetails(bb.Struct):
     """
     Enabled downloads for link.
 
-    :ivar team_log.ShmodelEnableDownloadsDetails.shared_link_owner: Shared link
-        owner details. Might be missing due to historical data gap.
+    :ivar ShmodelEnableDownloadsDetails.shared_link_owner:
+        Shared link owner details. Might be missing due to historical data gap.
     """
 
     __slots__ = [
@@ -83581,8 +84364,8 @@ class ShowcaseAccessGrantedDetails(bb.Struct):
     """
     Granted access to showcase.
 
-    :ivar team_log.ShowcaseAccessGrantedDetails.event_uuid: Event unique
-        identifier.
+    :ivar ShowcaseAccessGrantedDetails.event_uuid:
+        Event unique identifier.
     """
 
     __slots__ = [
@@ -83631,7 +84414,8 @@ class ShowcaseAddMemberDetails(bb.Struct):
     """
     Added member to showcase.
 
-    :ivar team_log.ShowcaseAddMemberDetails.event_uuid: Event unique identifier.
+    :ivar ShowcaseAddMemberDetails.event_uuid:
+        Event unique identifier.
     """
 
     __slots__ = [
@@ -83680,7 +84464,8 @@ class ShowcaseArchivedDetails(bb.Struct):
     """
     Archived showcase.
 
-    :ivar team_log.ShowcaseArchivedDetails.event_uuid: Event unique identifier.
+    :ivar ShowcaseArchivedDetails.event_uuid:
+        Event unique identifier.
     """
 
     __slots__ = [
@@ -83729,10 +84514,10 @@ class ShowcaseChangeDownloadPolicyDetails(bb.Struct):
     """
     Enabled/disabled downloading files from Dropbox Showcase for team.
 
-    :ivar team_log.ShowcaseChangeDownloadPolicyDetails.new_value: New Dropbox
-        Showcase download policy.
-    :ivar team_log.ShowcaseChangeDownloadPolicyDetails.previous_value: Previous
-        Dropbox Showcase download policy.
+    :ivar ShowcaseChangeDownloadPolicyDetails.new_value:
+        New Dropbox Showcase download policy.
+    :ivar ShowcaseChangeDownloadPolicyDetails.previous_value:
+        Previous Dropbox Showcase download policy.
     """
 
     __slots__ = [
@@ -83789,10 +84574,10 @@ class ShowcaseChangeEnabledPolicyDetails(bb.Struct):
     """
     Enabled/disabled Dropbox Showcase for team.
 
-    :ivar team_log.ShowcaseChangeEnabledPolicyDetails.new_value: New Dropbox
-        Showcase policy.
-    :ivar team_log.ShowcaseChangeEnabledPolicyDetails.previous_value: Previous
-        Dropbox Showcase policy.
+    :ivar ShowcaseChangeEnabledPolicyDetails.new_value:
+        New Dropbox Showcase policy.
+    :ivar ShowcaseChangeEnabledPolicyDetails.previous_value:
+        Previous Dropbox Showcase policy.
     """
 
     __slots__ = [
@@ -83849,9 +84634,9 @@ class ShowcaseChangeExternalSharingPolicyDetails(bb.Struct):
     """
     Enabled/disabled sharing Dropbox Showcase externally for team.
 
-    :ivar team_log.ShowcaseChangeExternalSharingPolicyDetails.new_value: New
-        Dropbox Showcase external sharing policy.
-    :ivar team_log.ShowcaseChangeExternalSharingPolicyDetails.previous_value:
+    :ivar ShowcaseChangeExternalSharingPolicyDetails.new_value:
+        New Dropbox Showcase external sharing policy.
+    :ivar ShowcaseChangeExternalSharingPolicyDetails.previous_value:
         Previous Dropbox Showcase external sharing policy.
     """
 
@@ -83909,7 +84694,8 @@ class ShowcaseCreatedDetails(bb.Struct):
     """
     Created showcase.
 
-    :ivar team_log.ShowcaseCreatedDetails.event_uuid: Event unique identifier.
+    :ivar ShowcaseCreatedDetails.event_uuid:
+        Event unique identifier.
     """
 
     __slots__ = [
@@ -83958,9 +84744,10 @@ class ShowcaseDeleteCommentDetails(bb.Struct):
     """
     Deleted showcase comment.
 
-    :ivar team_log.ShowcaseDeleteCommentDetails.event_uuid: Event unique
-        identifier.
-    :ivar team_log.ShowcaseDeleteCommentDetails.comment_text: Comment text.
+    :ivar ShowcaseDeleteCommentDetails.event_uuid:
+        Event unique identifier.
+    :ivar ShowcaseDeleteCommentDetails.comment_text:
+        Comment text.
     """
 
     __slots__ = [
@@ -84017,9 +84804,10 @@ class ShowcaseDocumentLogInfo(bb.Struct):
     """
     Showcase document's logged information.
 
-    :ivar team_log.ShowcaseDocumentLogInfo.showcase_id: Showcase document Id.
-    :ivar team_log.ShowcaseDocumentLogInfo.showcase_title: Showcase document
-        title.
+    :ivar ShowcaseDocumentLogInfo.showcase_id:
+        Showcase document Id.
+    :ivar ShowcaseDocumentLogInfo.showcase_title:
+        Showcase document title.
     """
 
     __slots__ = [
@@ -84101,9 +84889,10 @@ class ShowcaseEditCommentDetails(bb.Struct):
     """
     Edited showcase comment.
 
-    :ivar team_log.ShowcaseEditCommentDetails.event_uuid: Event unique
-        identifier.
-    :ivar team_log.ShowcaseEditCommentDetails.comment_text: Comment text.
+    :ivar ShowcaseEditCommentDetails.event_uuid:
+        Event unique identifier.
+    :ivar ShowcaseEditCommentDetails.comment_text:
+        Comment text.
     """
 
     __slots__ = [
@@ -84160,7 +84949,8 @@ class ShowcaseEditedDetails(bb.Struct):
     """
     Edited showcase.
 
-    :ivar team_log.ShowcaseEditedDetails.event_uuid: Event unique identifier.
+    :ivar ShowcaseEditedDetails.event_uuid:
+        Event unique identifier.
     """
 
     __slots__ = [
@@ -84301,7 +85091,8 @@ class ShowcaseFileAddedDetails(bb.Struct):
     """
     Added file to showcase.
 
-    :ivar team_log.ShowcaseFileAddedDetails.event_uuid: Event unique identifier.
+    :ivar ShowcaseFileAddedDetails.event_uuid:
+        Event unique identifier.
     """
 
     __slots__ = [
@@ -84350,10 +85141,10 @@ class ShowcaseFileDownloadDetails(bb.Struct):
     """
     Downloaded file from showcase.
 
-    :ivar team_log.ShowcaseFileDownloadDetails.event_uuid: Event unique
-        identifier.
-    :ivar team_log.ShowcaseFileDownloadDetails.download_type: Showcase download
-        type.
+    :ivar ShowcaseFileDownloadDetails.event_uuid:
+        Event unique identifier.
+    :ivar ShowcaseFileDownloadDetails.download_type:
+        Showcase download type.
     """
 
     __slots__ = [
@@ -84410,8 +85201,8 @@ class ShowcaseFileRemovedDetails(bb.Struct):
     """
     Removed file from showcase.
 
-    :ivar team_log.ShowcaseFileRemovedDetails.event_uuid: Event unique
-        identifier.
+    :ivar ShowcaseFileRemovedDetails.event_uuid:
+        Event unique identifier.
     """
 
     __slots__ = [
@@ -84460,7 +85251,8 @@ class ShowcaseFileViewDetails(bb.Struct):
     """
     Viewed file in showcase.
 
-    :ivar team_log.ShowcaseFileViewDetails.event_uuid: Event unique identifier.
+    :ivar ShowcaseFileViewDetails.event_uuid:
+        Event unique identifier.
     """
 
     __slots__ = [
@@ -84509,8 +85301,8 @@ class ShowcasePermanentlyDeletedDetails(bb.Struct):
     """
     Permanently deleted showcase.
 
-    :ivar team_log.ShowcasePermanentlyDeletedDetails.event_uuid: Event unique
-        identifier.
+    :ivar ShowcasePermanentlyDeletedDetails.event_uuid:
+        Event unique identifier.
     """
 
     __slots__ = [
@@ -84559,9 +85351,10 @@ class ShowcasePostCommentDetails(bb.Struct):
     """
     Added showcase comment.
 
-    :ivar team_log.ShowcasePostCommentDetails.event_uuid: Event unique
-        identifier.
-    :ivar team_log.ShowcasePostCommentDetails.comment_text: Comment text.
+    :ivar ShowcasePostCommentDetails.event_uuid:
+        Event unique identifier.
+    :ivar ShowcasePostCommentDetails.comment_text:
+        Comment text.
     """
 
     __slots__ = [
@@ -84618,8 +85411,8 @@ class ShowcaseRemoveMemberDetails(bb.Struct):
     """
     Removed member from showcase.
 
-    :ivar team_log.ShowcaseRemoveMemberDetails.event_uuid: Event unique
-        identifier.
+    :ivar ShowcaseRemoveMemberDetails.event_uuid:
+        Event unique identifier.
     """
 
     __slots__ = [
@@ -84668,7 +85461,8 @@ class ShowcaseRenamedDetails(bb.Struct):
     """
     Renamed showcase.
 
-    :ivar team_log.ShowcaseRenamedDetails.event_uuid: Event unique identifier.
+    :ivar ShowcaseRenamedDetails.event_uuid:
+        Event unique identifier.
     """
 
     __slots__ = [
@@ -84717,8 +85511,8 @@ class ShowcaseRequestAccessDetails(bb.Struct):
     """
     Requested access to showcase.
 
-    :ivar team_log.ShowcaseRequestAccessDetails.event_uuid: Event unique
-        identifier.
+    :ivar ShowcaseRequestAccessDetails.event_uuid:
+        Event unique identifier.
     """
 
     __slots__ = [
@@ -84767,9 +85561,10 @@ class ShowcaseResolveCommentDetails(bb.Struct):
     """
     Resolved showcase comment.
 
-    :ivar team_log.ShowcaseResolveCommentDetails.event_uuid: Event unique
-        identifier.
-    :ivar team_log.ShowcaseResolveCommentDetails.comment_text: Comment text.
+    :ivar ShowcaseResolveCommentDetails.event_uuid:
+        Event unique identifier.
+    :ivar ShowcaseResolveCommentDetails.comment_text:
+        Comment text.
     """
 
     __slots__ = [
@@ -84826,7 +85621,8 @@ class ShowcaseRestoredDetails(bb.Struct):
     """
     Unarchived showcase.
 
-    :ivar team_log.ShowcaseRestoredDetails.event_uuid: Event unique identifier.
+    :ivar ShowcaseRestoredDetails.event_uuid:
+        Event unique identifier.
     """
 
     __slots__ = [
@@ -84875,8 +85671,8 @@ class ShowcaseTrashedDeprecatedDetails(bb.Struct):
     """
     Deleted showcase (old version).
 
-    :ivar team_log.ShowcaseTrashedDeprecatedDetails.event_uuid: Event unique
-        identifier.
+    :ivar ShowcaseTrashedDeprecatedDetails.event_uuid:
+        Event unique identifier.
     """
 
     __slots__ = [
@@ -84925,7 +85721,8 @@ class ShowcaseTrashedDetails(bb.Struct):
     """
     Deleted showcase.
 
-    :ivar team_log.ShowcaseTrashedDetails.event_uuid: Event unique identifier.
+    :ivar ShowcaseTrashedDetails.event_uuid:
+        Event unique identifier.
     """
 
     __slots__ = [
@@ -84974,9 +85771,10 @@ class ShowcaseUnresolveCommentDetails(bb.Struct):
     """
     Unresolved showcase comment.
 
-    :ivar team_log.ShowcaseUnresolveCommentDetails.event_uuid: Event unique
-        identifier.
-    :ivar team_log.ShowcaseUnresolveCommentDetails.comment_text: Comment text.
+    :ivar ShowcaseUnresolveCommentDetails.event_uuid:
+        Event unique identifier.
+    :ivar ShowcaseUnresolveCommentDetails.comment_text:
+        Comment text.
     """
 
     __slots__ = [
@@ -85033,8 +85831,8 @@ class ShowcaseUntrashedDeprecatedDetails(bb.Struct):
     """
     Restored showcase (old version).
 
-    :ivar team_log.ShowcaseUntrashedDeprecatedDetails.event_uuid: Event unique
-        identifier.
+    :ivar ShowcaseUntrashedDeprecatedDetails.event_uuid:
+        Event unique identifier.
     """
 
     __slots__ = [
@@ -85083,7 +85881,8 @@ class ShowcaseUntrashedDetails(bb.Struct):
     """
     Restored showcase.
 
-    :ivar team_log.ShowcaseUntrashedDetails.event_uuid: Event unique identifier.
+    :ivar ShowcaseUntrashedDetails.event_uuid:
+        Event unique identifier.
     """
 
     __slots__ = [
@@ -85132,7 +85931,8 @@ class ShowcaseViewDetails(bb.Struct):
     """
     Viewed showcase.
 
-    :ivar team_log.ShowcaseViewDetails.event_uuid: Event unique identifier.
+    :ivar ShowcaseViewDetails.event_uuid:
+        Event unique identifier.
     """
 
     __slots__ = [
@@ -85237,8 +86037,10 @@ class SignExternalSharingPolicyChangedDetails(bb.Struct):
     """
     Changed Signatures external sharing policy for team.
 
-    :ivar team_log.SignExternalSharingPolicyChangedDetails.new_value: To.
-    :ivar team_log.SignExternalSharingPolicyChangedDetails.previous_value: From.
+    :ivar SignExternalSharingPolicyChangedDetails.new_value:
+        To.
+    :ivar SignExternalSharingPolicyChangedDetails.previous_value:
+        From.
     """
 
     __slots__ = [
@@ -85375,10 +86177,10 @@ class SignSignatureRequestCanceledDetails(bb.Struct):
     """
     Canceled signature request.
 
-    :ivar team_log.SignSignatureRequestCanceledDetails.recipient: The recipient
-        of the signature request.
-    :ivar team_log.SignSignatureRequestCanceledDetails.file_name: The name of
-        the related file.
+    :ivar SignSignatureRequestCanceledDetails.recipient:
+        The recipient of the signature request.
+    :ivar SignSignatureRequestCanceledDetails.file_name:
+        The name of the related file.
     """
 
     __slots__ = [
@@ -85435,10 +86237,10 @@ class SignSignatureRequestCompletedDetails(bb.Struct):
     """
     Completed signature request.
 
-    :ivar team_log.SignSignatureRequestCompletedDetails.recipient: The recipient
-        of the signature request.
-    :ivar team_log.SignSignatureRequestCompletedDetails.file_name: The name of
-        the related file.
+    :ivar SignSignatureRequestCompletedDetails.recipient:
+        The recipient of the signature request.
+    :ivar SignSignatureRequestCompletedDetails.file_name:
+        The name of the related file.
     """
 
     __slots__ = [
@@ -85495,10 +86297,10 @@ class SignSignatureRequestDeclinedDetails(bb.Struct):
     """
     Declined signature request.
 
-    :ivar team_log.SignSignatureRequestDeclinedDetails.recipient: The recipient
-        of the signature request.
-    :ivar team_log.SignSignatureRequestDeclinedDetails.file_name: The name of
-        the related file.
+    :ivar SignSignatureRequestDeclinedDetails.recipient:
+        The recipient of the signature request.
+    :ivar SignSignatureRequestDeclinedDetails.file_name:
+        The name of the related file.
     """
 
     __slots__ = [
@@ -85555,10 +86357,10 @@ class SignSignatureRequestOpenedDetails(bb.Struct):
     """
     Opened signature request.
 
-    :ivar team_log.SignSignatureRequestOpenedDetails.recipient: The recipient of
-        the signature request.
-    :ivar team_log.SignSignatureRequestOpenedDetails.file_name: The name of the
-        related file.
+    :ivar SignSignatureRequestOpenedDetails.recipient:
+        The recipient of the signature request.
+    :ivar SignSignatureRequestOpenedDetails.file_name:
+        The name of the related file.
     """
 
     __slots__ = [
@@ -85615,10 +86417,10 @@ class SignSignatureRequestReminderSentDetails(bb.Struct):
     """
     Sent signature request reminder.
 
-    :ivar team_log.SignSignatureRequestReminderSentDetails.recipient: The
-        recipient of the signature request.
-    :ivar team_log.SignSignatureRequestReminderSentDetails.file_name: The name
-        of the related file.
+    :ivar SignSignatureRequestReminderSentDetails.recipient:
+        The recipient of the signature request.
+    :ivar SignSignatureRequestReminderSentDetails.file_name:
+        The name of the related file.
     """
 
     __slots__ = [
@@ -85675,10 +86477,10 @@ class SignSignatureRequestSentDetails(bb.Struct):
     """
     Sent signature request.
 
-    :ivar team_log.SignSignatureRequestSentDetails.recipient: The recipient of
-        the signature request.
-    :ivar team_log.SignSignatureRequestSentDetails.file_name: The name of the
-        related file.
+    :ivar SignSignatureRequestSentDetails.recipient:
+        The recipient of the signature request.
+    :ivar SignSignatureRequestSentDetails.file_name:
+        The name of the related file.
     """
 
     __slots__ = [
@@ -85735,10 +86537,10 @@ class SignTemplateCreatedDetails(bb.Struct):
     """
     Created template.
 
-    :ivar team_log.SignTemplateCreatedDetails.access_level: The access level of
-        the template.
-    :ivar team_log.SignTemplateCreatedDetails.file_name: The name of the related
-        file.
+    :ivar SignTemplateCreatedDetails.access_level:
+        The access level of the template.
+    :ivar SignTemplateCreatedDetails.file_name:
+        The name of the related file.
     """
 
     __slots__ = [
@@ -85795,9 +86597,9 @@ class SignTemplateCreationPermissionChangedDetails(bb.Struct):
     """
     Changed template creation permission.
 
-    :ivar team_log.SignTemplateCreationPermissionChangedDetails.new_value: New
-        template creation permission policy.
-    :ivar team_log.SignTemplateCreationPermissionChangedDetails.previous_value:
+    :ivar SignTemplateCreationPermissionChangedDetails.new_value:
+        New template creation permission policy.
+    :ivar SignTemplateCreationPermissionChangedDetails.previous_value:
         Previous template creation permission policy.
     """
 
@@ -85901,10 +86703,10 @@ class SignTemplateSharedDetails(bb.Struct):
     """
     Shared template.
 
-    :ivar team_log.SignTemplateSharedDetails.access_level: The access level of
-        the template.
-    :ivar team_log.SignTemplateSharedDetails.file_name: The name of the related
-        file.
+    :ivar SignTemplateSharedDetails.access_level:
+        The access level of the template.
+    :ivar SignTemplateSharedDetails.file_name:
+        The name of the related file.
     """
 
     __slots__ = [
@@ -85961,10 +86763,10 @@ class SmartSyncChangePolicyDetails(bb.Struct):
     """
     Changed default Smart Sync setting for team members.
 
-    :ivar team_log.SmartSyncChangePolicyDetails.new_value: New smart sync
-        policy.
-    :ivar team_log.SmartSyncChangePolicyDetails.previous_value: Previous smart
-        sync policy.
+    :ivar SmartSyncChangePolicyDetails.new_value:
+        New smart sync policy.
+    :ivar SmartSyncChangePolicyDetails.previous_value:
+        Previous smart sync policy.
     """
 
     __slots__ = [
@@ -86061,10 +86863,10 @@ class SmartSyncNotOptOutDetails(bb.Struct):
     """
     Opted team into Smart Sync.
 
-    :ivar team_log.SmartSyncNotOptOutDetails.previous_value: Previous Smart Sync
-        opt out policy.
-    :ivar team_log.SmartSyncNotOptOutDetails.new_value: New Smart Sync opt out
-        policy.
+    :ivar SmartSyncNotOptOutDetails.previous_value:
+        Previous Smart Sync opt out policy.
+    :ivar SmartSyncNotOptOutDetails.new_value:
+        New Smart Sync opt out policy.
     """
 
     __slots__ = [
@@ -86121,10 +86923,10 @@ class SmartSyncOptOutDetails(bb.Struct):
     """
     Opted team out of Smart Sync.
 
-    :ivar team_log.SmartSyncOptOutDetails.previous_value: Previous Smart Sync
-        opt out policy.
-    :ivar team_log.SmartSyncOptOutDetails.new_value: New Smart Sync opt out
-        policy.
+    :ivar SmartSyncOptOutDetails.previous_value:
+        Previous Smart Sync opt out policy.
+    :ivar SmartSyncOptOutDetails.new_value:
+        New Smart Sync opt out policy.
     """
 
     __slots__ = [
@@ -86225,10 +87027,10 @@ class SmarterSmartSyncPolicyChangedDetails(bb.Struct):
     """
     Changed automatic Smart Sync setting for team.
 
-    :ivar team_log.SmarterSmartSyncPolicyChangedDetails.previous_value: Previous
-        automatic Smart Sync setting.
-    :ivar team_log.SmarterSmartSyncPolicyChangedDetails.new_value: New automatic
-        Smart Sync setting.
+    :ivar SmarterSmartSyncPolicyChangedDetails.previous_value:
+        Previous automatic Smart Sync setting.
+    :ivar SmarterSmartSyncPolicyChangedDetails.new_value:
+        New automatic Smart Sync setting.
     """
 
     __slots__ = [
@@ -86395,8 +87197,8 @@ class SsoAddCertDetails(bb.Struct):
     """
     Added X.509 certificate for SSO.
 
-    :ivar team_log.SsoAddCertDetails.certificate_details: SSO certificate
-        details.
+    :ivar SsoAddCertDetails.certificate_details:
+        SSO certificate details.
     """
 
     __slots__ = [
@@ -86445,8 +87247,8 @@ class SsoAddLoginUrlDetails(bb.Struct):
     """
     Added sign-in URL for SSO.
 
-    :ivar team_log.SsoAddLoginUrlDetails.new_value: New single sign-on login
-        URL.
+    :ivar SsoAddLoginUrlDetails.new_value:
+        New single sign-on login URL.
     """
 
     __slots__ = [
@@ -86495,8 +87297,8 @@ class SsoAddLogoutUrlDetails(bb.Struct):
     """
     Added sign-out URL for SSO.
 
-    :ivar team_log.SsoAddLogoutUrlDetails.new_value: New single sign-on logout
-        URL.
+    :ivar SsoAddLogoutUrlDetails.new_value:
+        New single sign-on logout URL.
     """
 
     __slots__ = [
@@ -86545,10 +87347,11 @@ class SsoChangeCertDetails(bb.Struct):
     """
     Changed X.509 certificate for SSO.
 
-    :ivar team_log.SsoChangeCertDetails.previous_certificate_details: Previous
-        SSO certificate details. Might be missing due to historical data gap.
-    :ivar team_log.SsoChangeCertDetails.new_certificate_details: New SSO
-        certificate details.
+    :ivar SsoChangeCertDetails.previous_certificate_details:
+        Previous SSO certificate details. Might be missing due to historical
+        data gap.
+    :ivar SsoChangeCertDetails.new_certificate_details:
+        New SSO certificate details.
     """
 
     __slots__ = [
@@ -86605,10 +87408,10 @@ class SsoChangeLoginUrlDetails(bb.Struct):
     """
     Changed sign-in URL for SSO.
 
-    :ivar team_log.SsoChangeLoginUrlDetails.previous_value: Previous single
-        sign-on login URL.
-    :ivar team_log.SsoChangeLoginUrlDetails.new_value: New single sign-on login
-        URL.
+    :ivar SsoChangeLoginUrlDetails.previous_value:
+        Previous single sign-on login URL.
+    :ivar SsoChangeLoginUrlDetails.new_value:
+        New single sign-on login URL.
     """
 
     __slots__ = [
@@ -86665,10 +87468,11 @@ class SsoChangeLogoutUrlDetails(bb.Struct):
     """
     Changed sign-out URL for SSO.
 
-    :ivar team_log.SsoChangeLogoutUrlDetails.previous_value: Previous single
-        sign-on logout URL. Might be missing due to historical data gap.
-    :ivar team_log.SsoChangeLogoutUrlDetails.new_value: New single sign-on
-        logout URL.
+    :ivar SsoChangeLogoutUrlDetails.previous_value:
+        Previous single sign-on logout URL. Might be missing due to historical
+        data gap.
+    :ivar SsoChangeLogoutUrlDetails.new_value:
+        New single sign-on logout URL.
     """
 
     __slots__ = [
@@ -86725,9 +87529,11 @@ class SsoChangePolicyDetails(bb.Struct):
     """
     Changed single sign-on setting for team.
 
-    :ivar team_log.SsoChangePolicyDetails.new_value: New single sign-on policy.
-    :ivar team_log.SsoChangePolicyDetails.previous_value: Previous single
-        sign-on policy. Might be missing due to historical data gap.
+    :ivar SsoChangePolicyDetails.new_value:
+        New single sign-on policy.
+    :ivar SsoChangePolicyDetails.previous_value:
+        Previous single sign-on policy. Might be missing due to historical data
+        gap.
     """
 
     __slots__ = [
@@ -86784,10 +87590,10 @@ class SsoChangeSamlIdentityModeDetails(bb.Struct):
     """
     Changed SAML identity mode for SSO.
 
-    :ivar team_log.SsoChangeSamlIdentityModeDetails.previous_value: Previous
-        single sign-on identity mode.
-    :ivar team_log.SsoChangeSamlIdentityModeDetails.new_value: New single
-        sign-on identity mode.
+    :ivar SsoChangeSamlIdentityModeDetails.previous_value:
+        Previous single sign-on identity mode.
+    :ivar SsoChangeSamlIdentityModeDetails.new_value:
+        New single sign-on identity mode.
     """
 
     __slots__ = [
@@ -86844,7 +87650,8 @@ class SsoErrorDetails(bb.Struct):
     """
     Failed to sign in via SSO.
 
-    :ivar team_log.SsoErrorDetails.error_details: Error details.
+    :ivar SsoErrorDetails.error_details:
+        Error details.
     """
 
     __slots__ = [
@@ -86933,8 +87740,8 @@ class SsoRemoveLoginUrlDetails(bb.Struct):
     """
     Removed sign-in URL for SSO.
 
-    :ivar team_log.SsoRemoveLoginUrlDetails.previous_value: Previous single
-        sign-on login URL.
+    :ivar SsoRemoveLoginUrlDetails.previous_value:
+        Previous single sign-on login URL.
     """
 
     __slots__ = [
@@ -86983,8 +87790,8 @@ class SsoRemoveLogoutUrlDetails(bb.Struct):
     """
     Removed sign-out URL for SSO.
 
-    :ivar team_log.SsoRemoveLogoutUrlDetails.previous_value: Previous single
-        sign-on logout URL.
+    :ivar SsoRemoveLogoutUrlDetails.previous_value:
+        Previous single sign-on logout URL.
     """
 
     __slots__ = [
@@ -87090,9 +87897,9 @@ class StackCrossTeamAccessPolicyChangedDetails(bb.Struct):
     """
     Changed cross-team Stack access policy for team.
 
-    :ivar team_log.StackCrossTeamAccessPolicyChangedDetails.new_value: New
-        cross-team Stack access policy.
-    :ivar team_log.StackCrossTeamAccessPolicyChangedDetails.previous_value:
+    :ivar StackCrossTeamAccessPolicyChangedDetails.new_value:
+        New cross-team Stack access policy.
+    :ivar StackCrossTeamAccessPolicyChangedDetails.previous_value:
         Previous cross-team Stack access policy. Might be missing due to
         historical data gap.
     """
@@ -87151,8 +87958,7 @@ class StartedEnterpriseAdminSessionDetails(bb.Struct):
     """
     Started enterprise admin session.
 
-    :ivar
-        team_log.StartedEnterpriseAdminSessionDetails.federation_extra_details:
+    :ivar StartedEnterpriseAdminSessionDetails.federation_extra_details:
         More information about the organization or team.
     """
 
@@ -87202,9 +88008,10 @@ class TeamActivityCreateReportDetails(bb.Struct):
     """
     Created team activity report.
 
-    :ivar team_log.TeamActivityCreateReportDetails.start_date: Report start
-        date.
-    :ivar team_log.TeamActivityCreateReportDetails.end_date: Report end date.
+    :ivar TeamActivityCreateReportDetails.start_date:
+        Report start date.
+    :ivar TeamActivityCreateReportDetails.end_date:
+        Report end date.
     """
 
     __slots__ = [
@@ -87239,8 +88046,8 @@ class TeamActivityCreateReportFailDetails(bb.Struct):
     """
     Couldn't generate team activity report.
 
-    :ivar team_log.TeamActivityCreateReportFailDetails.failure_reason: Failure
-        reason.
+    :ivar TeamActivityCreateReportFailDetails.failure_reason:
+        Failure reason.
     """
 
     __slots__ = [
@@ -87357,10 +88164,10 @@ class TeamBrandingPolicyChangedDetails(bb.Struct):
     """
     Changed team branding policy for team.
 
-    :ivar team_log.TeamBrandingPolicyChangedDetails.new_value: New team branding
-        policy.
-    :ivar team_log.TeamBrandingPolicyChangedDetails.previous_value: Previous
-        team branding policy.
+    :ivar TeamBrandingPolicyChangedDetails.new_value:
+        New team branding policy.
+    :ivar TeamBrandingPolicyChangedDetails.previous_value:
+        Previous team branding policy.
     """
 
     __slots__ = [
@@ -87417,7 +88224,8 @@ class TeamDetails(bb.Struct):
     """
     More details about the team.
 
-    :ivar team_log.TeamDetails.team: The name of the team.
+    :ivar TeamDetails.team:
+        The name of the team.
     """
 
     __slots__ = [
@@ -87444,8 +88252,8 @@ class TeamEncryptionKeyActivateKeyDetails(bb.Struct):
     """
     Activated team encryption key.
 
-    :ivar team_log.TeamEncryptionKeyActivateKeyDetails.key_management_type: Type
-        of key management.
+    :ivar TeamEncryptionKeyActivateKeyDetails.key_management_type:
+        Type of key management.
     """
 
     __slots__ = [
@@ -87814,32 +88622,34 @@ class TeamEvent(bb.Struct):
     """
     An audit log event.
 
-    :ivar team_log.TeamEvent.timestamp: The Dropbox timestamp representing when
-        the action was taken.
-    :ivar team_log.TeamEvent.event_category: The category that this type of
-        action belongs to.
-    :ivar team_log.TeamEvent.actor: The entity who actually performed the
-        action.
-    :ivar team_log.TeamEvent.origin: The origin from which the actor performed
-        the action including information about host, ip address, location,
-        session, etc. If the action was performed programmatically via the API
-        the origin represents the API client.
-    :ivar team_log.TeamEvent.involve_non_team_member: True if the action
-        involved a non team member either as the actor or as one of the affected
-        users.
-    :ivar team_log.TeamEvent.context: The user or team on whose behalf the actor
-        performed the action.
-    :ivar team_log.TeamEvent.participants: Zero or more users and/or groups that
-        are affected by the action. Note that this list doesn't include any
-        actors or users in context.
-    :ivar team_log.TeamEvent.assets: Zero or more content assets involved in the
-        action. Currently these include Dropbox files and folders but in the
-        future we might add other asset types such as Paper documents, folders,
-        projects, etc.
-    :ivar team_log.TeamEvent.event_type: The particular type of action taken.
-    :ivar team_log.TeamEvent.details: The variable event schema applicable to
-        this type of action, instantiated with respect to this particular
-        action.
+    :ivar TeamEvent.timestamp:
+        The Dropbox timestamp representing when the action was taken.
+    :ivar TeamEvent.event_category:
+        The category that this type of action belongs to.
+    :ivar TeamEvent.actor:
+        The entity who actually performed the action.
+    :ivar TeamEvent.origin:
+        The origin from which the actor performed the action including
+        information about host, ip address, location, session, etc. If the
+        action was performed programmatically via the API the origin represents
+        the API client.
+    :ivar TeamEvent.involve_non_team_member:
+        True if the action involved a non team member either as the actor or as
+        one of the affected users.
+    :ivar TeamEvent.context:
+        The user or team on whose behalf the actor performed the action.
+    :ivar TeamEvent.participants:
+        Zero or more users and/or groups that are affected by the action. Note
+        that this list doesn't include any actors or users in context.
+    :ivar TeamEvent.assets:
+        Zero or more content assets involved in the action. Currently these
+        include Dropbox files and folders but in the future we might add other
+        asset types such as Paper documents, folders, projects, etc.
+    :ivar TeamEvent.event_type:
+        The particular type of action taken.
+    :ivar TeamEvent.details:
+        The variable event schema applicable to this type of action,
+        instantiated with respect to this particular action.
     """
 
     __slots__ = [
@@ -87984,10 +88794,10 @@ class TeamExtensionsPolicyChangedDetails(bb.Struct):
     """
     Changed App Integrations setting for team.
 
-    :ivar team_log.TeamExtensionsPolicyChangedDetails.new_value: New Extensions
-        policy.
-    :ivar team_log.TeamExtensionsPolicyChangedDetails.previous_value: Previous
-        Extensions policy.
+    :ivar TeamExtensionsPolicyChangedDetails.new_value:
+        New Extensions policy.
+    :ivar TeamExtensionsPolicyChangedDetails.previous_value:
+        Previous Extensions policy.
     """
 
     __slots__ = [
@@ -88044,10 +88854,11 @@ class TeamFolderChangeStatusDetails(bb.Struct):
     """
     Changed archival status of team folder.
 
-    :ivar team_log.TeamFolderChangeStatusDetails.new_value: New team folder
-        status.
-    :ivar team_log.TeamFolderChangeStatusDetails.previous_value: Previous team
-        folder status. Might be missing due to historical data gap.
+    :ivar TeamFolderChangeStatusDetails.new_value:
+        New team folder status.
+    :ivar TeamFolderChangeStatusDetails.previous_value:
+        Previous team folder status. Might be missing due to historical data
+        gap.
     """
 
     __slots__ = [
@@ -88144,8 +88955,8 @@ class TeamFolderDowngradeDetails(bb.Struct):
     """
     Downgraded team folder to regular shared folder.
 
-    :ivar team_log.TeamFolderDowngradeDetails.target_asset_index: Target asset
-        position in the Assets list.
+    :ivar TeamFolderDowngradeDetails.target_asset_index:
+        Target asset position in the Assets list.
     """
 
     __slots__ = [
@@ -88300,9 +89111,10 @@ class TeamFolderRenameDetails(bb.Struct):
     """
     Renamed active/archived team folder.
 
-    :ivar team_log.TeamFolderRenameDetails.previous_folder_name: Previous folder
-        name.
-    :ivar team_log.TeamFolderRenameDetails.new_folder_name: New folder name.
+    :ivar TeamFolderRenameDetails.previous_folder_name:
+        Previous folder name.
+    :ivar TeamFolderRenameDetails.new_folder_name:
+        New folder name.
     """
 
     __slots__ = [
@@ -88415,11 +89227,10 @@ class TeamFolderSpaceLimitsChangeCapsTypeDetails(bb.Struct):
     """
     Changed team folder space limit enforcement type.
 
-    :ivar
-        team_log.TeamFolderSpaceLimitsChangeCapsTypeDetails.previous_caps_type:
+    :ivar TeamFolderSpaceLimitsChangeCapsTypeDetails.previous_caps_type:
         Previous enforcement type.
-    :ivar team_log.TeamFolderSpaceLimitsChangeCapsTypeDetails.new_caps_type: New
-        enforcement type.
+    :ivar TeamFolderSpaceLimitsChangeCapsTypeDetails.new_caps_type:
+        New enforcement type.
     """
 
     __slots__ = [
@@ -88476,10 +89287,10 @@ class TeamFolderSpaceLimitsChangeLimitDetails(bb.Struct):
     """
     Changed team folder space limit.
 
-    :ivar team_log.TeamFolderSpaceLimitsChangeLimitDetails.previous_limit_bytes:
+    :ivar TeamFolderSpaceLimitsChangeLimitDetails.previous_limit_bytes:
         Previous limit in bytes.
-    :ivar team_log.TeamFolderSpaceLimitsChangeLimitDetails.new_limit_bytes: New
-        limit in bytes.
+    :ivar TeamFolderSpaceLimitsChangeLimitDetails.new_limit_bytes:
+        New limit in bytes.
     """
 
     __slots__ = [
@@ -88536,11 +89347,9 @@ class TeamFolderSpaceLimitsChangeNotificationTargetDetails(bb.Struct):
     """
     Changed team folder space limit notification target.
 
-    :ivar
-        team_log.TeamFolderSpaceLimitsChangeNotificationTargetDetails.previous_target:
+    :ivar TeamFolderSpaceLimitsChangeNotificationTargetDetails.previous_target:
         Previous notification target.
-    :ivar
-        team_log.TeamFolderSpaceLimitsChangeNotificationTargetDetails.new_target:
+    :ivar TeamFolderSpaceLimitsChangeNotificationTargetDetails.new_target:
         New notification target.
     """
 
@@ -88616,8 +89425,8 @@ class TeamFoldersCreateReportFailedDetails(bb.Struct):
     """
     Couldn't generate team folders report.
 
-    :ivar team_log.TeamFoldersCreateReportFailedDetails.failure_reason: Failure
-        reason.
+    :ivar TeamFoldersCreateReportFailedDetails.failure_reason:
+        Failure reason.
     """
 
     __slots__ = [
@@ -88688,10 +89497,10 @@ class TeamInviteDetails(bb.Struct):
     """
     Details about team invites
 
-    :ivar team_log.TeamInviteDetails.invite_method: How the user was invited to
-        the team.
-    :ivar team_log.TeamInviteDetails.additional_license_purchase: True if the
-        invitation incurred an additional license purchase.
+    :ivar TeamInviteDetails.invite_method:
+        How the user was invited to the team.
+    :ivar TeamInviteDetails.additional_license_purchase:
+        True if the invitation incurred an additional license purchase.
     """
 
     __slots__ = [
@@ -88747,7 +89556,8 @@ class TeamLogInfo(bb.Struct):
     """
     Team's logged information.
 
-    :ivar team_log.TeamLogInfo.display_name: Team display name.
+    :ivar TeamLogInfo.display_name:
+        Team display name.
     """
 
     __slots__ = [
@@ -88774,11 +89584,12 @@ class TeamMemberLogInfo(UserLogInfo):
     """
     Team member's logged information.
 
-    :ivar team_log.TeamMemberLogInfo.team_member_id: Team member ID.
-    :ivar team_log.TeamMemberLogInfo.member_external_id: Team member external
-        ID.
-    :ivar team_log.TeamMemberLogInfo.team: Details about this user&#x2019s team
-        for enterprise event.
+    :ivar TeamMemberLogInfo.team_member_id:
+        Team member ID.
+    :ivar TeamMemberLogInfo.member_external_id:
+        Team member external ID.
+    :ivar TeamMemberLogInfo.team:
+        Details about this user&#x2019s team for enterprise event.
     """
 
     __slots__ = [
@@ -88884,9 +89695,9 @@ class TeamMemberStorageRequestPolicyChangedDetails(bb.Struct):
     """
     Changed team member storage request policy for team.
 
-    :ivar team_log.TeamMemberStorageRequestPolicyChangedDetails.new_value: New
-        team member storage request policy.
-    :ivar team_log.TeamMemberStorageRequestPolicyChangedDetails.previous_value:
+    :ivar TeamMemberStorageRequestPolicyChangedDetails.new_value:
+        New team member storage request policy.
+    :ivar TeamMemberStorageRequestPolicyChangedDetails.previous_value:
         Previous team member storage request policy. Might be missing due to
         historical data gap.
     """
@@ -88999,8 +89810,8 @@ class TeamMergeFromDetails(bb.Struct):
     """
     Merged another team into this team.
 
-    :ivar team_log.TeamMergeFromDetails.team_name: The name of the team that was
-        merged into this team.
+    :ivar TeamMergeFromDetails.team_name:
+        The name of the team that was merged into this team.
     """
 
     __slots__ = [
@@ -89049,7 +89860,7 @@ class TeamMergeRequestAcceptedDetails(bb.Struct):
     """
     Accepted a team merge request.
 
-    :ivar team_log.TeamMergeRequestAcceptedDetails.request_accepted_details:
+    :ivar TeamMergeRequestAcceptedDetails.request_accepted_details:
         Team merge request acceptance details.
     """
 
@@ -89081,12 +89892,12 @@ class TeamMergeRequestAcceptedExtraDetails(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar PrimaryTeamRequestAcceptedDetails
-        TeamMergeRequestAcceptedExtraDetails.primary_team: Team merge request
-        accepted details shown to the primary team
-    :ivar SecondaryTeamRequestAcceptedDetails
-        TeamMergeRequestAcceptedExtraDetails.secondary_team: Team merge request
-        accepted details shown to the secondary team
+    :ivar TeamMergeRequestAcceptedExtraDetails.primary_team:
+        Team merge request accepted details shown to the primary team
+    :vartype TeamMergeRequestAcceptedExtraDetails.primary_team: PrimaryTeamRequestAcceptedDetails
+    :ivar TeamMergeRequestAcceptedExtraDetails.secondary_team:
+        Team merge request accepted details shown to the secondary team
+    :vartype TeamMergeRequestAcceptedExtraDetails.secondary_team: SecondaryTeamRequestAcceptedDetails
     """
 
     _catch_all = 'other'
@@ -89172,10 +89983,9 @@ class TeamMergeRequestAcceptedShownToPrimaryTeamDetails(bb.Struct):
     """
     Accepted a team merge request.
 
-    :ivar
-        team_log.TeamMergeRequestAcceptedShownToPrimaryTeamDetails.secondary_team:
+    :ivar TeamMergeRequestAcceptedShownToPrimaryTeamDetails.secondary_team:
         The secondary team name.
-    :ivar team_log.TeamMergeRequestAcceptedShownToPrimaryTeamDetails.sent_by:
+    :ivar TeamMergeRequestAcceptedShownToPrimaryTeamDetails.sent_by:
         The name of the secondary team admin who sent the request originally.
     """
 
@@ -89233,10 +90043,9 @@ class TeamMergeRequestAcceptedShownToSecondaryTeamDetails(bb.Struct):
     """
     Accepted a team merge request.
 
-    :ivar
-        team_log.TeamMergeRequestAcceptedShownToSecondaryTeamDetails.primary_team:
+    :ivar TeamMergeRequestAcceptedShownToSecondaryTeamDetails.primary_team:
         The primary team name.
-    :ivar team_log.TeamMergeRequestAcceptedShownToSecondaryTeamDetails.sent_by:
+    :ivar TeamMergeRequestAcceptedShownToSecondaryTeamDetails.sent_by:
         The name of the secondary team admin who sent the request originally.
     """
 
@@ -89316,8 +90125,8 @@ class TeamMergeRequestAutoCanceledDetails(bb.Struct):
     """
     Automatically canceled team merge request.
 
-    :ivar team_log.TeamMergeRequestAutoCanceledDetails.details: The cancellation
-        reason.
+    :ivar TeamMergeRequestAutoCanceledDetails.details:
+        The cancellation reason.
     """
 
     __slots__ = [
@@ -89366,7 +90175,7 @@ class TeamMergeRequestCanceledDetails(bb.Struct):
     """
     Canceled a team merge request.
 
-    :ivar team_log.TeamMergeRequestCanceledDetails.request_canceled_details:
+    :ivar TeamMergeRequestCanceledDetails.request_canceled_details:
         Team merge request cancellation details.
     """
 
@@ -89398,12 +90207,12 @@ class TeamMergeRequestCanceledExtraDetails(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar PrimaryTeamRequestCanceledDetails
-        TeamMergeRequestCanceledExtraDetails.primary_team: Team merge request
-        cancellation details shown to the primary team
-    :ivar SecondaryTeamRequestCanceledDetails
-        TeamMergeRequestCanceledExtraDetails.secondary_team: Team merge request
-        cancellation details shown to the secondary team
+    :ivar TeamMergeRequestCanceledExtraDetails.primary_team:
+        Team merge request cancellation details shown to the primary team
+    :vartype TeamMergeRequestCanceledExtraDetails.primary_team: PrimaryTeamRequestCanceledDetails
+    :ivar TeamMergeRequestCanceledExtraDetails.secondary_team:
+        Team merge request cancellation details shown to the secondary team
+    :vartype TeamMergeRequestCanceledExtraDetails.secondary_team: SecondaryTeamRequestCanceledDetails
     """
 
     _catch_all = 'other'
@@ -89489,10 +90298,9 @@ class TeamMergeRequestCanceledShownToPrimaryTeamDetails(bb.Struct):
     """
     Canceled a team merge request.
 
-    :ivar
-        team_log.TeamMergeRequestCanceledShownToPrimaryTeamDetails.secondary_team:
+    :ivar TeamMergeRequestCanceledShownToPrimaryTeamDetails.secondary_team:
         The secondary team name.
-    :ivar team_log.TeamMergeRequestCanceledShownToPrimaryTeamDetails.sent_by:
+    :ivar TeamMergeRequestCanceledShownToPrimaryTeamDetails.sent_by:
         The name of the secondary team admin who sent the request originally.
     """
 
@@ -89550,9 +90358,9 @@ class TeamMergeRequestCanceledShownToSecondaryTeamDetails(bb.Struct):
     """
     Canceled a team merge request.
 
-    :ivar team_log.TeamMergeRequestCanceledShownToSecondaryTeamDetails.sent_to:
+    :ivar TeamMergeRequestCanceledShownToSecondaryTeamDetails.sent_to:
         The email of the primary team admin that the request was sent to.
-    :ivar team_log.TeamMergeRequestCanceledShownToSecondaryTeamDetails.sent_by:
+    :ivar TeamMergeRequestCanceledShownToSecondaryTeamDetails.sent_by:
         The name of the secondary team admin who sent the request originally.
     """
 
@@ -89632,8 +90440,8 @@ class TeamMergeRequestExpiredDetails(bb.Struct):
     """
     Team merge request expired.
 
-    :ivar team_log.TeamMergeRequestExpiredDetails.request_expired_details: Team
-        merge request expiration details.
+    :ivar TeamMergeRequestExpiredDetails.request_expired_details:
+        Team merge request expiration details.
     """
 
     __slots__ = [
@@ -89664,12 +90472,12 @@ class TeamMergeRequestExpiredExtraDetails(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar PrimaryTeamRequestExpiredDetails
-        TeamMergeRequestExpiredExtraDetails.primary_team: Team merge request
-        canceled details shown to the primary team
-    :ivar SecondaryTeamRequestExpiredDetails
-        TeamMergeRequestExpiredExtraDetails.secondary_team: Team merge request
-        canceled details shown to the secondary team
+    :ivar TeamMergeRequestExpiredExtraDetails.primary_team:
+        Team merge request canceled details shown to the primary team
+    :vartype TeamMergeRequestExpiredExtraDetails.primary_team: PrimaryTeamRequestExpiredDetails
+    :ivar TeamMergeRequestExpiredExtraDetails.secondary_team:
+        Team merge request canceled details shown to the secondary team
+    :vartype TeamMergeRequestExpiredExtraDetails.secondary_team: SecondaryTeamRequestExpiredDetails
     """
 
     _catch_all = 'other'
@@ -89755,11 +90563,10 @@ class TeamMergeRequestExpiredShownToPrimaryTeamDetails(bb.Struct):
     """
     Team merge request expired.
 
-    :ivar
-        team_log.TeamMergeRequestExpiredShownToPrimaryTeamDetails.secondary_team:
+    :ivar TeamMergeRequestExpiredShownToPrimaryTeamDetails.secondary_team:
         The secondary team name.
-    :ivar team_log.TeamMergeRequestExpiredShownToPrimaryTeamDetails.sent_by: The
-        name of the secondary team admin who sent the request originally.
+    :ivar TeamMergeRequestExpiredShownToPrimaryTeamDetails.sent_by:
+        The name of the secondary team admin who sent the request originally.
     """
 
     __slots__ = [
@@ -89816,7 +90623,7 @@ class TeamMergeRequestExpiredShownToSecondaryTeamDetails(bb.Struct):
     """
     Team merge request expired.
 
-    :ivar team_log.TeamMergeRequestExpiredShownToSecondaryTeamDetails.sent_to:
+    :ivar TeamMergeRequestExpiredShownToSecondaryTeamDetails.sent_to:
         The email of the primary team admin the request was sent to.
     """
 
@@ -89888,10 +90695,9 @@ class TeamMergeRequestRejectedShownToPrimaryTeamDetails(bb.Struct):
     """
     Rejected a team merge request.
 
-    :ivar
-        team_log.TeamMergeRequestRejectedShownToPrimaryTeamDetails.secondary_team:
+    :ivar TeamMergeRequestRejectedShownToPrimaryTeamDetails.secondary_team:
         The secondary team name.
-    :ivar team_log.TeamMergeRequestRejectedShownToPrimaryTeamDetails.sent_by:
+    :ivar TeamMergeRequestRejectedShownToPrimaryTeamDetails.sent_by:
         The name of the secondary team admin who sent the request originally.
     """
 
@@ -89949,7 +90755,7 @@ class TeamMergeRequestRejectedShownToSecondaryTeamDetails(bb.Struct):
     """
     Rejected a team merge request.
 
-    :ivar team_log.TeamMergeRequestRejectedShownToSecondaryTeamDetails.sent_by:
+    :ivar TeamMergeRequestRejectedShownToSecondaryTeamDetails.sent_by:
         The name of the secondary team admin who sent the request originally.
     """
 
@@ -89999,7 +90805,7 @@ class TeamMergeRequestReminderDetails(bb.Struct):
     """
     Sent a team merge request reminder.
 
-    :ivar team_log.TeamMergeRequestReminderDetails.request_reminder_details:
+    :ivar TeamMergeRequestReminderDetails.request_reminder_details:
         Team merge request reminder details.
     """
 
@@ -90031,12 +90837,12 @@ class TeamMergeRequestReminderExtraDetails(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar PrimaryTeamRequestReminderDetails
-        TeamMergeRequestReminderExtraDetails.primary_team: Team merge request
-        reminder details shown to the primary team
-    :ivar SecondaryTeamRequestReminderDetails
-        TeamMergeRequestReminderExtraDetails.secondary_team: Team merge request
-        reminder details shown to the secondary team
+    :ivar TeamMergeRequestReminderExtraDetails.primary_team:
+        Team merge request reminder details shown to the primary team
+    :vartype TeamMergeRequestReminderExtraDetails.primary_team: PrimaryTeamRequestReminderDetails
+    :ivar TeamMergeRequestReminderExtraDetails.secondary_team:
+        Team merge request reminder details shown to the secondary team
+    :vartype TeamMergeRequestReminderExtraDetails.secondary_team: SecondaryTeamRequestReminderDetails
     """
 
     _catch_all = 'other'
@@ -90122,10 +90928,9 @@ class TeamMergeRequestReminderShownToPrimaryTeamDetails(bb.Struct):
     """
     Sent a team merge request reminder.
 
-    :ivar
-        team_log.TeamMergeRequestReminderShownToPrimaryTeamDetails.secondary_team:
+    :ivar TeamMergeRequestReminderShownToPrimaryTeamDetails.secondary_team:
         The secondary team name.
-    :ivar team_log.TeamMergeRequestReminderShownToPrimaryTeamDetails.sent_to:
+    :ivar TeamMergeRequestReminderShownToPrimaryTeamDetails.sent_to:
         The name of the primary team admin the request was sent to.
     """
 
@@ -90183,7 +90988,7 @@ class TeamMergeRequestReminderShownToSecondaryTeamDetails(bb.Struct):
     """
     Sent a team merge request reminder.
 
-    :ivar team_log.TeamMergeRequestReminderShownToSecondaryTeamDetails.sent_to:
+    :ivar TeamMergeRequestReminderShownToSecondaryTeamDetails.sent_to:
         The email of the primary team admin the request was sent to.
     """
 
@@ -90255,8 +91060,8 @@ class TeamMergeRequestRevokedDetails(bb.Struct):
     """
     Canceled the team merge.
 
-    :ivar team_log.TeamMergeRequestRevokedDetails.team: The name of the other
-        team.
+    :ivar TeamMergeRequestRevokedDetails.team:
+        The name of the other team.
     """
 
     __slots__ = [
@@ -90305,10 +91110,10 @@ class TeamMergeRequestSentShownToPrimaryTeamDetails(bb.Struct):
     """
     Requested to merge their Dropbox team into yours.
 
-    :ivar team_log.TeamMergeRequestSentShownToPrimaryTeamDetails.secondary_team:
+    :ivar TeamMergeRequestSentShownToPrimaryTeamDetails.secondary_team:
         The secondary team name.
-    :ivar team_log.TeamMergeRequestSentShownToPrimaryTeamDetails.sent_to: The
-        name of the primary team admin the request was sent to.
+    :ivar TeamMergeRequestSentShownToPrimaryTeamDetails.sent_to:
+        The name of the primary team admin the request was sent to.
     """
 
     __slots__ = [
@@ -90365,8 +91170,8 @@ class TeamMergeRequestSentShownToSecondaryTeamDetails(bb.Struct):
     """
     Requested to merge your team into another Dropbox team.
 
-    :ivar team_log.TeamMergeRequestSentShownToSecondaryTeamDetails.sent_to: The
-        email of the primary team admin the request was sent to.
+    :ivar TeamMergeRequestSentShownToSecondaryTeamDetails.sent_to:
+        The email of the primary team admin the request was sent to.
     """
 
     __slots__ = [
@@ -90415,8 +91220,8 @@ class TeamMergeToDetails(bb.Struct):
     """
     Merged this team into another team.
 
-    :ivar team_log.TeamMergeToDetails.team_name: The name of the team that this
-        team was merged into.
+    :ivar TeamMergeToDetails.team_name:
+        The name of the team that this team was merged into.
     """
 
     __slots__ = [
@@ -90465,8 +91270,10 @@ class TeamName(bb.Struct):
     """
     Team name details
 
-    :ivar team_log.TeamName.team_display_name: Team's display name.
-    :ivar team_log.TeamName.team_legal_name: Team's legal name.
+    :ivar TeamName.team_display_name:
+        Team's display name.
+    :ivar TeamName.team_legal_name:
+        Team's legal name.
     """
 
     __slots__ = [
@@ -90621,9 +91428,9 @@ class TeamProfileChangeDefaultLanguageDetails(bb.Struct):
     """
     Changed default language for team.
 
-    :ivar team_log.TeamProfileChangeDefaultLanguageDetails.new_value: New team's
-        default language.
-    :ivar team_log.TeamProfileChangeDefaultLanguageDetails.previous_value:
+    :ivar TeamProfileChangeDefaultLanguageDetails.new_value:
+        New team's default language.
+    :ivar TeamProfileChangeDefaultLanguageDetails.previous_value:
         Previous team's default language.
     """
 
@@ -90721,9 +91528,10 @@ class TeamProfileChangeNameDetails(bb.Struct):
     """
     Changed team name.
 
-    :ivar team_log.TeamProfileChangeNameDetails.previous_value: Previous teams
-        name. Might be missing due to historical data gap.
-    :ivar team_log.TeamProfileChangeNameDetails.new_value: New team name.
+    :ivar TeamProfileChangeNameDetails.previous_value:
+        Previous teams name. Might be missing due to historical data gap.
+    :ivar TeamProfileChangeNameDetails.new_value:
+        New team name.
     """
 
     __slots__ = [
@@ -90906,9 +91714,9 @@ class TeamSelectiveSyncPolicyChangedDetails(bb.Struct):
     """
     Enabled/disabled Team Selective Sync for team.
 
-    :ivar team_log.TeamSelectiveSyncPolicyChangedDetails.new_value: New Team
-        Selective Sync policy.
-    :ivar team_log.TeamSelectiveSyncPolicyChangedDetails.previous_value:
+    :ivar TeamSelectiveSyncPolicyChangedDetails.new_value:
+        New Team Selective Sync policy.
+    :ivar TeamSelectiveSyncPolicyChangedDetails.previous_value:
         Previous Team Selective Sync policy.
     """
 
@@ -90966,9 +91774,10 @@ class TeamSelectiveSyncSettingsChangedDetails(bb.Struct):
     """
     Changed sync default.
 
-    :ivar team_log.TeamSelectiveSyncSettingsChangedDetails.previous_value:
+    :ivar TeamSelectiveSyncSettingsChangedDetails.previous_value:
         Previous value.
-    :ivar team_log.TeamSelectiveSyncSettingsChangedDetails.new_value: New value.
+    :ivar TeamSelectiveSyncSettingsChangedDetails.new_value:
+        New value.
     """
 
     __slots__ = [
@@ -91025,11 +91834,9 @@ class TeamSharingWhitelistSubjectsChangedDetails(bb.Struct):
     """
     Edited the approved list for sharing externally.
 
-    :ivar
-        team_log.TeamSharingWhitelistSubjectsChangedDetails.added_whitelist_subjects:
+    :ivar TeamSharingWhitelistSubjectsChangedDetails.added_whitelist_subjects:
         Domains or emails added to the approved list for sharing externally.
-    :ivar
-        team_log.TeamSharingWhitelistSubjectsChangedDetails.removed_whitelist_subjects:
+    :ivar TeamSharingWhitelistSubjectsChangedDetails.removed_whitelist_subjects:
         Domains or emails removed from the approved list for sharing externally.
     """
 
@@ -91105,8 +91912,8 @@ class TeamStorageCreateReportFailedDetails(bb.Struct):
     """
     Couldn't generate team storage report.
 
-    :ivar team_log.TeamStorageCreateReportFailedDetails.failure_reason: Failure
-        reason.
+    :ivar TeamStorageCreateReportFailedDetails.failure_reason:
+        Failure reason.
     """
 
     __slots__ = [
@@ -91337,9 +92144,10 @@ class TfaChangePolicyDetails(bb.Struct):
     """
     Changed two-factor authentication setting for team.
 
-    :ivar team_log.TfaChangePolicyDetails.new_value: New change policy.
-    :ivar team_log.TfaChangePolicyDetails.previous_value: Previous change
-        policy. Might be missing due to historical data gap.
+    :ivar TfaChangePolicyDetails.new_value:
+        New change policy.
+    :ivar TfaChangePolicyDetails.previous_value:
+        Previous change policy. Might be missing due to historical data gap.
     """
 
     __slots__ = [
@@ -91396,14 +92204,14 @@ class TfaChangeStatusDetails(bb.Struct):
     """
     Enabled/disabled/changed two-factor authentication setting.
 
-    :ivar team_log.TfaChangeStatusDetails.new_value: The new two factor
-        authentication configuration.
-    :ivar team_log.TfaChangeStatusDetails.previous_value: The previous two
-        factor authentication configuration. Might be missing due to historical
-        data gap.
-    :ivar team_log.TfaChangeStatusDetails.used_rescue_code: Used two factor
-        authentication rescue code. This flag is relevant when the two factor
-        authentication configuration is disabled.
+    :ivar TfaChangeStatusDetails.new_value:
+        The new two factor authentication configuration.
+    :ivar TfaChangeStatusDetails.previous_value:
+        The previous two factor authentication configuration. Might be missing
+        due to historical data gap.
+    :ivar TfaChangeStatusDetails.used_rescue_code:
+        Used two factor authentication rescue code. This flag is relevant when
+        the two factor authentication configuration is disabled.
     """
 
     __slots__ = [
@@ -91846,8 +92654,10 @@ class TopLevelContentPolicyChangedDetails(bb.Struct):
     """
     Changed top level content setting for team.
 
-    :ivar team_log.TopLevelContentPolicyChangedDetails.new_value: To.
-    :ivar team_log.TopLevelContentPolicyChangedDetails.previous_value: From.
+    :ivar TopLevelContentPolicyChangedDetails.new_value:
+        To.
+    :ivar TopLevelContentPolicyChangedDetails.previous_value:
+        From.
     """
 
     __slots__ = [
@@ -91904,10 +92714,10 @@ class TrustedNonTeamMemberLogInfo(UserLogInfo):
     """
     User that is not a member of the team but considered trusted.
 
-    :ivar team_log.TrustedNonTeamMemberLogInfo.trusted_non_team_member_type:
+    :ivar TrustedNonTeamMemberLogInfo.trusted_non_team_member_type:
         Indicates the type of the member of a trusted team.
-    :ivar team_log.TrustedNonTeamMemberLogInfo.team: Details about this user's
-        trusted team.
+    :ivar TrustedNonTeamMemberLogInfo.team:
+        Details about this user's trusted team.
     """
 
     __slots__ = [
@@ -92121,10 +92931,11 @@ class TwoAccountChangePolicyDetails(bb.Struct):
     Enabled/disabled option for members to link personal Dropbox account and
     team account to same computer.
 
-    :ivar team_log.TwoAccountChangePolicyDetails.new_value: New two account
-        policy.
-    :ivar team_log.TwoAccountChangePolicyDetails.previous_value: Previous two
-        account policy. Might be missing due to historical data gap.
+    :ivar TwoAccountChangePolicyDetails.new_value:
+        New two account policy.
+    :ivar TwoAccountChangePolicyDetails.previous_value:
+        Previous two account policy. Might be missing due to historical data
+        gap.
     """
 
     __slots__ = [
@@ -92328,10 +93139,12 @@ class UserNameLogInfo(bb.Struct):
     """
     User's name logged information
 
-    :ivar team_log.UserNameLogInfo.given_name: Given name.
-    :ivar team_log.UserNameLogInfo.surname: Surname.
-    :ivar team_log.UserNameLogInfo.locale: Locale. Might be missing due to
-        historical data gap.
+    :ivar UserNameLogInfo.given_name:
+        Given name.
+    :ivar UserNameLogInfo.surname:
+        Surname.
+    :ivar UserNameLogInfo.locale:
+        Locale. Might be missing due to historical data gap.
     """
 
     __slots__ = [
@@ -92396,7 +93209,8 @@ class UserTagsAddedDetails(bb.Struct):
     """
     Tagged a file.
 
-    :ivar team_log.UserTagsAddedDetails.values: values.
+    :ivar UserTagsAddedDetails.values:
+        values.
     """
 
     __slots__ = [
@@ -92445,7 +93259,8 @@ class UserTagsRemovedDetails(bb.Struct):
     """
     Removed tags.
 
-    :ivar team_log.UserTagsRemovedDetails.values: values.
+    :ivar UserTagsRemovedDetails.values:
+        values.
     """
 
     __slots__ = [
@@ -92494,10 +93309,10 @@ class ViewerInfoPolicyChangedDetails(bb.Struct):
     """
     Changed team policy for viewer info.
 
-    :ivar team_log.ViewerInfoPolicyChangedDetails.previous_value: Previous
-        Viewer Info policy.
-    :ivar team_log.ViewerInfoPolicyChangedDetails.new_value: New Viewer Info
-        policy.
+    :ivar ViewerInfoPolicyChangedDetails.previous_value:
+        Previous Viewer Info policy.
+    :ivar ViewerInfoPolicyChangedDetails.new_value:
+        New Viewer Info policy.
     """
 
     __slots__ = [
@@ -92600,10 +93415,10 @@ class WatermarkingPolicyChangedDetails(bb.Struct):
     """
     Changed watermarking policy for team.
 
-    :ivar team_log.WatermarkingPolicyChangedDetails.new_value: New watermarking
-        policy.
-    :ivar team_log.WatermarkingPolicyChangedDetails.previous_value: Previous
-        watermarking policy.
+    :ivar WatermarkingPolicyChangedDetails.new_value:
+        New watermarking policy.
+    :ivar WatermarkingPolicyChangedDetails.previous_value:
+        Previous watermarking policy.
     """
 
     __slots__ = [
@@ -92660,13 +93475,14 @@ class WebDeviceSessionLogInfo(DeviceSessionLogInfo):
     """
     Information on active web sessions
 
-    :ivar team_log.WebDeviceSessionLogInfo.session_info: Web session unique id.
-    :ivar team_log.WebDeviceSessionLogInfo.user_agent: Information on the
-        hosting device.
-    :ivar team_log.WebDeviceSessionLogInfo.os: Information on the hosting
-        operating system.
-    :ivar team_log.WebDeviceSessionLogInfo.browser: Information on the browser
-        used for this web session.
+    :ivar WebDeviceSessionLogInfo.session_info:
+        Web session unique id.
+    :ivar WebDeviceSessionLogInfo.user_agent:
+        Information on the hosting device.
+    :ivar WebDeviceSessionLogInfo.os:
+        Information on the hosting operating system.
+    :ivar WebDeviceSessionLogInfo.browser:
+        Information on the browser used for this web session.
     """
 
     __slots__ = [
@@ -92742,10 +93558,10 @@ class WebSessionsChangeActiveSessionLimitDetails(bb.Struct):
     """
     Changed limit on active sessions per member.
 
-    :ivar team_log.WebSessionsChangeActiveSessionLimitDetails.previous_value:
+    :ivar WebSessionsChangeActiveSessionLimitDetails.previous_value:
         Previous max number of concurrent active sessions policy.
-    :ivar team_log.WebSessionsChangeActiveSessionLimitDetails.new_value: New max
-        number of concurrent active sessions policy.
+    :ivar WebSessionsChangeActiveSessionLimitDetails.new_value:
+        New max number of concurrent active sessions policy.
     """
 
     __slots__ = [
@@ -92802,9 +93618,9 @@ class WebSessionsChangeFixedLengthPolicyDetails(bb.Struct):
     """
     Changed how long members can stay signed in to Dropbox.com.
 
-    :ivar team_log.WebSessionsChangeFixedLengthPolicyDetails.new_value: New
-        session length policy. Might be missing due to historical data gap.
-    :ivar team_log.WebSessionsChangeFixedLengthPolicyDetails.previous_value:
+    :ivar WebSessionsChangeFixedLengthPolicyDetails.new_value:
+        New session length policy. Might be missing due to historical data gap.
+    :ivar WebSessionsChangeFixedLengthPolicyDetails.previous_value:
         Previous session length policy. Might be missing due to historical data
         gap.
     """
@@ -92863,9 +93679,9 @@ class WebSessionsChangeIdleLengthPolicyDetails(bb.Struct):
     """
     Changed how long team members can be idle while signed in to Dropbox.com.
 
-    :ivar team_log.WebSessionsChangeIdleLengthPolicyDetails.new_value: New idle
-        length policy. Might be missing due to historical data gap.
-    :ivar team_log.WebSessionsChangeIdleLengthPolicyDetails.previous_value:
+    :ivar WebSessionsChangeIdleLengthPolicyDetails.new_value:
+        New idle length policy. Might be missing due to historical data gap.
+    :ivar WebSessionsChangeIdleLengthPolicyDetails.previous_value:
         Previous idle length policy. Might be missing due to historical data
         gap.
     """
@@ -92928,10 +93744,11 @@ class WebSessionsFixedLengthPolicy(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar DurationLogInfo WebSessionsFixedLengthPolicy.defined: Defined fixed
-        session length.
-    :ivar team_log.WebSessionsFixedLengthPolicy.undefined: Undefined fixed
-        session length.
+    :ivar WebSessionsFixedLengthPolicy.defined:
+        Defined fixed session length.
+    :vartype WebSessionsFixedLengthPolicy.defined: DurationLogInfo
+    :ivar WebSessionsFixedLengthPolicy.undefined:
+        Undefined fixed session length.
     """
 
     _catch_all = 'other'
@@ -93000,10 +93817,11 @@ class WebSessionsIdleLengthPolicy(bb.Union):
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
-    :ivar DurationLogInfo WebSessionsIdleLengthPolicy.defined: Defined idle
-        session length.
-    :ivar team_log.WebSessionsIdleLengthPolicy.undefined: Undefined idle session
-        length.
+    :ivar WebSessionsIdleLengthPolicy.defined:
+        Defined idle session length.
+    :vartype WebSessionsIdleLengthPolicy.defined: DurationLogInfo
+    :ivar WebSessionsIdleLengthPolicy.undefined:
+        Undefined idle session length.
     """
 
     _catch_all = 'other'
