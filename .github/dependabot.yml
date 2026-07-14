@@ -8,9 +8,14 @@ updates:
   - package-ecosystem: "pip" # See documentation for possible values
     directory: "/" # Location of package manifests
     schedule:
-      interval: "monthly"
+      interval: "weekly"
 
+  # Group all GitHub Actions updates into one PR
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
-      interval: "monthly"
+      interval: "weekly"
+    groups:
+      github-actions:
+        patterns:
+          - "*"
