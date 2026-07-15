@@ -1,6 +1,12 @@
 name: CI
 on:
+  push:
+    branches:
+      - main
   pull_request:
+
+permissions:  # least privilege; jobs needing OIDC override this
+  contents: read
 
 jobs:
   CI:
