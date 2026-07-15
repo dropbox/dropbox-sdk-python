@@ -29,7 +29,7 @@ from dropbox.dropbox_client import PATH_ROOT_HEADER, SELECT_USER_HEADER
 from dropbox.exceptions import (
     ApiError,
     AuthError,
-    # BadInputError,
+    BadInputError,
     PathRootError,
 )
 from dropbox.files import (
@@ -78,19 +78,37 @@ def dbx_session(request):
     return create_session(ca_certs=request.param)
 
 
-@pytest.fixture()
-def dbx_from_env(dbx_session):
-    oauth2_token = _value_from_env_or_die(format_env_name())
-    return Dropbox(oauth2_token, session=dbx_session)
-
-
-@pytest.fixture()
-def refresh_dbx_from_env(dbx_session):
+def _refresh_dbx(dbx_session=None):
+    # Build a user client from the refresh token instead of a stored access
+    # token; the SDK mints a short-lived access token on demand. Access tokens
+    # were the recurring cause of CI auth failures, so this removes them from
+    # the required credentials.
     refresh_token = _value_from_env_or_die(format_env_name(SCOPED_KEY, USER_KEY, REFRESH_TOKEN_KEY))
     app_key = _value_from_env_or_die(format_env_name(SCOPED_KEY, USER_KEY, CLIENT_ID_KEY))
     app_secret = _value_from_env_or_die(format_env_name(SCOPED_KEY, USER_KEY, CLIENT_SECRET_KEY))
     return Dropbox(oauth2_refresh_token=refresh_token,
                    app_key=app_key, app_secret=app_secret,
+                   session=dbx_session)
+
+
+@pytest.fixture()
+def dbx_from_env(dbx_session):
+    return _refresh_dbx(dbx_session)
+
+
+@pytest.fixture()
+def refresh_dbx_from_env(dbx_session):
+    return _refresh_dbx(dbx_session)
+
+
+@pytest.fixture()
+def bad_secret_dbx_from_env(dbx_session):
+    # Valid refresh token and app key, but a wrong app secret, so the token
+    # endpoint rejects the refresh.
+    refresh_token = _value_from_env_or_die(format_env_name(SCOPED_KEY, USER_KEY, REFRESH_TOKEN_KEY))
+    app_key = _value_from_env_or_die(format_env_name(SCOPED_KEY, USER_KEY, CLIENT_ID_KEY))
+    return Dropbox(oauth2_refresh_token=refresh_token,
+                   app_key=app_key, app_secret='invalid_app_secret',
                    session=dbx_session)
 
 
@@ -120,13 +138,13 @@ INVALID_TOKEN = 'z' * 62
 DUMMY_PAYLOAD = string.ascii_letters.encode('ascii')
 
 RANDOM_FOLDER = random.sample(string.ascii_letters, 15)
-TIMESTAMP = str(datetime.datetime.utcnow())
+TIMESTAMP = str(datetime.datetime.now(datetime.timezone.utc))
 STATIC_FILE = "/test.txt"
 
 @pytest.fixture(scope='module')
 def pytest_setup():
     print("Setup")
-    dbx = Dropbox(_value_from_env_or_die(format_env_name()))
+    dbx = _refresh_dbx()
 
     try:
         dbx.files_delete(STATIC_FILE)
@@ -161,6 +179,11 @@ class TestDropbox:
 
     def test_refresh(self, refresh_dbx_from_env):
         refresh_dbx_from_env.users_get_current_account()
+
+    def test_refresh_failure_error_detail(self, bad_secret_dbx_from_env):
+        with pytest.raises(BadInputError) as cm:
+            bad_secret_dbx_from_env.users_get_current_account()
+        assert 'invalid_client' in cm.value.message
 
     def test_app_auth(self, dbx_app_auth_from_env):
         dbx_app_auth_from_env.check_app(query="hello world")

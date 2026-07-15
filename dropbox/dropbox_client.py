@@ -667,7 +667,6 @@ class _DropboxTransport(object):
         elif res.status_code == 400:
             try:
                 if res.json().get('error') == 'invalid_grant':
-                    request_id = res.headers.get('x-dropbox-request-id')
                     err = stone_serializers.json_compat_obj_decode(
                         AuthError_validator, 'invalid_access_token')
                     raise AuthError(request_id, err)
