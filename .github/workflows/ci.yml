@@ -93,8 +93,13 @@ jobs:
           sphinx-build -b html docs build/html
 
   Integration:
-    continue-on-error: true
+    # Skip on fork PRs: they cannot assume the OIDC role.
+    if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository
+    continue-on-error: false
     runs-on: ${{ matrix.os }}
+    permissions:  # required for OIDC
+      id-token: write
+      contents: read
     strategy:
       fail-fast: false
       max-parallel: 1
@@ -126,19 +131,27 @@ jobs:
         run: |
           python -m pip install "$(python -c "import glob,sys; w=glob.glob('dist/*.whl'); assert w, f'No wheel built. dist contains: {glob.glob(\"dist/*\")}'; print(w[0])")"
 
+      - name: Configure AWS credentials (OIDC)
+        uses: aws-actions/configure-aws-credentials@v6
+        with:
+          role-to-assume: arn:aws:iam::082972943155:role/oidc-github-dropbox-dropbox-sdk-python-repo
+          aws-region: us-west-2
+
+      - name: Get integration credentials from AWS Secrets Manager
+        uses: aws-actions/aws-secretsmanager-get-secrets@v3
+        with:
+          secret-ids: |
+            CREDS,api-sdk-integration-test-creds
+          parse-json-secrets: true
+
       - name: Run integration tests
         env:
-          LEGACY_USER_DROPBOX_TOKEN: ${{ secrets.LEGACY_USER_DROPBOX_TOKEN }}
-          LEGACY_USER_CLIENT_ID: ${{ secrets.LEGACY_USER_CLIENT_ID }}
-          LEGACY_USER_CLIENT_SECRET: ${{ secrets.LEGACY_USER_CLIENT_SECRET }}
-          LEGACY_USER_REFRESH_TOKEN: ${{ secrets.LEGACY_USER_REFRESH_TOKEN }}
-          SCOPED_USER_CLIENT_ID: ${{ secrets.SCOPED_USER_CLIENT_ID }}
-          SCOPED_USER_CLIENT_SECRET: ${{ secrets.SCOPED_USER_CLIENT_SECRET }}
-          SCOPED_USER_REFRESH_TOKEN: ${{ secrets.SCOPED_USER_REFRESH_TOKEN }}
-          SCOPED_TEAM_DROPBOX_TOKEN: ${{ secrets.SCOPED_TEAM_DROPBOX_TOKEN }}
-          SCOPED_TEAM_CLIENT_ID: ${{ secrets.SCOPED_TEAM_CLIENT_ID }}
-          SCOPED_TEAM_CLIENT_SECRET: ${{ secrets.SCOPED_TEAM_CLIENT_SECRET }}
-          SCOPED_TEAM_REFRESH_TOKEN: ${{ secrets.SCOPED_TEAM_REFRESH_TOKEN }}
-          DROPBOX_SHARED_LINK: ${{ secrets.DROPBOX_SHARED_LINK }}
+          SCOPED_USER_CLIENT_ID: ${{ env.CREDS_SCOPED_USER_CLIENT_ID }}
+          SCOPED_USER_CLIENT_SECRET: ${{ env.CREDS_SCOPED_USER_CLIENT_SECRET }}
+          SCOPED_USER_REFRESH_TOKEN: ${{ env.CREDS_SCOPED_USER_REFRESH_TOKEN }}
+          SCOPED_TEAM_CLIENT_ID: ${{ env.CREDS_SCOPED_TEAM_CLIENT_ID }}
+          SCOPED_TEAM_CLIENT_SECRET: ${{ env.CREDS_SCOPED_TEAM_CLIENT_SECRET }}
+          SCOPED_TEAM_REFRESH_TOKEN: ${{ env.CREDS_SCOPED_TEAM_REFRESH_TOKEN }}
+          DROPBOX_SHARED_LINK: ${{ env.CREDS_DROPBOX_SHARED_LINK }}
         run: |
           pytest -v test/integration/test_dropbox.py

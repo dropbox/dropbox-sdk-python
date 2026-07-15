@@ -114,9 +114,15 @@ def bad_secret_dbx_from_env(dbx_session):
 
 @pytest.fixture()
 def dbx_team_from_env(dbx_session):
-    team_oauth2_token = _value_from_env_or_die(
-        format_env_name(SCOPED_KEY, TEAM_KEY, ACCESS_TOKEN_KEY))
-    return DropboxTeam(team_oauth2_token, session=dbx_session)
+    refresh_token = _value_from_env_or_die(
+        format_env_name(SCOPED_KEY, TEAM_KEY, REFRESH_TOKEN_KEY))
+    app_key = _value_from_env_or_die(
+        format_env_name(SCOPED_KEY, TEAM_KEY, CLIENT_ID_KEY))
+    app_secret = _value_from_env_or_die(
+        format_env_name(SCOPED_KEY, TEAM_KEY, CLIENT_SECRET_KEY))
+    return DropboxTeam(oauth2_refresh_token=refresh_token,
+                       app_key=app_key, app_secret=app_secret,
+                       session=dbx_session)
 
 
 @pytest.fixture()
