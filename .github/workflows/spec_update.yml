@@ -28,25 +28,35 @@ jobs:
           git submodule update --remote --recursive
       - name: Generate Branch Name
         id: git-branch
+        env:
+          FORMATTED_TIME: ${{ steps.current-time.outputs.formattedTime }}
         run: |
-          echo "::set-output name=branch::spec_update_${{ steps.current-time.outputs.formattedTime }}"
+          echo "branch=spec_update_${FORMATTED_TIME}" >> "$GITHUB_OUTPUT"
       - name: Generate Num Diffs
         id: git-diff-num
         run: |
           diffs=$(git diff --submodule spec | grep ">" | wc -l)
           echo "Number of Spec diffs: $diffs"
-          echo "::set-output name=num-diff::$diffs"
+          echo "num-diff=$diffs" >> "$GITHUB_OUTPUT"
       - name: Generate Diff
         id: git-diff
+        env:
+          NUM_DIFF: ${{ steps.git-diff-num.outputs.num-diff }}
         run: |
           cd spec
-          gitdiff=$(git log -n ${{ steps.git-diff-num.outputs.num-diff }} --pretty="format:%n %H %n%n %b")
+          gitdiff=$(git log -n "$NUM_DIFF" --pretty="format:%n %H %n%n %b")
           commit="Automated Spec Update $gitdiff"
-          commit="${commit//'%'/'%25'}"
-          commit="${commit//$'\n'/'%0A'}"
-          commit="${commit//$'\r'/'%0D'}"
-          echo "Commit Message: $commit"
-          echo "::set-output name=commit::$commit"
+          while true; do
+            delimiter="SPEC_UPDATE_EOF_$(python -c 'import uuid; print(uuid.uuid4())')"
+            if ! grep -Fxq "$delimiter" <<< "$commit"; then
+              break
+            fi
+          done
+          {
+            printf 'commit<<%s\n' "$delimiter"
+            printf '%s\n' "$commit"
+            printf '%s\n' "$delimiter"
+          } >> "$GITHUB_OUTPUT"
           cd ..
       - name: Generate New Routes
         run: |
