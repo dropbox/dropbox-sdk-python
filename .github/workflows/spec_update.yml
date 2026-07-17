@@ -105,7 +105,7 @@ jobs:
             ${{ steps.git-diff.outputs.commit}}
           branch: ${{ steps.git-branch.outputs.branch }}
           delete-branch: true
-          title: 'Automated Spec Update'
+          title: 'Automated Spec Update - ${{ steps.current-time.outputs.formattedTime }}'
           body: |
             ${{ steps.git-diff.outputs.commit}}
           base: 'main'
