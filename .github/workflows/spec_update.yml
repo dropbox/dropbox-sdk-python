@@ -90,12 +90,13 @@ jobs:
         if: steps.git-diff-num.outputs.num-diff != 0
         run: |
           closed=""
-          gh pr list --label "automated-spec-update" --state open --json number --jq '.[].number' | while read -r pr_num; do
+          while read -r pr_num; do
             echo "Closing old PR #$pr_num"
             gh pr close "$pr_num" --delete-branch
             closed="${closed:+$closed,}$pr_num"
-          done
+          done < <(gh pr list --label "automated-spec-update" --state open --json number --jq '.[].number')
           echo "closed=$closed" >> "$GITHUB_OUTPUT"
+        shell: bash
         env:
           GH_TOKEN: ${{ steps.app-token.outputs.token }}
 
