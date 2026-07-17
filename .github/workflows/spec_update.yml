@@ -85,6 +85,20 @@ jobs:
           pip install -r requirements.txt
           python generate_base_client.py
 
+      - name: Close Old Pull Requests
+        id: close-old-prs
+        if: steps.git-diff-num.outputs.num-diff != 0
+        run: |
+          closed=""
+          gh pr list --label "automated-spec-update" --state open --json number --jq '.[].number' | while read -r pr_num; do
+            echo "Closing old PR #$pr_num"
+            gh pr close "$pr_num" --delete-branch
+            closed="${closed:+$closed,}$pr_num"
+          done
+          echo "closed=$closed" >> "$GITHUB_OUTPUT"
+        env:
+          GH_TOKEN: ${{ steps.app-token.outputs.token }}
+
       - name: Create Pull Request
         id: create-pr
         uses: peter-evans/create-pull-request@v8
@@ -103,15 +117,12 @@ jobs:
             automated-spec-update
           draft: false
 
-      - name: Close Old Pull Requests
-        if: steps.create-pr.outputs.pull-request-number
+      - name: Comment on closed PRs
+        if: steps.create-pr.outputs.pull-request-number && steps.close-old-prs.outputs.closed
         run: |
-          gh pr list --label "automated-spec-update" --state open --json number --jq '.[].number' | while read -r pr_num; do
-            if [ "$pr_num" != "${{ steps.create-pr.outputs.pull-request-number }}" ]; then
-              echo "Closing old PR #$pr_num"
-              gh pr comment "$pr_num" --body "Superseded by #${{ steps.create-pr.outputs.pull-request-number }}"
-              gh pr close "$pr_num" --delete-branch
-            fi
+          IFS=',' read -ra prs <<< "${{ steps.close-old-prs.outputs.closed }}"
+          for pr_num in "${prs[@]}"; do
+            gh pr comment "$pr_num" --body "Superseded by #${{ steps.create-pr.outputs.pull-request-number }}"
           done
         env:
           GH_TOKEN: ${{ steps.app-token.outputs.token }}
