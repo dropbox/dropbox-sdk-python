@@ -4,13 +4,34 @@ on:
   repository_dispatch:
     types: [spec_update]
 
-permissions:  # least privilege; PR creation uses the SPEC_UPDATE_TOKEN PAT
+permissions:
+  id-token: write
   contents: read
 
 jobs:
   Update:
     runs-on: ubuntu-latest
     steps:
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v6
+        with:
+          role-to-assume: arn:aws:iam::082972943155:role/oidc-github-dropbox-dropbox-sdk-python-repo
+          aws-region: us-west-2
+
+      - name: Fetch GitHub App credentials from Secrets Manager
+        uses: aws-actions/aws-secretsmanager-get-secrets@v3
+        with:
+          secret-ids: |
+            SDK_UPDATER,sdk-updater-github-app
+          parse-json-secrets: true
+
+      - name: Generate GitHub App installation token
+        id: app-token
+        uses: actions/create-github-app-token@v3
+        with:
+          client-id: ${{ env.SDK_UPDATER_CLIENT_ID }}
+          private-key: ${{ env.SDK_UPDATER_PRIVATE_KEY }}
+
       - uses: actions/checkout@v7
       - name: Setup Python environment
         uses: actions/setup-python@v6
@@ -64,10 +85,11 @@ jobs:
           pip install -r requirements.txt
           python generate_base_client.py
       - name: Create Pull Request
+        id: create-pr
         uses: peter-evans/create-pull-request@v8
         if: steps.git-diff-num.outputs.num-diff != 0
         with:
-          token: ${{ secrets.SPEC_UPDATE_TOKEN }}
+          token: ${{ steps.app-token.outputs.token }}
           commit-message: |
             ${{ steps.git-diff.outputs.commit}}
           branch: ${{ steps.git-branch.outputs.branch }}
@@ -80,3 +102,9 @@ jobs:
             owners
             maintainers
           draft: false
+
+      - name: Enable Pull Request Automerge
+        if: steps.create-pr.outputs.pull-request-number
+        run: gh pr merge --merge --auto "${{ steps.create-pr.outputs.pull-request-number }}"
+        env:
+          GH_TOKEN: ${{ steps.app-token.outputs.token }}
