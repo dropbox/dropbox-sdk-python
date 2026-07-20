@@ -30,7 +30,7 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install -U pip
-          python -m pip install -U build flake8 pytest
+          python -m pip install -U build pytest ruff
           python -m pip install -r requirements.txt
           python -m pip install -r test/requirements.txt
 
@@ -54,7 +54,8 @@ jobs:
 
       - name: Run linter
         run: |
-          flake8 dropbox example test
+          ruff check dropbox example test
+          ruff format --check dropbox example test
 
       - name: Run unit tests
         run: |

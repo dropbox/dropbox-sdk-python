@@ -16,6 +16,7 @@ from dropbox import team_common
 from dropbox import team_policies
 from dropbox import users_common
 
+
 class Account(bb.Struct):
     """
     The amount of detail revealed about an account depends on the user being
@@ -38,23 +39,25 @@ class Account(bb.Struct):
     """
 
     __slots__ = [
-        '_account_id_value',
-        '_name_value',
-        '_email_value',
-        '_email_verified_value',
-        '_profile_photo_url_value',
-        '_disabled_value',
+        "_account_id_value",
+        "_name_value",
+        "_email_value",
+        "_email_verified_value",
+        "_profile_photo_url_value",
+        "_disabled_value",
     ]
 
     _has_required_fields = True
 
-    def __init__(self,
-                 account_id=None,
-                 name=None,
-                 email=None,
-                 email_verified=None,
-                 disabled=None,
-                 profile_photo_url=None):
+    def __init__(
+        self,
+        account_id=None,
+        name=None,
+        email=None,
+        email_verified=None,
+        disabled=None,
+        profile_photo_url=None,
+    ):
         self._account_id_value = bb.NOT_SET
         self._name_value = bb.NOT_SET
         self._email_value = bb.NOT_SET
@@ -95,7 +98,9 @@ class Account(bb.Struct):
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(Account, self)._process_custom_annotations(annotation_type, field_path, processor)
 
+
 Account_validator = bv.Struct(Account)
+
 
 class BasicAccount(Account):
     """
@@ -110,27 +115,26 @@ class BasicAccount(Account):
     """
 
     __slots__ = [
-        '_is_teammate_value',
-        '_team_member_id_value',
+        "_is_teammate_value",
+        "_team_member_id_value",
     ]
 
     _has_required_fields = True
 
-    def __init__(self,
-                 account_id=None,
-                 name=None,
-                 email=None,
-                 email_verified=None,
-                 disabled=None,
-                 is_teammate=None,
-                 profile_photo_url=None,
-                 team_member_id=None):
-        super(BasicAccount, self).__init__(account_id,
-                                           name,
-                                           email,
-                                           email_verified,
-                                           disabled,
-                                           profile_photo_url)
+    def __init__(
+        self,
+        account_id=None,
+        name=None,
+        email=None,
+        email_verified=None,
+        disabled=None,
+        is_teammate=None,
+        profile_photo_url=None,
+        team_member_id=None,
+    ):
+        super(BasicAccount, self).__init__(
+            account_id, name, email, email_verified, disabled, profile_photo_url
+        )
         self._is_teammate_value = bb.NOT_SET
         self._team_member_id_value = bb.NOT_SET
         if is_teammate is not None:
@@ -145,9 +149,13 @@ class BasicAccount(Account):
     team_member_id = bb.Attribute("team_member_id", nullable=True)
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
-        super(BasicAccount, self)._process_custom_annotations(annotation_type, field_path, processor)
+        super(BasicAccount, self)._process_custom_annotations(
+            annotation_type, field_path, processor
+        )
+
 
 BasicAccount_validator = bv.Struct(BasicAccount)
+
 
 class DistinctMemberHomeValue(bb.Union):
     """
@@ -163,7 +171,7 @@ class DistinctMemberHomeValue(bb.Union):
     :vartype DistinctMemberHomeValue.enabled: bool
     """
 
-    _catch_all = 'other'
+    _catch_all = "other"
     # Attribute is overwritten below the class definition
     other = None
 
@@ -176,7 +184,7 @@ class DistinctMemberHomeValue(bb.Union):
         :param bool val:
         :rtype: DistinctMemberHomeValue
         """
-        return cls('enabled', val)
+        return cls("enabled", val)
 
     def is_enabled(self):
         """
@@ -184,7 +192,7 @@ class DistinctMemberHomeValue(bb.Union):
 
         :rtype: bool
         """
-        return self._tag == 'enabled'
+        return self._tag == "enabled"
 
     def is_other(self):
         """
@@ -192,7 +200,7 @@ class DistinctMemberHomeValue(bb.Union):
 
         :rtype: bool
         """
-        return self._tag == 'other'
+        return self._tag == "other"
 
     def get_enabled(self):
         """
@@ -208,9 +216,13 @@ class DistinctMemberHomeValue(bb.Union):
         return self._value
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
-        super(DistinctMemberHomeValue, self)._process_custom_annotations(annotation_type, field_path, processor)
+        super(DistinctMemberHomeValue, self)._process_custom_annotations(
+            annotation_type, field_path, processor
+        )
+
 
 DistinctMemberHomeValue_validator = bv.Union(DistinctMemberHomeValue)
+
 
 class FileLockingValue(bb.Union):
     """
@@ -227,7 +239,7 @@ class FileLockingValue(bb.Union):
     :vartype FileLockingValue.enabled: bool
     """
 
-    _catch_all = 'other'
+    _catch_all = "other"
     # Attribute is overwritten below the class definition
     other = None
 
@@ -240,7 +252,7 @@ class FileLockingValue(bb.Union):
         :param bool val:
         :rtype: FileLockingValue
         """
-        return cls('enabled', val)
+        return cls("enabled", val)
 
     def is_enabled(self):
         """
@@ -248,7 +260,7 @@ class FileLockingValue(bb.Union):
 
         :rtype: bool
         """
-        return self._tag == 'enabled'
+        return self._tag == "enabled"
 
     def is_other(self):
         """
@@ -256,7 +268,7 @@ class FileLockingValue(bb.Union):
 
         :rtype: bool
         """
-        return self._tag == 'other'
+        return self._tag == "other"
 
     def get_enabled(self):
         """
@@ -273,9 +285,13 @@ class FileLockingValue(bb.Union):
         return self._value
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
-        super(FileLockingValue, self)._process_custom_annotations(annotation_type, field_path, processor)
+        super(FileLockingValue, self)._process_custom_annotations(
+            annotation_type, field_path, processor
+        )
+
 
 FileLockingValue_validator = bv.Union(FileLockingValue)
+
 
 class FullAccount(Account):
     """
@@ -305,39 +321,38 @@ class FullAccount(Account):
     """
 
     __slots__ = [
-        '_country_value',
-        '_locale_value',
-        '_referral_link_value',
-        '_team_value',
-        '_team_member_id_value',
-        '_is_paired_value',
-        '_account_type_value',
-        '_root_info_value',
+        "_country_value",
+        "_locale_value",
+        "_referral_link_value",
+        "_team_value",
+        "_team_member_id_value",
+        "_is_paired_value",
+        "_account_type_value",
+        "_root_info_value",
     ]
 
     _has_required_fields = True
 
-    def __init__(self,
-                 account_id=None,
-                 name=None,
-                 email=None,
-                 email_verified=None,
-                 disabled=None,
-                 locale=None,
-                 referral_link=None,
-                 is_paired=None,
-                 account_type=None,
-                 root_info=None,
-                 profile_photo_url=None,
-                 country=None,
-                 team=None,
-                 team_member_id=None):
-        super(FullAccount, self).__init__(account_id,
-                                          name,
-                                          email,
-                                          email_verified,
-                                          disabled,
-                                          profile_photo_url)
+    def __init__(
+        self,
+        account_id=None,
+        name=None,
+        email=None,
+        email_verified=None,
+        disabled=None,
+        locale=None,
+        referral_link=None,
+        is_paired=None,
+        account_type=None,
+        root_info=None,
+        profile_photo_url=None,
+        country=None,
+        team=None,
+        team_member_id=None,
+    ):
+        super(FullAccount, self).__init__(
+            account_id, name, email, email_verified, disabled, profile_photo_url
+        )
         self._country_value = bb.NOT_SET
         self._locale_value = bb.NOT_SET
         self._referral_link_value = bb.NOT_SET
@@ -390,7 +405,9 @@ class FullAccount(Account):
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(FullAccount, self)._process_custom_annotations(annotation_type, field_path, processor)
 
+
 FullAccount_validator = bv.Struct(FullAccount)
+
 
 class Team(bb.Struct):
     """
@@ -403,15 +420,13 @@ class Team(bb.Struct):
     """
 
     __slots__ = [
-        '_id_value',
-        '_name_value',
+        "_id_value",
+        "_name_value",
     ]
 
     _has_required_fields = True
 
-    def __init__(self,
-                 id=None,
-                 name=None):
+    def __init__(self, id=None, name=None):
         self._id_value = bb.NOT_SET
         self._name_value = bb.NOT_SET
         if id is not None:
@@ -428,7 +443,9 @@ class Team(bb.Struct):
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(Team, self)._process_custom_annotations(annotation_type, field_path, processor)
 
+
 Team_validator = bv.Struct(Team)
+
 
 class FullTeam(Team):
     """
@@ -444,21 +461,22 @@ class FullTeam(Team):
     """
 
     __slots__ = [
-        '_sharing_policies_value',
-        '_office_addin_policy_value',
-        '_top_level_content_policy_value',
+        "_sharing_policies_value",
+        "_office_addin_policy_value",
+        "_top_level_content_policy_value",
     ]
 
     _has_required_fields = True
 
-    def __init__(self,
-                 id=None,
-                 name=None,
-                 sharing_policies=None,
-                 office_addin_policy=None,
-                 top_level_content_policy=None):
-        super(FullTeam, self).__init__(id,
-                                       name)
+    def __init__(
+        self,
+        id=None,
+        name=None,
+        sharing_policies=None,
+        office_addin_policy=None,
+        top_level_content_policy=None,
+    ):
+        super(FullTeam, self).__init__(id, name)
         self._sharing_policies_value = bb.NOT_SET
         self._office_addin_policy_value = bb.NOT_SET
         self._top_level_content_policy_value = bb.NOT_SET
@@ -481,7 +499,9 @@ class FullTeam(Team):
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(FullTeam, self)._process_custom_annotations(annotation_type, field_path, processor)
 
+
 FullTeam_validator = bv.Struct(FullTeam)
+
 
 class GetAccountArg(bb.Struct):
     """
@@ -490,13 +510,12 @@ class GetAccountArg(bb.Struct):
     """
 
     __slots__ = [
-        '_account_id_value',
+        "_account_id_value",
     ]
 
     _has_required_fields = True
 
-    def __init__(self,
-                 account_id=None):
+    def __init__(self, account_id=None):
         self._account_id_value = bb.NOT_SET
         if account_id is not None:
             self.account_id = account_id
@@ -505,9 +524,13 @@ class GetAccountArg(bb.Struct):
     account_id = bb.Attribute("account_id")
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
-        super(GetAccountArg, self)._process_custom_annotations(annotation_type, field_path, processor)
+        super(GetAccountArg, self)._process_custom_annotations(
+            annotation_type, field_path, processor
+        )
+
 
 GetAccountArg_validator = bv.Struct(GetAccountArg)
+
 
 class GetAccountBatchArg(bb.Struct):
     """
@@ -517,13 +540,12 @@ class GetAccountBatchArg(bb.Struct):
     """
 
     __slots__ = [
-        '_account_ids_value',
+        "_account_ids_value",
     ]
 
     _has_required_fields = True
 
-    def __init__(self,
-                 account_ids=None):
+    def __init__(self, account_ids=None):
         self._account_ids_value = bb.NOT_SET
         if account_ids is not None:
             self.account_ids = account_ids
@@ -532,9 +554,13 @@ class GetAccountBatchArg(bb.Struct):
     account_ids = bb.Attribute("account_ids")
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
-        super(GetAccountBatchArg, self)._process_custom_annotations(annotation_type, field_path, processor)
+        super(GetAccountBatchArg, self)._process_custom_annotations(
+            annotation_type, field_path, processor
+        )
+
 
 GetAccountBatchArg_validator = bv.Struct(GetAccountBatchArg)
+
 
 class GetAccountBatchError(bb.Union):
     """
@@ -548,7 +574,7 @@ class GetAccountBatchError(bb.Union):
     :vartype GetAccountBatchError.no_account: str
     """
 
-    _catch_all = 'other'
+    _catch_all = "other"
     # Attribute is overwritten below the class definition
     other = None
 
@@ -561,7 +587,7 @@ class GetAccountBatchError(bb.Union):
         :param str val:
         :rtype: GetAccountBatchError
         """
-        return cls('no_account', val)
+        return cls("no_account", val)
 
     def is_no_account(self):
         """
@@ -569,7 +595,7 @@ class GetAccountBatchError(bb.Union):
 
         :rtype: bool
         """
-        return self._tag == 'no_account'
+        return self._tag == "no_account"
 
     def is_other(self):
         """
@@ -577,7 +603,7 @@ class GetAccountBatchError(bb.Union):
 
         :rtype: bool
         """
-        return self._tag == 'other'
+        return self._tag == "other"
 
     def get_no_account(self):
         """
@@ -593,9 +619,13 @@ class GetAccountBatchError(bb.Union):
         return self._value
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
-        super(GetAccountBatchError, self)._process_custom_annotations(annotation_type, field_path, processor)
+        super(GetAccountBatchError, self)._process_custom_annotations(
+            annotation_type, field_path, processor
+        )
+
 
 GetAccountBatchError_validator = bv.Union(GetAccountBatchError)
+
 
 class GetAccountError(bb.Union):
     """
@@ -607,7 +637,7 @@ class GetAccountError(bb.Union):
         The specified ``GetAccountArg.account_id`` does not exist.
     """
 
-    _catch_all = 'other'
+    _catch_all = "other"
     # Attribute is overwritten below the class definition
     no_account = None
     # Attribute is overwritten below the class definition
@@ -619,7 +649,7 @@ class GetAccountError(bb.Union):
 
         :rtype: bool
         """
-        return self._tag == 'no_account'
+        return self._tag == "no_account"
 
     def is_other(self):
         """
@@ -627,12 +657,16 @@ class GetAccountError(bb.Union):
 
         :rtype: bool
         """
-        return self._tag == 'other'
+        return self._tag == "other"
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
-        super(GetAccountError, self)._process_custom_annotations(annotation_type, field_path, processor)
+        super(GetAccountError, self)._process_custom_annotations(
+            annotation_type, field_path, processor
+        )
+
 
 GetAccountError_validator = bv.Union(GetAccountError)
+
 
 class IndividualSpaceAllocation(bb.Struct):
     """
@@ -641,13 +675,12 @@ class IndividualSpaceAllocation(bb.Struct):
     """
 
     __slots__ = [
-        '_allocated_value',
+        "_allocated_value",
     ]
 
     _has_required_fields = True
 
-    def __init__(self,
-                 allocated=None):
+    def __init__(self, allocated=None):
         self._allocated_value = bb.NOT_SET
         if allocated is not None:
             self.allocated = allocated
@@ -656,9 +689,13 @@ class IndividualSpaceAllocation(bb.Struct):
     allocated = bb.Attribute("allocated")
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
-        super(IndividualSpaceAllocation, self)._process_custom_annotations(annotation_type, field_path, processor)
+        super(IndividualSpaceAllocation, self)._process_custom_annotations(
+            annotation_type, field_path, processor
+        )
+
 
 IndividualSpaceAllocation_validator = bv.Struct(IndividualSpaceAllocation)
+
 
 class Name(bb.Struct):
     """
@@ -681,21 +718,23 @@ class Name(bb.Struct):
     """
 
     __slots__ = [
-        '_given_name_value',
-        '_surname_value',
-        '_familiar_name_value',
-        '_display_name_value',
-        '_abbreviated_name_value',
+        "_given_name_value",
+        "_surname_value",
+        "_familiar_name_value",
+        "_display_name_value",
+        "_abbreviated_name_value",
     ]
 
     _has_required_fields = True
 
-    def __init__(self,
-                 given_name=None,
-                 surname=None,
-                 familiar_name=None,
-                 display_name=None,
-                 abbreviated_name=None):
+    def __init__(
+        self,
+        given_name=None,
+        surname=None,
+        familiar_name=None,
+        display_name=None,
+        abbreviated_name=None,
+    ):
         self._given_name_value = bb.NOT_SET
         self._surname_value = bb.NOT_SET
         self._familiar_name_value = bb.NOT_SET
@@ -730,7 +769,9 @@ class Name(bb.Struct):
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(Name, self)._process_custom_annotations(annotation_type, field_path, processor)
 
+
 Name_validator = bv.Struct(Name)
+
 
 class PaperAsFilesValue(bb.Union):
     """
@@ -749,7 +790,7 @@ class PaperAsFilesValue(bb.Union):
     :vartype PaperAsFilesValue.enabled: bool
     """
 
-    _catch_all = 'other'
+    _catch_all = "other"
     # Attribute is overwritten below the class definition
     other = None
 
@@ -762,7 +803,7 @@ class PaperAsFilesValue(bb.Union):
         :param bool val:
         :rtype: PaperAsFilesValue
         """
-        return cls('enabled', val)
+        return cls("enabled", val)
 
     def is_enabled(self):
         """
@@ -770,7 +811,7 @@ class PaperAsFilesValue(bb.Union):
 
         :rtype: bool
         """
-        return self._tag == 'enabled'
+        return self._tag == "enabled"
 
     def is_other(self):
         """
@@ -778,7 +819,7 @@ class PaperAsFilesValue(bb.Union):
 
         :rtype: bool
         """
-        return self._tag == 'other'
+        return self._tag == "other"
 
     def get_enabled(self):
         """
@@ -797,9 +838,13 @@ class PaperAsFilesValue(bb.Union):
         return self._value
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
-        super(PaperAsFilesValue, self)._process_custom_annotations(annotation_type, field_path, processor)
+        super(PaperAsFilesValue, self)._process_custom_annotations(
+            annotation_type, field_path, processor
+        )
+
 
 PaperAsFilesValue_validator = bv.Union(PaperAsFilesValue)
+
 
 class SpaceAllocation(bb.Union):
     """
@@ -817,7 +862,7 @@ class SpaceAllocation(bb.Union):
     :vartype SpaceAllocation.team: TeamSpaceAllocation
     """
 
-    _catch_all = 'other'
+    _catch_all = "other"
     # Attribute is overwritten below the class definition
     other = None
 
@@ -830,7 +875,7 @@ class SpaceAllocation(bb.Union):
         :param IndividualSpaceAllocation val:
         :rtype: SpaceAllocation
         """
-        return cls('individual', val)
+        return cls("individual", val)
 
     @classmethod
     def team(cls, val):
@@ -841,7 +886,7 @@ class SpaceAllocation(bb.Union):
         :param TeamSpaceAllocation val:
         :rtype: SpaceAllocation
         """
-        return cls('team', val)
+        return cls("team", val)
 
     def is_individual(self):
         """
@@ -849,7 +894,7 @@ class SpaceAllocation(bb.Union):
 
         :rtype: bool
         """
-        return self._tag == 'individual'
+        return self._tag == "individual"
 
     def is_team(self):
         """
@@ -857,7 +902,7 @@ class SpaceAllocation(bb.Union):
 
         :rtype: bool
         """
-        return self._tag == 'team'
+        return self._tag == "team"
 
     def is_other(self):
         """
@@ -865,7 +910,7 @@ class SpaceAllocation(bb.Union):
 
         :rtype: bool
         """
-        return self._tag == 'other'
+        return self._tag == "other"
 
     def get_individual(self):
         """
@@ -892,9 +937,13 @@ class SpaceAllocation(bb.Union):
         return self._value
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
-        super(SpaceAllocation, self)._process_custom_annotations(annotation_type, field_path, processor)
+        super(SpaceAllocation, self)._process_custom_annotations(
+            annotation_type, field_path, processor
+        )
+
 
 SpaceAllocation_validator = bv.Union(SpaceAllocation)
+
 
 class SpaceUsage(bb.Struct):
     """
@@ -907,15 +956,13 @@ class SpaceUsage(bb.Struct):
     """
 
     __slots__ = [
-        '_used_value',
-        '_allocation_value',
+        "_used_value",
+        "_allocation_value",
     ]
 
     _has_required_fields = True
 
-    def __init__(self,
-                 used=None,
-                 allocation=None):
+    def __init__(self, used=None, allocation=None):
         self._used_value = bb.NOT_SET
         self._allocation_value = bb.NOT_SET
         if used is not None:
@@ -932,7 +979,9 @@ class SpaceUsage(bb.Struct):
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(SpaceUsage, self)._process_custom_annotations(annotation_type, field_path, processor)
 
+
 SpaceUsage_validator = bv.Struct(SpaceUsage)
+
 
 class TeamSharedDropboxValue(bb.Union):
     """
@@ -948,7 +997,7 @@ class TeamSharedDropboxValue(bb.Union):
     :vartype TeamSharedDropboxValue.enabled: bool
     """
 
-    _catch_all = 'other'
+    _catch_all = "other"
     # Attribute is overwritten below the class definition
     other = None
 
@@ -961,7 +1010,7 @@ class TeamSharedDropboxValue(bb.Union):
         :param bool val:
         :rtype: TeamSharedDropboxValue
         """
-        return cls('enabled', val)
+        return cls("enabled", val)
 
     def is_enabled(self):
         """
@@ -969,7 +1018,7 @@ class TeamSharedDropboxValue(bb.Union):
 
         :rtype: bool
         """
-        return self._tag == 'enabled'
+        return self._tag == "enabled"
 
     def is_other(self):
         """
@@ -977,7 +1026,7 @@ class TeamSharedDropboxValue(bb.Union):
 
         :rtype: bool
         """
-        return self._tag == 'other'
+        return self._tag == "other"
 
     def get_enabled(self):
         """
@@ -993,9 +1042,13 @@ class TeamSharedDropboxValue(bb.Union):
         return self._value
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
-        super(TeamSharedDropboxValue, self)._process_custom_annotations(annotation_type, field_path, processor)
+        super(TeamSharedDropboxValue, self)._process_custom_annotations(
+            annotation_type, field_path, processor
+        )
+
 
 TeamSharedDropboxValue_validator = bv.Union(TeamSharedDropboxValue)
+
 
 class TeamSpaceAllocation(bb.Struct):
     """
@@ -1016,21 +1069,23 @@ class TeamSpaceAllocation(bb.Struct):
     """
 
     __slots__ = [
-        '_used_value',
-        '_allocated_value',
-        '_user_within_team_space_allocated_value',
-        '_user_within_team_space_limit_type_value',
-        '_user_within_team_space_used_cached_value',
+        "_used_value",
+        "_allocated_value",
+        "_user_within_team_space_allocated_value",
+        "_user_within_team_space_limit_type_value",
+        "_user_within_team_space_used_cached_value",
     ]
 
     _has_required_fields = True
 
-    def __init__(self,
-                 used=None,
-                 allocated=None,
-                 user_within_team_space_allocated=None,
-                 user_within_team_space_limit_type=None,
-                 user_within_team_space_used_cached=None):
+    def __init__(
+        self,
+        used=None,
+        allocated=None,
+        user_within_team_space_allocated=None,
+        user_within_team_space_limit_type=None,
+        user_within_team_space_used_cached=None,
+    ):
         self._used_value = bb.NOT_SET
         self._allocated_value = bb.NOT_SET
         self._user_within_team_space_allocated_value = bb.NOT_SET
@@ -1057,15 +1112,21 @@ class TeamSpaceAllocation(bb.Struct):
     user_within_team_space_allocated = bb.Attribute("user_within_team_space_allocated")
 
     # Instance attribute type: team_common.MemberSpaceLimitType (validator is set below)
-    user_within_team_space_limit_type = bb.Attribute("user_within_team_space_limit_type", user_defined=True)
+    user_within_team_space_limit_type = bb.Attribute(
+        "user_within_team_space_limit_type", user_defined=True
+    )
 
     # Instance attribute type: int (validator is set below)
     user_within_team_space_used_cached = bb.Attribute("user_within_team_space_used_cached")
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
-        super(TeamSpaceAllocation, self)._process_custom_annotations(annotation_type, field_path, processor)
+        super(TeamSpaceAllocation, self)._process_custom_annotations(
+            annotation_type, field_path, processor
+        )
+
 
 TeamSpaceAllocation_validator = bv.Struct(TeamSpaceAllocation)
+
 
 class UserFeature(bb.Union):
     """
@@ -1089,7 +1150,7 @@ class UserFeature(bb.Union):
         namespace is distinct from their root namespace.
     """
 
-    _catch_all = 'other'
+    _catch_all = "other"
     # Attribute is overwritten below the class definition
     paper_as_files = None
     # Attribute is overwritten below the class definition
@@ -1107,7 +1168,7 @@ class UserFeature(bb.Union):
 
         :rtype: bool
         """
-        return self._tag == 'paper_as_files'
+        return self._tag == "paper_as_files"
 
     def is_file_locking(self):
         """
@@ -1115,7 +1176,7 @@ class UserFeature(bb.Union):
 
         :rtype: bool
         """
-        return self._tag == 'file_locking'
+        return self._tag == "file_locking"
 
     def is_team_shared_dropbox(self):
         """
@@ -1123,7 +1184,7 @@ class UserFeature(bb.Union):
 
         :rtype: bool
         """
-        return self._tag == 'team_shared_dropbox'
+        return self._tag == "team_shared_dropbox"
 
     def is_distinct_member_home(self):
         """
@@ -1131,7 +1192,7 @@ class UserFeature(bb.Union):
 
         :rtype: bool
         """
-        return self._tag == 'distinct_member_home'
+        return self._tag == "distinct_member_home"
 
     def is_other(self):
         """
@@ -1139,12 +1200,14 @@ class UserFeature(bb.Union):
 
         :rtype: bool
         """
-        return self._tag == 'other'
+        return self._tag == "other"
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(UserFeature, self)._process_custom_annotations(annotation_type, field_path, processor)
 
+
 UserFeature_validator = bv.Union(UserFeature)
+
 
 class UserFeatureValue(bb.Union):
     """
@@ -1155,7 +1218,7 @@ class UserFeatureValue(bb.Union):
     corresponding ``get_*`` method.
     """
 
-    _catch_all = 'other'
+    _catch_all = "other"
     # Attribute is overwritten below the class definition
     other = None
 
@@ -1168,7 +1231,7 @@ class UserFeatureValue(bb.Union):
         :param PaperAsFilesValue val:
         :rtype: UserFeatureValue
         """
-        return cls('paper_as_files', val)
+        return cls("paper_as_files", val)
 
     @classmethod
     def file_locking(cls, val):
@@ -1179,7 +1242,7 @@ class UserFeatureValue(bb.Union):
         :param FileLockingValue val:
         :rtype: UserFeatureValue
         """
-        return cls('file_locking', val)
+        return cls("file_locking", val)
 
     @classmethod
     def team_shared_dropbox(cls, val):
@@ -1190,7 +1253,7 @@ class UserFeatureValue(bb.Union):
         :param TeamSharedDropboxValue val:
         :rtype: UserFeatureValue
         """
-        return cls('team_shared_dropbox', val)
+        return cls("team_shared_dropbox", val)
 
     @classmethod
     def distinct_member_home(cls, val):
@@ -1201,7 +1264,7 @@ class UserFeatureValue(bb.Union):
         :param DistinctMemberHomeValue val:
         :rtype: UserFeatureValue
         """
-        return cls('distinct_member_home', val)
+        return cls("distinct_member_home", val)
 
     def is_paper_as_files(self):
         """
@@ -1209,7 +1272,7 @@ class UserFeatureValue(bb.Union):
 
         :rtype: bool
         """
-        return self._tag == 'paper_as_files'
+        return self._tag == "paper_as_files"
 
     def is_file_locking(self):
         """
@@ -1217,7 +1280,7 @@ class UserFeatureValue(bb.Union):
 
         :rtype: bool
         """
-        return self._tag == 'file_locking'
+        return self._tag == "file_locking"
 
     def is_team_shared_dropbox(self):
         """
@@ -1225,7 +1288,7 @@ class UserFeatureValue(bb.Union):
 
         :rtype: bool
         """
-        return self._tag == 'team_shared_dropbox'
+        return self._tag == "team_shared_dropbox"
 
     def is_distinct_member_home(self):
         """
@@ -1233,7 +1296,7 @@ class UserFeatureValue(bb.Union):
 
         :rtype: bool
         """
-        return self._tag == 'distinct_member_home'
+        return self._tag == "distinct_member_home"
 
     def is_other(self):
         """
@@ -1241,7 +1304,7 @@ class UserFeatureValue(bb.Union):
 
         :rtype: bool
         """
-        return self._tag == 'other'
+        return self._tag == "other"
 
     def get_paper_as_files(self):
         """
@@ -1284,9 +1347,13 @@ class UserFeatureValue(bb.Union):
         return self._value
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
-        super(UserFeatureValue, self)._process_custom_annotations(annotation_type, field_path, processor)
+        super(UserFeatureValue, self)._process_custom_annotations(
+            annotation_type, field_path, processor
+        )
+
 
 UserFeatureValue_validator = bv.Union(UserFeatureValue)
+
 
 class UserFeaturesGetValuesBatchArg(bb.Struct):
     """
@@ -1296,13 +1363,12 @@ class UserFeaturesGetValuesBatchArg(bb.Struct):
     """
 
     __slots__ = [
-        '_features_value',
+        "_features_value",
     ]
 
     _has_required_fields = True
 
-    def __init__(self,
-                 features=None):
+    def __init__(self, features=None):
         self._features_value = bb.NOT_SET
         if features is not None:
             self.features = features
@@ -1311,9 +1377,13 @@ class UserFeaturesGetValuesBatchArg(bb.Struct):
     features = bb.Attribute("features")
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
-        super(UserFeaturesGetValuesBatchArg, self)._process_custom_annotations(annotation_type, field_path, processor)
+        super(UserFeaturesGetValuesBatchArg, self)._process_custom_annotations(
+            annotation_type, field_path, processor
+        )
+
 
 UserFeaturesGetValuesBatchArg_validator = bv.Struct(UserFeaturesGetValuesBatchArg)
+
 
 class UserFeaturesGetValuesBatchError(bb.Union):
     """
@@ -1326,7 +1396,7 @@ class UserFeaturesGetValuesBatchError(bb.Union):
         :class:`UserFeaturesGetValuesBatchArg`.features list.
     """
 
-    _catch_all = 'other'
+    _catch_all = "other"
     # Attribute is overwritten below the class definition
     empty_features_list = None
     # Attribute is overwritten below the class definition
@@ -1338,7 +1408,7 @@ class UserFeaturesGetValuesBatchError(bb.Union):
 
         :rtype: bool
         """
-        return self._tag == 'empty_features_list'
+        return self._tag == "empty_features_list"
 
     def is_other(self):
         """
@@ -1346,23 +1416,25 @@ class UserFeaturesGetValuesBatchError(bb.Union):
 
         :rtype: bool
         """
-        return self._tag == 'other'
+        return self._tag == "other"
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
-        super(UserFeaturesGetValuesBatchError, self)._process_custom_annotations(annotation_type, field_path, processor)
+        super(UserFeaturesGetValuesBatchError, self)._process_custom_annotations(
+            annotation_type, field_path, processor
+        )
+
 
 UserFeaturesGetValuesBatchError_validator = bv.Union(UserFeaturesGetValuesBatchError)
 
-class UserFeaturesGetValuesBatchResult(bb.Struct):
 
+class UserFeaturesGetValuesBatchResult(bb.Struct):
     __slots__ = [
-        '_values_value',
+        "_values_value",
     ]
 
     _has_required_fields = True
 
-    def __init__(self,
-                 values=None):
+    def __init__(self, values=None):
         self._values_value = bb.NOT_SET
         if values is not None:
             self.values = values
@@ -1371,7 +1443,10 @@ class UserFeaturesGetValuesBatchResult(bb.Struct):
     values = bb.Attribute("values")
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
-        super(UserFeaturesGetValuesBatchResult, self)._process_custom_annotations(annotation_type, field_path, processor)
+        super(UserFeaturesGetValuesBatchResult, self)._process_custom_annotations(
+            annotation_type, field_path, processor
+        )
+
 
 UserFeaturesGetValuesBatchResult_validator = bv.Struct(UserFeaturesGetValuesBatchResult)
 
@@ -1382,51 +1457,57 @@ Account.email.validator = bv.String()
 Account.email_verified.validator = bv.Boolean()
 Account.profile_photo_url.validator = bv.Nullable(bv.String())
 Account.disabled.validator = bv.Boolean()
-Account._all_field_names_ = set([
-    'account_id',
-    'name',
-    'email',
-    'email_verified',
-    'profile_photo_url',
-    'disabled',
-])
+Account._all_field_names_ = set(
+    [
+        "account_id",
+        "name",
+        "email",
+        "email_verified",
+        "profile_photo_url",
+        "disabled",
+    ]
+)
 Account._all_fields_ = [
-    ('account_id', Account.account_id.validator),
-    ('name', Account.name.validator),
-    ('email', Account.email.validator),
-    ('email_verified', Account.email_verified.validator),
-    ('profile_photo_url', Account.profile_photo_url.validator),
-    ('disabled', Account.disabled.validator),
+    ("account_id", Account.account_id.validator),
+    ("name", Account.name.validator),
+    ("email", Account.email.validator),
+    ("email_verified", Account.email_verified.validator),
+    ("profile_photo_url", Account.profile_photo_url.validator),
+    ("disabled", Account.disabled.validator),
 ]
 
 BasicAccount.is_teammate.validator = bv.Boolean()
 BasicAccount.team_member_id.validator = bv.Nullable(bv.String())
-BasicAccount._all_field_names_ = Account._all_field_names_.union(set([
-    'is_teammate',
-    'team_member_id',
-]))
+BasicAccount._all_field_names_ = Account._all_field_names_.union(
+    set(
+        [
+            "is_teammate",
+            "team_member_id",
+        ]
+    )
+)
 BasicAccount._all_fields_ = Account._all_fields_ + [
-    ('is_teammate', BasicAccount.is_teammate.validator),
-    ('team_member_id', BasicAccount.team_member_id.validator),
+    ("is_teammate", BasicAccount.is_teammate.validator),
+    ("team_member_id", BasicAccount.team_member_id.validator),
 ]
 
 DistinctMemberHomeValue._enabled_validator = bv.Boolean()
 DistinctMemberHomeValue._other_validator = bv.Void()
 DistinctMemberHomeValue._tagmap = {
-    'enabled': DistinctMemberHomeValue._enabled_validator,
-    'other': DistinctMemberHomeValue._other_validator,
+    "enabled": DistinctMemberHomeValue._enabled_validator,
+    "other": DistinctMemberHomeValue._other_validator,
 }
 
-DistinctMemberHomeValue.other = DistinctMemberHomeValue('other')
+DistinctMemberHomeValue.other = DistinctMemberHomeValue("other")
 
 FileLockingValue._enabled_validator = bv.Boolean()
 FileLockingValue._other_validator = bv.Void()
 FileLockingValue._tagmap = {
-    'enabled': FileLockingValue._enabled_validator,
-    'other': FileLockingValue._other_validator,
+    "enabled": FileLockingValue._enabled_validator,
+    "other": FileLockingValue._other_validator,
 }
 
-FileLockingValue.other = FileLockingValue('other')
+FileLockingValue.other = FileLockingValue("other")
 
 FullAccount.country.validator = bv.Nullable(bv.String(min_length=2, max_length=2))
 FullAccount.locale.validator = bv.String(min_length=2)
@@ -1436,161 +1517,190 @@ FullAccount.team_member_id.validator = bv.Nullable(bv.String())
 FullAccount.is_paired.validator = bv.Boolean()
 FullAccount.account_type.validator = users_common.AccountType_validator
 FullAccount.root_info.validator = common.RootInfo_validator
-FullAccount._all_field_names_ = Account._all_field_names_.union(set([
-    'country',
-    'locale',
-    'referral_link',
-    'team',
-    'team_member_id',
-    'is_paired',
-    'account_type',
-    'root_info',
-]))
+FullAccount._all_field_names_ = Account._all_field_names_.union(
+    set(
+        [
+            "country",
+            "locale",
+            "referral_link",
+            "team",
+            "team_member_id",
+            "is_paired",
+            "account_type",
+            "root_info",
+        ]
+    )
+)
 FullAccount._all_fields_ = Account._all_fields_ + [
-    ('country', FullAccount.country.validator),
-    ('locale', FullAccount.locale.validator),
-    ('referral_link', FullAccount.referral_link.validator),
-    ('team', FullAccount.team.validator),
-    ('team_member_id', FullAccount.team_member_id.validator),
-    ('is_paired', FullAccount.is_paired.validator),
-    ('account_type', FullAccount.account_type.validator),
-    ('root_info', FullAccount.root_info.validator),
+    ("country", FullAccount.country.validator),
+    ("locale", FullAccount.locale.validator),
+    ("referral_link", FullAccount.referral_link.validator),
+    ("team", FullAccount.team.validator),
+    ("team_member_id", FullAccount.team_member_id.validator),
+    ("is_paired", FullAccount.is_paired.validator),
+    ("account_type", FullAccount.account_type.validator),
+    ("root_info", FullAccount.root_info.validator),
 ]
 
 Team.id.validator = bv.String()
 Team.name.validator = bv.String()
-Team._all_field_names_ = set([
-    'id',
-    'name',
-])
+Team._all_field_names_ = set(
+    [
+        "id",
+        "name",
+    ]
+)
 Team._all_fields_ = [
-    ('id', Team.id.validator),
-    ('name', Team.name.validator),
+    ("id", Team.id.validator),
+    ("name", Team.name.validator),
 ]
 
 FullTeam.sharing_policies.validator = team_policies.TeamSharingPolicies_validator
 FullTeam.office_addin_policy.validator = team_policies.OfficeAddInPolicy_validator
 FullTeam.top_level_content_policy.validator = team_policies.TopLevelContentPolicy_validator
-FullTeam._all_field_names_ = Team._all_field_names_.union(set([
-    'sharing_policies',
-    'office_addin_policy',
-    'top_level_content_policy',
-]))
+FullTeam._all_field_names_ = Team._all_field_names_.union(
+    set(
+        [
+            "sharing_policies",
+            "office_addin_policy",
+            "top_level_content_policy",
+        ]
+    )
+)
 FullTeam._all_fields_ = Team._all_fields_ + [
-    ('sharing_policies', FullTeam.sharing_policies.validator),
-    ('office_addin_policy', FullTeam.office_addin_policy.validator),
-    ('top_level_content_policy', FullTeam.top_level_content_policy.validator),
+    ("sharing_policies", FullTeam.sharing_policies.validator),
+    ("office_addin_policy", FullTeam.office_addin_policy.validator),
+    ("top_level_content_policy", FullTeam.top_level_content_policy.validator),
 ]
 
 GetAccountArg.account_id.validator = users_common.AccountId_validator
-GetAccountArg._all_field_names_ = set(['account_id'])
-GetAccountArg._all_fields_ = [('account_id', GetAccountArg.account_id.validator)]
+GetAccountArg._all_field_names_ = set(["account_id"])
+GetAccountArg._all_fields_ = [("account_id", GetAccountArg.account_id.validator)]
 
 GetAccountBatchArg.account_ids.validator = bv.List(users_common.AccountId_validator, min_items=1)
-GetAccountBatchArg._all_field_names_ = set(['account_ids'])
-GetAccountBatchArg._all_fields_ = [('account_ids', GetAccountBatchArg.account_ids.validator)]
+GetAccountBatchArg._all_field_names_ = set(["account_ids"])
+GetAccountBatchArg._all_fields_ = [("account_ids", GetAccountBatchArg.account_ids.validator)]
 
 GetAccountBatchError._no_account_validator = users_common.AccountId_validator
 GetAccountBatchError._other_validator = bv.Void()
 GetAccountBatchError._tagmap = {
-    'no_account': GetAccountBatchError._no_account_validator,
-    'other': GetAccountBatchError._other_validator,
+    "no_account": GetAccountBatchError._no_account_validator,
+    "other": GetAccountBatchError._other_validator,
 }
 
-GetAccountBatchError.other = GetAccountBatchError('other')
+GetAccountBatchError.other = GetAccountBatchError("other")
 
 GetAccountError._no_account_validator = bv.Void()
 GetAccountError._other_validator = bv.Void()
 GetAccountError._tagmap = {
-    'no_account': GetAccountError._no_account_validator,
-    'other': GetAccountError._other_validator,
+    "no_account": GetAccountError._no_account_validator,
+    "other": GetAccountError._other_validator,
 }
 
-GetAccountError.no_account = GetAccountError('no_account')
-GetAccountError.other = GetAccountError('other')
+GetAccountError.no_account = GetAccountError("no_account")
+GetAccountError.other = GetAccountError("other")
 
 IndividualSpaceAllocation.allocated.validator = bv.UInt64()
-IndividualSpaceAllocation._all_field_names_ = set(['allocated'])
-IndividualSpaceAllocation._all_fields_ = [('allocated', IndividualSpaceAllocation.allocated.validator)]
+IndividualSpaceAllocation._all_field_names_ = set(["allocated"])
+IndividualSpaceAllocation._all_fields_ = [
+    ("allocated", IndividualSpaceAllocation.allocated.validator)
+]
 
 Name.given_name.validator = bv.String()
 Name.surname.validator = bv.String()
 Name.familiar_name.validator = bv.String()
 Name.display_name.validator = bv.String()
 Name.abbreviated_name.validator = bv.String()
-Name._all_field_names_ = set([
-    'given_name',
-    'surname',
-    'familiar_name',
-    'display_name',
-    'abbreviated_name',
-])
+Name._all_field_names_ = set(
+    [
+        "given_name",
+        "surname",
+        "familiar_name",
+        "display_name",
+        "abbreviated_name",
+    ]
+)
 Name._all_fields_ = [
-    ('given_name', Name.given_name.validator),
-    ('surname', Name.surname.validator),
-    ('familiar_name', Name.familiar_name.validator),
-    ('display_name', Name.display_name.validator),
-    ('abbreviated_name', Name.abbreviated_name.validator),
+    ("given_name", Name.given_name.validator),
+    ("surname", Name.surname.validator),
+    ("familiar_name", Name.familiar_name.validator),
+    ("display_name", Name.display_name.validator),
+    ("abbreviated_name", Name.abbreviated_name.validator),
 ]
 
 PaperAsFilesValue._enabled_validator = bv.Boolean()
 PaperAsFilesValue._other_validator = bv.Void()
 PaperAsFilesValue._tagmap = {
-    'enabled': PaperAsFilesValue._enabled_validator,
-    'other': PaperAsFilesValue._other_validator,
+    "enabled": PaperAsFilesValue._enabled_validator,
+    "other": PaperAsFilesValue._other_validator,
 }
 
-PaperAsFilesValue.other = PaperAsFilesValue('other')
+PaperAsFilesValue.other = PaperAsFilesValue("other")
 
 SpaceAllocation._individual_validator = IndividualSpaceAllocation_validator
 SpaceAllocation._team_validator = TeamSpaceAllocation_validator
 SpaceAllocation._other_validator = bv.Void()
 SpaceAllocation._tagmap = {
-    'individual': SpaceAllocation._individual_validator,
-    'team': SpaceAllocation._team_validator,
-    'other': SpaceAllocation._other_validator,
+    "individual": SpaceAllocation._individual_validator,
+    "team": SpaceAllocation._team_validator,
+    "other": SpaceAllocation._other_validator,
 }
 
-SpaceAllocation.other = SpaceAllocation('other')
+SpaceAllocation.other = SpaceAllocation("other")
 
 SpaceUsage.used.validator = bv.UInt64()
 SpaceUsage.allocation.validator = SpaceAllocation_validator
-SpaceUsage._all_field_names_ = set([
-    'used',
-    'allocation',
-])
+SpaceUsage._all_field_names_ = set(
+    [
+        "used",
+        "allocation",
+    ]
+)
 SpaceUsage._all_fields_ = [
-    ('used', SpaceUsage.used.validator),
-    ('allocation', SpaceUsage.allocation.validator),
+    ("used", SpaceUsage.used.validator),
+    ("allocation", SpaceUsage.allocation.validator),
 ]
 
 TeamSharedDropboxValue._enabled_validator = bv.Boolean()
 TeamSharedDropboxValue._other_validator = bv.Void()
 TeamSharedDropboxValue._tagmap = {
-    'enabled': TeamSharedDropboxValue._enabled_validator,
-    'other': TeamSharedDropboxValue._other_validator,
+    "enabled": TeamSharedDropboxValue._enabled_validator,
+    "other": TeamSharedDropboxValue._other_validator,
 }
 
-TeamSharedDropboxValue.other = TeamSharedDropboxValue('other')
+TeamSharedDropboxValue.other = TeamSharedDropboxValue("other")
 
 TeamSpaceAllocation.used.validator = bv.UInt64()
 TeamSpaceAllocation.allocated.validator = bv.UInt64()
 TeamSpaceAllocation.user_within_team_space_allocated.validator = bv.UInt64()
-TeamSpaceAllocation.user_within_team_space_limit_type.validator = team_common.MemberSpaceLimitType_validator
+TeamSpaceAllocation.user_within_team_space_limit_type.validator = (
+    team_common.MemberSpaceLimitType_validator
+)
 TeamSpaceAllocation.user_within_team_space_used_cached.validator = bv.UInt64()
-TeamSpaceAllocation._all_field_names_ = set([
-    'used',
-    'allocated',
-    'user_within_team_space_allocated',
-    'user_within_team_space_limit_type',
-    'user_within_team_space_used_cached',
-])
+TeamSpaceAllocation._all_field_names_ = set(
+    [
+        "used",
+        "allocated",
+        "user_within_team_space_allocated",
+        "user_within_team_space_limit_type",
+        "user_within_team_space_used_cached",
+    ]
+)
 TeamSpaceAllocation._all_fields_ = [
-    ('used', TeamSpaceAllocation.used.validator),
-    ('allocated', TeamSpaceAllocation.allocated.validator),
-    ('user_within_team_space_allocated', TeamSpaceAllocation.user_within_team_space_allocated.validator),
-    ('user_within_team_space_limit_type', TeamSpaceAllocation.user_within_team_space_limit_type.validator),
-    ('user_within_team_space_used_cached', TeamSpaceAllocation.user_within_team_space_used_cached.validator),
+    ("used", TeamSpaceAllocation.used.validator),
+    ("allocated", TeamSpaceAllocation.allocated.validator),
+    (
+        "user_within_team_space_allocated",
+        TeamSpaceAllocation.user_within_team_space_allocated.validator,
+    ),
+    (
+        "user_within_team_space_limit_type",
+        TeamSpaceAllocation.user_within_team_space_limit_type.validator,
+    ),
+    (
+        "user_within_team_space_used_cached",
+        TeamSpaceAllocation.user_within_team_space_used_cached.validator,
+    ),
 ]
 
 UserFeature._paper_as_files_validator = bv.Void()
@@ -1599,18 +1709,18 @@ UserFeature._team_shared_dropbox_validator = bv.Void()
 UserFeature._distinct_member_home_validator = bv.Void()
 UserFeature._other_validator = bv.Void()
 UserFeature._tagmap = {
-    'paper_as_files': UserFeature._paper_as_files_validator,
-    'file_locking': UserFeature._file_locking_validator,
-    'team_shared_dropbox': UserFeature._team_shared_dropbox_validator,
-    'distinct_member_home': UserFeature._distinct_member_home_validator,
-    'other': UserFeature._other_validator,
+    "paper_as_files": UserFeature._paper_as_files_validator,
+    "file_locking": UserFeature._file_locking_validator,
+    "team_shared_dropbox": UserFeature._team_shared_dropbox_validator,
+    "distinct_member_home": UserFeature._distinct_member_home_validator,
+    "other": UserFeature._other_validator,
 }
 
-UserFeature.paper_as_files = UserFeature('paper_as_files')
-UserFeature.file_locking = UserFeature('file_locking')
-UserFeature.team_shared_dropbox = UserFeature('team_shared_dropbox')
-UserFeature.distinct_member_home = UserFeature('distinct_member_home')
-UserFeature.other = UserFeature('other')
+UserFeature.paper_as_files = UserFeature("paper_as_files")
+UserFeature.file_locking = UserFeature("file_locking")
+UserFeature.team_shared_dropbox = UserFeature("team_shared_dropbox")
+UserFeature.distinct_member_home = UserFeature("distinct_member_home")
+UserFeature.other = UserFeature("other")
 
 UserFeatureValue._paper_as_files_validator = PaperAsFilesValue_validator
 UserFeatureValue._file_locking_validator = FileLockingValue_validator
@@ -1618,94 +1728,89 @@ UserFeatureValue._team_shared_dropbox_validator = TeamSharedDropboxValue_validat
 UserFeatureValue._distinct_member_home_validator = DistinctMemberHomeValue_validator
 UserFeatureValue._other_validator = bv.Void()
 UserFeatureValue._tagmap = {
-    'paper_as_files': UserFeatureValue._paper_as_files_validator,
-    'file_locking': UserFeatureValue._file_locking_validator,
-    'team_shared_dropbox': UserFeatureValue._team_shared_dropbox_validator,
-    'distinct_member_home': UserFeatureValue._distinct_member_home_validator,
-    'other': UserFeatureValue._other_validator,
+    "paper_as_files": UserFeatureValue._paper_as_files_validator,
+    "file_locking": UserFeatureValue._file_locking_validator,
+    "team_shared_dropbox": UserFeatureValue._team_shared_dropbox_validator,
+    "distinct_member_home": UserFeatureValue._distinct_member_home_validator,
+    "other": UserFeatureValue._other_validator,
 }
 
-UserFeatureValue.other = UserFeatureValue('other')
+UserFeatureValue.other = UserFeatureValue("other")
 
 UserFeaturesGetValuesBatchArg.features.validator = bv.List(UserFeature_validator)
-UserFeaturesGetValuesBatchArg._all_field_names_ = set(['features'])
-UserFeaturesGetValuesBatchArg._all_fields_ = [('features', UserFeaturesGetValuesBatchArg.features.validator)]
+UserFeaturesGetValuesBatchArg._all_field_names_ = set(["features"])
+UserFeaturesGetValuesBatchArg._all_fields_ = [
+    ("features", UserFeaturesGetValuesBatchArg.features.validator)
+]
 
 UserFeaturesGetValuesBatchError._empty_features_list_validator = bv.Void()
 UserFeaturesGetValuesBatchError._other_validator = bv.Void()
 UserFeaturesGetValuesBatchError._tagmap = {
-    'empty_features_list': UserFeaturesGetValuesBatchError._empty_features_list_validator,
-    'other': UserFeaturesGetValuesBatchError._other_validator,
+    "empty_features_list": UserFeaturesGetValuesBatchError._empty_features_list_validator,
+    "other": UserFeaturesGetValuesBatchError._other_validator,
 }
 
-UserFeaturesGetValuesBatchError.empty_features_list = UserFeaturesGetValuesBatchError('empty_features_list')
-UserFeaturesGetValuesBatchError.other = UserFeaturesGetValuesBatchError('other')
+UserFeaturesGetValuesBatchError.empty_features_list = UserFeaturesGetValuesBatchError(
+    "empty_features_list"
+)
+UserFeaturesGetValuesBatchError.other = UserFeaturesGetValuesBatchError("other")
 
 UserFeaturesGetValuesBatchResult.values.validator = bv.List(UserFeatureValue_validator)
-UserFeaturesGetValuesBatchResult._all_field_names_ = set(['values'])
-UserFeaturesGetValuesBatchResult._all_fields_ = [('values', UserFeaturesGetValuesBatchResult.values.validator)]
+UserFeaturesGetValuesBatchResult._all_field_names_ = set(["values"])
+UserFeaturesGetValuesBatchResult._all_fields_ = [
+    ("values", UserFeaturesGetValuesBatchResult.values.validator)
+]
 
 features_get_values = bb.Route(
-    'features/get_values',
+    "features/get_values",
     1,
     False,
     UserFeaturesGetValuesBatchArg_validator,
     UserFeaturesGetValuesBatchResult_validator,
     UserFeaturesGetValuesBatchError_validator,
-    {'auth': 'user',
-     'host': 'api',
-     'style': 'rpc'},
+    {"auth": "user", "host": "api", "style": "rpc"},
 )
 get_account = bb.Route(
-    'get_account',
+    "get_account",
     1,
     False,
     GetAccountArg_validator,
     BasicAccount_validator,
     GetAccountError_validator,
-    {'auth': 'user',
-     'host': 'api',
-     'style': 'rpc'},
+    {"auth": "user", "host": "api", "style": "rpc"},
 )
 get_account_batch = bb.Route(
-    'get_account_batch',
+    "get_account_batch",
     1,
     False,
     GetAccountBatchArg_validator,
     GetAccountBatchResult_validator,
     GetAccountBatchError_validator,
-    {'auth': 'user',
-     'host': 'api',
-     'style': 'rpc'},
+    {"auth": "user", "host": "api", "style": "rpc"},
 )
 get_current_account = bb.Route(
-    'get_current_account',
+    "get_current_account",
     1,
     False,
     bv.Void(),
     FullAccount_validator,
     bv.Void(),
-    {'auth': 'user',
-     'host': 'api',
-     'style': 'rpc'},
+    {"auth": "user", "host": "api", "style": "rpc"},
 )
 get_space_usage = bb.Route(
-    'get_space_usage',
+    "get_space_usage",
     1,
     False,
     bv.Void(),
     SpaceUsage_validator,
     bv.Void(),
-    {'auth': 'user',
-     'host': 'api',
-     'style': 'rpc'},
+    {"auth": "user", "host": "api", "style": "rpc"},
 )
 
 ROUTES = {
-    'features/get_values': features_get_values,
-    'get_account': get_account,
-    'get_account_batch': get_account_batch,
-    'get_current_account': get_current_account,
-    'get_space_usage': get_space_usage,
+    "features/get_values": features_get_values,
+    "get_account": get_account,
+    "get_account_batch": get_account_batch,
+    "get_current_account": get_current_account,
+    "get_space_usage": get_space_usage,
 }
-

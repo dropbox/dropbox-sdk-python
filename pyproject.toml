@@ -1,5 +1,5 @@
 [build-system]
-requires = ["setuptools>=77.0"]
+requires = ["setuptools>=77", "setuptools-scm>=8,<9"]
 build-backend = "setuptools.build_meta"
 
 [project]
@@ -42,8 +42,31 @@ dev = ["flake8", "twine", "wheel", "build"]
 packages = ["dropbox"]
 zip-safe = false
 
-[tool.setuptools.dynamic]
-version = { attr = "dropbox.dropbox_client.__version__" }
+[tool.setuptools_scm]
+version_file = "dropbox/_version.py"
+parentdir_prefix_version = "dropbox-"
 
 [tool.pytest.ini_options]
 norecursedirs = [".tox", ".venv", ".venv-*", "stone"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+
+[tool.ruff.lint]
+select = ["E4", "E7", "E9", "F"]
+ignore = [
+    "E301",
+    "E302",
+    "E305",
+    "E402",
+]
+
+[tool.ruff.lint.per-file-ignores]
+"dropbox/stone_base.py" = ["F401", "F403"]
+"dropbox/stone_validators.py" = ["F401", "F403"]
+"dropbox/stone_serializers.py" = ["F401", "F403"]
+
+[tool.ruff.format]
+quote-style = "double"
+line-ending = "auto"
