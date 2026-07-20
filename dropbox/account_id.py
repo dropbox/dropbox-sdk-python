@@ -7,7 +7,6 @@ from __future__ import unicode_literals
 from stone.backends.python_rsrc import stone_base as bb
 from stone.backends.python_rsrc import stone_validators as bv
 
-
 class ContainsDbidAnnotation(bb.AnnotationType):
     """
     Annotation type should be applied to Response object fields which contain
@@ -15,10 +14,11 @@ class ContainsDbidAnnotation(bb.AnnotationType):
     """
 
     __slots__ = [
-        "_authorize_caller",
+        '_authorize_caller',
     ]
 
-    def __init__(self, authorize_caller=True):
+    def __init__(self,
+                 authorize_caller=True):
         self._authorize_caller = authorize_caller
 
     @property
@@ -29,4 +29,6 @@ class ContainsDbidAnnotation(bb.AnnotationType):
         return self._authorize_caller
 
 
-ROUTES = {}
+ROUTES = {
+}
+
