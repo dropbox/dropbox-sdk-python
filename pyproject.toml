@@ -70,3 +70,6 @@ ignore = [
 [tool.ruff.format]
 quote-style = "double"
 line-ending = "auto"
+exclude = [
+    "dropbox/",
+]

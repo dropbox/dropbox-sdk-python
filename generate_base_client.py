@@ -41,9 +41,7 @@ def main():
 
     specs = [os.path.join(os.getcwd(), s) for s in specs]
 
-    dropbox_pkg_path = os.path.abspath(
-        os.path.join(os.path.dirname(sys.argv[0]), "dropbox")
-    )
+    dropbox_pkg_path = os.path.abspath(os.path.join(os.path.dirname(sys.argv[0]), "dropbox"))
     if verbose:
         print("Dropbox package path: %s" % dropbox_pkg_path)
 
