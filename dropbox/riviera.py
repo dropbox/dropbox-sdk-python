@@ -9,7 +9,6 @@ from stone.backends.python_rsrc import stone_validators as bv
 
 from dropbox import async_
 
-
 class ApiExifGpsMetadata(bb.Struct):
     """
     GPS coordinates and related tags extracted from image EXIF data. Fields are
@@ -27,23 +26,21 @@ class ApiExifGpsMetadata(bb.Struct):
     """
 
     __slots__ = [
-        "_latitude_value",
-        "_longitude_value",
-        "_altitude_value",
-        "_timestamp_value",
-        "_datestamp_value",
+        '_latitude_value',
+        '_longitude_value',
+        '_altitude_value',
+        '_timestamp_value',
+        '_datestamp_value',
     ]
 
     _has_required_fields = False
 
-    def __init__(
-        self,
-        latitude=None,
-        longitude=None,
-        altitude=None,
-        timestamp=None,
-        datestamp=None,
-    ):
+    def __init__(self,
+                 latitude=None,
+                 longitude=None,
+                 altitude=None,
+                 timestamp=None,
+                 datestamp=None):
         self._latitude_value = bb.NOT_SET
         self._longitude_value = bb.NOT_SET
         self._altitude_value = bb.NOT_SET
@@ -76,13 +73,9 @@ class ApiExifGpsMetadata(bb.Struct):
     datestamp = bb.Attribute("datestamp")
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
-        super(ApiExifGpsMetadata, self)._process_custom_annotations(
-            annotation_type, field_path, processor
-        )
-
+        super(ApiExifGpsMetadata, self)._process_custom_annotations(annotation_type, field_path, processor)
 
 ApiExifGpsMetadata_validator = bv.Struct(ApiExifGpsMetadata)
-
 
 class ApiExifMetadata(bb.Struct):
     """
@@ -103,45 +96,43 @@ class ApiExifMetadata(bb.Struct):
     """
 
     __slots__ = [
-        "_image_width_value",
-        "_image_height_value",
-        "_camera_make_value",
-        "_camera_model_value",
-        "_lens_model_value",
-        "_date_time_original_value",
-        "_offset_time_original_value",
-        "_orientation_value",
-        "_exposure_time_value",
-        "_aperture_value_value",
-        "_iso_speed_value",
-        "_focal_length_value",
-        "_megapixels_value",
-        "_artist_value",
-        "_copyright_value",
-        "_gps_metadata_value",
+        '_image_width_value',
+        '_image_height_value',
+        '_camera_make_value',
+        '_camera_model_value',
+        '_lens_model_value',
+        '_date_time_original_value',
+        '_offset_time_original_value',
+        '_orientation_value',
+        '_exposure_time_value',
+        '_aperture_value_value',
+        '_iso_speed_value',
+        '_focal_length_value',
+        '_megapixels_value',
+        '_artist_value',
+        '_copyright_value',
+        '_gps_metadata_value',
     ]
 
     _has_required_fields = False
 
-    def __init__(
-        self,
-        image_width=None,
-        image_height=None,
-        camera_make=None,
-        camera_model=None,
-        lens_model=None,
-        date_time_original=None,
-        offset_time_original=None,
-        orientation=None,
-        exposure_time=None,
-        aperture_value=None,
-        iso_speed=None,
-        focal_length=None,
-        megapixels=None,
-        artist=None,
-        copyright=None,
-        gps_metadata=None,
-    ):
+    def __init__(self,
+                 image_width=None,
+                 image_height=None,
+                 camera_make=None,
+                 camera_model=None,
+                 lens_model=None,
+                 date_time_original=None,
+                 offset_time_original=None,
+                 orientation=None,
+                 exposure_time=None,
+                 aperture_value=None,
+                 iso_speed=None,
+                 focal_length=None,
+                 megapixels=None,
+                 artist=None,
+                 copyright=None,
+                 gps_metadata=None):
         self._image_width_value = bb.NOT_SET
         self._image_height_value = bb.NOT_SET
         self._camera_make_value = bb.NOT_SET
@@ -240,13 +231,9 @@ class ApiExifMetadata(bb.Struct):
     gps_metadata = bb.Attribute("gps_metadata", nullable=True, user_defined=True)
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
-        super(ApiExifMetadata, self)._process_custom_annotations(
-            annotation_type, field_path, processor
-        )
-
+        super(ApiExifMetadata, self)._process_custom_annotations(annotation_type, field_path, processor)
 
 ApiExifMetadata_validator = bv.Struct(ApiExifMetadata)
-
 
 class ApiMediaMetadata(bb.Struct):
     """
@@ -258,15 +245,19 @@ class ApiMediaMetadata(bb.Struct):
     """
 
     __slots__ = [
-        "_bitrate_bps_value",
-        "_duration_s_value",
-        "_creation_time_value",
-        "_streams_value",
+        '_bitrate_bps_value',
+        '_duration_s_value',
+        '_creation_time_value',
+        '_streams_value',
     ]
 
     _has_required_fields = False
 
-    def __init__(self, bitrate_bps=None, duration_s=None, creation_time=None, streams=None):
+    def __init__(self,
+                 bitrate_bps=None,
+                 duration_s=None,
+                 creation_time=None,
+                 streams=None):
         self._bitrate_bps_value = bb.NOT_SET
         self._duration_s_value = bb.NOT_SET
         self._creation_time_value = bb.NOT_SET
@@ -293,13 +284,9 @@ class ApiMediaMetadata(bb.Struct):
     streams = bb.Attribute("streams", nullable=True)
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
-        super(ApiMediaMetadata, self)._process_custom_annotations(
-            annotation_type, field_path, processor
-        )
-
+        super(ApiMediaMetadata, self)._process_custom_annotations(annotation_type, field_path, processor)
 
 ApiMediaMetadata_validator = bv.Struct(ApiMediaMetadata)
-
 
 class ApiMediaStream(bb.Struct):
     """
@@ -318,41 +305,39 @@ class ApiMediaStream(bb.Struct):
     """
 
     __slots__ = [
-        "_index_value",
-        "_codec_type_value",
-        "_codec_name_value",
-        "_bitrate_bps_value",
-        "_duration_s_value",
-        "_width_value",
-        "_height_value",
-        "_frames_per_second_value",
-        "_rotation_value",
-        "_display_aspect_ratio_value",
-        "_channels_value",
-        "_channel_layout_value",
-        "_sample_rate_s_value",
-        "_language_iso_639_value",
+        '_index_value',
+        '_codec_type_value',
+        '_codec_name_value',
+        '_bitrate_bps_value',
+        '_duration_s_value',
+        '_width_value',
+        '_height_value',
+        '_frames_per_second_value',
+        '_rotation_value',
+        '_display_aspect_ratio_value',
+        '_channels_value',
+        '_channel_layout_value',
+        '_sample_rate_s_value',
+        '_language_iso_639_value',
     ]
 
     _has_required_fields = False
 
-    def __init__(
-        self,
-        index=None,
-        codec_type=None,
-        codec_name=None,
-        bitrate_bps=None,
-        duration_s=None,
-        width=None,
-        height=None,
-        frames_per_second=None,
-        rotation=None,
-        display_aspect_ratio=None,
-        channels=None,
-        channel_layout=None,
-        sample_rate_s=None,
-        language_iso_639=None,
-    ):
+    def __init__(self,
+                 index=None,
+                 codec_type=None,
+                 codec_name=None,
+                 bitrate_bps=None,
+                 duration_s=None,
+                 width=None,
+                 height=None,
+                 frames_per_second=None,
+                 rotation=None,
+                 display_aspect_ratio=None,
+                 channels=None,
+                 channel_layout=None,
+                 sample_rate_s=None,
+                 language_iso_639=None):
         self._index_value = bb.NOT_SET
         self._codec_type_value = bb.NOT_SET
         self._codec_name_value = bb.NOT_SET
@@ -439,13 +424,9 @@ class ApiMediaStream(bb.Struct):
     language_iso_639 = bb.Attribute("language_iso_639")
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
-        super(ApiMediaStream, self)._process_custom_annotations(
-            annotation_type, field_path, processor
-        )
-
+        super(ApiMediaStream, self)._process_custom_annotations(annotation_type, field_path, processor)
 
 ApiMediaStream_validator = bv.Struct(ApiMediaStream)
-
 
 class ApiOfficeMetadata(bb.Struct):
     """
@@ -460,37 +441,35 @@ class ApiOfficeMetadata(bb.Struct):
     """
 
     __slots__ = [
-        "_file_type_value",
-        "_creator_value",
-        "_company_value",
-        "_title_value",
-        "_subject_value",
-        "_keywords_value",
-        "_description_value",
-        "_total_edit_time_minutes_value",
-        "_pages_value",
-        "_words_value",
-        "_slides_value",
-        "_revision_number_value",
+        '_file_type_value',
+        '_creator_value',
+        '_company_value',
+        '_title_value',
+        '_subject_value',
+        '_keywords_value',
+        '_description_value',
+        '_total_edit_time_minutes_value',
+        '_pages_value',
+        '_words_value',
+        '_slides_value',
+        '_revision_number_value',
     ]
 
     _has_required_fields = False
 
-    def __init__(
-        self,
-        file_type=None,
-        creator=None,
-        company=None,
-        title=None,
-        subject=None,
-        keywords=None,
-        description=None,
-        total_edit_time_minutes=None,
-        pages=None,
-        words=None,
-        slides=None,
-        revision_number=None,
-    ):
+    def __init__(self,
+                 file_type=None,
+                 creator=None,
+                 company=None,
+                 title=None,
+                 subject=None,
+                 keywords=None,
+                 description=None,
+                 total_edit_time_minutes=None,
+                 pages=None,
+                 words=None,
+                 slides=None,
+                 revision_number=None):
         self._file_type_value = bb.NOT_SET
         self._creator_value = bb.NOT_SET
         self._company_value = bb.NOT_SET
@@ -565,13 +544,9 @@ class ApiOfficeMetadata(bb.Struct):
     revision_number = bb.Attribute("revision_number")
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
-        super(ApiOfficeMetadata, self)._process_custom_annotations(
-            annotation_type, field_path, processor
-        )
-
+        super(ApiOfficeMetadata, self)._process_custom_annotations(annotation_type, field_path, processor)
 
 ApiOfficeMetadata_validator = bv.Struct(ApiOfficeMetadata)
-
 
 class ApiPdfMetadata(bb.Struct):
     """
@@ -582,14 +557,17 @@ class ApiPdfMetadata(bb.Struct):
     """
 
     __slots__ = [
-        "_pages_value",
-        "_width_value",
-        "_height_value",
+        '_pages_value',
+        '_width_value',
+        '_height_value',
     ]
 
     _has_required_fields = False
 
-    def __init__(self, pages=None, width=None, height=None):
+    def __init__(self,
+                 pages=None,
+                 width=None,
+                 height=None):
         self._pages_value = bb.NOT_SET
         self._width_value = bb.NOT_SET
         self._height_value = bb.NOT_SET
@@ -610,13 +588,9 @@ class ApiPdfMetadata(bb.Struct):
     height = bb.Attribute("height")
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
-        super(ApiPdfMetadata, self)._process_custom_annotations(
-            annotation_type, field_path, processor
-        )
-
+        super(ApiPdfMetadata, self)._process_custom_annotations(annotation_type, field_path, processor)
 
 ApiPdfMetadata_validator = bv.Struct(ApiPdfMetadata)
-
 
 class ApiStructuredTranscript(bb.Struct):
     """
@@ -624,13 +598,15 @@ class ApiStructuredTranscript(bb.Struct):
     """
 
     __slots__ = [
-        "_segments_value",
-        "_transcript_locale_value",
+        '_segments_value',
+        '_transcript_locale_value',
     ]
 
     _has_required_fields = False
 
-    def __init__(self, segments=None, transcript_locale=None):
+    def __init__(self,
+                 segments=None,
+                 transcript_locale=None):
         self._segments_value = bb.NOT_SET
         self._transcript_locale_value = bb.NOT_SET
         if segments is not None:
@@ -645,13 +621,9 @@ class ApiStructuredTranscript(bb.Struct):
     transcript_locale = bb.Attribute("transcript_locale")
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
-        super(ApiStructuredTranscript, self)._process_custom_annotations(
-            annotation_type, field_path, processor
-        )
-
+        super(ApiStructuredTranscript, self)._process_custom_annotations(annotation_type, field_path, processor)
 
 ApiStructuredTranscript_validator = bv.Struct(ApiStructuredTranscript)
-
 
 class ApiTranscriptSegment(bb.Struct):
     """
@@ -659,14 +631,17 @@ class ApiTranscriptSegment(bb.Struct):
     """
 
     __slots__ = [
-        "_text_value",
-        "_start_time_value",
-        "_end_time_value",
+        '_text_value',
+        '_start_time_value',
+        '_end_time_value',
     ]
 
     _has_required_fields = False
 
-    def __init__(self, text=None, start_time=None, end_time=None):
+    def __init__(self,
+                 text=None,
+                 start_time=None,
+                 end_time=None):
         self._text_value = bb.NOT_SET
         self._start_time_value = bb.NOT_SET
         self._end_time_value = bb.NOT_SET
@@ -687,13 +662,9 @@ class ApiTranscriptSegment(bb.Struct):
     end_time = bb.Attribute("end_time")
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
-        super(ApiTranscriptSegment, self)._process_custom_annotations(
-            annotation_type, field_path, processor
-        )
-
+        super(ApiTranscriptSegment, self)._process_custom_annotations(annotation_type, field_path, processor)
 
 ApiTranscriptSegment_validator = bv.Struct(ApiTranscriptSegment)
-
 
 class ContentApiV2Error(bb.Union):
     """
@@ -707,7 +678,7 @@ class ContentApiV2Error(bb.Union):
         The target is a folder, not a file.
     """
 
-    _catch_all = "other"
+    _catch_all = 'other'
     # Attribute is overwritten below the class definition
     no_audio_error = None
     # Attribute is overwritten below the class definition
@@ -732,7 +703,7 @@ class ContentApiV2Error(bb.Union):
         :param str val:
         :rtype: ContentApiV2Error
         """
-        return cls("server_error", val)
+        return cls('server_error', val)
 
     @classmethod
     def user_error(cls, val):
@@ -743,7 +714,7 @@ class ContentApiV2Error(bb.Union):
         :param str val:
         :rtype: ContentApiV2Error
         """
-        return cls("user_error", val)
+        return cls('user_error', val)
 
     @classmethod
     def media_duration_error(cls, val):
@@ -754,7 +725,7 @@ class ContentApiV2Error(bb.Union):
         :param MediaDurationError val:
         :rtype: ContentApiV2Error
         """
-        return cls("media_duration_error", val)
+        return cls('media_duration_error', val)
 
     def is_server_error(self):
         """
@@ -762,7 +733,7 @@ class ContentApiV2Error(bb.Union):
 
         :rtype: bool
         """
-        return self._tag == "server_error"
+        return self._tag == 'server_error'
 
     def is_user_error(self):
         """
@@ -770,7 +741,7 @@ class ContentApiV2Error(bb.Union):
 
         :rtype: bool
         """
-        return self._tag == "user_error"
+        return self._tag == 'user_error'
 
     def is_media_duration_error(self):
         """
@@ -778,7 +749,7 @@ class ContentApiV2Error(bb.Union):
 
         :rtype: bool
         """
-        return self._tag == "media_duration_error"
+        return self._tag == 'media_duration_error'
 
     def is_no_audio_error(self):
         """
@@ -786,7 +757,7 @@ class ContentApiV2Error(bb.Union):
 
         :rtype: bool
         """
-        return self._tag == "no_audio_error"
+        return self._tag == 'no_audio_error'
 
     def is_link_download_disabled_error(self):
         """
@@ -794,7 +765,7 @@ class ContentApiV2Error(bb.Union):
 
         :rtype: bool
         """
-        return self._tag == "link_download_disabled_error"
+        return self._tag == 'link_download_disabled_error'
 
     def is_shared_link_password_protected(self):
         """
@@ -802,7 +773,7 @@ class ContentApiV2Error(bb.Union):
 
         :rtype: bool
         """
-        return self._tag == "shared_link_password_protected"
+        return self._tag == 'shared_link_password_protected'
 
     def is_limit_exceeded_error(self):
         """
@@ -810,7 +781,7 @@ class ContentApiV2Error(bb.Union):
 
         :rtype: bool
         """
-        return self._tag == "limit_exceeded_error"
+        return self._tag == 'limit_exceeded_error'
 
     def is_not_found_error(self):
         """
@@ -818,7 +789,7 @@ class ContentApiV2Error(bb.Union):
 
         :rtype: bool
         """
-        return self._tag == "not_found_error"
+        return self._tag == 'not_found_error'
 
     def is_is_a_folder_error(self):
         """
@@ -826,7 +797,7 @@ class ContentApiV2Error(bb.Union):
 
         :rtype: bool
         """
-        return self._tag == "is_a_folder_error"
+        return self._tag == 'is_a_folder_error'
 
     def is_other(self):
         """
@@ -834,7 +805,7 @@ class ContentApiV2Error(bb.Union):
 
         :rtype: bool
         """
-        return self._tag == "other"
+        return self._tag == 'other'
 
     def get_server_error(self):
         """
@@ -867,13 +838,9 @@ class ContentApiV2Error(bb.Union):
         return self._value
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
-        super(ContentApiV2Error, self)._process_custom_annotations(
-            annotation_type, field_path, processor
-        )
-
+        super(ContentApiV2Error, self)._process_custom_annotations(annotation_type, field_path, processor)
 
 ContentApiV2Error_validator = bv.Union(ContentApiV2Error)
-
 
 class ErrorCode(bb.Union):
     """
@@ -893,7 +860,7 @@ class ErrorCode(bb.Union):
         503
     """
 
-    _catch_all = "other"
+    _catch_all = 'other'
     # Attribute is overwritten below the class definition
     unknown_error = None
     # Attribute is overwritten below the class definition
@@ -915,7 +882,7 @@ class ErrorCode(bb.Union):
 
         :rtype: bool
         """
-        return self._tag == "unknown_error"
+        return self._tag == 'unknown_error'
 
     def is_bad_request(self):
         """
@@ -923,7 +890,7 @@ class ErrorCode(bb.Union):
 
         :rtype: bool
         """
-        return self._tag == "bad_request"
+        return self._tag == 'bad_request'
 
     def is_api_error(self):
         """
@@ -931,7 +898,7 @@ class ErrorCode(bb.Union):
 
         :rtype: bool
         """
-        return self._tag == "api_error"
+        return self._tag == 'api_error'
 
     def is_access_error(self):
         """
@@ -939,7 +906,7 @@ class ErrorCode(bb.Union):
 
         :rtype: bool
         """
-        return self._tag == "access_error"
+        return self._tag == 'access_error'
 
     def is_ratelimit_error(self):
         """
@@ -947,7 +914,7 @@ class ErrorCode(bb.Union):
 
         :rtype: bool
         """
-        return self._tag == "ratelimit_error"
+        return self._tag == 'ratelimit_error'
 
     def is_unavailable(self):
         """
@@ -955,7 +922,7 @@ class ErrorCode(bb.Union):
 
         :rtype: bool
         """
-        return self._tag == "unavailable"
+        return self._tag == 'unavailable'
 
     def is_other(self):
         """
@@ -963,14 +930,12 @@ class ErrorCode(bb.Union):
 
         :rtype: bool
         """
-        return self._tag == "other"
+        return self._tag == 'other'
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(ErrorCode, self)._process_custom_annotations(annotation_type, field_path, processor)
 
-
 ErrorCode_validator = bv.Union(ErrorCode)
-
 
 class FileIdOrUrl(bb.Union):
     """
@@ -979,7 +944,7 @@ class FileIdOrUrl(bb.Union):
     corresponding ``get_*`` method.
     """
 
-    _catch_all = "other"
+    _catch_all = 'other'
     # Attribute is overwritten below the class definition
     other = None
 
@@ -992,7 +957,7 @@ class FileIdOrUrl(bb.Union):
         :param str val:
         :rtype: FileIdOrUrl
         """
-        return cls("file_id", val)
+        return cls('file_id', val)
 
     @classmethod
     def url(cls, val):
@@ -1003,7 +968,7 @@ class FileIdOrUrl(bb.Union):
         :param str val:
         :rtype: FileIdOrUrl
         """
-        return cls("url", val)
+        return cls('url', val)
 
     @classmethod
     def path(cls, val):
@@ -1014,7 +979,7 @@ class FileIdOrUrl(bb.Union):
         :param str val:
         :rtype: FileIdOrUrl
         """
-        return cls("path", val)
+        return cls('path', val)
 
     def is_file_id(self):
         """
@@ -1022,7 +987,7 @@ class FileIdOrUrl(bb.Union):
 
         :rtype: bool
         """
-        return self._tag == "file_id"
+        return self._tag == 'file_id'
 
     def is_url(self):
         """
@@ -1030,7 +995,7 @@ class FileIdOrUrl(bb.Union):
 
         :rtype: bool
         """
-        return self._tag == "url"
+        return self._tag == 'url'
 
     def is_path(self):
         """
@@ -1038,7 +1003,7 @@ class FileIdOrUrl(bb.Union):
 
         :rtype: bool
         """
-        return self._tag == "path"
+        return self._tag == 'path'
 
     def is_other(self):
         """
@@ -1046,7 +1011,7 @@ class FileIdOrUrl(bb.Union):
 
         :rtype: bool
         """
-        return self._tag == "other"
+        return self._tag == 'other'
 
     def get_file_id(self):
         """
@@ -1081,9 +1046,7 @@ class FileIdOrUrl(bb.Union):
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(FileIdOrUrl, self)._process_custom_annotations(annotation_type, field_path, processor)
 
-
 FileIdOrUrl_validator = bv.Union(FileIdOrUrl)
-
 
 class GetMarkdownArgs(bb.Struct):
     """
@@ -1116,14 +1079,17 @@ class GetMarkdownArgs(bb.Struct):
     """
 
     __slots__ = [
-        "_file_id_or_url_value",
-        "_enable_ocr_value",
-        "_embed_images_value",
+        '_file_id_or_url_value',
+        '_enable_ocr_value',
+        '_embed_images_value',
     ]
 
     _has_required_fields = False
 
-    def __init__(self, file_id_or_url=None, enable_ocr=None, embed_images=None):
+    def __init__(self,
+                 file_id_or_url=None,
+                 enable_ocr=None,
+                 embed_images=None):
         self._file_id_or_url_value = bb.NOT_SET
         self._enable_ocr_value = bb.NOT_SET
         self._embed_images_value = bb.NOT_SET
@@ -1144,13 +1110,9 @@ class GetMarkdownArgs(bb.Struct):
     embed_images = bb.Attribute("embed_images")
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
-        super(GetMarkdownArgs, self)._process_custom_annotations(
-            annotation_type, field_path, processor
-        )
-
+        super(GetMarkdownArgs, self)._process_custom_annotations(annotation_type, field_path, processor)
 
 GetMarkdownArgs_validator = bv.Struct(GetMarkdownArgs)
-
 
 class GetMarkdownAsyncCheckResult(bb.Union):
     """
@@ -1161,7 +1123,7 @@ class GetMarkdownAsyncCheckResult(bb.Union):
     corresponding ``get_*`` method.
     """
 
-    _catch_all = "other"
+    _catch_all = 'other'
     # Attribute is overwritten below the class definition
     in_progress = None
     # Attribute is overwritten below the class definition
@@ -1176,7 +1138,7 @@ class GetMarkdownAsyncCheckResult(bb.Union):
         :param GetMarkdownResult val:
         :rtype: GetMarkdownAsyncCheckResult
         """
-        return cls("complete", val)
+        return cls('complete', val)
 
     @classmethod
     def failed(cls, val):
@@ -1187,7 +1149,7 @@ class GetMarkdownAsyncCheckResult(bb.Union):
         :param GetMarkdownAsyncError val:
         :rtype: GetMarkdownAsyncCheckResult
         """
-        return cls("failed", val)
+        return cls('failed', val)
 
     def is_in_progress(self):
         """
@@ -1195,7 +1157,7 @@ class GetMarkdownAsyncCheckResult(bb.Union):
 
         :rtype: bool
         """
-        return self._tag == "in_progress"
+        return self._tag == 'in_progress'
 
     def is_complete(self):
         """
@@ -1203,7 +1165,7 @@ class GetMarkdownAsyncCheckResult(bb.Union):
 
         :rtype: bool
         """
-        return self._tag == "complete"
+        return self._tag == 'complete'
 
     def is_failed(self):
         """
@@ -1211,7 +1173,7 @@ class GetMarkdownAsyncCheckResult(bb.Union):
 
         :rtype: bool
         """
-        return self._tag == "failed"
+        return self._tag == 'failed'
 
     def is_other(self):
         """
@@ -1219,7 +1181,7 @@ class GetMarkdownAsyncCheckResult(bb.Union):
 
         :rtype: bool
         """
-        return self._tag == "other"
+        return self._tag == 'other'
 
     def get_complete(self):
         """
@@ -1242,23 +1204,22 @@ class GetMarkdownAsyncCheckResult(bb.Union):
         return self._value
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
-        super(GetMarkdownAsyncCheckResult, self)._process_custom_annotations(
-            annotation_type, field_path, processor
-        )
-
+        super(GetMarkdownAsyncCheckResult, self)._process_custom_annotations(annotation_type, field_path, processor)
 
 GetMarkdownAsyncCheckResult_validator = bv.Union(GetMarkdownAsyncCheckResult)
 
-
 class GetMarkdownAsyncError(bb.Struct):
+
     __slots__ = [
-        "_error_code_value",
-        "_error_details_value",
+        '_error_code_value',
+        '_error_details_value',
     ]
 
     _has_required_fields = False
 
-    def __init__(self, error_code=None, error_details=None):
+    def __init__(self,
+                 error_code=None,
+                 error_details=None):
         self._error_code_value = bb.NOT_SET
         self._error_details_value = bb.NOT_SET
         if error_code is not None:
@@ -1273,13 +1234,9 @@ class GetMarkdownAsyncError(bb.Struct):
     error_details = bb.Attribute("error_details", nullable=True, user_defined=True)
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
-        super(GetMarkdownAsyncError, self)._process_custom_annotations(
-            annotation_type, field_path, processor
-        )
-
+        super(GetMarkdownAsyncError, self)._process_custom_annotations(annotation_type, field_path, processor)
 
 GetMarkdownAsyncError_validator = bv.Struct(GetMarkdownAsyncError)
-
 
 class GetMarkdownResult(bb.Struct):
     """
@@ -1288,12 +1245,13 @@ class GetMarkdownResult(bb.Struct):
     """
 
     __slots__ = [
-        "_markdown_value",
+        '_markdown_value',
     ]
 
     _has_required_fields = False
 
-    def __init__(self, markdown=None):
+    def __init__(self,
+                 markdown=None):
         self._markdown_value = bb.NOT_SET
         if markdown is not None:
             self.markdown = markdown
@@ -1302,13 +1260,9 @@ class GetMarkdownResult(bb.Struct):
     markdown = bb.Attribute("markdown")
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
-        super(GetMarkdownResult, self)._process_custom_annotations(
-            annotation_type, field_path, processor
-        )
-
+        super(GetMarkdownResult, self)._process_custom_annotations(annotation_type, field_path, processor)
 
 GetMarkdownResult_validator = bv.Struct(GetMarkdownResult)
-
 
 class GetMetadataArgs(bb.Struct):
     """
@@ -1338,12 +1292,13 @@ class GetMetadataArgs(bb.Struct):
     """
 
     __slots__ = [
-        "_file_id_or_url_value",
+        '_file_id_or_url_value',
     ]
 
     _has_required_fields = False
 
-    def __init__(self, file_id_or_url=None):
+    def __init__(self,
+                 file_id_or_url=None):
         self._file_id_or_url_value = bb.NOT_SET
         if file_id_or_url is not None:
             self.file_id_or_url = file_id_or_url
@@ -1352,13 +1307,9 @@ class GetMetadataArgs(bb.Struct):
     file_id_or_url = bb.Attribute("file_id_or_url", nullable=True, user_defined=True)
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
-        super(GetMetadataArgs, self)._process_custom_annotations(
-            annotation_type, field_path, processor
-        )
-
+        super(GetMetadataArgs, self)._process_custom_annotations(annotation_type, field_path, processor)
 
 GetMetadataArgs_validator = bv.Struct(GetMetadataArgs)
-
 
 class GetMetadataAsyncCheckResult(bb.Union):
     """
@@ -1369,7 +1320,7 @@ class GetMetadataAsyncCheckResult(bb.Union):
     corresponding ``get_*`` method.
     """
 
-    _catch_all = "other"
+    _catch_all = 'other'
     # Attribute is overwritten below the class definition
     in_progress = None
     # Attribute is overwritten below the class definition
@@ -1384,7 +1335,7 @@ class GetMetadataAsyncCheckResult(bb.Union):
         :param GetMetadataResult val:
         :rtype: GetMetadataAsyncCheckResult
         """
-        return cls("complete", val)
+        return cls('complete', val)
 
     @classmethod
     def failed(cls, val):
@@ -1395,7 +1346,7 @@ class GetMetadataAsyncCheckResult(bb.Union):
         :param GetMetadataAsyncError val:
         :rtype: GetMetadataAsyncCheckResult
         """
-        return cls("failed", val)
+        return cls('failed', val)
 
     def is_in_progress(self):
         """
@@ -1403,7 +1354,7 @@ class GetMetadataAsyncCheckResult(bb.Union):
 
         :rtype: bool
         """
-        return self._tag == "in_progress"
+        return self._tag == 'in_progress'
 
     def is_complete(self):
         """
@@ -1411,7 +1362,7 @@ class GetMetadataAsyncCheckResult(bb.Union):
 
         :rtype: bool
         """
-        return self._tag == "complete"
+        return self._tag == 'complete'
 
     def is_failed(self):
         """
@@ -1419,7 +1370,7 @@ class GetMetadataAsyncCheckResult(bb.Union):
 
         :rtype: bool
         """
-        return self._tag == "failed"
+        return self._tag == 'failed'
 
     def is_other(self):
         """
@@ -1427,7 +1378,7 @@ class GetMetadataAsyncCheckResult(bb.Union):
 
         :rtype: bool
         """
-        return self._tag == "other"
+        return self._tag == 'other'
 
     def get_complete(self):
         """
@@ -1450,23 +1401,22 @@ class GetMetadataAsyncCheckResult(bb.Union):
         return self._value
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
-        super(GetMetadataAsyncCheckResult, self)._process_custom_annotations(
-            annotation_type, field_path, processor
-        )
-
+        super(GetMetadataAsyncCheckResult, self)._process_custom_annotations(annotation_type, field_path, processor)
 
 GetMetadataAsyncCheckResult_validator = bv.Union(GetMetadataAsyncCheckResult)
 
-
 class GetMetadataAsyncError(bb.Struct):
+
     __slots__ = [
-        "_error_code_value",
-        "_error_details_value",
+        '_error_code_value',
+        '_error_details_value',
     ]
 
     _has_required_fields = False
 
-    def __init__(self, error_code=None, error_details=None):
+    def __init__(self,
+                 error_code=None,
+                 error_details=None):
         self._error_code_value = bb.NOT_SET
         self._error_details_value = bb.NOT_SET
         if error_code is not None:
@@ -1481,13 +1431,9 @@ class GetMetadataAsyncError(bb.Struct):
     error_details = bb.Attribute("error_details", nullable=True, user_defined=True)
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
-        super(GetMetadataAsyncError, self)._process_custom_annotations(
-            annotation_type, field_path, processor
-        )
-
+        super(GetMetadataAsyncError, self)._process_custom_annotations(annotation_type, field_path, processor)
 
 GetMetadataAsyncError_validator = bv.Struct(GetMetadataAsyncError)
-
 
 class GetMetadataResult(bb.Struct):
     """
@@ -1497,13 +1443,15 @@ class GetMetadataResult(bb.Struct):
     """
 
     __slots__ = [
-        "_metadata_type_value",
-        "_metadata_value",
+        '_metadata_type_value',
+        '_metadata_value',
     ]
 
     _has_required_fields = False
 
-    def __init__(self, metadata_type=None, metadata=None):
+    def __init__(self,
+                 metadata_type=None,
+                 metadata=None):
         self._metadata_type_value = bb.NOT_SET
         self._metadata_value = bb.NOT_SET
         if metadata_type is not None:
@@ -1518,13 +1466,9 @@ class GetMetadataResult(bb.Struct):
     metadata = bb.Attribute("metadata", nullable=True, user_defined=True)
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
-        super(GetMetadataResult, self)._process_custom_annotations(
-            annotation_type, field_path, processor
-        )
-
+        super(GetMetadataResult, self)._process_custom_annotations(annotation_type, field_path, processor)
 
 GetMetadataResult_validator = bv.Struct(GetMetadataResult)
-
 
 class GetTranscriptArgs(bb.Struct):
     """
@@ -1568,21 +1512,19 @@ class GetTranscriptArgs(bb.Struct):
     """
 
     __slots__ = [
-        "_file_id_or_url_value",
-        "_timestamp_level_value",
-        "_included_special_words_value",
-        "_audio_language_value",
+        '_file_id_or_url_value',
+        '_timestamp_level_value',
+        '_included_special_words_value',
+        '_audio_language_value',
     ]
 
     _has_required_fields = False
 
-    def __init__(
-        self,
-        file_id_or_url=None,
-        timestamp_level=None,
-        included_special_words=None,
-        audio_language=None,
-    ):
+    def __init__(self,
+                 file_id_or_url=None,
+                 timestamp_level=None,
+                 included_special_words=None,
+                 audio_language=None):
         self._file_id_or_url_value = bb.NOT_SET
         self._timestamp_level_value = bb.NOT_SET
         self._included_special_words_value = bb.NOT_SET
@@ -1609,13 +1551,9 @@ class GetTranscriptArgs(bb.Struct):
     audio_language = bb.Attribute("audio_language")
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
-        super(GetTranscriptArgs, self)._process_custom_annotations(
-            annotation_type, field_path, processor
-        )
-
+        super(GetTranscriptArgs, self)._process_custom_annotations(annotation_type, field_path, processor)
 
 GetTranscriptArgs_validator = bv.Struct(GetTranscriptArgs)
-
 
 class GetTranscriptAsyncCheckResult(bb.Union):
     """
@@ -1626,7 +1564,7 @@ class GetTranscriptAsyncCheckResult(bb.Union):
     corresponding ``get_*`` method.
     """
 
-    _catch_all = "other"
+    _catch_all = 'other'
     # Attribute is overwritten below the class definition
     in_progress = None
     # Attribute is overwritten below the class definition
@@ -1641,7 +1579,7 @@ class GetTranscriptAsyncCheckResult(bb.Union):
         :param GetTranscriptResult val:
         :rtype: GetTranscriptAsyncCheckResult
         """
-        return cls("complete", val)
+        return cls('complete', val)
 
     @classmethod
     def failed(cls, val):
@@ -1652,7 +1590,7 @@ class GetTranscriptAsyncCheckResult(bb.Union):
         :param GetTranscriptAsyncError val:
         :rtype: GetTranscriptAsyncCheckResult
         """
-        return cls("failed", val)
+        return cls('failed', val)
 
     def is_in_progress(self):
         """
@@ -1660,7 +1598,7 @@ class GetTranscriptAsyncCheckResult(bb.Union):
 
         :rtype: bool
         """
-        return self._tag == "in_progress"
+        return self._tag == 'in_progress'
 
     def is_complete(self):
         """
@@ -1668,7 +1606,7 @@ class GetTranscriptAsyncCheckResult(bb.Union):
 
         :rtype: bool
         """
-        return self._tag == "complete"
+        return self._tag == 'complete'
 
     def is_failed(self):
         """
@@ -1676,7 +1614,7 @@ class GetTranscriptAsyncCheckResult(bb.Union):
 
         :rtype: bool
         """
-        return self._tag == "failed"
+        return self._tag == 'failed'
 
     def is_other(self):
         """
@@ -1684,7 +1622,7 @@ class GetTranscriptAsyncCheckResult(bb.Union):
 
         :rtype: bool
         """
-        return self._tag == "other"
+        return self._tag == 'other'
 
     def get_complete(self):
         """
@@ -1707,23 +1645,22 @@ class GetTranscriptAsyncCheckResult(bb.Union):
         return self._value
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
-        super(GetTranscriptAsyncCheckResult, self)._process_custom_annotations(
-            annotation_type, field_path, processor
-        )
-
+        super(GetTranscriptAsyncCheckResult, self)._process_custom_annotations(annotation_type, field_path, processor)
 
 GetTranscriptAsyncCheckResult_validator = bv.Union(GetTranscriptAsyncCheckResult)
 
-
 class GetTranscriptAsyncError(bb.Struct):
+
     __slots__ = [
-        "_error_code_value",
-        "_error_details_value",
+        '_error_code_value',
+        '_error_details_value',
     ]
 
     _has_required_fields = False
 
-    def __init__(self, error_code=None, error_details=None):
+    def __init__(self,
+                 error_code=None,
+                 error_details=None):
         self._error_code_value = bb.NOT_SET
         self._error_details_value = bb.NOT_SET
         if error_code is not None:
@@ -1738,13 +1675,9 @@ class GetTranscriptAsyncError(bb.Struct):
     error_details = bb.Attribute("error_details", nullable=True, user_defined=True)
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
-        super(GetTranscriptAsyncError, self)._process_custom_annotations(
-            annotation_type, field_path, processor
-        )
-
+        super(GetTranscriptAsyncError, self)._process_custom_annotations(annotation_type, field_path, processor)
 
 GetTranscriptAsyncError_validator = bv.Struct(GetTranscriptAsyncError)
-
 
 class GetTranscriptResult(bb.Struct):
     """
@@ -1755,12 +1688,13 @@ class GetTranscriptResult(bb.Struct):
     """
 
     __slots__ = [
-        "_structured_transcript_value",
+        '_structured_transcript_value',
     ]
 
     _has_required_fields = False
 
-    def __init__(self, structured_transcript=None):
+    def __init__(self,
+                 structured_transcript=None):
         self._structured_transcript_value = bb.NOT_SET
         if structured_transcript is not None:
             self.structured_transcript = structured_transcript
@@ -1769,13 +1703,9 @@ class GetTranscriptResult(bb.Struct):
     structured_transcript = bb.Attribute("structured_transcript", nullable=True, user_defined=True)
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
-        super(GetTranscriptResult, self)._process_custom_annotations(
-            annotation_type, field_path, processor
-        )
-
+        super(GetTranscriptResult, self)._process_custom_annotations(annotation_type, field_path, processor)
 
 GetTranscriptResult_validator = bv.Struct(GetTranscriptResult)
-
 
 class MarkdownConversionApiV2Error(bb.Union):
     """
@@ -1789,7 +1719,7 @@ class MarkdownConversionApiV2Error(bb.Union):
         The target is a folder, not a file.
     """
 
-    _catch_all = "other"
+    _catch_all = 'other'
     # Attribute is overwritten below the class definition
     unsupported_format_error = None
     # Attribute is overwritten below the class definition
@@ -1816,7 +1746,7 @@ class MarkdownConversionApiV2Error(bb.Union):
         :param str val:
         :rtype: MarkdownConversionApiV2Error
         """
-        return cls("server_error", val)
+        return cls('server_error', val)
 
     @classmethod
     def user_error(cls, val):
@@ -1827,7 +1757,7 @@ class MarkdownConversionApiV2Error(bb.Union):
         :param str val:
         :rtype: MarkdownConversionApiV2Error
         """
-        return cls("user_error", val)
+        return cls('user_error', val)
 
     def is_server_error(self):
         """
@@ -1835,7 +1765,7 @@ class MarkdownConversionApiV2Error(bb.Union):
 
         :rtype: bool
         """
-        return self._tag == "server_error"
+        return self._tag == 'server_error'
 
     def is_user_error(self):
         """
@@ -1843,7 +1773,7 @@ class MarkdownConversionApiV2Error(bb.Union):
 
         :rtype: bool
         """
-        return self._tag == "user_error"
+        return self._tag == 'user_error'
 
     def is_unsupported_format_error(self):
         """
@@ -1851,7 +1781,7 @@ class MarkdownConversionApiV2Error(bb.Union):
 
         :rtype: bool
         """
-        return self._tag == "unsupported_format_error"
+        return self._tag == 'unsupported_format_error'
 
     def is_link_download_disabled_error(self):
         """
@@ -1859,7 +1789,7 @@ class MarkdownConversionApiV2Error(bb.Union):
 
         :rtype: bool
         """
-        return self._tag == "link_download_disabled_error"
+        return self._tag == 'link_download_disabled_error'
 
     def is_shared_link_password_protected(self):
         """
@@ -1867,7 +1797,7 @@ class MarkdownConversionApiV2Error(bb.Union):
 
         :rtype: bool
         """
-        return self._tag == "shared_link_password_protected"
+        return self._tag == 'shared_link_password_protected'
 
     def is_limit_exceeded_error(self):
         """
@@ -1875,7 +1805,7 @@ class MarkdownConversionApiV2Error(bb.Union):
 
         :rtype: bool
         """
-        return self._tag == "limit_exceeded_error"
+        return self._tag == 'limit_exceeded_error'
 
     def is_conversion_failure_error(self):
         """
@@ -1883,7 +1813,7 @@ class MarkdownConversionApiV2Error(bb.Union):
 
         :rtype: bool
         """
-        return self._tag == "conversion_failure_error"
+        return self._tag == 'conversion_failure_error'
 
     def is_not_found_error(self):
         """
@@ -1891,7 +1821,7 @@ class MarkdownConversionApiV2Error(bb.Union):
 
         :rtype: bool
         """
-        return self._tag == "not_found_error"
+        return self._tag == 'not_found_error'
 
     def is_is_a_folder_error(self):
         """
@@ -1899,7 +1829,7 @@ class MarkdownConversionApiV2Error(bb.Union):
 
         :rtype: bool
         """
-        return self._tag == "is_a_folder_error"
+        return self._tag == 'is_a_folder_error'
 
     def is_other(self):
         """
@@ -1907,7 +1837,7 @@ class MarkdownConversionApiV2Error(bb.Union):
 
         :rtype: bool
         """
-        return self._tag == "other"
+        return self._tag == 'other'
 
     def get_server_error(self):
         """
@@ -1930,22 +1860,20 @@ class MarkdownConversionApiV2Error(bb.Union):
         return self._value
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
-        super(MarkdownConversionApiV2Error, self)._process_custom_annotations(
-            annotation_type, field_path, processor
-        )
-
+        super(MarkdownConversionApiV2Error, self)._process_custom_annotations(annotation_type, field_path, processor)
 
 MarkdownConversionApiV2Error_validator = bv.Union(MarkdownConversionApiV2Error)
 
-
 class MediaDurationError(bb.Struct):
+
     __slots__ = [
-        "_limit_value",
+        '_limit_value',
     ]
 
     _has_required_fields = False
 
-    def __init__(self, limit=None):
+    def __init__(self,
+                 limit=None):
         self._limit_value = bb.NOT_SET
         if limit is not None:
             self.limit = limit
@@ -1954,13 +1882,9 @@ class MediaDurationError(bb.Struct):
     limit = bb.Attribute("limit")
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
-        super(MediaDurationError, self)._process_custom_annotations(
-            annotation_type, field_path, processor
-        )
-
+        super(MediaDurationError, self)._process_custom_annotations(annotation_type, field_path, processor)
 
 MediaDurationError_validator = bv.Struct(MediaDurationError)
-
 
 class MetadataExtractionApiV2Error(bb.Union):
     """
@@ -1974,7 +1898,7 @@ class MetadataExtractionApiV2Error(bb.Union):
         The target is a folder, not a file.
     """
 
-    _catch_all = "other"
+    _catch_all = 'other'
     # Attribute is overwritten below the class definition
     unsupported_format_error = None
     # Attribute is overwritten below the class definition
@@ -2001,7 +1925,7 @@ class MetadataExtractionApiV2Error(bb.Union):
         :param str val:
         :rtype: MetadataExtractionApiV2Error
         """
-        return cls("server_error", val)
+        return cls('server_error', val)
 
     @classmethod
     def user_error(cls, val):
@@ -2012,7 +1936,7 @@ class MetadataExtractionApiV2Error(bb.Union):
         :param str val:
         :rtype: MetadataExtractionApiV2Error
         """
-        return cls("user_error", val)
+        return cls('user_error', val)
 
     def is_server_error(self):
         """
@@ -2020,7 +1944,7 @@ class MetadataExtractionApiV2Error(bb.Union):
 
         :rtype: bool
         """
-        return self._tag == "server_error"
+        return self._tag == 'server_error'
 
     def is_user_error(self):
         """
@@ -2028,7 +1952,7 @@ class MetadataExtractionApiV2Error(bb.Union):
 
         :rtype: bool
         """
-        return self._tag == "user_error"
+        return self._tag == 'user_error'
 
     def is_unsupported_format_error(self):
         """
@@ -2036,7 +1960,7 @@ class MetadataExtractionApiV2Error(bb.Union):
 
         :rtype: bool
         """
-        return self._tag == "unsupported_format_error"
+        return self._tag == 'unsupported_format_error'
 
     def is_link_download_disabled_error(self):
         """
@@ -2044,7 +1968,7 @@ class MetadataExtractionApiV2Error(bb.Union):
 
         :rtype: bool
         """
-        return self._tag == "link_download_disabled_error"
+        return self._tag == 'link_download_disabled_error'
 
     def is_shared_link_password_protected(self):
         """
@@ -2052,7 +1976,7 @@ class MetadataExtractionApiV2Error(bb.Union):
 
         :rtype: bool
         """
-        return self._tag == "shared_link_password_protected"
+        return self._tag == 'shared_link_password_protected'
 
     def is_limit_exceeded_error(self):
         """
@@ -2060,7 +1984,7 @@ class MetadataExtractionApiV2Error(bb.Union):
 
         :rtype: bool
         """
-        return self._tag == "limit_exceeded_error"
+        return self._tag == 'limit_exceeded_error'
 
     def is_conversion_failure_error(self):
         """
@@ -2068,7 +1992,7 @@ class MetadataExtractionApiV2Error(bb.Union):
 
         :rtype: bool
         """
-        return self._tag == "conversion_failure_error"
+        return self._tag == 'conversion_failure_error'
 
     def is_not_found_error(self):
         """
@@ -2076,7 +2000,7 @@ class MetadataExtractionApiV2Error(bb.Union):
 
         :rtype: bool
         """
-        return self._tag == "not_found_error"
+        return self._tag == 'not_found_error'
 
     def is_is_a_folder_error(self):
         """
@@ -2084,7 +2008,7 @@ class MetadataExtractionApiV2Error(bb.Union):
 
         :rtype: bool
         """
-        return self._tag == "is_a_folder_error"
+        return self._tag == 'is_a_folder_error'
 
     def is_other(self):
         """
@@ -2092,7 +2016,7 @@ class MetadataExtractionApiV2Error(bb.Union):
 
         :rtype: bool
         """
-        return self._tag == "other"
+        return self._tag == 'other'
 
     def get_server_error(self):
         """
@@ -2115,13 +2039,9 @@ class MetadataExtractionApiV2Error(bb.Union):
         return self._value
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
-        super(MetadataExtractionApiV2Error, self)._process_custom_annotations(
-            annotation_type, field_path, processor
-        )
-
+        super(MetadataExtractionApiV2Error, self)._process_custom_annotations(annotation_type, field_path, processor)
 
 MetadataExtractionApiV2Error_validator = bv.Union(MetadataExtractionApiV2Error)
-
 
 class MetadataType(bb.Union):
     """
@@ -2133,7 +2053,7 @@ class MetadataType(bb.Union):
     corresponding ``get_*`` method.
     """
 
-    _catch_all = "other"
+    _catch_all = 'other'
     # Attribute is overwritten below the class definition
     metadata_type_unknown = None
     # Attribute is overwritten below the class definition
@@ -2153,7 +2073,7 @@ class MetadataType(bb.Union):
 
         :rtype: bool
         """
-        return self._tag == "metadata_type_unknown"
+        return self._tag == 'metadata_type_unknown'
 
     def is_metadata_type_exif(self):
         """
@@ -2161,7 +2081,7 @@ class MetadataType(bb.Union):
 
         :rtype: bool
         """
-        return self._tag == "metadata_type_exif"
+        return self._tag == 'metadata_type_exif'
 
     def is_metadata_type_media(self):
         """
@@ -2169,7 +2089,7 @@ class MetadataType(bb.Union):
 
         :rtype: bool
         """
-        return self._tag == "metadata_type_media"
+        return self._tag == 'metadata_type_media'
 
     def is_metadata_type_pdf(self):
         """
@@ -2177,7 +2097,7 @@ class MetadataType(bb.Union):
 
         :rtype: bool
         """
-        return self._tag == "metadata_type_pdf"
+        return self._tag == 'metadata_type_pdf'
 
     def is_metadata_type_office(self):
         """
@@ -2185,7 +2105,7 @@ class MetadataType(bb.Union):
 
         :rtype: bool
         """
-        return self._tag == "metadata_type_office"
+        return self._tag == 'metadata_type_office'
 
     def is_other(self):
         """
@@ -2193,16 +2113,12 @@ class MetadataType(bb.Union):
 
         :rtype: bool
         """
-        return self._tag == "other"
+        return self._tag == 'other'
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
-        super(MetadataType, self)._process_custom_annotations(
-            annotation_type, field_path, processor
-        )
-
+        super(MetadataType, self)._process_custom_annotations(annotation_type, field_path, processor)
 
 MetadataType_validator = bv.Union(MetadataType)
-
 
 class OfficeFileType(bb.Union):
     """
@@ -2213,7 +2129,7 @@ class OfficeFileType(bb.Union):
     corresponding ``get_*`` method.
     """
 
-    _catch_all = "other"
+    _catch_all = 'other'
     # Attribute is overwritten below the class definition
     office_filetype_unknown = None
     # Attribute is overwritten below the class definition
@@ -2231,7 +2147,7 @@ class OfficeFileType(bb.Union):
 
         :rtype: bool
         """
-        return self._tag == "office_filetype_unknown"
+        return self._tag == 'office_filetype_unknown'
 
     def is_office_filetype_word(self):
         """
@@ -2239,7 +2155,7 @@ class OfficeFileType(bb.Union):
 
         :rtype: bool
         """
-        return self._tag == "office_filetype_word"
+        return self._tag == 'office_filetype_word'
 
     def is_office_filetype_powerpoint(self):
         """
@@ -2247,7 +2163,7 @@ class OfficeFileType(bb.Union):
 
         :rtype: bool
         """
-        return self._tag == "office_filetype_powerpoint"
+        return self._tag == 'office_filetype_powerpoint'
 
     def is_office_filetype_excel(self):
         """
@@ -2255,7 +2171,7 @@ class OfficeFileType(bb.Union):
 
         :rtype: bool
         """
-        return self._tag == "office_filetype_excel"
+        return self._tag == 'office_filetype_excel'
 
     def is_other(self):
         """
@@ -2263,16 +2179,12 @@ class OfficeFileType(bb.Union):
 
         :rtype: bool
         """
-        return self._tag == "other"
+        return self._tag == 'other'
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
-        super(OfficeFileType, self)._process_custom_annotations(
-            annotation_type, field_path, processor
-        )
-
+        super(OfficeFileType, self)._process_custom_annotations(annotation_type, field_path, processor)
 
 OfficeFileType_validator = bv.Union(OfficeFileType)
-
 
 class TimestampLevel(bb.Union):
     """
@@ -2281,7 +2193,7 @@ class TimestampLevel(bb.Union):
     corresponding ``get_*`` method.
     """
 
-    _catch_all = "other"
+    _catch_all = 'other'
     # Attribute is overwritten below the class definition
     unknown = None
     # Attribute is overwritten below the class definition
@@ -2297,7 +2209,7 @@ class TimestampLevel(bb.Union):
 
         :rtype: bool
         """
-        return self._tag == "unknown"
+        return self._tag == 'unknown'
 
     def is_sentence(self):
         """
@@ -2305,7 +2217,7 @@ class TimestampLevel(bb.Union):
 
         :rtype: bool
         """
-        return self._tag == "sentence"
+        return self._tag == 'sentence'
 
     def is_word(self):
         """
@@ -2313,7 +2225,7 @@ class TimestampLevel(bb.Union):
 
         :rtype: bool
         """
-        return self._tag == "word"
+        return self._tag == 'word'
 
     def is_other(self):
         """
@@ -2321,16 +2233,12 @@ class TimestampLevel(bb.Union):
 
         :rtype: bool
         """
-        return self._tag == "other"
+        return self._tag == 'other'
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
-        super(TimestampLevel, self)._process_custom_annotations(
-            annotation_type, field_path, processor
-        )
-
+        super(TimestampLevel, self)._process_custom_annotations(annotation_type, field_path, processor)
 
 TimestampLevel_validator = bv.Union(TimestampLevel)
-
 
 class MetadataUnion(bb.Union):
     """
@@ -2341,7 +2249,7 @@ class MetadataUnion(bb.Union):
     corresponding ``get_*`` method.
     """
 
-    _catch_all = "other"
+    _catch_all = 'other'
     # Attribute is overwritten below the class definition
     other = None
 
@@ -2354,7 +2262,7 @@ class MetadataUnion(bb.Union):
         :param ApiExifMetadata val:
         :rtype: MetadataUnion
         """
-        return cls("exif", val)
+        return cls('exif', val)
 
     @classmethod
     def media(cls, val):
@@ -2365,7 +2273,7 @@ class MetadataUnion(bb.Union):
         :param ApiMediaMetadata val:
         :rtype: MetadataUnion
         """
-        return cls("media", val)
+        return cls('media', val)
 
     @classmethod
     def pdf(cls, val):
@@ -2376,7 +2284,7 @@ class MetadataUnion(bb.Union):
         :param ApiPdfMetadata val:
         :rtype: MetadataUnion
         """
-        return cls("pdf", val)
+        return cls('pdf', val)
 
     @classmethod
     def office(cls, val):
@@ -2387,7 +2295,7 @@ class MetadataUnion(bb.Union):
         :param ApiOfficeMetadata val:
         :rtype: MetadataUnion
         """
-        return cls("office", val)
+        return cls('office', val)
 
     def is_exif(self):
         """
@@ -2395,7 +2303,7 @@ class MetadataUnion(bb.Union):
 
         :rtype: bool
         """
-        return self._tag == "exif"
+        return self._tag == 'exif'
 
     def is_media(self):
         """
@@ -2403,7 +2311,7 @@ class MetadataUnion(bb.Union):
 
         :rtype: bool
         """
-        return self._tag == "media"
+        return self._tag == 'media'
 
     def is_pdf(self):
         """
@@ -2411,7 +2319,7 @@ class MetadataUnion(bb.Union):
 
         :rtype: bool
         """
-        return self._tag == "pdf"
+        return self._tag == 'pdf'
 
     def is_office(self):
         """
@@ -2419,7 +2327,7 @@ class MetadataUnion(bb.Union):
 
         :rtype: bool
         """
-        return self._tag == "office"
+        return self._tag == 'office'
 
     def is_other(self):
         """
@@ -2427,7 +2335,7 @@ class MetadataUnion(bb.Union):
 
         :rtype: bool
         """
-        return self._tag == "other"
+        return self._tag == 'other'
 
     def get_exif(self):
         """
@@ -2470,10 +2378,7 @@ class MetadataUnion(bb.Union):
         return self._value
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
-        super(MetadataUnion, self)._process_custom_annotations(
-            annotation_type, field_path, processor
-        )
-
+        super(MetadataUnion, self)._process_custom_annotations(annotation_type, field_path, processor)
 
 MetadataUnion_validator = bv.Union(MetadataUnion)
 
@@ -2482,21 +2387,19 @@ ApiExifGpsMetadata.longitude.validator = bv.Float32()
 ApiExifGpsMetadata.altitude.validator = bv.String()
 ApiExifGpsMetadata.timestamp.validator = bv.String()
 ApiExifGpsMetadata.datestamp.validator = bv.String()
-ApiExifGpsMetadata._all_field_names_ = set(
-    [
-        "latitude",
-        "longitude",
-        "altitude",
-        "timestamp",
-        "datestamp",
-    ]
-)
+ApiExifGpsMetadata._all_field_names_ = set([
+    'latitude',
+    'longitude',
+    'altitude',
+    'timestamp',
+    'datestamp',
+])
 ApiExifGpsMetadata._all_fields_ = [
-    ("latitude", ApiExifGpsMetadata.latitude.validator),
-    ("longitude", ApiExifGpsMetadata.longitude.validator),
-    ("altitude", ApiExifGpsMetadata.altitude.validator),
-    ("timestamp", ApiExifGpsMetadata.timestamp.validator),
-    ("datestamp", ApiExifGpsMetadata.datestamp.validator),
+    ('latitude', ApiExifGpsMetadata.latitude.validator),
+    ('longitude', ApiExifGpsMetadata.longitude.validator),
+    ('altitude', ApiExifGpsMetadata.altitude.validator),
+    ('timestamp', ApiExifGpsMetadata.timestamp.validator),
+    ('datestamp', ApiExifGpsMetadata.datestamp.validator),
 ]
 
 ApiExifMetadata.image_width.validator = bv.UInt32()
@@ -2515,62 +2418,58 @@ ApiExifMetadata.megapixels.validator = bv.Float64()
 ApiExifMetadata.artist.validator = bv.String()
 ApiExifMetadata.copyright.validator = bv.String()
 ApiExifMetadata.gps_metadata.validator = bv.Nullable(ApiExifGpsMetadata_validator)
-ApiExifMetadata._all_field_names_ = set(
-    [
-        "image_width",
-        "image_height",
-        "camera_make",
-        "camera_model",
-        "lens_model",
-        "date_time_original",
-        "offset_time_original",
-        "orientation",
-        "exposure_time",
-        "aperture_value",
-        "iso_speed",
-        "focal_length",
-        "megapixels",
-        "artist",
-        "copyright",
-        "gps_metadata",
-    ]
-)
+ApiExifMetadata._all_field_names_ = set([
+    'image_width',
+    'image_height',
+    'camera_make',
+    'camera_model',
+    'lens_model',
+    'date_time_original',
+    'offset_time_original',
+    'orientation',
+    'exposure_time',
+    'aperture_value',
+    'iso_speed',
+    'focal_length',
+    'megapixels',
+    'artist',
+    'copyright',
+    'gps_metadata',
+])
 ApiExifMetadata._all_fields_ = [
-    ("image_width", ApiExifMetadata.image_width.validator),
-    ("image_height", ApiExifMetadata.image_height.validator),
-    ("camera_make", ApiExifMetadata.camera_make.validator),
-    ("camera_model", ApiExifMetadata.camera_model.validator),
-    ("lens_model", ApiExifMetadata.lens_model.validator),
-    ("date_time_original", ApiExifMetadata.date_time_original.validator),
-    ("offset_time_original", ApiExifMetadata.offset_time_original.validator),
-    ("orientation", ApiExifMetadata.orientation.validator),
-    ("exposure_time", ApiExifMetadata.exposure_time.validator),
-    ("aperture_value", ApiExifMetadata.aperture_value.validator),
-    ("iso_speed", ApiExifMetadata.iso_speed.validator),
-    ("focal_length", ApiExifMetadata.focal_length.validator),
-    ("megapixels", ApiExifMetadata.megapixels.validator),
-    ("artist", ApiExifMetadata.artist.validator),
-    ("copyright", ApiExifMetadata.copyright.validator),
-    ("gps_metadata", ApiExifMetadata.gps_metadata.validator),
+    ('image_width', ApiExifMetadata.image_width.validator),
+    ('image_height', ApiExifMetadata.image_height.validator),
+    ('camera_make', ApiExifMetadata.camera_make.validator),
+    ('camera_model', ApiExifMetadata.camera_model.validator),
+    ('lens_model', ApiExifMetadata.lens_model.validator),
+    ('date_time_original', ApiExifMetadata.date_time_original.validator),
+    ('offset_time_original', ApiExifMetadata.offset_time_original.validator),
+    ('orientation', ApiExifMetadata.orientation.validator),
+    ('exposure_time', ApiExifMetadata.exposure_time.validator),
+    ('aperture_value', ApiExifMetadata.aperture_value.validator),
+    ('iso_speed', ApiExifMetadata.iso_speed.validator),
+    ('focal_length', ApiExifMetadata.focal_length.validator),
+    ('megapixels', ApiExifMetadata.megapixels.validator),
+    ('artist', ApiExifMetadata.artist.validator),
+    ('copyright', ApiExifMetadata.copyright.validator),
+    ('gps_metadata', ApiExifMetadata.gps_metadata.validator),
 ]
 
 ApiMediaMetadata.bitrate_bps.validator = bv.UInt64()
 ApiMediaMetadata.duration_s.validator = bv.Float64()
 ApiMediaMetadata.creation_time.validator = bv.String()
 ApiMediaMetadata.streams.validator = bv.Nullable(bv.List(ApiMediaStream_validator))
-ApiMediaMetadata._all_field_names_ = set(
-    [
-        "bitrate_bps",
-        "duration_s",
-        "creation_time",
-        "streams",
-    ]
-)
+ApiMediaMetadata._all_field_names_ = set([
+    'bitrate_bps',
+    'duration_s',
+    'creation_time',
+    'streams',
+])
 ApiMediaMetadata._all_fields_ = [
-    ("bitrate_bps", ApiMediaMetadata.bitrate_bps.validator),
-    ("duration_s", ApiMediaMetadata.duration_s.validator),
-    ("creation_time", ApiMediaMetadata.creation_time.validator),
-    ("streams", ApiMediaMetadata.streams.validator),
+    ('bitrate_bps', ApiMediaMetadata.bitrate_bps.validator),
+    ('duration_s', ApiMediaMetadata.duration_s.validator),
+    ('creation_time', ApiMediaMetadata.creation_time.validator),
+    ('streams', ApiMediaMetadata.streams.validator),
 ]
 
 ApiMediaStream.index.validator = bv.UInt32()
@@ -2587,39 +2486,37 @@ ApiMediaStream.channels.validator = bv.UInt32()
 ApiMediaStream.channel_layout.validator = bv.String()
 ApiMediaStream.sample_rate_s.validator = bv.UInt64()
 ApiMediaStream.language_iso_639.validator = bv.String()
-ApiMediaStream._all_field_names_ = set(
-    [
-        "index",
-        "codec_type",
-        "codec_name",
-        "bitrate_bps",
-        "duration_s",
-        "width",
-        "height",
-        "frames_per_second",
-        "rotation",
-        "display_aspect_ratio",
-        "channels",
-        "channel_layout",
-        "sample_rate_s",
-        "language_iso_639",
-    ]
-)
+ApiMediaStream._all_field_names_ = set([
+    'index',
+    'codec_type',
+    'codec_name',
+    'bitrate_bps',
+    'duration_s',
+    'width',
+    'height',
+    'frames_per_second',
+    'rotation',
+    'display_aspect_ratio',
+    'channels',
+    'channel_layout',
+    'sample_rate_s',
+    'language_iso_639',
+])
 ApiMediaStream._all_fields_ = [
-    ("index", ApiMediaStream.index.validator),
-    ("codec_type", ApiMediaStream.codec_type.validator),
-    ("codec_name", ApiMediaStream.codec_name.validator),
-    ("bitrate_bps", ApiMediaStream.bitrate_bps.validator),
-    ("duration_s", ApiMediaStream.duration_s.validator),
-    ("width", ApiMediaStream.width.validator),
-    ("height", ApiMediaStream.height.validator),
-    ("frames_per_second", ApiMediaStream.frames_per_second.validator),
-    ("rotation", ApiMediaStream.rotation.validator),
-    ("display_aspect_ratio", ApiMediaStream.display_aspect_ratio.validator),
-    ("channels", ApiMediaStream.channels.validator),
-    ("channel_layout", ApiMediaStream.channel_layout.validator),
-    ("sample_rate_s", ApiMediaStream.sample_rate_s.validator),
-    ("language_iso_639", ApiMediaStream.language_iso_639.validator),
+    ('index', ApiMediaStream.index.validator),
+    ('codec_type', ApiMediaStream.codec_type.validator),
+    ('codec_name', ApiMediaStream.codec_name.validator),
+    ('bitrate_bps', ApiMediaStream.bitrate_bps.validator),
+    ('duration_s', ApiMediaStream.duration_s.validator),
+    ('width', ApiMediaStream.width.validator),
+    ('height', ApiMediaStream.height.validator),
+    ('frames_per_second', ApiMediaStream.frames_per_second.validator),
+    ('rotation', ApiMediaStream.rotation.validator),
+    ('display_aspect_ratio', ApiMediaStream.display_aspect_ratio.validator),
+    ('channels', ApiMediaStream.channels.validator),
+    ('channel_layout', ApiMediaStream.channel_layout.validator),
+    ('sample_rate_s', ApiMediaStream.sample_rate_s.validator),
+    ('language_iso_639', ApiMediaStream.language_iso_639.validator),
 ]
 
 ApiOfficeMetadata.file_type.validator = OfficeFileType_validator
@@ -2634,80 +2531,72 @@ ApiOfficeMetadata.pages.validator = bv.UInt32()
 ApiOfficeMetadata.words.validator = bv.UInt32()
 ApiOfficeMetadata.slides.validator = bv.UInt32()
 ApiOfficeMetadata.revision_number.validator = bv.String()
-ApiOfficeMetadata._all_field_names_ = set(
-    [
-        "file_type",
-        "creator",
-        "company",
-        "title",
-        "subject",
-        "keywords",
-        "description",
-        "total_edit_time_minutes",
-        "pages",
-        "words",
-        "slides",
-        "revision_number",
-    ]
-)
+ApiOfficeMetadata._all_field_names_ = set([
+    'file_type',
+    'creator',
+    'company',
+    'title',
+    'subject',
+    'keywords',
+    'description',
+    'total_edit_time_minutes',
+    'pages',
+    'words',
+    'slides',
+    'revision_number',
+])
 ApiOfficeMetadata._all_fields_ = [
-    ("file_type", ApiOfficeMetadata.file_type.validator),
-    ("creator", ApiOfficeMetadata.creator.validator),
-    ("company", ApiOfficeMetadata.company.validator),
-    ("title", ApiOfficeMetadata.title.validator),
-    ("subject", ApiOfficeMetadata.subject.validator),
-    ("keywords", ApiOfficeMetadata.keywords.validator),
-    ("description", ApiOfficeMetadata.description.validator),
-    ("total_edit_time_minutes", ApiOfficeMetadata.total_edit_time_minutes.validator),
-    ("pages", ApiOfficeMetadata.pages.validator),
-    ("words", ApiOfficeMetadata.words.validator),
-    ("slides", ApiOfficeMetadata.slides.validator),
-    ("revision_number", ApiOfficeMetadata.revision_number.validator),
+    ('file_type', ApiOfficeMetadata.file_type.validator),
+    ('creator', ApiOfficeMetadata.creator.validator),
+    ('company', ApiOfficeMetadata.company.validator),
+    ('title', ApiOfficeMetadata.title.validator),
+    ('subject', ApiOfficeMetadata.subject.validator),
+    ('keywords', ApiOfficeMetadata.keywords.validator),
+    ('description', ApiOfficeMetadata.description.validator),
+    ('total_edit_time_minutes', ApiOfficeMetadata.total_edit_time_minutes.validator),
+    ('pages', ApiOfficeMetadata.pages.validator),
+    ('words', ApiOfficeMetadata.words.validator),
+    ('slides', ApiOfficeMetadata.slides.validator),
+    ('revision_number', ApiOfficeMetadata.revision_number.validator),
 ]
 
 ApiPdfMetadata.pages.validator = bv.UInt32()
 ApiPdfMetadata.width.validator = bv.UInt32()
 ApiPdfMetadata.height.validator = bv.UInt32()
-ApiPdfMetadata._all_field_names_ = set(
-    [
-        "pages",
-        "width",
-        "height",
-    ]
-)
+ApiPdfMetadata._all_field_names_ = set([
+    'pages',
+    'width',
+    'height',
+])
 ApiPdfMetadata._all_fields_ = [
-    ("pages", ApiPdfMetadata.pages.validator),
-    ("width", ApiPdfMetadata.width.validator),
-    ("height", ApiPdfMetadata.height.validator),
+    ('pages', ApiPdfMetadata.pages.validator),
+    ('width', ApiPdfMetadata.width.validator),
+    ('height', ApiPdfMetadata.height.validator),
 ]
 
 ApiStructuredTranscript.segments.validator = bv.Nullable(bv.List(ApiTranscriptSegment_validator))
 ApiStructuredTranscript.transcript_locale.validator = bv.String()
-ApiStructuredTranscript._all_field_names_ = set(
-    [
-        "segments",
-        "transcript_locale",
-    ]
-)
+ApiStructuredTranscript._all_field_names_ = set([
+    'segments',
+    'transcript_locale',
+])
 ApiStructuredTranscript._all_fields_ = [
-    ("segments", ApiStructuredTranscript.segments.validator),
-    ("transcript_locale", ApiStructuredTranscript.transcript_locale.validator),
+    ('segments', ApiStructuredTranscript.segments.validator),
+    ('transcript_locale', ApiStructuredTranscript.transcript_locale.validator),
 ]
 
 ApiTranscriptSegment.text.validator = bv.String()
 ApiTranscriptSegment.start_time.validator = bv.Float64()
 ApiTranscriptSegment.end_time.validator = bv.Float64()
-ApiTranscriptSegment._all_field_names_ = set(
-    [
-        "text",
-        "start_time",
-        "end_time",
-    ]
-)
+ApiTranscriptSegment._all_field_names_ = set([
+    'text',
+    'start_time',
+    'end_time',
+])
 ApiTranscriptSegment._all_fields_ = [
-    ("text", ApiTranscriptSegment.text.validator),
-    ("start_time", ApiTranscriptSegment.start_time.validator),
-    ("end_time", ApiTranscriptSegment.end_time.validator),
+    ('text', ApiTranscriptSegment.text.validator),
+    ('start_time', ApiTranscriptSegment.start_time.validator),
+    ('end_time', ApiTranscriptSegment.end_time.validator),
 ]
 
 ContentApiV2Error._server_error_validator = bv.String()
@@ -2721,27 +2610,25 @@ ContentApiV2Error._not_found_error_validator = bv.Void()
 ContentApiV2Error._is_a_folder_error_validator = bv.Void()
 ContentApiV2Error._other_validator = bv.Void()
 ContentApiV2Error._tagmap = {
-    "server_error": ContentApiV2Error._server_error_validator,
-    "user_error": ContentApiV2Error._user_error_validator,
-    "media_duration_error": ContentApiV2Error._media_duration_error_validator,
-    "no_audio_error": ContentApiV2Error._no_audio_error_validator,
-    "link_download_disabled_error": ContentApiV2Error._link_download_disabled_error_validator,
-    "shared_link_password_protected": ContentApiV2Error._shared_link_password_protected_validator,
-    "limit_exceeded_error": ContentApiV2Error._limit_exceeded_error_validator,
-    "not_found_error": ContentApiV2Error._not_found_error_validator,
-    "is_a_folder_error": ContentApiV2Error._is_a_folder_error_validator,
-    "other": ContentApiV2Error._other_validator,
+    'server_error': ContentApiV2Error._server_error_validator,
+    'user_error': ContentApiV2Error._user_error_validator,
+    'media_duration_error': ContentApiV2Error._media_duration_error_validator,
+    'no_audio_error': ContentApiV2Error._no_audio_error_validator,
+    'link_download_disabled_error': ContentApiV2Error._link_download_disabled_error_validator,
+    'shared_link_password_protected': ContentApiV2Error._shared_link_password_protected_validator,
+    'limit_exceeded_error': ContentApiV2Error._limit_exceeded_error_validator,
+    'not_found_error': ContentApiV2Error._not_found_error_validator,
+    'is_a_folder_error': ContentApiV2Error._is_a_folder_error_validator,
+    'other': ContentApiV2Error._other_validator,
 }
 
-ContentApiV2Error.no_audio_error = ContentApiV2Error("no_audio_error")
-ContentApiV2Error.link_download_disabled_error = ContentApiV2Error("link_download_disabled_error")
-ContentApiV2Error.shared_link_password_protected = ContentApiV2Error(
-    "shared_link_password_protected"
-)
-ContentApiV2Error.limit_exceeded_error = ContentApiV2Error("limit_exceeded_error")
-ContentApiV2Error.not_found_error = ContentApiV2Error("not_found_error")
-ContentApiV2Error.is_a_folder_error = ContentApiV2Error("is_a_folder_error")
-ContentApiV2Error.other = ContentApiV2Error("other")
+ContentApiV2Error.no_audio_error = ContentApiV2Error('no_audio_error')
+ContentApiV2Error.link_download_disabled_error = ContentApiV2Error('link_download_disabled_error')
+ContentApiV2Error.shared_link_password_protected = ContentApiV2Error('shared_link_password_protected')
+ContentApiV2Error.limit_exceeded_error = ContentApiV2Error('limit_exceeded_error')
+ContentApiV2Error.not_found_error = ContentApiV2Error('not_found_error')
+ContentApiV2Error.is_a_folder_error = ContentApiV2Error('is_a_folder_error')
+ContentApiV2Error.other = ContentApiV2Error('other')
 
 ErrorCode._unknown_error_validator = bv.Void()
 ErrorCode._bad_request_validator = bv.Void()
@@ -2751,50 +2638,48 @@ ErrorCode._ratelimit_error_validator = bv.Void()
 ErrorCode._unavailable_validator = bv.Void()
 ErrorCode._other_validator = bv.Void()
 ErrorCode._tagmap = {
-    "unknown_error": ErrorCode._unknown_error_validator,
-    "bad_request": ErrorCode._bad_request_validator,
-    "api_error": ErrorCode._api_error_validator,
-    "access_error": ErrorCode._access_error_validator,
-    "ratelimit_error": ErrorCode._ratelimit_error_validator,
-    "unavailable": ErrorCode._unavailable_validator,
-    "other": ErrorCode._other_validator,
+    'unknown_error': ErrorCode._unknown_error_validator,
+    'bad_request': ErrorCode._bad_request_validator,
+    'api_error': ErrorCode._api_error_validator,
+    'access_error': ErrorCode._access_error_validator,
+    'ratelimit_error': ErrorCode._ratelimit_error_validator,
+    'unavailable': ErrorCode._unavailable_validator,
+    'other': ErrorCode._other_validator,
 }
 
-ErrorCode.unknown_error = ErrorCode("unknown_error")
-ErrorCode.bad_request = ErrorCode("bad_request")
-ErrorCode.api_error = ErrorCode("api_error")
-ErrorCode.access_error = ErrorCode("access_error")
-ErrorCode.ratelimit_error = ErrorCode("ratelimit_error")
-ErrorCode.unavailable = ErrorCode("unavailable")
-ErrorCode.other = ErrorCode("other")
+ErrorCode.unknown_error = ErrorCode('unknown_error')
+ErrorCode.bad_request = ErrorCode('bad_request')
+ErrorCode.api_error = ErrorCode('api_error')
+ErrorCode.access_error = ErrorCode('access_error')
+ErrorCode.ratelimit_error = ErrorCode('ratelimit_error')
+ErrorCode.unavailable = ErrorCode('unavailable')
+ErrorCode.other = ErrorCode('other')
 
 FileIdOrUrl._file_id_validator = bv.String()
 FileIdOrUrl._url_validator = bv.String()
 FileIdOrUrl._path_validator = bv.String()
 FileIdOrUrl._other_validator = bv.Void()
 FileIdOrUrl._tagmap = {
-    "file_id": FileIdOrUrl._file_id_validator,
-    "url": FileIdOrUrl._url_validator,
-    "path": FileIdOrUrl._path_validator,
-    "other": FileIdOrUrl._other_validator,
+    'file_id': FileIdOrUrl._file_id_validator,
+    'url': FileIdOrUrl._url_validator,
+    'path': FileIdOrUrl._path_validator,
+    'other': FileIdOrUrl._other_validator,
 }
 
-FileIdOrUrl.other = FileIdOrUrl("other")
+FileIdOrUrl.other = FileIdOrUrl('other')
 
 GetMarkdownArgs.file_id_or_url.validator = bv.Nullable(FileIdOrUrl_validator)
 GetMarkdownArgs.enable_ocr.validator = bv.Boolean()
 GetMarkdownArgs.embed_images.validator = bv.Boolean()
-GetMarkdownArgs._all_field_names_ = set(
-    [
-        "file_id_or_url",
-        "enable_ocr",
-        "embed_images",
-    ]
-)
+GetMarkdownArgs._all_field_names_ = set([
+    'file_id_or_url',
+    'enable_ocr',
+    'embed_images',
+])
 GetMarkdownArgs._all_fields_ = [
-    ("file_id_or_url", GetMarkdownArgs.file_id_or_url.validator),
-    ("enable_ocr", GetMarkdownArgs.enable_ocr.validator),
-    ("embed_images", GetMarkdownArgs.embed_images.validator),
+    ('file_id_or_url', GetMarkdownArgs.file_id_or_url.validator),
+    ('enable_ocr', GetMarkdownArgs.enable_ocr.validator),
+    ('embed_images', GetMarkdownArgs.embed_images.validator),
 ]
 
 GetMarkdownAsyncCheckResult._in_progress_validator = bv.Void()
@@ -2802,93 +2687,85 @@ GetMarkdownAsyncCheckResult._complete_validator = GetMarkdownResult_validator
 GetMarkdownAsyncCheckResult._failed_validator = GetMarkdownAsyncError_validator
 GetMarkdownAsyncCheckResult._other_validator = bv.Void()
 GetMarkdownAsyncCheckResult._tagmap = {
-    "in_progress": GetMarkdownAsyncCheckResult._in_progress_validator,
-    "complete": GetMarkdownAsyncCheckResult._complete_validator,
-    "failed": GetMarkdownAsyncCheckResult._failed_validator,
-    "other": GetMarkdownAsyncCheckResult._other_validator,
+    'in_progress': GetMarkdownAsyncCheckResult._in_progress_validator,
+    'complete': GetMarkdownAsyncCheckResult._complete_validator,
+    'failed': GetMarkdownAsyncCheckResult._failed_validator,
+    'other': GetMarkdownAsyncCheckResult._other_validator,
 }
 
-GetMarkdownAsyncCheckResult.in_progress = GetMarkdownAsyncCheckResult("in_progress")
-GetMarkdownAsyncCheckResult.other = GetMarkdownAsyncCheckResult("other")
+GetMarkdownAsyncCheckResult.in_progress = GetMarkdownAsyncCheckResult('in_progress')
+GetMarkdownAsyncCheckResult.other = GetMarkdownAsyncCheckResult('other')
 
 GetMarkdownAsyncError.error_code.validator = ErrorCode_validator
 GetMarkdownAsyncError.error_details.validator = bv.Nullable(MarkdownConversionApiV2Error_validator)
-GetMarkdownAsyncError._all_field_names_ = set(
-    [
-        "error_code",
-        "error_details",
-    ]
-)
+GetMarkdownAsyncError._all_field_names_ = set([
+    'error_code',
+    'error_details',
+])
 GetMarkdownAsyncError._all_fields_ = [
-    ("error_code", GetMarkdownAsyncError.error_code.validator),
-    ("error_details", GetMarkdownAsyncError.error_details.validator),
+    ('error_code', GetMarkdownAsyncError.error_code.validator),
+    ('error_details', GetMarkdownAsyncError.error_details.validator),
 ]
 
 GetMarkdownResult.markdown.validator = bv.String()
-GetMarkdownResult._all_field_names_ = set(["markdown"])
-GetMarkdownResult._all_fields_ = [("markdown", GetMarkdownResult.markdown.validator)]
+GetMarkdownResult._all_field_names_ = set(['markdown'])
+GetMarkdownResult._all_fields_ = [('markdown', GetMarkdownResult.markdown.validator)]
 
 GetMetadataArgs.file_id_or_url.validator = bv.Nullable(FileIdOrUrl_validator)
-GetMetadataArgs._all_field_names_ = set(["file_id_or_url"])
-GetMetadataArgs._all_fields_ = [("file_id_or_url", GetMetadataArgs.file_id_or_url.validator)]
+GetMetadataArgs._all_field_names_ = set(['file_id_or_url'])
+GetMetadataArgs._all_fields_ = [('file_id_or_url', GetMetadataArgs.file_id_or_url.validator)]
 
 GetMetadataAsyncCheckResult._in_progress_validator = bv.Void()
 GetMetadataAsyncCheckResult._complete_validator = GetMetadataResult_validator
 GetMetadataAsyncCheckResult._failed_validator = GetMetadataAsyncError_validator
 GetMetadataAsyncCheckResult._other_validator = bv.Void()
 GetMetadataAsyncCheckResult._tagmap = {
-    "in_progress": GetMetadataAsyncCheckResult._in_progress_validator,
-    "complete": GetMetadataAsyncCheckResult._complete_validator,
-    "failed": GetMetadataAsyncCheckResult._failed_validator,
-    "other": GetMetadataAsyncCheckResult._other_validator,
+    'in_progress': GetMetadataAsyncCheckResult._in_progress_validator,
+    'complete': GetMetadataAsyncCheckResult._complete_validator,
+    'failed': GetMetadataAsyncCheckResult._failed_validator,
+    'other': GetMetadataAsyncCheckResult._other_validator,
 }
 
-GetMetadataAsyncCheckResult.in_progress = GetMetadataAsyncCheckResult("in_progress")
-GetMetadataAsyncCheckResult.other = GetMetadataAsyncCheckResult("other")
+GetMetadataAsyncCheckResult.in_progress = GetMetadataAsyncCheckResult('in_progress')
+GetMetadataAsyncCheckResult.other = GetMetadataAsyncCheckResult('other')
 
 GetMetadataAsyncError.error_code.validator = ErrorCode_validator
 GetMetadataAsyncError.error_details.validator = bv.Nullable(MetadataExtractionApiV2Error_validator)
-GetMetadataAsyncError._all_field_names_ = set(
-    [
-        "error_code",
-        "error_details",
-    ]
-)
+GetMetadataAsyncError._all_field_names_ = set([
+    'error_code',
+    'error_details',
+])
 GetMetadataAsyncError._all_fields_ = [
-    ("error_code", GetMetadataAsyncError.error_code.validator),
-    ("error_details", GetMetadataAsyncError.error_details.validator),
+    ('error_code', GetMetadataAsyncError.error_code.validator),
+    ('error_details', GetMetadataAsyncError.error_details.validator),
 ]
 
 GetMetadataResult.metadata_type.validator = MetadataType_validator
 GetMetadataResult.metadata.validator = bv.Nullable(MetadataUnion_validator)
-GetMetadataResult._all_field_names_ = set(
-    [
-        "metadata_type",
-        "metadata",
-    ]
-)
+GetMetadataResult._all_field_names_ = set([
+    'metadata_type',
+    'metadata',
+])
 GetMetadataResult._all_fields_ = [
-    ("metadata_type", GetMetadataResult.metadata_type.validator),
-    ("metadata", GetMetadataResult.metadata.validator),
+    ('metadata_type', GetMetadataResult.metadata_type.validator),
+    ('metadata', GetMetadataResult.metadata.validator),
 ]
 
 GetTranscriptArgs.file_id_or_url.validator = bv.Nullable(FileIdOrUrl_validator)
 GetTranscriptArgs.timestamp_level.validator = TimestampLevel_validator
 GetTranscriptArgs.included_special_words.validator = bv.String()
 GetTranscriptArgs.audio_language.validator = bv.String()
-GetTranscriptArgs._all_field_names_ = set(
-    [
-        "file_id_or_url",
-        "timestamp_level",
-        "included_special_words",
-        "audio_language",
-    ]
-)
+GetTranscriptArgs._all_field_names_ = set([
+    'file_id_or_url',
+    'timestamp_level',
+    'included_special_words',
+    'audio_language',
+])
 GetTranscriptArgs._all_fields_ = [
-    ("file_id_or_url", GetTranscriptArgs.file_id_or_url.validator),
-    ("timestamp_level", GetTranscriptArgs.timestamp_level.validator),
-    ("included_special_words", GetTranscriptArgs.included_special_words.validator),
-    ("audio_language", GetTranscriptArgs.audio_language.validator),
+    ('file_id_or_url', GetTranscriptArgs.file_id_or_url.validator),
+    ('timestamp_level', GetTranscriptArgs.timestamp_level.validator),
+    ('included_special_words', GetTranscriptArgs.included_special_words.validator),
+    ('audio_language', GetTranscriptArgs.audio_language.validator),
 ]
 
 GetTranscriptAsyncCheckResult._in_progress_validator = bv.Void()
@@ -2896,33 +2773,29 @@ GetTranscriptAsyncCheckResult._complete_validator = GetTranscriptResult_validato
 GetTranscriptAsyncCheckResult._failed_validator = GetTranscriptAsyncError_validator
 GetTranscriptAsyncCheckResult._other_validator = bv.Void()
 GetTranscriptAsyncCheckResult._tagmap = {
-    "in_progress": GetTranscriptAsyncCheckResult._in_progress_validator,
-    "complete": GetTranscriptAsyncCheckResult._complete_validator,
-    "failed": GetTranscriptAsyncCheckResult._failed_validator,
-    "other": GetTranscriptAsyncCheckResult._other_validator,
+    'in_progress': GetTranscriptAsyncCheckResult._in_progress_validator,
+    'complete': GetTranscriptAsyncCheckResult._complete_validator,
+    'failed': GetTranscriptAsyncCheckResult._failed_validator,
+    'other': GetTranscriptAsyncCheckResult._other_validator,
 }
 
-GetTranscriptAsyncCheckResult.in_progress = GetTranscriptAsyncCheckResult("in_progress")
-GetTranscriptAsyncCheckResult.other = GetTranscriptAsyncCheckResult("other")
+GetTranscriptAsyncCheckResult.in_progress = GetTranscriptAsyncCheckResult('in_progress')
+GetTranscriptAsyncCheckResult.other = GetTranscriptAsyncCheckResult('other')
 
 GetTranscriptAsyncError.error_code.validator = ErrorCode_validator
 GetTranscriptAsyncError.error_details.validator = bv.Nullable(ContentApiV2Error_validator)
-GetTranscriptAsyncError._all_field_names_ = set(
-    [
-        "error_code",
-        "error_details",
-    ]
-)
+GetTranscriptAsyncError._all_field_names_ = set([
+    'error_code',
+    'error_details',
+])
 GetTranscriptAsyncError._all_fields_ = [
-    ("error_code", GetTranscriptAsyncError.error_code.validator),
-    ("error_details", GetTranscriptAsyncError.error_details.validator),
+    ('error_code', GetTranscriptAsyncError.error_code.validator),
+    ('error_details', GetTranscriptAsyncError.error_details.validator),
 ]
 
 GetTranscriptResult.structured_transcript.validator = bv.Nullable(ApiStructuredTranscript_validator)
-GetTranscriptResult._all_field_names_ = set(["structured_transcript"])
-GetTranscriptResult._all_fields_ = [
-    ("structured_transcript", GetTranscriptResult.structured_transcript.validator)
-]
+GetTranscriptResult._all_field_names_ = set(['structured_transcript'])
+GetTranscriptResult._all_fields_ = [('structured_transcript', GetTranscriptResult.structured_transcript.validator)]
 
 MarkdownConversionApiV2Error._server_error_validator = bv.String()
 MarkdownConversionApiV2Error._user_error_validator = bv.String()
@@ -2935,40 +2808,30 @@ MarkdownConversionApiV2Error._not_found_error_validator = bv.Void()
 MarkdownConversionApiV2Error._is_a_folder_error_validator = bv.Void()
 MarkdownConversionApiV2Error._other_validator = bv.Void()
 MarkdownConversionApiV2Error._tagmap = {
-    "server_error": MarkdownConversionApiV2Error._server_error_validator,
-    "user_error": MarkdownConversionApiV2Error._user_error_validator,
-    "unsupported_format_error": MarkdownConversionApiV2Error._unsupported_format_error_validator,
-    "link_download_disabled_error": MarkdownConversionApiV2Error._link_download_disabled_error_validator,
-    "shared_link_password_protected": MarkdownConversionApiV2Error._shared_link_password_protected_validator,
-    "limit_exceeded_error": MarkdownConversionApiV2Error._limit_exceeded_error_validator,
-    "conversion_failure_error": MarkdownConversionApiV2Error._conversion_failure_error_validator,
-    "not_found_error": MarkdownConversionApiV2Error._not_found_error_validator,
-    "is_a_folder_error": MarkdownConversionApiV2Error._is_a_folder_error_validator,
-    "other": MarkdownConversionApiV2Error._other_validator,
+    'server_error': MarkdownConversionApiV2Error._server_error_validator,
+    'user_error': MarkdownConversionApiV2Error._user_error_validator,
+    'unsupported_format_error': MarkdownConversionApiV2Error._unsupported_format_error_validator,
+    'link_download_disabled_error': MarkdownConversionApiV2Error._link_download_disabled_error_validator,
+    'shared_link_password_protected': MarkdownConversionApiV2Error._shared_link_password_protected_validator,
+    'limit_exceeded_error': MarkdownConversionApiV2Error._limit_exceeded_error_validator,
+    'conversion_failure_error': MarkdownConversionApiV2Error._conversion_failure_error_validator,
+    'not_found_error': MarkdownConversionApiV2Error._not_found_error_validator,
+    'is_a_folder_error': MarkdownConversionApiV2Error._is_a_folder_error_validator,
+    'other': MarkdownConversionApiV2Error._other_validator,
 }
 
-MarkdownConversionApiV2Error.unsupported_format_error = MarkdownConversionApiV2Error(
-    "unsupported_format_error"
-)
-MarkdownConversionApiV2Error.link_download_disabled_error = MarkdownConversionApiV2Error(
-    "link_download_disabled_error"
-)
-MarkdownConversionApiV2Error.shared_link_password_protected = MarkdownConversionApiV2Error(
-    "shared_link_password_protected"
-)
-MarkdownConversionApiV2Error.limit_exceeded_error = MarkdownConversionApiV2Error(
-    "limit_exceeded_error"
-)
-MarkdownConversionApiV2Error.conversion_failure_error = MarkdownConversionApiV2Error(
-    "conversion_failure_error"
-)
-MarkdownConversionApiV2Error.not_found_error = MarkdownConversionApiV2Error("not_found_error")
-MarkdownConversionApiV2Error.is_a_folder_error = MarkdownConversionApiV2Error("is_a_folder_error")
-MarkdownConversionApiV2Error.other = MarkdownConversionApiV2Error("other")
+MarkdownConversionApiV2Error.unsupported_format_error = MarkdownConversionApiV2Error('unsupported_format_error')
+MarkdownConversionApiV2Error.link_download_disabled_error = MarkdownConversionApiV2Error('link_download_disabled_error')
+MarkdownConversionApiV2Error.shared_link_password_protected = MarkdownConversionApiV2Error('shared_link_password_protected')
+MarkdownConversionApiV2Error.limit_exceeded_error = MarkdownConversionApiV2Error('limit_exceeded_error')
+MarkdownConversionApiV2Error.conversion_failure_error = MarkdownConversionApiV2Error('conversion_failure_error')
+MarkdownConversionApiV2Error.not_found_error = MarkdownConversionApiV2Error('not_found_error')
+MarkdownConversionApiV2Error.is_a_folder_error = MarkdownConversionApiV2Error('is_a_folder_error')
+MarkdownConversionApiV2Error.other = MarkdownConversionApiV2Error('other')
 
 MediaDurationError.limit.validator = bv.Int32()
-MediaDurationError._all_field_names_ = set(["limit"])
-MediaDurationError._all_fields_ = [("limit", MediaDurationError.limit.validator)]
+MediaDurationError._all_field_names_ = set(['limit'])
+MediaDurationError._all_fields_ = [('limit', MediaDurationError.limit.validator)]
 
 MetadataExtractionApiV2Error._server_error_validator = bv.String()
 MetadataExtractionApiV2Error._user_error_validator = bv.String()
@@ -2981,36 +2844,26 @@ MetadataExtractionApiV2Error._not_found_error_validator = bv.Void()
 MetadataExtractionApiV2Error._is_a_folder_error_validator = bv.Void()
 MetadataExtractionApiV2Error._other_validator = bv.Void()
 MetadataExtractionApiV2Error._tagmap = {
-    "server_error": MetadataExtractionApiV2Error._server_error_validator,
-    "user_error": MetadataExtractionApiV2Error._user_error_validator,
-    "unsupported_format_error": MetadataExtractionApiV2Error._unsupported_format_error_validator,
-    "link_download_disabled_error": MetadataExtractionApiV2Error._link_download_disabled_error_validator,
-    "shared_link_password_protected": MetadataExtractionApiV2Error._shared_link_password_protected_validator,
-    "limit_exceeded_error": MetadataExtractionApiV2Error._limit_exceeded_error_validator,
-    "conversion_failure_error": MetadataExtractionApiV2Error._conversion_failure_error_validator,
-    "not_found_error": MetadataExtractionApiV2Error._not_found_error_validator,
-    "is_a_folder_error": MetadataExtractionApiV2Error._is_a_folder_error_validator,
-    "other": MetadataExtractionApiV2Error._other_validator,
+    'server_error': MetadataExtractionApiV2Error._server_error_validator,
+    'user_error': MetadataExtractionApiV2Error._user_error_validator,
+    'unsupported_format_error': MetadataExtractionApiV2Error._unsupported_format_error_validator,
+    'link_download_disabled_error': MetadataExtractionApiV2Error._link_download_disabled_error_validator,
+    'shared_link_password_protected': MetadataExtractionApiV2Error._shared_link_password_protected_validator,
+    'limit_exceeded_error': MetadataExtractionApiV2Error._limit_exceeded_error_validator,
+    'conversion_failure_error': MetadataExtractionApiV2Error._conversion_failure_error_validator,
+    'not_found_error': MetadataExtractionApiV2Error._not_found_error_validator,
+    'is_a_folder_error': MetadataExtractionApiV2Error._is_a_folder_error_validator,
+    'other': MetadataExtractionApiV2Error._other_validator,
 }
 
-MetadataExtractionApiV2Error.unsupported_format_error = MetadataExtractionApiV2Error(
-    "unsupported_format_error"
-)
-MetadataExtractionApiV2Error.link_download_disabled_error = MetadataExtractionApiV2Error(
-    "link_download_disabled_error"
-)
-MetadataExtractionApiV2Error.shared_link_password_protected = MetadataExtractionApiV2Error(
-    "shared_link_password_protected"
-)
-MetadataExtractionApiV2Error.limit_exceeded_error = MetadataExtractionApiV2Error(
-    "limit_exceeded_error"
-)
-MetadataExtractionApiV2Error.conversion_failure_error = MetadataExtractionApiV2Error(
-    "conversion_failure_error"
-)
-MetadataExtractionApiV2Error.not_found_error = MetadataExtractionApiV2Error("not_found_error")
-MetadataExtractionApiV2Error.is_a_folder_error = MetadataExtractionApiV2Error("is_a_folder_error")
-MetadataExtractionApiV2Error.other = MetadataExtractionApiV2Error("other")
+MetadataExtractionApiV2Error.unsupported_format_error = MetadataExtractionApiV2Error('unsupported_format_error')
+MetadataExtractionApiV2Error.link_download_disabled_error = MetadataExtractionApiV2Error('link_download_disabled_error')
+MetadataExtractionApiV2Error.shared_link_password_protected = MetadataExtractionApiV2Error('shared_link_password_protected')
+MetadataExtractionApiV2Error.limit_exceeded_error = MetadataExtractionApiV2Error('limit_exceeded_error')
+MetadataExtractionApiV2Error.conversion_failure_error = MetadataExtractionApiV2Error('conversion_failure_error')
+MetadataExtractionApiV2Error.not_found_error = MetadataExtractionApiV2Error('not_found_error')
+MetadataExtractionApiV2Error.is_a_folder_error = MetadataExtractionApiV2Error('is_a_folder_error')
+MetadataExtractionApiV2Error.other = MetadataExtractionApiV2Error('other')
 
 MetadataType._metadata_type_unknown_validator = bv.Void()
 MetadataType._metadata_type_exif_validator = bv.Void()
@@ -3019,20 +2872,20 @@ MetadataType._metadata_type_pdf_validator = bv.Void()
 MetadataType._metadata_type_office_validator = bv.Void()
 MetadataType._other_validator = bv.Void()
 MetadataType._tagmap = {
-    "metadata_type_unknown": MetadataType._metadata_type_unknown_validator,
-    "metadata_type_exif": MetadataType._metadata_type_exif_validator,
-    "metadata_type_media": MetadataType._metadata_type_media_validator,
-    "metadata_type_pdf": MetadataType._metadata_type_pdf_validator,
-    "metadata_type_office": MetadataType._metadata_type_office_validator,
-    "other": MetadataType._other_validator,
+    'metadata_type_unknown': MetadataType._metadata_type_unknown_validator,
+    'metadata_type_exif': MetadataType._metadata_type_exif_validator,
+    'metadata_type_media': MetadataType._metadata_type_media_validator,
+    'metadata_type_pdf': MetadataType._metadata_type_pdf_validator,
+    'metadata_type_office': MetadataType._metadata_type_office_validator,
+    'other': MetadataType._other_validator,
 }
 
-MetadataType.metadata_type_unknown = MetadataType("metadata_type_unknown")
-MetadataType.metadata_type_exif = MetadataType("metadata_type_exif")
-MetadataType.metadata_type_media = MetadataType("metadata_type_media")
-MetadataType.metadata_type_pdf = MetadataType("metadata_type_pdf")
-MetadataType.metadata_type_office = MetadataType("metadata_type_office")
-MetadataType.other = MetadataType("other")
+MetadataType.metadata_type_unknown = MetadataType('metadata_type_unknown')
+MetadataType.metadata_type_exif = MetadataType('metadata_type_exif')
+MetadataType.metadata_type_media = MetadataType('metadata_type_media')
+MetadataType.metadata_type_pdf = MetadataType('metadata_type_pdf')
+MetadataType.metadata_type_office = MetadataType('metadata_type_office')
+MetadataType.other = MetadataType('other')
 
 OfficeFileType._office_filetype_unknown_validator = bv.Void()
 OfficeFileType._office_filetype_word_validator = bv.Void()
@@ -3040,34 +2893,34 @@ OfficeFileType._office_filetype_powerpoint_validator = bv.Void()
 OfficeFileType._office_filetype_excel_validator = bv.Void()
 OfficeFileType._other_validator = bv.Void()
 OfficeFileType._tagmap = {
-    "office_filetype_unknown": OfficeFileType._office_filetype_unknown_validator,
-    "office_filetype_word": OfficeFileType._office_filetype_word_validator,
-    "office_filetype_powerpoint": OfficeFileType._office_filetype_powerpoint_validator,
-    "office_filetype_excel": OfficeFileType._office_filetype_excel_validator,
-    "other": OfficeFileType._other_validator,
+    'office_filetype_unknown': OfficeFileType._office_filetype_unknown_validator,
+    'office_filetype_word': OfficeFileType._office_filetype_word_validator,
+    'office_filetype_powerpoint': OfficeFileType._office_filetype_powerpoint_validator,
+    'office_filetype_excel': OfficeFileType._office_filetype_excel_validator,
+    'other': OfficeFileType._other_validator,
 }
 
-OfficeFileType.office_filetype_unknown = OfficeFileType("office_filetype_unknown")
-OfficeFileType.office_filetype_word = OfficeFileType("office_filetype_word")
-OfficeFileType.office_filetype_powerpoint = OfficeFileType("office_filetype_powerpoint")
-OfficeFileType.office_filetype_excel = OfficeFileType("office_filetype_excel")
-OfficeFileType.other = OfficeFileType("other")
+OfficeFileType.office_filetype_unknown = OfficeFileType('office_filetype_unknown')
+OfficeFileType.office_filetype_word = OfficeFileType('office_filetype_word')
+OfficeFileType.office_filetype_powerpoint = OfficeFileType('office_filetype_powerpoint')
+OfficeFileType.office_filetype_excel = OfficeFileType('office_filetype_excel')
+OfficeFileType.other = OfficeFileType('other')
 
 TimestampLevel._unknown_validator = bv.Void()
 TimestampLevel._sentence_validator = bv.Void()
 TimestampLevel._word_validator = bv.Void()
 TimestampLevel._other_validator = bv.Void()
 TimestampLevel._tagmap = {
-    "unknown": TimestampLevel._unknown_validator,
-    "sentence": TimestampLevel._sentence_validator,
-    "word": TimestampLevel._word_validator,
-    "other": TimestampLevel._other_validator,
+    'unknown': TimestampLevel._unknown_validator,
+    'sentence': TimestampLevel._sentence_validator,
+    'word': TimestampLevel._word_validator,
+    'other': TimestampLevel._other_validator,
 }
 
-TimestampLevel.unknown = TimestampLevel("unknown")
-TimestampLevel.sentence = TimestampLevel("sentence")
-TimestampLevel.word = TimestampLevel("word")
-TimestampLevel.other = TimestampLevel("other")
+TimestampLevel.unknown = TimestampLevel('unknown')
+TimestampLevel.sentence = TimestampLevel('sentence')
+TimestampLevel.word = TimestampLevel('word')
+TimestampLevel.other = TimestampLevel('other')
 
 MetadataUnion._exif_validator = ApiExifMetadata_validator
 MetadataUnion._media_validator = ApiMediaMetadata_validator
@@ -3075,142 +2928,155 @@ MetadataUnion._pdf_validator = ApiPdfMetadata_validator
 MetadataUnion._office_validator = ApiOfficeMetadata_validator
 MetadataUnion._other_validator = bv.Void()
 MetadataUnion._tagmap = {
-    "exif": MetadataUnion._exif_validator,
-    "media": MetadataUnion._media_validator,
-    "pdf": MetadataUnion._pdf_validator,
-    "office": MetadataUnion._office_validator,
-    "other": MetadataUnion._other_validator,
+    'exif': MetadataUnion._exif_validator,
+    'media': MetadataUnion._media_validator,
+    'pdf': MetadataUnion._pdf_validator,
+    'office': MetadataUnion._office_validator,
+    'other': MetadataUnion._other_validator,
 }
 
-MetadataUnion.other = MetadataUnion("other")
+MetadataUnion.other = MetadataUnion('other')
 
 ApiExifGpsMetadata.latitude.default = 0.0
 ApiExifGpsMetadata.longitude.default = 0.0
-ApiExifGpsMetadata.altitude.default = ""
-ApiExifGpsMetadata.timestamp.default = ""
-ApiExifGpsMetadata.datestamp.default = ""
+ApiExifGpsMetadata.altitude.default = ''
+ApiExifGpsMetadata.timestamp.default = ''
+ApiExifGpsMetadata.datestamp.default = ''
 ApiExifMetadata.image_width.default = 0
 ApiExifMetadata.image_height.default = 0
-ApiExifMetadata.camera_make.default = ""
-ApiExifMetadata.camera_model.default = ""
-ApiExifMetadata.lens_model.default = ""
-ApiExifMetadata.date_time_original.default = ""
-ApiExifMetadata.offset_time_original.default = ""
+ApiExifMetadata.camera_make.default = ''
+ApiExifMetadata.camera_model.default = ''
+ApiExifMetadata.lens_model.default = ''
+ApiExifMetadata.date_time_original.default = ''
+ApiExifMetadata.offset_time_original.default = ''
 ApiExifMetadata.orientation.default = 0
-ApiExifMetadata.exposure_time.default = ""
+ApiExifMetadata.exposure_time.default = ''
 ApiExifMetadata.aperture_value.default = 0.0
 ApiExifMetadata.iso_speed.default = 0
-ApiExifMetadata.focal_length.default = ""
+ApiExifMetadata.focal_length.default = ''
 ApiExifMetadata.megapixels.default = 0.0
-ApiExifMetadata.artist.default = ""
-ApiExifMetadata.copyright.default = ""
+ApiExifMetadata.artist.default = ''
+ApiExifMetadata.copyright.default = ''
 ApiMediaMetadata.bitrate_bps.default = 0
 ApiMediaMetadata.duration_s.default = 0.0
-ApiMediaMetadata.creation_time.default = ""
+ApiMediaMetadata.creation_time.default = ''
 ApiMediaStream.index.default = 0
-ApiMediaStream.codec_type.default = ""
-ApiMediaStream.codec_name.default = ""
+ApiMediaStream.codec_type.default = ''
+ApiMediaStream.codec_name.default = ''
 ApiMediaStream.bitrate_bps.default = 0
 ApiMediaStream.duration_s.default = 0.0
 ApiMediaStream.width.default = 0
 ApiMediaStream.height.default = 0
 ApiMediaStream.frames_per_second.default = 0.0
 ApiMediaStream.rotation.default = 0
-ApiMediaStream.display_aspect_ratio.default = ""
+ApiMediaStream.display_aspect_ratio.default = ''
 ApiMediaStream.channels.default = 0
-ApiMediaStream.channel_layout.default = ""
+ApiMediaStream.channel_layout.default = ''
 ApiMediaStream.sample_rate_s.default = 0
-ApiMediaStream.language_iso_639.default = ""
+ApiMediaStream.language_iso_639.default = ''
 ApiOfficeMetadata.file_type.default = OfficeFileType.office_filetype_unknown
-ApiOfficeMetadata.creator.default = ""
-ApiOfficeMetadata.company.default = ""
-ApiOfficeMetadata.title.default = ""
-ApiOfficeMetadata.subject.default = ""
-ApiOfficeMetadata.keywords.default = ""
-ApiOfficeMetadata.description.default = ""
+ApiOfficeMetadata.creator.default = ''
+ApiOfficeMetadata.company.default = ''
+ApiOfficeMetadata.title.default = ''
+ApiOfficeMetadata.subject.default = ''
+ApiOfficeMetadata.keywords.default = ''
+ApiOfficeMetadata.description.default = ''
 ApiOfficeMetadata.total_edit_time_minutes.default = 0
 ApiOfficeMetadata.pages.default = 0
 ApiOfficeMetadata.words.default = 0
 ApiOfficeMetadata.slides.default = 0
-ApiOfficeMetadata.revision_number.default = ""
+ApiOfficeMetadata.revision_number.default = ''
 ApiPdfMetadata.pages.default = 0
 ApiPdfMetadata.width.default = 0
 ApiPdfMetadata.height.default = 0
-ApiStructuredTranscript.transcript_locale.default = ""
-ApiTranscriptSegment.text.default = ""
+ApiStructuredTranscript.transcript_locale.default = ''
+ApiTranscriptSegment.text.default = ''
 ApiTranscriptSegment.start_time.default = 0.0
 ApiTranscriptSegment.end_time.default = 0.0
 GetMarkdownArgs.enable_ocr.default = False
 GetMarkdownArgs.embed_images.default = False
 GetMarkdownAsyncError.error_code.default = ErrorCode.unknown_error
-GetMarkdownResult.markdown.default = ""
+GetMarkdownResult.markdown.default = ''
 GetMetadataAsyncError.error_code.default = ErrorCode.unknown_error
 GetMetadataResult.metadata_type.default = MetadataType.metadata_type_unknown
 GetTranscriptArgs.timestamp_level.default = TimestampLevel.unknown
-GetTranscriptArgs.included_special_words.default = ""
-GetTranscriptArgs.audio_language.default = ""
+GetTranscriptArgs.included_special_words.default = ''
+GetTranscriptArgs.audio_language.default = ''
 GetTranscriptAsyncError.error_code.default = ErrorCode.unknown_error
 MediaDurationError.limit.default = 0
 get_markdown_async = bb.Route(
-    "get_markdown_async",
+    'get_markdown_async',
     1,
     False,
     GetMarkdownArgs_validator,
     async_.LaunchResultBase_validator,
     bv.Void(),
-    {"auth": "app, user", "host": "api", "style": "rpc"},
+    {'auth': 'app, user',
+     'host': 'api',
+     'style': 'rpc'},
 )
 get_markdown_async_check = bb.Route(
-    "get_markdown_async/check",
+    'get_markdown_async/check',
     1,
     False,
     async_.PollArg_validator,
     GetMarkdownAsyncCheckResult_validator,
     async_.PollError_validator,
-    {"auth": "app, user", "host": "api", "style": "rpc"},
+    {'auth': 'app, user',
+     'host': 'api',
+     'style': 'rpc'},
 )
 get_metadata_async = bb.Route(
-    "get_metadata_async",
+    'get_metadata_async',
     1,
     False,
     GetMetadataArgs_validator,
     async_.LaunchResultBase_validator,
     bv.Void(),
-    {"auth": "app, user", "host": "api", "style": "rpc"},
+    {'auth': 'app, user',
+     'host': 'api',
+     'style': 'rpc'},
 )
 get_metadata_async_check = bb.Route(
-    "get_metadata_async/check",
+    'get_metadata_async/check',
     1,
     False,
     async_.PollArg_validator,
     GetMetadataAsyncCheckResult_validator,
     async_.PollError_validator,
-    {"auth": "app, user", "host": "api", "style": "rpc"},
+    {'auth': 'app, user',
+     'host': 'api',
+     'style': 'rpc'},
 )
 get_transcript_async = bb.Route(
-    "get_transcript_async",
+    'get_transcript_async',
     1,
     False,
     GetTranscriptArgs_validator,
     async_.LaunchResultBase_validator,
     bv.Void(),
-    {"auth": "app, user", "host": "api", "style": "rpc"},
+    {'auth': 'app, user',
+     'host': 'api',
+     'style': 'rpc'},
 )
 get_transcript_async_check = bb.Route(
-    "get_transcript_async/check",
+    'get_transcript_async/check',
     1,
     False,
     async_.PollArg_validator,
     GetTranscriptAsyncCheckResult_validator,
     async_.PollError_validator,
-    {"auth": "app, user", "host": "api", "style": "rpc"},
+    {'auth': 'app, user',
+     'host': 'api',
+     'style': 'rpc'},
 )
 
 ROUTES = {
-    "get_markdown_async": get_markdown_async,
-    "get_markdown_async/check": get_markdown_async_check,
-    "get_metadata_async": get_metadata_async,
-    "get_metadata_async/check": get_metadata_async_check,
-    "get_transcript_async": get_transcript_async,
-    "get_transcript_async/check": get_transcript_async_check,
+    'get_markdown_async': get_markdown_async,
+    'get_markdown_async/check': get_markdown_async_check,
+    'get_metadata_async': get_metadata_async,
+    'get_metadata_async/check': get_metadata_async_check,
+    'get_transcript_async': get_transcript_async,
+    'get_transcript_async/check': get_transcript_async_check,
 }
+
