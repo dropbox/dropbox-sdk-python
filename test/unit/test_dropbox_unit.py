@@ -19,162 +19,218 @@ from dropbox.exceptions import AuthError, BadInputError
 from dropbox.oauth import OAuth2FlowNoRedirectResult, DropboxOAuth2FlowNoRedirect
 from datetime import datetime, timedelta
 
-APP_KEY = 'dummy_app_key'
-APP_SECRET = 'dummy_app_secret'
-ACCESS_TOKEN = 'dummy_access_token'
-REFRESH_TOKEN = 'dummy_refresh_token'
+APP_KEY = "dummy_app_key"
+APP_SECRET = "dummy_app_secret"
+ACCESS_TOKEN = "dummy_access_token"
+REFRESH_TOKEN = "dummy_refresh_token"
 EXPIRES_IN = 14400
-ACCOUNT_ID = 'dummy_account_id'
-USER_ID = 'dummy_user_id'
-ADMIN_ID = 'dummy_admin_id'
-TEAM_MEMBER_ID = 'dummy_team_member_id'
-SCOPE_LIST = ['files.metadata.read', 'files.metadata.write']
+ACCOUNT_ID = "dummy_account_id"
+USER_ID = "dummy_user_id"
+ADMIN_ID = "dummy_admin_id"
+TEAM_MEMBER_ID = "dummy_team_member_id"
+SCOPE_LIST = ["files.metadata.read", "files.metadata.write"]
 EXPIRATION = datetime.utcnow() + timedelta(seconds=EXPIRES_IN)
 CA_CERTS = "/dummy/path/ca.crt"
 
 EXPIRATION_BUFFER = timedelta(minutes=5)
 
-class TestOAuth:
 
+class TestOAuth:
     def test_authorization_url(self):
-        flow_obj = DropboxOAuth2Flow(APP_KEY, APP_SECRET, 'http://localhost/dummy',
-                                     'dummy_session', 'dbx-auth-csrf-token')
-        for redirect_uri in [None, 'localhost']:
-            for state in [None, 'state']:
-                for token_access_type in [None, 'legacy', 'offline', 'online']:
+        flow_obj = DropboxOAuth2Flow(
+            APP_KEY,
+            APP_SECRET,
+            "http://localhost/dummy",
+            "dummy_session",
+            "dbx-auth-csrf-token",
+        )
+        for redirect_uri in [None, "localhost"]:
+            for state in [None, "state"]:
+                for token_access_type in [None, "legacy", "offline", "online"]:
                     for scope in [None, SCOPE_LIST]:
-                        for include_granted_scopes in [None, 'user', 'team']:
-                            for code_challenge in [None, 'mychallenge']:
-                                authorization_url = \
-                                    flow_obj._get_authorize_url(redirect_uri, state,
-                                                                token_access_type, scope,
-                                                                include_granted_scopes,
-                                                                code_challenge)
-                                assert authorization_url\
-                                    .startswith('https://{}/oauth2/authorize?'
-                                                .format(session.WEB_HOST))
-                                assert 'client_id={}'.format(APP_KEY) in authorization_url
-                                assert 'response_type=code' in authorization_url
+                        for include_granted_scopes in [None, "user", "team"]:
+                            for code_challenge in [None, "mychallenge"]:
+                                authorization_url = flow_obj._get_authorize_url(
+                                    redirect_uri,
+                                    state,
+                                    token_access_type,
+                                    scope,
+                                    include_granted_scopes,
+                                    code_challenge,
+                                )
+                                assert authorization_url.startswith(
+                                    "https://{}/oauth2/authorize?".format(session.WEB_HOST)
+                                )
+                                assert "client_id={}".format(APP_KEY) in authorization_url
+                                assert "response_type=code" in authorization_url
 
                                 if redirect_uri:
-                                    assert 'redirect_uri={}'.format(redirect_uri) \
-                                        in authorization_url
+                                    assert (
+                                        "redirect_uri={}".format(redirect_uri) in authorization_url
+                                    )
                                 else:
-                                    assert 'redirect_uri' not in authorization_url
+                                    assert "redirect_uri" not in authorization_url
 
                                 if state:
-                                    assert 'state={}'.format(state) in authorization_url
+                                    assert "state={}".format(state) in authorization_url
                                 else:
-                                    assert 'state' not in authorization_url
+                                    assert "state" not in authorization_url
 
                                 if token_access_type:
-                                    assert 'token_access_type={}'.format(token_access_type) \
+                                    assert (
+                                        "token_access_type={}".format(token_access_type)
                                         in authorization_url
+                                    )
                                 else:
-                                    assert 'token_access_type' not in authorization_url
+                                    assert "token_access_type" not in authorization_url
 
                                 if scope:
-                                    assert 'scope={}'.format("+".join(scope)) \
-                                           in authorization_url
+                                    assert "scope={}".format("+".join(scope)) in authorization_url
                                 else:
-                                    assert 'scope' not in authorization_url
+                                    assert "scope" not in authorization_url
 
                                 if include_granted_scopes and scope:
-                                    assert 'include_granted_scopes={}'\
-                                        .format(include_granted_scopes)\
+                                    assert (
+                                        "include_granted_scopes={}".format(include_granted_scopes)
                                         in authorization_url
+                                    )
                                 else:
-                                    assert 'include_granted_scopes' not in authorization_url
+                                    assert "include_granted_scopes" not in authorization_url
 
                                 if code_challenge:
-                                    assert 'code_challenge_method=S256' in authorization_url
-                                    assert 'code_challenge={}'.format(code_challenge)\
+                                    assert "code_challenge_method=S256" in authorization_url
+                                    assert (
+                                        "code_challenge={}".format(code_challenge)
                                         in authorization_url
+                                    )
                                 else:
-                                    assert 'code_challenge_method' not in authorization_url
-                                    assert 'code_challenge' not in authorization_url
+                                    assert "code_challenge_method" not in authorization_url
+                                    assert "code_challenge" not in authorization_url
 
     def test_authorization_with_ca_certs(self):
-        DropboxOAuth2Flow(APP_KEY, APP_SECRET, 'http://localhost/dummy', 'dummy_session',
-                          'dbx-auth-csrf-token', ca_certs=CA_CERTS)
+        DropboxOAuth2Flow(
+            APP_KEY,
+            APP_SECRET,
+            "http://localhost/dummy",
+            "dummy_session",
+            "dbx-auth-csrf-token",
+            ca_certs=CA_CERTS,
+        )
 
     def test_authorization_url_legacy_default(self):
-        flow_obj = DropboxOAuth2Flow(APP_KEY, APP_SECRET, 'http://localhost/dummy',
-                                     'dummy_session', 'dbx-auth-csrf-token')
+        flow_obj = DropboxOAuth2Flow(
+            APP_KEY,
+            APP_SECRET,
+            "http://localhost/dummy",
+            "dummy_session",
+            "dbx-auth-csrf-token",
+        )
 
-        legacy_default_authorization_url = flow_obj._get_authorize_url(None, None, 'legacy')
-        assert legacy_default_authorization_url.startswith('https://{}/oauth2/authorize?'
-                                                           .format(session.WEB_HOST))
-        assert 'client_id={}'.format(APP_KEY) in legacy_default_authorization_url
-        assert 'response_type=code' in legacy_default_authorization_url
+        legacy_default_authorization_url = flow_obj._get_authorize_url(None, None, "legacy")
+        assert legacy_default_authorization_url.startswith(
+            "https://{}/oauth2/authorize?".format(session.WEB_HOST)
+        )
+        assert "client_id={}".format(APP_KEY) in legacy_default_authorization_url
+        assert "response_type=code" in legacy_default_authorization_url
 
     def test_authorization_url_invalid_token_type_raises_assertion_error(self):
-        flow_obj = DropboxOAuth2Flow(APP_KEY, APP_SECRET, 'http://localhost/dummy',
-                                     'dummy_session', 'dbx-auth-csrf-token')
+        flow_obj = DropboxOAuth2Flow(
+            APP_KEY,
+            APP_SECRET,
+            "http://localhost/dummy",
+            "dummy_session",
+            "dbx-auth-csrf-token",
+        )
         with pytest.raises(AssertionError):
-            flow_obj._get_authorize_url(None, None, 'invalid')
+            flow_obj._get_authorize_url(None, None, "invalid")
 
     def test_authorization_url_online_token_type(self):
-        flow_obj = DropboxOAuth2Flow(APP_KEY, APP_SECRET, 'http://localhost/dummy',
-                                     'dummy_session', 'dbx-auth-csrf-token')
-        online_authorization_url = flow_obj._get_authorize_url(None, None, 'online')
-        assert online_authorization_url.startswith('https://{}/oauth2/authorize?'
-                                                   .format(session.WEB_HOST))
-        assert 'client_id={}'.format(APP_KEY) in online_authorization_url
-        assert 'response_type=code' in online_authorization_url
-        assert 'token_access_type=online' in online_authorization_url
+        flow_obj = DropboxOAuth2Flow(
+            APP_KEY,
+            APP_SECRET,
+            "http://localhost/dummy",
+            "dummy_session",
+            "dbx-auth-csrf-token",
+        )
+        online_authorization_url = flow_obj._get_authorize_url(None, None, "online")
+        assert online_authorization_url.startswith(
+            "https://{}/oauth2/authorize?".format(session.WEB_HOST)
+        )
+        assert "client_id={}".format(APP_KEY) in online_authorization_url
+        assert "response_type=code" in online_authorization_url
+        assert "token_access_type=online" in online_authorization_url
 
     def test_authorization_url_offline_token_type(self):
-        flow_obj = DropboxOAuth2Flow(APP_KEY, APP_SECRET, 'http://localhost/dummy',
-                                     'dummy_session', 'dbx-auth-csrf-token')
+        flow_obj = DropboxOAuth2Flow(
+            APP_KEY,
+            APP_SECRET,
+            "http://localhost/dummy",
+            "dummy_session",
+            "dbx-auth-csrf-token",
+        )
 
-        offline_authorization_url = flow_obj._get_authorize_url(None, None, 'offline')
-        assert offline_authorization_url.startswith('https://{}/oauth2/authorize?'
-                                                    .format(session.WEB_HOST))
-        assert 'client_id={}'.format(APP_KEY) in offline_authorization_url
-        assert 'response_type=code' in offline_authorization_url
-        assert 'token_access_type=offline' in offline_authorization_url
+        offline_authorization_url = flow_obj._get_authorize_url(None, None, "offline")
+        assert offline_authorization_url.startswith(
+            "https://{}/oauth2/authorize?".format(session.WEB_HOST)
+        )
+        assert "client_id={}".format(APP_KEY) in offline_authorization_url
+        assert "response_type=code" in offline_authorization_url
+        assert "token_access_type=offline" in offline_authorization_url
 
     def test_authorization_url_with_scopes_and_granted(self):
-        flow_obj = DropboxOAuth2Flow(APP_KEY, APP_SECRET, 'http://localhost/dummy',
-                                     'dummy_session', 'dbx-auth-csrf-token')
+        flow_obj = DropboxOAuth2Flow(
+            APP_KEY,
+            APP_SECRET,
+            "http://localhost/dummy",
+            "dummy_session",
+            "dbx-auth-csrf-token",
+        )
 
-        scopes = ['account_info.read', 'files.metadata.read']
-        scope_authorization_url = flow_obj._get_authorize_url(None, None, 'offline', scopes, 'user')
-        assert scope_authorization_url.startswith('https://{}/oauth2/authorize?'
-                .format(session.WEB_HOST))
-        assert 'client_id={}'.format(APP_KEY) in scope_authorization_url
-        assert 'response_type=code' in scope_authorization_url
-        assert 'token_access_type=offline' in scope_authorization_url
-        assert 'scope=account_info.read+files.metadata.read' in scope_authorization_url
-        assert 'include_granted_scopes=user' in scope_authorization_url
+        scopes = ["account_info.read", "files.metadata.read"]
+        scope_authorization_url = flow_obj._get_authorize_url(None, None, "offline", scopes, "user")
+        assert scope_authorization_url.startswith(
+            "https://{}/oauth2/authorize?".format(session.WEB_HOST)
+        )
+        assert "client_id={}".format(APP_KEY) in scope_authorization_url
+        assert "response_type=code" in scope_authorization_url
+        assert "token_access_type=offline" in scope_authorization_url
+        assert "scope=account_info.read+files.metadata.read" in scope_authorization_url
+        assert "include_granted_scopes=user" in scope_authorization_url
 
     def test_authorization_url_with_scopes(self):
-        flow_obj = DropboxOAuth2Flow(APP_KEY, APP_SECRET, 'http://localhost/dummy',
-                                     'dummy_session', 'dbx-auth-csrf-token')
+        flow_obj = DropboxOAuth2Flow(
+            APP_KEY,
+            APP_SECRET,
+            "http://localhost/dummy",
+            "dummy_session",
+            "dbx-auth-csrf-token",
+        )
 
-        scopes = ['account_info.read', 'files.metadata.read']
-        scope_authorization_url = flow_obj._get_authorize_url(None, None, 'offline', scopes)
-        assert scope_authorization_url.startswith('https://{}/oauth2/authorize?'
-                                                  .format(session.WEB_HOST))
-        assert 'client_id={}'.format(APP_KEY) in scope_authorization_url
-        assert 'response_type=code' in scope_authorization_url
-        assert 'token_access_type=offline' in scope_authorization_url
-        assert 'scope=account_info.read+files.metadata.read' in scope_authorization_url
-        assert 'include_granted_scopes' not in scope_authorization_url
+        scopes = ["account_info.read", "files.metadata.read"]
+        scope_authorization_url = flow_obj._get_authorize_url(None, None, "offline", scopes)
+        assert scope_authorization_url.startswith(
+            "https://{}/oauth2/authorize?".format(session.WEB_HOST)
+        )
+        assert "client_id={}".format(APP_KEY) in scope_authorization_url
+        assert "response_type=code" in scope_authorization_url
+        assert "token_access_type=offline" in scope_authorization_url
+        assert "scope=account_info.read+files.metadata.read" in scope_authorization_url
+        assert "include_granted_scopes" not in scope_authorization_url
 
     def test_OAuth2FlowNoRedirectResult_legacy(self):
         # Test legacy result
-        result_obj = OAuth2FlowNoRedirectResult(ACCESS_TOKEN, ACCOUNT_ID, USER_ID, None, None,
-                                                SCOPE_LIST)
+        result_obj = OAuth2FlowNoRedirectResult(
+            ACCESS_TOKEN, ACCOUNT_ID, USER_ID, None, None, SCOPE_LIST
+        )
         assert result_obj.access_token == ACCESS_TOKEN
         assert not result_obj.refresh_token
         assert not result_obj.expires_at
 
     def test_OAuth2FlowNoRedirectResult_offline(self):
         # Test offline result
-        result_obj = OAuth2FlowNoRedirectResult(ACCESS_TOKEN, ACCOUNT_ID, USER_ID,
-                                                REFRESH_TOKEN, EXPIRES_IN, SCOPE_LIST)
+        result_obj = OAuth2FlowNoRedirectResult(
+            ACCESS_TOKEN, ACCOUNT_ID, USER_ID, REFRESH_TOKEN, EXPIRES_IN, SCOPE_LIST
+        )
         assert result_obj.access_token == ACCESS_TOKEN
         assert result_obj.refresh_token == REFRESH_TOKEN
         assert abs(result_obj.expires_at - EXPIRATION) < EXPIRATION_BUFFER
@@ -184,39 +240,46 @@ class TestOAuth:
 
     def test_OAuth2FlowNoRedirectResult_online(self):
         # Test online result
-        result_obj = OAuth2FlowNoRedirectResult(ACCESS_TOKEN, ACCOUNT_ID, USER_ID, None, EXPIRES_IN,
-                                                SCOPE_LIST)
+        result_obj = OAuth2FlowNoRedirectResult(
+            ACCESS_TOKEN, ACCOUNT_ID, USER_ID, None, EXPIRES_IN, SCOPE_LIST
+        )
         assert result_obj.access_token == ACCESS_TOKEN
         assert not result_obj.refresh_token
         assert abs(result_obj.expires_at - EXPIRATION) < EXPIRATION_BUFFER
 
     def test_OAuth2FlowNoRedirectResult_copy(self):
         # Test constructor for copying object
-        result_obj = OAuth2FlowNoRedirectResult(ACCESS_TOKEN, ACCOUNT_ID, USER_ID,
-                                                REFRESH_TOKEN, EXPIRATION, SCOPE_LIST)
+        result_obj = OAuth2FlowNoRedirectResult(
+            ACCESS_TOKEN, ACCOUNT_ID, USER_ID, REFRESH_TOKEN, EXPIRATION, SCOPE_LIST
+        )
         assert result_obj.expires_at == EXPIRATION
 
-    @pytest.fixture(scope='function')
+    @pytest.fixture(scope="function")
     def auth_flow_offline_with_scopes(self, mocker):
-        auth_flow = DropboxOAuth2FlowNoRedirect(APP_KEY, APP_SECRET, token_access_type='offline',
-                                                scope=SCOPE_LIST)
+        auth_flow = DropboxOAuth2FlowNoRedirect(
+            APP_KEY, APP_SECRET, token_access_type="offline", scope=SCOPE_LIST
+        )
         session = mock.MagicMock()
         post_response = mock.MagicMock(status_code=200)
-        post_response.json.return_value = {"access_token": ACCESS_TOKEN, "refresh_token":
-            REFRESH_TOKEN, "expires_in": EXPIRES_IN, "uid": USER_ID, "account_id": ACCOUNT_ID,
-                                           "scope": " ".join(SCOPE_LIST)}
-        mocker.patch.object(session, 'post', return_value=post_response)
+        post_response.json.return_value = {
+            "access_token": ACCESS_TOKEN,
+            "refresh_token": REFRESH_TOKEN,
+            "expires_in": EXPIRES_IN,
+            "uid": USER_ID,
+            "account_id": ACCOUNT_ID,
+            "scope": " ".join(SCOPE_LIST),
+        }
+        mocker.patch.object(session, "post", return_value=post_response)
         auth_flow.requests_session = session
         return auth_flow
 
     def test_NoRedirect_whole_flow(self, auth_flow_offline_with_scopes):
         authorization_url = auth_flow_offline_with_scopes.start()
 
-        assert authorization_url.startswith('https://{}/oauth2/authorize?'
-                                            .format(session.WEB_HOST))
-        assert 'client_id={}'.format(APP_KEY) in authorization_url
-        assert 'response_type=code' in authorization_url
-        mycode = 'test oauth code'
+        assert authorization_url.startswith("https://{}/oauth2/authorize?".format(session.WEB_HOST))
+        assert "client_id={}".format(APP_KEY) in authorization_url
+        assert "response_type=code" in authorization_url
+        mycode = "test oauth code"
         auth_result = auth_flow_offline_with_scopes.finish(mycode)
         assert auth_result.access_token == ACCESS_TOKEN
         assert auth_result.refresh_token == REFRESH_TOKEN
@@ -229,68 +292,76 @@ class TestOAuth:
         token_call_args = auth_flow_offline_with_scopes.requests_session.post.call_args_list
         assert len(token_call_args) == 1
         first_call_args = token_call_args[0]
-        assert first_call_args[0][0] == 'https://{}/oauth2/token'.format(session.API_HOST)
-        call_data = first_call_args[1]['data']
-        assert call_data['client_id'] == APP_KEY
-        assert call_data['grant_type'] == 'authorization_code'
-        assert call_data['client_secret'] == APP_SECRET
-        assert call_data['code'] == mycode
+        assert first_call_args[0][0] == "https://{}/oauth2/token".format(session.API_HOST)
+        call_data = first_call_args[1]["data"]
+        assert call_data["client_id"] == APP_KEY
+        assert call_data["grant_type"] == "authorization_code"
+        assert call_data["client_secret"] == APP_SECRET
+        assert call_data["code"] == mycode
+
 
 class TestClient:
-
-    @pytest.fixture(scope='function')
+    @pytest.fixture(scope="function")
     def session_instance(self, mocker):
         session_obj = create_session()
         post_response = mock.MagicMock(status_code=200)
-        post_response.json.return_value = {"access_token": ACCESS_TOKEN, "expires_in": EXPIRES_IN}
-        mocker.patch.object(session_obj, 'post', return_value=post_response)
+        post_response.json.return_value = {
+            "access_token": ACCESS_TOKEN,
+            "expires_in": EXPIRES_IN,
+        }
+        mocker.patch.object(session_obj, "post", return_value=post_response)
         return session_obj
 
-    @pytest.fixture(scope='function')
+    @pytest.fixture(scope="function")
     def session_instance_with_ca_certs(self, mocker):
         session_obj = create_session(ca_certs=CA_CERTS)
         post_response = mock.MagicMock(status_code=200)
-        post_response.json.return_value = {"access_token": ACCESS_TOKEN, "expires_in": EXPIRES_IN}
-        mocker.patch.object(session_obj, 'post', return_value=post_response)
+        post_response.json.return_value = {
+            "access_token": ACCESS_TOKEN,
+            "expires_in": EXPIRES_IN,
+        }
+        mocker.patch.object(session_obj, "post", return_value=post_response)
         return session_obj
 
-    @pytest.fixture(scope='function')
+    @pytest.fixture(scope="function")
     def invalid_grant_session_instance(self, mocker):
         session_obj = create_session()
         post_response = mock.MagicMock(status_code=400)
         post_response.json.return_value = {"error": "invalid_grant"}
-        mocker.patch.object(session_obj, 'post', return_value=post_response)
+        mocker.patch.object(session_obj, "post", return_value=post_response)
         return session_obj
 
-    @pytest.fixture(scope='function')
+    @pytest.fixture(scope="function")
     def bad_request_no_error_key_session_instance(self, mocker):
         # A 400 response whose JSON body does not contain an "error" key.
         session_obj = create_session()
         post_response = mock.MagicMock(status_code=400)
         post_response.json.return_value = {"error_description": "some other problem"}
         post_response.text = '{"error_description": "some other problem"}'
-        mocker.patch.object(session_obj, 'post', return_value=post_response)
+        mocker.patch.object(session_obj, "post", return_value=post_response)
         return session_obj
 
-    @pytest.fixture(scope='function')
+    @pytest.fixture(scope="function")
     def server_error_then_ok_session_instance(self, mocker):
         # First refresh POST returns 500, second returns 200 with a valid token.
         session_obj = create_session()
         error_response = mock.MagicMock(status_code=500)
-        error_response.text = 'internal server error'
+        error_response.text = "internal server error"
         ok_response = mock.MagicMock(status_code=200)
-        ok_response.json.return_value = {"access_token": ACCESS_TOKEN, "expires_in": EXPIRES_IN}
-        mocker.patch.object(session_obj, 'post',
-                            side_effect=[error_response, ok_response])
+        ok_response.json.return_value = {
+            "access_token": ACCESS_TOKEN,
+            "expires_in": EXPIRES_IN,
+        }
+        mocker.patch.object(session_obj, "post", side_effect=[error_response, ok_response])
         return session_obj
 
-    @pytest.fixture(scope='function')
+    @pytest.fixture(scope="function")
     def server_error_session_instance(self, mocker):
         # Every refresh POST returns 500.
         session_obj = create_session()
         error_response = mock.MagicMock(status_code=500)
-        error_response.text = 'internal server error'
-        mocker.patch.object(session_obj, 'post', return_value=error_response)
+        error_response.text = "internal server error"
+        mocker.patch.object(session_obj, "post", return_value=error_response)
         return session_obj
 
     def test_default_Dropbox_raises_assertion_error(self):
@@ -308,39 +379,50 @@ class TestClient:
 
     def test_Dropbox_with_valid_online_token(self, session_instance):
         # Test Online Case w/ valid access
-        Dropbox(oauth2_access_token=ACCESS_TOKEN, oauth2_access_token_expiration=EXPIRATION,
-                session=session_instance)
+        Dropbox(
+            oauth2_access_token=ACCESS_TOKEN,
+            oauth2_access_token_expiration=EXPIRATION,
+            session=session_instance,
+        )
 
     def test_Dropbox_with_expired_online_token(self, session_instance):
         # Test Online Case w/ invalid access
-        Dropbox(oauth2_access_token=ACCESS_TOKEN,
-                oauth2_access_token_expiration=EXPIRATION - timedelta(weeks=1),
-                session=session_instance)
+        Dropbox(
+            oauth2_access_token=ACCESS_TOKEN,
+            oauth2_access_token_expiration=EXPIRATION - timedelta(weeks=1),
+            session=session_instance,
+        )
 
     def test_Dropbox_with_valid_offline_token(self, session_instance):
         # Test Offline Case w/ valid access
-        Dropbox(oauth2_access_token=ACCESS_TOKEN,
-                oauth2_refresh_token=REFRESH_TOKEN,
-                oauth2_access_token_expiration=EXPIRATION,
-                app_key=APP_KEY,
-                app_secret=APP_SECRET,
-                session=session_instance)
+        Dropbox(
+            oauth2_access_token=ACCESS_TOKEN,
+            oauth2_refresh_token=REFRESH_TOKEN,
+            oauth2_access_token_expiration=EXPIRATION,
+            app_key=APP_KEY,
+            app_secret=APP_SECRET,
+            session=session_instance,
+        )
 
     def test_Dropbox_with_expired_offline_token(self, session_instance):
         # Test Offline Case w/ invalid access
-        Dropbox(oauth2_access_token=ACCESS_TOKEN,
-                oauth2_refresh_token=REFRESH_TOKEN,
-                oauth2_access_token_expiration=EXPIRATION - timedelta(weeks=1),
-                app_key=APP_KEY,
-                app_secret=APP_SECRET,
-                session=session_instance)
+        Dropbox(
+            oauth2_access_token=ACCESS_TOKEN,
+            oauth2_refresh_token=REFRESH_TOKEN,
+            oauth2_access_token_expiration=EXPIRATION - timedelta(weeks=1),
+            app_key=APP_KEY,
+            app_secret=APP_SECRET,
+            session=session_instance,
+        )
 
     def test_Dropbox_with_only_refresh(self, session_instance):
         # Test Offline Case w/ only refresh
-        Dropbox(oauth2_refresh_token=REFRESH_TOKEN,
-                app_key=APP_KEY,
-                app_secret=APP_SECRET,
-                session=session_instance)
+        Dropbox(
+            oauth2_refresh_token=REFRESH_TOKEN,
+            app_key=APP_KEY,
+            app_secret=APP_SECRET,
+            session=session_instance,
+        )
 
     def test_Dropbox_with_only_app_key_and_secret(self, session_instance):
         Dropbox(app_key=APP_KEY, app_secret=APP_SECRET)
@@ -352,146 +434,179 @@ class TestClient:
 
     def test_check_refresh_with_valid_online_token(self, session_instance):
         # Test Online Case w/ valid access
-        dbx = Dropbox(oauth2_access_token=ACCESS_TOKEN, oauth2_access_token_expiration=EXPIRATION,
-                      session=session_instance)
+        dbx = Dropbox(
+            oauth2_access_token=ACCESS_TOKEN,
+            oauth2_access_token_expiration=EXPIRATION,
+            session=session_instance,
+        )
         dbx.check_and_refresh_access_token()
         session_instance.post.assert_not_called()
 
     def test_check_refresh_with_expired_online_token(self, session_instance):
         # Test Online Case w/ invalid access
-        dbx = Dropbox(oauth2_access_token=ACCESS_TOKEN,
-                      oauth2_access_token_expiration=EXPIRATION - timedelta(weeks=1),
-                      session=session_instance)
+        dbx = Dropbox(
+            oauth2_access_token=ACCESS_TOKEN,
+            oauth2_access_token_expiration=EXPIRATION - timedelta(weeks=1),
+            session=session_instance,
+        )
         dbx.check_and_refresh_access_token()
         session_instance.post.assert_not_called()
 
     def test_check_refresh_with_valid_offline_token(self, session_instance):
         # Test Offline Case w/ valid access
-        dbx = Dropbox(oauth2_access_token=ACCESS_TOKEN,
-                      oauth2_refresh_token=REFRESH_TOKEN,
-                      oauth2_access_token_expiration=EXPIRATION,
-                      app_key=APP_KEY,
-                      app_secret=APP_SECRET,
-                      session=session_instance)
+        dbx = Dropbox(
+            oauth2_access_token=ACCESS_TOKEN,
+            oauth2_refresh_token=REFRESH_TOKEN,
+            oauth2_access_token_expiration=EXPIRATION,
+            app_key=APP_KEY,
+            app_secret=APP_SECRET,
+            session=session_instance,
+        )
         dbx.check_and_refresh_access_token()
         session_instance.post.assert_not_called()
 
     def test_check_refresh_with_expired_offline_token(self, session_instance):
         # Test Offline Case w/ invalid access
-        dbx = Dropbox(oauth2_access_token=ACCESS_TOKEN,
-                      oauth2_refresh_token=REFRESH_TOKEN,
-                      oauth2_access_token_expiration=EXPIRATION - timedelta(weeks=1),
-                      app_key=APP_KEY,
-                      app_secret=APP_SECRET,
-                      session=session_instance)
+        dbx = Dropbox(
+            oauth2_access_token=ACCESS_TOKEN,
+            oauth2_refresh_token=REFRESH_TOKEN,
+            oauth2_access_token_expiration=EXPIRATION - timedelta(weeks=1),
+            app_key=APP_KEY,
+            app_secret=APP_SECRET,
+            session=session_instance,
+        )
         dbx.check_and_refresh_access_token()
         assert session_instance.post.call_count == 1
 
     def test_check_refresh_with_only_refresh(self, session_instance):
         # Test Offline Case w/ only refresh
-        dbx = Dropbox(oauth2_refresh_token=REFRESH_TOKEN,
-                      app_key=APP_KEY,
-                      app_secret=APP_SECRET,
-                      session=session_instance)
+        dbx = Dropbox(
+            oauth2_refresh_token=REFRESH_TOKEN,
+            app_key=APP_KEY,
+            app_secret=APP_SECRET,
+            session=session_instance,
+        )
         dbx.check_and_refresh_access_token()
         assert session_instance.post.call_count == 1
 
     def test_refresh_token_with_no_expiration(self, session_instance):
         # Test refresh token is refreshed when not given expiration
-        dbx = Dropbox(oauth2_access_token=ACCESS_TOKEN,
-                      oauth2_refresh_token=REFRESH_TOKEN,
-                      oauth2_access_token_expiration=None,
-                      app_key=APP_KEY,
-                      app_secret=APP_SECRET,
-                      session=session_instance)
+        dbx = Dropbox(
+            oauth2_access_token=ACCESS_TOKEN,
+            oauth2_refresh_token=REFRESH_TOKEN,
+            oauth2_access_token_expiration=None,
+            app_key=APP_KEY,
+            app_secret=APP_SECRET,
+            session=session_instance,
+        )
         dbx.check_and_refresh_access_token()
         assert session_instance.post.call_count == 1
         assert dbx._oauth2_access_token_expiration
 
     def test_check_refresh_with_invalid_grant(self, invalid_grant_session_instance):
-        dbx = Dropbox(oauth2_refresh_token=REFRESH_TOKEN,
-                      app_key=APP_KEY,
-                      app_secret=APP_SECRET,
-                      session=invalid_grant_session_instance)
+        dbx = Dropbox(
+            oauth2_refresh_token=REFRESH_TOKEN,
+            app_key=APP_KEY,
+            app_secret=APP_SECRET,
+            session=invalid_grant_session_instance,
+        )
         with pytest.raises(AuthError) as e:
             dbx.check_and_refresh_access_token()
             assert invalid_grant_session_instance.post.call_count == 1
             assert e.error.is_invalid_access_token()
 
     def test_check_Dropbox_with_ca_certs(self, session_instance_with_ca_certs):
-        Dropbox(oauth2_access_token=ACCESS_TOKEN, oauth2_access_token_expiration=EXPIRATION,
-                session=session_instance_with_ca_certs)
+        Dropbox(
+            oauth2_access_token=ACCESS_TOKEN,
+            oauth2_access_token_expiration=EXPIRATION,
+            session=session_instance_with_ca_certs,
+        )
 
     def test_team_client_refresh(self, session_instance):
-        dbx = DropboxTeam(oauth2_refresh_token=REFRESH_TOKEN,
-                      app_key=APP_KEY,
-                      app_secret=APP_SECRET,
-                      session=session_instance)
+        dbx = DropboxTeam(
+            oauth2_refresh_token=REFRESH_TOKEN,
+            app_key=APP_KEY,
+            app_secret=APP_SECRET,
+            session=session_instance,
+        )
         dbx.check_and_refresh_access_token()
         assert session_instance.post.call_count == 1
 
     def test_team_client_as_admin(self, session_instance):
-        dbx = DropboxTeam(oauth2_refresh_token=REFRESH_TOKEN,
-                      app_key=APP_KEY,
-                      app_secret=APP_SECRET,
-                      session=session_instance,
-                      auto_content_hash=False)
+        dbx = DropboxTeam(
+            oauth2_refresh_token=REFRESH_TOKEN,
+            app_key=APP_KEY,
+            app_secret=APP_SECRET,
+            session=session_instance,
+            auto_content_hash=False,
+        )
         assert dbx.as_admin(ADMIN_ID)._auto_content_hash is False
 
     def test_team_client_as_user(self, session_instance):
-        dbx = DropboxTeam(oauth2_refresh_token=REFRESH_TOKEN,
-                      app_key=APP_KEY,
-                      app_secret=APP_SECRET,
-                      session=session_instance,
-                      auto_content_hash=False)
+        dbx = DropboxTeam(
+            oauth2_refresh_token=REFRESH_TOKEN,
+            app_key=APP_KEY,
+            app_secret=APP_SECRET,
+            session=session_instance,
+            auto_content_hash=False,
+        )
         assert dbx.as_user(TEAM_MEMBER_ID)._auto_content_hash is False
 
     def test_non_list_scope_raises_bad_input(self, session_instance):
         # A non-list scope with no len() must raise BadInputException, not
         # TypeError from calling len() before the isinstance check.
         with pytest.raises(BadInputException):
-            Dropbox(oauth2_access_token=ACCESS_TOKEN,
-                    scope=12345,
-                    session=session_instance)
+            Dropbox(oauth2_access_token=ACCESS_TOKEN, scope=12345, session=session_instance)
 
     def test_clone_does_not_double_user_agent(self, session_instance):
-        dbx = Dropbox(oauth2_access_token=ACCESS_TOKEN, session=session_instance,
-                      user_agent='myapp')
+        dbx = Dropbox(
+            oauth2_access_token=ACCESS_TOKEN,
+            session=session_instance,
+            user_agent="myapp",
+        )
         cloned = dbx.clone()
         # The base suffix must appear exactly once after cloning.
-        assert cloned._user_agent.count('OfficialDropboxPythonSDKv2/') == 1
+        assert cloned._user_agent.count("OfficialDropboxPythonSDKv2/") == 1
         assert cloned._user_agent == dbx._user_agent
 
     def test_clone_preserves_and_can_override_auto_content_hash(self, session_instance):
-        dbx = Dropbox(oauth2_access_token=ACCESS_TOKEN,
-                      session=session_instance,
-                      auto_content_hash=False)
+        dbx = Dropbox(
+            oauth2_access_token=ACCESS_TOKEN,
+            session=session_instance,
+            auto_content_hash=False,
+        )
         assert dbx.clone()._auto_content_hash is False
         assert dbx.clone(auto_content_hash=True)._auto_content_hash is True
 
     def test_with_path_root_preserves_auto_content_hash(self, session_instance):
-        dbx = Dropbox(oauth2_access_token=ACCESS_TOKEN,
-                      session=session_instance,
-                      auto_content_hash=False)
+        dbx = Dropbox(
+            oauth2_access_token=ACCESS_TOKEN,
+            session=session_instance,
+            auto_content_hash=False,
+        )
         cloned = dbx.with_path_root(PathRoot.home)
         assert cloned._auto_content_hash is False
 
     def test_refresh_400_without_error_key(self, bad_request_no_error_key_session_instance):
         # A 400 body lacking the "error" key must raise BadInputError, not KeyError.
-        dbx = Dropbox(oauth2_refresh_token=REFRESH_TOKEN,
-                      app_key=APP_KEY,
-                      app_secret=APP_SECRET,
-                      session=bad_request_no_error_key_session_instance)
+        dbx = Dropbox(
+            oauth2_refresh_token=REFRESH_TOKEN,
+            app_key=APP_KEY,
+            app_secret=APP_SECRET,
+            session=bad_request_no_error_key_session_instance,
+        )
         with pytest.raises(BadInputError):
             dbx.check_and_refresh_access_token()
 
     def test_refresh_retries_on_server_error(self, server_error_then_ok_session_instance):
         # A 5xx on the refresh POST must be retried, then succeed.
-        dbx = Dropbox(oauth2_refresh_token=REFRESH_TOKEN,
-                      app_key=APP_KEY,
-                      app_secret=APP_SECRET,
-                      max_retries_on_error=2,
-                      session=server_error_then_ok_session_instance)
+        dbx = Dropbox(
+            oauth2_refresh_token=REFRESH_TOKEN,
+            app_key=APP_KEY,
+            app_secret=APP_SECRET,
+            max_retries_on_error=2,
+            session=server_error_then_ok_session_instance,
+        )
         dbx.check_and_refresh_access_token()
         assert server_error_then_ok_session_instance.post.call_count == 2
         assert dbx._oauth2_access_token == ACCESS_TOKEN
@@ -499,11 +614,14 @@ class TestClient:
     def test_refresh_raises_after_exhausting_retries(self, server_error_session_instance):
         # Once retries are exhausted, the 5xx propagates as InternalServerError.
         from dropbox.exceptions import InternalServerError
-        dbx = Dropbox(oauth2_refresh_token=REFRESH_TOKEN,
-                      app_key=APP_KEY,
-                      app_secret=APP_SECRET,
-                      max_retries_on_error=2,
-                      session=server_error_session_instance)
+
+        dbx = Dropbox(
+            oauth2_refresh_token=REFRESH_TOKEN,
+            app_key=APP_KEY,
+            app_secret=APP_SECRET,
+            max_retries_on_error=2,
+            session=server_error_session_instance,
+        )
         with pytest.raises(InternalServerError):
             dbx.check_and_refresh_access_token()
         # Initial attempt + 2 retries.
@@ -511,53 +629,52 @@ class TestClient:
 
 
 class TestAutoContentHash:
-
     def _fake_file_metadata(self, size, file_content_hash):
-        return json.dumps({
-            'name': 'a.txt',
-            'id': 'id:1',
-            'client_modified': '2020-01-01T00:00:00Z',
-            'server_modified': '2020-01-01T00:00:00Z',
-            'rev': '0123456789',
-            'size': size,
-            'path_lower': '/a.txt',
-            'path_display': '/a.txt',
-            'content_hash': file_content_hash,
-        })
+        return json.dumps(
+            {
+                "name": "a.txt",
+                "id": "id:1",
+                "client_modified": "2020-01-01T00:00:00Z",
+                "server_modified": "2020-01-01T00:00:00Z",
+                "rev": "0123456789",
+                "size": size,
+                "path_lower": "/a.txt",
+                "path_display": "/a.txt",
+                "content_hash": file_content_hash,
+            }
+        )
 
     def _capture_upload(self, dbx, data, **upload_kwargs):
         # Stub out the network layer and capture the serialized argument sent.
         captured = {}
 
-        def fake_request(host, name, style, serialized_arg, auth, binary,
-                         timeout=None):
-            captured['arg'] = json.loads(serialized_arg)
-            return RouteResult(self._fake_file_metadata(
-                len(data), content_hash(data)))
+        def fake_request(host, name, style, serialized_arg, auth, binary, timeout=None):
+            captured["arg"] = json.loads(serialized_arg)
+            return RouteResult(self._fake_file_metadata(len(data), content_hash(data)))
 
         dbx.request_json_string_with_retry = fake_request
         dbx.check_and_refresh_access_token = lambda: None
-        dbx.files_upload(data, '/a.txt', **upload_kwargs)
-        return captured['arg']
+        dbx.files_upload(data, "/a.txt", **upload_kwargs)
+        return captured["arg"]
 
     def test_upload_adds_content_hash_by_default(self):
-        data = b'hello world'
+        data = b"hello world"
         dbx = Dropbox(oauth2_access_token=ACCESS_TOKEN)
         arg = self._capture_upload(dbx, data)
-        assert arg['content_hash'] == content_hash(data)
+        assert arg["content_hash"] == content_hash(data)
 
     def test_upload_no_content_hash_when_disabled(self):
-        data = b'hello world'
+        data = b"hello world"
         dbx = Dropbox(oauth2_access_token=ACCESS_TOKEN, auto_content_hash=False)
         arg = self._capture_upload(dbx, data)
-        assert 'content_hash' not in arg
+        assert "content_hash" not in arg
 
     def test_upload_respects_caller_content_hash(self):
-        data = b'hello world'
-        caller_hash = 'f' * 64
+        data = b"hello world"
+        caller_hash = "f" * 64
         dbx = Dropbox(oauth2_access_token=ACCESS_TOKEN)
         arg = self._capture_upload(dbx, data, content_hash=caller_hash)
-        assert arg['content_hash'] == caller_hash
+        assert arg["content_hash"] == caller_hash
 
 
 class TestSession:

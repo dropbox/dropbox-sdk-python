@@ -1,15 +1,15 @@
 import hashlib
 
 __all__ = [
-    'BadRequestException',
-    'BadStateException',
-    'CsrfException',
-    'DropboxOAuth2Flow',
-    'DropboxOAuth2FlowNoRedirect',
-    'NotApprovedException',
-    'OAuth2FlowNoRedirectResult',
-    'OAuth2FlowResult',
-    'ProviderException',
+    "BadRequestException",
+    "BadStateException",
+    "CsrfException",
+    "DropboxOAuth2Flow",
+    "DropboxOAuth2FlowNoRedirect",
+    "NotApprovedException",
+    "OAuth2FlowNoRedirectResult",
+    "OAuth2FlowResult",
+    "ProviderException",
 ]
 
 import base64
@@ -28,9 +28,10 @@ from .session import (
 url_path_quote = urllib.parse.quote
 url_encode = urllib.parse.urlencode
 
-TOKEN_ACCESS_TYPES = ['offline', 'online', 'legacy']
-INCLUDE_GRANTED_SCOPES_TYPES = ['user', 'team']
+TOKEN_ACCESS_TYPES = ["offline", "online", "legacy"]
+INCLUDE_GRANTED_SCOPES_TYPES = ["user", "team"]
 PKCE_VERIFIER_LENGTH = 128
+
 
 class OAuth2FlowNoRedirectResult(object):
     """
@@ -62,7 +63,7 @@ class OAuth2FlowNoRedirectResult(object):
         self.scope = scope
 
     def __repr__(self):
-        return 'OAuth2FlowNoRedirectResult(%s, %s, %s, %s, %s, %s)' % (
+        return "OAuth2FlowNoRedirectResult(%s, %s, %s, %s, %s, %s)" % (
             self.access_token,
             self.account_id,
             self.user_id,
@@ -77,8 +78,16 @@ class OAuth2FlowResult(OAuth2FlowNoRedirectResult):
     Authorization information for an :class:`OAuth2Flow` with redirect.
     """
 
-    def __init__(self, access_token, account_id, user_id, url_state, refresh_token,
-                 expires_in, scope):
+    def __init__(
+        self,
+        access_token,
+        account_id,
+        user_id,
+        url_state,
+        refresh_token,
+        expires_in,
+        scope,
+    ):
         """
         Same as :class:`OAuth2FlowNoRedirectResult` but with url_state.
 
@@ -90,17 +99,25 @@ class OAuth2FlowResult(OAuth2FlowNoRedirectResult):
             user_id=user_id,
             refresh_token=refresh_token,
             expiration=expires_in,
-            scope=scope)
+            scope=scope,
+        )
         self.url_state = url_state
 
     @classmethod
     def from_no_redirect_result(cls, result, url_state):
         assert isinstance(result, OAuth2FlowNoRedirectResult)
-        return cls(result.access_token, result.account_id, result.user_id,
-                   url_state, result.refresh_token, result.expires_at, result.scope)
+        return cls(
+            result.access_token,
+            result.account_id,
+            result.user_id,
+            url_state,
+            result.refresh_token,
+            result.expires_at,
+            result.scope,
+        )
 
     def __repr__(self):
-        return 'OAuth2FlowResult(%s, %s, %s, %s, %s, %s, %s)' % (
+        return "OAuth2FlowResult(%s, %s, %s, %s, %s, %s, %s)" % (
             self.access_token,
             self.account_id,
             self.user_id,
@@ -112,15 +129,24 @@ class OAuth2FlowResult(OAuth2FlowNoRedirectResult):
 
 
 class DropboxOAuth2FlowBase(object):
-
-    def __init__(self, consumer_key, consumer_secret=None, locale=None, token_access_type=None,
-                 scope=None, include_granted_scopes=None, use_pkce=False, timeout=DEFAULT_TIMEOUT,
-                 ca_certs=None):
+    def __init__(
+        self,
+        consumer_key,
+        consumer_secret=None,
+        locale=None,
+        token_access_type=None,
+        scope=None,
+        include_granted_scopes=None,
+        use_pkce=False,
+        timeout=DEFAULT_TIMEOUT,
+        ca_certs=None,
+    ):
         if scope is not None and (not isinstance(scope, list) or len(scope) == 0):
             raise BadInputException("Scope list must be of type list")
         if token_access_type is not None and token_access_type not in TOKEN_ACCESS_TYPES:
-            raise BadInputException("Token access type must be from the following enum: {}".format(
-                TOKEN_ACCESS_TYPES))
+            raise BadInputException(
+                "Token access type must be from the following enum: {}".format(TOKEN_ACCESS_TYPES)
+            )
         if not (use_pkce or consumer_secret):
             raise BadInputException("Must pass in either consumer secret or use PKCE")
         if include_granted_scopes and not scope:
@@ -142,80 +168,83 @@ class DropboxOAuth2FlowBase(object):
             self.code_verifier = None
             self.code_challenge = None
 
-    def _get_authorize_url(self, redirect_uri, state, token_access_type=None, scope=None,
-                           include_granted_scopes=None, code_challenge=None):
-        params = dict(response_type='code',
-                      client_id=self.consumer_key)
+    def _get_authorize_url(
+        self,
+        redirect_uri,
+        state,
+        token_access_type=None,
+        scope=None,
+        include_granted_scopes=None,
+        code_challenge=None,
+    ):
+        params = dict(response_type="code", client_id=self.consumer_key)
         if redirect_uri is not None:
-            params['redirect_uri'] = redirect_uri
+            params["redirect_uri"] = redirect_uri
         if state is not None:
-            params['state'] = state
+            params["state"] = state
         if token_access_type is not None:
             assert token_access_type in TOKEN_ACCESS_TYPES
-            params['token_access_type'] = token_access_type
+            params["token_access_type"] = token_access_type
         if code_challenge:
-            params['code_challenge'] = code_challenge
-            params['code_challenge_method'] = 'S256'
+            params["code_challenge"] = code_challenge
+            params["code_challenge_method"] = "S256"
 
         if scope is not None:
-            params['scope'] = " ".join(scope)
+            params["scope"] = " ".join(scope)
             if include_granted_scopes is not None:
                 assert include_granted_scopes in INCLUDE_GRANTED_SCOPES_TYPES
-                params['include_granted_scopes'] = include_granted_scopes
+                params["include_granted_scopes"] = include_granted_scopes
 
-        return self.build_url('/oauth2/authorize', params, WEB_HOST)
+        return self.build_url("/oauth2/authorize", params, WEB_HOST)
 
     def _finish(self, code, redirect_uri, code_verifier):
-        url = self.build_url('/oauth2/token')
-        params = {'grant_type': 'authorization_code',
-                  'code': code,
-                  'client_id': self.consumer_key,
-                  }
+        url = self.build_url("/oauth2/token")
+        params = {
+            "grant_type": "authorization_code",
+            "code": code,
+            "client_id": self.consumer_key,
+        }
         if code_verifier:
-            params['code_verifier'] = code_verifier
+            params["code_verifier"] = code_verifier
         else:
-            params['client_secret'] = self.consumer_secret
+            params["client_secret"] = self.consumer_secret
         if self.locale is not None:
-            params['locale'] = self.locale
+            params["locale"] = self.locale
         if redirect_uri is not None:
-            params['redirect_uri'] = redirect_uri
+            params["redirect_uri"] = redirect_uri
 
         resp = self.requests_session.post(url, data=params, timeout=self._timeout)
         resp.raise_for_status()
 
         d = resp.json()
 
-        if 'team_id' in d:
-            account_id = d['team_id']
+        if "team_id" in d:
+            account_id = d["team_id"]
         else:
-            account_id = d['account_id']
+            account_id = d["account_id"]
 
-        access_token = d['access_token']
+        access_token = d["access_token"]
 
-        if 'refresh_token' in d:
-            refresh_token = d['refresh_token']
+        if "refresh_token" in d:
+            refresh_token = d["refresh_token"]
         else:
             refresh_token = ""
 
-        if 'expires_in' in d:
-            expires_in = d['expires_in']
+        if "expires_in" in d:
+            expires_in = d["expires_in"]
         else:
             expires_in = None
 
-        if 'scope' in d:
-            scope = d['scope']
+        if "scope" in d:
+            scope = d["scope"]
         else:
             scope = None
 
-        uid = d['uid']
+        uid = d["uid"]
 
         return OAuth2FlowNoRedirectResult(
-            access_token,
-            account_id,
-            uid,
-            refresh_token,
-            expires_in,
-            scope)
+            access_token, account_id, uid, refresh_token, expires_in, scope
+        )
 
     def build_path(self, target, params=None):
         """Build the path component for an API URL.
@@ -234,7 +263,7 @@ class DropboxOAuth2FlowBase(object):
         params = params.copy()
 
         if self.locale:
-            params['locale'] = self.locale
+            params["locale"] = self.locale
 
         if params:
             query_string = _params_to_urlencoded(params)
@@ -265,9 +294,18 @@ class DropboxOAuth2FlowNoRedirect(DropboxOAuth2FlowBase):
 
     """
 
-    def __init__(self, consumer_key, consumer_secret=None, locale=None, token_access_type=None,
-                 scope=None, include_granted_scopes=None, use_pkce=False, timeout=DEFAULT_TIMEOUT,
-                 ca_certs=None):  # noqa: E501;
+    def __init__(
+        self,
+        consumer_key,
+        consumer_secret=None,
+        locale=None,
+        token_access_type=None,
+        scope=None,
+        include_granted_scopes=None,
+        use_pkce=False,
+        timeout=DEFAULT_TIMEOUT,
+        ca_certs=None,
+    ):  # noqa: E501;
         """
         Construct an instance.
 
@@ -312,7 +350,7 @@ class DropboxOAuth2FlowNoRedirect(DropboxOAuth2FlowBase):
             include_granted_scopes=include_granted_scopes,
             use_pkce=use_pkce,
             timeout=timeout,
-            ca_certs=ca_certs
+            ca_certs=ca_certs,
         )
 
     def start(self):
@@ -323,10 +361,14 @@ class DropboxOAuth2FlowNoRedirect(DropboxOAuth2FlowBase):
             your app, which gives your app permission to access the user's Dropbox account.
             Tell the user to visit this URL and approve your app.
         """
-        return self._get_authorize_url(None, None, self.token_access_type,
-                                       scope=self.scope,
-                                       include_granted_scopes=self.include_granted_scopes,
-                                       code_challenge=self.code_challenge)
+        return self._get_authorize_url(
+            None,
+            None,
+            self.token_access_type,
+            scope=self.scope,
+            include_granted_scopes=self.include_granted_scopes,
+            code_challenge=self.code_challenge,
+        )
 
     def finish(self, code):
         """
@@ -354,11 +396,21 @@ class DropboxOAuth2Flow(DropboxOAuth2FlowBase):
 
     """
 
-    def __init__(self, consumer_key, redirect_uri, session,
-                 csrf_token_session_key, consumer_secret=None, locale=None,
-                 token_access_type=None, scope=None,
-                 include_granted_scopes=None, use_pkce=False, timeout=DEFAULT_TIMEOUT,
-                 ca_certs=None):
+    def __init__(
+        self,
+        consumer_key,
+        redirect_uri,
+        session,
+        csrf_token_session_key,
+        consumer_secret=None,
+        locale=None,
+        token_access_type=None,
+        scope=None,
+        include_granted_scopes=None,
+        use_pkce=False,
+        timeout=DEFAULT_TIMEOUT,
+        ca_certs=None,
+    ):
         """
         Construct an instance.
 
@@ -410,7 +462,7 @@ class DropboxOAuth2Flow(DropboxOAuth2FlowBase):
             include_granted_scopes=include_granted_scopes,
             use_pkce=use_pkce,
             timeout=timeout,
-            ca_certs=ca_certs
+            ca_certs=ca_certs,
         )
         self.redirect_uri = redirect_uri
         self.session = session
@@ -434,16 +486,20 @@ class DropboxOAuth2Flow(DropboxOAuth2FlowBase):
             app, which gives your app permission to access the user's Dropbox account. Tell the user
             to visit this URL and approve your app.
         """
-        csrf_token = base64.urlsafe_b64encode(os.urandom(16)).decode('ascii')
+        csrf_token = base64.urlsafe_b64encode(os.urandom(16)).decode("ascii")
         state = csrf_token
         if url_state is not None:
             state += "|" + url_state
         self.session[self.csrf_token_session_key] = csrf_token
 
-        return self._get_authorize_url(self.redirect_uri, state, self.token_access_type,
-                                       scope=self.scope,
-                                       include_granted_scopes=self.include_granted_scopes,
-                                       code_challenge=self.code_challenge)
+        return self._get_authorize_url(
+            self.redirect_uri,
+            state,
+            self.token_access_type,
+            scope=self.scope,
+            include_granted_scopes=self.include_granted_scopes,
+            code_challenge=self.code_challenge,
+        )
 
     def finish(self, query_params):
         """
@@ -463,57 +519,53 @@ class DropboxOAuth2Flow(DropboxOAuth2FlowBase):
         """
         # Check well-formedness of request.
 
-        state = query_params.get('state')
+        state = query_params.get("state")
         if state is None:
             raise BadRequestException("Missing query parameter 'state'.")
 
-        error = query_params.get('error')
-        error_description = query_params.get('error_description')
-        code = query_params.get('code')
+        error = query_params.get("error")
+        error_description = query_params.get("error_description")
+        code = query_params.get("code")
 
         if error is not None and code is not None:
             raise BadRequestException(
-                "Query parameters 'code' and 'error' are both set; "
-                "only one must be set.")
+                "Query parameters 'code' and 'error' are both set; only one must be set."
+            )
         if error is None and code is None:
-            raise BadRequestException(
-                "Neither query parameter 'code' or 'error' is set.")
+            raise BadRequestException("Neither query parameter 'code' or 'error' is set.")
 
         # Check CSRF token
 
         if self.csrf_token_session_key not in self.session:
-            raise BadStateException('Missing CSRF token in session.')
+            raise BadStateException("Missing CSRF token in session.")
         csrf_token_from_session = self.session[self.csrf_token_session_key]
         if len(csrf_token_from_session) <= 20:
-            raise AssertionError('CSRF token unexpectedly short: %r' %
-                                 csrf_token_from_session)
+            raise AssertionError("CSRF token unexpectedly short: %r" % csrf_token_from_session)
 
-        split_pos = state.find('|')
+        split_pos = state.find("|")
         if split_pos < 0:
             given_csrf_token = state
             url_state = None
         else:
             given_csrf_token = state[0:split_pos]
-            url_state = state[split_pos + 1:]
+            url_state = state[split_pos + 1 :]
 
         if not _safe_equals(csrf_token_from_session, given_csrf_token):
-            raise CsrfException('expected %r, got %r' %
-                                (csrf_token_from_session, given_csrf_token))
+            raise CsrfException("expected %r, got %r" % (csrf_token_from_session, given_csrf_token))
 
         del self.session[self.csrf_token_session_key]
 
         # Check for error identifier
 
         if error is not None:
-            if error == 'access_denied':
+            if error == "access_denied":
                 # The user clicked "Deny"
                 if error_description is None:
-                    raise NotApprovedException(
-                        'No additional description from Dropbox')
+                    raise NotApprovedException("No additional description from Dropbox")
                 else:
                     raise NotApprovedException(
-                        'Additional description from Dropbox: %s' %
-                        error_description)
+                        "Additional description from Dropbox: %s" % error_description
+                    )
             else:
                 # All other errors
                 full_message = error
@@ -524,8 +576,7 @@ class DropboxOAuth2Flow(DropboxOAuth2FlowBase):
         # If everything went ok, make the network call to get an access token.
 
         no_redirect_result = self._finish(code, self.redirect_uri, self.code_verifier)
-        return OAuth2FlowResult.from_no_redirect_result(
-            no_redirect_result, url_state)
+        return OAuth2FlowResult.from_no_redirect_result(no_redirect_result, url_state)
 
 
 class BadRequestException(Exception):
@@ -534,6 +585,7 @@ class BadRequestException(Exception):
 
     The recommended action is to show an HTTP 400 error page.
     """
+
     pass
 
 
@@ -544,6 +596,7 @@ class BadStateException(Exception):
 
     The recommended action is to redirect the user's browser to try the approval process again.
     """
+
     pass
 
 
@@ -554,6 +607,7 @@ class CsrfException(Exception):
 
     The recommended action is to respond with an HTTP 403 error page.
     """
+
     pass
 
 
@@ -561,6 +615,7 @@ class NotApprovedException(Exception):
     """
     The user chose not to approve your app.
     """
+
     pass
 
 
@@ -571,6 +626,7 @@ class ProviderException(Exception):
     The recommended action is to log the error, tell the user something went wrong, and let them try
     again.
     """
+
     pass
 
 
@@ -581,6 +637,7 @@ class BadInputException(Exception):
     This should only ever be thrown during testing, app should have validation of input prior to
     reaching this point
     """
+
     pass
 
 
@@ -601,27 +658,30 @@ def _params_to_urlencoded(params):
     Keys are values are ``str()``'d before calling :meth:`urllib.urlencode`, with the exception of
     unicode objects which are utf8-encoded.
     """
+
     def encode(o):
         if isinstance(o, bytes):
             return o
         else:
             if isinstance(o, str):
-                return o.encode('utf-8')
+                return o.encode("utf-8")
             else:
-                return str(o).encode('utf-8')
+                return str(o).encode("utf-8")
 
     utf8_params = {encode(k): encode(v) for k, v in params.items()}
     return url_encode(utf8_params)
 
+
 def _generate_pkce_code_verifier():
-    code_verifier = base64.urlsafe_b64encode(os.urandom(PKCE_VERIFIER_LENGTH)).decode('utf-8')
-    code_verifier = re.sub('[^a-zA-Z0-9]+', '', code_verifier)
+    code_verifier = base64.urlsafe_b64encode(os.urandom(PKCE_VERIFIER_LENGTH)).decode("utf-8")
+    code_verifier = re.sub("[^a-zA-Z0-9]+", "", code_verifier)
     if len(code_verifier) > PKCE_VERIFIER_LENGTH:
         code_verifier = code_verifier[:128]
     return code_verifier
 
+
 def _generate_pkce_code_challenge(code_verifier):
-    code_challenge = hashlib.sha256(code_verifier.encode('utf-8')).digest()
-    code_challenge = base64.urlsafe_b64encode(code_challenge).decode('utf-8')
-    code_challenge = code_challenge.replace('=', '')
+    code_challenge = hashlib.sha256(code_verifier.encode("utf-8")).digest()
+    code_challenge = base64.urlsafe_b64encode(code_challenge).decode("utf-8")
+    code_challenge = code_challenge.replace("=", "")
     return code_challenge

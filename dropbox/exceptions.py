@@ -30,7 +30,7 @@ class ApiError(DropboxException):
         self.user_message_locale = user_message_locale
 
     def __repr__(self):
-        return 'ApiError({!r}, {})'.format(self.request_id, self.error)
+        return "ApiError({!r}, {})".format(self.request_id, self.error)
 
 
 class HttpError(DropboxException):
@@ -42,8 +42,7 @@ class HttpError(DropboxException):
         self.body = body
 
     def __repr__(self):
-        return 'HttpError({!r}, {}, {!r})'.format(self.request_id,
-            self.status_code, self.body)
+        return "HttpError({!r}, {}, {!r})".format(self.request_id, self.status_code, self.body)
 
 
 class PathRootError(HttpError):
@@ -54,7 +53,7 @@ class PathRootError(HttpError):
         self.error = error
 
     def __repr__(self):
-        return 'PathRootError({!r}, {!r})'.format(self.request_id, self.error)
+        return "PathRootError({!r}, {!r})".format(self.request_id, self.error)
 
 
 class BadInputError(HttpError):
@@ -65,7 +64,7 @@ class BadInputError(HttpError):
         self.message = message
 
     def __repr__(self):
-        return 'BadInputError({!r}, {!r})'.format(self.request_id, self.message)
+        return "BadInputError({!r}, {!r})".format(self.request_id, self.message)
 
 
 class AuthError(HttpError):
@@ -76,7 +75,7 @@ class AuthError(HttpError):
         self.error = error
 
     def __repr__(self):
-        return 'AuthError({!r}, {!r})'.format(self.request_id, self.error)
+        return "AuthError({!r}, {!r})".format(self.request_id, self.error)
 
 
 class RateLimitError(HttpError):
@@ -88,13 +87,13 @@ class RateLimitError(HttpError):
         self.backoff = backoff
 
     def __repr__(self):
-        return 'RateLimitError({!r}, {!r}, {!r})'.format(
-            self.request_id, self.error, self.backoff)
+        return "RateLimitError({!r}, {!r}, {!r})".format(self.request_id, self.error, self.backoff)
 
 
 class InternalServerError(HttpError):
     """Errors due to a problem on Dropbox."""
 
     def __repr__(self):
-        return 'InternalServerError({!r}, {}, {!r})'.format(
-            self.request_id, self.status_code, self.body)
+        return "InternalServerError({!r}, {}, {!r})".format(
+            self.request_id, self.status_code, self.body
+        )

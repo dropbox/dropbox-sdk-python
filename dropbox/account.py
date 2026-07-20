@@ -7,6 +7,7 @@ from __future__ import unicode_literals
 from stone.backends.python_rsrc import stone_base as bb
 from stone.backends.python_rsrc import stone_validators as bv
 
+
 class AccountPhotoGetArg(bb.Struct):
     """
     :ivar AccountPhotoGetArg.dbx_account_id:
@@ -20,19 +21,21 @@ class AccountPhotoGetArg(bb.Struct):
     """
 
     __slots__ = [
-        '_dbx_account_id_value',
-        '_size_value',
-        '_circle_crop_value',
-        '_expect_account_photo_value',
+        "_dbx_account_id_value",
+        "_size_value",
+        "_circle_crop_value",
+        "_expect_account_photo_value",
     ]
 
     _has_required_fields = True
 
-    def __init__(self,
-                 dbx_account_id=None,
-                 size=None,
-                 circle_crop=None,
-                 expect_account_photo=None):
+    def __init__(
+        self,
+        dbx_account_id=None,
+        size=None,
+        circle_crop=None,
+        expect_account_photo=None,
+    ):
         self._dbx_account_id_value = bb.NOT_SET
         self._size_value = bb.NOT_SET
         self._circle_crop_value = bb.NOT_SET
@@ -59,9 +62,13 @@ class AccountPhotoGetArg(bb.Struct):
     expect_account_photo = bb.Attribute("expect_account_photo")
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
-        super(AccountPhotoGetArg, self)._process_custom_annotations(annotation_type, field_path, processor)
+        super(AccountPhotoGetArg, self)._process_custom_annotations(
+            annotation_type, field_path, processor
+        )
+
 
 AccountPhotoGetArg_validator = bv.Struct(AccountPhotoGetArg)
+
 
 class AccountPhotoGetError(bb.Union):
     """
@@ -78,7 +85,7 @@ class AccountPhotoGetError(bb.Union):
         Account photo was expected to exist, but it's missing.
     """
 
-    _catch_all = 'other'
+    _catch_all = "other"
     # Attribute is overwritten below the class definition
     account_photo_missing = None
     # Attribute is overwritten below the class definition
@@ -95,7 +102,7 @@ class AccountPhotoGetError(bb.Union):
         :param ThumbnailError val:
         :rtype: AccountPhotoGetError
         """
-        return cls('thumbnail_error', val)
+        return cls("thumbnail_error", val)
 
     def is_thumbnail_error(self):
         """
@@ -103,7 +110,7 @@ class AccountPhotoGetError(bb.Union):
 
         :rtype: bool
         """
-        return self._tag == 'thumbnail_error'
+        return self._tag == "thumbnail_error"
 
     def is_account_photo_missing(self):
         """
@@ -111,7 +118,7 @@ class AccountPhotoGetError(bb.Union):
 
         :rtype: bool
         """
-        return self._tag == 'account_photo_missing'
+        return self._tag == "account_photo_missing"
 
     def is_expected_account_photo_missing(self):
         """
@@ -119,7 +126,7 @@ class AccountPhotoGetError(bb.Union):
 
         :rtype: bool
         """
-        return self._tag == 'expected_account_photo_missing'
+        return self._tag == "expected_account_photo_missing"
 
     def is_other(self):
         """
@@ -127,7 +134,7 @@ class AccountPhotoGetError(bb.Union):
 
         :rtype: bool
         """
-        return self._tag == 'other'
+        return self._tag == "other"
 
     def get_thumbnail_error(self):
         """
@@ -142,9 +149,13 @@ class AccountPhotoGetError(bb.Union):
         return self._value
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
-        super(AccountPhotoGetError, self)._process_custom_annotations(annotation_type, field_path, processor)
+        super(AccountPhotoGetError, self)._process_custom_annotations(
+            annotation_type, field_path, processor
+        )
+
 
 AccountPhotoGetError_validator = bv.Union(AccountPhotoGetError)
+
 
 class AccountPhotoGetResult(bb.Struct):
     """
@@ -153,13 +164,12 @@ class AccountPhotoGetResult(bb.Struct):
     """
 
     __slots__ = [
-        '_content_type_value',
+        "_content_type_value",
     ]
 
     _has_required_fields = True
 
-    def __init__(self,
-                 content_type=None):
+    def __init__(self, content_type=None):
         self._content_type_value = bb.NOT_SET
         if content_type is not None:
             self.content_type = content_type
@@ -168,9 +178,13 @@ class AccountPhotoGetResult(bb.Struct):
     content_type = bb.Attribute("content_type")
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
-        super(AccountPhotoGetResult, self)._process_custom_annotations(annotation_type, field_path, processor)
+        super(AccountPhotoGetResult, self)._process_custom_annotations(
+            annotation_type, field_path, processor
+        )
+
 
 AccountPhotoGetResult_validator = bv.Struct(AccountPhotoGetResult)
+
 
 class DeleteProfilePhotoArg(bb.Struct):
     """
@@ -178,8 +192,7 @@ class DeleteProfilePhotoArg(bb.Struct):
     indentation issues with Stone.
     """
 
-    __slots__ = [
-    ]
+    __slots__ = []
 
     _has_required_fields = False
 
@@ -187,9 +200,13 @@ class DeleteProfilePhotoArg(bb.Struct):
         pass
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
-        super(DeleteProfilePhotoArg, self)._process_custom_annotations(annotation_type, field_path, processor)
+        super(DeleteProfilePhotoArg, self)._process_custom_annotations(
+            annotation_type, field_path, processor
+        )
+
 
 DeleteProfilePhotoArg_validator = bv.Struct(DeleteProfilePhotoArg)
+
 
 class DeleteProfilePhotoError(bb.Union):
     """
@@ -201,7 +218,7 @@ class DeleteProfilePhotoError(bb.Union):
     corresponding ``get_*`` method.
     """
 
-    _catch_all = 'other'
+    _catch_all = "other"
     # Attribute is overwritten below the class definition
     other = None
 
@@ -211,12 +228,16 @@ class DeleteProfilePhotoError(bb.Union):
 
         :rtype: bool
         """
-        return self._tag == 'other'
+        return self._tag == "other"
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
-        super(DeleteProfilePhotoError, self)._process_custom_annotations(annotation_type, field_path, processor)
+        super(DeleteProfilePhotoError, self)._process_custom_annotations(
+            annotation_type, field_path, processor
+        )
+
 
 DeleteProfilePhotoError_validator = bv.Union(DeleteProfilePhotoError)
+
 
 class DeleteProfilePhotoResult(bb.Struct):
     """
@@ -224,8 +245,7 @@ class DeleteProfilePhotoResult(bb.Struct):
     indentation issues with Stone.
     """
 
-    __slots__ = [
-    ]
+    __slots__ = []
 
     _has_required_fields = False
 
@@ -233,9 +253,13 @@ class DeleteProfilePhotoResult(bb.Struct):
         pass
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
-        super(DeleteProfilePhotoResult, self)._process_custom_annotations(annotation_type, field_path, processor)
+        super(DeleteProfilePhotoResult, self)._process_custom_annotations(
+            annotation_type, field_path, processor
+        )
+
 
 DeleteProfilePhotoResult_validator = bv.Struct(DeleteProfilePhotoResult)
+
 
 class PhotoSourceArg(bb.Union):
     """
@@ -248,7 +272,7 @@ class PhotoSourceArg(bb.Union):
     :vartype PhotoSourceArg.base64_data: str
     """
 
-    _catch_all = 'other'
+    _catch_all = "other"
     # Attribute is overwritten below the class definition
     other = None
 
@@ -261,7 +285,7 @@ class PhotoSourceArg(bb.Union):
         :param str val:
         :rtype: PhotoSourceArg
         """
-        return cls('base64_data', val)
+        return cls("base64_data", val)
 
     def is_base64_data(self):
         """
@@ -269,7 +293,7 @@ class PhotoSourceArg(bb.Union):
 
         :rtype: bool
         """
-        return self._tag == 'base64_data'
+        return self._tag == "base64_data"
 
     def is_other(self):
         """
@@ -277,7 +301,7 @@ class PhotoSourceArg(bb.Union):
 
         :rtype: bool
         """
-        return self._tag == 'other'
+        return self._tag == "other"
 
     def get_base64_data(self):
         """
@@ -292,9 +316,13 @@ class PhotoSourceArg(bb.Union):
         return self._value
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
-        super(PhotoSourceArg, self)._process_custom_annotations(annotation_type, field_path, processor)
+        super(PhotoSourceArg, self)._process_custom_annotations(
+            annotation_type, field_path, processor
+        )
+
 
 PhotoSourceArg_validator = bv.Union(PhotoSourceArg)
+
 
 class SetProfilePhotoArg(bb.Struct):
     """
@@ -303,13 +331,12 @@ class SetProfilePhotoArg(bb.Struct):
     """
 
     __slots__ = [
-        '_photo_value',
+        "_photo_value",
     ]
 
     _has_required_fields = True
 
-    def __init__(self,
-                 photo=None):
+    def __init__(self, photo=None):
         self._photo_value = bb.NOT_SET
         if photo is not None:
             self.photo = photo
@@ -318,9 +345,13 @@ class SetProfilePhotoArg(bb.Struct):
     photo = bb.Attribute("photo", user_defined=True)
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
-        super(SetProfilePhotoArg, self)._process_custom_annotations(annotation_type, field_path, processor)
+        super(SetProfilePhotoArg, self)._process_custom_annotations(
+            annotation_type, field_path, processor
+        )
+
 
 SetProfilePhotoArg_validator = bv.Struct(SetProfilePhotoArg)
+
 
 class SetProfilePhotoError(bb.Union):
     """
@@ -340,7 +371,7 @@ class SetProfilePhotoError(bb.Union):
         Temporary infrastructure failure, please retry.
     """
 
-    _catch_all = 'other'
+    _catch_all = "other"
     # Attribute is overwritten below the class definition
     file_type_error = None
     # Attribute is overwritten below the class definition
@@ -360,7 +391,7 @@ class SetProfilePhotoError(bb.Union):
 
         :rtype: bool
         """
-        return self._tag == 'file_type_error'
+        return self._tag == "file_type_error"
 
     def is_file_size_error(self):
         """
@@ -368,7 +399,7 @@ class SetProfilePhotoError(bb.Union):
 
         :rtype: bool
         """
-        return self._tag == 'file_size_error'
+        return self._tag == "file_size_error"
 
     def is_dimension_error(self):
         """
@@ -376,7 +407,7 @@ class SetProfilePhotoError(bb.Union):
 
         :rtype: bool
         """
-        return self._tag == 'dimension_error'
+        return self._tag == "dimension_error"
 
     def is_thumbnail_error(self):
         """
@@ -384,7 +415,7 @@ class SetProfilePhotoError(bb.Union):
 
         :rtype: bool
         """
-        return self._tag == 'thumbnail_error'
+        return self._tag == "thumbnail_error"
 
     def is_transient_error(self):
         """
@@ -392,7 +423,7 @@ class SetProfilePhotoError(bb.Union):
 
         :rtype: bool
         """
-        return self._tag == 'transient_error'
+        return self._tag == "transient_error"
 
     def is_other(self):
         """
@@ -400,12 +431,16 @@ class SetProfilePhotoError(bb.Union):
 
         :rtype: bool
         """
-        return self._tag == 'other'
+        return self._tag == "other"
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
-        super(SetProfilePhotoError, self)._process_custom_annotations(annotation_type, field_path, processor)
+        super(SetProfilePhotoError, self)._process_custom_annotations(
+            annotation_type, field_path, processor
+        )
+
 
 SetProfilePhotoError_validator = bv.Union(SetProfilePhotoError)
+
 
 class SetProfilePhotoResult(bb.Struct):
     """
@@ -414,13 +449,12 @@ class SetProfilePhotoResult(bb.Struct):
     """
 
     __slots__ = [
-        '_profile_photo_url_value',
+        "_profile_photo_url_value",
     ]
 
     _has_required_fields = True
 
-    def __init__(self,
-                 profile_photo_url=None):
+    def __init__(self, profile_photo_url=None):
         self._profile_photo_url_value = bb.NOT_SET
         if profile_photo_url is not None:
             self.profile_photo_url = profile_photo_url
@@ -429,9 +463,13 @@ class SetProfilePhotoResult(bb.Struct):
     profile_photo_url = bb.Attribute("profile_photo_url")
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
-        super(SetProfilePhotoResult, self)._process_custom_annotations(annotation_type, field_path, processor)
+        super(SetProfilePhotoResult, self)._process_custom_annotations(
+            annotation_type, field_path, processor
+        )
+
 
 SetProfilePhotoResult_validator = bv.Struct(SetProfilePhotoResult)
+
 
 class ThumbnailError(bb.Union):
     """
@@ -445,7 +483,7 @@ class ThumbnailError(bb.Union):
         Indicates temporary infrastructural failure.
     """
 
-    _catch_all = 'other'
+    _catch_all = "other"
     # Attribute is overwritten below the class definition
     permanent_failure = None
     # Attribute is overwritten below the class definition
@@ -459,7 +497,7 @@ class ThumbnailError(bb.Union):
 
         :rtype: bool
         """
-        return self._tag == 'permanent_failure'
+        return self._tag == "permanent_failure"
 
     def is_temporary_failure(self):
         """
@@ -467,7 +505,7 @@ class ThumbnailError(bb.Union):
 
         :rtype: bool
         """
-        return self._tag == 'temporary_failure'
+        return self._tag == "temporary_failure"
 
     def is_other(self):
         """
@@ -475,10 +513,13 @@ class ThumbnailError(bb.Union):
 
         :rtype: bool
         """
-        return self._tag == 'other'
+        return self._tag == "other"
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
-        super(ThumbnailError, self)._process_custom_annotations(annotation_type, field_path, processor)
+        super(ThumbnailError, self)._process_custom_annotations(
+            annotation_type, field_path, processor
+        )
+
 
 ThumbnailError_validator = bv.Union(ThumbnailError)
 
@@ -486,17 +527,19 @@ AccountPhotoGetArg.dbx_account_id.validator = bv.String()
 AccountPhotoGetArg.size.validator = bv.String()
 AccountPhotoGetArg.circle_crop.validator = bv.Boolean()
 AccountPhotoGetArg.expect_account_photo.validator = bv.Boolean()
-AccountPhotoGetArg._all_field_names_ = set([
-    'dbx_account_id',
-    'size',
-    'circle_crop',
-    'expect_account_photo',
-])
+AccountPhotoGetArg._all_field_names_ = set(
+    [
+        "dbx_account_id",
+        "size",
+        "circle_crop",
+        "expect_account_photo",
+    ]
+)
 AccountPhotoGetArg._all_fields_ = [
-    ('dbx_account_id', AccountPhotoGetArg.dbx_account_id.validator),
-    ('size', AccountPhotoGetArg.size.validator),
-    ('circle_crop', AccountPhotoGetArg.circle_crop.validator),
-    ('expect_account_photo', AccountPhotoGetArg.expect_account_photo.validator),
+    ("dbx_account_id", AccountPhotoGetArg.dbx_account_id.validator),
+    ("size", AccountPhotoGetArg.size.validator),
+    ("circle_crop", AccountPhotoGetArg.circle_crop.validator),
+    ("expect_account_photo", AccountPhotoGetArg.expect_account_photo.validator),
 ]
 
 AccountPhotoGetError._thumbnail_error_validator = ThumbnailError_validator
@@ -504,29 +547,33 @@ AccountPhotoGetError._account_photo_missing_validator = bv.Void()
 AccountPhotoGetError._expected_account_photo_missing_validator = bv.Void()
 AccountPhotoGetError._other_validator = bv.Void()
 AccountPhotoGetError._tagmap = {
-    'thumbnail_error': AccountPhotoGetError._thumbnail_error_validator,
-    'account_photo_missing': AccountPhotoGetError._account_photo_missing_validator,
-    'expected_account_photo_missing': AccountPhotoGetError._expected_account_photo_missing_validator,
-    'other': AccountPhotoGetError._other_validator,
+    "thumbnail_error": AccountPhotoGetError._thumbnail_error_validator,
+    "account_photo_missing": AccountPhotoGetError._account_photo_missing_validator,
+    "expected_account_photo_missing": AccountPhotoGetError._expected_account_photo_missing_validator,
+    "other": AccountPhotoGetError._other_validator,
 }
 
-AccountPhotoGetError.account_photo_missing = AccountPhotoGetError('account_photo_missing')
-AccountPhotoGetError.expected_account_photo_missing = AccountPhotoGetError('expected_account_photo_missing')
-AccountPhotoGetError.other = AccountPhotoGetError('other')
+AccountPhotoGetError.account_photo_missing = AccountPhotoGetError("account_photo_missing")
+AccountPhotoGetError.expected_account_photo_missing = AccountPhotoGetError(
+    "expected_account_photo_missing"
+)
+AccountPhotoGetError.other = AccountPhotoGetError("other")
 
 AccountPhotoGetResult.content_type.validator = bv.String()
-AccountPhotoGetResult._all_field_names_ = set(['content_type'])
-AccountPhotoGetResult._all_fields_ = [('content_type', AccountPhotoGetResult.content_type.validator)]
+AccountPhotoGetResult._all_field_names_ = set(["content_type"])
+AccountPhotoGetResult._all_fields_ = [
+    ("content_type", AccountPhotoGetResult.content_type.validator)
+]
 
 DeleteProfilePhotoArg._all_field_names_ = set([])
 DeleteProfilePhotoArg._all_fields_ = []
 
 DeleteProfilePhotoError._other_validator = bv.Void()
 DeleteProfilePhotoError._tagmap = {
-    'other': DeleteProfilePhotoError._other_validator,
+    "other": DeleteProfilePhotoError._other_validator,
 }
 
-DeleteProfilePhotoError.other = DeleteProfilePhotoError('other')
+DeleteProfilePhotoError.other = DeleteProfilePhotoError("other")
 
 DeleteProfilePhotoResult._all_field_names_ = set([])
 DeleteProfilePhotoResult._all_fields_ = []
@@ -534,15 +581,15 @@ DeleteProfilePhotoResult._all_fields_ = []
 PhotoSourceArg._base64_data_validator = bv.String()
 PhotoSourceArg._other_validator = bv.Void()
 PhotoSourceArg._tagmap = {
-    'base64_data': PhotoSourceArg._base64_data_validator,
-    'other': PhotoSourceArg._other_validator,
+    "base64_data": PhotoSourceArg._base64_data_validator,
+    "other": PhotoSourceArg._other_validator,
 }
 
-PhotoSourceArg.other = PhotoSourceArg('other')
+PhotoSourceArg.other = PhotoSourceArg("other")
 
 SetProfilePhotoArg.photo.validator = PhotoSourceArg_validator
-SetProfilePhotoArg._all_field_names_ = set(['photo'])
-SetProfilePhotoArg._all_fields_ = [('photo', SetProfilePhotoArg.photo.validator)]
+SetProfilePhotoArg._all_field_names_ = set(["photo"])
+SetProfilePhotoArg._all_fields_ = [("photo", SetProfilePhotoArg.photo.validator)]
 
 SetProfilePhotoError._file_type_error_validator = bv.Void()
 SetProfilePhotoError._file_size_error_validator = bv.Void()
@@ -551,75 +598,70 @@ SetProfilePhotoError._thumbnail_error_validator = bv.Void()
 SetProfilePhotoError._transient_error_validator = bv.Void()
 SetProfilePhotoError._other_validator = bv.Void()
 SetProfilePhotoError._tagmap = {
-    'file_type_error': SetProfilePhotoError._file_type_error_validator,
-    'file_size_error': SetProfilePhotoError._file_size_error_validator,
-    'dimension_error': SetProfilePhotoError._dimension_error_validator,
-    'thumbnail_error': SetProfilePhotoError._thumbnail_error_validator,
-    'transient_error': SetProfilePhotoError._transient_error_validator,
-    'other': SetProfilePhotoError._other_validator,
+    "file_type_error": SetProfilePhotoError._file_type_error_validator,
+    "file_size_error": SetProfilePhotoError._file_size_error_validator,
+    "dimension_error": SetProfilePhotoError._dimension_error_validator,
+    "thumbnail_error": SetProfilePhotoError._thumbnail_error_validator,
+    "transient_error": SetProfilePhotoError._transient_error_validator,
+    "other": SetProfilePhotoError._other_validator,
 }
 
-SetProfilePhotoError.file_type_error = SetProfilePhotoError('file_type_error')
-SetProfilePhotoError.file_size_error = SetProfilePhotoError('file_size_error')
-SetProfilePhotoError.dimension_error = SetProfilePhotoError('dimension_error')
-SetProfilePhotoError.thumbnail_error = SetProfilePhotoError('thumbnail_error')
-SetProfilePhotoError.transient_error = SetProfilePhotoError('transient_error')
-SetProfilePhotoError.other = SetProfilePhotoError('other')
+SetProfilePhotoError.file_type_error = SetProfilePhotoError("file_type_error")
+SetProfilePhotoError.file_size_error = SetProfilePhotoError("file_size_error")
+SetProfilePhotoError.dimension_error = SetProfilePhotoError("dimension_error")
+SetProfilePhotoError.thumbnail_error = SetProfilePhotoError("thumbnail_error")
+SetProfilePhotoError.transient_error = SetProfilePhotoError("transient_error")
+SetProfilePhotoError.other = SetProfilePhotoError("other")
 
 SetProfilePhotoResult.profile_photo_url.validator = bv.String()
-SetProfilePhotoResult._all_field_names_ = set(['profile_photo_url'])
-SetProfilePhotoResult._all_fields_ = [('profile_photo_url', SetProfilePhotoResult.profile_photo_url.validator)]
+SetProfilePhotoResult._all_field_names_ = set(["profile_photo_url"])
+SetProfilePhotoResult._all_fields_ = [
+    ("profile_photo_url", SetProfilePhotoResult.profile_photo_url.validator)
+]
 
 ThumbnailError._permanent_failure_validator = bv.Void()
 ThumbnailError._temporary_failure_validator = bv.Void()
 ThumbnailError._other_validator = bv.Void()
 ThumbnailError._tagmap = {
-    'permanent_failure': ThumbnailError._permanent_failure_validator,
-    'temporary_failure': ThumbnailError._temporary_failure_validator,
-    'other': ThumbnailError._other_validator,
+    "permanent_failure": ThumbnailError._permanent_failure_validator,
+    "temporary_failure": ThumbnailError._temporary_failure_validator,
+    "other": ThumbnailError._other_validator,
 }
 
-ThumbnailError.permanent_failure = ThumbnailError('permanent_failure')
-ThumbnailError.temporary_failure = ThumbnailError('temporary_failure')
-ThumbnailError.other = ThumbnailError('other')
+ThumbnailError.permanent_failure = ThumbnailError("permanent_failure")
+ThumbnailError.temporary_failure = ThumbnailError("temporary_failure")
+ThumbnailError.other = ThumbnailError("other")
 
 delete_profile_photo = bb.Route(
-    'delete_profile_photo',
+    "delete_profile_photo",
     1,
     False,
     DeleteProfilePhotoArg_validator,
     DeleteProfilePhotoResult_validator,
     DeleteProfilePhotoError_validator,
-    {'auth': 'user',
-     'host': 'api',
-     'style': 'rpc'},
+    {"auth": "user", "host": "api", "style": "rpc"},
 )
 get_photo = bb.Route(
-    'get_photo',
+    "get_photo",
     1,
     False,
     AccountPhotoGetArg_validator,
     AccountPhotoGetResult_validator,
     AccountPhotoGetError_validator,
-    {'auth': 'user',
-     'host': 'content',
-     'style': 'download'},
+    {"auth": "user", "host": "content", "style": "download"},
 )
 set_profile_photo = bb.Route(
-    'set_profile_photo',
+    "set_profile_photo",
     1,
     False,
     SetProfilePhotoArg_validator,
     SetProfilePhotoResult_validator,
     SetProfilePhotoError_validator,
-    {'auth': 'user',
-     'host': 'api',
-     'style': 'rpc'},
+    {"auth": "user", "host": "api", "style": "rpc"},
 )
 
 ROUTES = {
-    'delete_profile_photo': delete_profile_photo,
-    'get_photo': get_photo,
-    'set_profile_photo': set_profile_photo,
+    "delete_profile_photo": delete_profile_photo,
+    "get_photo": get_photo,
+    "set_profile_photo": set_profile_photo,
 }
-

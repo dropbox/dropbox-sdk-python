@@ -7,6 +7,7 @@ from __future__ import unicode_literals
 from stone.backends.python_rsrc import stone_base as bb
 from stone.backends.python_rsrc import stone_validators as bv
 
+
 class EchoArg(bb.Struct):
     """
     Contains the arguments to be sent to the Dropbox servers.
@@ -16,13 +17,12 @@ class EchoArg(bb.Struct):
     """
 
     __slots__ = [
-        '_query_value',
+        "_query_value",
     ]
 
     _has_required_fields = False
 
-    def __init__(self,
-                 query=None):
+    def __init__(self, query=None):
         self._query_value = bb.NOT_SET
         if query is not None:
             self.query = query
@@ -33,7 +33,9 @@ class EchoArg(bb.Struct):
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(EchoArg, self)._process_custom_annotations(annotation_type, field_path, processor)
 
+
 EchoArg_validator = bv.Struct(EchoArg)
+
 
 class EchoError(bb.Union):
     """
@@ -47,7 +49,7 @@ class EchoError(bb.Union):
         The request was successful.
     """
 
-    _catch_all = 'other'
+    _catch_all = "other"
     # Attribute is overwritten below the class definition
     user_requested = None
     # Attribute is overwritten below the class definition
@@ -59,7 +61,7 @@ class EchoError(bb.Union):
 
         :rtype: bool
         """
-        return self._tag == 'user_requested'
+        return self._tag == "user_requested"
 
     def is_other(self):
         """
@@ -67,12 +69,14 @@ class EchoError(bb.Union):
 
         :rtype: bool
         """
-        return self._tag == 'other'
+        return self._tag == "other"
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(EchoError, self)._process_custom_annotations(annotation_type, field_path, processor)
 
+
 EchoError_validator = bv.Union(EchoError)
+
 
 class EchoResult(bb.Struct):
     """
@@ -83,13 +87,12 @@ class EchoResult(bb.Struct):
     """
 
     __slots__ = [
-        '_result_value',
+        "_result_value",
     ]
 
     _has_required_fields = False
 
-    def __init__(self,
-                 result=None):
+    def __init__(self, result=None):
         self._result_value = bb.NOT_SET
         if result is not None:
             self.result = result
@@ -100,53 +103,49 @@ class EchoResult(bb.Struct):
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(EchoResult, self)._process_custom_annotations(annotation_type, field_path, processor)
 
+
 EchoResult_validator = bv.Struct(EchoResult)
 
 EchoArg.query.validator = bv.String(max_length=500)
-EchoArg._all_field_names_ = set(['query'])
-EchoArg._all_fields_ = [('query', EchoArg.query.validator)]
+EchoArg._all_field_names_ = set(["query"])
+EchoArg._all_fields_ = [("query", EchoArg.query.validator)]
 
 EchoError._user_requested_validator = bv.Void()
 EchoError._other_validator = bv.Void()
 EchoError._tagmap = {
-    'user_requested': EchoError._user_requested_validator,
-    'other': EchoError._other_validator,
+    "user_requested": EchoError._user_requested_validator,
+    "other": EchoError._other_validator,
 }
 
-EchoError.user_requested = EchoError('user_requested')
-EchoError.other = EchoError('other')
+EchoError.user_requested = EchoError("user_requested")
+EchoError.other = EchoError("other")
 
 EchoResult.result.validator = bv.String()
-EchoResult._all_field_names_ = set(['result'])
-EchoResult._all_fields_ = [('result', EchoResult.result.validator)]
+EchoResult._all_field_names_ = set(["result"])
+EchoResult._all_fields_ = [("result", EchoResult.result.validator)]
 
-EchoArg.query.default = ''
-EchoResult.result.default = ''
+EchoArg.query.default = ""
+EchoResult.result.default = ""
 app = bb.Route(
-    'app',
+    "app",
     1,
     False,
     EchoArg_validator,
     EchoResult_validator,
     EchoError_validator,
-    {'auth': 'app',
-     'host': 'api',
-     'style': 'rpc'},
+    {"auth": "app", "host": "api", "style": "rpc"},
 )
 user = bb.Route(
-    'user',
+    "user",
     1,
     False,
     EchoArg_validator,
     EchoResult_validator,
     EchoError_validator,
-    {'auth': 'user',
-     'host': 'api',
-     'style': 'rpc'},
+    {"auth": "user", "host": "api", "style": "rpc"},
 )
 
 ROUTES = {
-    'app': app,
-    'user': user,
+    "app": app,
+    "user": user,
 }
-

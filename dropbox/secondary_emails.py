@@ -9,6 +9,7 @@ from stone.backends.python_rsrc import stone_validators as bv
 
 from dropbox import common
 
+
 class SecondaryEmail(bb.Struct):
     """
     :ivar SecondaryEmail.email:
@@ -19,15 +20,13 @@ class SecondaryEmail(bb.Struct):
     """
 
     __slots__ = [
-        '_email_value',
-        '_is_verified_value',
+        "_email_value",
+        "_is_verified_value",
     ]
 
     _has_required_fields = True
 
-    def __init__(self,
-                 email=None,
-                 is_verified=None):
+    def __init__(self, email=None, is_verified=None):
         self._email_value = bb.NOT_SET
         self._is_verified_value = bb.NOT_SET
         if email is not None:
@@ -42,21 +41,24 @@ class SecondaryEmail(bb.Struct):
     is_verified = bb.Attribute("is_verified")
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
-        super(SecondaryEmail, self)._process_custom_annotations(annotation_type, field_path, processor)
+        super(SecondaryEmail, self)._process_custom_annotations(
+            annotation_type, field_path, processor
+        )
+
 
 SecondaryEmail_validator = bv.Struct(SecondaryEmail)
 
 SecondaryEmail.email.validator = common.EmailAddress_validator
 SecondaryEmail.is_verified.validator = bv.Boolean()
-SecondaryEmail._all_field_names_ = set([
-    'email',
-    'is_verified',
-])
+SecondaryEmail._all_field_names_ = set(
+    [
+        "email",
+        "is_verified",
+    ]
+)
 SecondaryEmail._all_fields_ = [
-    ('email', SecondaryEmail.email.validator),
-    ('is_verified', SecondaryEmail.is_verified.validator),
+    ("email", SecondaryEmail.email.validator),
+    ("is_verified", SecondaryEmail.is_verified.validator),
 ]
 
-ROUTES = {
-}
-
+ROUTES = {}

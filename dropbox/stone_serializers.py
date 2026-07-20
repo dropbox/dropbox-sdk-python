@@ -1,1 +1,1 @@
-from stone.backends.python_rsrc.stone_serializers import *
+from stone.backends.python_rsrc.stone_serializers import *  # noqa: F403

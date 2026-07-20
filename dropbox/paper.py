@@ -16,6 +16,7 @@ from dropbox import common
 from dropbox import files
 from dropbox import sharing
 
+
 class AddMember(bb.Struct):
     """
     :ivar AddMember.permission_level:
@@ -26,15 +27,13 @@ class AddMember(bb.Struct):
     """
 
     __slots__ = [
-        '_permission_level_value',
-        '_member_value',
+        "_permission_level_value",
+        "_member_value",
     ]
 
     _has_required_fields = True
 
-    def __init__(self,
-                 member=None,
-                 permission_level=None):
+    def __init__(self, member=None, permission_level=None):
         self._permission_level_value = bb.NOT_SET
         self._member_value = bb.NOT_SET
         if permission_level is not None:
@@ -51,7 +50,9 @@ class AddMember(bb.Struct):
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(AddMember, self)._process_custom_annotations(annotation_type, field_path, processor)
 
+
 AddMember_validator = bv.Struct(AddMember)
+
 
 class RefPaperDoc(bb.Struct):
     """
@@ -60,13 +61,12 @@ class RefPaperDoc(bb.Struct):
     """
 
     __slots__ = [
-        '_doc_id_value',
+        "_doc_id_value",
     ]
 
     _has_required_fields = True
 
-    def __init__(self,
-                 doc_id=None):
+    def __init__(self, doc_id=None):
         self._doc_id_value = bb.NOT_SET
         if doc_id is not None:
             self.doc_id = doc_id
@@ -77,7 +77,9 @@ class RefPaperDoc(bb.Struct):
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(RefPaperDoc, self)._process_custom_annotations(annotation_type, field_path, processor)
 
+
 RefPaperDoc_validator = bv.Struct(RefPaperDoc)
+
 
 class AddPaperDocUser(RefPaperDoc):
     """
@@ -93,18 +95,14 @@ class AddPaperDocUser(RefPaperDoc):
     """
 
     __slots__ = [
-        '_members_value',
-        '_custom_message_value',
-        '_quiet_value',
+        "_members_value",
+        "_custom_message_value",
+        "_quiet_value",
     ]
 
     _has_required_fields = True
 
-    def __init__(self,
-                 doc_id=None,
-                 members=None,
-                 custom_message=None,
-                 quiet=None):
+    def __init__(self, doc_id=None, members=None, custom_message=None, quiet=None):
         super(AddPaperDocUser, self).__init__(doc_id)
         self._members_value = bb.NOT_SET
         self._custom_message_value = bb.NOT_SET
@@ -126,9 +124,13 @@ class AddPaperDocUser(RefPaperDoc):
     quiet = bb.Attribute("quiet")
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
-        super(AddPaperDocUser, self)._process_custom_annotations(annotation_type, field_path, processor)
+        super(AddPaperDocUser, self)._process_custom_annotations(
+            annotation_type, field_path, processor
+        )
+
 
 AddPaperDocUser_validator = bv.Struct(AddPaperDocUser)
+
 
 class AddPaperDocUserMemberResult(bb.Struct):
     """
@@ -142,15 +144,13 @@ class AddPaperDocUserMemberResult(bb.Struct):
     """
 
     __slots__ = [
-        '_member_value',
-        '_result_value',
+        "_member_value",
+        "_result_value",
     ]
 
     _has_required_fields = True
 
-    def __init__(self,
-                 member=None,
-                 result=None):
+    def __init__(self, member=None, result=None):
         self._member_value = bb.NOT_SET
         self._result_value = bb.NOT_SET
         if member is not None:
@@ -165,9 +165,13 @@ class AddPaperDocUserMemberResult(bb.Struct):
     result = bb.Attribute("result", user_defined=True)
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
-        super(AddPaperDocUserMemberResult, self)._process_custom_annotations(annotation_type, field_path, processor)
+        super(AddPaperDocUserMemberResult, self)._process_custom_annotations(
+            annotation_type, field_path, processor
+        )
+
 
 AddPaperDocUserMemberResult_validator = bv.Struct(AddPaperDocUserMemberResult)
+
 
 class AddPaperDocUserResult(bb.Union):
     """
@@ -193,7 +197,7 @@ class AddPaperDocUserResult(bb.Union):
         This user already has the correct permission to the Paper doc.
     """
 
-    _catch_all = 'other'
+    _catch_all = "other"
     # Attribute is overwritten below the class definition
     success = None
     # Attribute is overwritten below the class definition
@@ -217,7 +221,7 @@ class AddPaperDocUserResult(bb.Union):
 
         :rtype: bool
         """
-        return self._tag == 'success'
+        return self._tag == "success"
 
     def is_unknown_error(self):
         """
@@ -225,7 +229,7 @@ class AddPaperDocUserResult(bb.Union):
 
         :rtype: bool
         """
-        return self._tag == 'unknown_error'
+        return self._tag == "unknown_error"
 
     def is_sharing_outside_team_disabled(self):
         """
@@ -233,7 +237,7 @@ class AddPaperDocUserResult(bb.Union):
 
         :rtype: bool
         """
-        return self._tag == 'sharing_outside_team_disabled'
+        return self._tag == "sharing_outside_team_disabled"
 
     def is_daily_limit_reached(self):
         """
@@ -241,7 +245,7 @@ class AddPaperDocUserResult(bb.Union):
 
         :rtype: bool
         """
-        return self._tag == 'daily_limit_reached'
+        return self._tag == "daily_limit_reached"
 
     def is_user_is_owner(self):
         """
@@ -249,7 +253,7 @@ class AddPaperDocUserResult(bb.Union):
 
         :rtype: bool
         """
-        return self._tag == 'user_is_owner'
+        return self._tag == "user_is_owner"
 
     def is_failed_user_data_retrieval(self):
         """
@@ -257,7 +261,7 @@ class AddPaperDocUserResult(bb.Union):
 
         :rtype: bool
         """
-        return self._tag == 'failed_user_data_retrieval'
+        return self._tag == "failed_user_data_retrieval"
 
     def is_permission_already_granted(self):
         """
@@ -265,7 +269,7 @@ class AddPaperDocUserResult(bb.Union):
 
         :rtype: bool
         """
-        return self._tag == 'permission_already_granted'
+        return self._tag == "permission_already_granted"
 
     def is_other(self):
         """
@@ -273,12 +277,16 @@ class AddPaperDocUserResult(bb.Union):
 
         :rtype: bool
         """
-        return self._tag == 'other'
+        return self._tag == "other"
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
-        super(AddPaperDocUserResult, self)._process_custom_annotations(annotation_type, field_path, processor)
+        super(AddPaperDocUserResult, self)._process_custom_annotations(
+            annotation_type, field_path, processor
+        )
+
 
 AddPaperDocUserResult_validator = bv.Union(AddPaperDocUserResult)
+
 
 class Cursor(bb.Struct):
     """
@@ -301,15 +309,13 @@ class Cursor(bb.Struct):
     """
 
     __slots__ = [
-        '_value_value',
-        '_expiration_value',
+        "_value_value",
+        "_expiration_value",
     ]
 
     _has_required_fields = True
 
-    def __init__(self,
-                 value=None,
-                 expiration=None):
+    def __init__(self, value=None, expiration=None):
         self._value_value = bb.NOT_SET
         self._expiration_value = bb.NOT_SET
         if value is not None:
@@ -326,7 +332,9 @@ class Cursor(bb.Struct):
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(Cursor, self)._process_custom_annotations(annotation_type, field_path, processor)
 
+
 Cursor_validator = bv.Struct(Cursor)
+
 
 class PaperApiBaseError(bb.Union):
     """
@@ -341,7 +349,7 @@ class PaperApiBaseError(bb.Union):
         <https://www.dropbox.com/lp/developers/reference/paper-migration-guide>`_.
     """
 
-    _catch_all = 'other'
+    _catch_all = "other"
     # Attribute is overwritten below the class definition
     insufficient_permissions = None
     # Attribute is overwritten below the class definition
@@ -353,7 +361,7 @@ class PaperApiBaseError(bb.Union):
 
         :rtype: bool
         """
-        return self._tag == 'insufficient_permissions'
+        return self._tag == "insufficient_permissions"
 
     def is_other(self):
         """
@@ -361,12 +369,16 @@ class PaperApiBaseError(bb.Union):
 
         :rtype: bool
         """
-        return self._tag == 'other'
+        return self._tag == "other"
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
-        super(PaperApiBaseError, self)._process_custom_annotations(annotation_type, field_path, processor)
+        super(PaperApiBaseError, self)._process_custom_annotations(
+            annotation_type, field_path, processor
+        )
+
 
 PaperApiBaseError_validator = bv.Union(PaperApiBaseError)
+
 
 class DocLookupError(PaperApiBaseError):
     """
@@ -387,12 +399,16 @@ class DocLookupError(PaperApiBaseError):
 
         :rtype: bool
         """
-        return self._tag == 'doc_not_found'
+        return self._tag == "doc_not_found"
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
-        super(DocLookupError, self)._process_custom_annotations(annotation_type, field_path, processor)
+        super(DocLookupError, self)._process_custom_annotations(
+            annotation_type, field_path, processor
+        )
+
 
 DocLookupError_validator = bv.Union(DocLookupError)
+
 
 class DocSubscriptionLevel(bb.Union):
     """
@@ -431,7 +447,7 @@ class DocSubscriptionLevel(bb.Union):
 
         :rtype: bool
         """
-        return self._tag == 'default'
+        return self._tag == "default"
 
     def is_ignore(self):
         """
@@ -439,7 +455,7 @@ class DocSubscriptionLevel(bb.Union):
 
         :rtype: bool
         """
-        return self._tag == 'ignore'
+        return self._tag == "ignore"
 
     def is_every(self):
         """
@@ -447,7 +463,7 @@ class DocSubscriptionLevel(bb.Union):
 
         :rtype: bool
         """
-        return self._tag == 'every'
+        return self._tag == "every"
 
     def is_no_email(self):
         """
@@ -455,12 +471,16 @@ class DocSubscriptionLevel(bb.Union):
 
         :rtype: bool
         """
-        return self._tag == 'no_email'
+        return self._tag == "no_email"
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
-        super(DocSubscriptionLevel, self)._process_custom_annotations(annotation_type, field_path, processor)
+        super(DocSubscriptionLevel, self)._process_custom_annotations(
+            annotation_type, field_path, processor
+        )
+
 
 DocSubscriptionLevel_validator = bv.Union(DocSubscriptionLevel)
+
 
 class ExportFormat(bb.Union):
     """
@@ -478,7 +498,7 @@ class ExportFormat(bb.Union):
         Doc metadata JSON export format.
     """
 
-    _catch_all = 'other'
+    _catch_all = "other"
     # Attribute is overwritten below the class definition
     html = None
     # Attribute is overwritten below the class definition
@@ -494,7 +514,7 @@ class ExportFormat(bb.Union):
 
         :rtype: bool
         """
-        return self._tag == 'html'
+        return self._tag == "html"
 
     def is_markdown(self):
         """
@@ -502,7 +522,7 @@ class ExportFormat(bb.Union):
 
         :rtype: bool
         """
-        return self._tag == 'markdown'
+        return self._tag == "markdown"
 
     def is_json(self):
         """
@@ -510,7 +530,7 @@ class ExportFormat(bb.Union):
 
         :rtype: bool
         """
-        return self._tag == 'json'
+        return self._tag == "json"
 
     def is_other(self):
         """
@@ -518,12 +538,16 @@ class ExportFormat(bb.Union):
 
         :rtype: bool
         """
-        return self._tag == 'other'
+        return self._tag == "other"
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
-        super(ExportFormat, self)._process_custom_annotations(annotation_type, field_path, processor)
+        super(ExportFormat, self)._process_custom_annotations(
+            annotation_type, field_path, processor
+        )
+
 
 ExportFormat_validator = bv.Union(ExportFormat)
+
 
 class Folder(bb.Struct):
     """
@@ -536,15 +560,13 @@ class Folder(bb.Struct):
     """
 
     __slots__ = [
-        '_id_value',
-        '_name_value',
+        "_id_value",
+        "_name_value",
     ]
 
     _has_required_fields = True
 
-    def __init__(self,
-                 id=None,
-                 name=None):
+    def __init__(self, id=None, name=None):
         self._id_value = bb.NOT_SET
         self._name_value = bb.NOT_SET
         if id is not None:
@@ -561,7 +583,9 @@ class Folder(bb.Struct):
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(Folder, self)._process_custom_annotations(annotation_type, field_path, processor)
 
+
 Folder_validator = bv.Struct(Folder)
+
 
 class FolderSharingPolicyType(bb.Union):
     """
@@ -591,7 +615,7 @@ class FolderSharingPolicyType(bb.Union):
 
         :rtype: bool
         """
-        return self._tag == 'team'
+        return self._tag == "team"
 
     def is_invite_only(self):
         """
@@ -599,12 +623,16 @@ class FolderSharingPolicyType(bb.Union):
 
         :rtype: bool
         """
-        return self._tag == 'invite_only'
+        return self._tag == "invite_only"
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
-        super(FolderSharingPolicyType, self)._process_custom_annotations(annotation_type, field_path, processor)
+        super(FolderSharingPolicyType, self)._process_custom_annotations(
+            annotation_type, field_path, processor
+        )
+
 
 FolderSharingPolicyType_validator = bv.Union(FolderSharingPolicyType)
+
 
 class FolderSubscriptionLevel(bb.Union):
     """
@@ -640,7 +668,7 @@ class FolderSubscriptionLevel(bb.Union):
 
         :rtype: bool
         """
-        return self._tag == 'none'
+        return self._tag == "none"
 
     def is_activity_only(self):
         """
@@ -648,7 +676,7 @@ class FolderSubscriptionLevel(bb.Union):
 
         :rtype: bool
         """
-        return self._tag == 'activity_only'
+        return self._tag == "activity_only"
 
     def is_daily_emails(self):
         """
@@ -656,7 +684,7 @@ class FolderSubscriptionLevel(bb.Union):
 
         :rtype: bool
         """
-        return self._tag == 'daily_emails'
+        return self._tag == "daily_emails"
 
     def is_weekly_emails(self):
         """
@@ -664,12 +692,16 @@ class FolderSubscriptionLevel(bb.Union):
 
         :rtype: bool
         """
-        return self._tag == 'weekly_emails'
+        return self._tag == "weekly_emails"
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
-        super(FolderSubscriptionLevel, self)._process_custom_annotations(annotation_type, field_path, processor)
+        super(FolderSubscriptionLevel, self)._process_custom_annotations(
+            annotation_type, field_path, processor
+        )
+
 
 FolderSubscriptionLevel_validator = bv.Union(FolderSubscriptionLevel)
+
 
 class FoldersContainingPaperDoc(bb.Struct):
     """
@@ -682,15 +714,13 @@ class FoldersContainingPaperDoc(bb.Struct):
     """
 
     __slots__ = [
-        '_folder_sharing_policy_type_value',
-        '_folders_value',
+        "_folder_sharing_policy_type_value",
+        "_folders_value",
     ]
 
     _has_required_fields = False
 
-    def __init__(self,
-                 folder_sharing_policy_type=None,
-                 folders=None):
+    def __init__(self, folder_sharing_policy_type=None, folders=None):
         self._folder_sharing_policy_type_value = bb.NOT_SET
         self._folders_value = bb.NOT_SET
         if folder_sharing_policy_type is not None:
@@ -699,15 +729,21 @@ class FoldersContainingPaperDoc(bb.Struct):
             self.folders = folders
 
     # Instance attribute type: FolderSharingPolicyType (validator is set below)
-    folder_sharing_policy_type = bb.Attribute("folder_sharing_policy_type", nullable=True, user_defined=True)
+    folder_sharing_policy_type = bb.Attribute(
+        "folder_sharing_policy_type", nullable=True, user_defined=True
+    )
 
     # Instance attribute type: list of [Folder] (validator is set below)
     folders = bb.Attribute("folders", nullable=True)
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
-        super(FoldersContainingPaperDoc, self)._process_custom_annotations(annotation_type, field_path, processor)
+        super(FoldersContainingPaperDoc, self)._process_custom_annotations(
+            annotation_type, field_path, processor
+        )
+
 
 FoldersContainingPaperDoc_validator = bv.Struct(FoldersContainingPaperDoc)
+
 
 class GetDocMetadataArg(bb.Struct):
     """
@@ -721,15 +757,13 @@ class GetDocMetadataArg(bb.Struct):
     """
 
     __slots__ = [
-        '_doc_id_value',
-        '_file_id_value',
+        "_doc_id_value",
+        "_file_id_value",
     ]
 
     _has_required_fields = False
 
-    def __init__(self,
-                 doc_id=None,
-                 file_id=None):
+    def __init__(self, doc_id=None, file_id=None):
         self._doc_id_value = bb.NOT_SET
         self._file_id_value = bb.NOT_SET
         if doc_id is not None:
@@ -744,9 +778,13 @@ class GetDocMetadataArg(bb.Struct):
     file_id = bb.Attribute("file_id", nullable=True)
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
-        super(GetDocMetadataArg, self)._process_custom_annotations(annotation_type, field_path, processor)
+        super(GetDocMetadataArg, self)._process_custom_annotations(
+            annotation_type, field_path, processor
+        )
+
 
 GetDocMetadataArg_validator = bv.Struct(GetDocMetadataArg)
+
 
 class ImportFormat(bb.Union):
     """
@@ -766,7 +804,7 @@ class ImportFormat(bb.Union):
         provided document will be used as the doc title.
     """
 
-    _catch_all = 'other'
+    _catch_all = "other"
     # Attribute is overwritten below the class definition
     html = None
     # Attribute is overwritten below the class definition
@@ -782,7 +820,7 @@ class ImportFormat(bb.Union):
 
         :rtype: bool
         """
-        return self._tag == 'html'
+        return self._tag == "html"
 
     def is_markdown(self):
         """
@@ -790,7 +828,7 @@ class ImportFormat(bb.Union):
 
         :rtype: bool
         """
-        return self._tag == 'markdown'
+        return self._tag == "markdown"
 
     def is_plain_text(self):
         """
@@ -798,7 +836,7 @@ class ImportFormat(bb.Union):
 
         :rtype: bool
         """
-        return self._tag == 'plain_text'
+        return self._tag == "plain_text"
 
     def is_other(self):
         """
@@ -806,12 +844,16 @@ class ImportFormat(bb.Union):
 
         :rtype: bool
         """
-        return self._tag == 'other'
+        return self._tag == "other"
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
-        super(ImportFormat, self)._process_custom_annotations(annotation_type, field_path, processor)
+        super(ImportFormat, self)._process_custom_annotations(
+            annotation_type, field_path, processor
+        )
+
 
 ImportFormat_validator = bv.Union(ImportFormat)
+
 
 class InviteeInfoWithPermissionLevel(bb.Struct):
     """
@@ -822,15 +864,13 @@ class InviteeInfoWithPermissionLevel(bb.Struct):
     """
 
     __slots__ = [
-        '_invitee_value',
-        '_permission_level_value',
+        "_invitee_value",
+        "_permission_level_value",
     ]
 
     _has_required_fields = True
 
-    def __init__(self,
-                 invitee=None,
-                 permission_level=None):
+    def __init__(self, invitee=None, permission_level=None):
         self._invitee_value = bb.NOT_SET
         self._permission_level_value = bb.NOT_SET
         if invitee is not None:
@@ -845,9 +885,13 @@ class InviteeInfoWithPermissionLevel(bb.Struct):
     permission_level = bb.Attribute("permission_level", user_defined=True)
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
-        super(InviteeInfoWithPermissionLevel, self)._process_custom_annotations(annotation_type, field_path, processor)
+        super(InviteeInfoWithPermissionLevel, self)._process_custom_annotations(
+            annotation_type, field_path, processor
+        )
+
 
 InviteeInfoWithPermissionLevel_validator = bv.Struct(InviteeInfoWithPermissionLevel)
+
 
 class ListDocsCursorError(bb.Union):
     """
@@ -856,7 +900,7 @@ class ListDocsCursorError(bb.Union):
     corresponding ``get_*`` method.
     """
 
-    _catch_all = 'other'
+    _catch_all = "other"
     # Attribute is overwritten below the class definition
     other = None
 
@@ -869,7 +913,7 @@ class ListDocsCursorError(bb.Union):
         :param PaperApiCursorError val:
         :rtype: ListDocsCursorError
         """
-        return cls('cursor_error', val)
+        return cls("cursor_error", val)
 
     def is_cursor_error(self):
         """
@@ -877,7 +921,7 @@ class ListDocsCursorError(bb.Union):
 
         :rtype: bool
         """
-        return self._tag == 'cursor_error'
+        return self._tag == "cursor_error"
 
     def is_other(self):
         """
@@ -885,7 +929,7 @@ class ListDocsCursorError(bb.Union):
 
         :rtype: bool
         """
-        return self._tag == 'other'
+        return self._tag == "other"
 
     def get_cursor_error(self):
         """
@@ -898,9 +942,13 @@ class ListDocsCursorError(bb.Union):
         return self._value
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
-        super(ListDocsCursorError, self)._process_custom_annotations(annotation_type, field_path, processor)
+        super(ListDocsCursorError, self)._process_custom_annotations(
+            annotation_type, field_path, processor
+        )
+
 
 ListDocsCursorError_validator = bv.Union(ListDocsCursorError)
+
 
 class ListPaperDocsArgs(bb.Struct):
     """
@@ -918,21 +966,23 @@ class ListPaperDocsArgs(bb.Struct):
     """
 
     __slots__ = [
-        '_filter_by_value',
-        '_sort_by_value',
-        '_sort_order_value',
-        '_limit_value',
-        '_stop_at_date_value',
+        "_filter_by_value",
+        "_sort_by_value",
+        "_sort_order_value",
+        "_limit_value",
+        "_stop_at_date_value",
     ]
 
     _has_required_fields = False
 
-    def __init__(self,
-                 filter_by=None,
-                 sort_by=None,
-                 sort_order=None,
-                 limit=None,
-                 stop_at_date=None):
+    def __init__(
+        self,
+        filter_by=None,
+        sort_by=None,
+        sort_order=None,
+        limit=None,
+        stop_at_date=None,
+    ):
         self._filter_by_value = bb.NOT_SET
         self._sort_by_value = bb.NOT_SET
         self._sort_order_value = bb.NOT_SET
@@ -965,9 +1015,13 @@ class ListPaperDocsArgs(bb.Struct):
     stop_at_date = bb.Attribute("stop_at_date", nullable=True)
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
-        super(ListPaperDocsArgs, self)._process_custom_annotations(annotation_type, field_path, processor)
+        super(ListPaperDocsArgs, self)._process_custom_annotations(
+            annotation_type, field_path, processor
+        )
+
 
 ListPaperDocsArgs_validator = bv.Struct(ListPaperDocsArgs)
+
 
 class ListPaperDocsContinueArgs(bb.Struct):
     """
@@ -979,13 +1033,12 @@ class ListPaperDocsContinueArgs(bb.Struct):
     """
 
     __slots__ = [
-        '_cursor_value',
+        "_cursor_value",
     ]
 
     _has_required_fields = True
 
-    def __init__(self,
-                 cursor=None):
+    def __init__(self, cursor=None):
         self._cursor_value = bb.NOT_SET
         if cursor is not None:
             self.cursor = cursor
@@ -994,9 +1047,13 @@ class ListPaperDocsContinueArgs(bb.Struct):
     cursor = bb.Attribute("cursor")
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
-        super(ListPaperDocsContinueArgs, self)._process_custom_annotations(annotation_type, field_path, processor)
+        super(ListPaperDocsContinueArgs, self)._process_custom_annotations(
+            annotation_type, field_path, processor
+        )
+
 
 ListPaperDocsContinueArgs_validator = bv.Struct(ListPaperDocsContinueArgs)
+
 
 class ListPaperDocsFilterBy(bb.Union):
     """
@@ -1010,7 +1067,7 @@ class ListPaperDocsFilterBy(bb.Union):
         Fetches only the Paper doc IDs that the user has created.
     """
 
-    _catch_all = 'other'
+    _catch_all = "other"
     # Attribute is overwritten below the class definition
     docs_accessed = None
     # Attribute is overwritten below the class definition
@@ -1024,7 +1081,7 @@ class ListPaperDocsFilterBy(bb.Union):
 
         :rtype: bool
         """
-        return self._tag == 'docs_accessed'
+        return self._tag == "docs_accessed"
 
     def is_docs_created(self):
         """
@@ -1032,7 +1089,7 @@ class ListPaperDocsFilterBy(bb.Union):
 
         :rtype: bool
         """
-        return self._tag == 'docs_created'
+        return self._tag == "docs_created"
 
     def is_other(self):
         """
@@ -1040,12 +1097,16 @@ class ListPaperDocsFilterBy(bb.Union):
 
         :rtype: bool
         """
-        return self._tag == 'other'
+        return self._tag == "other"
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
-        super(ListPaperDocsFilterBy, self)._process_custom_annotations(annotation_type, field_path, processor)
+        super(ListPaperDocsFilterBy, self)._process_custom_annotations(
+            annotation_type, field_path, processor
+        )
+
 
 ListPaperDocsFilterBy_validator = bv.Union(ListPaperDocsFilterBy)
+
 
 class ListPaperDocsResponse(bb.Struct):
     """
@@ -1069,17 +1130,14 @@ class ListPaperDocsResponse(bb.Struct):
     """
 
     __slots__ = [
-        '_doc_ids_value',
-        '_cursor_value',
-        '_has_more_value',
+        "_doc_ids_value",
+        "_cursor_value",
+        "_has_more_value",
     ]
 
     _has_required_fields = True
 
-    def __init__(self,
-                 doc_ids=None,
-                 cursor=None,
-                 has_more=None):
+    def __init__(self, doc_ids=None, cursor=None, has_more=None):
         self._doc_ids_value = bb.NOT_SET
         self._cursor_value = bb.NOT_SET
         self._has_more_value = bb.NOT_SET
@@ -1100,9 +1158,13 @@ class ListPaperDocsResponse(bb.Struct):
     has_more = bb.Attribute("has_more")
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
-        super(ListPaperDocsResponse, self)._process_custom_annotations(annotation_type, field_path, processor)
+        super(ListPaperDocsResponse, self)._process_custom_annotations(
+            annotation_type, field_path, processor
+        )
+
 
 ListPaperDocsResponse_validator = bv.Struct(ListPaperDocsResponse)
+
 
 class ListPaperDocsSortBy(bb.Union):
     """
@@ -1118,7 +1180,7 @@ class ListPaperDocsSortBy(bb.Union):
         Sorts the Paper docs by the creation time.
     """
 
-    _catch_all = 'other'
+    _catch_all = "other"
     # Attribute is overwritten below the class definition
     accessed = None
     # Attribute is overwritten below the class definition
@@ -1134,7 +1196,7 @@ class ListPaperDocsSortBy(bb.Union):
 
         :rtype: bool
         """
-        return self._tag == 'accessed'
+        return self._tag == "accessed"
 
     def is_modified(self):
         """
@@ -1142,7 +1204,7 @@ class ListPaperDocsSortBy(bb.Union):
 
         :rtype: bool
         """
-        return self._tag == 'modified'
+        return self._tag == "modified"
 
     def is_created(self):
         """
@@ -1150,7 +1212,7 @@ class ListPaperDocsSortBy(bb.Union):
 
         :rtype: bool
         """
-        return self._tag == 'created'
+        return self._tag == "created"
 
     def is_other(self):
         """
@@ -1158,12 +1220,16 @@ class ListPaperDocsSortBy(bb.Union):
 
         :rtype: bool
         """
-        return self._tag == 'other'
+        return self._tag == "other"
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
-        super(ListPaperDocsSortBy, self)._process_custom_annotations(annotation_type, field_path, processor)
+        super(ListPaperDocsSortBy, self)._process_custom_annotations(
+            annotation_type, field_path, processor
+        )
+
 
 ListPaperDocsSortBy_validator = bv.Union(ListPaperDocsSortBy)
+
 
 class ListPaperDocsSortOrder(bb.Union):
     """
@@ -1177,7 +1243,7 @@ class ListPaperDocsSortOrder(bb.Union):
         Sorts the search result in descending order.
     """
 
-    _catch_all = 'other'
+    _catch_all = "other"
     # Attribute is overwritten below the class definition
     ascending = None
     # Attribute is overwritten below the class definition
@@ -1191,7 +1257,7 @@ class ListPaperDocsSortOrder(bb.Union):
 
         :rtype: bool
         """
-        return self._tag == 'ascending'
+        return self._tag == "ascending"
 
     def is_descending(self):
         """
@@ -1199,7 +1265,7 @@ class ListPaperDocsSortOrder(bb.Union):
 
         :rtype: bool
         """
-        return self._tag == 'descending'
+        return self._tag == "descending"
 
     def is_other(self):
         """
@@ -1207,12 +1273,16 @@ class ListPaperDocsSortOrder(bb.Union):
 
         :rtype: bool
         """
-        return self._tag == 'other'
+        return self._tag == "other"
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
-        super(ListPaperDocsSortOrder, self)._process_custom_annotations(annotation_type, field_path, processor)
+        super(ListPaperDocsSortOrder, self)._process_custom_annotations(
+            annotation_type, field_path, processor
+        )
+
 
 ListPaperDocsSortOrder_validator = bv.Union(ListPaperDocsSortOrder)
+
 
 class ListUsersCursorError(PaperApiBaseError):
     """
@@ -1236,7 +1306,7 @@ class ListUsersCursorError(PaperApiBaseError):
         :param PaperApiCursorError val:
         :rtype: ListUsersCursorError
         """
-        return cls('cursor_error', val)
+        return cls("cursor_error", val)
 
     def is_doc_not_found(self):
         """
@@ -1244,7 +1314,7 @@ class ListUsersCursorError(PaperApiBaseError):
 
         :rtype: bool
         """
-        return self._tag == 'doc_not_found'
+        return self._tag == "doc_not_found"
 
     def is_cursor_error(self):
         """
@@ -1252,7 +1322,7 @@ class ListUsersCursorError(PaperApiBaseError):
 
         :rtype: bool
         """
-        return self._tag == 'cursor_error'
+        return self._tag == "cursor_error"
 
     def get_cursor_error(self):
         """
@@ -1265,9 +1335,13 @@ class ListUsersCursorError(PaperApiBaseError):
         return self._value
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
-        super(ListUsersCursorError, self)._process_custom_annotations(annotation_type, field_path, processor)
+        super(ListUsersCursorError, self)._process_custom_annotations(
+            annotation_type, field_path, processor
+        )
+
 
 ListUsersCursorError_validator = bv.Union(ListUsersCursorError)
+
 
 class ListUsersOnFolderArgs(RefPaperDoc):
     """
@@ -1277,14 +1351,12 @@ class ListUsersOnFolderArgs(RefPaperDoc):
     """
 
     __slots__ = [
-        '_limit_value',
+        "_limit_value",
     ]
 
     _has_required_fields = True
 
-    def __init__(self,
-                 doc_id=None,
-                 limit=None):
+    def __init__(self, doc_id=None, limit=None):
         super(ListUsersOnFolderArgs, self).__init__(doc_id)
         self._limit_value = bb.NOT_SET
         if limit is not None:
@@ -1294,9 +1366,13 @@ class ListUsersOnFolderArgs(RefPaperDoc):
     limit = bb.Attribute("limit")
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
-        super(ListUsersOnFolderArgs, self)._process_custom_annotations(annotation_type, field_path, processor)
+        super(ListUsersOnFolderArgs, self)._process_custom_annotations(
+            annotation_type, field_path, processor
+        )
+
 
 ListUsersOnFolderArgs_validator = bv.Struct(ListUsersOnFolderArgs)
+
 
 class ListUsersOnFolderContinueArgs(RefPaperDoc):
     """
@@ -1308,14 +1384,12 @@ class ListUsersOnFolderContinueArgs(RefPaperDoc):
     """
 
     __slots__ = [
-        '_cursor_value',
+        "_cursor_value",
     ]
 
     _has_required_fields = True
 
-    def __init__(self,
-                 doc_id=None,
-                 cursor=None):
+    def __init__(self, doc_id=None, cursor=None):
         super(ListUsersOnFolderContinueArgs, self).__init__(doc_id)
         self._cursor_value = bb.NOT_SET
         if cursor is not None:
@@ -1325,9 +1399,13 @@ class ListUsersOnFolderContinueArgs(RefPaperDoc):
     cursor = bb.Attribute("cursor")
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
-        super(ListUsersOnFolderContinueArgs, self)._process_custom_annotations(annotation_type, field_path, processor)
+        super(ListUsersOnFolderContinueArgs, self)._process_custom_annotations(
+            annotation_type, field_path, processor
+        )
+
 
 ListUsersOnFolderContinueArgs_validator = bv.Struct(ListUsersOnFolderContinueArgs)
+
 
 class ListUsersOnFolderResponse(bb.Struct):
     """
@@ -1350,19 +1428,15 @@ class ListUsersOnFolderResponse(bb.Struct):
     """
 
     __slots__ = [
-        '_invitees_value',
-        '_users_value',
-        '_cursor_value',
-        '_has_more_value',
+        "_invitees_value",
+        "_users_value",
+        "_cursor_value",
+        "_has_more_value",
     ]
 
     _has_required_fields = True
 
-    def __init__(self,
-                 invitees=None,
-                 users=None,
-                 cursor=None,
-                 has_more=None):
+    def __init__(self, invitees=None, users=None, cursor=None, has_more=None):
         self._invitees_value = bb.NOT_SET
         self._users_value = bb.NOT_SET
         self._cursor_value = bb.NOT_SET
@@ -1389,9 +1463,13 @@ class ListUsersOnFolderResponse(bb.Struct):
     has_more = bb.Attribute("has_more")
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
-        super(ListUsersOnFolderResponse, self)._process_custom_annotations(annotation_type, field_path, processor)
+        super(ListUsersOnFolderResponse, self)._process_custom_annotations(
+            annotation_type, field_path, processor
+        )
+
 
 ListUsersOnFolderResponse_validator = bv.Struct(ListUsersOnFolderResponse)
+
 
 class ListUsersOnPaperDocArgs(RefPaperDoc):
     """
@@ -1404,16 +1482,13 @@ class ListUsersOnPaperDocArgs(RefPaperDoc):
     """
 
     __slots__ = [
-        '_limit_value',
-        '_filter_by_value',
+        "_limit_value",
+        "_filter_by_value",
     ]
 
     _has_required_fields = True
 
-    def __init__(self,
-                 doc_id=None,
-                 limit=None,
-                 filter_by=None):
+    def __init__(self, doc_id=None, limit=None, filter_by=None):
         super(ListUsersOnPaperDocArgs, self).__init__(doc_id)
         self._limit_value = bb.NOT_SET
         self._filter_by_value = bb.NOT_SET
@@ -1429,9 +1504,13 @@ class ListUsersOnPaperDocArgs(RefPaperDoc):
     filter_by = bb.Attribute("filter_by", user_defined=True)
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
-        super(ListUsersOnPaperDocArgs, self)._process_custom_annotations(annotation_type, field_path, processor)
+        super(ListUsersOnPaperDocArgs, self)._process_custom_annotations(
+            annotation_type, field_path, processor
+        )
+
 
 ListUsersOnPaperDocArgs_validator = bv.Struct(ListUsersOnPaperDocArgs)
+
 
 class ListUsersOnPaperDocContinueArgs(RefPaperDoc):
     """
@@ -1443,14 +1522,12 @@ class ListUsersOnPaperDocContinueArgs(RefPaperDoc):
     """
 
     __slots__ = [
-        '_cursor_value',
+        "_cursor_value",
     ]
 
     _has_required_fields = True
 
-    def __init__(self,
-                 doc_id=None,
-                 cursor=None):
+    def __init__(self, doc_id=None, cursor=None):
         super(ListUsersOnPaperDocContinueArgs, self).__init__(doc_id)
         self._cursor_value = bb.NOT_SET
         if cursor is not None:
@@ -1460,9 +1537,13 @@ class ListUsersOnPaperDocContinueArgs(RefPaperDoc):
     cursor = bb.Attribute("cursor")
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
-        super(ListUsersOnPaperDocContinueArgs, self)._process_custom_annotations(annotation_type, field_path, processor)
+        super(ListUsersOnPaperDocContinueArgs, self)._process_custom_annotations(
+            annotation_type, field_path, processor
+        )
+
 
 ListUsersOnPaperDocContinueArgs_validator = bv.Struct(ListUsersOnPaperDocContinueArgs)
+
 
 class ListUsersOnPaperDocResponse(bb.Struct):
     """
@@ -1489,21 +1570,16 @@ class ListUsersOnPaperDocResponse(bb.Struct):
     """
 
     __slots__ = [
-        '_invitees_value',
-        '_users_value',
-        '_doc_owner_value',
-        '_cursor_value',
-        '_has_more_value',
+        "_invitees_value",
+        "_users_value",
+        "_doc_owner_value",
+        "_cursor_value",
+        "_has_more_value",
     ]
 
     _has_required_fields = True
 
-    def __init__(self,
-                 invitees=None,
-                 users=None,
-                 doc_owner=None,
-                 cursor=None,
-                 has_more=None):
+    def __init__(self, invitees=None, users=None, doc_owner=None, cursor=None, has_more=None):
         self._invitees_value = bb.NOT_SET
         self._users_value = bb.NOT_SET
         self._doc_owner_value = bb.NOT_SET
@@ -1536,9 +1612,13 @@ class ListUsersOnPaperDocResponse(bb.Struct):
     has_more = bb.Attribute("has_more")
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
-        super(ListUsersOnPaperDocResponse, self)._process_custom_annotations(annotation_type, field_path, processor)
+        super(ListUsersOnPaperDocResponse, self)._process_custom_annotations(
+            annotation_type, field_path, processor
+        )
+
 
 ListUsersOnPaperDocResponse_validator = bv.Struct(ListUsersOnPaperDocResponse)
+
 
 class PaperApiCursorError(bb.Union):
     """
@@ -1557,7 +1637,7 @@ class PaperApiCursorError(bb.Union):
         non-continue endpoint to obtain a new cursor.
     """
 
-    _catch_all = 'other'
+    _catch_all = "other"
     # Attribute is overwritten below the class definition
     expired_cursor = None
     # Attribute is overwritten below the class definition
@@ -1575,7 +1655,7 @@ class PaperApiCursorError(bb.Union):
 
         :rtype: bool
         """
-        return self._tag == 'expired_cursor'
+        return self._tag == "expired_cursor"
 
     def is_invalid_cursor(self):
         """
@@ -1583,7 +1663,7 @@ class PaperApiCursorError(bb.Union):
 
         :rtype: bool
         """
-        return self._tag == 'invalid_cursor'
+        return self._tag == "invalid_cursor"
 
     def is_wrong_user_in_cursor(self):
         """
@@ -1591,7 +1671,7 @@ class PaperApiCursorError(bb.Union):
 
         :rtype: bool
         """
-        return self._tag == 'wrong_user_in_cursor'
+        return self._tag == "wrong_user_in_cursor"
 
     def is_reset(self):
         """
@@ -1599,7 +1679,7 @@ class PaperApiCursorError(bb.Union):
 
         :rtype: bool
         """
-        return self._tag == 'reset'
+        return self._tag == "reset"
 
     def is_other(self):
         """
@@ -1607,12 +1687,16 @@ class PaperApiCursorError(bb.Union):
 
         :rtype: bool
         """
-        return self._tag == 'other'
+        return self._tag == "other"
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
-        super(PaperApiCursorError, self)._process_custom_annotations(annotation_type, field_path, processor)
+        super(PaperApiCursorError, self)._process_custom_annotations(
+            annotation_type, field_path, processor
+        )
+
 
 PaperApiCursorError_validator = bv.Union(PaperApiCursorError)
+
 
 class PaperDocCreateArgs(bb.Struct):
     """
@@ -1624,15 +1708,13 @@ class PaperDocCreateArgs(bb.Struct):
     """
 
     __slots__ = [
-        '_parent_folder_id_value',
-        '_import_format_value',
+        "_parent_folder_id_value",
+        "_import_format_value",
     ]
 
     _has_required_fields = True
 
-    def __init__(self,
-                 import_format=None,
-                 parent_folder_id=None):
+    def __init__(self, import_format=None, parent_folder_id=None):
         self._parent_folder_id_value = bb.NOT_SET
         self._import_format_value = bb.NOT_SET
         if parent_folder_id is not None:
@@ -1647,9 +1729,13 @@ class PaperDocCreateArgs(bb.Struct):
     import_format = bb.Attribute("import_format", user_defined=True)
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
-        super(PaperDocCreateArgs, self)._process_custom_annotations(annotation_type, field_path, processor)
+        super(PaperDocCreateArgs, self)._process_custom_annotations(
+            annotation_type, field_path, processor
+        )
+
 
 PaperDocCreateArgs_validator = bv.Struct(PaperDocCreateArgs)
+
 
 class PaperDocCreateError(PaperApiBaseError):
     """
@@ -1684,7 +1770,7 @@ class PaperDocCreateError(PaperApiBaseError):
 
         :rtype: bool
         """
-        return self._tag == 'content_malformed'
+        return self._tag == "content_malformed"
 
     def is_folder_not_found(self):
         """
@@ -1692,7 +1778,7 @@ class PaperDocCreateError(PaperApiBaseError):
 
         :rtype: bool
         """
-        return self._tag == 'folder_not_found'
+        return self._tag == "folder_not_found"
 
     def is_doc_length_exceeded(self):
         """
@@ -1700,7 +1786,7 @@ class PaperDocCreateError(PaperApiBaseError):
 
         :rtype: bool
         """
-        return self._tag == 'doc_length_exceeded'
+        return self._tag == "doc_length_exceeded"
 
     def is_image_size_exceeded(self):
         """
@@ -1708,12 +1794,16 @@ class PaperDocCreateError(PaperApiBaseError):
 
         :rtype: bool
         """
-        return self._tag == 'image_size_exceeded'
+        return self._tag == "image_size_exceeded"
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
-        super(PaperDocCreateError, self)._process_custom_annotations(annotation_type, field_path, processor)
+        super(PaperDocCreateError, self)._process_custom_annotations(
+            annotation_type, field_path, processor
+        )
+
 
 PaperDocCreateError_validator = bv.Union(PaperDocCreateError)
+
 
 class PaperDocCreateUpdateResult(bb.Struct):
     """
@@ -1726,17 +1816,14 @@ class PaperDocCreateUpdateResult(bb.Struct):
     """
 
     __slots__ = [
-        '_doc_id_value',
-        '_revision_value',
-        '_title_value',
+        "_doc_id_value",
+        "_revision_value",
+        "_title_value",
     ]
 
     _has_required_fields = True
 
-    def __init__(self,
-                 doc_id=None,
-                 revision=None,
-                 title=None):
+    def __init__(self, doc_id=None, revision=None, title=None):
         self._doc_id_value = bb.NOT_SET
         self._revision_value = bb.NOT_SET
         self._title_value = bb.NOT_SET
@@ -1757,9 +1844,13 @@ class PaperDocCreateUpdateResult(bb.Struct):
     title = bb.Attribute("title")
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
-        super(PaperDocCreateUpdateResult, self)._process_custom_annotations(annotation_type, field_path, processor)
+        super(PaperDocCreateUpdateResult, self)._process_custom_annotations(
+            annotation_type, field_path, processor
+        )
+
 
 PaperDocCreateUpdateResult_validator = bv.Struct(PaperDocCreateUpdateResult)
+
 
 class PaperDocExport(RefPaperDoc):
     """
@@ -1771,16 +1862,13 @@ class PaperDocExport(RefPaperDoc):
     """
 
     __slots__ = [
-        '_export_format_value',
-        '_include_comments_value',
+        "_export_format_value",
+        "_include_comments_value",
     ]
 
     _has_required_fields = True
 
-    def __init__(self,
-                 doc_id=None,
-                 export_format=None,
-                 include_comments=None):
+    def __init__(self, doc_id=None, export_format=None, include_comments=None):
         super(PaperDocExport, self).__init__(doc_id)
         self._export_format_value = bb.NOT_SET
         self._include_comments_value = bb.NOT_SET
@@ -1796,9 +1884,13 @@ class PaperDocExport(RefPaperDoc):
     include_comments = bb.Attribute("include_comments")
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
-        super(PaperDocExport, self)._process_custom_annotations(annotation_type, field_path, processor)
+        super(PaperDocExport, self)._process_custom_annotations(
+            annotation_type, field_path, processor
+        )
+
 
 PaperDocExport_validator = bv.Struct(PaperDocExport)
+
 
 class PaperDocExportResult(bb.Struct):
     """
@@ -1814,19 +1906,15 @@ class PaperDocExportResult(bb.Struct):
     """
 
     __slots__ = [
-        '_owner_value',
-        '_title_value',
-        '_revision_value',
-        '_mime_type_value',
+        "_owner_value",
+        "_title_value",
+        "_revision_value",
+        "_mime_type_value",
     ]
 
     _has_required_fields = True
 
-    def __init__(self,
-                 owner=None,
-                 title=None,
-                 revision=None,
-                 mime_type=None):
+    def __init__(self, owner=None, title=None, revision=None, mime_type=None):
         self._owner_value = bb.NOT_SET
         self._title_value = bb.NOT_SET
         self._revision_value = bb.NOT_SET
@@ -1853,9 +1941,13 @@ class PaperDocExportResult(bb.Struct):
     mime_type = bb.Attribute("mime_type")
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
-        super(PaperDocExportResult, self)._process_custom_annotations(annotation_type, field_path, processor)
+        super(PaperDocExportResult, self)._process_custom_annotations(
+            annotation_type, field_path, processor
+        )
+
 
 PaperDocExportResult_validator = bv.Struct(PaperDocExportResult)
+
 
 class PaperDocGetMetadataResult(bb.Struct):
     """
@@ -1880,27 +1972,29 @@ class PaperDocGetMetadataResult(bb.Struct):
     """
 
     __slots__ = [
-        '_doc_id_value',
-        '_owner_value',
-        '_title_value',
-        '_created_date_value',
-        '_status_value',
-        '_revision_value',
-        '_last_updated_date_value',
-        '_last_editor_value',
+        "_doc_id_value",
+        "_owner_value",
+        "_title_value",
+        "_created_date_value",
+        "_status_value",
+        "_revision_value",
+        "_last_updated_date_value",
+        "_last_editor_value",
     ]
 
     _has_required_fields = True
 
-    def __init__(self,
-                 doc_id=None,
-                 owner=None,
-                 title=None,
-                 created_date=None,
-                 status=None,
-                 revision=None,
-                 last_updated_date=None,
-                 last_editor=None):
+    def __init__(
+        self,
+        doc_id=None,
+        owner=None,
+        title=None,
+        created_date=None,
+        status=None,
+        revision=None,
+        last_updated_date=None,
+        last_editor=None,
+    ):
         self._doc_id_value = bb.NOT_SET
         self._owner_value = bb.NOT_SET
         self._title_value = bb.NOT_SET
@@ -1951,9 +2045,13 @@ class PaperDocGetMetadataResult(bb.Struct):
     last_editor = bb.Attribute("last_editor")
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
-        super(PaperDocGetMetadataResult, self)._process_custom_annotations(annotation_type, field_path, processor)
+        super(PaperDocGetMetadataResult, self)._process_custom_annotations(
+            annotation_type, field_path, processor
+        )
+
 
 PaperDocGetMetadataResult_validator = bv.Struct(PaperDocGetMetadataResult)
+
 
 class PaperDocPermissionLevel(bb.Union):
     """
@@ -1967,7 +2065,7 @@ class PaperDocPermissionLevel(bb.Union):
         User will be granted view and comment permissions.
     """
 
-    _catch_all = 'other'
+    _catch_all = "other"
     # Attribute is overwritten below the class definition
     edit = None
     # Attribute is overwritten below the class definition
@@ -1981,7 +2079,7 @@ class PaperDocPermissionLevel(bb.Union):
 
         :rtype: bool
         """
-        return self._tag == 'edit'
+        return self._tag == "edit"
 
     def is_view_and_comment(self):
         """
@@ -1989,7 +2087,7 @@ class PaperDocPermissionLevel(bb.Union):
 
         :rtype: bool
         """
-        return self._tag == 'view_and_comment'
+        return self._tag == "view_and_comment"
 
     def is_other(self):
         """
@@ -1997,12 +2095,16 @@ class PaperDocPermissionLevel(bb.Union):
 
         :rtype: bool
         """
-        return self._tag == 'other'
+        return self._tag == "other"
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
-        super(PaperDocPermissionLevel, self)._process_custom_annotations(annotation_type, field_path, processor)
+        super(PaperDocPermissionLevel, self)._process_custom_annotations(
+            annotation_type, field_path, processor
+        )
+
 
 PaperDocPermissionLevel_validator = bv.Union(PaperDocPermissionLevel)
+
 
 class PaperDocSharingPolicy(RefPaperDoc):
     """
@@ -2011,14 +2113,12 @@ class PaperDocSharingPolicy(RefPaperDoc):
     """
 
     __slots__ = [
-        '_sharing_policy_value',
+        "_sharing_policy_value",
     ]
 
     _has_required_fields = True
 
-    def __init__(self,
-                 doc_id=None,
-                 sharing_policy=None):
+    def __init__(self, doc_id=None, sharing_policy=None):
         super(PaperDocSharingPolicy, self).__init__(doc_id)
         self._sharing_policy_value = bb.NOT_SET
         if sharing_policy is not None:
@@ -2028,9 +2128,13 @@ class PaperDocSharingPolicy(RefPaperDoc):
     sharing_policy = bb.Attribute("sharing_policy", user_defined=True)
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
-        super(PaperDocSharingPolicy, self)._process_custom_annotations(annotation_type, field_path, processor)
+        super(PaperDocSharingPolicy, self)._process_custom_annotations(
+            annotation_type, field_path, processor
+        )
+
 
 PaperDocSharingPolicy_validator = bv.Struct(PaperDocSharingPolicy)
+
 
 class PaperDocStatus(bb.Union):
     """
@@ -2046,7 +2150,7 @@ class PaperDocStatus(bb.Union):
         The Paper doc is deleted.
     """
 
-    _catch_all = 'other'
+    _catch_all = "other"
     # Attribute is overwritten below the class definition
     active = None
     # Attribute is overwritten below the class definition
@@ -2060,7 +2164,7 @@ class PaperDocStatus(bb.Union):
 
         :rtype: bool
         """
-        return self._tag == 'active'
+        return self._tag == "active"
 
     def is_deleted(self):
         """
@@ -2068,7 +2172,7 @@ class PaperDocStatus(bb.Union):
 
         :rtype: bool
         """
-        return self._tag == 'deleted'
+        return self._tag == "deleted"
 
     def is_other(self):
         """
@@ -2076,12 +2180,16 @@ class PaperDocStatus(bb.Union):
 
         :rtype: bool
         """
-        return self._tag == 'other'
+        return self._tag == "other"
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
-        super(PaperDocStatus, self)._process_custom_annotations(annotation_type, field_path, processor)
+        super(PaperDocStatus, self)._process_custom_annotations(
+            annotation_type, field_path, processor
+        )
+
 
 PaperDocStatus_validator = bv.Union(PaperDocStatus)
+
 
 class PaperDocUpdateArgs(RefPaperDoc):
     """
@@ -2095,18 +2203,14 @@ class PaperDocUpdateArgs(RefPaperDoc):
     """
 
     __slots__ = [
-        '_doc_update_policy_value',
-        '_revision_value',
-        '_import_format_value',
+        "_doc_update_policy_value",
+        "_revision_value",
+        "_import_format_value",
     ]
 
     _has_required_fields = True
 
-    def __init__(self,
-                 doc_id=None,
-                 doc_update_policy=None,
-                 revision=None,
-                 import_format=None):
+    def __init__(self, doc_id=None, doc_update_policy=None, revision=None, import_format=None):
         super(PaperDocUpdateArgs, self).__init__(doc_id)
         self._doc_update_policy_value = bb.NOT_SET
         self._revision_value = bb.NOT_SET
@@ -2128,9 +2232,13 @@ class PaperDocUpdateArgs(RefPaperDoc):
     import_format = bb.Attribute("import_format", user_defined=True)
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
-        super(PaperDocUpdateArgs, self)._process_custom_annotations(annotation_type, field_path, processor)
+        super(PaperDocUpdateArgs, self)._process_custom_annotations(
+            annotation_type, field_path, processor
+        )
+
 
 PaperDocUpdateArgs_validator = bv.Struct(PaperDocUpdateArgs)
+
 
 class PaperDocUpdateError(DocLookupError):
     """
@@ -2173,7 +2281,7 @@ class PaperDocUpdateError(DocLookupError):
 
         :rtype: bool
         """
-        return self._tag == 'content_malformed'
+        return self._tag == "content_malformed"
 
     def is_revision_mismatch(self):
         """
@@ -2181,7 +2289,7 @@ class PaperDocUpdateError(DocLookupError):
 
         :rtype: bool
         """
-        return self._tag == 'revision_mismatch'
+        return self._tag == "revision_mismatch"
 
     def is_doc_length_exceeded(self):
         """
@@ -2189,7 +2297,7 @@ class PaperDocUpdateError(DocLookupError):
 
         :rtype: bool
         """
-        return self._tag == 'doc_length_exceeded'
+        return self._tag == "doc_length_exceeded"
 
     def is_image_size_exceeded(self):
         """
@@ -2197,7 +2305,7 @@ class PaperDocUpdateError(DocLookupError):
 
         :rtype: bool
         """
-        return self._tag == 'image_size_exceeded'
+        return self._tag == "image_size_exceeded"
 
     def is_doc_archived(self):
         """
@@ -2205,7 +2313,7 @@ class PaperDocUpdateError(DocLookupError):
 
         :rtype: bool
         """
-        return self._tag == 'doc_archived'
+        return self._tag == "doc_archived"
 
     def is_doc_deleted(self):
         """
@@ -2213,12 +2321,16 @@ class PaperDocUpdateError(DocLookupError):
 
         :rtype: bool
         """
-        return self._tag == 'doc_deleted'
+        return self._tag == "doc_deleted"
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
-        super(PaperDocUpdateError, self)._process_custom_annotations(annotation_type, field_path, processor)
+        super(PaperDocUpdateError, self)._process_custom_annotations(
+            annotation_type, field_path, processor
+        )
+
 
 PaperDocUpdateError_validator = bv.Union(PaperDocUpdateError)
+
 
 class PaperDocUpdatePolicy(bb.Union):
     """
@@ -2235,7 +2347,7 @@ class PaperDocUpdatePolicy(bb.Union):
         The document will be overwitten at the head with the provided content.
     """
 
-    _catch_all = 'other'
+    _catch_all = "other"
     # Attribute is overwritten below the class definition
     append = None
     # Attribute is overwritten below the class definition
@@ -2251,7 +2363,7 @@ class PaperDocUpdatePolicy(bb.Union):
 
         :rtype: bool
         """
-        return self._tag == 'append'
+        return self._tag == "append"
 
     def is_prepend(self):
         """
@@ -2259,7 +2371,7 @@ class PaperDocUpdatePolicy(bb.Union):
 
         :rtype: bool
         """
-        return self._tag == 'prepend'
+        return self._tag == "prepend"
 
     def is_overwrite_all(self):
         """
@@ -2267,7 +2379,7 @@ class PaperDocUpdatePolicy(bb.Union):
 
         :rtype: bool
         """
-        return self._tag == 'overwrite_all'
+        return self._tag == "overwrite_all"
 
     def is_other(self):
         """
@@ -2275,12 +2387,16 @@ class PaperDocUpdatePolicy(bb.Union):
 
         :rtype: bool
         """
-        return self._tag == 'other'
+        return self._tag == "other"
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
-        super(PaperDocUpdatePolicy, self)._process_custom_annotations(annotation_type, field_path, processor)
+        super(PaperDocUpdatePolicy, self)._process_custom_annotations(
+            annotation_type, field_path, processor
+        )
+
 
 PaperDocUpdatePolicy_validator = bv.Union(PaperDocUpdatePolicy)
+
 
 class PaperFolderCreateArg(bb.Struct):
     """
@@ -2299,17 +2415,14 @@ class PaperFolderCreateArg(bb.Struct):
     """
 
     __slots__ = [
-        '_name_value',
-        '_parent_folder_id_value',
-        '_is_team_folder_value',
+        "_name_value",
+        "_parent_folder_id_value",
+        "_is_team_folder_value",
     ]
 
     _has_required_fields = True
 
-    def __init__(self,
-                 name=None,
-                 parent_folder_id=None,
-                 is_team_folder=None):
+    def __init__(self, name=None, parent_folder_id=None, is_team_folder=None):
         self._name_value = bb.NOT_SET
         self._parent_folder_id_value = bb.NOT_SET
         self._is_team_folder_value = bb.NOT_SET
@@ -2330,9 +2443,13 @@ class PaperFolderCreateArg(bb.Struct):
     is_team_folder = bb.Attribute("is_team_folder", nullable=True)
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
-        super(PaperFolderCreateArg, self)._process_custom_annotations(annotation_type, field_path, processor)
+        super(PaperFolderCreateArg, self)._process_custom_annotations(
+            annotation_type, field_path, processor
+        )
+
 
 PaperFolderCreateArg_validator = bv.Struct(PaperFolderCreateArg)
+
 
 class PaperFolderCreateError(PaperApiBaseError):
     """
@@ -2357,7 +2474,7 @@ class PaperFolderCreateError(PaperApiBaseError):
 
         :rtype: bool
         """
-        return self._tag == 'folder_not_found'
+        return self._tag == "folder_not_found"
 
     def is_invalid_folder_id(self):
         """
@@ -2365,12 +2482,16 @@ class PaperFolderCreateError(PaperApiBaseError):
 
         :rtype: bool
         """
-        return self._tag == 'invalid_folder_id'
+        return self._tag == "invalid_folder_id"
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
-        super(PaperFolderCreateError, self)._process_custom_annotations(annotation_type, field_path, processor)
+        super(PaperFolderCreateError, self)._process_custom_annotations(
+            annotation_type, field_path, processor
+        )
+
 
 PaperFolderCreateError_validator = bv.Union(PaperFolderCreateError)
+
 
 class PaperFolderCreateResult(bb.Struct):
     """
@@ -2379,13 +2500,12 @@ class PaperFolderCreateResult(bb.Struct):
     """
 
     __slots__ = [
-        '_folder_id_value',
+        "_folder_id_value",
     ]
 
     _has_required_fields = True
 
-    def __init__(self,
-                 folder_id=None):
+    def __init__(self, folder_id=None):
         self._folder_id_value = bb.NOT_SET
         if folder_id is not None:
             self.folder_id = folder_id
@@ -2394,9 +2514,13 @@ class PaperFolderCreateResult(bb.Struct):
     folder_id = bb.Attribute("folder_id")
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
-        super(PaperFolderCreateResult, self)._process_custom_annotations(annotation_type, field_path, processor)
+        super(PaperFolderCreateResult, self)._process_custom_annotations(
+            annotation_type, field_path, processor
+        )
+
 
 PaperFolderCreateResult_validator = bv.Struct(PaperFolderCreateResult)
+
 
 class RemovePaperDocUser(RefPaperDoc):
     """
@@ -2406,14 +2530,12 @@ class RemovePaperDocUser(RefPaperDoc):
     """
 
     __slots__ = [
-        '_member_value',
+        "_member_value",
     ]
 
     _has_required_fields = True
 
-    def __init__(self,
-                 doc_id=None,
-                 member=None):
+    def __init__(self, doc_id=None, member=None):
         super(RemovePaperDocUser, self).__init__(doc_id)
         self._member_value = bb.NOT_SET
         if member is not None:
@@ -2423,9 +2545,13 @@ class RemovePaperDocUser(RefPaperDoc):
     member = bb.Attribute("member", user_defined=True)
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
-        super(RemovePaperDocUser, self)._process_custom_annotations(annotation_type, field_path, processor)
+        super(RemovePaperDocUser, self)._process_custom_annotations(
+            annotation_type, field_path, processor
+        )
+
 
 RemovePaperDocUser_validator = bv.Struct(RemovePaperDocUser)
+
 
 class SharingPolicy(bb.Struct):
     """
@@ -2439,15 +2565,13 @@ class SharingPolicy(bb.Struct):
     """
 
     __slots__ = [
-        '_public_sharing_policy_value',
-        '_team_sharing_policy_value',
+        "_public_sharing_policy_value",
+        "_team_sharing_policy_value",
     ]
 
     _has_required_fields = False
 
-    def __init__(self,
-                 public_sharing_policy=None,
-                 team_sharing_policy=None):
+    def __init__(self, public_sharing_policy=None, team_sharing_policy=None):
         self._public_sharing_policy_value = bb.NOT_SET
         self._team_sharing_policy_value = bb.NOT_SET
         if public_sharing_policy is not None:
@@ -2462,9 +2586,13 @@ class SharingPolicy(bb.Struct):
     team_sharing_policy = bb.Attribute("team_sharing_policy", nullable=True, user_defined=True)
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
-        super(SharingPolicy, self)._process_custom_annotations(annotation_type, field_path, processor)
+        super(SharingPolicy, self)._process_custom_annotations(
+            annotation_type, field_path, processor
+        )
+
 
 SharingPolicy_validator = bv.Struct(SharingPolicy)
+
 
 class SharingTeamPolicyType(bb.Union):
     """
@@ -2496,7 +2624,7 @@ class SharingTeamPolicyType(bb.Union):
 
         :rtype: bool
         """
-        return self._tag == 'people_with_link_can_edit'
+        return self._tag == "people_with_link_can_edit"
 
     def is_people_with_link_can_view_and_comment(self):
         """
@@ -2504,7 +2632,7 @@ class SharingTeamPolicyType(bb.Union):
 
         :rtype: bool
         """
-        return self._tag == 'people_with_link_can_view_and_comment'
+        return self._tag == "people_with_link_can_view_and_comment"
 
     def is_invite_only(self):
         """
@@ -2512,12 +2640,16 @@ class SharingTeamPolicyType(bb.Union):
 
         :rtype: bool
         """
-        return self._tag == 'invite_only'
+        return self._tag == "invite_only"
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
-        super(SharingTeamPolicyType, self)._process_custom_annotations(annotation_type, field_path, processor)
+        super(SharingTeamPolicyType, self)._process_custom_annotations(
+            annotation_type, field_path, processor
+        )
+
 
 SharingTeamPolicyType_validator = bv.Union(SharingTeamPolicyType)
+
 
 class SharingPublicPolicyType(SharingTeamPolicyType):
     """
@@ -2538,12 +2670,16 @@ class SharingPublicPolicyType(SharingTeamPolicyType):
 
         :rtype: bool
         """
-        return self._tag == 'disabled'
+        return self._tag == "disabled"
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
-        super(SharingPublicPolicyType, self)._process_custom_annotations(annotation_type, field_path, processor)
+        super(SharingPublicPolicyType, self)._process_custom_annotations(
+            annotation_type, field_path, processor
+        )
+
 
 SharingPublicPolicyType_validator = bv.Union(SharingPublicPolicyType)
+
 
 class UserInfoWithPermissionLevel(bb.Struct):
     """
@@ -2554,15 +2690,13 @@ class UserInfoWithPermissionLevel(bb.Struct):
     """
 
     __slots__ = [
-        '_user_value',
-        '_permission_level_value',
+        "_user_value",
+        "_permission_level_value",
     ]
 
     _has_required_fields = True
 
-    def __init__(self,
-                 user=None,
-                 permission_level=None):
+    def __init__(self, user=None, permission_level=None):
         self._user_value = bb.NOT_SET
         self._permission_level_value = bb.NOT_SET
         if user is not None:
@@ -2577,9 +2711,13 @@ class UserInfoWithPermissionLevel(bb.Struct):
     permission_level = bb.Attribute("permission_level", user_defined=True)
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
-        super(UserInfoWithPermissionLevel, self)._process_custom_annotations(annotation_type, field_path, processor)
+        super(UserInfoWithPermissionLevel, self)._process_custom_annotations(
+            annotation_type, field_path, processor
+        )
+
 
 UserInfoWithPermissionLevel_validator = bv.Struct(UserInfoWithPermissionLevel)
+
 
 class UserOnPaperDocFilter(bb.Union):
     """
@@ -2594,7 +2732,7 @@ class UserOnPaperDocFilter(bb.Union):
         have visited the Paper doc as well as those who have not.
     """
 
-    _catch_all = 'other'
+    _catch_all = "other"
     # Attribute is overwritten below the class definition
     visited = None
     # Attribute is overwritten below the class definition
@@ -2608,7 +2746,7 @@ class UserOnPaperDocFilter(bb.Union):
 
         :rtype: bool
         """
-        return self._tag == 'visited'
+        return self._tag == "visited"
 
     def is_shared(self):
         """
@@ -2616,7 +2754,7 @@ class UserOnPaperDocFilter(bb.Union):
 
         :rtype: bool
         """
-        return self._tag == 'shared'
+        return self._tag == "shared"
 
     def is_other(self):
         """
@@ -2624,52 +2762,63 @@ class UserOnPaperDocFilter(bb.Union):
 
         :rtype: bool
         """
-        return self._tag == 'other'
+        return self._tag == "other"
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
-        super(UserOnPaperDocFilter, self)._process_custom_annotations(annotation_type, field_path, processor)
+        super(UserOnPaperDocFilter, self)._process_custom_annotations(
+            annotation_type, field_path, processor
+        )
+
 
 UserOnPaperDocFilter_validator = bv.Union(UserOnPaperDocFilter)
 
 PaperDocId_validator = bv.String()
 AddMember.permission_level.validator = PaperDocPermissionLevel_validator
 AddMember.member.validator = sharing.MemberSelector_validator
-AddMember._all_field_names_ = set([
-    'permission_level',
-    'member',
-])
+AddMember._all_field_names_ = set(
+    [
+        "permission_level",
+        "member",
+    ]
+)
 AddMember._all_fields_ = [
-    ('permission_level', AddMember.permission_level.validator),
-    ('member', AddMember.member.validator),
+    ("permission_level", AddMember.permission_level.validator),
+    ("member", AddMember.member.validator),
 ]
 
 RefPaperDoc.doc_id.validator = PaperDocId_validator
-RefPaperDoc._all_field_names_ = set(['doc_id'])
-RefPaperDoc._all_fields_ = [('doc_id', RefPaperDoc.doc_id.validator)]
+RefPaperDoc._all_field_names_ = set(["doc_id"])
+RefPaperDoc._all_fields_ = [("doc_id", RefPaperDoc.doc_id.validator)]
 
 AddPaperDocUser.members.validator = bv.List(AddMember_validator, max_items=20)
 AddPaperDocUser.custom_message.validator = bv.Nullable(bv.String())
 AddPaperDocUser.quiet.validator = bv.Boolean()
-AddPaperDocUser._all_field_names_ = RefPaperDoc._all_field_names_.union(set([
-    'members',
-    'custom_message',
-    'quiet',
-]))
+AddPaperDocUser._all_field_names_ = RefPaperDoc._all_field_names_.union(
+    set(
+        [
+            "members",
+            "custom_message",
+            "quiet",
+        ]
+    )
+)
 AddPaperDocUser._all_fields_ = RefPaperDoc._all_fields_ + [
-    ('members', AddPaperDocUser.members.validator),
-    ('custom_message', AddPaperDocUser.custom_message.validator),
-    ('quiet', AddPaperDocUser.quiet.validator),
+    ("members", AddPaperDocUser.members.validator),
+    ("custom_message", AddPaperDocUser.custom_message.validator),
+    ("quiet", AddPaperDocUser.quiet.validator),
 ]
 
 AddPaperDocUserMemberResult.member.validator = sharing.MemberSelector_validator
 AddPaperDocUserMemberResult.result.validator = AddPaperDocUserResult_validator
-AddPaperDocUserMemberResult._all_field_names_ = set([
-    'member',
-    'result',
-])
+AddPaperDocUserMemberResult._all_field_names_ = set(
+    [
+        "member",
+        "result",
+    ]
+)
 AddPaperDocUserMemberResult._all_fields_ = [
-    ('member', AddPaperDocUserMemberResult.member.validator),
-    ('result', AddPaperDocUserMemberResult.result.validator),
+    ("member", AddPaperDocUserMemberResult.member.validator),
+    ("result", AddPaperDocUserMemberResult.result.validator),
 ]
 
 AddPaperDocUserResult._success_validator = bv.Void()
@@ -2681,143 +2830,162 @@ AddPaperDocUserResult._failed_user_data_retrieval_validator = bv.Void()
 AddPaperDocUserResult._permission_already_granted_validator = bv.Void()
 AddPaperDocUserResult._other_validator = bv.Void()
 AddPaperDocUserResult._tagmap = {
-    'success': AddPaperDocUserResult._success_validator,
-    'unknown_error': AddPaperDocUserResult._unknown_error_validator,
-    'sharing_outside_team_disabled': AddPaperDocUserResult._sharing_outside_team_disabled_validator,
-    'daily_limit_reached': AddPaperDocUserResult._daily_limit_reached_validator,
-    'user_is_owner': AddPaperDocUserResult._user_is_owner_validator,
-    'failed_user_data_retrieval': AddPaperDocUserResult._failed_user_data_retrieval_validator,
-    'permission_already_granted': AddPaperDocUserResult._permission_already_granted_validator,
-    'other': AddPaperDocUserResult._other_validator,
+    "success": AddPaperDocUserResult._success_validator,
+    "unknown_error": AddPaperDocUserResult._unknown_error_validator,
+    "sharing_outside_team_disabled": AddPaperDocUserResult._sharing_outside_team_disabled_validator,
+    "daily_limit_reached": AddPaperDocUserResult._daily_limit_reached_validator,
+    "user_is_owner": AddPaperDocUserResult._user_is_owner_validator,
+    "failed_user_data_retrieval": AddPaperDocUserResult._failed_user_data_retrieval_validator,
+    "permission_already_granted": AddPaperDocUserResult._permission_already_granted_validator,
+    "other": AddPaperDocUserResult._other_validator,
 }
 
-AddPaperDocUserResult.success = AddPaperDocUserResult('success')
-AddPaperDocUserResult.unknown_error = AddPaperDocUserResult('unknown_error')
-AddPaperDocUserResult.sharing_outside_team_disabled = AddPaperDocUserResult('sharing_outside_team_disabled')
-AddPaperDocUserResult.daily_limit_reached = AddPaperDocUserResult('daily_limit_reached')
-AddPaperDocUserResult.user_is_owner = AddPaperDocUserResult('user_is_owner')
-AddPaperDocUserResult.failed_user_data_retrieval = AddPaperDocUserResult('failed_user_data_retrieval')
-AddPaperDocUserResult.permission_already_granted = AddPaperDocUserResult('permission_already_granted')
-AddPaperDocUserResult.other = AddPaperDocUserResult('other')
+AddPaperDocUserResult.success = AddPaperDocUserResult("success")
+AddPaperDocUserResult.unknown_error = AddPaperDocUserResult("unknown_error")
+AddPaperDocUserResult.sharing_outside_team_disabled = AddPaperDocUserResult(
+    "sharing_outside_team_disabled"
+)
+AddPaperDocUserResult.daily_limit_reached = AddPaperDocUserResult("daily_limit_reached")
+AddPaperDocUserResult.user_is_owner = AddPaperDocUserResult("user_is_owner")
+AddPaperDocUserResult.failed_user_data_retrieval = AddPaperDocUserResult(
+    "failed_user_data_retrieval"
+)
+AddPaperDocUserResult.permission_already_granted = AddPaperDocUserResult(
+    "permission_already_granted"
+)
+AddPaperDocUserResult.other = AddPaperDocUserResult("other")
 
 Cursor.value.validator = bv.String()
 Cursor.expiration.validator = bv.Nullable(common.DropboxTimestamp_validator)
-Cursor._all_field_names_ = set([
-    'value',
-    'expiration',
-])
+Cursor._all_field_names_ = set(
+    [
+        "value",
+        "expiration",
+    ]
+)
 Cursor._all_fields_ = [
-    ('value', Cursor.value.validator),
-    ('expiration', Cursor.expiration.validator),
+    ("value", Cursor.value.validator),
+    ("expiration", Cursor.expiration.validator),
 ]
 
 PaperApiBaseError._insufficient_permissions_validator = bv.Void()
 PaperApiBaseError._other_validator = bv.Void()
 PaperApiBaseError._tagmap = {
-    'insufficient_permissions': PaperApiBaseError._insufficient_permissions_validator,
-    'other': PaperApiBaseError._other_validator,
+    "insufficient_permissions": PaperApiBaseError._insufficient_permissions_validator,
+    "other": PaperApiBaseError._other_validator,
 }
 
-PaperApiBaseError.insufficient_permissions = PaperApiBaseError('insufficient_permissions')
-PaperApiBaseError.other = PaperApiBaseError('other')
+PaperApiBaseError.insufficient_permissions = PaperApiBaseError("insufficient_permissions")
+PaperApiBaseError.other = PaperApiBaseError("other")
 
 DocLookupError._doc_not_found_validator = bv.Void()
 DocLookupError._tagmap = {
-    'doc_not_found': DocLookupError._doc_not_found_validator,
+    "doc_not_found": DocLookupError._doc_not_found_validator,
 }
 DocLookupError._tagmap.update(PaperApiBaseError._tagmap)
 
-DocLookupError.doc_not_found = DocLookupError('doc_not_found')
+DocLookupError.doc_not_found = DocLookupError("doc_not_found")
 
 DocSubscriptionLevel._default_validator = bv.Void()
 DocSubscriptionLevel._ignore_validator = bv.Void()
 DocSubscriptionLevel._every_validator = bv.Void()
 DocSubscriptionLevel._no_email_validator = bv.Void()
 DocSubscriptionLevel._tagmap = {
-    'default': DocSubscriptionLevel._default_validator,
-    'ignore': DocSubscriptionLevel._ignore_validator,
-    'every': DocSubscriptionLevel._every_validator,
-    'no_email': DocSubscriptionLevel._no_email_validator,
+    "default": DocSubscriptionLevel._default_validator,
+    "ignore": DocSubscriptionLevel._ignore_validator,
+    "every": DocSubscriptionLevel._every_validator,
+    "no_email": DocSubscriptionLevel._no_email_validator,
 }
 
-DocSubscriptionLevel.default = DocSubscriptionLevel('default')
-DocSubscriptionLevel.ignore = DocSubscriptionLevel('ignore')
-DocSubscriptionLevel.every = DocSubscriptionLevel('every')
-DocSubscriptionLevel.no_email = DocSubscriptionLevel('no_email')
+DocSubscriptionLevel.default = DocSubscriptionLevel("default")
+DocSubscriptionLevel.ignore = DocSubscriptionLevel("ignore")
+DocSubscriptionLevel.every = DocSubscriptionLevel("every")
+DocSubscriptionLevel.no_email = DocSubscriptionLevel("no_email")
 
 ExportFormat._html_validator = bv.Void()
 ExportFormat._markdown_validator = bv.Void()
 ExportFormat._json_validator = bv.Void()
 ExportFormat._other_validator = bv.Void()
 ExportFormat._tagmap = {
-    'html': ExportFormat._html_validator,
-    'markdown': ExportFormat._markdown_validator,
-    'json': ExportFormat._json_validator,
-    'other': ExportFormat._other_validator,
+    "html": ExportFormat._html_validator,
+    "markdown": ExportFormat._markdown_validator,
+    "json": ExportFormat._json_validator,
+    "other": ExportFormat._other_validator,
 }
 
-ExportFormat.html = ExportFormat('html')
-ExportFormat.markdown = ExportFormat('markdown')
-ExportFormat.json = ExportFormat('json')
-ExportFormat.other = ExportFormat('other')
+ExportFormat.html = ExportFormat("html")
+ExportFormat.markdown = ExportFormat("markdown")
+ExportFormat.json = ExportFormat("json")
+ExportFormat.other = ExportFormat("other")
 
 Folder.id.validator = bv.String()
 Folder.name.validator = bv.String()
-Folder._all_field_names_ = set([
-    'id',
-    'name',
-])
+Folder._all_field_names_ = set(
+    [
+        "id",
+        "name",
+    ]
+)
 Folder._all_fields_ = [
-    ('id', Folder.id.validator),
-    ('name', Folder.name.validator),
+    ("id", Folder.id.validator),
+    ("name", Folder.name.validator),
 ]
 
 FolderSharingPolicyType._team_validator = bv.Void()
 FolderSharingPolicyType._invite_only_validator = bv.Void()
 FolderSharingPolicyType._tagmap = {
-    'team': FolderSharingPolicyType._team_validator,
-    'invite_only': FolderSharingPolicyType._invite_only_validator,
+    "team": FolderSharingPolicyType._team_validator,
+    "invite_only": FolderSharingPolicyType._invite_only_validator,
 }
 
-FolderSharingPolicyType.team = FolderSharingPolicyType('team')
-FolderSharingPolicyType.invite_only = FolderSharingPolicyType('invite_only')
+FolderSharingPolicyType.team = FolderSharingPolicyType("team")
+FolderSharingPolicyType.invite_only = FolderSharingPolicyType("invite_only")
 
 FolderSubscriptionLevel._none_validator = bv.Void()
 FolderSubscriptionLevel._activity_only_validator = bv.Void()
 FolderSubscriptionLevel._daily_emails_validator = bv.Void()
 FolderSubscriptionLevel._weekly_emails_validator = bv.Void()
 FolderSubscriptionLevel._tagmap = {
-    'none': FolderSubscriptionLevel._none_validator,
-    'activity_only': FolderSubscriptionLevel._activity_only_validator,
-    'daily_emails': FolderSubscriptionLevel._daily_emails_validator,
-    'weekly_emails': FolderSubscriptionLevel._weekly_emails_validator,
+    "none": FolderSubscriptionLevel._none_validator,
+    "activity_only": FolderSubscriptionLevel._activity_only_validator,
+    "daily_emails": FolderSubscriptionLevel._daily_emails_validator,
+    "weekly_emails": FolderSubscriptionLevel._weekly_emails_validator,
 }
 
-FolderSubscriptionLevel.none = FolderSubscriptionLevel('none')
-FolderSubscriptionLevel.activity_only = FolderSubscriptionLevel('activity_only')
-FolderSubscriptionLevel.daily_emails = FolderSubscriptionLevel('daily_emails')
-FolderSubscriptionLevel.weekly_emails = FolderSubscriptionLevel('weekly_emails')
+FolderSubscriptionLevel.none = FolderSubscriptionLevel("none")
+FolderSubscriptionLevel.activity_only = FolderSubscriptionLevel("activity_only")
+FolderSubscriptionLevel.daily_emails = FolderSubscriptionLevel("daily_emails")
+FolderSubscriptionLevel.weekly_emails = FolderSubscriptionLevel("weekly_emails")
 
-FoldersContainingPaperDoc.folder_sharing_policy_type.validator = bv.Nullable(FolderSharingPolicyType_validator)
+FoldersContainingPaperDoc.folder_sharing_policy_type.validator = bv.Nullable(
+    FolderSharingPolicyType_validator
+)
 FoldersContainingPaperDoc.folders.validator = bv.Nullable(bv.List(Folder_validator))
-FoldersContainingPaperDoc._all_field_names_ = set([
-    'folder_sharing_policy_type',
-    'folders',
-])
+FoldersContainingPaperDoc._all_field_names_ = set(
+    [
+        "folder_sharing_policy_type",
+        "folders",
+    ]
+)
 FoldersContainingPaperDoc._all_fields_ = [
-    ('folder_sharing_policy_type', FoldersContainingPaperDoc.folder_sharing_policy_type.validator),
-    ('folders', FoldersContainingPaperDoc.folders.validator),
+    (
+        "folder_sharing_policy_type",
+        FoldersContainingPaperDoc.folder_sharing_policy_type.validator,
+    ),
+    ("folders", FoldersContainingPaperDoc.folders.validator),
 ]
 
 GetDocMetadataArg.doc_id.validator = bv.Nullable(PaperDocId_validator)
 GetDocMetadataArg.file_id.validator = bv.Nullable(files.FileId_validator)
-GetDocMetadataArg._all_field_names_ = set([
-    'doc_id',
-    'file_id',
-])
+GetDocMetadataArg._all_field_names_ = set(
+    [
+        "doc_id",
+        "file_id",
+    ]
+)
 GetDocMetadataArg._all_fields_ = [
-    ('doc_id', GetDocMetadataArg.doc_id.validator),
-    ('file_id', GetDocMetadataArg.file_id.validator),
+    ("doc_id", GetDocMetadataArg.doc_id.validator),
+    ("file_id", GetDocMetadataArg.file_id.validator),
 ]
 
 ImportFormat._html_validator = bv.Void()
@@ -2825,86 +2993,92 @@ ImportFormat._markdown_validator = bv.Void()
 ImportFormat._plain_text_validator = bv.Void()
 ImportFormat._other_validator = bv.Void()
 ImportFormat._tagmap = {
-    'html': ImportFormat._html_validator,
-    'markdown': ImportFormat._markdown_validator,
-    'plain_text': ImportFormat._plain_text_validator,
-    'other': ImportFormat._other_validator,
+    "html": ImportFormat._html_validator,
+    "markdown": ImportFormat._markdown_validator,
+    "plain_text": ImportFormat._plain_text_validator,
+    "other": ImportFormat._other_validator,
 }
 
-ImportFormat.html = ImportFormat('html')
-ImportFormat.markdown = ImportFormat('markdown')
-ImportFormat.plain_text = ImportFormat('plain_text')
-ImportFormat.other = ImportFormat('other')
+ImportFormat.html = ImportFormat("html")
+ImportFormat.markdown = ImportFormat("markdown")
+ImportFormat.plain_text = ImportFormat("plain_text")
+ImportFormat.other = ImportFormat("other")
 
 InviteeInfoWithPermissionLevel.invitee.validator = sharing.InviteeInfo_validator
 InviteeInfoWithPermissionLevel.permission_level.validator = PaperDocPermissionLevel_validator
-InviteeInfoWithPermissionLevel._all_field_names_ = set([
-    'invitee',
-    'permission_level',
-])
+InviteeInfoWithPermissionLevel._all_field_names_ = set(
+    [
+        "invitee",
+        "permission_level",
+    ]
+)
 InviteeInfoWithPermissionLevel._all_fields_ = [
-    ('invitee', InviteeInfoWithPermissionLevel.invitee.validator),
-    ('permission_level', InviteeInfoWithPermissionLevel.permission_level.validator),
+    ("invitee", InviteeInfoWithPermissionLevel.invitee.validator),
+    ("permission_level", InviteeInfoWithPermissionLevel.permission_level.validator),
 ]
 
 ListDocsCursorError._cursor_error_validator = PaperApiCursorError_validator
 ListDocsCursorError._other_validator = bv.Void()
 ListDocsCursorError._tagmap = {
-    'cursor_error': ListDocsCursorError._cursor_error_validator,
-    'other': ListDocsCursorError._other_validator,
+    "cursor_error": ListDocsCursorError._cursor_error_validator,
+    "other": ListDocsCursorError._other_validator,
 }
 
-ListDocsCursorError.other = ListDocsCursorError('other')
+ListDocsCursorError.other = ListDocsCursorError("other")
 
 ListPaperDocsArgs.filter_by.validator = ListPaperDocsFilterBy_validator
 ListPaperDocsArgs.sort_by.validator = ListPaperDocsSortBy_validator
 ListPaperDocsArgs.sort_order.validator = ListPaperDocsSortOrder_validator
 ListPaperDocsArgs.limit.validator = bv.Int32(min_value=1, max_value=1000)
 ListPaperDocsArgs.stop_at_date.validator = bv.Nullable(common.DropboxTimestamp_validator)
-ListPaperDocsArgs._all_field_names_ = set([
-    'filter_by',
-    'sort_by',
-    'sort_order',
-    'limit',
-    'stop_at_date',
-])
+ListPaperDocsArgs._all_field_names_ = set(
+    [
+        "filter_by",
+        "sort_by",
+        "sort_order",
+        "limit",
+        "stop_at_date",
+    ]
+)
 ListPaperDocsArgs._all_fields_ = [
-    ('filter_by', ListPaperDocsArgs.filter_by.validator),
-    ('sort_by', ListPaperDocsArgs.sort_by.validator),
-    ('sort_order', ListPaperDocsArgs.sort_order.validator),
-    ('limit', ListPaperDocsArgs.limit.validator),
-    ('stop_at_date', ListPaperDocsArgs.stop_at_date.validator),
+    ("filter_by", ListPaperDocsArgs.filter_by.validator),
+    ("sort_by", ListPaperDocsArgs.sort_by.validator),
+    ("sort_order", ListPaperDocsArgs.sort_order.validator),
+    ("limit", ListPaperDocsArgs.limit.validator),
+    ("stop_at_date", ListPaperDocsArgs.stop_at_date.validator),
 ]
 
 ListPaperDocsContinueArgs.cursor.validator = bv.String()
-ListPaperDocsContinueArgs._all_field_names_ = set(['cursor'])
-ListPaperDocsContinueArgs._all_fields_ = [('cursor', ListPaperDocsContinueArgs.cursor.validator)]
+ListPaperDocsContinueArgs._all_field_names_ = set(["cursor"])
+ListPaperDocsContinueArgs._all_fields_ = [("cursor", ListPaperDocsContinueArgs.cursor.validator)]
 
 ListPaperDocsFilterBy._docs_accessed_validator = bv.Void()
 ListPaperDocsFilterBy._docs_created_validator = bv.Void()
 ListPaperDocsFilterBy._other_validator = bv.Void()
 ListPaperDocsFilterBy._tagmap = {
-    'docs_accessed': ListPaperDocsFilterBy._docs_accessed_validator,
-    'docs_created': ListPaperDocsFilterBy._docs_created_validator,
-    'other': ListPaperDocsFilterBy._other_validator,
+    "docs_accessed": ListPaperDocsFilterBy._docs_accessed_validator,
+    "docs_created": ListPaperDocsFilterBy._docs_created_validator,
+    "other": ListPaperDocsFilterBy._other_validator,
 }
 
-ListPaperDocsFilterBy.docs_accessed = ListPaperDocsFilterBy('docs_accessed')
-ListPaperDocsFilterBy.docs_created = ListPaperDocsFilterBy('docs_created')
-ListPaperDocsFilterBy.other = ListPaperDocsFilterBy('other')
+ListPaperDocsFilterBy.docs_accessed = ListPaperDocsFilterBy("docs_accessed")
+ListPaperDocsFilterBy.docs_created = ListPaperDocsFilterBy("docs_created")
+ListPaperDocsFilterBy.other = ListPaperDocsFilterBy("other")
 
 ListPaperDocsResponse.doc_ids.validator = bv.List(PaperDocId_validator)
 ListPaperDocsResponse.cursor.validator = Cursor_validator
 ListPaperDocsResponse.has_more.validator = bv.Boolean()
-ListPaperDocsResponse._all_field_names_ = set([
-    'doc_ids',
-    'cursor',
-    'has_more',
-])
+ListPaperDocsResponse._all_field_names_ = set(
+    [
+        "doc_ids",
+        "cursor",
+        "has_more",
+    ]
+)
 ListPaperDocsResponse._all_fields_ = [
-    ('doc_ids', ListPaperDocsResponse.doc_ids.validator),
-    ('cursor', ListPaperDocsResponse.cursor.validator),
-    ('has_more', ListPaperDocsResponse.has_more.validator),
+    ("doc_ids", ListPaperDocsResponse.doc_ids.validator),
+    ("cursor", ListPaperDocsResponse.cursor.validator),
+    ("has_more", ListPaperDocsResponse.has_more.validator),
 ]
 
 ListPaperDocsSortBy._accessed_validator = bv.Void()
@@ -2912,98 +3086,116 @@ ListPaperDocsSortBy._modified_validator = bv.Void()
 ListPaperDocsSortBy._created_validator = bv.Void()
 ListPaperDocsSortBy._other_validator = bv.Void()
 ListPaperDocsSortBy._tagmap = {
-    'accessed': ListPaperDocsSortBy._accessed_validator,
-    'modified': ListPaperDocsSortBy._modified_validator,
-    'created': ListPaperDocsSortBy._created_validator,
-    'other': ListPaperDocsSortBy._other_validator,
+    "accessed": ListPaperDocsSortBy._accessed_validator,
+    "modified": ListPaperDocsSortBy._modified_validator,
+    "created": ListPaperDocsSortBy._created_validator,
+    "other": ListPaperDocsSortBy._other_validator,
 }
 
-ListPaperDocsSortBy.accessed = ListPaperDocsSortBy('accessed')
-ListPaperDocsSortBy.modified = ListPaperDocsSortBy('modified')
-ListPaperDocsSortBy.created = ListPaperDocsSortBy('created')
-ListPaperDocsSortBy.other = ListPaperDocsSortBy('other')
+ListPaperDocsSortBy.accessed = ListPaperDocsSortBy("accessed")
+ListPaperDocsSortBy.modified = ListPaperDocsSortBy("modified")
+ListPaperDocsSortBy.created = ListPaperDocsSortBy("created")
+ListPaperDocsSortBy.other = ListPaperDocsSortBy("other")
 
 ListPaperDocsSortOrder._ascending_validator = bv.Void()
 ListPaperDocsSortOrder._descending_validator = bv.Void()
 ListPaperDocsSortOrder._other_validator = bv.Void()
 ListPaperDocsSortOrder._tagmap = {
-    'ascending': ListPaperDocsSortOrder._ascending_validator,
-    'descending': ListPaperDocsSortOrder._descending_validator,
-    'other': ListPaperDocsSortOrder._other_validator,
+    "ascending": ListPaperDocsSortOrder._ascending_validator,
+    "descending": ListPaperDocsSortOrder._descending_validator,
+    "other": ListPaperDocsSortOrder._other_validator,
 }
 
-ListPaperDocsSortOrder.ascending = ListPaperDocsSortOrder('ascending')
-ListPaperDocsSortOrder.descending = ListPaperDocsSortOrder('descending')
-ListPaperDocsSortOrder.other = ListPaperDocsSortOrder('other')
+ListPaperDocsSortOrder.ascending = ListPaperDocsSortOrder("ascending")
+ListPaperDocsSortOrder.descending = ListPaperDocsSortOrder("descending")
+ListPaperDocsSortOrder.other = ListPaperDocsSortOrder("other")
 
 ListUsersCursorError._doc_not_found_validator = bv.Void()
 ListUsersCursorError._cursor_error_validator = PaperApiCursorError_validator
 ListUsersCursorError._tagmap = {
-    'doc_not_found': ListUsersCursorError._doc_not_found_validator,
-    'cursor_error': ListUsersCursorError._cursor_error_validator,
+    "doc_not_found": ListUsersCursorError._doc_not_found_validator,
+    "cursor_error": ListUsersCursorError._cursor_error_validator,
 }
 ListUsersCursorError._tagmap.update(PaperApiBaseError._tagmap)
 
-ListUsersCursorError.doc_not_found = ListUsersCursorError('doc_not_found')
+ListUsersCursorError.doc_not_found = ListUsersCursorError("doc_not_found")
 
 ListUsersOnFolderArgs.limit.validator = bv.Int32(min_value=1, max_value=1000)
-ListUsersOnFolderArgs._all_field_names_ = RefPaperDoc._all_field_names_.union(set(['limit']))
-ListUsersOnFolderArgs._all_fields_ = RefPaperDoc._all_fields_ + [('limit', ListUsersOnFolderArgs.limit.validator)]
+ListUsersOnFolderArgs._all_field_names_ = RefPaperDoc._all_field_names_.union(set(["limit"]))
+ListUsersOnFolderArgs._all_fields_ = RefPaperDoc._all_fields_ + [
+    ("limit", ListUsersOnFolderArgs.limit.validator)
+]
 
 ListUsersOnFolderContinueArgs.cursor.validator = bv.String()
-ListUsersOnFolderContinueArgs._all_field_names_ = RefPaperDoc._all_field_names_.union(set(['cursor']))
-ListUsersOnFolderContinueArgs._all_fields_ = RefPaperDoc._all_fields_ + [('cursor', ListUsersOnFolderContinueArgs.cursor.validator)]
+ListUsersOnFolderContinueArgs._all_field_names_ = RefPaperDoc._all_field_names_.union(
+    set(["cursor"])
+)
+ListUsersOnFolderContinueArgs._all_fields_ = RefPaperDoc._all_fields_ + [
+    ("cursor", ListUsersOnFolderContinueArgs.cursor.validator)
+]
 
 ListUsersOnFolderResponse.invitees.validator = bv.List(sharing.InviteeInfo_validator)
 ListUsersOnFolderResponse.users.validator = bv.List(sharing.UserInfo_validator)
 ListUsersOnFolderResponse.cursor.validator = Cursor_validator
 ListUsersOnFolderResponse.has_more.validator = bv.Boolean()
-ListUsersOnFolderResponse._all_field_names_ = set([
-    'invitees',
-    'users',
-    'cursor',
-    'has_more',
-])
+ListUsersOnFolderResponse._all_field_names_ = set(
+    [
+        "invitees",
+        "users",
+        "cursor",
+        "has_more",
+    ]
+)
 ListUsersOnFolderResponse._all_fields_ = [
-    ('invitees', ListUsersOnFolderResponse.invitees.validator),
-    ('users', ListUsersOnFolderResponse.users.validator),
-    ('cursor', ListUsersOnFolderResponse.cursor.validator),
-    ('has_more', ListUsersOnFolderResponse.has_more.validator),
+    ("invitees", ListUsersOnFolderResponse.invitees.validator),
+    ("users", ListUsersOnFolderResponse.users.validator),
+    ("cursor", ListUsersOnFolderResponse.cursor.validator),
+    ("has_more", ListUsersOnFolderResponse.has_more.validator),
 ]
 
 ListUsersOnPaperDocArgs.limit.validator = bv.Int32(min_value=1, max_value=1000)
 ListUsersOnPaperDocArgs.filter_by.validator = UserOnPaperDocFilter_validator
-ListUsersOnPaperDocArgs._all_field_names_ = RefPaperDoc._all_field_names_.union(set([
-    'limit',
-    'filter_by',
-]))
+ListUsersOnPaperDocArgs._all_field_names_ = RefPaperDoc._all_field_names_.union(
+    set(
+        [
+            "limit",
+            "filter_by",
+        ]
+    )
+)
 ListUsersOnPaperDocArgs._all_fields_ = RefPaperDoc._all_fields_ + [
-    ('limit', ListUsersOnPaperDocArgs.limit.validator),
-    ('filter_by', ListUsersOnPaperDocArgs.filter_by.validator),
+    ("limit", ListUsersOnPaperDocArgs.limit.validator),
+    ("filter_by", ListUsersOnPaperDocArgs.filter_by.validator),
 ]
 
 ListUsersOnPaperDocContinueArgs.cursor.validator = bv.String()
-ListUsersOnPaperDocContinueArgs._all_field_names_ = RefPaperDoc._all_field_names_.union(set(['cursor']))
-ListUsersOnPaperDocContinueArgs._all_fields_ = RefPaperDoc._all_fields_ + [('cursor', ListUsersOnPaperDocContinueArgs.cursor.validator)]
+ListUsersOnPaperDocContinueArgs._all_field_names_ = RefPaperDoc._all_field_names_.union(
+    set(["cursor"])
+)
+ListUsersOnPaperDocContinueArgs._all_fields_ = RefPaperDoc._all_fields_ + [
+    ("cursor", ListUsersOnPaperDocContinueArgs.cursor.validator)
+]
 
 ListUsersOnPaperDocResponse.invitees.validator = bv.List(InviteeInfoWithPermissionLevel_validator)
 ListUsersOnPaperDocResponse.users.validator = bv.List(UserInfoWithPermissionLevel_validator)
 ListUsersOnPaperDocResponse.doc_owner.validator = sharing.UserInfo_validator
 ListUsersOnPaperDocResponse.cursor.validator = Cursor_validator
 ListUsersOnPaperDocResponse.has_more.validator = bv.Boolean()
-ListUsersOnPaperDocResponse._all_field_names_ = set([
-    'invitees',
-    'users',
-    'doc_owner',
-    'cursor',
-    'has_more',
-])
+ListUsersOnPaperDocResponse._all_field_names_ = set(
+    [
+        "invitees",
+        "users",
+        "doc_owner",
+        "cursor",
+        "has_more",
+    ]
+)
 ListUsersOnPaperDocResponse._all_fields_ = [
-    ('invitees', ListUsersOnPaperDocResponse.invitees.validator),
-    ('users', ListUsersOnPaperDocResponse.users.validator),
-    ('doc_owner', ListUsersOnPaperDocResponse.doc_owner.validator),
-    ('cursor', ListUsersOnPaperDocResponse.cursor.validator),
-    ('has_more', ListUsersOnPaperDocResponse.has_more.validator),
+    ("invitees", ListUsersOnPaperDocResponse.invitees.validator),
+    ("users", ListUsersOnPaperDocResponse.users.validator),
+    ("doc_owner", ListUsersOnPaperDocResponse.doc_owner.validator),
+    ("cursor", ListUsersOnPaperDocResponse.cursor.validator),
+    ("has_more", ListUsersOnPaperDocResponse.has_more.validator),
 ]
 
 PaperApiCursorError._expired_cursor_validator = bv.Void()
@@ -3012,28 +3204,30 @@ PaperApiCursorError._wrong_user_in_cursor_validator = bv.Void()
 PaperApiCursorError._reset_validator = bv.Void()
 PaperApiCursorError._other_validator = bv.Void()
 PaperApiCursorError._tagmap = {
-    'expired_cursor': PaperApiCursorError._expired_cursor_validator,
-    'invalid_cursor': PaperApiCursorError._invalid_cursor_validator,
-    'wrong_user_in_cursor': PaperApiCursorError._wrong_user_in_cursor_validator,
-    'reset': PaperApiCursorError._reset_validator,
-    'other': PaperApiCursorError._other_validator,
+    "expired_cursor": PaperApiCursorError._expired_cursor_validator,
+    "invalid_cursor": PaperApiCursorError._invalid_cursor_validator,
+    "wrong_user_in_cursor": PaperApiCursorError._wrong_user_in_cursor_validator,
+    "reset": PaperApiCursorError._reset_validator,
+    "other": PaperApiCursorError._other_validator,
 }
 
-PaperApiCursorError.expired_cursor = PaperApiCursorError('expired_cursor')
-PaperApiCursorError.invalid_cursor = PaperApiCursorError('invalid_cursor')
-PaperApiCursorError.wrong_user_in_cursor = PaperApiCursorError('wrong_user_in_cursor')
-PaperApiCursorError.reset = PaperApiCursorError('reset')
-PaperApiCursorError.other = PaperApiCursorError('other')
+PaperApiCursorError.expired_cursor = PaperApiCursorError("expired_cursor")
+PaperApiCursorError.invalid_cursor = PaperApiCursorError("invalid_cursor")
+PaperApiCursorError.wrong_user_in_cursor = PaperApiCursorError("wrong_user_in_cursor")
+PaperApiCursorError.reset = PaperApiCursorError("reset")
+PaperApiCursorError.other = PaperApiCursorError("other")
 
 PaperDocCreateArgs.parent_folder_id.validator = bv.Nullable(bv.String())
 PaperDocCreateArgs.import_format.validator = ImportFormat_validator
-PaperDocCreateArgs._all_field_names_ = set([
-    'parent_folder_id',
-    'import_format',
-])
+PaperDocCreateArgs._all_field_names_ = set(
+    [
+        "parent_folder_id",
+        "import_format",
+    ]
+)
 PaperDocCreateArgs._all_fields_ = [
-    ('parent_folder_id', PaperDocCreateArgs.parent_folder_id.validator),
-    ('import_format', PaperDocCreateArgs.import_format.validator),
+    ("parent_folder_id", PaperDocCreateArgs.parent_folder_id.validator),
+    ("import_format", PaperDocCreateArgs.import_format.validator),
 ]
 
 PaperDocCreateError._content_malformed_validator = bv.Void()
@@ -3041,58 +3235,66 @@ PaperDocCreateError._folder_not_found_validator = bv.Void()
 PaperDocCreateError._doc_length_exceeded_validator = bv.Void()
 PaperDocCreateError._image_size_exceeded_validator = bv.Void()
 PaperDocCreateError._tagmap = {
-    'content_malformed': PaperDocCreateError._content_malformed_validator,
-    'folder_not_found': PaperDocCreateError._folder_not_found_validator,
-    'doc_length_exceeded': PaperDocCreateError._doc_length_exceeded_validator,
-    'image_size_exceeded': PaperDocCreateError._image_size_exceeded_validator,
+    "content_malformed": PaperDocCreateError._content_malformed_validator,
+    "folder_not_found": PaperDocCreateError._folder_not_found_validator,
+    "doc_length_exceeded": PaperDocCreateError._doc_length_exceeded_validator,
+    "image_size_exceeded": PaperDocCreateError._image_size_exceeded_validator,
 }
 PaperDocCreateError._tagmap.update(PaperApiBaseError._tagmap)
 
-PaperDocCreateError.content_malformed = PaperDocCreateError('content_malformed')
-PaperDocCreateError.folder_not_found = PaperDocCreateError('folder_not_found')
-PaperDocCreateError.doc_length_exceeded = PaperDocCreateError('doc_length_exceeded')
-PaperDocCreateError.image_size_exceeded = PaperDocCreateError('image_size_exceeded')
+PaperDocCreateError.content_malformed = PaperDocCreateError("content_malformed")
+PaperDocCreateError.folder_not_found = PaperDocCreateError("folder_not_found")
+PaperDocCreateError.doc_length_exceeded = PaperDocCreateError("doc_length_exceeded")
+PaperDocCreateError.image_size_exceeded = PaperDocCreateError("image_size_exceeded")
 
 PaperDocCreateUpdateResult.doc_id.validator = bv.String()
 PaperDocCreateUpdateResult.revision.validator = bv.Int64()
 PaperDocCreateUpdateResult.title.validator = bv.String()
-PaperDocCreateUpdateResult._all_field_names_ = set([
-    'doc_id',
-    'revision',
-    'title',
-])
+PaperDocCreateUpdateResult._all_field_names_ = set(
+    [
+        "doc_id",
+        "revision",
+        "title",
+    ]
+)
 PaperDocCreateUpdateResult._all_fields_ = [
-    ('doc_id', PaperDocCreateUpdateResult.doc_id.validator),
-    ('revision', PaperDocCreateUpdateResult.revision.validator),
-    ('title', PaperDocCreateUpdateResult.title.validator),
+    ("doc_id", PaperDocCreateUpdateResult.doc_id.validator),
+    ("revision", PaperDocCreateUpdateResult.revision.validator),
+    ("title", PaperDocCreateUpdateResult.title.validator),
 ]
 
 PaperDocExport.export_format.validator = ExportFormat_validator
 PaperDocExport.include_comments.validator = bv.Boolean()
-PaperDocExport._all_field_names_ = RefPaperDoc._all_field_names_.union(set([
-    'export_format',
-    'include_comments',
-]))
+PaperDocExport._all_field_names_ = RefPaperDoc._all_field_names_.union(
+    set(
+        [
+            "export_format",
+            "include_comments",
+        ]
+    )
+)
 PaperDocExport._all_fields_ = RefPaperDoc._all_fields_ + [
-    ('export_format', PaperDocExport.export_format.validator),
-    ('include_comments', PaperDocExport.include_comments.validator),
+    ("export_format", PaperDocExport.export_format.validator),
+    ("include_comments", PaperDocExport.include_comments.validator),
 ]
 
 PaperDocExportResult.owner.validator = bv.String()
 PaperDocExportResult.title.validator = bv.String()
 PaperDocExportResult.revision.validator = bv.Int64()
 PaperDocExportResult.mime_type.validator = bv.String()
-PaperDocExportResult._all_field_names_ = set([
-    'owner',
-    'title',
-    'revision',
-    'mime_type',
-])
+PaperDocExportResult._all_field_names_ = set(
+    [
+        "owner",
+        "title",
+        "revision",
+        "mime_type",
+    ]
+)
 PaperDocExportResult._all_fields_ = [
-    ('owner', PaperDocExportResult.owner.validator),
-    ('title', PaperDocExportResult.title.validator),
-    ('revision', PaperDocExportResult.revision.validator),
-    ('mime_type', PaperDocExportResult.mime_type.validator),
+    ("owner", PaperDocExportResult.owner.validator),
+    ("title", PaperDocExportResult.title.validator),
+    ("revision", PaperDocExportResult.revision.validator),
+    ("mime_type", PaperDocExportResult.mime_type.validator),
 ]
 
 PaperDocGetMetadataResult.doc_id.validator = PaperDocId_validator
@@ -3103,69 +3305,79 @@ PaperDocGetMetadataResult.status.validator = PaperDocStatus_validator
 PaperDocGetMetadataResult.revision.validator = bv.Int64()
 PaperDocGetMetadataResult.last_updated_date.validator = common.DropboxTimestamp_validator
 PaperDocGetMetadataResult.last_editor.validator = bv.String()
-PaperDocGetMetadataResult._all_field_names_ = set([
-    'doc_id',
-    'owner',
-    'title',
-    'created_date',
-    'status',
-    'revision',
-    'last_updated_date',
-    'last_editor',
-])
+PaperDocGetMetadataResult._all_field_names_ = set(
+    [
+        "doc_id",
+        "owner",
+        "title",
+        "created_date",
+        "status",
+        "revision",
+        "last_updated_date",
+        "last_editor",
+    ]
+)
 PaperDocGetMetadataResult._all_fields_ = [
-    ('doc_id', PaperDocGetMetadataResult.doc_id.validator),
-    ('owner', PaperDocGetMetadataResult.owner.validator),
-    ('title', PaperDocGetMetadataResult.title.validator),
-    ('created_date', PaperDocGetMetadataResult.created_date.validator),
-    ('status', PaperDocGetMetadataResult.status.validator),
-    ('revision', PaperDocGetMetadataResult.revision.validator),
-    ('last_updated_date', PaperDocGetMetadataResult.last_updated_date.validator),
-    ('last_editor', PaperDocGetMetadataResult.last_editor.validator),
+    ("doc_id", PaperDocGetMetadataResult.doc_id.validator),
+    ("owner", PaperDocGetMetadataResult.owner.validator),
+    ("title", PaperDocGetMetadataResult.title.validator),
+    ("created_date", PaperDocGetMetadataResult.created_date.validator),
+    ("status", PaperDocGetMetadataResult.status.validator),
+    ("revision", PaperDocGetMetadataResult.revision.validator),
+    ("last_updated_date", PaperDocGetMetadataResult.last_updated_date.validator),
+    ("last_editor", PaperDocGetMetadataResult.last_editor.validator),
 ]
 
 PaperDocPermissionLevel._edit_validator = bv.Void()
 PaperDocPermissionLevel._view_and_comment_validator = bv.Void()
 PaperDocPermissionLevel._other_validator = bv.Void()
 PaperDocPermissionLevel._tagmap = {
-    'edit': PaperDocPermissionLevel._edit_validator,
-    'view_and_comment': PaperDocPermissionLevel._view_and_comment_validator,
-    'other': PaperDocPermissionLevel._other_validator,
+    "edit": PaperDocPermissionLevel._edit_validator,
+    "view_and_comment": PaperDocPermissionLevel._view_and_comment_validator,
+    "other": PaperDocPermissionLevel._other_validator,
 }
 
-PaperDocPermissionLevel.edit = PaperDocPermissionLevel('edit')
-PaperDocPermissionLevel.view_and_comment = PaperDocPermissionLevel('view_and_comment')
-PaperDocPermissionLevel.other = PaperDocPermissionLevel('other')
+PaperDocPermissionLevel.edit = PaperDocPermissionLevel("edit")
+PaperDocPermissionLevel.view_and_comment = PaperDocPermissionLevel("view_and_comment")
+PaperDocPermissionLevel.other = PaperDocPermissionLevel("other")
 
 PaperDocSharingPolicy.sharing_policy.validator = SharingPolicy_validator
-PaperDocSharingPolicy._all_field_names_ = RefPaperDoc._all_field_names_.union(set(['sharing_policy']))
-PaperDocSharingPolicy._all_fields_ = RefPaperDoc._all_fields_ + [('sharing_policy', PaperDocSharingPolicy.sharing_policy.validator)]
+PaperDocSharingPolicy._all_field_names_ = RefPaperDoc._all_field_names_.union(
+    set(["sharing_policy"])
+)
+PaperDocSharingPolicy._all_fields_ = RefPaperDoc._all_fields_ + [
+    ("sharing_policy", PaperDocSharingPolicy.sharing_policy.validator)
+]
 
 PaperDocStatus._active_validator = bv.Void()
 PaperDocStatus._deleted_validator = bv.Void()
 PaperDocStatus._other_validator = bv.Void()
 PaperDocStatus._tagmap = {
-    'active': PaperDocStatus._active_validator,
-    'deleted': PaperDocStatus._deleted_validator,
-    'other': PaperDocStatus._other_validator,
+    "active": PaperDocStatus._active_validator,
+    "deleted": PaperDocStatus._deleted_validator,
+    "other": PaperDocStatus._other_validator,
 }
 
-PaperDocStatus.active = PaperDocStatus('active')
-PaperDocStatus.deleted = PaperDocStatus('deleted')
-PaperDocStatus.other = PaperDocStatus('other')
+PaperDocStatus.active = PaperDocStatus("active")
+PaperDocStatus.deleted = PaperDocStatus("deleted")
+PaperDocStatus.other = PaperDocStatus("other")
 
 PaperDocUpdateArgs.doc_update_policy.validator = PaperDocUpdatePolicy_validator
 PaperDocUpdateArgs.revision.validator = bv.Int64()
 PaperDocUpdateArgs.import_format.validator = ImportFormat_validator
-PaperDocUpdateArgs._all_field_names_ = RefPaperDoc._all_field_names_.union(set([
-    'doc_update_policy',
-    'revision',
-    'import_format',
-]))
+PaperDocUpdateArgs._all_field_names_ = RefPaperDoc._all_field_names_.union(
+    set(
+        [
+            "doc_update_policy",
+            "revision",
+            "import_format",
+        ]
+    )
+)
 PaperDocUpdateArgs._all_fields_ = RefPaperDoc._all_fields_ + [
-    ('doc_update_policy', PaperDocUpdateArgs.doc_update_policy.validator),
-    ('revision', PaperDocUpdateArgs.revision.validator),
-    ('import_format', PaperDocUpdateArgs.import_format.validator),
+    ("doc_update_policy", PaperDocUpdateArgs.doc_update_policy.validator),
+    ("revision", PaperDocUpdateArgs.revision.validator),
+    ("import_format", PaperDocUpdateArgs.import_format.validator),
 ]
 
 PaperDocUpdateError._content_malformed_validator = bv.Void()
@@ -3175,126 +3387,136 @@ PaperDocUpdateError._image_size_exceeded_validator = bv.Void()
 PaperDocUpdateError._doc_archived_validator = bv.Void()
 PaperDocUpdateError._doc_deleted_validator = bv.Void()
 PaperDocUpdateError._tagmap = {
-    'content_malformed': PaperDocUpdateError._content_malformed_validator,
-    'revision_mismatch': PaperDocUpdateError._revision_mismatch_validator,
-    'doc_length_exceeded': PaperDocUpdateError._doc_length_exceeded_validator,
-    'image_size_exceeded': PaperDocUpdateError._image_size_exceeded_validator,
-    'doc_archived': PaperDocUpdateError._doc_archived_validator,
-    'doc_deleted': PaperDocUpdateError._doc_deleted_validator,
+    "content_malformed": PaperDocUpdateError._content_malformed_validator,
+    "revision_mismatch": PaperDocUpdateError._revision_mismatch_validator,
+    "doc_length_exceeded": PaperDocUpdateError._doc_length_exceeded_validator,
+    "image_size_exceeded": PaperDocUpdateError._image_size_exceeded_validator,
+    "doc_archived": PaperDocUpdateError._doc_archived_validator,
+    "doc_deleted": PaperDocUpdateError._doc_deleted_validator,
 }
 PaperDocUpdateError._tagmap.update(DocLookupError._tagmap)
 
-PaperDocUpdateError.content_malformed = PaperDocUpdateError('content_malformed')
-PaperDocUpdateError.revision_mismatch = PaperDocUpdateError('revision_mismatch')
-PaperDocUpdateError.doc_length_exceeded = PaperDocUpdateError('doc_length_exceeded')
-PaperDocUpdateError.image_size_exceeded = PaperDocUpdateError('image_size_exceeded')
-PaperDocUpdateError.doc_archived = PaperDocUpdateError('doc_archived')
-PaperDocUpdateError.doc_deleted = PaperDocUpdateError('doc_deleted')
+PaperDocUpdateError.content_malformed = PaperDocUpdateError("content_malformed")
+PaperDocUpdateError.revision_mismatch = PaperDocUpdateError("revision_mismatch")
+PaperDocUpdateError.doc_length_exceeded = PaperDocUpdateError("doc_length_exceeded")
+PaperDocUpdateError.image_size_exceeded = PaperDocUpdateError("image_size_exceeded")
+PaperDocUpdateError.doc_archived = PaperDocUpdateError("doc_archived")
+PaperDocUpdateError.doc_deleted = PaperDocUpdateError("doc_deleted")
 
 PaperDocUpdatePolicy._append_validator = bv.Void()
 PaperDocUpdatePolicy._prepend_validator = bv.Void()
 PaperDocUpdatePolicy._overwrite_all_validator = bv.Void()
 PaperDocUpdatePolicy._other_validator = bv.Void()
 PaperDocUpdatePolicy._tagmap = {
-    'append': PaperDocUpdatePolicy._append_validator,
-    'prepend': PaperDocUpdatePolicy._prepend_validator,
-    'overwrite_all': PaperDocUpdatePolicy._overwrite_all_validator,
-    'other': PaperDocUpdatePolicy._other_validator,
+    "append": PaperDocUpdatePolicy._append_validator,
+    "prepend": PaperDocUpdatePolicy._prepend_validator,
+    "overwrite_all": PaperDocUpdatePolicy._overwrite_all_validator,
+    "other": PaperDocUpdatePolicy._other_validator,
 }
 
-PaperDocUpdatePolicy.append = PaperDocUpdatePolicy('append')
-PaperDocUpdatePolicy.prepend = PaperDocUpdatePolicy('prepend')
-PaperDocUpdatePolicy.overwrite_all = PaperDocUpdatePolicy('overwrite_all')
-PaperDocUpdatePolicy.other = PaperDocUpdatePolicy('other')
+PaperDocUpdatePolicy.append = PaperDocUpdatePolicy("append")
+PaperDocUpdatePolicy.prepend = PaperDocUpdatePolicy("prepend")
+PaperDocUpdatePolicy.overwrite_all = PaperDocUpdatePolicy("overwrite_all")
+PaperDocUpdatePolicy.other = PaperDocUpdatePolicy("other")
 
 PaperFolderCreateArg.name.validator = bv.String()
 PaperFolderCreateArg.parent_folder_id.validator = bv.Nullable(bv.String())
 PaperFolderCreateArg.is_team_folder.validator = bv.Nullable(bv.Boolean())
-PaperFolderCreateArg._all_field_names_ = set([
-    'name',
-    'parent_folder_id',
-    'is_team_folder',
-])
+PaperFolderCreateArg._all_field_names_ = set(
+    [
+        "name",
+        "parent_folder_id",
+        "is_team_folder",
+    ]
+)
 PaperFolderCreateArg._all_fields_ = [
-    ('name', PaperFolderCreateArg.name.validator),
-    ('parent_folder_id', PaperFolderCreateArg.parent_folder_id.validator),
-    ('is_team_folder', PaperFolderCreateArg.is_team_folder.validator),
+    ("name", PaperFolderCreateArg.name.validator),
+    ("parent_folder_id", PaperFolderCreateArg.parent_folder_id.validator),
+    ("is_team_folder", PaperFolderCreateArg.is_team_folder.validator),
 ]
 
 PaperFolderCreateError._folder_not_found_validator = bv.Void()
 PaperFolderCreateError._invalid_folder_id_validator = bv.Void()
 PaperFolderCreateError._tagmap = {
-    'folder_not_found': PaperFolderCreateError._folder_not_found_validator,
-    'invalid_folder_id': PaperFolderCreateError._invalid_folder_id_validator,
+    "folder_not_found": PaperFolderCreateError._folder_not_found_validator,
+    "invalid_folder_id": PaperFolderCreateError._invalid_folder_id_validator,
 }
 PaperFolderCreateError._tagmap.update(PaperApiBaseError._tagmap)
 
-PaperFolderCreateError.folder_not_found = PaperFolderCreateError('folder_not_found')
-PaperFolderCreateError.invalid_folder_id = PaperFolderCreateError('invalid_folder_id')
+PaperFolderCreateError.folder_not_found = PaperFolderCreateError("folder_not_found")
+PaperFolderCreateError.invalid_folder_id = PaperFolderCreateError("invalid_folder_id")
 
 PaperFolderCreateResult.folder_id.validator = bv.String()
-PaperFolderCreateResult._all_field_names_ = set(['folder_id'])
-PaperFolderCreateResult._all_fields_ = [('folder_id', PaperFolderCreateResult.folder_id.validator)]
+PaperFolderCreateResult._all_field_names_ = set(["folder_id"])
+PaperFolderCreateResult._all_fields_ = [("folder_id", PaperFolderCreateResult.folder_id.validator)]
 
 RemovePaperDocUser.member.validator = sharing.MemberSelector_validator
-RemovePaperDocUser._all_field_names_ = RefPaperDoc._all_field_names_.union(set(['member']))
-RemovePaperDocUser._all_fields_ = RefPaperDoc._all_fields_ + [('member', RemovePaperDocUser.member.validator)]
+RemovePaperDocUser._all_field_names_ = RefPaperDoc._all_field_names_.union(set(["member"]))
+RemovePaperDocUser._all_fields_ = RefPaperDoc._all_fields_ + [
+    ("member", RemovePaperDocUser.member.validator)
+]
 
 SharingPolicy.public_sharing_policy.validator = bv.Nullable(SharingPublicPolicyType_validator)
 SharingPolicy.team_sharing_policy.validator = bv.Nullable(SharingTeamPolicyType_validator)
-SharingPolicy._all_field_names_ = set([
-    'public_sharing_policy',
-    'team_sharing_policy',
-])
+SharingPolicy._all_field_names_ = set(
+    [
+        "public_sharing_policy",
+        "team_sharing_policy",
+    ]
+)
 SharingPolicy._all_fields_ = [
-    ('public_sharing_policy', SharingPolicy.public_sharing_policy.validator),
-    ('team_sharing_policy', SharingPolicy.team_sharing_policy.validator),
+    ("public_sharing_policy", SharingPolicy.public_sharing_policy.validator),
+    ("team_sharing_policy", SharingPolicy.team_sharing_policy.validator),
 ]
 
 SharingTeamPolicyType._people_with_link_can_edit_validator = bv.Void()
 SharingTeamPolicyType._people_with_link_can_view_and_comment_validator = bv.Void()
 SharingTeamPolicyType._invite_only_validator = bv.Void()
 SharingTeamPolicyType._tagmap = {
-    'people_with_link_can_edit': SharingTeamPolicyType._people_with_link_can_edit_validator,
-    'people_with_link_can_view_and_comment': SharingTeamPolicyType._people_with_link_can_view_and_comment_validator,
-    'invite_only': SharingTeamPolicyType._invite_only_validator,
+    "people_with_link_can_edit": SharingTeamPolicyType._people_with_link_can_edit_validator,
+    "people_with_link_can_view_and_comment": SharingTeamPolicyType._people_with_link_can_view_and_comment_validator,
+    "invite_only": SharingTeamPolicyType._invite_only_validator,
 }
 
-SharingTeamPolicyType.people_with_link_can_edit = SharingTeamPolicyType('people_with_link_can_edit')
-SharingTeamPolicyType.people_with_link_can_view_and_comment = SharingTeamPolicyType('people_with_link_can_view_and_comment')
-SharingTeamPolicyType.invite_only = SharingTeamPolicyType('invite_only')
+SharingTeamPolicyType.people_with_link_can_edit = SharingTeamPolicyType("people_with_link_can_edit")
+SharingTeamPolicyType.people_with_link_can_view_and_comment = SharingTeamPolicyType(
+    "people_with_link_can_view_and_comment"
+)
+SharingTeamPolicyType.invite_only = SharingTeamPolicyType("invite_only")
 
 SharingPublicPolicyType._disabled_validator = bv.Void()
 SharingPublicPolicyType._tagmap = {
-    'disabled': SharingPublicPolicyType._disabled_validator,
+    "disabled": SharingPublicPolicyType._disabled_validator,
 }
 SharingPublicPolicyType._tagmap.update(SharingTeamPolicyType._tagmap)
 
-SharingPublicPolicyType.disabled = SharingPublicPolicyType('disabled')
+SharingPublicPolicyType.disabled = SharingPublicPolicyType("disabled")
 
 UserInfoWithPermissionLevel.user.validator = sharing.UserInfo_validator
 UserInfoWithPermissionLevel.permission_level.validator = PaperDocPermissionLevel_validator
-UserInfoWithPermissionLevel._all_field_names_ = set([
-    'user',
-    'permission_level',
-])
+UserInfoWithPermissionLevel._all_field_names_ = set(
+    [
+        "user",
+        "permission_level",
+    ]
+)
 UserInfoWithPermissionLevel._all_fields_ = [
-    ('user', UserInfoWithPermissionLevel.user.validator),
-    ('permission_level', UserInfoWithPermissionLevel.permission_level.validator),
+    ("user", UserInfoWithPermissionLevel.user.validator),
+    ("permission_level", UserInfoWithPermissionLevel.permission_level.validator),
 ]
 
 UserOnPaperDocFilter._visited_validator = bv.Void()
 UserOnPaperDocFilter._shared_validator = bv.Void()
 UserOnPaperDocFilter._other_validator = bv.Void()
 UserOnPaperDocFilter._tagmap = {
-    'visited': UserOnPaperDocFilter._visited_validator,
-    'shared': UserOnPaperDocFilter._shared_validator,
-    'other': UserOnPaperDocFilter._other_validator,
+    "visited": UserOnPaperDocFilter._visited_validator,
+    "shared": UserOnPaperDocFilter._shared_validator,
+    "other": UserOnPaperDocFilter._other_validator,
 }
 
-UserOnPaperDocFilter.visited = UserOnPaperDocFilter('visited')
-UserOnPaperDocFilter.shared = UserOnPaperDocFilter('shared')
-UserOnPaperDocFilter.other = UserOnPaperDocFilter('other')
+UserOnPaperDocFilter.visited = UserOnPaperDocFilter("visited")
+UserOnPaperDocFilter.shared = UserOnPaperDocFilter("shared")
+UserOnPaperDocFilter.other = UserOnPaperDocFilter("other")
 
 AddMember.permission_level.default = PaperDocPermissionLevel.edit
 AddPaperDocUser.quiet.default = False
@@ -3307,222 +3529,185 @@ ListUsersOnPaperDocArgs.limit.default = 1000
 ListUsersOnPaperDocArgs.filter_by.default = UserOnPaperDocFilter.shared
 PaperDocExport.include_comments.default = False
 docs_archive = bb.Route(
-    'docs/archive',
+    "docs/archive",
     1,
     True,
     RefPaperDoc_validator,
     bv.Void(),
     DocLookupError_validator,
-    {'auth': 'user',
-     'host': 'api',
-     'style': 'rpc'},
+    {"auth": "user", "host": "api", "style": "rpc"},
 )
 docs_create = bb.Route(
-    'docs/create',
+    "docs/create",
     1,
     True,
     PaperDocCreateArgs_validator,
     PaperDocCreateUpdateResult_validator,
     PaperDocCreateError_validator,
-    {'auth': 'user',
-     'host': 'api',
-     'style': 'upload'},
+    {"auth": "user", "host": "api", "style": "upload"},
 )
 docs_download = bb.Route(
-    'docs/download',
+    "docs/download",
     1,
     True,
     PaperDocExport_validator,
     PaperDocExportResult_validator,
     DocLookupError_validator,
-    {'auth': 'user',
-     'host': 'api',
-     'style': 'download'},
+    {"auth": "user", "host": "api", "style": "download"},
 )
 docs_folder_users_list = bb.Route(
-    'docs/folder_users/list',
+    "docs/folder_users/list",
     1,
     True,
     ListUsersOnFolderArgs_validator,
     ListUsersOnFolderResponse_validator,
     DocLookupError_validator,
-    {'auth': 'user',
-     'host': 'api',
-     'style': 'rpc'},
+    {"auth": "user", "host": "api", "style": "rpc"},
 )
 docs_folder_users_list_continue = bb.Route(
-    'docs/folder_users/list/continue',
+    "docs/folder_users/list/continue",
     1,
     True,
     ListUsersOnFolderContinueArgs_validator,
     ListUsersOnFolderResponse_validator,
     ListUsersCursorError_validator,
-    {'auth': 'user',
-     'host': 'api',
-     'style': 'rpc'},
+    {"auth": "user", "host": "api", "style": "rpc"},
 )
 docs_get_folder_info = bb.Route(
-    'docs/get_folder_info',
+    "docs/get_folder_info",
     1,
     True,
     RefPaperDoc_validator,
     FoldersContainingPaperDoc_validator,
     DocLookupError_validator,
-    {'auth': 'user',
-     'host': 'api',
-     'style': 'rpc'},
+    {"auth": "user", "host": "api", "style": "rpc"},
 )
 docs_get_metadata = bb.Route(
-    'docs/get_metadata',
+    "docs/get_metadata",
     1,
     False,
     GetDocMetadataArg_validator,
     PaperDocGetMetadataResult_validator,
     DocLookupError_validator,
-    {'auth': 'user',
-     'host': 'api',
-     'style': 'rpc'},
+    {"auth": "user", "host": "api", "style": "rpc"},
 )
 docs_list = bb.Route(
-    'docs/list',
+    "docs/list",
     1,
     True,
     ListPaperDocsArgs_validator,
     ListPaperDocsResponse_validator,
     bv.Void(),
-    {'auth': 'user',
-     'host': 'api',
-     'style': 'rpc'},
+    {"auth": "user", "host": "api", "style": "rpc"},
 )
 docs_list_continue = bb.Route(
-    'docs/list/continue',
+    "docs/list/continue",
     1,
     True,
     ListPaperDocsContinueArgs_validator,
     ListPaperDocsResponse_validator,
     ListDocsCursorError_validator,
-    {'auth': 'user',
-     'host': 'api',
-     'style': 'rpc'},
+    {"auth": "user", "host": "api", "style": "rpc"},
 )
 docs_permanently_delete = bb.Route(
-    'docs/permanently_delete',
+    "docs/permanently_delete",
     1,
     True,
     RefPaperDoc_validator,
     bv.Void(),
     DocLookupError_validator,
-    {'auth': 'user',
-     'host': 'api',
-     'style': 'rpc'},
+    {"auth": "user", "host": "api", "style": "rpc"},
 )
 docs_sharing_policy_get = bb.Route(
-    'docs/sharing_policy/get',
+    "docs/sharing_policy/get",
     1,
     True,
     RefPaperDoc_validator,
     SharingPolicy_validator,
     DocLookupError_validator,
-    {'auth': 'user',
-     'host': 'api',
-     'style': 'rpc'},
+    {"auth": "user", "host": "api", "style": "rpc"},
 )
 docs_sharing_policy_set = bb.Route(
-    'docs/sharing_policy/set',
+    "docs/sharing_policy/set",
     1,
     True,
     PaperDocSharingPolicy_validator,
     bv.Void(),
     DocLookupError_validator,
-    {'auth': 'user',
-     'host': 'api',
-     'style': 'rpc'},
+    {"auth": "user", "host": "api", "style": "rpc"},
 )
 docs_update = bb.Route(
-    'docs/update',
+    "docs/update",
     1,
     True,
     PaperDocUpdateArgs_validator,
     PaperDocCreateUpdateResult_validator,
     PaperDocUpdateError_validator,
-    {'auth': 'user',
-     'host': 'api',
-     'style': 'upload'},
+    {"auth": "user", "host": "api", "style": "upload"},
 )
 docs_users_add = bb.Route(
-    'docs/users/add',
+    "docs/users/add",
     1,
     True,
     AddPaperDocUser_validator,
     bv.List(AddPaperDocUserMemberResult_validator),
     DocLookupError_validator,
-    {'auth': 'user',
-     'host': 'api',
-     'style': 'rpc'},
+    {"auth": "user", "host": "api", "style": "rpc"},
 )
 docs_users_list = bb.Route(
-    'docs/users/list',
+    "docs/users/list",
     1,
     True,
     ListUsersOnPaperDocArgs_validator,
     ListUsersOnPaperDocResponse_validator,
     DocLookupError_validator,
-    {'auth': 'user',
-     'host': 'api',
-     'style': 'rpc'},
+    {"auth": "user", "host": "api", "style": "rpc"},
 )
 docs_users_list_continue = bb.Route(
-    'docs/users/list/continue',
+    "docs/users/list/continue",
     1,
     True,
     ListUsersOnPaperDocContinueArgs_validator,
     ListUsersOnPaperDocResponse_validator,
     ListUsersCursorError_validator,
-    {'auth': 'user',
-     'host': 'api',
-     'style': 'rpc'},
+    {"auth": "user", "host": "api", "style": "rpc"},
 )
 docs_users_remove = bb.Route(
-    'docs/users/remove',
+    "docs/users/remove",
     1,
     True,
     RemovePaperDocUser_validator,
     bv.Void(),
     DocLookupError_validator,
-    {'auth': 'user',
-     'host': 'api',
-     'style': 'rpc'},
+    {"auth": "user", "host": "api", "style": "rpc"},
 )
 folders_create = bb.Route(
-    'folders/create',
+    "folders/create",
     1,
     True,
     PaperFolderCreateArg_validator,
     PaperFolderCreateResult_validator,
     PaperFolderCreateError_validator,
-    {'auth': 'user',
-     'host': 'api',
-     'style': 'rpc'},
+    {"auth": "user", "host": "api", "style": "rpc"},
 )
 
 ROUTES = {
-    'docs/archive': docs_archive,
-    'docs/create': docs_create,
-    'docs/download': docs_download,
-    'docs/folder_users/list': docs_folder_users_list,
-    'docs/folder_users/list/continue': docs_folder_users_list_continue,
-    'docs/get_folder_info': docs_get_folder_info,
-    'docs/get_metadata': docs_get_metadata,
-    'docs/list': docs_list,
-    'docs/list/continue': docs_list_continue,
-    'docs/permanently_delete': docs_permanently_delete,
-    'docs/sharing_policy/get': docs_sharing_policy_get,
-    'docs/sharing_policy/set': docs_sharing_policy_set,
-    'docs/update': docs_update,
-    'docs/users/add': docs_users_add,
-    'docs/users/list': docs_users_list,
-    'docs/users/list/continue': docs_users_list_continue,
-    'docs/users/remove': docs_users_remove,
-    'folders/create': folders_create,
+    "docs/archive": docs_archive,
+    "docs/create": docs_create,
+    "docs/download": docs_download,
+    "docs/folder_users/list": docs_folder_users_list,
+    "docs/folder_users/list/continue": docs_folder_users_list_continue,
+    "docs/get_folder_info": docs_get_folder_info,
+    "docs/get_metadata": docs_get_metadata,
+    "docs/list": docs_list,
+    "docs/list/continue": docs_list_continue,
+    "docs/permanently_delete": docs_permanently_delete,
+    "docs/sharing_policy/get": docs_sharing_policy_get,
+    "docs/sharing_policy/set": docs_sharing_policy_set,
+    "docs/update": docs_update,
+    "docs/users/add": docs_users_add,
+    "docs/users/list": docs_users_list,
+    "docs/users/list/continue": docs_users_list_continue,
+    "docs/users/remove": docs_users_remove,
+    "folders/create": folders_create,
 }
-

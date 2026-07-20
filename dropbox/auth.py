@@ -7,6 +7,7 @@ from __future__ import unicode_literals
 from stone.backends.python_rsrc import stone_base as bb
 from stone.backends.python_rsrc import stone_validators as bv
 
+
 class AccessError(bb.Union):
     """
     Error occurred because the account doesn't have permission to access the
@@ -29,7 +30,7 @@ class AccessError(bb.Union):
     :vartype AccessError.no_permission: NoPermissionError
     """
 
-    _catch_all = 'other'
+    _catch_all = "other"
     # Attribute is overwritten below the class definition
     team_access_denied = None
     # Attribute is overwritten below the class definition
@@ -44,7 +45,7 @@ class AccessError(bb.Union):
         :param InvalidAccountTypeError val:
         :rtype: AccessError
         """
-        return cls('invalid_account_type', val)
+        return cls("invalid_account_type", val)
 
     @classmethod
     def paper_access_denied(cls, val):
@@ -55,7 +56,7 @@ class AccessError(bb.Union):
         :param PaperAccessError val:
         :rtype: AccessError
         """
-        return cls('paper_access_denied', val)
+        return cls("paper_access_denied", val)
 
     @classmethod
     def no_permission(cls, val):
@@ -66,7 +67,7 @@ class AccessError(bb.Union):
         :param NoPermissionError val:
         :rtype: AccessError
         """
-        return cls('no_permission', val)
+        return cls("no_permission", val)
 
     def is_invalid_account_type(self):
         """
@@ -74,7 +75,7 @@ class AccessError(bb.Union):
 
         :rtype: bool
         """
-        return self._tag == 'invalid_account_type'
+        return self._tag == "invalid_account_type"
 
     def is_paper_access_denied(self):
         """
@@ -82,7 +83,7 @@ class AccessError(bb.Union):
 
         :rtype: bool
         """
-        return self._tag == 'paper_access_denied'
+        return self._tag == "paper_access_denied"
 
     def is_team_access_denied(self):
         """
@@ -90,7 +91,7 @@ class AccessError(bb.Union):
 
         :rtype: bool
         """
-        return self._tag == 'team_access_denied'
+        return self._tag == "team_access_denied"
 
     def is_no_permission(self):
         """
@@ -98,7 +99,7 @@ class AccessError(bb.Union):
 
         :rtype: bool
         """
-        return self._tag == 'no_permission'
+        return self._tag == "no_permission"
 
     def is_other(self):
         """
@@ -106,7 +107,7 @@ class AccessError(bb.Union):
 
         :rtype: bool
         """
-        return self._tag == 'other'
+        return self._tag == "other"
 
     def get_invalid_account_type(self):
         """
@@ -147,7 +148,9 @@ class AccessError(bb.Union):
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(AccessError, self)._process_custom_annotations(annotation_type, field_path, processor)
 
+
 AccessError_validator = bv.Union(AccessError)
+
 
 class AuthError(bb.Union):
     """
@@ -176,7 +179,7 @@ class AuthError(bb.Union):
         The route is not available to public.
     """
 
-    _catch_all = 'other'
+    _catch_all = "other"
     # Attribute is overwritten below the class definition
     invalid_access_token = None
     # Attribute is overwritten below the class definition
@@ -201,7 +204,7 @@ class AuthError(bb.Union):
         :param TokenScopeError val:
         :rtype: AuthError
         """
-        return cls('missing_scope', val)
+        return cls("missing_scope", val)
 
     def is_invalid_access_token(self):
         """
@@ -209,7 +212,7 @@ class AuthError(bb.Union):
 
         :rtype: bool
         """
-        return self._tag == 'invalid_access_token'
+        return self._tag == "invalid_access_token"
 
     def is_invalid_select_user(self):
         """
@@ -217,7 +220,7 @@ class AuthError(bb.Union):
 
         :rtype: bool
         """
-        return self._tag == 'invalid_select_user'
+        return self._tag == "invalid_select_user"
 
     def is_invalid_select_admin(self):
         """
@@ -225,7 +228,7 @@ class AuthError(bb.Union):
 
         :rtype: bool
         """
-        return self._tag == 'invalid_select_admin'
+        return self._tag == "invalid_select_admin"
 
     def is_user_suspended(self):
         """
@@ -233,7 +236,7 @@ class AuthError(bb.Union):
 
         :rtype: bool
         """
-        return self._tag == 'user_suspended'
+        return self._tag == "user_suspended"
 
     def is_expired_access_token(self):
         """
@@ -241,7 +244,7 @@ class AuthError(bb.Union):
 
         :rtype: bool
         """
-        return self._tag == 'expired_access_token'
+        return self._tag == "expired_access_token"
 
     def is_missing_scope(self):
         """
@@ -249,7 +252,7 @@ class AuthError(bb.Union):
 
         :rtype: bool
         """
-        return self._tag == 'missing_scope'
+        return self._tag == "missing_scope"
 
     def is_route_access_denied(self):
         """
@@ -257,7 +260,7 @@ class AuthError(bb.Union):
 
         :rtype: bool
         """
-        return self._tag == 'route_access_denied'
+        return self._tag == "route_access_denied"
 
     def is_other(self):
         """
@@ -265,7 +268,7 @@ class AuthError(bb.Union):
 
         :rtype: bool
         """
-        return self._tag == 'other'
+        return self._tag == "other"
 
     def get_missing_scope(self):
         """
@@ -282,7 +285,9 @@ class AuthError(bb.Union):
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(AuthError, self)._process_custom_annotations(annotation_type, field_path, processor)
 
+
 AuthError_validator = bv.Union(AuthError)
+
 
 class InvalidAccountTypeError(bb.Union):
     """
@@ -297,7 +302,7 @@ class InvalidAccountTypeError(bb.Union):
         Current account type doesn't have permission to access this feature.
     """
 
-    _catch_all = 'other'
+    _catch_all = "other"
     # Attribute is overwritten below the class definition
     endpoint = None
     # Attribute is overwritten below the class definition
@@ -311,7 +316,7 @@ class InvalidAccountTypeError(bb.Union):
 
         :rtype: bool
         """
-        return self._tag == 'endpoint'
+        return self._tag == "endpoint"
 
     def is_feature(self):
         """
@@ -319,7 +324,7 @@ class InvalidAccountTypeError(bb.Union):
 
         :rtype: bool
         """
-        return self._tag == 'feature'
+        return self._tag == "feature"
 
     def is_other(self):
         """
@@ -327,12 +332,16 @@ class InvalidAccountTypeError(bb.Union):
 
         :rtype: bool
         """
-        return self._tag == 'other'
+        return self._tag == "other"
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
-        super(InvalidAccountTypeError, self)._process_custom_annotations(annotation_type, field_path, processor)
+        super(InvalidAccountTypeError, self)._process_custom_annotations(
+            annotation_type, field_path, processor
+        )
+
 
 InvalidAccountTypeError_validator = bv.Union(InvalidAccountTypeError)
+
 
 class NoPermissionError(bb.Union):
     """
@@ -346,7 +355,7 @@ class NoPermissionError(bb.Union):
     :vartype NoPermissionError.unauthorized_account_id_usage: UnauthorizedAccountIdUsageError
     """
 
-    _catch_all = 'other'
+    _catch_all = "other"
     # Attribute is overwritten below the class definition
     other = None
 
@@ -359,7 +368,7 @@ class NoPermissionError(bb.Union):
         :param UnauthorizedAccountIdUsageError val:
         :rtype: NoPermissionError
         """
-        return cls('unauthorized_account_id_usage', val)
+        return cls("unauthorized_account_id_usage", val)
 
     def is_unauthorized_account_id_usage(self):
         """
@@ -367,7 +376,7 @@ class NoPermissionError(bb.Union):
 
         :rtype: bool
         """
-        return self._tag == 'unauthorized_account_id_usage'
+        return self._tag == "unauthorized_account_id_usage"
 
     def is_other(self):
         """
@@ -375,7 +384,7 @@ class NoPermissionError(bb.Union):
 
         :rtype: bool
         """
-        return self._tag == 'other'
+        return self._tag == "other"
 
     def get_unauthorized_account_id_usage(self):
         """
@@ -391,9 +400,13 @@ class NoPermissionError(bb.Union):
         return self._value
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
-        super(NoPermissionError, self)._process_custom_annotations(annotation_type, field_path, processor)
+        super(NoPermissionError, self)._process_custom_annotations(
+            annotation_type, field_path, processor
+        )
+
 
 NoPermissionError_validator = bv.Union(NoPermissionError)
+
 
 class PaperAccessError(bb.Union):
     """
@@ -407,7 +420,7 @@ class PaperAccessError(bb.Union):
         The provided user has not used Paper yet.
     """
 
-    _catch_all = 'other'
+    _catch_all = "other"
     # Attribute is overwritten below the class definition
     paper_disabled = None
     # Attribute is overwritten below the class definition
@@ -421,7 +434,7 @@ class PaperAccessError(bb.Union):
 
         :rtype: bool
         """
-        return self._tag == 'paper_disabled'
+        return self._tag == "paper_disabled"
 
     def is_not_paper_user(self):
         """
@@ -429,7 +442,7 @@ class PaperAccessError(bb.Union):
 
         :rtype: bool
         """
-        return self._tag == 'not_paper_user'
+        return self._tag == "not_paper_user"
 
     def is_other(self):
         """
@@ -437,12 +450,16 @@ class PaperAccessError(bb.Union):
 
         :rtype: bool
         """
-        return self._tag == 'other'
+        return self._tag == "other"
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
-        super(PaperAccessError, self)._process_custom_annotations(annotation_type, field_path, processor)
+        super(PaperAccessError, self)._process_custom_annotations(
+            annotation_type, field_path, processor
+        )
+
 
 PaperAccessError_validator = bv.Union(PaperAccessError)
+
 
 class RateLimitError(bb.Struct):
     """
@@ -456,15 +473,13 @@ class RateLimitError(bb.Struct):
     """
 
     __slots__ = [
-        '_reason_value',
-        '_retry_after_value',
+        "_reason_value",
+        "_retry_after_value",
     ]
 
     _has_required_fields = True
 
-    def __init__(self,
-                 reason=None,
-                 retry_after=None):
+    def __init__(self, reason=None, retry_after=None):
         self._reason_value = bb.NOT_SET
         self._retry_after_value = bb.NOT_SET
         if reason is not None:
@@ -479,9 +494,13 @@ class RateLimitError(bb.Struct):
     retry_after = bb.Attribute("retry_after")
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
-        super(RateLimitError, self)._process_custom_annotations(annotation_type, field_path, processor)
+        super(RateLimitError, self)._process_custom_annotations(
+            annotation_type, field_path, processor
+        )
+
 
 RateLimitError_validator = bv.Struct(RateLimitError)
+
 
 class RateLimitReason(bb.Union):
     """
@@ -496,7 +515,7 @@ class RateLimitReason(bb.Union):
         Dropbox.
     """
 
-    _catch_all = 'other'
+    _catch_all = "other"
     # Attribute is overwritten below the class definition
     too_many_requests = None
     # Attribute is overwritten below the class definition
@@ -510,7 +529,7 @@ class RateLimitReason(bb.Union):
 
         :rtype: bool
         """
-        return self._tag == 'too_many_requests'
+        return self._tag == "too_many_requests"
 
     def is_too_many_write_operations(self):
         """
@@ -518,7 +537,7 @@ class RateLimitReason(bb.Union):
 
         :rtype: bool
         """
-        return self._tag == 'too_many_write_operations'
+        return self._tag == "too_many_write_operations"
 
     def is_other(self):
         """
@@ -526,12 +545,16 @@ class RateLimitReason(bb.Union):
 
         :rtype: bool
         """
-        return self._tag == 'other'
+        return self._tag == "other"
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
-        super(RateLimitReason, self)._process_custom_annotations(annotation_type, field_path, processor)
+        super(RateLimitReason, self)._process_custom_annotations(
+            annotation_type, field_path, processor
+        )
+
 
 RateLimitReason_validator = bv.Union(RateLimitReason)
+
 
 class TokenFromOAuth1Arg(bb.Struct):
     """
@@ -542,15 +565,13 @@ class TokenFromOAuth1Arg(bb.Struct):
     """
 
     __slots__ = [
-        '_oauth1_token_value',
-        '_oauth1_token_secret_value',
+        "_oauth1_token_value",
+        "_oauth1_token_secret_value",
     ]
 
     _has_required_fields = True
 
-    def __init__(self,
-                 oauth1_token=None,
-                 oauth1_token_secret=None):
+    def __init__(self, oauth1_token=None, oauth1_token_secret=None):
         self._oauth1_token_value = bb.NOT_SET
         self._oauth1_token_secret_value = bb.NOT_SET
         if oauth1_token is not None:
@@ -565,9 +586,13 @@ class TokenFromOAuth1Arg(bb.Struct):
     oauth1_token_secret = bb.Attribute("oauth1_token_secret")
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
-        super(TokenFromOAuth1Arg, self)._process_custom_annotations(annotation_type, field_path, processor)
+        super(TokenFromOAuth1Arg, self)._process_custom_annotations(
+            annotation_type, field_path, processor
+        )
+
 
 TokenFromOAuth1Arg_validator = bv.Struct(TokenFromOAuth1Arg)
+
 
 class TokenFromOAuth1Error(bb.Union):
     """
@@ -582,7 +607,7 @@ class TokenFromOAuth1Error(bb.Union):
         access token.
     """
 
-    _catch_all = 'other'
+    _catch_all = "other"
     # Attribute is overwritten below the class definition
     invalid_oauth1_token_info = None
     # Attribute is overwritten below the class definition
@@ -596,7 +621,7 @@ class TokenFromOAuth1Error(bb.Union):
 
         :rtype: bool
         """
-        return self._tag == 'invalid_oauth1_token_info'
+        return self._tag == "invalid_oauth1_token_info"
 
     def is_app_id_mismatch(self):
         """
@@ -604,7 +629,7 @@ class TokenFromOAuth1Error(bb.Union):
 
         :rtype: bool
         """
-        return self._tag == 'app_id_mismatch'
+        return self._tag == "app_id_mismatch"
 
     def is_other(self):
         """
@@ -612,12 +637,16 @@ class TokenFromOAuth1Error(bb.Union):
 
         :rtype: bool
         """
-        return self._tag == 'other'
+        return self._tag == "other"
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
-        super(TokenFromOAuth1Error, self)._process_custom_annotations(annotation_type, field_path, processor)
+        super(TokenFromOAuth1Error, self)._process_custom_annotations(
+            annotation_type, field_path, processor
+        )
+
 
 TokenFromOAuth1Error_validator = bv.Union(TokenFromOAuth1Error)
+
 
 class TokenFromOAuth1Result(bb.Struct):
     """
@@ -626,13 +655,12 @@ class TokenFromOAuth1Result(bb.Struct):
     """
 
     __slots__ = [
-        '_oauth2_token_value',
+        "_oauth2_token_value",
     ]
 
     _has_required_fields = True
 
-    def __init__(self,
-                 oauth2_token=None):
+    def __init__(self, oauth2_token=None):
         self._oauth2_token_value = bb.NOT_SET
         if oauth2_token is not None:
             self.oauth2_token = oauth2_token
@@ -641,9 +669,13 @@ class TokenFromOAuth1Result(bb.Struct):
     oauth2_token = bb.Attribute("oauth2_token")
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
-        super(TokenFromOAuth1Result, self)._process_custom_annotations(annotation_type, field_path, processor)
+        super(TokenFromOAuth1Result, self)._process_custom_annotations(
+            annotation_type, field_path, processor
+        )
+
 
 TokenFromOAuth1Result_validator = bv.Struct(TokenFromOAuth1Result)
+
 
 class TokenScopeError(bb.Struct):
     """
@@ -652,13 +684,12 @@ class TokenScopeError(bb.Struct):
     """
 
     __slots__ = [
-        '_required_scope_value',
+        "_required_scope_value",
     ]
 
     _has_required_fields = True
 
-    def __init__(self,
-                 required_scope=None):
+    def __init__(self, required_scope=None):
         self._required_scope_value = bb.NOT_SET
         if required_scope is not None:
             self.required_scope = required_scope
@@ -667,9 +698,13 @@ class TokenScopeError(bb.Struct):
     required_scope = bb.Attribute("required_scope")
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
-        super(TokenScopeError, self)._process_custom_annotations(annotation_type, field_path, processor)
+        super(TokenScopeError, self)._process_custom_annotations(
+            annotation_type, field_path, processor
+        )
+
 
 TokenScopeError_validator = bv.Struct(TokenScopeError)
+
 
 class UnauthorizedAccountIdUsageError(bb.Struct):
     """
@@ -678,13 +713,12 @@ class UnauthorizedAccountIdUsageError(bb.Struct):
     """
 
     __slots__ = [
-        '_unauthorized_account_ids_value',
+        "_unauthorized_account_ids_value",
     ]
 
     _has_required_fields = True
 
-    def __init__(self,
-                 unauthorized_account_ids=None):
+    def __init__(self, unauthorized_account_ids=None):
         self._unauthorized_account_ids_value = bb.NOT_SET
         if unauthorized_account_ids is not None:
             self.unauthorized_account_ids = unauthorized_account_ids
@@ -693,7 +727,10 @@ class UnauthorizedAccountIdUsageError(bb.Struct):
     unauthorized_account_ids = bb.Attribute("unauthorized_account_ids")
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
-        super(UnauthorizedAccountIdUsageError, self)._process_custom_annotations(annotation_type, field_path, processor)
+        super(UnauthorizedAccountIdUsageError, self)._process_custom_annotations(
+            annotation_type, field_path, processor
+        )
+
 
 UnauthorizedAccountIdUsageError_validator = bv.Struct(UnauthorizedAccountIdUsageError)
 
@@ -703,15 +740,15 @@ AccessError._team_access_denied_validator = bv.Void()
 AccessError._no_permission_validator = NoPermissionError_validator
 AccessError._other_validator = bv.Void()
 AccessError._tagmap = {
-    'invalid_account_type': AccessError._invalid_account_type_validator,
-    'paper_access_denied': AccessError._paper_access_denied_validator,
-    'team_access_denied': AccessError._team_access_denied_validator,
-    'no_permission': AccessError._no_permission_validator,
-    'other': AccessError._other_validator,
+    "invalid_account_type": AccessError._invalid_account_type_validator,
+    "paper_access_denied": AccessError._paper_access_denied_validator,
+    "team_access_denied": AccessError._team_access_denied_validator,
+    "no_permission": AccessError._no_permission_validator,
+    "other": AccessError._other_validator,
 }
 
-AccessError.team_access_denied = AccessError('team_access_denied')
-AccessError.other = AccessError('other')
+AccessError.team_access_denied = AccessError("team_access_denied")
+AccessError.other = AccessError("other")
 
 AuthError._invalid_access_token_validator = bv.Void()
 AuthError._invalid_select_user_validator = bv.Void()
@@ -722,145 +759,153 @@ AuthError._missing_scope_validator = TokenScopeError_validator
 AuthError._route_access_denied_validator = bv.Void()
 AuthError._other_validator = bv.Void()
 AuthError._tagmap = {
-    'invalid_access_token': AuthError._invalid_access_token_validator,
-    'invalid_select_user': AuthError._invalid_select_user_validator,
-    'invalid_select_admin': AuthError._invalid_select_admin_validator,
-    'user_suspended': AuthError._user_suspended_validator,
-    'expired_access_token': AuthError._expired_access_token_validator,
-    'missing_scope': AuthError._missing_scope_validator,
-    'route_access_denied': AuthError._route_access_denied_validator,
-    'other': AuthError._other_validator,
+    "invalid_access_token": AuthError._invalid_access_token_validator,
+    "invalid_select_user": AuthError._invalid_select_user_validator,
+    "invalid_select_admin": AuthError._invalid_select_admin_validator,
+    "user_suspended": AuthError._user_suspended_validator,
+    "expired_access_token": AuthError._expired_access_token_validator,
+    "missing_scope": AuthError._missing_scope_validator,
+    "route_access_denied": AuthError._route_access_denied_validator,
+    "other": AuthError._other_validator,
 }
 
-AuthError.invalid_access_token = AuthError('invalid_access_token')
-AuthError.invalid_select_user = AuthError('invalid_select_user')
-AuthError.invalid_select_admin = AuthError('invalid_select_admin')
-AuthError.user_suspended = AuthError('user_suspended')
-AuthError.expired_access_token = AuthError('expired_access_token')
-AuthError.route_access_denied = AuthError('route_access_denied')
-AuthError.other = AuthError('other')
+AuthError.invalid_access_token = AuthError("invalid_access_token")
+AuthError.invalid_select_user = AuthError("invalid_select_user")
+AuthError.invalid_select_admin = AuthError("invalid_select_admin")
+AuthError.user_suspended = AuthError("user_suspended")
+AuthError.expired_access_token = AuthError("expired_access_token")
+AuthError.route_access_denied = AuthError("route_access_denied")
+AuthError.other = AuthError("other")
 
 InvalidAccountTypeError._endpoint_validator = bv.Void()
 InvalidAccountTypeError._feature_validator = bv.Void()
 InvalidAccountTypeError._other_validator = bv.Void()
 InvalidAccountTypeError._tagmap = {
-    'endpoint': InvalidAccountTypeError._endpoint_validator,
-    'feature': InvalidAccountTypeError._feature_validator,
-    'other': InvalidAccountTypeError._other_validator,
+    "endpoint": InvalidAccountTypeError._endpoint_validator,
+    "feature": InvalidAccountTypeError._feature_validator,
+    "other": InvalidAccountTypeError._other_validator,
 }
 
-InvalidAccountTypeError.endpoint = InvalidAccountTypeError('endpoint')
-InvalidAccountTypeError.feature = InvalidAccountTypeError('feature')
-InvalidAccountTypeError.other = InvalidAccountTypeError('other')
+InvalidAccountTypeError.endpoint = InvalidAccountTypeError("endpoint")
+InvalidAccountTypeError.feature = InvalidAccountTypeError("feature")
+InvalidAccountTypeError.other = InvalidAccountTypeError("other")
 
-NoPermissionError._unauthorized_account_id_usage_validator = UnauthorizedAccountIdUsageError_validator
+NoPermissionError._unauthorized_account_id_usage_validator = (
+    UnauthorizedAccountIdUsageError_validator
+)
 NoPermissionError._other_validator = bv.Void()
 NoPermissionError._tagmap = {
-    'unauthorized_account_id_usage': NoPermissionError._unauthorized_account_id_usage_validator,
-    'other': NoPermissionError._other_validator,
+    "unauthorized_account_id_usage": NoPermissionError._unauthorized_account_id_usage_validator,
+    "other": NoPermissionError._other_validator,
 }
 
-NoPermissionError.other = NoPermissionError('other')
+NoPermissionError.other = NoPermissionError("other")
 
 PaperAccessError._paper_disabled_validator = bv.Void()
 PaperAccessError._not_paper_user_validator = bv.Void()
 PaperAccessError._other_validator = bv.Void()
 PaperAccessError._tagmap = {
-    'paper_disabled': PaperAccessError._paper_disabled_validator,
-    'not_paper_user': PaperAccessError._not_paper_user_validator,
-    'other': PaperAccessError._other_validator,
+    "paper_disabled": PaperAccessError._paper_disabled_validator,
+    "not_paper_user": PaperAccessError._not_paper_user_validator,
+    "other": PaperAccessError._other_validator,
 }
 
-PaperAccessError.paper_disabled = PaperAccessError('paper_disabled')
-PaperAccessError.not_paper_user = PaperAccessError('not_paper_user')
-PaperAccessError.other = PaperAccessError('other')
+PaperAccessError.paper_disabled = PaperAccessError("paper_disabled")
+PaperAccessError.not_paper_user = PaperAccessError("not_paper_user")
+PaperAccessError.other = PaperAccessError("other")
 
 RateLimitError.reason.validator = RateLimitReason_validator
 RateLimitError.retry_after.validator = bv.UInt64()
-RateLimitError._all_field_names_ = set([
-    'reason',
-    'retry_after',
-])
+RateLimitError._all_field_names_ = set(
+    [
+        "reason",
+        "retry_after",
+    ]
+)
 RateLimitError._all_fields_ = [
-    ('reason', RateLimitError.reason.validator),
-    ('retry_after', RateLimitError.retry_after.validator),
+    ("reason", RateLimitError.reason.validator),
+    ("retry_after", RateLimitError.retry_after.validator),
 ]
 
 RateLimitReason._too_many_requests_validator = bv.Void()
 RateLimitReason._too_many_write_operations_validator = bv.Void()
 RateLimitReason._other_validator = bv.Void()
 RateLimitReason._tagmap = {
-    'too_many_requests': RateLimitReason._too_many_requests_validator,
-    'too_many_write_operations': RateLimitReason._too_many_write_operations_validator,
-    'other': RateLimitReason._other_validator,
+    "too_many_requests": RateLimitReason._too_many_requests_validator,
+    "too_many_write_operations": RateLimitReason._too_many_write_operations_validator,
+    "other": RateLimitReason._other_validator,
 }
 
-RateLimitReason.too_many_requests = RateLimitReason('too_many_requests')
-RateLimitReason.too_many_write_operations = RateLimitReason('too_many_write_operations')
-RateLimitReason.other = RateLimitReason('other')
+RateLimitReason.too_many_requests = RateLimitReason("too_many_requests")
+RateLimitReason.too_many_write_operations = RateLimitReason("too_many_write_operations")
+RateLimitReason.other = RateLimitReason("other")
 
 TokenFromOAuth1Arg.oauth1_token.validator = bv.String(min_length=1)
 TokenFromOAuth1Arg.oauth1_token_secret.validator = bv.String(min_length=1)
-TokenFromOAuth1Arg._all_field_names_ = set([
-    'oauth1_token',
-    'oauth1_token_secret',
-])
+TokenFromOAuth1Arg._all_field_names_ = set(
+    [
+        "oauth1_token",
+        "oauth1_token_secret",
+    ]
+)
 TokenFromOAuth1Arg._all_fields_ = [
-    ('oauth1_token', TokenFromOAuth1Arg.oauth1_token.validator),
-    ('oauth1_token_secret', TokenFromOAuth1Arg.oauth1_token_secret.validator),
+    ("oauth1_token", TokenFromOAuth1Arg.oauth1_token.validator),
+    ("oauth1_token_secret", TokenFromOAuth1Arg.oauth1_token_secret.validator),
 ]
 
 TokenFromOAuth1Error._invalid_oauth1_token_info_validator = bv.Void()
 TokenFromOAuth1Error._app_id_mismatch_validator = bv.Void()
 TokenFromOAuth1Error._other_validator = bv.Void()
 TokenFromOAuth1Error._tagmap = {
-    'invalid_oauth1_token_info': TokenFromOAuth1Error._invalid_oauth1_token_info_validator,
-    'app_id_mismatch': TokenFromOAuth1Error._app_id_mismatch_validator,
-    'other': TokenFromOAuth1Error._other_validator,
+    "invalid_oauth1_token_info": TokenFromOAuth1Error._invalid_oauth1_token_info_validator,
+    "app_id_mismatch": TokenFromOAuth1Error._app_id_mismatch_validator,
+    "other": TokenFromOAuth1Error._other_validator,
 }
 
-TokenFromOAuth1Error.invalid_oauth1_token_info = TokenFromOAuth1Error('invalid_oauth1_token_info')
-TokenFromOAuth1Error.app_id_mismatch = TokenFromOAuth1Error('app_id_mismatch')
-TokenFromOAuth1Error.other = TokenFromOAuth1Error('other')
+TokenFromOAuth1Error.invalid_oauth1_token_info = TokenFromOAuth1Error("invalid_oauth1_token_info")
+TokenFromOAuth1Error.app_id_mismatch = TokenFromOAuth1Error("app_id_mismatch")
+TokenFromOAuth1Error.other = TokenFromOAuth1Error("other")
 
 TokenFromOAuth1Result.oauth2_token.validator = bv.String(min_length=1)
-TokenFromOAuth1Result._all_field_names_ = set(['oauth2_token'])
-TokenFromOAuth1Result._all_fields_ = [('oauth2_token', TokenFromOAuth1Result.oauth2_token.validator)]
+TokenFromOAuth1Result._all_field_names_ = set(["oauth2_token"])
+TokenFromOAuth1Result._all_fields_ = [
+    ("oauth2_token", TokenFromOAuth1Result.oauth2_token.validator)
+]
 
 TokenScopeError.required_scope.validator = bv.String()
-TokenScopeError._all_field_names_ = set(['required_scope'])
-TokenScopeError._all_fields_ = [('required_scope', TokenScopeError.required_scope.validator)]
+TokenScopeError._all_field_names_ = set(["required_scope"])
+TokenScopeError._all_fields_ = [("required_scope", TokenScopeError.required_scope.validator)]
 
 UnauthorizedAccountIdUsageError.unauthorized_account_ids.validator = bv.List(bv.String())
-UnauthorizedAccountIdUsageError._all_field_names_ = set(['unauthorized_account_ids'])
-UnauthorizedAccountIdUsageError._all_fields_ = [('unauthorized_account_ids', UnauthorizedAccountIdUsageError.unauthorized_account_ids.validator)]
+UnauthorizedAccountIdUsageError._all_field_names_ = set(["unauthorized_account_ids"])
+UnauthorizedAccountIdUsageError._all_fields_ = [
+    (
+        "unauthorized_account_ids",
+        UnauthorizedAccountIdUsageError.unauthorized_account_ids.validator,
+    )
+]
 
 RateLimitError.retry_after.default = 1
 token_from_oauth1 = bb.Route(
-    'token/from_oauth1',
+    "token/from_oauth1",
     1,
     True,
     TokenFromOAuth1Arg_validator,
     TokenFromOAuth1Result_validator,
     TokenFromOAuth1Error_validator,
-    {'auth': 'app',
-     'host': 'api',
-     'style': 'rpc'},
+    {"auth": "app", "host": "api", "style": "rpc"},
 )
 token_revoke = bb.Route(
-    'token/revoke',
+    "token/revoke",
     1,
     False,
     bv.Void(),
     bv.Void(),
     bv.Void(),
-    {'auth': 'user',
-     'host': 'api',
-     'style': 'rpc'},
+    {"auth": "user", "host": "api", "style": "rpc"},
 )
 
 ROUTES = {
-    'token/from_oauth1': token_from_oauth1,
-    'token/revoke': token_revoke,
+    "token/from_oauth1": token_from_oauth1,
+    "token/revoke": token_revoke,
 }
-
