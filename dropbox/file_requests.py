@@ -14,7 +14,6 @@ from stone.backends.python_rsrc import stone_validators as bv
 from dropbox import common
 from dropbox import files
 
-
 class GeneralFileRequestsError(bb.Union):
     """
     There is an error accessing the file requests functionality.
@@ -27,7 +26,7 @@ class GeneralFileRequestsError(bb.Union):
         This user's Dropbox Business team doesn't allow file requests.
     """
 
-    _catch_all = "other"
+    _catch_all = 'other'
     # Attribute is overwritten below the class definition
     disabled_for_team = None
     # Attribute is overwritten below the class definition
@@ -39,7 +38,7 @@ class GeneralFileRequestsError(bb.Union):
 
         :rtype: bool
         """
-        return self._tag == "disabled_for_team"
+        return self._tag == 'disabled_for_team'
 
     def is_other(self):
         """
@@ -47,16 +46,12 @@ class GeneralFileRequestsError(bb.Union):
 
         :rtype: bool
         """
-        return self._tag == "other"
+        return self._tag == 'other'
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
-        super(GeneralFileRequestsError, self)._process_custom_annotations(
-            annotation_type, field_path, processor
-        )
-
+        super(GeneralFileRequestsError, self)._process_custom_annotations(annotation_type, field_path, processor)
 
 GeneralFileRequestsError_validator = bv.Union(GeneralFileRequestsError)
-
 
 class CountFileRequestsError(GeneralFileRequestsError):
     """
@@ -68,13 +63,9 @@ class CountFileRequestsError(GeneralFileRequestsError):
     """
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
-        super(CountFileRequestsError, self)._process_custom_annotations(
-            annotation_type, field_path, processor
-        )
-
+        super(CountFileRequestsError, self)._process_custom_annotations(annotation_type, field_path, processor)
 
 CountFileRequestsError_validator = bv.Union(CountFileRequestsError)
-
 
 class CountFileRequestsResult(bb.Struct):
     """
@@ -85,12 +76,13 @@ class CountFileRequestsResult(bb.Struct):
     """
 
     __slots__ = [
-        "_file_request_count_value",
+        '_file_request_count_value',
     ]
 
     _has_required_fields = True
 
-    def __init__(self, file_request_count=None):
+    def __init__(self,
+                 file_request_count=None):
         self._file_request_count_value = bb.NOT_SET
         if file_request_count is not None:
             self.file_request_count = file_request_count
@@ -99,13 +91,9 @@ class CountFileRequestsResult(bb.Struct):
     file_request_count = bb.Attribute("file_request_count")
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
-        super(CountFileRequestsResult, self)._process_custom_annotations(
-            annotation_type, field_path, processor
-        )
-
+        super(CountFileRequestsResult, self)._process_custom_annotations(annotation_type, field_path, processor)
 
 CountFileRequestsResult_validator = bv.Struct(CountFileRequestsResult)
-
 
 class CreateFileRequestArgs(bb.Struct):
     """
@@ -131,25 +119,23 @@ class CreateFileRequestArgs(bb.Struct):
     """
 
     __slots__ = [
-        "_title_value",
-        "_destination_value",
-        "_deadline_value",
-        "_open_value",
-        "_description_value",
-        "_video_project_id_value",
+        '_title_value',
+        '_destination_value',
+        '_deadline_value',
+        '_open_value',
+        '_description_value',
+        '_video_project_id_value',
     ]
 
     _has_required_fields = True
 
-    def __init__(
-        self,
-        title=None,
-        destination=None,
-        deadline=None,
-        open=None,
-        description=None,
-        video_project_id=None,
-    ):
+    def __init__(self,
+                 title=None,
+                 destination=None,
+                 deadline=None,
+                 open=None,
+                 description=None,
+                 video_project_id=None):
         self._title_value = bb.NOT_SET
         self._destination_value = bb.NOT_SET
         self._deadline_value = bb.NOT_SET
@@ -188,13 +174,9 @@ class CreateFileRequestArgs(bb.Struct):
     video_project_id = bb.Attribute("video_project_id", nullable=True)
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
-        super(CreateFileRequestArgs, self)._process_custom_annotations(
-            annotation_type, field_path, processor
-        )
-
+        super(CreateFileRequestArgs, self)._process_custom_annotations(annotation_type, field_path, processor)
 
 CreateFileRequestArgs_validator = bv.Struct(CreateFileRequestArgs)
-
 
 class FileRequestError(GeneralFileRequestsError):
     """
@@ -245,7 +227,7 @@ class FileRequestError(GeneralFileRequestsError):
 
         :rtype: bool
         """
-        return self._tag == "not_found"
+        return self._tag == 'not_found'
 
     def is_not_a_folder(self):
         """
@@ -253,7 +235,7 @@ class FileRequestError(GeneralFileRequestsError):
 
         :rtype: bool
         """
-        return self._tag == "not_a_folder"
+        return self._tag == 'not_a_folder'
 
     def is_app_lacks_access(self):
         """
@@ -261,7 +243,7 @@ class FileRequestError(GeneralFileRequestsError):
 
         :rtype: bool
         """
-        return self._tag == "app_lacks_access"
+        return self._tag == 'app_lacks_access'
 
     def is_no_permission(self):
         """
@@ -269,7 +251,7 @@ class FileRequestError(GeneralFileRequestsError):
 
         :rtype: bool
         """
-        return self._tag == "no_permission"
+        return self._tag == 'no_permission'
 
     def is_email_unverified(self):
         """
@@ -277,7 +259,7 @@ class FileRequestError(GeneralFileRequestsError):
 
         :rtype: bool
         """
-        return self._tag == "email_unverified"
+        return self._tag == 'email_unverified'
 
     def is_validation_error(self):
         """
@@ -285,7 +267,7 @@ class FileRequestError(GeneralFileRequestsError):
 
         :rtype: bool
         """
-        return self._tag == "validation_error"
+        return self._tag == 'validation_error'
 
     def is_no_write_permission(self):
         """
@@ -293,16 +275,12 @@ class FileRequestError(GeneralFileRequestsError):
 
         :rtype: bool
         """
-        return self._tag == "no_write_permission"
+        return self._tag == 'no_write_permission'
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
-        super(FileRequestError, self)._process_custom_annotations(
-            annotation_type, field_path, processor
-        )
-
+        super(FileRequestError, self)._process_custom_annotations(annotation_type, field_path, processor)
 
 FileRequestError_validator = bv.Union(FileRequestError)
-
 
 class CreateFileRequestError(FileRequestError):
     """
@@ -330,7 +308,7 @@ class CreateFileRequestError(FileRequestError):
 
         :rtype: bool
         """
-        return self._tag == "invalid_location"
+        return self._tag == 'invalid_location'
 
     def is_rate_limit(self):
         """
@@ -338,16 +316,12 @@ class CreateFileRequestError(FileRequestError):
 
         :rtype: bool
         """
-        return self._tag == "rate_limit"
+        return self._tag == 'rate_limit'
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
-        super(CreateFileRequestError, self)._process_custom_annotations(
-            annotation_type, field_path, processor
-        )
-
+        super(CreateFileRequestError, self)._process_custom_annotations(annotation_type, field_path, processor)
 
 CreateFileRequestError_validator = bv.Union(CreateFileRequestError)
-
 
 class DeleteAllClosedFileRequestsError(FileRequestError):
     """
@@ -359,13 +333,9 @@ class DeleteAllClosedFileRequestsError(FileRequestError):
     """
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
-        super(DeleteAllClosedFileRequestsError, self)._process_custom_annotations(
-            annotation_type, field_path, processor
-        )
-
+        super(DeleteAllClosedFileRequestsError, self)._process_custom_annotations(annotation_type, field_path, processor)
 
 DeleteAllClosedFileRequestsError_validator = bv.Union(DeleteAllClosedFileRequestsError)
-
 
 class DeleteAllClosedFileRequestsResult(bb.Struct):
     """
@@ -377,12 +347,13 @@ class DeleteAllClosedFileRequestsResult(bb.Struct):
     """
 
     __slots__ = [
-        "_file_requests_value",
+        '_file_requests_value',
     ]
 
     _has_required_fields = True
 
-    def __init__(self, file_requests=None):
+    def __init__(self,
+                 file_requests=None):
         self._file_requests_value = bb.NOT_SET
         if file_requests is not None:
             self.file_requests = file_requests
@@ -391,13 +362,9 @@ class DeleteAllClosedFileRequestsResult(bb.Struct):
     file_requests = bb.Attribute("file_requests")
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
-        super(DeleteAllClosedFileRequestsResult, self)._process_custom_annotations(
-            annotation_type, field_path, processor
-        )
-
+        super(DeleteAllClosedFileRequestsResult, self)._process_custom_annotations(annotation_type, field_path, processor)
 
 DeleteAllClosedFileRequestsResult_validator = bv.Struct(DeleteAllClosedFileRequestsResult)
-
 
 class DeleteFileRequestArgs(bb.Struct):
     """
@@ -408,12 +375,13 @@ class DeleteFileRequestArgs(bb.Struct):
     """
 
     __slots__ = [
-        "_ids_value",
+        '_ids_value',
     ]
 
     _has_required_fields = True
 
-    def __init__(self, ids=None):
+    def __init__(self,
+                 ids=None):
         self._ids_value = bb.NOT_SET
         if ids is not None:
             self.ids = ids
@@ -422,13 +390,9 @@ class DeleteFileRequestArgs(bb.Struct):
     ids = bb.Attribute("ids")
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
-        super(DeleteFileRequestArgs, self)._process_custom_annotations(
-            annotation_type, field_path, processor
-        )
-
+        super(DeleteFileRequestArgs, self)._process_custom_annotations(annotation_type, field_path, processor)
 
 DeleteFileRequestArgs_validator = bv.Struct(DeleteFileRequestArgs)
-
 
 class DeleteFileRequestError(FileRequestError):
     """
@@ -451,16 +415,12 @@ class DeleteFileRequestError(FileRequestError):
 
         :rtype: bool
         """
-        return self._tag == "file_request_open"
+        return self._tag == 'file_request_open'
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
-        super(DeleteFileRequestError, self)._process_custom_annotations(
-            annotation_type, field_path, processor
-        )
-
+        super(DeleteFileRequestError, self)._process_custom_annotations(annotation_type, field_path, processor)
 
 DeleteFileRequestError_validator = bv.Union(DeleteFileRequestError)
-
 
 class DeleteFileRequestsResult(bb.Struct):
     """
@@ -471,12 +431,13 @@ class DeleteFileRequestsResult(bb.Struct):
     """
 
     __slots__ = [
-        "_file_requests_value",
+        '_file_requests_value',
     ]
 
     _has_required_fields = True
 
-    def __init__(self, file_requests=None):
+    def __init__(self,
+                 file_requests=None):
         self._file_requests_value = bb.NOT_SET
         if file_requests is not None:
             self.file_requests = file_requests
@@ -485,13 +446,9 @@ class DeleteFileRequestsResult(bb.Struct):
     file_requests = bb.Attribute("file_requests")
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
-        super(DeleteFileRequestsResult, self)._process_custom_annotations(
-            annotation_type, field_path, processor
-        )
-
+        super(DeleteFileRequestsResult, self)._process_custom_annotations(annotation_type, field_path, processor)
 
 DeleteFileRequestsResult_validator = bv.Struct(DeleteFileRequestsResult)
-
 
 class FileRequest(bb.Struct):
     """
@@ -525,33 +482,31 @@ class FileRequest(bb.Struct):
     """
 
     __slots__ = [
-        "_id_value",
-        "_url_value",
-        "_title_value",
-        "_destination_value",
-        "_created_value",
-        "_deadline_value",
-        "_is_open_value",
-        "_file_count_value",
-        "_description_value",
-        "_video_project_id_value",
+        '_id_value',
+        '_url_value',
+        '_title_value',
+        '_destination_value',
+        '_created_value',
+        '_deadline_value',
+        '_is_open_value',
+        '_file_count_value',
+        '_description_value',
+        '_video_project_id_value',
     ]
 
     _has_required_fields = True
 
-    def __init__(
-        self,
-        id=None,
-        url=None,
-        title=None,
-        created=None,
-        is_open=None,
-        file_count=None,
-        destination=None,
-        deadline=None,
-        description=None,
-        video_project_id=None,
-    ):
+    def __init__(self,
+                 id=None,
+                 url=None,
+                 title=None,
+                 created=None,
+                 is_open=None,
+                 file_count=None,
+                 destination=None,
+                 deadline=None,
+                 description=None,
+                 video_project_id=None):
         self._id_value = bb.NOT_SET
         self._url_value = bb.NOT_SET
         self._title_value = bb.NOT_SET
@@ -616,9 +571,7 @@ class FileRequest(bb.Struct):
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(FileRequest, self)._process_custom_annotations(annotation_type, field_path, processor)
 
-
 FileRequest_validator = bv.Struct(FileRequest)
-
 
 class FileRequestDeadline(bb.Struct):
     """
@@ -630,13 +583,15 @@ class FileRequestDeadline(bb.Struct):
     """
 
     __slots__ = [
-        "_deadline_value",
-        "_allow_late_uploads_value",
+        '_deadline_value',
+        '_allow_late_uploads_value',
     ]
 
     _has_required_fields = True
 
-    def __init__(self, deadline=None, allow_late_uploads=None):
+    def __init__(self,
+                 deadline=None,
+                 allow_late_uploads=None):
         self._deadline_value = bb.NOT_SET
         self._allow_late_uploads_value = bb.NOT_SET
         if deadline is not None:
@@ -651,13 +606,9 @@ class FileRequestDeadline(bb.Struct):
     allow_late_uploads = bb.Attribute("allow_late_uploads", nullable=True, user_defined=True)
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
-        super(FileRequestDeadline, self)._process_custom_annotations(
-            annotation_type, field_path, processor
-        )
-
+        super(FileRequestDeadline, self)._process_custom_annotations(annotation_type, field_path, processor)
 
 FileRequestDeadline_validator = bv.Struct(FileRequestDeadline)
-
 
 class GetFileRequestArgs(bb.Struct):
     """
@@ -668,12 +619,13 @@ class GetFileRequestArgs(bb.Struct):
     """
 
     __slots__ = [
-        "_id_value",
+        '_id_value',
     ]
 
     _has_required_fields = True
 
-    def __init__(self, id=None):
+    def __init__(self,
+                 id=None):
         self._id_value = bb.NOT_SET
         if id is not None:
             self.id = id
@@ -682,13 +634,9 @@ class GetFileRequestArgs(bb.Struct):
     id = bb.Attribute("id")
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
-        super(GetFileRequestArgs, self)._process_custom_annotations(
-            annotation_type, field_path, processor
-        )
-
+        super(GetFileRequestArgs, self)._process_custom_annotations(annotation_type, field_path, processor)
 
 GetFileRequestArgs_validator = bv.Struct(GetFileRequestArgs)
-
 
 class GetFileRequestError(FileRequestError):
     """
@@ -700,13 +648,9 @@ class GetFileRequestError(FileRequestError):
     """
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
-        super(GetFileRequestError, self)._process_custom_annotations(
-            annotation_type, field_path, processor
-        )
-
+        super(GetFileRequestError, self)._process_custom_annotations(annotation_type, field_path, processor)
 
 GetFileRequestError_validator = bv.Union(GetFileRequestError)
-
 
 class GracePeriod(bb.Union):
     """
@@ -715,7 +659,7 @@ class GracePeriod(bb.Union):
     corresponding ``get_*`` method.
     """
 
-    _catch_all = "other"
+    _catch_all = 'other'
     # Attribute is overwritten below the class definition
     one_day = None
     # Attribute is overwritten below the class definition
@@ -735,7 +679,7 @@ class GracePeriod(bb.Union):
 
         :rtype: bool
         """
-        return self._tag == "one_day"
+        return self._tag == 'one_day'
 
     def is_two_days(self):
         """
@@ -743,7 +687,7 @@ class GracePeriod(bb.Union):
 
         :rtype: bool
         """
-        return self._tag == "two_days"
+        return self._tag == 'two_days'
 
     def is_seven_days(self):
         """
@@ -751,7 +695,7 @@ class GracePeriod(bb.Union):
 
         :rtype: bool
         """
-        return self._tag == "seven_days"
+        return self._tag == 'seven_days'
 
     def is_thirty_days(self):
         """
@@ -759,7 +703,7 @@ class GracePeriod(bb.Union):
 
         :rtype: bool
         """
-        return self._tag == "thirty_days"
+        return self._tag == 'thirty_days'
 
     def is_always(self):
         """
@@ -767,7 +711,7 @@ class GracePeriod(bb.Union):
 
         :rtype: bool
         """
-        return self._tag == "always"
+        return self._tag == 'always'
 
     def is_other(self):
         """
@@ -775,14 +719,12 @@ class GracePeriod(bb.Union):
 
         :rtype: bool
         """
-        return self._tag == "other"
+        return self._tag == 'other'
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(GracePeriod, self)._process_custom_annotations(annotation_type, field_path, processor)
 
-
 GracePeriod_validator = bv.Union(GracePeriod)
-
 
 class ListFileRequestsArg(bb.Struct):
     """
@@ -793,12 +735,13 @@ class ListFileRequestsArg(bb.Struct):
     """
 
     __slots__ = [
-        "_limit_value",
+        '_limit_value',
     ]
 
     _has_required_fields = False
 
-    def __init__(self, limit=None):
+    def __init__(self,
+                 limit=None):
         self._limit_value = bb.NOT_SET
         if limit is not None:
             self.limit = limit
@@ -807,13 +750,9 @@ class ListFileRequestsArg(bb.Struct):
     limit = bb.Attribute("limit")
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
-        super(ListFileRequestsArg, self)._process_custom_annotations(
-            annotation_type, field_path, processor
-        )
-
+        super(ListFileRequestsArg, self)._process_custom_annotations(annotation_type, field_path, processor)
 
 ListFileRequestsArg_validator = bv.Struct(ListFileRequestsArg)
-
 
 class ListFileRequestsContinueArg(bb.Struct):
     """
@@ -823,12 +762,13 @@ class ListFileRequestsContinueArg(bb.Struct):
     """
 
     __slots__ = [
-        "_cursor_value",
+        '_cursor_value',
     ]
 
     _has_required_fields = True
 
-    def __init__(self, cursor=None):
+    def __init__(self,
+                 cursor=None):
         self._cursor_value = bb.NOT_SET
         if cursor is not None:
             self.cursor = cursor
@@ -837,13 +777,9 @@ class ListFileRequestsContinueArg(bb.Struct):
     cursor = bb.Attribute("cursor")
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
-        super(ListFileRequestsContinueArg, self)._process_custom_annotations(
-            annotation_type, field_path, processor
-        )
-
+        super(ListFileRequestsContinueArg, self)._process_custom_annotations(annotation_type, field_path, processor)
 
 ListFileRequestsContinueArg_validator = bv.Struct(ListFileRequestsContinueArg)
-
 
 class ListFileRequestsContinueError(GeneralFileRequestsError):
     """
@@ -866,16 +802,12 @@ class ListFileRequestsContinueError(GeneralFileRequestsError):
 
         :rtype: bool
         """
-        return self._tag == "invalid_cursor"
+        return self._tag == 'invalid_cursor'
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
-        super(ListFileRequestsContinueError, self)._process_custom_annotations(
-            annotation_type, field_path, processor
-        )
-
+        super(ListFileRequestsContinueError, self)._process_custom_annotations(annotation_type, field_path, processor)
 
 ListFileRequestsContinueError_validator = bv.Union(ListFileRequestsContinueError)
-
 
 class ListFileRequestsError(GeneralFileRequestsError):
     """
@@ -887,13 +819,9 @@ class ListFileRequestsError(GeneralFileRequestsError):
     """
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
-        super(ListFileRequestsError, self)._process_custom_annotations(
-            annotation_type, field_path, processor
-        )
-
+        super(ListFileRequestsError, self)._process_custom_annotations(annotation_type, field_path, processor)
 
 ListFileRequestsError_validator = bv.Union(ListFileRequestsError)
-
 
 class ListFileRequestsResult(bb.Struct):
     """
@@ -905,12 +833,13 @@ class ListFileRequestsResult(bb.Struct):
     """
 
     __slots__ = [
-        "_file_requests_value",
+        '_file_requests_value',
     ]
 
     _has_required_fields = True
 
-    def __init__(self, file_requests=None):
+    def __init__(self,
+                 file_requests=None):
         self._file_requests_value = bb.NOT_SET
         if file_requests is not None:
             self.file_requests = file_requests
@@ -919,13 +848,9 @@ class ListFileRequestsResult(bb.Struct):
     file_requests = bb.Attribute("file_requests")
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
-        super(ListFileRequestsResult, self)._process_custom_annotations(
-            annotation_type, field_path, processor
-        )
-
+        super(ListFileRequestsResult, self)._process_custom_annotations(annotation_type, field_path, processor)
 
 ListFileRequestsResult_validator = bv.Struct(ListFileRequestsResult)
-
 
 class ListFileRequestsV2Result(bb.Struct):
     """
@@ -946,14 +871,17 @@ class ListFileRequestsV2Result(bb.Struct):
     """
 
     __slots__ = [
-        "_file_requests_value",
-        "_cursor_value",
-        "_has_more_value",
+        '_file_requests_value',
+        '_cursor_value',
+        '_has_more_value',
     ]
 
     _has_required_fields = True
 
-    def __init__(self, file_requests=None, cursor=None, has_more=None):
+    def __init__(self,
+                 file_requests=None,
+                 cursor=None,
+                 has_more=None):
         self._file_requests_value = bb.NOT_SET
         self._cursor_value = bb.NOT_SET
         self._has_more_value = bb.NOT_SET
@@ -974,13 +902,9 @@ class ListFileRequestsV2Result(bb.Struct):
     has_more = bb.Attribute("has_more")
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
-        super(ListFileRequestsV2Result, self)._process_custom_annotations(
-            annotation_type, field_path, processor
-        )
-
+        super(ListFileRequestsV2Result, self)._process_custom_annotations(annotation_type, field_path, processor)
 
 ListFileRequestsV2Result_validator = bv.Struct(ListFileRequestsV2Result)
-
 
 class UpdateFileRequestArgs(bb.Struct):
     """
@@ -1004,25 +928,23 @@ class UpdateFileRequestArgs(bb.Struct):
     """
 
     __slots__ = [
-        "_id_value",
-        "_title_value",
-        "_destination_value",
-        "_deadline_value",
-        "_open_value",
-        "_description_value",
+        '_id_value',
+        '_title_value',
+        '_destination_value',
+        '_deadline_value',
+        '_open_value',
+        '_description_value',
     ]
 
     _has_required_fields = True
 
-    def __init__(
-        self,
-        id=None,
-        title=None,
-        destination=None,
-        deadline=None,
-        open=None,
-        description=None,
-    ):
+    def __init__(self,
+                 id=None,
+                 title=None,
+                 destination=None,
+                 deadline=None,
+                 open=None,
+                 description=None):
         self._id_value = bb.NOT_SET
         self._title_value = bb.NOT_SET
         self._destination_value = bb.NOT_SET
@@ -1061,13 +983,9 @@ class UpdateFileRequestArgs(bb.Struct):
     description = bb.Attribute("description", nullable=True)
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
-        super(UpdateFileRequestArgs, self)._process_custom_annotations(
-            annotation_type, field_path, processor
-        )
-
+        super(UpdateFileRequestArgs, self)._process_custom_annotations(annotation_type, field_path, processor)
 
 UpdateFileRequestArgs_validator = bv.Struct(UpdateFileRequestArgs)
-
 
 class UpdateFileRequestDeadline(bb.Union):
     """
@@ -1082,7 +1000,7 @@ class UpdateFileRequestDeadline(bb.Union):
     :vartype UpdateFileRequestDeadline.update: Optional[FileRequestDeadline]
     """
 
-    _catch_all = "other"
+    _catch_all = 'other'
     # Attribute is overwritten below the class definition
     no_update = None
     # Attribute is overwritten below the class definition
@@ -1097,7 +1015,7 @@ class UpdateFileRequestDeadline(bb.Union):
         :param FileRequestDeadline val:
         :rtype: UpdateFileRequestDeadline
         """
-        return cls("update", val)
+        return cls('update', val)
 
     def is_no_update(self):
         """
@@ -1105,7 +1023,7 @@ class UpdateFileRequestDeadline(bb.Union):
 
         :rtype: bool
         """
-        return self._tag == "no_update"
+        return self._tag == 'no_update'
 
     def is_update(self):
         """
@@ -1113,7 +1031,7 @@ class UpdateFileRequestDeadline(bb.Union):
 
         :rtype: bool
         """
-        return self._tag == "update"
+        return self._tag == 'update'
 
     def is_other(self):
         """
@@ -1121,7 +1039,7 @@ class UpdateFileRequestDeadline(bb.Union):
 
         :rtype: bool
         """
-        return self._tag == "other"
+        return self._tag == 'other'
 
     def get_update(self):
         """
@@ -1136,13 +1054,9 @@ class UpdateFileRequestDeadline(bb.Union):
         return self._value
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
-        super(UpdateFileRequestDeadline, self)._process_custom_annotations(
-            annotation_type, field_path, processor
-        )
-
+        super(UpdateFileRequestDeadline, self)._process_custom_annotations(annotation_type, field_path, processor)
 
 UpdateFileRequestDeadline_validator = bv.Union(UpdateFileRequestDeadline)
-
 
 class UpdateFileRequestError(FileRequestError):
     """
@@ -1154,33 +1068,29 @@ class UpdateFileRequestError(FileRequestError):
     """
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
-        super(UpdateFileRequestError, self)._process_custom_annotations(
-            annotation_type, field_path, processor
-        )
-
+        super(UpdateFileRequestError, self)._process_custom_annotations(annotation_type, field_path, processor)
 
 UpdateFileRequestError_validator = bv.Union(UpdateFileRequestError)
 
-FileRequestId_validator = bv.String(min_length=1, pattern="[-_0-9a-zA-Z]+")
+FileRequestId_validator = bv.String(min_length=1, pattern='[-_0-9a-zA-Z]+')
 FileRequestValidationError_validator = bv.Nullable(bv.String())
 GeneralFileRequestsError._disabled_for_team_validator = bv.Void()
 GeneralFileRequestsError._other_validator = bv.Void()
 GeneralFileRequestsError._tagmap = {
-    "disabled_for_team": GeneralFileRequestsError._disabled_for_team_validator,
-    "other": GeneralFileRequestsError._other_validator,
+    'disabled_for_team': GeneralFileRequestsError._disabled_for_team_validator,
+    'other': GeneralFileRequestsError._other_validator,
 }
 
-GeneralFileRequestsError.disabled_for_team = GeneralFileRequestsError("disabled_for_team")
-GeneralFileRequestsError.other = GeneralFileRequestsError("other")
+GeneralFileRequestsError.disabled_for_team = GeneralFileRequestsError('disabled_for_team')
+GeneralFileRequestsError.other = GeneralFileRequestsError('other')
 
-CountFileRequestsError._tagmap = {}
+CountFileRequestsError._tagmap = {
+}
 CountFileRequestsError._tagmap.update(GeneralFileRequestsError._tagmap)
 
 CountFileRequestsResult.file_request_count.validator = bv.UInt64()
-CountFileRequestsResult._all_field_names_ = set(["file_request_count"])
-CountFileRequestsResult._all_fields_ = [
-    ("file_request_count", CountFileRequestsResult.file_request_count.validator)
-]
+CountFileRequestsResult._all_field_names_ = set(['file_request_count'])
+CountFileRequestsResult._all_fields_ = [('file_request_count', CountFileRequestsResult.file_request_count.validator)]
 
 CreateFileRequestArgs.title.validator = bv.String(min_length=1)
 CreateFileRequestArgs.destination.validator = files.Path_validator
@@ -1188,23 +1098,21 @@ CreateFileRequestArgs.deadline.validator = bv.Nullable(FileRequestDeadline_valid
 CreateFileRequestArgs.open.validator = bv.Boolean()
 CreateFileRequestArgs.description.validator = bv.Nullable(bv.String())
 CreateFileRequestArgs.video_project_id.validator = bv.Nullable(bv.String())
-CreateFileRequestArgs._all_field_names_ = set(
-    [
-        "title",
-        "destination",
-        "deadline",
-        "open",
-        "description",
-        "video_project_id",
-    ]
-)
+CreateFileRequestArgs._all_field_names_ = set([
+    'title',
+    'destination',
+    'deadline',
+    'open',
+    'description',
+    'video_project_id',
+])
 CreateFileRequestArgs._all_fields_ = [
-    ("title", CreateFileRequestArgs.title.validator),
-    ("destination", CreateFileRequestArgs.destination.validator),
-    ("deadline", CreateFileRequestArgs.deadline.validator),
-    ("open", CreateFileRequestArgs.open.validator),
-    ("description", CreateFileRequestArgs.description.validator),
-    ("video_project_id", CreateFileRequestArgs.video_project_id.validator),
+    ('title', CreateFileRequestArgs.title.validator),
+    ('destination', CreateFileRequestArgs.destination.validator),
+    ('deadline', CreateFileRequestArgs.deadline.validator),
+    ('open', CreateFileRequestArgs.open.validator),
+    ('description', CreateFileRequestArgs.description.validator),
+    ('video_project_id', CreateFileRequestArgs.video_project_id.validator),
 ]
 
 FileRequestError._not_found_validator = bv.Void()
@@ -1215,61 +1123,58 @@ FileRequestError._email_unverified_validator = bv.Void()
 FileRequestError._validation_error_validator = bv.Void()
 FileRequestError._no_write_permission_validator = bv.Void()
 FileRequestError._tagmap = {
-    "not_found": FileRequestError._not_found_validator,
-    "not_a_folder": FileRequestError._not_a_folder_validator,
-    "app_lacks_access": FileRequestError._app_lacks_access_validator,
-    "no_permission": FileRequestError._no_permission_validator,
-    "email_unverified": FileRequestError._email_unverified_validator,
-    "validation_error": FileRequestError._validation_error_validator,
-    "no_write_permission": FileRequestError._no_write_permission_validator,
+    'not_found': FileRequestError._not_found_validator,
+    'not_a_folder': FileRequestError._not_a_folder_validator,
+    'app_lacks_access': FileRequestError._app_lacks_access_validator,
+    'no_permission': FileRequestError._no_permission_validator,
+    'email_unverified': FileRequestError._email_unverified_validator,
+    'validation_error': FileRequestError._validation_error_validator,
+    'no_write_permission': FileRequestError._no_write_permission_validator,
 }
 FileRequestError._tagmap.update(GeneralFileRequestsError._tagmap)
 
-FileRequestError.not_found = FileRequestError("not_found")
-FileRequestError.not_a_folder = FileRequestError("not_a_folder")
-FileRequestError.app_lacks_access = FileRequestError("app_lacks_access")
-FileRequestError.no_permission = FileRequestError("no_permission")
-FileRequestError.email_unverified = FileRequestError("email_unverified")
-FileRequestError.validation_error = FileRequestError("validation_error")
-FileRequestError.no_write_permission = FileRequestError("no_write_permission")
+FileRequestError.not_found = FileRequestError('not_found')
+FileRequestError.not_a_folder = FileRequestError('not_a_folder')
+FileRequestError.app_lacks_access = FileRequestError('app_lacks_access')
+FileRequestError.no_permission = FileRequestError('no_permission')
+FileRequestError.email_unverified = FileRequestError('email_unverified')
+FileRequestError.validation_error = FileRequestError('validation_error')
+FileRequestError.no_write_permission = FileRequestError('no_write_permission')
 
 CreateFileRequestError._invalid_location_validator = bv.Void()
 CreateFileRequestError._rate_limit_validator = bv.Void()
 CreateFileRequestError._tagmap = {
-    "invalid_location": CreateFileRequestError._invalid_location_validator,
-    "rate_limit": CreateFileRequestError._rate_limit_validator,
+    'invalid_location': CreateFileRequestError._invalid_location_validator,
+    'rate_limit': CreateFileRequestError._rate_limit_validator,
 }
 CreateFileRequestError._tagmap.update(FileRequestError._tagmap)
 
-CreateFileRequestError.invalid_location = CreateFileRequestError("invalid_location")
-CreateFileRequestError.rate_limit = CreateFileRequestError("rate_limit")
+CreateFileRequestError.invalid_location = CreateFileRequestError('invalid_location')
+CreateFileRequestError.rate_limit = CreateFileRequestError('rate_limit')
 
-DeleteAllClosedFileRequestsError._tagmap = {}
+DeleteAllClosedFileRequestsError._tagmap = {
+}
 DeleteAllClosedFileRequestsError._tagmap.update(FileRequestError._tagmap)
 
 DeleteAllClosedFileRequestsResult.file_requests.validator = bv.List(FileRequest_validator)
-DeleteAllClosedFileRequestsResult._all_field_names_ = set(["file_requests"])
-DeleteAllClosedFileRequestsResult._all_fields_ = [
-    ("file_requests", DeleteAllClosedFileRequestsResult.file_requests.validator)
-]
+DeleteAllClosedFileRequestsResult._all_field_names_ = set(['file_requests'])
+DeleteAllClosedFileRequestsResult._all_fields_ = [('file_requests', DeleteAllClosedFileRequestsResult.file_requests.validator)]
 
 DeleteFileRequestArgs.ids.validator = bv.List(FileRequestId_validator)
-DeleteFileRequestArgs._all_field_names_ = set(["ids"])
-DeleteFileRequestArgs._all_fields_ = [("ids", DeleteFileRequestArgs.ids.validator)]
+DeleteFileRequestArgs._all_field_names_ = set(['ids'])
+DeleteFileRequestArgs._all_fields_ = [('ids', DeleteFileRequestArgs.ids.validator)]
 
 DeleteFileRequestError._file_request_open_validator = bv.Void()
 DeleteFileRequestError._tagmap = {
-    "file_request_open": DeleteFileRequestError._file_request_open_validator,
+    'file_request_open': DeleteFileRequestError._file_request_open_validator,
 }
 DeleteFileRequestError._tagmap.update(FileRequestError._tagmap)
 
-DeleteFileRequestError.file_request_open = DeleteFileRequestError("file_request_open")
+DeleteFileRequestError.file_request_open = DeleteFileRequestError('file_request_open')
 
 DeleteFileRequestsResult.file_requests.validator = bv.List(FileRequest_validator)
-DeleteFileRequestsResult._all_field_names_ = set(["file_requests"])
-DeleteFileRequestsResult._all_fields_ = [
-    ("file_requests", DeleteFileRequestsResult.file_requests.validator)
-]
+DeleteFileRequestsResult._all_field_names_ = set(['file_requests'])
+DeleteFileRequestsResult._all_fields_ = [('file_requests', DeleteFileRequestsResult.file_requests.validator)]
 
 FileRequest.id.validator = FileRequestId_validator
 FileRequest.url.validator = bv.String(min_length=1)
@@ -1281,51 +1186,48 @@ FileRequest.is_open.validator = bv.Boolean()
 FileRequest.file_count.validator = bv.Int64()
 FileRequest.description.validator = bv.Nullable(bv.String())
 FileRequest.video_project_id.validator = bv.Nullable(bv.String())
-FileRequest._all_field_names_ = set(
-    [
-        "id",
-        "url",
-        "title",
-        "destination",
-        "created",
-        "deadline",
-        "is_open",
-        "file_count",
-        "description",
-        "video_project_id",
-    ]
-)
+FileRequest._all_field_names_ = set([
+    'id',
+    'url',
+    'title',
+    'destination',
+    'created',
+    'deadline',
+    'is_open',
+    'file_count',
+    'description',
+    'video_project_id',
+])
 FileRequest._all_fields_ = [
-    ("id", FileRequest.id.validator),
-    ("url", FileRequest.url.validator),
-    ("title", FileRequest.title.validator),
-    ("destination", FileRequest.destination.validator),
-    ("created", FileRequest.created.validator),
-    ("deadline", FileRequest.deadline.validator),
-    ("is_open", FileRequest.is_open.validator),
-    ("file_count", FileRequest.file_count.validator),
-    ("description", FileRequest.description.validator),
-    ("video_project_id", FileRequest.video_project_id.validator),
+    ('id', FileRequest.id.validator),
+    ('url', FileRequest.url.validator),
+    ('title', FileRequest.title.validator),
+    ('destination', FileRequest.destination.validator),
+    ('created', FileRequest.created.validator),
+    ('deadline', FileRequest.deadline.validator),
+    ('is_open', FileRequest.is_open.validator),
+    ('file_count', FileRequest.file_count.validator),
+    ('description', FileRequest.description.validator),
+    ('video_project_id', FileRequest.video_project_id.validator),
 ]
 
 FileRequestDeadline.deadline.validator = common.DropboxTimestamp_validator
 FileRequestDeadline.allow_late_uploads.validator = bv.Nullable(GracePeriod_validator)
-FileRequestDeadline._all_field_names_ = set(
-    [
-        "deadline",
-        "allow_late_uploads",
-    ]
-)
+FileRequestDeadline._all_field_names_ = set([
+    'deadline',
+    'allow_late_uploads',
+])
 FileRequestDeadline._all_fields_ = [
-    ("deadline", FileRequestDeadline.deadline.validator),
-    ("allow_late_uploads", FileRequestDeadline.allow_late_uploads.validator),
+    ('deadline', FileRequestDeadline.deadline.validator),
+    ('allow_late_uploads', FileRequestDeadline.allow_late_uploads.validator),
 ]
 
 GetFileRequestArgs.id.validator = FileRequestId_validator
-GetFileRequestArgs._all_field_names_ = set(["id"])
-GetFileRequestArgs._all_fields_ = [("id", GetFileRequestArgs.id.validator)]
+GetFileRequestArgs._all_field_names_ = set(['id'])
+GetFileRequestArgs._all_fields_ = [('id', GetFileRequestArgs.id.validator)]
 
-GetFileRequestError._tagmap = {}
+GetFileRequestError._tagmap = {
+}
 GetFileRequestError._tagmap.update(FileRequestError._tagmap)
 
 GracePeriod._one_day_validator = bv.Void()
@@ -1335,62 +1237,57 @@ GracePeriod._thirty_days_validator = bv.Void()
 GracePeriod._always_validator = bv.Void()
 GracePeriod._other_validator = bv.Void()
 GracePeriod._tagmap = {
-    "one_day": GracePeriod._one_day_validator,
-    "two_days": GracePeriod._two_days_validator,
-    "seven_days": GracePeriod._seven_days_validator,
-    "thirty_days": GracePeriod._thirty_days_validator,
-    "always": GracePeriod._always_validator,
-    "other": GracePeriod._other_validator,
+    'one_day': GracePeriod._one_day_validator,
+    'two_days': GracePeriod._two_days_validator,
+    'seven_days': GracePeriod._seven_days_validator,
+    'thirty_days': GracePeriod._thirty_days_validator,
+    'always': GracePeriod._always_validator,
+    'other': GracePeriod._other_validator,
 }
 
-GracePeriod.one_day = GracePeriod("one_day")
-GracePeriod.two_days = GracePeriod("two_days")
-GracePeriod.seven_days = GracePeriod("seven_days")
-GracePeriod.thirty_days = GracePeriod("thirty_days")
-GracePeriod.always = GracePeriod("always")
-GracePeriod.other = GracePeriod("other")
+GracePeriod.one_day = GracePeriod('one_day')
+GracePeriod.two_days = GracePeriod('two_days')
+GracePeriod.seven_days = GracePeriod('seven_days')
+GracePeriod.thirty_days = GracePeriod('thirty_days')
+GracePeriod.always = GracePeriod('always')
+GracePeriod.other = GracePeriod('other')
 
 ListFileRequestsArg.limit.validator = bv.UInt64()
-ListFileRequestsArg._all_field_names_ = set(["limit"])
-ListFileRequestsArg._all_fields_ = [("limit", ListFileRequestsArg.limit.validator)]
+ListFileRequestsArg._all_field_names_ = set(['limit'])
+ListFileRequestsArg._all_fields_ = [('limit', ListFileRequestsArg.limit.validator)]
 
 ListFileRequestsContinueArg.cursor.validator = bv.String()
-ListFileRequestsContinueArg._all_field_names_ = set(["cursor"])
-ListFileRequestsContinueArg._all_fields_ = [
-    ("cursor", ListFileRequestsContinueArg.cursor.validator)
-]
+ListFileRequestsContinueArg._all_field_names_ = set(['cursor'])
+ListFileRequestsContinueArg._all_fields_ = [('cursor', ListFileRequestsContinueArg.cursor.validator)]
 
 ListFileRequestsContinueError._invalid_cursor_validator = bv.Void()
 ListFileRequestsContinueError._tagmap = {
-    "invalid_cursor": ListFileRequestsContinueError._invalid_cursor_validator,
+    'invalid_cursor': ListFileRequestsContinueError._invalid_cursor_validator,
 }
 ListFileRequestsContinueError._tagmap.update(GeneralFileRequestsError._tagmap)
 
-ListFileRequestsContinueError.invalid_cursor = ListFileRequestsContinueError("invalid_cursor")
+ListFileRequestsContinueError.invalid_cursor = ListFileRequestsContinueError('invalid_cursor')
 
-ListFileRequestsError._tagmap = {}
+ListFileRequestsError._tagmap = {
+}
 ListFileRequestsError._tagmap.update(GeneralFileRequestsError._tagmap)
 
 ListFileRequestsResult.file_requests.validator = bv.List(FileRequest_validator)
-ListFileRequestsResult._all_field_names_ = set(["file_requests"])
-ListFileRequestsResult._all_fields_ = [
-    ("file_requests", ListFileRequestsResult.file_requests.validator)
-]
+ListFileRequestsResult._all_field_names_ = set(['file_requests'])
+ListFileRequestsResult._all_fields_ = [('file_requests', ListFileRequestsResult.file_requests.validator)]
 
 ListFileRequestsV2Result.file_requests.validator = bv.List(FileRequest_validator)
 ListFileRequestsV2Result.cursor.validator = bv.String()
 ListFileRequestsV2Result.has_more.validator = bv.Boolean()
-ListFileRequestsV2Result._all_field_names_ = set(
-    [
-        "file_requests",
-        "cursor",
-        "has_more",
-    ]
-)
+ListFileRequestsV2Result._all_field_names_ = set([
+    'file_requests',
+    'cursor',
+    'has_more',
+])
 ListFileRequestsV2Result._all_fields_ = [
-    ("file_requests", ListFileRequestsV2Result.file_requests.validator),
-    ("cursor", ListFileRequestsV2Result.cursor.validator),
-    ("has_more", ListFileRequestsV2Result.has_more.validator),
+    ('file_requests', ListFileRequestsV2Result.file_requests.validator),
+    ('cursor', ListFileRequestsV2Result.cursor.validator),
+    ('has_more', ListFileRequestsV2Result.has_more.validator),
 ]
 
 UpdateFileRequestArgs.id.validator = FileRequestId_validator
@@ -1399,133 +1296,151 @@ UpdateFileRequestArgs.destination.validator = bv.Nullable(files.Path_validator)
 UpdateFileRequestArgs.deadline.validator = UpdateFileRequestDeadline_validator
 UpdateFileRequestArgs.open.validator = bv.Nullable(bv.Boolean())
 UpdateFileRequestArgs.description.validator = bv.Nullable(bv.String())
-UpdateFileRequestArgs._all_field_names_ = set(
-    [
-        "id",
-        "title",
-        "destination",
-        "deadline",
-        "open",
-        "description",
-    ]
-)
+UpdateFileRequestArgs._all_field_names_ = set([
+    'id',
+    'title',
+    'destination',
+    'deadline',
+    'open',
+    'description',
+])
 UpdateFileRequestArgs._all_fields_ = [
-    ("id", UpdateFileRequestArgs.id.validator),
-    ("title", UpdateFileRequestArgs.title.validator),
-    ("destination", UpdateFileRequestArgs.destination.validator),
-    ("deadline", UpdateFileRequestArgs.deadline.validator),
-    ("open", UpdateFileRequestArgs.open.validator),
-    ("description", UpdateFileRequestArgs.description.validator),
+    ('id', UpdateFileRequestArgs.id.validator),
+    ('title', UpdateFileRequestArgs.title.validator),
+    ('destination', UpdateFileRequestArgs.destination.validator),
+    ('deadline', UpdateFileRequestArgs.deadline.validator),
+    ('open', UpdateFileRequestArgs.open.validator),
+    ('description', UpdateFileRequestArgs.description.validator),
 ]
 
 UpdateFileRequestDeadline._no_update_validator = bv.Void()
 UpdateFileRequestDeadline._update_validator = bv.Nullable(FileRequestDeadline_validator)
 UpdateFileRequestDeadline._other_validator = bv.Void()
 UpdateFileRequestDeadline._tagmap = {
-    "no_update": UpdateFileRequestDeadline._no_update_validator,
-    "update": UpdateFileRequestDeadline._update_validator,
-    "other": UpdateFileRequestDeadline._other_validator,
+    'no_update': UpdateFileRequestDeadline._no_update_validator,
+    'update': UpdateFileRequestDeadline._update_validator,
+    'other': UpdateFileRequestDeadline._other_validator,
 }
 
-UpdateFileRequestDeadline.no_update = UpdateFileRequestDeadline("no_update")
-UpdateFileRequestDeadline.other = UpdateFileRequestDeadline("other")
+UpdateFileRequestDeadline.no_update = UpdateFileRequestDeadline('no_update')
+UpdateFileRequestDeadline.other = UpdateFileRequestDeadline('other')
 
-UpdateFileRequestError._tagmap = {}
+UpdateFileRequestError._tagmap = {
+}
 UpdateFileRequestError._tagmap.update(FileRequestError._tagmap)
 
 CreateFileRequestArgs.open.default = True
 ListFileRequestsArg.limit.default = 1000
 UpdateFileRequestArgs.deadline.default = UpdateFileRequestDeadline.no_update
 count = bb.Route(
-    "count",
+    'count',
     1,
     False,
     bv.Void(),
     CountFileRequestsResult_validator,
     CountFileRequestsError_validator,
-    {"auth": "user", "host": "api", "style": "rpc"},
+    {'auth': 'user',
+     'host': 'api',
+     'style': 'rpc'},
 )
 create = bb.Route(
-    "create",
+    'create',
     1,
     False,
     CreateFileRequestArgs_validator,
     FileRequest_validator,
     CreateFileRequestError_validator,
-    {"auth": "user", "host": "api", "style": "rpc"},
+    {'auth': 'user',
+     'host': 'api',
+     'style': 'rpc'},
 )
 delete = bb.Route(
-    "delete",
+    'delete',
     1,
     False,
     DeleteFileRequestArgs_validator,
     DeleteFileRequestsResult_validator,
     DeleteFileRequestError_validator,
-    {"auth": "user", "host": "api", "style": "rpc"},
+    {'auth': 'user',
+     'host': 'api',
+     'style': 'rpc'},
 )
 delete_all_closed = bb.Route(
-    "delete_all_closed",
+    'delete_all_closed',
     1,
     False,
     bv.Void(),
     DeleteAllClosedFileRequestsResult_validator,
     DeleteAllClosedFileRequestsError_validator,
-    {"auth": "user", "host": "api", "style": "rpc"},
+    {'auth': 'user',
+     'host': 'api',
+     'style': 'rpc'},
 )
 get = bb.Route(
-    "get",
+    'get',
     1,
     False,
     GetFileRequestArgs_validator,
     FileRequest_validator,
     GetFileRequestError_validator,
-    {"auth": "user", "host": "api", "style": "rpc"},
+    {'auth': 'user',
+     'host': 'api',
+     'style': 'rpc'},
 )
 list = bb.Route(
-    "list",
+    'list',
     1,
     False,
     bv.Void(),
     ListFileRequestsResult_validator,
     ListFileRequestsError_validator,
-    {"auth": "user", "host": "api", "style": "rpc"},
+    {'auth': 'user',
+     'host': 'api',
+     'style': 'rpc'},
 )
 list_v2 = bb.Route(
-    "list",
+    'list',
     2,
     False,
     ListFileRequestsArg_validator,
     ListFileRequestsV2Result_validator,
     ListFileRequestsError_validator,
-    {"auth": "user", "host": "api", "style": "rpc"},
+    {'auth': 'user',
+     'host': 'api',
+     'style': 'rpc'},
 )
 list_continue = bb.Route(
-    "list/continue",
+    'list/continue',
     1,
     False,
     ListFileRequestsContinueArg_validator,
     ListFileRequestsV2Result_validator,
     ListFileRequestsContinueError_validator,
-    {"auth": "user", "host": "api", "style": "rpc"},
+    {'auth': 'user',
+     'host': 'api',
+     'style': 'rpc'},
 )
 update = bb.Route(
-    "update",
+    'update',
     1,
     False,
     UpdateFileRequestArgs_validator,
     FileRequest_validator,
     UpdateFileRequestError_validator,
-    {"auth": "user", "host": "api", "style": "rpc"},
+    {'auth': 'user',
+     'host': 'api',
+     'style': 'rpc'},
 )
 
 ROUTES = {
-    "count": count,
-    "create": create,
-    "delete": delete,
-    "delete_all_closed": delete_all_closed,
-    "get": get,
-    "list": list,
-    "list:2": list_v2,
-    "list/continue": list_continue,
-    "update": update,
+    'count': count,
+    'create': create,
+    'delete': delete,
+    'delete_all_closed': delete_all_closed,
+    'get': get,
+    'list': list,
+    'list:2': list_v2,
+    'list/continue': list_continue,
+    'update': update,
 }
+

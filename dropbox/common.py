@@ -7,16 +7,18 @@ from __future__ import unicode_literals
 from stone.backends.python_rsrc import stone_base as bb
 from stone.backends.python_rsrc import stone_validators as bv
 
-
 class DropboxDuration(bb.Struct):
+
     __slots__ = [
-        "_seconds_value",
-        "_nanos_value",
+        '_seconds_value',
+        '_nanos_value',
     ]
 
     _has_required_fields = True
 
-    def __init__(self, seconds=None, nanos=None):
+    def __init__(self,
+                 seconds=None,
+                 nanos=None):
         self._seconds_value = bb.NOT_SET
         self._nanos_value = bb.NOT_SET
         if seconds is not None:
@@ -31,13 +33,9 @@ class DropboxDuration(bb.Struct):
     nanos = bb.Attribute("nanos")
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
-        super(DropboxDuration, self)._process_custom_annotations(
-            annotation_type, field_path, processor
-        )
-
+        super(DropboxDuration, self)._process_custom_annotations(annotation_type, field_path, processor)
 
 DropboxDuration_validator = bv.Struct(DropboxDuration)
-
 
 class PathRoot(bb.Union):
     """
@@ -60,7 +58,7 @@ class PathRoot(bb.Union):
     :vartype PathRoot.namespace_id: str
     """
 
-    _catch_all = "other"
+    _catch_all = 'other'
     # Attribute is overwritten below the class definition
     home = None
     # Attribute is overwritten below the class definition
@@ -75,7 +73,7 @@ class PathRoot(bb.Union):
         :param str val:
         :rtype: PathRoot
         """
-        return cls("root", val)
+        return cls('root', val)
 
     @classmethod
     def namespace_id(cls, val):
@@ -86,7 +84,7 @@ class PathRoot(bb.Union):
         :param str val:
         :rtype: PathRoot
         """
-        return cls("namespace_id", val)
+        return cls('namespace_id', val)
 
     def is_home(self):
         """
@@ -94,7 +92,7 @@ class PathRoot(bb.Union):
 
         :rtype: bool
         """
-        return self._tag == "home"
+        return self._tag == 'home'
 
     def is_root(self):
         """
@@ -102,7 +100,7 @@ class PathRoot(bb.Union):
 
         :rtype: bool
         """
-        return self._tag == "root"
+        return self._tag == 'root'
 
     def is_namespace_id(self):
         """
@@ -110,7 +108,7 @@ class PathRoot(bb.Union):
 
         :rtype: bool
         """
-        return self._tag == "namespace_id"
+        return self._tag == 'namespace_id'
 
     def is_other(self):
         """
@@ -118,7 +116,7 @@ class PathRoot(bb.Union):
 
         :rtype: bool
         """
-        return self._tag == "other"
+        return self._tag == 'other'
 
     def get_root(self):
         """
@@ -151,9 +149,7 @@ class PathRoot(bb.Union):
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(PathRoot, self)._process_custom_annotations(annotation_type, field_path, processor)
 
-
 PathRoot_validator = bv.Union(PathRoot)
-
 
 class PathRootError(bb.Union):
     """
@@ -170,7 +166,7 @@ class PathRootError(bb.Union):
         Dropbox-API-Path-Root header.
     """
 
-    _catch_all = "other"
+    _catch_all = 'other'
     # Attribute is overwritten below the class definition
     no_permission = None
     # Attribute is overwritten below the class definition
@@ -185,7 +181,7 @@ class PathRootError(bb.Union):
         :param RootInfo val:
         :rtype: PathRootError
         """
-        return cls("invalid_root", val)
+        return cls('invalid_root', val)
 
     def is_invalid_root(self):
         """
@@ -193,7 +189,7 @@ class PathRootError(bb.Union):
 
         :rtype: bool
         """
-        return self._tag == "invalid_root"
+        return self._tag == 'invalid_root'
 
     def is_no_permission(self):
         """
@@ -201,7 +197,7 @@ class PathRootError(bb.Union):
 
         :rtype: bool
         """
-        return self._tag == "no_permission"
+        return self._tag == 'no_permission'
 
     def is_other(self):
         """
@@ -209,7 +205,7 @@ class PathRootError(bb.Union):
 
         :rtype: bool
         """
-        return self._tag == "other"
+        return self._tag == 'other'
 
     def get_invalid_root(self):
         """
@@ -225,13 +221,9 @@ class PathRootError(bb.Union):
         return self._value
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
-        super(PathRootError, self)._process_custom_annotations(
-            annotation_type, field_path, processor
-        )
-
+        super(PathRootError, self)._process_custom_annotations(annotation_type, field_path, processor)
 
 PathRootError_validator = bv.Union(PathRootError)
-
 
 class RootInfo(bb.Struct):
     """
@@ -248,13 +240,15 @@ class RootInfo(bb.Struct):
     """
 
     __slots__ = [
-        "_root_namespace_id_value",
-        "_home_namespace_id_value",
+        '_root_namespace_id_value',
+        '_home_namespace_id_value',
     ]
 
     _has_required_fields = True
 
-    def __init__(self, root_namespace_id=None, home_namespace_id=None):
+    def __init__(self,
+                 root_namespace_id=None,
+                 home_namespace_id=None):
         self._root_namespace_id_value = bb.NOT_SET
         self._home_namespace_id_value = bb.NOT_SET
         if root_namespace_id is not None:
@@ -271,9 +265,7 @@ class RootInfo(bb.Struct):
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(RootInfo, self)._process_custom_annotations(annotation_type, field_path, processor)
 
-
 RootInfo_validator = bv.StructTree(RootInfo)
-
 
 class TeamRootInfo(RootInfo):
     """
@@ -284,13 +276,17 @@ class TeamRootInfo(RootInfo):
     """
 
     __slots__ = [
-        "_home_path_value",
+        '_home_path_value',
     ]
 
     _has_required_fields = True
 
-    def __init__(self, root_namespace_id=None, home_namespace_id=None, home_path=None):
-        super(TeamRootInfo, self).__init__(root_namespace_id, home_namespace_id)
+    def __init__(self,
+                 root_namespace_id=None,
+                 home_namespace_id=None,
+                 home_path=None):
+        super(TeamRootInfo, self).__init__(root_namespace_id,
+                                           home_namespace_id)
         self._home_path_value = bb.NOT_SET
         if home_path is not None:
             self.home_path = home_path
@@ -299,13 +295,9 @@ class TeamRootInfo(RootInfo):
     home_path = bb.Attribute("home_path")
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
-        super(TeamRootInfo, self)._process_custom_annotations(
-            annotation_type, field_path, processor
-        )
-
+        super(TeamRootInfo, self)._process_custom_annotations(annotation_type, field_path, processor)
 
 TeamRootInfo_validator = bv.Struct(TeamRootInfo)
-
 
 class UserRootInfo(RootInfo):
     """
@@ -317,13 +309,17 @@ class UserRootInfo(RootInfo):
     """
 
     __slots__ = [
-        "_home_path_value",
+        '_home_path_value',
     ]
 
     _has_required_fields = True
 
-    def __init__(self, root_namespace_id=None, home_namespace_id=None, home_path=None):
-        super(UserRootInfo, self).__init__(root_namespace_id, home_namespace_id)
+    def __init__(self,
+                 root_namespace_id=None,
+                 home_namespace_id=None,
+                 home_path=None):
+        super(UserRootInfo, self).__init__(root_namespace_id,
+                                           home_namespace_id)
         self._home_path_value = bb.NOT_SET
         if home_path is not None:
             self.home_path = home_path
@@ -332,38 +328,30 @@ class UserRootInfo(RootInfo):
     home_path = bb.Attribute("home_path", nullable=True)
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
-        super(UserRootInfo, self)._process_custom_annotations(
-            annotation_type, field_path, processor
-        )
-
+        super(UserRootInfo, self)._process_custom_annotations(annotation_type, field_path, processor)
 
 UserRootInfo_validator = bv.Struct(UserRootInfo)
 
-Date_validator = bv.Timestamp("%Y-%m-%d")
+Date_validator = bv.Timestamp('%Y-%m-%d')
 DisplayName_validator = bv.String(pattern='[^/:?*<>"|]*')
 DisplayNameLegacy_validator = bv.String()
-DropboxTimestamp_validator = bv.Timestamp("%Y-%m-%dT%H:%M:%SZ")
-EmailAddress_validator = bv.String(
-    max_length=255,
-    pattern="^['#&A-Za-z0-9._%+-]+@[A-Za-z0-9-][A-Za-z0-9.-]*\\.[A-Za-z]{2,15}$",
-)
+DropboxTimestamp_validator = bv.Timestamp('%Y-%m-%dT%H:%M:%SZ')
+EmailAddress_validator = bv.String(max_length=255, pattern="^['#&A-Za-z0-9._%+-]+@[A-Za-z0-9-][A-Za-z0-9.-]*\\.[A-Za-z]{2,15}$")
 LanguageCode_validator = bv.String(min_length=2)
 NamePart_validator = bv.String(min_length=1, max_length=50, pattern='[^/:?*<>"|]*')
-NamespaceId_validator = bv.String(pattern="[-_0-9a-zA-Z:]+")
+NamespaceId_validator = bv.String(pattern='[-_0-9a-zA-Z:]+')
 OptionalNamePart_validator = bv.String(max_length=50, pattern='[^/:?*<>"|]*')
 SessionId_validator = bv.String()
 SharedFolderId_validator = NamespaceId_validator
 DropboxDuration.seconds.validator = bv.Int64()
 DropboxDuration.nanos.validator = bv.Int32()
-DropboxDuration._all_field_names_ = set(
-    [
-        "seconds",
-        "nanos",
-    ]
-)
+DropboxDuration._all_field_names_ = set([
+    'seconds',
+    'nanos',
+])
 DropboxDuration._all_fields_ = [
-    ("seconds", DropboxDuration.seconds.validator),
-    ("nanos", DropboxDuration.nanos.validator),
+    ('seconds', DropboxDuration.seconds.validator),
+    ('nanos', DropboxDuration.nanos.validator),
 ]
 
 PathRoot._home_validator = bv.Void()
@@ -371,62 +359,62 @@ PathRoot._root_validator = NamespaceId_validator
 PathRoot._namespace_id_validator = NamespaceId_validator
 PathRoot._other_validator = bv.Void()
 PathRoot._tagmap = {
-    "home": PathRoot._home_validator,
-    "root": PathRoot._root_validator,
-    "namespace_id": PathRoot._namespace_id_validator,
-    "other": PathRoot._other_validator,
+    'home': PathRoot._home_validator,
+    'root': PathRoot._root_validator,
+    'namespace_id': PathRoot._namespace_id_validator,
+    'other': PathRoot._other_validator,
 }
 
-PathRoot.home = PathRoot("home")
-PathRoot.other = PathRoot("other")
+PathRoot.home = PathRoot('home')
+PathRoot.other = PathRoot('other')
 
 PathRootError._invalid_root_validator = RootInfo_validator
 PathRootError._no_permission_validator = bv.Void()
 PathRootError._other_validator = bv.Void()
 PathRootError._tagmap = {
-    "invalid_root": PathRootError._invalid_root_validator,
-    "no_permission": PathRootError._no_permission_validator,
-    "other": PathRootError._other_validator,
+    'invalid_root': PathRootError._invalid_root_validator,
+    'no_permission': PathRootError._no_permission_validator,
+    'other': PathRootError._other_validator,
 }
 
-PathRootError.no_permission = PathRootError("no_permission")
-PathRootError.other = PathRootError("other")
+PathRootError.no_permission = PathRootError('no_permission')
+PathRootError.other = PathRootError('other')
 
 RootInfo.root_namespace_id.validator = NamespaceId_validator
 RootInfo.home_namespace_id.validator = NamespaceId_validator
-RootInfo._field_names_ = set(
-    [
-        "root_namespace_id",
-        "home_namespace_id",
-    ]
-)
+RootInfo._field_names_ = set([
+    'root_namespace_id',
+    'home_namespace_id',
+])
 RootInfo._all_field_names_ = RootInfo._field_names_
 RootInfo._fields_ = [
-    ("root_namespace_id", RootInfo.root_namespace_id.validator),
-    ("home_namespace_id", RootInfo.home_namespace_id.validator),
+    ('root_namespace_id', RootInfo.root_namespace_id.validator),
+    ('home_namespace_id', RootInfo.home_namespace_id.validator),
 ]
 RootInfo._all_fields_ = RootInfo._fields_
 
 RootInfo._tag_to_subtype_ = {
-    ("team",): TeamRootInfo_validator,
-    ("user",): UserRootInfo_validator,
+    ('team',): TeamRootInfo_validator,
+    ('user',): UserRootInfo_validator,
 }
 RootInfo._pytype_to_tag_and_subtype_ = {
-    TeamRootInfo: (("team",), TeamRootInfo_validator),
-    UserRootInfo: (("user",), UserRootInfo_validator),
+    TeamRootInfo: (('team',), TeamRootInfo_validator),
+    UserRootInfo: (('user',), UserRootInfo_validator),
 }
 RootInfo._is_catch_all_ = True
 
 TeamRootInfo.home_path.validator = bv.String()
-TeamRootInfo._field_names_ = set(["home_path"])
+TeamRootInfo._field_names_ = set(['home_path'])
 TeamRootInfo._all_field_names_ = RootInfo._all_field_names_.union(TeamRootInfo._field_names_)
-TeamRootInfo._fields_ = [("home_path", TeamRootInfo.home_path.validator)]
+TeamRootInfo._fields_ = [('home_path', TeamRootInfo.home_path.validator)]
 TeamRootInfo._all_fields_ = RootInfo._all_fields_ + TeamRootInfo._fields_
 
 UserRootInfo.home_path.validator = bv.Nullable(bv.String())
-UserRootInfo._field_names_ = set(["home_path"])
+UserRootInfo._field_names_ = set(['home_path'])
 UserRootInfo._all_field_names_ = RootInfo._all_field_names_.union(UserRootInfo._field_names_)
-UserRootInfo._fields_ = [("home_path", UserRootInfo.home_path.validator)]
+UserRootInfo._fields_ = [('home_path', UserRootInfo.home_path.validator)]
 UserRootInfo._all_fields_ = RootInfo._all_fields_ + UserRootInfo._fields_
 
-ROUTES = {}
+ROUTES = {
+}
+
