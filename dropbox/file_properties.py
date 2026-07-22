@@ -27,7 +27,6 @@ from __future__ import unicode_literals
 from stone.backends.python_rsrc import stone_base as bb
 from stone.backends.python_rsrc import stone_validators as bv
 
-
 class AddPropertiesArg(bb.Struct):
     """
     :ivar AddPropertiesArg.path:
@@ -38,13 +37,15 @@ class AddPropertiesArg(bb.Struct):
     """
 
     __slots__ = [
-        "_path_value",
-        "_property_groups_value",
+        '_path_value',
+        '_property_groups_value',
     ]
 
     _has_required_fields = True
 
-    def __init__(self, path=None, property_groups=None):
+    def __init__(self,
+                 path=None,
+                 property_groups=None):
         self._path_value = bb.NOT_SET
         self._property_groups_value = bb.NOT_SET
         if path is not None:
@@ -59,13 +60,9 @@ class AddPropertiesArg(bb.Struct):
     property_groups = bb.Attribute("property_groups")
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
-        super(AddPropertiesArg, self)._process_custom_annotations(
-            annotation_type, field_path, processor
-        )
-
+        super(AddPropertiesArg, self)._process_custom_annotations(annotation_type, field_path, processor)
 
 AddPropertiesArg_validator = bv.Struct(AddPropertiesArg)
-
 
 class TemplateError(bb.Union):
     """
@@ -80,7 +77,7 @@ class TemplateError(bb.Union):
         You do not have permission to modify this template.
     """
 
-    _catch_all = "other"
+    _catch_all = 'other'
     # Attribute is overwritten below the class definition
     restricted_content = None
     # Attribute is overwritten below the class definition
@@ -95,7 +92,7 @@ class TemplateError(bb.Union):
         :param str val:
         :rtype: TemplateError
         """
-        return cls("template_not_found", val)
+        return cls('template_not_found', val)
 
     def is_template_not_found(self):
         """
@@ -103,7 +100,7 @@ class TemplateError(bb.Union):
 
         :rtype: bool
         """
-        return self._tag == "template_not_found"
+        return self._tag == 'template_not_found'
 
     def is_restricted_content(self):
         """
@@ -111,7 +108,7 @@ class TemplateError(bb.Union):
 
         :rtype: bool
         """
-        return self._tag == "restricted_content"
+        return self._tag == 'restricted_content'
 
     def is_other(self):
         """
@@ -119,7 +116,7 @@ class TemplateError(bb.Union):
 
         :rtype: bool
         """
-        return self._tag == "other"
+        return self._tag == 'other'
 
     def get_template_not_found(self):
         """
@@ -134,13 +131,9 @@ class TemplateError(bb.Union):
         return self._value
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
-        super(TemplateError, self)._process_custom_annotations(
-            annotation_type, field_path, processor
-        )
-
+        super(TemplateError, self)._process_custom_annotations(annotation_type, field_path, processor)
 
 TemplateError_validator = bv.Union(TemplateError)
-
 
 class PropertiesError(TemplateError):
     """
@@ -165,7 +158,7 @@ class PropertiesError(TemplateError):
         :param LookupError val:
         :rtype: PropertiesError
         """
-        return cls("path", val)
+        return cls('path', val)
 
     def is_path(self):
         """
@@ -173,7 +166,7 @@ class PropertiesError(TemplateError):
 
         :rtype: bool
         """
-        return self._tag == "path"
+        return self._tag == 'path'
 
     def is_unsupported_folder(self):
         """
@@ -181,7 +174,7 @@ class PropertiesError(TemplateError):
 
         :rtype: bool
         """
-        return self._tag == "unsupported_folder"
+        return self._tag == 'unsupported_folder'
 
     def get_path(self):
         """
@@ -194,13 +187,9 @@ class PropertiesError(TemplateError):
         return self._value
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
-        super(PropertiesError, self)._process_custom_annotations(
-            annotation_type, field_path, processor
-        )
-
+        super(PropertiesError, self)._process_custom_annotations(annotation_type, field_path, processor)
 
 PropertiesError_validator = bv.Union(PropertiesError)
-
 
 class InvalidPropertyGroupError(PropertiesError):
     """
@@ -231,7 +220,7 @@ class InvalidPropertyGroupError(PropertiesError):
 
         :rtype: bool
         """
-        return self._tag == "property_field_too_large"
+        return self._tag == 'property_field_too_large'
 
     def is_does_not_fit_template(self):
         """
@@ -239,7 +228,7 @@ class InvalidPropertyGroupError(PropertiesError):
 
         :rtype: bool
         """
-        return self._tag == "does_not_fit_template"
+        return self._tag == 'does_not_fit_template'
 
     def is_duplicate_property_groups(self):
         """
@@ -247,16 +236,12 @@ class InvalidPropertyGroupError(PropertiesError):
 
         :rtype: bool
         """
-        return self._tag == "duplicate_property_groups"
+        return self._tag == 'duplicate_property_groups'
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
-        super(InvalidPropertyGroupError, self)._process_custom_annotations(
-            annotation_type, field_path, processor
-        )
-
+        super(InvalidPropertyGroupError, self)._process_custom_annotations(annotation_type, field_path, processor)
 
 InvalidPropertyGroupError_validator = bv.Union(InvalidPropertyGroupError)
-
 
 class AddPropertiesError(InvalidPropertyGroupError):
     """
@@ -277,16 +262,12 @@ class AddPropertiesError(InvalidPropertyGroupError):
 
         :rtype: bool
         """
-        return self._tag == "property_group_already_exists"
+        return self._tag == 'property_group_already_exists'
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
-        super(AddPropertiesError, self)._process_custom_annotations(
-            annotation_type, field_path, processor
-        )
-
+        super(AddPropertiesError, self)._process_custom_annotations(annotation_type, field_path, processor)
 
 AddPropertiesError_validator = bv.Union(AddPropertiesError)
-
 
 class PropertyGroupTemplate(bb.Struct):
     """
@@ -303,14 +284,17 @@ class PropertyGroupTemplate(bb.Struct):
     """
 
     __slots__ = [
-        "_name_value",
-        "_description_value",
-        "_fields_value",
+        '_name_value',
+        '_description_value',
+        '_fields_value',
     ]
 
     _has_required_fields = True
 
-    def __init__(self, name=None, description=None, fields=None):
+    def __init__(self,
+                 name=None,
+                 description=None,
+                 fields=None):
         self._name_value = bb.NOT_SET
         self._description_value = bb.NOT_SET
         self._fields_value = bb.NOT_SET
@@ -331,30 +315,29 @@ class PropertyGroupTemplate(bb.Struct):
     fields = bb.Attribute("fields")
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
-        super(PropertyGroupTemplate, self)._process_custom_annotations(
-            annotation_type, field_path, processor
-        )
-
+        super(PropertyGroupTemplate, self)._process_custom_annotations(annotation_type, field_path, processor)
 
 PropertyGroupTemplate_validator = bv.Struct(PropertyGroupTemplate)
 
-
 class AddTemplateArg(PropertyGroupTemplate):
-    __slots__ = []
+
+    __slots__ = [
+    ]
 
     _has_required_fields = True
 
-    def __init__(self, name=None, description=None, fields=None):
-        super(AddTemplateArg, self).__init__(name, description, fields)
+    def __init__(self,
+                 name=None,
+                 description=None,
+                 fields=None):
+        super(AddTemplateArg, self).__init__(name,
+                                             description,
+                                             fields)
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
-        super(AddTemplateArg, self)._process_custom_annotations(
-            annotation_type, field_path, processor
-        )
-
+        super(AddTemplateArg, self)._process_custom_annotations(annotation_type, field_path, processor)
 
 AddTemplateArg_validator = bv.Struct(AddTemplateArg)
-
 
 class AddTemplateResult(bb.Struct):
     """
@@ -366,12 +349,13 @@ class AddTemplateResult(bb.Struct):
     """
 
     __slots__ = [
-        "_template_id_value",
+        '_template_id_value',
     ]
 
     _has_required_fields = True
 
-    def __init__(self, template_id=None):
+    def __init__(self,
+                 template_id=None):
         self._template_id_value = bb.NOT_SET
         if template_id is not None:
             self.template_id = template_id
@@ -380,13 +364,9 @@ class AddTemplateResult(bb.Struct):
     template_id = bb.Attribute("template_id")
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
-        super(AddTemplateResult, self)._process_custom_annotations(
-            annotation_type, field_path, processor
-        )
-
+        super(AddTemplateResult, self)._process_custom_annotations(annotation_type, field_path, processor)
 
 AddTemplateResult_validator = bv.Struct(AddTemplateResult)
-
 
 class GetTemplateArg(bb.Struct):
     """
@@ -398,12 +378,13 @@ class GetTemplateArg(bb.Struct):
     """
 
     __slots__ = [
-        "_template_id_value",
+        '_template_id_value',
     ]
 
     _has_required_fields = True
 
-    def __init__(self, template_id=None):
+    def __init__(self,
+                 template_id=None):
         self._template_id_value = bb.NOT_SET
         if template_id is not None:
             self.template_id = template_id
@@ -412,30 +393,29 @@ class GetTemplateArg(bb.Struct):
     template_id = bb.Attribute("template_id")
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
-        super(GetTemplateArg, self)._process_custom_annotations(
-            annotation_type, field_path, processor
-        )
-
+        super(GetTemplateArg, self)._process_custom_annotations(annotation_type, field_path, processor)
 
 GetTemplateArg_validator = bv.Struct(GetTemplateArg)
 
-
 class GetTemplateResult(PropertyGroupTemplate):
-    __slots__ = []
+
+    __slots__ = [
+    ]
 
     _has_required_fields = True
 
-    def __init__(self, name=None, description=None, fields=None):
-        super(GetTemplateResult, self).__init__(name, description, fields)
+    def __init__(self,
+                 name=None,
+                 description=None,
+                 fields=None):
+        super(GetTemplateResult, self).__init__(name,
+                                                description,
+                                                fields)
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
-        super(GetTemplateResult, self)._process_custom_annotations(
-            annotation_type, field_path, processor
-        )
-
+        super(GetTemplateResult, self)._process_custom_annotations(annotation_type, field_path, processor)
 
 GetTemplateResult_validator = bv.Struct(GetTemplateResult)
-
 
 class ListTemplateResult(bb.Struct):
     """
@@ -447,12 +427,13 @@ class ListTemplateResult(bb.Struct):
     """
 
     __slots__ = [
-        "_template_ids_value",
+        '_template_ids_value',
     ]
 
     _has_required_fields = True
 
-    def __init__(self, template_ids=None):
+    def __init__(self,
+                 template_ids=None):
         self._template_ids_value = bb.NOT_SET
         if template_ids is not None:
             self.template_ids = template_ids
@@ -461,13 +442,9 @@ class ListTemplateResult(bb.Struct):
     template_ids = bb.Attribute("template_ids")
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
-        super(ListTemplateResult, self)._process_custom_annotations(
-            annotation_type, field_path, processor
-        )
-
+        super(ListTemplateResult, self)._process_custom_annotations(annotation_type, field_path, processor)
 
 ListTemplateResult_validator = bv.Struct(ListTemplateResult)
-
 
 class LogicalOperator(bb.Union):
     """
@@ -481,7 +458,7 @@ class LogicalOperator(bb.Union):
         Append a query with an "or" operator.
     """
 
-    _catch_all = "other"
+    _catch_all = 'other'
     # Attribute is overwritten below the class definition
     or_operator = None
     # Attribute is overwritten below the class definition
@@ -493,7 +470,7 @@ class LogicalOperator(bb.Union):
 
         :rtype: bool
         """
-        return self._tag == "or_operator"
+        return self._tag == 'or_operator'
 
     def is_other(self):
         """
@@ -501,16 +478,12 @@ class LogicalOperator(bb.Union):
 
         :rtype: bool
         """
-        return self._tag == "other"
+        return self._tag == 'other'
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
-        super(LogicalOperator, self)._process_custom_annotations(
-            annotation_type, field_path, processor
-        )
-
+        super(LogicalOperator, self)._process_custom_annotations(annotation_type, field_path, processor)
 
 LogicalOperator_validator = bv.Union(LogicalOperator)
-
 
 class LookUpPropertiesError(bb.Union):
     """
@@ -522,7 +495,7 @@ class LookUpPropertiesError(bb.Union):
         No property group was found.
     """
 
-    _catch_all = "other"
+    _catch_all = 'other'
     # Attribute is overwritten below the class definition
     property_group_not_found = None
     # Attribute is overwritten below the class definition
@@ -534,7 +507,7 @@ class LookUpPropertiesError(bb.Union):
 
         :rtype: bool
         """
-        return self._tag == "property_group_not_found"
+        return self._tag == 'property_group_not_found'
 
     def is_other(self):
         """
@@ -542,16 +515,12 @@ class LookUpPropertiesError(bb.Union):
 
         :rtype: bool
         """
-        return self._tag == "other"
+        return self._tag == 'other'
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
-        super(LookUpPropertiesError, self)._process_custom_annotations(
-            annotation_type, field_path, processor
-        )
-
+        super(LookUpPropertiesError, self)._process_custom_annotations(annotation_type, field_path, processor)
 
 LookUpPropertiesError_validator = bv.Union(LookUpPropertiesError)
-
 
 class LookupError(bb.Union):
     """
@@ -572,7 +541,7 @@ class LookupError(bb.Union):
         example, we might restrict a file due to legal requirements.
     """
 
-    _catch_all = "other"
+    _catch_all = 'other'
     # Attribute is overwritten below the class definition
     not_found = None
     # Attribute is overwritten below the class definition
@@ -593,7 +562,7 @@ class LookupError(bb.Union):
         :param str val:
         :rtype: LookupError
         """
-        return cls("malformed_path", val)
+        return cls('malformed_path', val)
 
     def is_malformed_path(self):
         """
@@ -601,7 +570,7 @@ class LookupError(bb.Union):
 
         :rtype: bool
         """
-        return self._tag == "malformed_path"
+        return self._tag == 'malformed_path'
 
     def is_not_found(self):
         """
@@ -609,7 +578,7 @@ class LookupError(bb.Union):
 
         :rtype: bool
         """
-        return self._tag == "not_found"
+        return self._tag == 'not_found'
 
     def is_not_file(self):
         """
@@ -617,7 +586,7 @@ class LookupError(bb.Union):
 
         :rtype: bool
         """
-        return self._tag == "not_file"
+        return self._tag == 'not_file'
 
     def is_not_folder(self):
         """
@@ -625,7 +594,7 @@ class LookupError(bb.Union):
 
         :rtype: bool
         """
-        return self._tag == "not_folder"
+        return self._tag == 'not_folder'
 
     def is_restricted_content(self):
         """
@@ -633,7 +602,7 @@ class LookupError(bb.Union):
 
         :rtype: bool
         """
-        return self._tag == "restricted_content"
+        return self._tag == 'restricted_content'
 
     def is_other(self):
         """
@@ -641,7 +610,7 @@ class LookupError(bb.Union):
 
         :rtype: bool
         """
-        return self._tag == "other"
+        return self._tag == 'other'
 
     def get_malformed_path(self):
         """
@@ -656,9 +625,7 @@ class LookupError(bb.Union):
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(LookupError, self)._process_custom_annotations(annotation_type, field_path, processor)
 
-
 LookupError_validator = bv.Union(LookupError)
-
 
 class ModifyTemplateError(TemplateError):
     """
@@ -693,7 +660,7 @@ class ModifyTemplateError(TemplateError):
 
         :rtype: bool
         """
-        return self._tag == "conflicting_property_names"
+        return self._tag == 'conflicting_property_names'
 
     def is_too_many_properties(self):
         """
@@ -701,7 +668,7 @@ class ModifyTemplateError(TemplateError):
 
         :rtype: bool
         """
-        return self._tag == "too_many_properties"
+        return self._tag == 'too_many_properties'
 
     def is_too_many_templates(self):
         """
@@ -709,7 +676,7 @@ class ModifyTemplateError(TemplateError):
 
         :rtype: bool
         """
-        return self._tag == "too_many_templates"
+        return self._tag == 'too_many_templates'
 
     def is_template_attribute_too_large(self):
         """
@@ -717,16 +684,12 @@ class ModifyTemplateError(TemplateError):
 
         :rtype: bool
         """
-        return self._tag == "template_attribute_too_large"
+        return self._tag == 'template_attribute_too_large'
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
-        super(ModifyTemplateError, self)._process_custom_annotations(
-            annotation_type, field_path, processor
-        )
-
+        super(ModifyTemplateError, self)._process_custom_annotations(annotation_type, field_path, processor)
 
 ModifyTemplateError_validator = bv.Union(ModifyTemplateError)
-
 
 class OverwritePropertyGroupArg(bb.Struct):
     """
@@ -738,13 +701,15 @@ class OverwritePropertyGroupArg(bb.Struct):
     """
 
     __slots__ = [
-        "_path_value",
-        "_property_groups_value",
+        '_path_value',
+        '_property_groups_value',
     ]
 
     _has_required_fields = True
 
-    def __init__(self, path=None, property_groups=None):
+    def __init__(self,
+                 path=None,
+                 property_groups=None):
         self._path_value = bb.NOT_SET
         self._property_groups_value = bb.NOT_SET
         if path is not None:
@@ -759,13 +724,9 @@ class OverwritePropertyGroupArg(bb.Struct):
     property_groups = bb.Attribute("property_groups")
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
-        super(OverwritePropertyGroupArg, self)._process_custom_annotations(
-            annotation_type, field_path, processor
-        )
-
+        super(OverwritePropertyGroupArg, self)._process_custom_annotations(annotation_type, field_path, processor)
 
 OverwritePropertyGroupArg_validator = bv.Struct(OverwritePropertyGroupArg)
-
 
 class PropertiesSearchArg(bb.Struct):
     """
@@ -777,13 +738,15 @@ class PropertiesSearchArg(bb.Struct):
     """
 
     __slots__ = [
-        "_queries_value",
-        "_template_filter_value",
+        '_queries_value',
+        '_template_filter_value',
     ]
 
     _has_required_fields = True
 
-    def __init__(self, queries=None, template_filter=None):
+    def __init__(self,
+                 queries=None,
+                 template_filter=None):
         self._queries_value = bb.NOT_SET
         self._template_filter_value = bb.NOT_SET
         if queries is not None:
@@ -798,13 +761,9 @@ class PropertiesSearchArg(bb.Struct):
     template_filter = bb.Attribute("template_filter", user_defined=True)
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
-        super(PropertiesSearchArg, self)._process_custom_annotations(
-            annotation_type, field_path, processor
-        )
-
+        super(PropertiesSearchArg, self)._process_custom_annotations(annotation_type, field_path, processor)
 
 PropertiesSearchArg_validator = bv.Struct(PropertiesSearchArg)
-
 
 class PropertiesSearchContinueArg(bb.Struct):
     """
@@ -816,12 +775,13 @@ class PropertiesSearchContinueArg(bb.Struct):
     """
 
     __slots__ = [
-        "_cursor_value",
+        '_cursor_value',
     ]
 
     _has_required_fields = True
 
-    def __init__(self, cursor=None):
+    def __init__(self,
+                 cursor=None):
         self._cursor_value = bb.NOT_SET
         if cursor is not None:
             self.cursor = cursor
@@ -830,13 +790,9 @@ class PropertiesSearchContinueArg(bb.Struct):
     cursor = bb.Attribute("cursor")
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
-        super(PropertiesSearchContinueArg, self)._process_custom_annotations(
-            annotation_type, field_path, processor
-        )
-
+        super(PropertiesSearchContinueArg, self)._process_custom_annotations(annotation_type, field_path, processor)
 
 PropertiesSearchContinueArg_validator = bv.Struct(PropertiesSearchContinueArg)
-
 
 class PropertiesSearchContinueError(bb.Union):
     """
@@ -850,7 +806,7 @@ class PropertiesSearchContinueError(bb.Union):
         to obtain a new cursor.
     """
 
-    _catch_all = "other"
+    _catch_all = 'other'
     # Attribute is overwritten below the class definition
     reset = None
     # Attribute is overwritten below the class definition
@@ -862,7 +818,7 @@ class PropertiesSearchContinueError(bb.Union):
 
         :rtype: bool
         """
-        return self._tag == "reset"
+        return self._tag == 'reset'
 
     def is_other(self):
         """
@@ -870,16 +826,12 @@ class PropertiesSearchContinueError(bb.Union):
 
         :rtype: bool
         """
-        return self._tag == "other"
+        return self._tag == 'other'
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
-        super(PropertiesSearchContinueError, self)._process_custom_annotations(
-            annotation_type, field_path, processor
-        )
-
+        super(PropertiesSearchContinueError, self)._process_custom_annotations(annotation_type, field_path, processor)
 
 PropertiesSearchContinueError_validator = bv.Union(PropertiesSearchContinueError)
-
 
 class PropertiesSearchError(bb.Union):
     """
@@ -888,7 +840,7 @@ class PropertiesSearchError(bb.Union):
     corresponding ``get_*`` method.
     """
 
-    _catch_all = "other"
+    _catch_all = 'other'
     # Attribute is overwritten below the class definition
     other = None
 
@@ -901,7 +853,7 @@ class PropertiesSearchError(bb.Union):
         :param LookUpPropertiesError val:
         :rtype: PropertiesSearchError
         """
-        return cls("property_group_lookup", val)
+        return cls('property_group_lookup', val)
 
     def is_property_group_lookup(self):
         """
@@ -909,7 +861,7 @@ class PropertiesSearchError(bb.Union):
 
         :rtype: bool
         """
-        return self._tag == "property_group_lookup"
+        return self._tag == 'property_group_lookup'
 
     def is_other(self):
         """
@@ -917,7 +869,7 @@ class PropertiesSearchError(bb.Union):
 
         :rtype: bool
         """
-        return self._tag == "other"
+        return self._tag == 'other'
 
     def get_property_group_lookup(self):
         """
@@ -930,13 +882,9 @@ class PropertiesSearchError(bb.Union):
         return self._value
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
-        super(PropertiesSearchError, self)._process_custom_annotations(
-            annotation_type, field_path, processor
-        )
-
+        super(PropertiesSearchError, self)._process_custom_annotations(annotation_type, field_path, processor)
 
 PropertiesSearchError_validator = bv.Union(PropertiesSearchError)
-
 
 class PropertiesSearchMatch(bb.Struct):
     """
@@ -951,15 +899,19 @@ class PropertiesSearchMatch(bb.Struct):
     """
 
     __slots__ = [
-        "_id_value",
-        "_path_value",
-        "_is_deleted_value",
-        "_property_groups_value",
+        '_id_value',
+        '_path_value',
+        '_is_deleted_value',
+        '_property_groups_value',
     ]
 
     _has_required_fields = True
 
-    def __init__(self, id=None, path=None, is_deleted=None, property_groups=None):
+    def __init__(self,
+                 id=None,
+                 path=None,
+                 is_deleted=None,
+                 property_groups=None):
         self._id_value = bb.NOT_SET
         self._path_value = bb.NOT_SET
         self._is_deleted_value = bb.NOT_SET
@@ -986,13 +938,9 @@ class PropertiesSearchMatch(bb.Struct):
     property_groups = bb.Attribute("property_groups")
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
-        super(PropertiesSearchMatch, self)._process_custom_annotations(
-            annotation_type, field_path, processor
-        )
-
+        super(PropertiesSearchMatch, self)._process_custom_annotations(annotation_type, field_path, processor)
 
 PropertiesSearchMatch_validator = bv.Struct(PropertiesSearchMatch)
-
 
 class PropertiesSearchMode(bb.Union):
     """
@@ -1005,7 +953,7 @@ class PropertiesSearchMode(bb.Union):
     :vartype PropertiesSearchMode.field_name: str
     """
 
-    _catch_all = "other"
+    _catch_all = 'other'
     # Attribute is overwritten below the class definition
     other = None
 
@@ -1018,7 +966,7 @@ class PropertiesSearchMode(bb.Union):
         :param str val:
         :rtype: PropertiesSearchMode
         """
-        return cls("field_name", val)
+        return cls('field_name', val)
 
     def is_field_name(self):
         """
@@ -1026,7 +974,7 @@ class PropertiesSearchMode(bb.Union):
 
         :rtype: bool
         """
-        return self._tag == "field_name"
+        return self._tag == 'field_name'
 
     def is_other(self):
         """
@@ -1034,7 +982,7 @@ class PropertiesSearchMode(bb.Union):
 
         :rtype: bool
         """
-        return self._tag == "other"
+        return self._tag == 'other'
 
     def get_field_name(self):
         """
@@ -1049,13 +997,9 @@ class PropertiesSearchMode(bb.Union):
         return self._value
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
-        super(PropertiesSearchMode, self)._process_custom_annotations(
-            annotation_type, field_path, processor
-        )
-
+        super(PropertiesSearchMode, self)._process_custom_annotations(annotation_type, field_path, processor)
 
 PropertiesSearchMode_validator = bv.Union(PropertiesSearchMode)
-
 
 class PropertiesSearchQuery(bb.Struct):
     """
@@ -1068,14 +1012,17 @@ class PropertiesSearchQuery(bb.Struct):
     """
 
     __slots__ = [
-        "_query_value",
-        "_mode_value",
-        "_logical_operator_value",
+        '_query_value',
+        '_mode_value',
+        '_logical_operator_value',
     ]
 
     _has_required_fields = True
 
-    def __init__(self, query=None, mode=None, logical_operator=None):
+    def __init__(self,
+                 query=None,
+                 mode=None,
+                 logical_operator=None):
         self._query_value = bb.NOT_SET
         self._mode_value = bb.NOT_SET
         self._logical_operator_value = bb.NOT_SET
@@ -1096,13 +1043,9 @@ class PropertiesSearchQuery(bb.Struct):
     logical_operator = bb.Attribute("logical_operator", user_defined=True)
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
-        super(PropertiesSearchQuery, self)._process_custom_annotations(
-            annotation_type, field_path, processor
-        )
-
+        super(PropertiesSearchQuery, self)._process_custom_annotations(annotation_type, field_path, processor)
 
 PropertiesSearchQuery_validator = bv.Struct(PropertiesSearchQuery)
-
 
 class PropertiesSearchResult(bb.Struct):
     """
@@ -1116,13 +1059,15 @@ class PropertiesSearchResult(bb.Struct):
     """
 
     __slots__ = [
-        "_matches_value",
-        "_cursor_value",
+        '_matches_value',
+        '_cursor_value',
     ]
 
     _has_required_fields = True
 
-    def __init__(self, matches=None, cursor=None):
+    def __init__(self,
+                 matches=None,
+                 cursor=None):
         self._matches_value = bb.NOT_SET
         self._cursor_value = bb.NOT_SET
         if matches is not None:
@@ -1137,13 +1082,9 @@ class PropertiesSearchResult(bb.Struct):
     cursor = bb.Attribute("cursor", nullable=True)
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
-        super(PropertiesSearchResult, self)._process_custom_annotations(
-            annotation_type, field_path, processor
-        )
-
+        super(PropertiesSearchResult, self)._process_custom_annotations(annotation_type, field_path, processor)
 
 PropertiesSearchResult_validator = bv.Struct(PropertiesSearchResult)
-
 
 class PropertyField(bb.Struct):
     """
@@ -1159,13 +1100,15 @@ class PropertyField(bb.Struct):
     """
 
     __slots__ = [
-        "_name_value",
-        "_value_value",
+        '_name_value',
+        '_value_value',
     ]
 
     _has_required_fields = True
 
-    def __init__(self, name=None, value=None):
+    def __init__(self,
+                 name=None,
+                 value=None):
         self._name_value = bb.NOT_SET
         self._value_value = bb.NOT_SET
         if name is not None:
@@ -1180,13 +1123,9 @@ class PropertyField(bb.Struct):
     value = bb.Attribute("value")
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
-        super(PropertyField, self)._process_custom_annotations(
-            annotation_type, field_path, processor
-        )
-
+        super(PropertyField, self)._process_custom_annotations(annotation_type, field_path, processor)
 
 PropertyField_validator = bv.Struct(PropertyField)
-
 
 class PropertyFieldTemplate(bb.Struct):
     """
@@ -1202,14 +1141,17 @@ class PropertyFieldTemplate(bb.Struct):
     """
 
     __slots__ = [
-        "_name_value",
-        "_description_value",
-        "_type_value",
+        '_name_value',
+        '_description_value',
+        '_type_value',
     ]
 
     _has_required_fields = True
 
-    def __init__(self, name=None, description=None, type=None):
+    def __init__(self,
+                 name=None,
+                 description=None,
+                 type=None):
         self._name_value = bb.NOT_SET
         self._description_value = bb.NOT_SET
         self._type_value = bb.NOT_SET
@@ -1230,13 +1172,9 @@ class PropertyFieldTemplate(bb.Struct):
     type = bb.Attribute("type", user_defined=True)
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
-        super(PropertyFieldTemplate, self)._process_custom_annotations(
-            annotation_type, field_path, processor
-        )
-
+        super(PropertyFieldTemplate, self)._process_custom_annotations(annotation_type, field_path, processor)
 
 PropertyFieldTemplate_validator = bv.Struct(PropertyFieldTemplate)
-
 
 class PropertyGroup(bb.Struct):
     """
@@ -1253,13 +1191,15 @@ class PropertyGroup(bb.Struct):
     """
 
     __slots__ = [
-        "_template_id_value",
-        "_fields_value",
+        '_template_id_value',
+        '_fields_value',
     ]
 
     _has_required_fields = True
 
-    def __init__(self, template_id=None, fields=None):
+    def __init__(self,
+                 template_id=None,
+                 fields=None):
         self._template_id_value = bb.NOT_SET
         self._fields_value = bb.NOT_SET
         if template_id is not None:
@@ -1274,13 +1214,9 @@ class PropertyGroup(bb.Struct):
     fields = bb.Attribute("fields")
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
-        super(PropertyGroup, self)._process_custom_annotations(
-            annotation_type, field_path, processor
-        )
-
+        super(PropertyGroup, self)._process_custom_annotations(annotation_type, field_path, processor)
 
 PropertyGroup_validator = bv.Struct(PropertyGroup)
-
 
 class PropertyGroupUpdate(bb.Struct):
     """
@@ -1297,14 +1233,17 @@ class PropertyGroupUpdate(bb.Struct):
     """
 
     __slots__ = [
-        "_template_id_value",
-        "_add_or_update_fields_value",
-        "_remove_fields_value",
+        '_template_id_value',
+        '_add_or_update_fields_value',
+        '_remove_fields_value',
     ]
 
     _has_required_fields = True
 
-    def __init__(self, template_id=None, add_or_update_fields=None, remove_fields=None):
+    def __init__(self,
+                 template_id=None,
+                 add_or_update_fields=None,
+                 remove_fields=None):
         self._template_id_value = bb.NOT_SET
         self._add_or_update_fields_value = bb.NOT_SET
         self._remove_fields_value = bb.NOT_SET
@@ -1325,13 +1264,9 @@ class PropertyGroupUpdate(bb.Struct):
     remove_fields = bb.Attribute("remove_fields", nullable=True)
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
-        super(PropertyGroupUpdate, self)._process_custom_annotations(
-            annotation_type, field_path, processor
-        )
-
+        super(PropertyGroupUpdate, self)._process_custom_annotations(annotation_type, field_path, processor)
 
 PropertyGroupUpdate_validator = bv.Struct(PropertyGroupUpdate)
-
 
 class PropertyType(bb.Union):
     """
@@ -1346,7 +1281,7 @@ class PropertyType(bb.Union):
         supported.
     """
 
-    _catch_all = "other"
+    _catch_all = 'other'
     # Attribute is overwritten below the class definition
     string = None
     # Attribute is overwritten below the class definition
@@ -1358,7 +1293,7 @@ class PropertyType(bb.Union):
 
         :rtype: bool
         """
-        return self._tag == "string"
+        return self._tag == 'string'
 
     def is_other(self):
         """
@@ -1366,16 +1301,12 @@ class PropertyType(bb.Union):
 
         :rtype: bool
         """
-        return self._tag == "other"
+        return self._tag == 'other'
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
-        super(PropertyType, self)._process_custom_annotations(
-            annotation_type, field_path, processor
-        )
-
+        super(PropertyType, self)._process_custom_annotations(annotation_type, field_path, processor)
 
 PropertyType_validator = bv.Union(PropertyType)
-
 
 class RemovePropertiesArg(bb.Struct):
     """
@@ -1389,13 +1320,15 @@ class RemovePropertiesArg(bb.Struct):
     """
 
     __slots__ = [
-        "_path_value",
-        "_property_template_ids_value",
+        '_path_value',
+        '_property_template_ids_value',
     ]
 
     _has_required_fields = True
 
-    def __init__(self, path=None, property_template_ids=None):
+    def __init__(self,
+                 path=None,
+                 property_template_ids=None):
         self._path_value = bb.NOT_SET
         self._property_template_ids_value = bb.NOT_SET
         if path is not None:
@@ -1410,13 +1343,9 @@ class RemovePropertiesArg(bb.Struct):
     property_template_ids = bb.Attribute("property_template_ids")
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
-        super(RemovePropertiesArg, self)._process_custom_annotations(
-            annotation_type, field_path, processor
-        )
-
+        super(RemovePropertiesArg, self)._process_custom_annotations(annotation_type, field_path, processor)
 
 RemovePropertiesArg_validator = bv.Struct(RemovePropertiesArg)
-
 
 class RemovePropertiesError(PropertiesError):
     """
@@ -1434,7 +1363,7 @@ class RemovePropertiesError(PropertiesError):
         :param LookUpPropertiesError val:
         :rtype: RemovePropertiesError
         """
-        return cls("property_group_lookup", val)
+        return cls('property_group_lookup', val)
 
     def is_property_group_lookup(self):
         """
@@ -1442,7 +1371,7 @@ class RemovePropertiesError(PropertiesError):
 
         :rtype: bool
         """
-        return self._tag == "property_group_lookup"
+        return self._tag == 'property_group_lookup'
 
     def get_property_group_lookup(self):
         """
@@ -1455,13 +1384,9 @@ class RemovePropertiesError(PropertiesError):
         return self._value
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
-        super(RemovePropertiesError, self)._process_custom_annotations(
-            annotation_type, field_path, processor
-        )
-
+        super(RemovePropertiesError, self)._process_custom_annotations(annotation_type, field_path, processor)
 
 RemovePropertiesError_validator = bv.Union(RemovePropertiesError)
-
 
 class RemoveTemplateArg(bb.Struct):
     """
@@ -1473,12 +1398,13 @@ class RemoveTemplateArg(bb.Struct):
     """
 
     __slots__ = [
-        "_template_id_value",
+        '_template_id_value',
     ]
 
     _has_required_fields = True
 
-    def __init__(self, template_id=None):
+    def __init__(self,
+                 template_id=None):
         self._template_id_value = bb.NOT_SET
         if template_id is not None:
             self.template_id = template_id
@@ -1487,13 +1413,9 @@ class RemoveTemplateArg(bb.Struct):
     template_id = bb.Attribute("template_id")
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
-        super(RemoveTemplateArg, self)._process_custom_annotations(
-            annotation_type, field_path, processor
-        )
-
+        super(RemoveTemplateArg, self)._process_custom_annotations(annotation_type, field_path, processor)
 
 RemoveTemplateArg_validator = bv.Struct(RemoveTemplateArg)
-
 
 class TemplateFilterBase(bb.Union):
     """
@@ -1507,7 +1429,7 @@ class TemplateFilterBase(bb.Union):
     :vartype TemplateFilterBase.filter_some: list of [str]
     """
 
-    _catch_all = "other"
+    _catch_all = 'other'
     # Attribute is overwritten below the class definition
     other = None
 
@@ -1520,7 +1442,7 @@ class TemplateFilterBase(bb.Union):
         :param list of [str] val:
         :rtype: TemplateFilterBase
         """
-        return cls("filter_some", val)
+        return cls('filter_some', val)
 
     def is_filter_some(self):
         """
@@ -1528,7 +1450,7 @@ class TemplateFilterBase(bb.Union):
 
         :rtype: bool
         """
-        return self._tag == "filter_some"
+        return self._tag == 'filter_some'
 
     def is_other(self):
         """
@@ -1536,7 +1458,7 @@ class TemplateFilterBase(bb.Union):
 
         :rtype: bool
         """
-        return self._tag == "other"
+        return self._tag == 'other'
 
     def get_filter_some(self):
         """
@@ -1552,13 +1474,9 @@ class TemplateFilterBase(bb.Union):
         return self._value
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
-        super(TemplateFilterBase, self)._process_custom_annotations(
-            annotation_type, field_path, processor
-        )
-
+        super(TemplateFilterBase, self)._process_custom_annotations(annotation_type, field_path, processor)
 
 TemplateFilterBase_validator = bv.Union(TemplateFilterBase)
-
 
 class TemplateFilter(TemplateFilterBase):
     """
@@ -1580,16 +1498,12 @@ class TemplateFilter(TemplateFilterBase):
 
         :rtype: bool
         """
-        return self._tag == "filter_none"
+        return self._tag == 'filter_none'
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
-        super(TemplateFilter, self)._process_custom_annotations(
-            annotation_type, field_path, processor
-        )
-
+        super(TemplateFilter, self)._process_custom_annotations(annotation_type, field_path, processor)
 
 TemplateFilter_validator = bv.Union(TemplateFilter)
-
 
 class TemplateOwnerType(bb.Union):
     """
@@ -1603,7 +1517,7 @@ class TemplateOwnerType(bb.Union):
         Template will be associated with a team.
     """
 
-    _catch_all = "other"
+    _catch_all = 'other'
     # Attribute is overwritten below the class definition
     user = None
     # Attribute is overwritten below the class definition
@@ -1617,7 +1531,7 @@ class TemplateOwnerType(bb.Union):
 
         :rtype: bool
         """
-        return self._tag == "user"
+        return self._tag == 'user'
 
     def is_team(self):
         """
@@ -1625,7 +1539,7 @@ class TemplateOwnerType(bb.Union):
 
         :rtype: bool
         """
-        return self._tag == "team"
+        return self._tag == 'team'
 
     def is_other(self):
         """
@@ -1633,16 +1547,12 @@ class TemplateOwnerType(bb.Union):
 
         :rtype: bool
         """
-        return self._tag == "other"
+        return self._tag == 'other'
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
-        super(TemplateOwnerType, self)._process_custom_annotations(
-            annotation_type, field_path, processor
-        )
-
+        super(TemplateOwnerType, self)._process_custom_annotations(annotation_type, field_path, processor)
 
 TemplateOwnerType_validator = bv.Union(TemplateOwnerType)
-
 
 class UpdatePropertiesArg(bb.Struct):
     """
@@ -1653,13 +1563,15 @@ class UpdatePropertiesArg(bb.Struct):
     """
 
     __slots__ = [
-        "_path_value",
-        "_update_property_groups_value",
+        '_path_value',
+        '_update_property_groups_value',
     ]
 
     _has_required_fields = True
 
-    def __init__(self, path=None, update_property_groups=None):
+    def __init__(self,
+                 path=None,
+                 update_property_groups=None):
         self._path_value = bb.NOT_SET
         self._update_property_groups_value = bb.NOT_SET
         if path is not None:
@@ -1674,13 +1586,9 @@ class UpdatePropertiesArg(bb.Struct):
     update_property_groups = bb.Attribute("update_property_groups")
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
-        super(UpdatePropertiesArg, self)._process_custom_annotations(
-            annotation_type, field_path, processor
-        )
-
+        super(UpdatePropertiesArg, self)._process_custom_annotations(annotation_type, field_path, processor)
 
 UpdatePropertiesArg_validator = bv.Struct(UpdatePropertiesArg)
-
 
 class UpdatePropertiesError(InvalidPropertyGroupError):
     """
@@ -1698,7 +1606,7 @@ class UpdatePropertiesError(InvalidPropertyGroupError):
         :param LookUpPropertiesError val:
         :rtype: UpdatePropertiesError
         """
-        return cls("property_group_lookup", val)
+        return cls('property_group_lookup', val)
 
     def is_property_group_lookup(self):
         """
@@ -1706,7 +1614,7 @@ class UpdatePropertiesError(InvalidPropertyGroupError):
 
         :rtype: bool
         """
-        return self._tag == "property_group_lookup"
+        return self._tag == 'property_group_lookup'
 
     def get_property_group_lookup(self):
         """
@@ -1719,13 +1627,9 @@ class UpdatePropertiesError(InvalidPropertyGroupError):
         return self._value
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
-        super(UpdatePropertiesError, self)._process_custom_annotations(
-            annotation_type, field_path, processor
-        )
-
+        super(UpdatePropertiesError, self)._process_custom_annotations(annotation_type, field_path, processor)
 
 UpdatePropertiesError_validator = bv.Union(UpdatePropertiesError)
-
 
 class UpdateTemplateArg(bb.Struct):
     """
@@ -1745,15 +1649,19 @@ class UpdateTemplateArg(bb.Struct):
     """
 
     __slots__ = [
-        "_template_id_value",
-        "_name_value",
-        "_description_value",
-        "_add_fields_value",
+        '_template_id_value',
+        '_name_value',
+        '_description_value',
+        '_add_fields_value',
     ]
 
     _has_required_fields = True
 
-    def __init__(self, template_id=None, name=None, description=None, add_fields=None):
+    def __init__(self,
+                 template_id=None,
+                 name=None,
+                 description=None,
+                 add_fields=None):
         self._template_id_value = bb.NOT_SET
         self._name_value = bb.NOT_SET
         self._description_value = bb.NOT_SET
@@ -1780,13 +1688,9 @@ class UpdateTemplateArg(bb.Struct):
     add_fields = bb.Attribute("add_fields", nullable=True)
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
-        super(UpdateTemplateArg, self)._process_custom_annotations(
-            annotation_type, field_path, processor
-        )
-
+        super(UpdateTemplateArg, self)._process_custom_annotations(annotation_type, field_path, processor)
 
 UpdateTemplateArg_validator = bv.Struct(UpdateTemplateArg)
-
 
 class UpdateTemplateResult(bb.Struct):
     """
@@ -1798,12 +1702,13 @@ class UpdateTemplateResult(bb.Struct):
     """
 
     __slots__ = [
-        "_template_id_value",
+        '_template_id_value',
     ]
 
     _has_required_fields = True
 
-    def __init__(self, template_id=None):
+    def __init__(self,
+                 template_id=None):
         self._template_id_value = bb.NOT_SET
         if template_id is not None:
             self.template_id = template_id
@@ -1812,133 +1717,120 @@ class UpdateTemplateResult(bb.Struct):
     template_id = bb.Attribute("template_id")
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
-        super(UpdateTemplateResult, self)._process_custom_annotations(
-            annotation_type, field_path, processor
-        )
-
+        super(UpdateTemplateResult, self)._process_custom_annotations(annotation_type, field_path, processor)
 
 UpdateTemplateResult_validator = bv.Struct(UpdateTemplateResult)
 
 Id_validator = bv.String(min_length=1)
-PathOrId_validator = bv.String(pattern="/(.|[\\r\\n])*|id:.*|(ns:[0-9]+(/.*)?)")
+PathOrId_validator = bv.String(pattern='/(.|[\\r\\n])*|id:.*|(ns:[0-9]+(/.*)?)')
 PropertiesSearchCursor_validator = bv.String(min_length=1)
-TemplateId_validator = bv.String(min_length=1, pattern="(/|ptid:).*")
+TemplateId_validator = bv.String(min_length=1, pattern='(/|ptid:).*')
 AddPropertiesArg.path.validator = PathOrId_validator
 AddPropertiesArg.property_groups.validator = bv.List(PropertyGroup_validator)
-AddPropertiesArg._all_field_names_ = set(
-    [
-        "path",
-        "property_groups",
-    ]
-)
+AddPropertiesArg._all_field_names_ = set([
+    'path',
+    'property_groups',
+])
 AddPropertiesArg._all_fields_ = [
-    ("path", AddPropertiesArg.path.validator),
-    ("property_groups", AddPropertiesArg.property_groups.validator),
+    ('path', AddPropertiesArg.path.validator),
+    ('property_groups', AddPropertiesArg.property_groups.validator),
 ]
 
 TemplateError._template_not_found_validator = TemplateId_validator
 TemplateError._restricted_content_validator = bv.Void()
 TemplateError._other_validator = bv.Void()
 TemplateError._tagmap = {
-    "template_not_found": TemplateError._template_not_found_validator,
-    "restricted_content": TemplateError._restricted_content_validator,
-    "other": TemplateError._other_validator,
+    'template_not_found': TemplateError._template_not_found_validator,
+    'restricted_content': TemplateError._restricted_content_validator,
+    'other': TemplateError._other_validator,
 }
 
-TemplateError.restricted_content = TemplateError("restricted_content")
-TemplateError.other = TemplateError("other")
+TemplateError.restricted_content = TemplateError('restricted_content')
+TemplateError.other = TemplateError('other')
 
 PropertiesError._path_validator = LookupError_validator
 PropertiesError._unsupported_folder_validator = bv.Void()
 PropertiesError._tagmap = {
-    "path": PropertiesError._path_validator,
-    "unsupported_folder": PropertiesError._unsupported_folder_validator,
+    'path': PropertiesError._path_validator,
+    'unsupported_folder': PropertiesError._unsupported_folder_validator,
 }
 PropertiesError._tagmap.update(TemplateError._tagmap)
 
-PropertiesError.unsupported_folder = PropertiesError("unsupported_folder")
+PropertiesError.unsupported_folder = PropertiesError('unsupported_folder')
 
 InvalidPropertyGroupError._property_field_too_large_validator = bv.Void()
 InvalidPropertyGroupError._does_not_fit_template_validator = bv.Void()
 InvalidPropertyGroupError._duplicate_property_groups_validator = bv.Void()
 InvalidPropertyGroupError._tagmap = {
-    "property_field_too_large": InvalidPropertyGroupError._property_field_too_large_validator,
-    "does_not_fit_template": InvalidPropertyGroupError._does_not_fit_template_validator,
-    "duplicate_property_groups": InvalidPropertyGroupError._duplicate_property_groups_validator,
+    'property_field_too_large': InvalidPropertyGroupError._property_field_too_large_validator,
+    'does_not_fit_template': InvalidPropertyGroupError._does_not_fit_template_validator,
+    'duplicate_property_groups': InvalidPropertyGroupError._duplicate_property_groups_validator,
 }
 InvalidPropertyGroupError._tagmap.update(PropertiesError._tagmap)
 
-InvalidPropertyGroupError.property_field_too_large = InvalidPropertyGroupError(
-    "property_field_too_large"
-)
-InvalidPropertyGroupError.does_not_fit_template = InvalidPropertyGroupError("does_not_fit_template")
-InvalidPropertyGroupError.duplicate_property_groups = InvalidPropertyGroupError(
-    "duplicate_property_groups"
-)
+InvalidPropertyGroupError.property_field_too_large = InvalidPropertyGroupError('property_field_too_large')
+InvalidPropertyGroupError.does_not_fit_template = InvalidPropertyGroupError('does_not_fit_template')
+InvalidPropertyGroupError.duplicate_property_groups = InvalidPropertyGroupError('duplicate_property_groups')
 
 AddPropertiesError._property_group_already_exists_validator = bv.Void()
 AddPropertiesError._tagmap = {
-    "property_group_already_exists": AddPropertiesError._property_group_already_exists_validator,
+    'property_group_already_exists': AddPropertiesError._property_group_already_exists_validator,
 }
 AddPropertiesError._tagmap.update(InvalidPropertyGroupError._tagmap)
 
-AddPropertiesError.property_group_already_exists = AddPropertiesError(
-    "property_group_already_exists"
-)
+AddPropertiesError.property_group_already_exists = AddPropertiesError('property_group_already_exists')
 
 PropertyGroupTemplate.name.validator = bv.String()
 PropertyGroupTemplate.description.validator = bv.String()
 PropertyGroupTemplate.fields.validator = bv.List(PropertyFieldTemplate_validator)
-PropertyGroupTemplate._all_field_names_ = set(
-    [
-        "name",
-        "description",
-        "fields",
-    ]
-)
+PropertyGroupTemplate._all_field_names_ = set([
+    'name',
+    'description',
+    'fields',
+])
 PropertyGroupTemplate._all_fields_ = [
-    ("name", PropertyGroupTemplate.name.validator),
-    ("description", PropertyGroupTemplate.description.validator),
-    ("fields", PropertyGroupTemplate.fields.validator),
+    ('name', PropertyGroupTemplate.name.validator),
+    ('description', PropertyGroupTemplate.description.validator),
+    ('fields', PropertyGroupTemplate.fields.validator),
 ]
 
 AddTemplateArg._all_field_names_ = PropertyGroupTemplate._all_field_names_.union(set([]))
 AddTemplateArg._all_fields_ = PropertyGroupTemplate._all_fields_ + []
 
 AddTemplateResult.template_id.validator = TemplateId_validator
-AddTemplateResult._all_field_names_ = set(["template_id"])
-AddTemplateResult._all_fields_ = [("template_id", AddTemplateResult.template_id.validator)]
+AddTemplateResult._all_field_names_ = set(['template_id'])
+AddTemplateResult._all_fields_ = [('template_id', AddTemplateResult.template_id.validator)]
 
 GetTemplateArg.template_id.validator = TemplateId_validator
-GetTemplateArg._all_field_names_ = set(["template_id"])
-GetTemplateArg._all_fields_ = [("template_id", GetTemplateArg.template_id.validator)]
+GetTemplateArg._all_field_names_ = set(['template_id'])
+GetTemplateArg._all_fields_ = [('template_id', GetTemplateArg.template_id.validator)]
 
 GetTemplateResult._all_field_names_ = PropertyGroupTemplate._all_field_names_.union(set([]))
 GetTemplateResult._all_fields_ = PropertyGroupTemplate._all_fields_ + []
 
 ListTemplateResult.template_ids.validator = bv.List(TemplateId_validator)
-ListTemplateResult._all_field_names_ = set(["template_ids"])
-ListTemplateResult._all_fields_ = [("template_ids", ListTemplateResult.template_ids.validator)]
+ListTemplateResult._all_field_names_ = set(['template_ids'])
+ListTemplateResult._all_fields_ = [('template_ids', ListTemplateResult.template_ids.validator)]
 
 LogicalOperator._or_operator_validator = bv.Void()
 LogicalOperator._other_validator = bv.Void()
 LogicalOperator._tagmap = {
-    "or_operator": LogicalOperator._or_operator_validator,
-    "other": LogicalOperator._other_validator,
+    'or_operator': LogicalOperator._or_operator_validator,
+    'other': LogicalOperator._other_validator,
 }
 
-LogicalOperator.or_operator = LogicalOperator("or_operator")
-LogicalOperator.other = LogicalOperator("other")
+LogicalOperator.or_operator = LogicalOperator('or_operator')
+LogicalOperator.other = LogicalOperator('other')
 
 LookUpPropertiesError._property_group_not_found_validator = bv.Void()
 LookUpPropertiesError._other_validator = bv.Void()
 LookUpPropertiesError._tagmap = {
-    "property_group_not_found": LookUpPropertiesError._property_group_not_found_validator,
-    "other": LookUpPropertiesError._other_validator,
+    'property_group_not_found': LookUpPropertiesError._property_group_not_found_validator,
+    'other': LookUpPropertiesError._other_validator,
 }
 
-LookUpPropertiesError.property_group_not_found = LookUpPropertiesError("property_group_not_found")
-LookUpPropertiesError.other = LookUpPropertiesError("other")
+LookUpPropertiesError.property_group_not_found = LookUpPropertiesError('property_group_not_found')
+LookUpPropertiesError.other = LookUpPropertiesError('other')
 
 LookupError._malformed_path_validator = bv.String()
 LookupError._not_found_validator = bv.Void()
@@ -1947,284 +1839,258 @@ LookupError._not_folder_validator = bv.Void()
 LookupError._restricted_content_validator = bv.Void()
 LookupError._other_validator = bv.Void()
 LookupError._tagmap = {
-    "malformed_path": LookupError._malformed_path_validator,
-    "not_found": LookupError._not_found_validator,
-    "not_file": LookupError._not_file_validator,
-    "not_folder": LookupError._not_folder_validator,
-    "restricted_content": LookupError._restricted_content_validator,
-    "other": LookupError._other_validator,
+    'malformed_path': LookupError._malformed_path_validator,
+    'not_found': LookupError._not_found_validator,
+    'not_file': LookupError._not_file_validator,
+    'not_folder': LookupError._not_folder_validator,
+    'restricted_content': LookupError._restricted_content_validator,
+    'other': LookupError._other_validator,
 }
 
-LookupError.not_found = LookupError("not_found")
-LookupError.not_file = LookupError("not_file")
-LookupError.not_folder = LookupError("not_folder")
-LookupError.restricted_content = LookupError("restricted_content")
-LookupError.other = LookupError("other")
+LookupError.not_found = LookupError('not_found')
+LookupError.not_file = LookupError('not_file')
+LookupError.not_folder = LookupError('not_folder')
+LookupError.restricted_content = LookupError('restricted_content')
+LookupError.other = LookupError('other')
 
 ModifyTemplateError._conflicting_property_names_validator = bv.Void()
 ModifyTemplateError._too_many_properties_validator = bv.Void()
 ModifyTemplateError._too_many_templates_validator = bv.Void()
 ModifyTemplateError._template_attribute_too_large_validator = bv.Void()
 ModifyTemplateError._tagmap = {
-    "conflicting_property_names": ModifyTemplateError._conflicting_property_names_validator,
-    "too_many_properties": ModifyTemplateError._too_many_properties_validator,
-    "too_many_templates": ModifyTemplateError._too_many_templates_validator,
-    "template_attribute_too_large": ModifyTemplateError._template_attribute_too_large_validator,
+    'conflicting_property_names': ModifyTemplateError._conflicting_property_names_validator,
+    'too_many_properties': ModifyTemplateError._too_many_properties_validator,
+    'too_many_templates': ModifyTemplateError._too_many_templates_validator,
+    'template_attribute_too_large': ModifyTemplateError._template_attribute_too_large_validator,
 }
 ModifyTemplateError._tagmap.update(TemplateError._tagmap)
 
-ModifyTemplateError.conflicting_property_names = ModifyTemplateError("conflicting_property_names")
-ModifyTemplateError.too_many_properties = ModifyTemplateError("too_many_properties")
-ModifyTemplateError.too_many_templates = ModifyTemplateError("too_many_templates")
-ModifyTemplateError.template_attribute_too_large = ModifyTemplateError(
-    "template_attribute_too_large"
-)
+ModifyTemplateError.conflicting_property_names = ModifyTemplateError('conflicting_property_names')
+ModifyTemplateError.too_many_properties = ModifyTemplateError('too_many_properties')
+ModifyTemplateError.too_many_templates = ModifyTemplateError('too_many_templates')
+ModifyTemplateError.template_attribute_too_large = ModifyTemplateError('template_attribute_too_large')
 
 OverwritePropertyGroupArg.path.validator = PathOrId_validator
 OverwritePropertyGroupArg.property_groups.validator = bv.List(PropertyGroup_validator, min_items=1)
-OverwritePropertyGroupArg._all_field_names_ = set(
-    [
-        "path",
-        "property_groups",
-    ]
-)
+OverwritePropertyGroupArg._all_field_names_ = set([
+    'path',
+    'property_groups',
+])
 OverwritePropertyGroupArg._all_fields_ = [
-    ("path", OverwritePropertyGroupArg.path.validator),
-    ("property_groups", OverwritePropertyGroupArg.property_groups.validator),
+    ('path', OverwritePropertyGroupArg.path.validator),
+    ('property_groups', OverwritePropertyGroupArg.property_groups.validator),
 ]
 
 PropertiesSearchArg.queries.validator = bv.List(PropertiesSearchQuery_validator, min_items=1)
 PropertiesSearchArg.template_filter.validator = TemplateFilter_validator
-PropertiesSearchArg._all_field_names_ = set(
-    [
-        "queries",
-        "template_filter",
-    ]
-)
+PropertiesSearchArg._all_field_names_ = set([
+    'queries',
+    'template_filter',
+])
 PropertiesSearchArg._all_fields_ = [
-    ("queries", PropertiesSearchArg.queries.validator),
-    ("template_filter", PropertiesSearchArg.template_filter.validator),
+    ('queries', PropertiesSearchArg.queries.validator),
+    ('template_filter', PropertiesSearchArg.template_filter.validator),
 ]
 
 PropertiesSearchContinueArg.cursor.validator = PropertiesSearchCursor_validator
-PropertiesSearchContinueArg._all_field_names_ = set(["cursor"])
-PropertiesSearchContinueArg._all_fields_ = [
-    ("cursor", PropertiesSearchContinueArg.cursor.validator)
-]
+PropertiesSearchContinueArg._all_field_names_ = set(['cursor'])
+PropertiesSearchContinueArg._all_fields_ = [('cursor', PropertiesSearchContinueArg.cursor.validator)]
 
 PropertiesSearchContinueError._reset_validator = bv.Void()
 PropertiesSearchContinueError._other_validator = bv.Void()
 PropertiesSearchContinueError._tagmap = {
-    "reset": PropertiesSearchContinueError._reset_validator,
-    "other": PropertiesSearchContinueError._other_validator,
+    'reset': PropertiesSearchContinueError._reset_validator,
+    'other': PropertiesSearchContinueError._other_validator,
 }
 
-PropertiesSearchContinueError.reset = PropertiesSearchContinueError("reset")
-PropertiesSearchContinueError.other = PropertiesSearchContinueError("other")
+PropertiesSearchContinueError.reset = PropertiesSearchContinueError('reset')
+PropertiesSearchContinueError.other = PropertiesSearchContinueError('other')
 
 PropertiesSearchError._property_group_lookup_validator = LookUpPropertiesError_validator
 PropertiesSearchError._other_validator = bv.Void()
 PropertiesSearchError._tagmap = {
-    "property_group_lookup": PropertiesSearchError._property_group_lookup_validator,
-    "other": PropertiesSearchError._other_validator,
+    'property_group_lookup': PropertiesSearchError._property_group_lookup_validator,
+    'other': PropertiesSearchError._other_validator,
 }
 
-PropertiesSearchError.other = PropertiesSearchError("other")
+PropertiesSearchError.other = PropertiesSearchError('other')
 
 PropertiesSearchMatch.id.validator = Id_validator
 PropertiesSearchMatch.path.validator = bv.String()
 PropertiesSearchMatch.is_deleted.validator = bv.Boolean()
 PropertiesSearchMatch.property_groups.validator = bv.List(PropertyGroup_validator)
-PropertiesSearchMatch._all_field_names_ = set(
-    [
-        "id",
-        "path",
-        "is_deleted",
-        "property_groups",
-    ]
-)
+PropertiesSearchMatch._all_field_names_ = set([
+    'id',
+    'path',
+    'is_deleted',
+    'property_groups',
+])
 PropertiesSearchMatch._all_fields_ = [
-    ("id", PropertiesSearchMatch.id.validator),
-    ("path", PropertiesSearchMatch.path.validator),
-    ("is_deleted", PropertiesSearchMatch.is_deleted.validator),
-    ("property_groups", PropertiesSearchMatch.property_groups.validator),
+    ('id', PropertiesSearchMatch.id.validator),
+    ('path', PropertiesSearchMatch.path.validator),
+    ('is_deleted', PropertiesSearchMatch.is_deleted.validator),
+    ('property_groups', PropertiesSearchMatch.property_groups.validator),
 ]
 
 PropertiesSearchMode._field_name_validator = bv.String()
 PropertiesSearchMode._other_validator = bv.Void()
 PropertiesSearchMode._tagmap = {
-    "field_name": PropertiesSearchMode._field_name_validator,
-    "other": PropertiesSearchMode._other_validator,
+    'field_name': PropertiesSearchMode._field_name_validator,
+    'other': PropertiesSearchMode._other_validator,
 }
 
-PropertiesSearchMode.other = PropertiesSearchMode("other")
+PropertiesSearchMode.other = PropertiesSearchMode('other')
 
 PropertiesSearchQuery.query.validator = bv.String()
 PropertiesSearchQuery.mode.validator = PropertiesSearchMode_validator
 PropertiesSearchQuery.logical_operator.validator = LogicalOperator_validator
-PropertiesSearchQuery._all_field_names_ = set(
-    [
-        "query",
-        "mode",
-        "logical_operator",
-    ]
-)
+PropertiesSearchQuery._all_field_names_ = set([
+    'query',
+    'mode',
+    'logical_operator',
+])
 PropertiesSearchQuery._all_fields_ = [
-    ("query", PropertiesSearchQuery.query.validator),
-    ("mode", PropertiesSearchQuery.mode.validator),
-    ("logical_operator", PropertiesSearchQuery.logical_operator.validator),
+    ('query', PropertiesSearchQuery.query.validator),
+    ('mode', PropertiesSearchQuery.mode.validator),
+    ('logical_operator', PropertiesSearchQuery.logical_operator.validator),
 ]
 
 PropertiesSearchResult.matches.validator = bv.List(PropertiesSearchMatch_validator)
 PropertiesSearchResult.cursor.validator = bv.Nullable(PropertiesSearchCursor_validator)
-PropertiesSearchResult._all_field_names_ = set(
-    [
-        "matches",
-        "cursor",
-    ]
-)
+PropertiesSearchResult._all_field_names_ = set([
+    'matches',
+    'cursor',
+])
 PropertiesSearchResult._all_fields_ = [
-    ("matches", PropertiesSearchResult.matches.validator),
-    ("cursor", PropertiesSearchResult.cursor.validator),
+    ('matches', PropertiesSearchResult.matches.validator),
+    ('cursor', PropertiesSearchResult.cursor.validator),
 ]
 
 PropertyField.name.validator = bv.String()
 PropertyField.value.validator = bv.String()
-PropertyField._all_field_names_ = set(
-    [
-        "name",
-        "value",
-    ]
-)
+PropertyField._all_field_names_ = set([
+    'name',
+    'value',
+])
 PropertyField._all_fields_ = [
-    ("name", PropertyField.name.validator),
-    ("value", PropertyField.value.validator),
+    ('name', PropertyField.name.validator),
+    ('value', PropertyField.value.validator),
 ]
 
 PropertyFieldTemplate.name.validator = bv.String()
 PropertyFieldTemplate.description.validator = bv.String()
 PropertyFieldTemplate.type.validator = PropertyType_validator
-PropertyFieldTemplate._all_field_names_ = set(
-    [
-        "name",
-        "description",
-        "type",
-    ]
-)
+PropertyFieldTemplate._all_field_names_ = set([
+    'name',
+    'description',
+    'type',
+])
 PropertyFieldTemplate._all_fields_ = [
-    ("name", PropertyFieldTemplate.name.validator),
-    ("description", PropertyFieldTemplate.description.validator),
-    ("type", PropertyFieldTemplate.type.validator),
+    ('name', PropertyFieldTemplate.name.validator),
+    ('description', PropertyFieldTemplate.description.validator),
+    ('type', PropertyFieldTemplate.type.validator),
 ]
 
 PropertyGroup.template_id.validator = TemplateId_validator
 PropertyGroup.fields.validator = bv.List(PropertyField_validator)
-PropertyGroup._all_field_names_ = set(
-    [
-        "template_id",
-        "fields",
-    ]
-)
+PropertyGroup._all_field_names_ = set([
+    'template_id',
+    'fields',
+])
 PropertyGroup._all_fields_ = [
-    ("template_id", PropertyGroup.template_id.validator),
-    ("fields", PropertyGroup.fields.validator),
+    ('template_id', PropertyGroup.template_id.validator),
+    ('fields', PropertyGroup.fields.validator),
 ]
 
 PropertyGroupUpdate.template_id.validator = TemplateId_validator
 PropertyGroupUpdate.add_or_update_fields.validator = bv.Nullable(bv.List(PropertyField_validator))
 PropertyGroupUpdate.remove_fields.validator = bv.Nullable(bv.List(bv.String()))
-PropertyGroupUpdate._all_field_names_ = set(
-    [
-        "template_id",
-        "add_or_update_fields",
-        "remove_fields",
-    ]
-)
+PropertyGroupUpdate._all_field_names_ = set([
+    'template_id',
+    'add_or_update_fields',
+    'remove_fields',
+])
 PropertyGroupUpdate._all_fields_ = [
-    ("template_id", PropertyGroupUpdate.template_id.validator),
-    ("add_or_update_fields", PropertyGroupUpdate.add_or_update_fields.validator),
-    ("remove_fields", PropertyGroupUpdate.remove_fields.validator),
+    ('template_id', PropertyGroupUpdate.template_id.validator),
+    ('add_or_update_fields', PropertyGroupUpdate.add_or_update_fields.validator),
+    ('remove_fields', PropertyGroupUpdate.remove_fields.validator),
 ]
 
 PropertyType._string_validator = bv.Void()
 PropertyType._other_validator = bv.Void()
 PropertyType._tagmap = {
-    "string": PropertyType._string_validator,
-    "other": PropertyType._other_validator,
+    'string': PropertyType._string_validator,
+    'other': PropertyType._other_validator,
 }
 
-PropertyType.string = PropertyType("string")
-PropertyType.other = PropertyType("other")
+PropertyType.string = PropertyType('string')
+PropertyType.other = PropertyType('other')
 
 RemovePropertiesArg.path.validator = PathOrId_validator
 RemovePropertiesArg.property_template_ids.validator = bv.List(TemplateId_validator)
-RemovePropertiesArg._all_field_names_ = set(
-    [
-        "path",
-        "property_template_ids",
-    ]
-)
+RemovePropertiesArg._all_field_names_ = set([
+    'path',
+    'property_template_ids',
+])
 RemovePropertiesArg._all_fields_ = [
-    ("path", RemovePropertiesArg.path.validator),
-    ("property_template_ids", RemovePropertiesArg.property_template_ids.validator),
+    ('path', RemovePropertiesArg.path.validator),
+    ('property_template_ids', RemovePropertiesArg.property_template_ids.validator),
 ]
 
 RemovePropertiesError._property_group_lookup_validator = LookUpPropertiesError_validator
 RemovePropertiesError._tagmap = {
-    "property_group_lookup": RemovePropertiesError._property_group_lookup_validator,
+    'property_group_lookup': RemovePropertiesError._property_group_lookup_validator,
 }
 RemovePropertiesError._tagmap.update(PropertiesError._tagmap)
 
 RemoveTemplateArg.template_id.validator = TemplateId_validator
-RemoveTemplateArg._all_field_names_ = set(["template_id"])
-RemoveTemplateArg._all_fields_ = [("template_id", RemoveTemplateArg.template_id.validator)]
+RemoveTemplateArg._all_field_names_ = set(['template_id'])
+RemoveTemplateArg._all_fields_ = [('template_id', RemoveTemplateArg.template_id.validator)]
 
 TemplateFilterBase._filter_some_validator = bv.List(TemplateId_validator, min_items=1)
 TemplateFilterBase._other_validator = bv.Void()
 TemplateFilterBase._tagmap = {
-    "filter_some": TemplateFilterBase._filter_some_validator,
-    "other": TemplateFilterBase._other_validator,
+    'filter_some': TemplateFilterBase._filter_some_validator,
+    'other': TemplateFilterBase._other_validator,
 }
 
-TemplateFilterBase.other = TemplateFilterBase("other")
+TemplateFilterBase.other = TemplateFilterBase('other')
 
 TemplateFilter._filter_none_validator = bv.Void()
 TemplateFilter._tagmap = {
-    "filter_none": TemplateFilter._filter_none_validator,
+    'filter_none': TemplateFilter._filter_none_validator,
 }
 TemplateFilter._tagmap.update(TemplateFilterBase._tagmap)
 
-TemplateFilter.filter_none = TemplateFilter("filter_none")
+TemplateFilter.filter_none = TemplateFilter('filter_none')
 
 TemplateOwnerType._user_validator = bv.Void()
 TemplateOwnerType._team_validator = bv.Void()
 TemplateOwnerType._other_validator = bv.Void()
 TemplateOwnerType._tagmap = {
-    "user": TemplateOwnerType._user_validator,
-    "team": TemplateOwnerType._team_validator,
-    "other": TemplateOwnerType._other_validator,
+    'user': TemplateOwnerType._user_validator,
+    'team': TemplateOwnerType._team_validator,
+    'other': TemplateOwnerType._other_validator,
 }
 
-TemplateOwnerType.user = TemplateOwnerType("user")
-TemplateOwnerType.team = TemplateOwnerType("team")
-TemplateOwnerType.other = TemplateOwnerType("other")
+TemplateOwnerType.user = TemplateOwnerType('user')
+TemplateOwnerType.team = TemplateOwnerType('team')
+TemplateOwnerType.other = TemplateOwnerType('other')
 
 UpdatePropertiesArg.path.validator = PathOrId_validator
 UpdatePropertiesArg.update_property_groups.validator = bv.List(PropertyGroupUpdate_validator)
-UpdatePropertiesArg._all_field_names_ = set(
-    [
-        "path",
-        "update_property_groups",
-    ]
-)
+UpdatePropertiesArg._all_field_names_ = set([
+    'path',
+    'update_property_groups',
+])
 UpdatePropertiesArg._all_fields_ = [
-    ("path", UpdatePropertiesArg.path.validator),
-    ("update_property_groups", UpdatePropertiesArg.update_property_groups.validator),
+    ('path', UpdatePropertiesArg.path.validator),
+    ('update_property_groups', UpdatePropertiesArg.update_property_groups.validator),
 ]
 
 UpdatePropertiesError._property_group_lookup_validator = LookUpPropertiesError_validator
 UpdatePropertiesError._tagmap = {
-    "property_group_lookup": UpdatePropertiesError._property_group_lookup_validator,
+    'property_group_lookup': UpdatePropertiesError._property_group_lookup_validator,
 }
 UpdatePropertiesError._tagmap.update(InvalidPropertyGroupError._tagmap)
 
@@ -2232,187 +2098,218 @@ UpdateTemplateArg.template_id.validator = TemplateId_validator
 UpdateTemplateArg.name.validator = bv.Nullable(bv.String())
 UpdateTemplateArg.description.validator = bv.Nullable(bv.String())
 UpdateTemplateArg.add_fields.validator = bv.Nullable(bv.List(PropertyFieldTemplate_validator))
-UpdateTemplateArg._all_field_names_ = set(
-    [
-        "template_id",
-        "name",
-        "description",
-        "add_fields",
-    ]
-)
+UpdateTemplateArg._all_field_names_ = set([
+    'template_id',
+    'name',
+    'description',
+    'add_fields',
+])
 UpdateTemplateArg._all_fields_ = [
-    ("template_id", UpdateTemplateArg.template_id.validator),
-    ("name", UpdateTemplateArg.name.validator),
-    ("description", UpdateTemplateArg.description.validator),
-    ("add_fields", UpdateTemplateArg.add_fields.validator),
+    ('template_id', UpdateTemplateArg.template_id.validator),
+    ('name', UpdateTemplateArg.name.validator),
+    ('description', UpdateTemplateArg.description.validator),
+    ('add_fields', UpdateTemplateArg.add_fields.validator),
 ]
 
 UpdateTemplateResult.template_id.validator = TemplateId_validator
-UpdateTemplateResult._all_field_names_ = set(["template_id"])
-UpdateTemplateResult._all_fields_ = [("template_id", UpdateTemplateResult.template_id.validator)]
+UpdateTemplateResult._all_field_names_ = set(['template_id'])
+UpdateTemplateResult._all_fields_ = [('template_id', UpdateTemplateResult.template_id.validator)]
 
 PropertiesSearchArg.template_filter.default = TemplateFilter.filter_none
 PropertiesSearchQuery.logical_operator.default = LogicalOperator.or_operator
 properties_add = bb.Route(
-    "properties/add",
+    'properties/add',
     1,
     False,
     AddPropertiesArg_validator,
     bv.Void(),
     AddPropertiesError_validator,
-    {"auth": "user", "host": "api", "style": "rpc"},
+    {'auth': 'user',
+     'host': 'api',
+     'style': 'rpc'},
 )
 properties_overwrite = bb.Route(
-    "properties/overwrite",
+    'properties/overwrite',
     1,
     False,
     OverwritePropertyGroupArg_validator,
     bv.Void(),
     InvalidPropertyGroupError_validator,
-    {"auth": "user", "host": "api", "style": "rpc"},
+    {'auth': 'user',
+     'host': 'api',
+     'style': 'rpc'},
 )
 properties_remove = bb.Route(
-    "properties/remove",
+    'properties/remove',
     1,
     False,
     RemovePropertiesArg_validator,
     bv.Void(),
     RemovePropertiesError_validator,
-    {"auth": "user", "host": "api", "style": "rpc"},
+    {'auth': 'user',
+     'host': 'api',
+     'style': 'rpc'},
 )
 properties_search = bb.Route(
-    "properties/search",
+    'properties/search',
     1,
     False,
     PropertiesSearchArg_validator,
     PropertiesSearchResult_validator,
     PropertiesSearchError_validator,
-    {"auth": "user", "host": "api", "style": "rpc"},
+    {'auth': 'user',
+     'host': 'api',
+     'style': 'rpc'},
 )
 properties_search_continue = bb.Route(
-    "properties/search/continue",
+    'properties/search/continue',
     1,
     False,
     PropertiesSearchContinueArg_validator,
     PropertiesSearchResult_validator,
     PropertiesSearchContinueError_validator,
-    {"auth": "user", "host": "api", "style": "rpc"},
+    {'auth': 'user',
+     'host': 'api',
+     'style': 'rpc'},
 )
 properties_update = bb.Route(
-    "properties/update",
+    'properties/update',
     1,
     False,
     UpdatePropertiesArg_validator,
     bv.Void(),
     UpdatePropertiesError_validator,
-    {"auth": "user", "host": "api", "style": "rpc"},
+    {'auth': 'user',
+     'host': 'api',
+     'style': 'rpc'},
 )
 templates_add_for_team = bb.Route(
-    "templates/add_for_team",
+    'templates/add_for_team',
     1,
     False,
     AddTemplateArg_validator,
     AddTemplateResult_validator,
     ModifyTemplateError_validator,
-    {"auth": "team", "host": "api", "style": "rpc"},
+    {'auth': 'team',
+     'host': 'api',
+     'style': 'rpc'},
 )
 templates_add_for_user = bb.Route(
-    "templates/add_for_user",
+    'templates/add_for_user',
     1,
     False,
     AddTemplateArg_validator,
     AddTemplateResult_validator,
     ModifyTemplateError_validator,
-    {"auth": "user", "host": "api", "style": "rpc"},
+    {'auth': 'user',
+     'host': 'api',
+     'style': 'rpc'},
 )
 templates_get_for_team = bb.Route(
-    "templates/get_for_team",
+    'templates/get_for_team',
     1,
     False,
     GetTemplateArg_validator,
     GetTemplateResult_validator,
     TemplateError_validator,
-    {"auth": "team", "host": "api", "style": "rpc"},
+    {'auth': 'team',
+     'host': 'api',
+     'style': 'rpc'},
 )
 templates_get_for_user = bb.Route(
-    "templates/get_for_user",
+    'templates/get_for_user',
     1,
     False,
     GetTemplateArg_validator,
     GetTemplateResult_validator,
     TemplateError_validator,
-    {"auth": "user", "host": "api", "style": "rpc"},
+    {'auth': 'user',
+     'host': 'api',
+     'style': 'rpc'},
 )
 templates_list_for_team = bb.Route(
-    "templates/list_for_team",
+    'templates/list_for_team',
     1,
     False,
     bv.Void(),
     ListTemplateResult_validator,
     TemplateError_validator,
-    {"auth": "team", "host": "api", "style": "rpc"},
+    {'auth': 'team',
+     'host': 'api',
+     'style': 'rpc'},
 )
 templates_list_for_user = bb.Route(
-    "templates/list_for_user",
+    'templates/list_for_user',
     1,
     False,
     bv.Void(),
     ListTemplateResult_validator,
     TemplateError_validator,
-    {"auth": "user", "host": "api", "style": "rpc"},
+    {'auth': 'user',
+     'host': 'api',
+     'style': 'rpc'},
 )
 templates_remove_for_team = bb.Route(
-    "templates/remove_for_team",
+    'templates/remove_for_team',
     1,
     False,
     RemoveTemplateArg_validator,
     bv.Void(),
     TemplateError_validator,
-    {"auth": "team", "host": "api", "style": "rpc"},
+    {'auth': 'team',
+     'host': 'api',
+     'style': 'rpc'},
 )
 templates_remove_for_user = bb.Route(
-    "templates/remove_for_user",
+    'templates/remove_for_user',
     1,
     False,
     RemoveTemplateArg_validator,
     bv.Void(),
     TemplateError_validator,
-    {"auth": "user", "host": "api", "style": "rpc"},
+    {'auth': 'user',
+     'host': 'api',
+     'style': 'rpc'},
 )
 templates_update_for_team = bb.Route(
-    "templates/update_for_team",
+    'templates/update_for_team',
     1,
     False,
     UpdateTemplateArg_validator,
     UpdateTemplateResult_validator,
     ModifyTemplateError_validator,
-    {"auth": "team", "host": "api", "style": "rpc"},
+    {'auth': 'team',
+     'host': 'api',
+     'style': 'rpc'},
 )
 templates_update_for_user = bb.Route(
-    "templates/update_for_user",
+    'templates/update_for_user',
     1,
     False,
     UpdateTemplateArg_validator,
     UpdateTemplateResult_validator,
     ModifyTemplateError_validator,
-    {"auth": "user", "host": "api", "style": "rpc"},
+    {'auth': 'user',
+     'host': 'api',
+     'style': 'rpc'},
 )
 
 ROUTES = {
-    "properties/add": properties_add,
-    "properties/overwrite": properties_overwrite,
-    "properties/remove": properties_remove,
-    "properties/search": properties_search,
-    "properties/search/continue": properties_search_continue,
-    "properties/update": properties_update,
-    "templates/add_for_team": templates_add_for_team,
-    "templates/add_for_user": templates_add_for_user,
-    "templates/get_for_team": templates_get_for_team,
-    "templates/get_for_user": templates_get_for_user,
-    "templates/list_for_team": templates_list_for_team,
-    "templates/list_for_user": templates_list_for_user,
-    "templates/remove_for_team": templates_remove_for_team,
-    "templates/remove_for_user": templates_remove_for_user,
-    "templates/update_for_team": templates_update_for_team,
-    "templates/update_for_user": templates_update_for_user,
+    'properties/add': properties_add,
+    'properties/overwrite': properties_overwrite,
+    'properties/remove': properties_remove,
+    'properties/search': properties_search,
+    'properties/search/continue': properties_search_continue,
+    'properties/update': properties_update,
+    'templates/add_for_team': templates_add_for_team,
+    'templates/add_for_user': templates_add_for_user,
+    'templates/get_for_team': templates_get_for_team,
+    'templates/get_for_user': templates_get_for_user,
+    'templates/list_for_team': templates_list_for_team,
+    'templates/list_for_user': templates_list_for_user,
+    'templates/remove_for_team': templates_remove_for_team,
+    'templates/remove_for_user': templates_remove_for_user,
+    'templates/update_for_team': templates_update_for_team,
+    'templates/update_for_user': templates_update_for_user,
 }
+

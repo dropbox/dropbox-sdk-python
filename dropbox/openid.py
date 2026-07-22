@@ -7,7 +7,6 @@ from __future__ import unicode_literals
 from stone.backends.python_rsrc import stone_base as bb
 from stone.backends.python_rsrc import stone_validators as bv
 
-
 class OpenIdError(bb.Union):
     """
     This class acts as a tagged union. Only one of the ``is_*`` methods will
@@ -18,7 +17,7 @@ class OpenIdError(bb.Union):
         Missing openid claims for the associated access token.
     """
 
-    _catch_all = "other"
+    _catch_all = 'other'
     # Attribute is overwritten below the class definition
     incorrect_openid_scopes = None
     # Attribute is overwritten below the class definition
@@ -30,7 +29,7 @@ class OpenIdError(bb.Union):
 
         :rtype: bool
         """
-        return self._tag == "incorrect_openid_scopes"
+        return self._tag == 'incorrect_openid_scopes'
 
     def is_other(self):
         """
@@ -38,21 +37,20 @@ class OpenIdError(bb.Union):
 
         :rtype: bool
         """
-        return self._tag == "other"
+        return self._tag == 'other'
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(OpenIdError, self)._process_custom_annotations(annotation_type, field_path, processor)
 
-
 OpenIdError_validator = bv.Union(OpenIdError)
-
 
 class UserInfoArgs(bb.Struct):
     """
     No Parameters
     """
 
-    __slots__ = []
+    __slots__ = [
+    ]
 
     _has_required_fields = False
 
@@ -60,13 +58,9 @@ class UserInfoArgs(bb.Struct):
         pass
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
-        super(UserInfoArgs, self)._process_custom_annotations(
-            annotation_type, field_path, processor
-        )
-
+        super(UserInfoArgs, self)._process_custom_annotations(annotation_type, field_path, processor)
 
 UserInfoArgs_validator = bv.Struct(UserInfoArgs)
-
 
 class UserInfoError(bb.Union):
     """
@@ -75,7 +69,7 @@ class UserInfoError(bb.Union):
     corresponding ``get_*`` method.
     """
 
-    _catch_all = "other"
+    _catch_all = 'other'
     # Attribute is overwritten below the class definition
     other = None
 
@@ -88,7 +82,7 @@ class UserInfoError(bb.Union):
         :param OpenIdError val:
         :rtype: UserInfoError
         """
-        return cls("openid_error", val)
+        return cls('openid_error', val)
 
     def is_openid_error(self):
         """
@@ -96,7 +90,7 @@ class UserInfoError(bb.Union):
 
         :rtype: bool
         """
-        return self._tag == "openid_error"
+        return self._tag == 'openid_error'
 
     def is_other(self):
         """
@@ -104,7 +98,7 @@ class UserInfoError(bb.Union):
 
         :rtype: bool
         """
-        return self._tag == "other"
+        return self._tag == 'other'
 
     def get_openid_error(self):
         """
@@ -117,13 +111,9 @@ class UserInfoError(bb.Union):
         return self._value
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
-        super(UserInfoError, self)._process_custom_annotations(
-            annotation_type, field_path, processor
-        )
-
+        super(UserInfoError, self)._process_custom_annotations(annotation_type, field_path, processor)
 
 UserInfoError_validator = bv.Union(UserInfoError)
-
 
 class UserInfoResult(bb.Struct):
     """
@@ -143,25 +133,23 @@ class UserInfoResult(bb.Struct):
     """
 
     __slots__ = [
-        "_family_name_value",
-        "_given_name_value",
-        "_email_value",
-        "_email_verified_value",
-        "_iss_value",
-        "_sub_value",
+        '_family_name_value',
+        '_given_name_value',
+        '_email_value',
+        '_email_verified_value',
+        '_iss_value',
+        '_sub_value',
     ]
 
     _has_required_fields = False
 
-    def __init__(
-        self,
-        family_name=None,
-        given_name=None,
-        email=None,
-        email_verified=None,
-        iss=None,
-        sub=None,
-    ):
+    def __init__(self,
+                 family_name=None,
+                 given_name=None,
+                 email=None,
+                 email_verified=None,
+                 iss=None,
+                 sub=None):
         self._family_name_value = bb.NOT_SET
         self._given_name_value = bb.NOT_SET
         self._email_value = bb.NOT_SET
@@ -200,22 +188,19 @@ class UserInfoResult(bb.Struct):
     sub = bb.Attribute("sub")
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
-        super(UserInfoResult, self)._process_custom_annotations(
-            annotation_type, field_path, processor
-        )
-
+        super(UserInfoResult, self)._process_custom_annotations(annotation_type, field_path, processor)
 
 UserInfoResult_validator = bv.Struct(UserInfoResult)
 
 OpenIdError._incorrect_openid_scopes_validator = bv.Void()
 OpenIdError._other_validator = bv.Void()
 OpenIdError._tagmap = {
-    "incorrect_openid_scopes": OpenIdError._incorrect_openid_scopes_validator,
-    "other": OpenIdError._other_validator,
+    'incorrect_openid_scopes': OpenIdError._incorrect_openid_scopes_validator,
+    'other': OpenIdError._other_validator,
 }
 
-OpenIdError.incorrect_openid_scopes = OpenIdError("incorrect_openid_scopes")
-OpenIdError.other = OpenIdError("other")
+OpenIdError.incorrect_openid_scopes = OpenIdError('incorrect_openid_scopes')
+OpenIdError.other = OpenIdError('other')
 
 UserInfoArgs._all_field_names_ = set([])
 UserInfoArgs._all_fields_ = []
@@ -223,11 +208,11 @@ UserInfoArgs._all_fields_ = []
 UserInfoError._openid_error_validator = OpenIdError_validator
 UserInfoError._other_validator = bv.Void()
 UserInfoError._tagmap = {
-    "openid_error": UserInfoError._openid_error_validator,
-    "other": UserInfoError._other_validator,
+    'openid_error': UserInfoError._openid_error_validator,
+    'other': UserInfoError._other_validator,
 }
 
-UserInfoError.other = UserInfoError("other")
+UserInfoError.other = UserInfoError('other')
 
 UserInfoResult.family_name.validator = bv.Nullable(bv.String())
 UserInfoResult.given_name.validator = bv.Nullable(bv.String())
@@ -235,37 +220,38 @@ UserInfoResult.email.validator = bv.Nullable(bv.String())
 UserInfoResult.email_verified.validator = bv.Nullable(bv.Boolean())
 UserInfoResult.iss.validator = bv.String()
 UserInfoResult.sub.validator = bv.String()
-UserInfoResult._all_field_names_ = set(
-    [
-        "family_name",
-        "given_name",
-        "email",
-        "email_verified",
-        "iss",
-        "sub",
-    ]
-)
+UserInfoResult._all_field_names_ = set([
+    'family_name',
+    'given_name',
+    'email',
+    'email_verified',
+    'iss',
+    'sub',
+])
 UserInfoResult._all_fields_ = [
-    ("family_name", UserInfoResult.family_name.validator),
-    ("given_name", UserInfoResult.given_name.validator),
-    ("email", UserInfoResult.email.validator),
-    ("email_verified", UserInfoResult.email_verified.validator),
-    ("iss", UserInfoResult.iss.validator),
-    ("sub", UserInfoResult.sub.validator),
+    ('family_name', UserInfoResult.family_name.validator),
+    ('given_name', UserInfoResult.given_name.validator),
+    ('email', UserInfoResult.email.validator),
+    ('email_verified', UserInfoResult.email_verified.validator),
+    ('iss', UserInfoResult.iss.validator),
+    ('sub', UserInfoResult.sub.validator),
 ]
 
-UserInfoResult.iss.default = ""
-UserInfoResult.sub.default = ""
+UserInfoResult.iss.default = ''
+UserInfoResult.sub.default = ''
 userinfo = bb.Route(
-    "userinfo",
+    'userinfo',
     1,
     False,
     UserInfoArgs_validator,
     UserInfoResult_validator,
     UserInfoError_validator,
-    {"auth": "user", "host": "api", "style": "rpc"},
+    {'auth': 'user',
+     'host': 'api',
+     'style': 'rpc'},
 )
 
 ROUTES = {
-    "userinfo": userinfo,
+    'userinfo': userinfo,
 }
+

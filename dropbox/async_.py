@@ -7,7 +7,6 @@ from __future__ import unicode_literals
 from stone.backends.python_rsrc import stone_base as bb
 from stone.backends.python_rsrc import stone_validators as bv
 
-
 class LaunchResultBase(bb.Union):
     """
     Result returned by methods that launch an asynchronous job. A method who may
@@ -37,7 +36,7 @@ class LaunchResultBase(bb.Union):
         :param str val:
         :rtype: LaunchResultBase
         """
-        return cls("async_job_id", val)
+        return cls('async_job_id', val)
 
     def is_async_job_id(self):
         """
@@ -45,7 +44,7 @@ class LaunchResultBase(bb.Union):
 
         :rtype: bool
         """
-        return self._tag == "async_job_id"
+        return self._tag == 'async_job_id'
 
     def get_async_job_id(self):
         """
@@ -61,13 +60,9 @@ class LaunchResultBase(bb.Union):
         return self._value
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
-        super(LaunchResultBase, self)._process_custom_annotations(
-            annotation_type, field_path, processor
-        )
-
+        super(LaunchResultBase, self)._process_custom_annotations(annotation_type, field_path, processor)
 
 LaunchResultBase_validator = bv.Union(LaunchResultBase)
-
 
 class LaunchEmptyResult(LaunchResultBase):
     """
@@ -92,16 +87,12 @@ class LaunchEmptyResult(LaunchResultBase):
 
         :rtype: bool
         """
-        return self._tag == "complete"
+        return self._tag == 'complete'
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
-        super(LaunchEmptyResult, self)._process_custom_annotations(
-            annotation_type, field_path, processor
-        )
-
+        super(LaunchEmptyResult, self)._process_custom_annotations(annotation_type, field_path, processor)
 
 LaunchEmptyResult_validator = bv.Union(LaunchEmptyResult)
-
 
 class PollArg(bb.Struct):
     """
@@ -113,12 +104,13 @@ class PollArg(bb.Struct):
     """
 
     __slots__ = [
-        "_async_job_id_value",
+        '_async_job_id_value',
     ]
 
     _has_required_fields = True
 
-    def __init__(self, async_job_id=None):
+    def __init__(self,
+                 async_job_id=None):
         self._async_job_id_value = bb.NOT_SET
         if async_job_id is not None:
             self.async_job_id = async_job_id
@@ -129,9 +121,7 @@ class PollArg(bb.Struct):
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(PollArg, self)._process_custom_annotations(annotation_type, field_path, processor)
 
-
 PollArg_validator = bv.Struct(PollArg)
-
 
 class PollResultBase(bb.Union):
     """
@@ -158,16 +148,12 @@ class PollResultBase(bb.Union):
 
         :rtype: bool
         """
-        return self._tag == "in_progress"
+        return self._tag == 'in_progress'
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
-        super(PollResultBase, self)._process_custom_annotations(
-            annotation_type, field_path, processor
-        )
-
+        super(PollResultBase, self)._process_custom_annotations(annotation_type, field_path, processor)
 
 PollResultBase_validator = bv.Union(PollResultBase)
-
 
 class PollEmptyResult(PollResultBase):
     """
@@ -191,16 +177,12 @@ class PollEmptyResult(PollResultBase):
 
         :rtype: bool
         """
-        return self._tag == "complete"
+        return self._tag == 'complete'
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
-        super(PollEmptyResult, self)._process_custom_annotations(
-            annotation_type, field_path, processor
-        )
-
+        super(PollEmptyResult, self)._process_custom_annotations(annotation_type, field_path, processor)
 
 PollEmptyResult_validator = bv.Union(PollEmptyResult)
-
 
 class PollError(bb.Union):
     """
@@ -218,7 +200,7 @@ class PollError(bb.Union):
         This should happen very rarely.
     """
 
-    _catch_all = "other"
+    _catch_all = 'other'
     # Attribute is overwritten below the class definition
     invalid_async_job_id = None
     # Attribute is overwritten below the class definition
@@ -232,7 +214,7 @@ class PollError(bb.Union):
 
         :rtype: bool
         """
-        return self._tag == "invalid_async_job_id"
+        return self._tag == 'invalid_async_job_id'
 
     def is_internal_error(self):
         """
@@ -240,7 +222,7 @@ class PollError(bb.Union):
 
         :rtype: bool
         """
-        return self._tag == "internal_error"
+        return self._tag == 'internal_error'
 
     def is_other(self):
         """
@@ -248,58 +230,59 @@ class PollError(bb.Union):
 
         :rtype: bool
         """
-        return self._tag == "other"
+        return self._tag == 'other'
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(PollError, self)._process_custom_annotations(annotation_type, field_path, processor)
-
 
 PollError_validator = bv.Union(PollError)
 
 AsyncJobId_validator = bv.String(min_length=1)
 LaunchResultBase._async_job_id_validator = AsyncJobId_validator
 LaunchResultBase._tagmap = {
-    "async_job_id": LaunchResultBase._async_job_id_validator,
+    'async_job_id': LaunchResultBase._async_job_id_validator,
 }
 
 LaunchEmptyResult._complete_validator = bv.Void()
 LaunchEmptyResult._tagmap = {
-    "complete": LaunchEmptyResult._complete_validator,
+    'complete': LaunchEmptyResult._complete_validator,
 }
 LaunchEmptyResult._tagmap.update(LaunchResultBase._tagmap)
 
-LaunchEmptyResult.complete = LaunchEmptyResult("complete")
+LaunchEmptyResult.complete = LaunchEmptyResult('complete')
 
 PollArg.async_job_id.validator = AsyncJobId_validator
-PollArg._all_field_names_ = set(["async_job_id"])
-PollArg._all_fields_ = [("async_job_id", PollArg.async_job_id.validator)]
+PollArg._all_field_names_ = set(['async_job_id'])
+PollArg._all_fields_ = [('async_job_id', PollArg.async_job_id.validator)]
 
 PollResultBase._in_progress_validator = bv.Void()
 PollResultBase._tagmap = {
-    "in_progress": PollResultBase._in_progress_validator,
+    'in_progress': PollResultBase._in_progress_validator,
 }
 
-PollResultBase.in_progress = PollResultBase("in_progress")
+PollResultBase.in_progress = PollResultBase('in_progress')
 
 PollEmptyResult._complete_validator = bv.Void()
 PollEmptyResult._tagmap = {
-    "complete": PollEmptyResult._complete_validator,
+    'complete': PollEmptyResult._complete_validator,
 }
 PollEmptyResult._tagmap.update(PollResultBase._tagmap)
 
-PollEmptyResult.complete = PollEmptyResult("complete")
+PollEmptyResult.complete = PollEmptyResult('complete')
 
 PollError._invalid_async_job_id_validator = bv.Void()
 PollError._internal_error_validator = bv.Void()
 PollError._other_validator = bv.Void()
 PollError._tagmap = {
-    "invalid_async_job_id": PollError._invalid_async_job_id_validator,
-    "internal_error": PollError._internal_error_validator,
-    "other": PollError._other_validator,
+    'invalid_async_job_id': PollError._invalid_async_job_id_validator,
+    'internal_error': PollError._internal_error_validator,
+    'other': PollError._other_validator,
 }
 
-PollError.invalid_async_job_id = PollError("invalid_async_job_id")
-PollError.internal_error = PollError("internal_error")
-PollError.other = PollError("other")
+PollError.invalid_async_job_id = PollError('invalid_async_job_id')
+PollError.internal_error = PollError('internal_error')
+PollError.other = PollError('other')
 
-ROUTES = {}
+ROUTES = {
+}
+
