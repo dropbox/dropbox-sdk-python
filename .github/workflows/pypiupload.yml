@@ -36,7 +36,7 @@ jobs:
           PYPI_SECRET,pypi-api-token-dropbox-sdk-python
         parse-json-secrets: false
     - name: Setup Python environment
-      uses: actions/setup-python@v6
+      uses: actions/setup-python@v7
       with:
         python-version: "3.x"
     - name: Install dependencies
