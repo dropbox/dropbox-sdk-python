@@ -344,8 +344,7 @@ DisplayName_validator = bv.String(pattern='[^/:?*<>"|]*')
 DisplayNameLegacy_validator = bv.String()
 DropboxTimestamp_validator = bv.Timestamp("%Y-%m-%dT%H:%M:%SZ")
 EmailAddress_validator = bv.String(
-    max_length=255,
-    pattern="^['#&A-Za-z0-9._%+-]+@[A-Za-z0-9-][A-Za-z0-9.-]*\\.[A-Za-z]{2,15}$",
+    max_length=255, pattern="^['#&A-Za-z0-9._%+-]+@[A-Za-z0-9-][A-Za-z0-9.-]*\\.[A-Za-z]{2,15}$"
 )
 LanguageCode_validator = bv.String(min_length=2)
 NamePart_validator = bv.String(min_length=1, max_length=50, pattern='[^/:?*<>"|]*')

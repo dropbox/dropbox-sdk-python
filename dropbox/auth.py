@@ -879,10 +879,7 @@ TokenScopeError._all_fields_ = [("required_scope", TokenScopeError.required_scop
 UnauthorizedAccountIdUsageError.unauthorized_account_ids.validator = bv.List(bv.String())
 UnauthorizedAccountIdUsageError._all_field_names_ = set(["unauthorized_account_ids"])
 UnauthorizedAccountIdUsageError._all_fields_ = [
-    (
-        "unauthorized_account_ids",
-        UnauthorizedAccountIdUsageError.unauthorized_account_ids.validator,
-    )
+    ("unauthorized_account_ids", UnauthorizedAccountIdUsageError.unauthorized_account_ids.validator)
 ]
 
 RateLimitError.retry_after.default = 1

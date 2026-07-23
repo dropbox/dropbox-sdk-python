@@ -2598,11 +2598,7 @@ class FileLockMetadata(bb.Struct):
     _has_required_fields = False
 
     def __init__(
-        self,
-        is_lockholder=None,
-        lockholder_name=None,
-        lockholder_account_id=None,
-        created=None,
+        self, is_lockholder=None, lockholder_name=None, lockholder_account_id=None, created=None
     ):
         self._is_lockholder_value = bb.NOT_SET
         self._lockholder_name_value = bb.NOT_SET
@@ -4490,12 +4486,7 @@ class ListRevisionsArg(bb.Struct):
     _has_required_fields = True
 
     def __init__(
-        self,
-        path=None,
-        mode=None,
-        limit=None,
-        before_rev=None,
-        include_restorable_info=None,
+        self, path=None, mode=None, limit=None, before_rev=None, include_restorable_info=None
     ):
         self._path_value = bb.NOT_SET
         self._mode_value = bb.NOT_SET
@@ -6581,11 +6572,7 @@ class RelocationBatchArg(RelocationBatchArgBase):
     _has_required_fields = True
 
     def __init__(
-        self,
-        entries=None,
-        autorename=None,
-        allow_shared_folder=None,
-        allow_ownership_transfer=None,
+        self, entries=None, autorename=None, allow_shared_folder=None, allow_ownership_transfer=None
     ):
         super(RelocationBatchArg, self).__init__(entries, autorename)
         self._allow_shared_folder_value = bb.NOT_SET
@@ -8856,13 +8843,7 @@ class SearchV2Arg(bb.Struct):
 
     _has_required_fields = True
 
-    def __init__(
-        self,
-        query=None,
-        options=None,
-        match_field_options=None,
-        include_highlights=None,
-    ):
+    def __init__(self, query=None, options=None, match_field_options=None, include_highlights=None):
         self._query_value = bb.NOT_SET
         self._options_value = bb.NOT_SET
         self._match_field_options_value = bb.NOT_SET
@@ -9440,13 +9421,7 @@ class ThumbnailArg(bb.Struct):
     _has_required_fields = True
 
     def __init__(
-        self,
-        path=None,
-        format=None,
-        size=None,
-        mode=None,
-        quality=None,
-        exclude_media_info=None,
+        self, path=None, format=None, size=None, mode=None, quality=None, exclude_media_info=None
     ):
         self._path_value = bb.NOT_SET
         self._format_value = bb.NOT_SET
@@ -10204,13 +10179,7 @@ class UploadArg(CommitInfo):
         content_hash=None,
     ):
         super(UploadArg, self).__init__(
-            path,
-            mode,
-            autorename,
-            client_modified,
-            mute,
-            property_groups,
-            strict_conflict,
+            path, mode, autorename, client_modified, mute, property_groups, strict_conflict
         )
         self._content_hash_value = bb.NOT_SET
         if content_hash is not None:
@@ -12552,10 +12521,7 @@ AlphaGetMetadataArg._all_field_names_ = GetMetadataArg._all_field_names_.union(
     set(["include_property_templates"])
 )
 AlphaGetMetadataArg._all_fields_ = GetMetadataArg._all_fields_ + [
-    (
-        "include_property_templates",
-        AlphaGetMetadataArg.include_property_templates.validator,
-    )
+    ("include_property_templates", AlphaGetMetadataArg.include_property_templates.validator)
 ]
 
 GetMetadataError._path_validator = LookupError_validator
@@ -13410,10 +13376,7 @@ ListFolderArg._all_fields_ = [
     ("limit", ListFolderArg.limit.validator),
     ("shared_link", ListFolderArg.shared_link.validator),
     ("include_property_groups", ListFolderArg.include_property_groups.validator),
-    (
-        "include_non_downloadable_files",
-        ListFolderArg.include_non_downloadable_files.validator,
-    ),
+    ("include_non_downloadable_files", ListFolderArg.include_non_downloadable_files.validator),
     ("include_restorable_info", ListFolderArg.include_restorable_info.validator),
 ]
 

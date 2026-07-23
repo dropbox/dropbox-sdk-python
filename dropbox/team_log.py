@@ -2003,11 +2003,7 @@ class AdminAlertingTriggeredAlertDetails(bb.Struct):
     _has_required_fields = True
 
     def __init__(
-        self,
-        alert_name=None,
-        alert_severity=None,
-        alert_category=None,
-        alert_instance_id=None,
+        self, alert_name=None, alert_severity=None, alert_category=None, alert_instance_id=None
     ):
         self._alert_name_value = bb.NOT_SET
         self._alert_severity_value = bb.NOT_SET
@@ -3995,11 +3991,7 @@ class BinderRenamePageDetails(bb.Struct):
     _has_required_fields = True
 
     def __init__(
-        self,
-        event_uuid=None,
-        doc_title=None,
-        binder_item_name=None,
-        previous_binder_item_name=None,
+        self, event_uuid=None, doc_title=None, binder_item_name=None, previous_binder_item_name=None
     ):
         self._event_uuid_value = bb.NOT_SET
         self._doc_title_value = bb.NOT_SET
@@ -4083,11 +4075,7 @@ class BinderRenameSectionDetails(bb.Struct):
     _has_required_fields = True
 
     def __init__(
-        self,
-        event_uuid=None,
-        doc_title=None,
-        binder_item_name=None,
-        previous_binder_item_name=None,
+        self, event_uuid=None, doc_title=None, binder_item_name=None, previous_binder_item_name=None
     ):
         self._event_uuid_value = bb.NOT_SET
         self._doc_title_value = bb.NOT_SET
@@ -6711,11 +6699,7 @@ class DashClonedStackDetails(bb.Struct):
     _has_required_fields = True
 
     def __init__(
-        self,
-        stack_name=None,
-        actor_email=None,
-        new_cloned_stack_name=None,
-        stack_type=None,
+        self, stack_name=None, actor_email=None, new_cloned_stack_name=None, stack_type=None
     ):
         self._stack_name_value = bb.NOT_SET
         self._actor_email_value = bb.NOT_SET
@@ -11411,12 +11395,7 @@ class EmailIngestReceiveFileDetails(bb.Struct):
     _has_required_fields = True
 
     def __init__(
-        self,
-        inbox_name=None,
-        attachment_names=None,
-        subject=None,
-        from_name=None,
-        from_email=None,
+        self, inbox_name=None, attachment_names=None, subject=None, from_name=None, from_email=None
     ):
         self._inbox_name_value = bb.NOT_SET
         self._attachment_names_value = bb.NOT_SET
@@ -60253,10 +60232,7 @@ class ExternalDriveBackupEligibilityStatusCheckedDetails(bb.Struct):
     _has_required_fields = True
 
     def __init__(
-        self,
-        desktop_device_session_info=None,
-        status=None,
-        number_of_external_drive_backup=None,
+        self, desktop_device_session_info=None, status=None, number_of_external_drive_backup=None
     ):
         self._desktop_device_session_info_value = bb.NOT_SET
         self._status_value = bb.NOT_SET
@@ -64235,14 +64211,7 @@ class FolderLogInfo(FileOrFolderLogInfo):
 
     _has_required_fields = True
 
-    def __init__(
-        self,
-        path=None,
-        display_name=None,
-        file_id=None,
-        file_size=None,
-        file_count=None,
-    ):
+    def __init__(self, path=None, display_name=None, file_id=None, file_size=None, file_count=None):
         super(FolderLogInfo, self).__init__(path, display_name, file_id, file_size)
         self._file_count_value = bb.NOT_SET
         if file_count is not None:
@@ -64968,12 +64937,7 @@ class GovernancePolicyAddFolderFailedDetails(bb.Struct):
     _has_required_fields = True
 
     def __init__(
-        self,
-        governance_policy_id=None,
-        name=None,
-        folder=None,
-        policy_type=None,
-        reason=None,
+        self, governance_policy_id=None, name=None, folder=None, policy_type=None, reason=None
     ):
         self._governance_policy_id_value = bb.NOT_SET
         self._name_value = bb.NOT_SET
@@ -65145,11 +65109,7 @@ class GovernancePolicyContentDisposedDetails(bb.Struct):
     _has_required_fields = True
 
     def __init__(
-        self,
-        governance_policy_id=None,
-        name=None,
-        disposition_type=None,
-        policy_type=None,
+        self, governance_policy_id=None, name=None, disposition_type=None, policy_type=None
     ):
         self._governance_policy_id_value = bb.NOT_SET
         self._name_value = bb.NOT_SET
@@ -65236,12 +65196,7 @@ class GovernancePolicyCreateDetails(bb.Struct):
     _has_required_fields = True
 
     def __init__(
-        self,
-        governance_policy_id=None,
-        name=None,
-        duration=None,
-        policy_type=None,
-        folders=None,
+        self, governance_policy_id=None, name=None, duration=None, policy_type=None, folders=None
     ):
         self._governance_policy_id_value = bb.NOT_SET
         self._name_value = bb.NOT_SET
@@ -65777,12 +65732,7 @@ class GovernancePolicyRemoveFoldersDetails(bb.Struct):
     _has_required_fields = True
 
     def __init__(
-        self,
-        governance_policy_id=None,
-        name=None,
-        policy_type=None,
-        folders=None,
-        reason=None,
+        self, governance_policy_id=None, name=None, policy_type=None, folders=None, reason=None
     ):
         self._governance_policy_id_value = bb.NOT_SET
         self._name_value = bb.NOT_SET
@@ -65948,12 +65898,7 @@ class GovernancePolicyZipPartDownloadedDetails(bb.Struct):
     _has_required_fields = True
 
     def __init__(
-        self,
-        governance_policy_id=None,
-        name=None,
-        export_name=None,
-        policy_type=None,
-        part=None,
+        self, governance_policy_id=None, name=None, export_name=None, policy_type=None, part=None
     ):
         self._governance_policy_id_value = bb.NOT_SET
         self._name_value = bb.NOT_SET
@@ -71164,12 +71109,7 @@ class MemberChangeStatusDetails(bb.Struct):
     _has_required_fields = True
 
     def __init__(
-        self,
-        new_value=None,
-        previous_value=None,
-        action=None,
-        new_team=None,
-        previous_team=None,
+        self, new_value=None, previous_value=None, action=None, new_team=None, previous_team=None
     ):
         self._previous_value_value = bb.NOT_SET
         self._new_value_value = bb.NOT_SET
@@ -75757,10 +75697,7 @@ class PaperDocChangeSubscriptionDetails(bb.Struct):
     _has_required_fields = True
 
     def __init__(
-        self,
-        event_uuid=None,
-        new_subscription_level=None,
-        previous_subscription_level=None,
+        self, event_uuid=None, new_subscription_level=None, previous_subscription_level=None
     ):
         self._event_uuid_value = bb.NOT_SET
         self._new_subscription_level_value = bb.NOT_SET
@@ -77197,10 +77134,7 @@ class PaperFolderChangeSubscriptionDetails(bb.Struct):
     _has_required_fields = True
 
     def __init__(
-        self,
-        event_uuid=None,
-        new_subscription_level=None,
-        previous_subscription_level=None,
+        self, event_uuid=None, new_subscription_level=None, previous_subscription_level=None
     ):
         self._event_uuid_value = bb.NOT_SET
         self._new_subscription_level_value = bb.NOT_SET
@@ -82050,12 +81984,7 @@ class SfAllowNonMembersToViewSharedLinksDetails(bb.Struct):
 
     _has_required_fields = True
 
-    def __init__(
-        self,
-        target_asset_index=None,
-        original_folder_name=None,
-        shared_folder_type=None,
-    ):
+    def __init__(self, target_asset_index=None, original_folder_name=None, shared_folder_type=None):
         self._target_asset_index_value = bb.NOT_SET
         self._original_folder_name_value = bb.NOT_SET
         self._shared_folder_type_value = bb.NOT_SET
@@ -82306,12 +82235,7 @@ class SfFbInviteDetails(bb.Struct):
 
     _has_required_fields = True
 
-    def __init__(
-        self,
-        target_asset_index=None,
-        original_folder_name=None,
-        sharing_permission=None,
-    ):
+    def __init__(self, target_asset_index=None, original_folder_name=None, sharing_permission=None):
         self._target_asset_index_value = bb.NOT_SET
         self._original_folder_name_value = bb.NOT_SET
         self._sharing_permission_value = bb.NOT_SET
@@ -82655,12 +82579,7 @@ class SfTeamInviteDetails(bb.Struct):
 
     _has_required_fields = True
 
-    def __init__(
-        self,
-        target_asset_index=None,
-        original_folder_name=None,
-        sharing_permission=None,
-    ):
+    def __init__(self, target_asset_index=None, original_folder_name=None, sharing_permission=None):
         self._target_asset_index_value = bb.NOT_SET
         self._original_folder_name_value = bb.NOT_SET
         self._sharing_permission_value = bb.NOT_SET
@@ -83760,10 +83679,7 @@ class SharedContentDownloadDetails(bb.Struct):
     _has_required_fields = True
 
     def __init__(
-        self,
-        shared_content_link=None,
-        shared_content_access_level=None,
-        shared_content_owner=None,
+        self, shared_content_link=None, shared_content_access_level=None, shared_content_owner=None
     ):
         self._shared_content_link_value = bb.NOT_SET
         self._shared_content_owner_value = bb.NOT_SET
@@ -84317,10 +84233,7 @@ class SharedContentViewDetails(bb.Struct):
     _has_required_fields = True
 
     def __init__(
-        self,
-        shared_content_link=None,
-        shared_content_access_level=None,
-        shared_content_owner=None,
+        self, shared_content_link=None, shared_content_access_level=None, shared_content_owner=None
     ):
         self._shared_content_link_value = bb.NOT_SET
         self._shared_content_owner_value = bb.NOT_SET
@@ -86403,10 +86316,7 @@ class SharedLinkSettingsRemoveExpirationDetails(bb.Struct):
     _has_required_fields = True
 
     def __init__(
-        self,
-        shared_content_access_level=None,
-        shared_content_link=None,
-        previous_value=None,
+        self, shared_content_access_level=None, shared_content_link=None, previous_value=None
     ):
         self._shared_content_access_level_value = bb.NOT_SET
         self._shared_content_link_value = bb.NOT_SET
@@ -97937,10 +97847,7 @@ AccountCaptureChangeAvailabilityDetails._all_field_names_ = set(
 )
 AccountCaptureChangeAvailabilityDetails._all_fields_ = [
     ("new_value", AccountCaptureChangeAvailabilityDetails.new_value.validator),
-    (
-        "previous_value",
-        AccountCaptureChangeAvailabilityDetails.previous_value.validator,
-    ),
+    ("previous_value", AccountCaptureChangeAvailabilityDetails.previous_value.validator),
 ]
 
 AccountCaptureChangeAvailabilityType.description.validator = bv.String()
@@ -97994,10 +97901,7 @@ AccountCaptureNotificationEmailsSentDetails._all_field_names_ = set(
 )
 AccountCaptureNotificationEmailsSentDetails._all_fields_ = [
     ("domain_name", AccountCaptureNotificationEmailsSentDetails.domain_name.validator),
-    (
-        "notification_type",
-        AccountCaptureNotificationEmailsSentDetails.notification_type.validator,
-    ),
+    ("notification_type", AccountCaptureNotificationEmailsSentDetails.notification_type.validator),
 ]
 
 AccountCaptureNotificationEmailsSentType.description.validator = bv.String()
@@ -98254,19 +98158,13 @@ AdminAlertingAlertConfiguration._all_field_names_ = set(
 AdminAlertingAlertConfiguration._all_fields_ = [
     ("alert_state", AdminAlertingAlertConfiguration.alert_state.validator),
     ("sensitivity_level", AdminAlertingAlertConfiguration.sensitivity_level.validator),
-    (
-        "recipients_settings",
-        AdminAlertingAlertConfiguration.recipients_settings.validator,
-    ),
+    ("recipients_settings", AdminAlertingAlertConfiguration.recipients_settings.validator),
     ("text", AdminAlertingAlertConfiguration.text.validator),
     (
         "excluded_file_extensions",
         AdminAlertingAlertConfiguration.excluded_file_extensions.validator,
     ),
-    (
-        "malware_exclusion_state",
-        AdminAlertingAlertConfiguration.malware_exclusion_state.validator,
-    ),
+    ("malware_exclusion_state", AdminAlertingAlertConfiguration.malware_exclusion_state.validator),
 ]
 
 AdminAlertingAlertSensitivity._high_validator = bv.Void()
@@ -98316,10 +98214,7 @@ AdminAlertingAlertStateChangedDetails._all_fields_ = [
     ("alert_name", AdminAlertingAlertStateChangedDetails.alert_name.validator),
     ("alert_severity", AdminAlertingAlertStateChangedDetails.alert_severity.validator),
     ("alert_category", AdminAlertingAlertStateChangedDetails.alert_category.validator),
-    (
-        "alert_instance_id",
-        AdminAlertingAlertStateChangedDetails.alert_instance_id.validator,
-    ),
+    ("alert_instance_id", AdminAlertingAlertStateChangedDetails.alert_instance_id.validator),
     ("previous_value", AdminAlertingAlertStateChangedDetails.previous_value.validator),
     ("new_value", AdminAlertingAlertStateChangedDetails.new_value.validator),
 ]
@@ -98363,10 +98258,7 @@ AdminAlertingChangedAlertConfigDetails._all_fields_ = [
         "previous_alert_config",
         AdminAlertingChangedAlertConfigDetails.previous_alert_config.validator,
     ),
-    (
-        "new_alert_config",
-        AdminAlertingChangedAlertConfigDetails.new_alert_config.validator,
-    ),
+    ("new_alert_config", AdminAlertingChangedAlertConfigDetails.new_alert_config.validator),
 ]
 
 AdminAlertingChangedAlertConfigType.description.validator = bv.String()
@@ -98391,10 +98283,7 @@ AdminAlertingTriggeredAlertDetails._all_fields_ = [
     ("alert_name", AdminAlertingTriggeredAlertDetails.alert_name.validator),
     ("alert_severity", AdminAlertingTriggeredAlertDetails.alert_severity.validator),
     ("alert_category", AdminAlertingTriggeredAlertDetails.alert_category.validator),
-    (
-        "alert_instance_id",
-        AdminAlertingTriggeredAlertDetails.alert_instance_id.validator,
-    ),
+    ("alert_instance_id", AdminAlertingTriggeredAlertDetails.alert_instance_id.validator),
 ]
 
 AdminAlertingTriggeredAlertType.description.validator = bv.String()
@@ -98548,23 +98437,14 @@ AiThirdPartySharingDropboxBasePolicyChangedDetails._all_field_names_ = set(
     ]
 )
 AiThirdPartySharingDropboxBasePolicyChangedDetails._all_fields_ = [
-    (
-        "new_value",
-        AiThirdPartySharingDropboxBasePolicyChangedDetails.new_value.validator,
-    ),
-    (
-        "previous_value",
-        AiThirdPartySharingDropboxBasePolicyChangedDetails.previous_value.validator,
-    ),
+    ("new_value", AiThirdPartySharingDropboxBasePolicyChangedDetails.new_value.validator),
+    ("previous_value", AiThirdPartySharingDropboxBasePolicyChangedDetails.previous_value.validator),
 ]
 
 AiThirdPartySharingDropboxBasePolicyChangedType.description.validator = bv.String()
 AiThirdPartySharingDropboxBasePolicyChangedType._all_field_names_ = set(["description"])
 AiThirdPartySharingDropboxBasePolicyChangedType._all_fields_ = [
-    (
-        "description",
-        AiThirdPartySharingDropboxBasePolicyChangedType.description.validator,
-    )
+    ("description", AiThirdPartySharingDropboxBasePolicyChangedType.description.validator)
 ]
 
 AlertRecipientsSettingType._custom_list_validator = bv.Void()
@@ -98897,10 +98777,7 @@ BinderRenamePageDetails._all_fields_ = [
     ("event_uuid", BinderRenamePageDetails.event_uuid.validator),
     ("doc_title", BinderRenamePageDetails.doc_title.validator),
     ("binder_item_name", BinderRenamePageDetails.binder_item_name.validator),
-    (
-        "previous_binder_item_name",
-        BinderRenamePageDetails.previous_binder_item_name.validator,
-    ),
+    ("previous_binder_item_name", BinderRenamePageDetails.previous_binder_item_name.validator),
 ]
 
 BinderRenamePageType.description.validator = bv.String()
@@ -98923,10 +98800,7 @@ BinderRenameSectionDetails._all_fields_ = [
     ("event_uuid", BinderRenameSectionDetails.event_uuid.validator),
     ("doc_title", BinderRenameSectionDetails.doc_title.validator),
     ("binder_item_name", BinderRenameSectionDetails.binder_item_name.validator),
-    (
-        "previous_binder_item_name",
-        BinderRenameSectionDetails.previous_binder_item_name.validator,
-    ),
+    ("previous_binder_item_name", BinderRenameSectionDetails.previous_binder_item_name.validator),
 ]
 
 BinderRenameSectionType.description.validator = bv.String()
@@ -99157,14 +99031,8 @@ ChangedEnterpriseConnectedTeamStatusDetails._all_field_names_ = set(
 )
 ChangedEnterpriseConnectedTeamStatusDetails._all_fields_ = [
     ("action", ChangedEnterpriseConnectedTeamStatusDetails.action.validator),
-    (
-        "additional_info",
-        ChangedEnterpriseConnectedTeamStatusDetails.additional_info.validator,
-    ),
-    (
-        "previous_value",
-        ChangedEnterpriseConnectedTeamStatusDetails.previous_value.validator,
-    ),
+    ("additional_info", ChangedEnterpriseConnectedTeamStatusDetails.additional_info.validator),
+    ("previous_value", ChangedEnterpriseConnectedTeamStatusDetails.previous_value.validator),
     ("new_value", ChangedEnterpriseConnectedTeamStatusDetails.new_value.validator),
 ]
 
@@ -99189,10 +99057,7 @@ ClassificationChangePolicyDetails._all_field_names_ = set(
 ClassificationChangePolicyDetails._all_fields_ = [
     ("previous_value", ClassificationChangePolicyDetails.previous_value.validator),
     ("new_value", ClassificationChangePolicyDetails.new_value.validator),
-    (
-        "classification_type",
-        ClassificationChangePolicyDetails.classification_type.validator,
-    ),
+    ("classification_type", ClassificationChangePolicyDetails.classification_type.validator),
 ]
 
 ClassificationChangePolicyType.description.validator = bv.String()
@@ -99315,10 +99180,7 @@ ContentAdministrationPolicyChangedDetails._all_field_names_ = set(
 )
 ContentAdministrationPolicyChangedDetails._all_fields_ = [
     ("new_value", ContentAdministrationPolicyChangedDetails.new_value.validator),
-    (
-        "previous_value",
-        ContentAdministrationPolicyChangedDetails.previous_value.validator,
-    ),
+    ("previous_value", ContentAdministrationPolicyChangedDetails.previous_value.validator),
 ]
 
 ContentAdministrationPolicyChangedType.description.validator = bv.String()
@@ -99353,10 +99215,7 @@ ContentDeletionProtectionChangePolicyDetails._all_fields_ = [
         "new_threshold_bytes",
         ContentDeletionProtectionChangePolicyDetails.new_threshold_bytes.validator,
     ),
-    (
-        "previous_value",
-        ContentDeletionProtectionChangePolicyDetails.previous_value.validator,
-    ),
+    ("previous_value", ContentDeletionProtectionChangePolicyDetails.previous_value.validator),
     (
         "previous_threshold_bytes",
         ContentDeletionProtectionChangePolicyDetails.previous_threshold_bytes.validator,
@@ -99535,10 +99394,7 @@ DashAdminAddedOrgWideConnectorDetails._all_field_names_ = set(
 )
 DashAdminAddedOrgWideConnectorDetails._all_fields_ = [
     ("connector_name", DashAdminAddedOrgWideConnectorDetails.connector_name.validator),
-    (
-        "connector_status",
-        DashAdminAddedOrgWideConnectorDetails.connector_status.validator,
-    ),
+    ("connector_status", DashAdminAddedOrgWideConnectorDetails.connector_status.validator),
 ]
 
 DashAdminAddedOrgWideConnectorType.description.validator = bv.String()
@@ -99598,14 +99454,8 @@ DashAdminRemovedOrgWideConnectorDetails._all_field_names_ = set(
     ]
 )
 DashAdminRemovedOrgWideConnectorDetails._all_fields_ = [
-    (
-        "connector_name",
-        DashAdminRemovedOrgWideConnectorDetails.connector_name.validator,
-    ),
-    (
-        "connector_status",
-        DashAdminRemovedOrgWideConnectorDetails.connector_status.validator,
-    ),
+    ("connector_name", DashAdminRemovedOrgWideConnectorDetails.connector_name.validator),
+    ("connector_status", DashAdminRemovedOrgWideConnectorDetails.connector_status.validator),
 ]
 
 DashAdminRemovedOrgWideConnectorType.description.validator = bv.String()
@@ -99819,10 +99669,7 @@ DashExternalSharingPolicyChangedDetails._all_field_names_ = set(
 )
 DashExternalSharingPolicyChangedDetails._all_fields_ = [
     ("new_value", DashExternalSharingPolicyChangedDetails.new_value.validator),
-    (
-        "previous_value",
-        DashExternalSharingPolicyChangedDetails.previous_value.validator,
-    ),
+    ("previous_value", DashExternalSharingPolicyChangedDetails.previous_value.validator),
 ]
 
 DashExternalSharingPolicyChangedType.description.validator = bv.String()
@@ -99849,16 +99696,10 @@ DashExternalUserOpenedStackDetails._all_field_names_ = set(
 )
 DashExternalUserOpenedStackDetails._all_fields_ = [
     ("stack_name", DashExternalUserOpenedStackDetails.stack_name.validator),
-    (
-        "stack_sharing_scope",
-        DashExternalUserOpenedStackDetails.stack_sharing_scope.validator,
-    ),
+    ("stack_sharing_scope", DashExternalUserOpenedStackDetails.stack_sharing_scope.validator),
     ("is_invited", DashExternalUserOpenedStackDetails.is_invited.validator),
     ("is_verified", DashExternalUserOpenedStackDetails.is_verified.validator),
-    (
-        "stack_owner_team_id",
-        DashExternalUserOpenedStackDetails.stack_owner_team_id.validator,
-    ),
+    ("stack_owner_team_id", DashExternalUserOpenedStackDetails.stack_owner_team_id.validator),
     ("stack_type", DashExternalUserOpenedStackDetails.stack_type.validator),
 ]
 
@@ -100169,10 +100010,7 @@ DataPlacementRestrictionChangePolicyDetails._all_field_names_ = set(
     ]
 )
 DataPlacementRestrictionChangePolicyDetails._all_fields_ = [
-    (
-        "previous_value",
-        DataPlacementRestrictionChangePolicyDetails.previous_value.validator,
-    ),
+    ("previous_value", DataPlacementRestrictionChangePolicyDetails.previous_value.validator),
     ("new_value", DataPlacementRestrictionChangePolicyDetails.new_value.validator),
 ]
 
@@ -100289,18 +100127,9 @@ DeviceSessionLogInfo._pytype_to_tag_and_subtype_ = {
         ("desktop_device_session",),
         DesktopDeviceSessionLogInfo_validator,
     ),
-    LegacyDeviceSessionLogInfo: (
-        ("legacy_device_session",),
-        LegacyDeviceSessionLogInfo_validator,
-    ),
-    MobileDeviceSessionLogInfo: (
-        ("mobile_device_session",),
-        MobileDeviceSessionLogInfo_validator,
-    ),
-    WebDeviceSessionLogInfo: (
-        ("web_device_session",),
-        WebDeviceSessionLogInfo_validator,
-    ),
+    LegacyDeviceSessionLogInfo: (("legacy_device_session",), LegacyDeviceSessionLogInfo_validator),
+    MobileDeviceSessionLogInfo: (("mobile_device_session",), MobileDeviceSessionLogInfo_validator),
+    WebDeviceSessionLogInfo: (("web_device_session",), WebDeviceSessionLogInfo_validator),
 }
 DeviceSessionLogInfo._is_catch_all_ = True
 
@@ -100386,10 +100215,7 @@ DeviceApprovalsChangeDesktopPolicyDetails._all_field_names_ = set(
 )
 DeviceApprovalsChangeDesktopPolicyDetails._all_fields_ = [
     ("new_value", DeviceApprovalsChangeDesktopPolicyDetails.new_value.validator),
-    (
-        "previous_value",
-        DeviceApprovalsChangeDesktopPolicyDetails.previous_value.validator,
-    ),
+    ("previous_value", DeviceApprovalsChangeDesktopPolicyDetails.previous_value.validator),
 ]
 
 DeviceApprovalsChangeDesktopPolicyType.description.validator = bv.String()
@@ -100412,10 +100238,7 @@ DeviceApprovalsChangeMobilePolicyDetails._all_field_names_ = set(
 )
 DeviceApprovalsChangeMobilePolicyDetails._all_fields_ = [
     ("new_value", DeviceApprovalsChangeMobilePolicyDetails.new_value.validator),
-    (
-        "previous_value",
-        DeviceApprovalsChangeMobilePolicyDetails.previous_value.validator,
-    ),
+    ("previous_value", DeviceApprovalsChangeMobilePolicyDetails.previous_value.validator),
 ]
 
 DeviceApprovalsChangeMobilePolicyType.description.validator = bv.String()
@@ -100438,10 +100261,7 @@ DeviceApprovalsChangeOverageActionDetails._all_field_names_ = set(
 )
 DeviceApprovalsChangeOverageActionDetails._all_fields_ = [
     ("new_value", DeviceApprovalsChangeOverageActionDetails.new_value.validator),
-    (
-        "previous_value",
-        DeviceApprovalsChangeOverageActionDetails.previous_value.validator,
-    ),
+    ("previous_value", DeviceApprovalsChangeOverageActionDetails.previous_value.validator),
 ]
 
 DeviceApprovalsChangeOverageActionType.description.validator = bv.String()
@@ -100464,10 +100284,7 @@ DeviceApprovalsChangeUnlinkActionDetails._all_field_names_ = set(
 )
 DeviceApprovalsChangeUnlinkActionDetails._all_fields_ = [
     ("new_value", DeviceApprovalsChangeUnlinkActionDetails.new_value.validator),
-    (
-        "previous_value",
-        DeviceApprovalsChangeUnlinkActionDetails.previous_value.validator,
-    ),
+    ("previous_value", DeviceApprovalsChangeUnlinkActionDetails.previous_value.validator),
 ]
 
 DeviceApprovalsChangeUnlinkActionType.description.validator = bv.String()
@@ -100809,10 +100626,7 @@ DomainVerificationAddDomainFailDetails._all_field_names_ = set(
 )
 DomainVerificationAddDomainFailDetails._all_fields_ = [
     ("domain_name", DomainVerificationAddDomainFailDetails.domain_name.validator),
-    (
-        "verification_method",
-        DomainVerificationAddDomainFailDetails.verification_method.validator,
-    ),
+    ("verification_method", DomainVerificationAddDomainFailDetails.verification_method.validator),
 ]
 
 DomainVerificationAddDomainFailType.description.validator = bv.String()
@@ -100889,10 +100703,7 @@ DropboxPasswordsNewDeviceEnrolledDetails._all_field_names_ = set(
     ]
 )
 DropboxPasswordsNewDeviceEnrolledDetails._all_fields_ = [
-    (
-        "is_first_device",
-        DropboxPasswordsNewDeviceEnrolledDetails.is_first_device.validator,
-    ),
+    ("is_first_device", DropboxPasswordsNewDeviceEnrolledDetails.is_first_device.validator),
     ("platform", DropboxPasswordsNewDeviceEnrolledDetails.platform.validator),
 ]
 
@@ -101251,10 +101062,7 @@ EnterpriseSettingsLockingDetails._all_field_names_ = set(
 )
 EnterpriseSettingsLockingDetails._all_fields_ = [
     ("team_name", EnterpriseSettingsLockingDetails.team_name.validator),
-    (
-        "settings_page_name",
-        EnterpriseSettingsLockingDetails.settings_page_name.validator,
-    ),
+    ("settings_page_name", EnterpriseSettingsLockingDetails.settings_page_name.validator),
     (
         "previous_settings_page_locking_state",
         EnterpriseSettingsLockingDetails.previous_settings_page_locking_state.validator,
@@ -107006,10 +106814,7 @@ ExtendedVersionHistoryChangePolicyDetails._all_field_names_ = set(
 )
 ExtendedVersionHistoryChangePolicyDetails._all_fields_ = [
     ("new_value", ExtendedVersionHistoryChangePolicyDetails.new_value.validator),
-    (
-        "previous_value",
-        ExtendedVersionHistoryChangePolicyDetails.previous_value.validator,
-    ),
+    ("previous_value", ExtendedVersionHistoryChangePolicyDetails.previous_value.validator),
 ]
 
 ExtendedVersionHistoryChangePolicyType.description.validator = bv.String()
@@ -107090,10 +106895,7 @@ ExternalDriveBackupEligibilityStatusCheckedDetails._all_fields_ = [
 ExternalDriveBackupEligibilityStatusCheckedType.description.validator = bv.String()
 ExternalDriveBackupEligibilityStatusCheckedType._all_field_names_ = set(["description"])
 ExternalDriveBackupEligibilityStatusCheckedType._all_fields_ = [
-    (
-        "description",
-        ExternalDriveBackupEligibilityStatusCheckedType.description.validator,
-    )
+    ("description", ExternalDriveBackupEligibilityStatusCheckedType.description.validator)
 ]
 
 ExternalDriveBackupPolicy._default_validator = bv.Void()
@@ -107124,10 +106926,7 @@ ExternalDriveBackupPolicyChangedDetails._all_field_names_ = set(
 )
 ExternalDriveBackupPolicyChangedDetails._all_fields_ = [
     ("new_value", ExternalDriveBackupPolicyChangedDetails.new_value.validator),
-    (
-        "previous_value",
-        ExternalDriveBackupPolicyChangedDetails.previous_value.validator,
-    ),
+    ("previous_value", ExternalDriveBackupPolicyChangedDetails.previous_value.validator),
 ]
 
 ExternalDriveBackupPolicyChangedType.description.validator = bv.String()
@@ -107180,10 +106979,7 @@ ExternalDriveBackupStatusChangedDetails._all_fields_ = [
         "desktop_device_session_info",
         ExternalDriveBackupStatusChangedDetails.desktop_device_session_info.validator,
     ),
-    (
-        "previous_value",
-        ExternalDriveBackupStatusChangedDetails.previous_value.validator,
-    ),
+    ("previous_value", ExternalDriveBackupStatusChangedDetails.previous_value.validator),
     ("new_value", ExternalDriveBackupStatusChangedDetails.new_value.validator),
 ]
 
@@ -107253,10 +107049,7 @@ FailureDetailsLogInfo._all_field_names_ = set(
 )
 FailureDetailsLogInfo._all_fields_ = [
     ("user_friendly_message", FailureDetailsLogInfo.user_friendly_message.validator),
-    (
-        "technical_error_message",
-        FailureDetailsLogInfo.technical_error_message.validator,
-    ),
+    ("technical_error_message", FailureDetailsLogInfo.technical_error_message.validator),
 ]
 
 FedAdminRole._enterprise_admin_validator = bv.Void()
@@ -107598,10 +107391,7 @@ FileProviderMigrationPolicyChangedDetails._all_field_names_ = set(
 )
 FileProviderMigrationPolicyChangedDetails._all_fields_ = [
     ("new_value", FileProviderMigrationPolicyChangedDetails.new_value.validator),
-    (
-        "previous_value",
-        FileProviderMigrationPolicyChangedDetails.previous_value.validator,
-    ),
+    ("previous_value", FileProviderMigrationPolicyChangedDetails.previous_value.validator),
 ]
 
 FileProviderMigrationPolicyChangedType.description.validator = bv.String()
@@ -107776,14 +107566,8 @@ FileRequestReceiveFileDetails._all_field_names_ = set(
 )
 FileRequestReceiveFileDetails._all_fields_ = [
     ("file_request_id", FileRequestReceiveFileDetails.file_request_id.validator),
-    (
-        "file_request_details",
-        FileRequestReceiveFileDetails.file_request_details.validator,
-    ),
-    (
-        "submitted_file_names",
-        FileRequestReceiveFileDetails.submitted_file_names.validator,
-    ),
+    ("file_request_details", FileRequestReceiveFileDetails.file_request_details.validator),
+    ("submitted_file_names", FileRequestReceiveFileDetails.submitted_file_names.validator),
     ("submitter_name", FileRequestReceiveFileDetails.submitter_name.validator),
     ("submitter_email", FileRequestReceiveFileDetails.submitter_email.validator),
 ]
@@ -107884,10 +107668,7 @@ FileSaveCopyReferenceDetails.relocate_action_details.validator = bv.List(
 )
 FileSaveCopyReferenceDetails._all_field_names_ = set(["relocate_action_details"])
 FileSaveCopyReferenceDetails._all_fields_ = [
-    (
-        "relocate_action_details",
-        FileSaveCopyReferenceDetails.relocate_action_details.validator,
-    )
+    ("relocate_action_details", FileSaveCopyReferenceDetails.relocate_action_details.validator)
 ]
 
 FileSaveCopyReferenceType.description.validator = bv.String()
@@ -107955,10 +107736,7 @@ FileTransfersTransferDeleteType._all_fields_ = [
 FileTransfersTransferDownloadDetails.file_transfer_id.validator = bv.String()
 FileTransfersTransferDownloadDetails._all_field_names_ = set(["file_transfer_id"])
 FileTransfersTransferDownloadDetails._all_fields_ = [
-    (
-        "file_transfer_id",
-        FileTransfersTransferDownloadDetails.file_transfer_id.validator,
-    )
+    ("file_transfer_id", FileTransfersTransferDownloadDetails.file_transfer_id.validator)
 ]
 
 FileTransfersTransferDownloadType.description.validator = bv.String()
@@ -108086,10 +107864,7 @@ FolderLinkRestrictionPolicyChangedDetails._all_field_names_ = set(
 )
 FolderLinkRestrictionPolicyChangedDetails._all_fields_ = [
     ("new_value", FolderLinkRestrictionPolicyChangedDetails.new_value.validator),
-    (
-        "previous_value",
-        FolderLinkRestrictionPolicyChangedDetails.previous_value.validator,
-    ),
+    ("previous_value", FolderLinkRestrictionPolicyChangedDetails.previous_value.validator),
 ]
 
 FolderLinkRestrictionPolicyChangedType.description.validator = bv.String()
@@ -108305,10 +108080,7 @@ GovernancePolicyAddFolderFailedDetails._all_field_names_ = set(
     ]
 )
 GovernancePolicyAddFolderFailedDetails._all_fields_ = [
-    (
-        "governance_policy_id",
-        GovernancePolicyAddFolderFailedDetails.governance_policy_id.validator,
-    ),
+    ("governance_policy_id", GovernancePolicyAddFolderFailedDetails.governance_policy_id.validator),
     ("name", GovernancePolicyAddFolderFailedDetails.name.validator),
     ("policy_type", GovernancePolicyAddFolderFailedDetails.policy_type.validator),
     ("folder", GovernancePolicyAddFolderFailedDetails.folder.validator),
@@ -108334,10 +108106,7 @@ GovernancePolicyAddFoldersDetails._all_field_names_ = set(
     ]
 )
 GovernancePolicyAddFoldersDetails._all_fields_ = [
-    (
-        "governance_policy_id",
-        GovernancePolicyAddFoldersDetails.governance_policy_id.validator,
-    ),
+    ("governance_policy_id", GovernancePolicyAddFoldersDetails.governance_policy_id.validator),
     ("name", GovernancePolicyAddFoldersDetails.name.validator),
     ("policy_type", GovernancePolicyAddFoldersDetails.policy_type.validator),
     ("folders", GovernancePolicyAddFoldersDetails.folders.validator),
@@ -108362,16 +108131,10 @@ GovernancePolicyContentDisposedDetails._all_field_names_ = set(
     ]
 )
 GovernancePolicyContentDisposedDetails._all_fields_ = [
-    (
-        "governance_policy_id",
-        GovernancePolicyContentDisposedDetails.governance_policy_id.validator,
-    ),
+    ("governance_policy_id", GovernancePolicyContentDisposedDetails.governance_policy_id.validator),
     ("name", GovernancePolicyContentDisposedDetails.name.validator),
     ("policy_type", GovernancePolicyContentDisposedDetails.policy_type.validator),
-    (
-        "disposition_type",
-        GovernancePolicyContentDisposedDetails.disposition_type.validator,
-    ),
+    ("disposition_type", GovernancePolicyContentDisposedDetails.disposition_type.validator),
 ]
 
 GovernancePolicyContentDisposedType.description.validator = bv.String()
@@ -108395,10 +108158,7 @@ GovernancePolicyCreateDetails._all_field_names_ = set(
     ]
 )
 GovernancePolicyCreateDetails._all_fields_ = [
-    (
-        "governance_policy_id",
-        GovernancePolicyCreateDetails.governance_policy_id.validator,
-    ),
+    ("governance_policy_id", GovernancePolicyCreateDetails.governance_policy_id.validator),
     ("name", GovernancePolicyCreateDetails.name.validator),
     ("policy_type", GovernancePolicyCreateDetails.policy_type.validator),
     ("duration", GovernancePolicyCreateDetails.duration.validator),
@@ -108422,10 +108182,7 @@ GovernancePolicyDeleteDetails._all_field_names_ = set(
     ]
 )
 GovernancePolicyDeleteDetails._all_fields_ = [
-    (
-        "governance_policy_id",
-        GovernancePolicyDeleteDetails.governance_policy_id.validator,
-    ),
+    ("governance_policy_id", GovernancePolicyDeleteDetails.governance_policy_id.validator),
     ("name", GovernancePolicyDeleteDetails.name.validator),
     ("policy_type", GovernancePolicyDeleteDetails.policy_type.validator),
 ]
@@ -108453,10 +108210,7 @@ GovernancePolicyEditDetailsDetails._all_field_names_ = set(
     ]
 )
 GovernancePolicyEditDetailsDetails._all_fields_ = [
-    (
-        "governance_policy_id",
-        GovernancePolicyEditDetailsDetails.governance_policy_id.validator,
-    ),
+    ("governance_policy_id", GovernancePolicyEditDetailsDetails.governance_policy_id.validator),
     ("name", GovernancePolicyEditDetailsDetails.name.validator),
     ("policy_type", GovernancePolicyEditDetailsDetails.policy_type.validator),
     ("attribute", GovernancePolicyEditDetailsDetails.attribute.validator),
@@ -108485,10 +108239,7 @@ GovernancePolicyEditDurationDetails._all_field_names_ = set(
     ]
 )
 GovernancePolicyEditDurationDetails._all_fields_ = [
-    (
-        "governance_policy_id",
-        GovernancePolicyEditDurationDetails.governance_policy_id.validator,
-    ),
+    ("governance_policy_id", GovernancePolicyEditDurationDetails.governance_policy_id.validator),
     ("name", GovernancePolicyEditDurationDetails.name.validator),
     ("policy_type", GovernancePolicyEditDurationDetails.policy_type.validator),
     ("previous_value", GovernancePolicyEditDurationDetails.previous_value.validator),
@@ -108514,10 +108265,7 @@ GovernancePolicyExportCreatedDetails._all_field_names_ = set(
     ]
 )
 GovernancePolicyExportCreatedDetails._all_fields_ = [
-    (
-        "governance_policy_id",
-        GovernancePolicyExportCreatedDetails.governance_policy_id.validator,
-    ),
+    ("governance_policy_id", GovernancePolicyExportCreatedDetails.governance_policy_id.validator),
     ("name", GovernancePolicyExportCreatedDetails.name.validator),
     ("policy_type", GovernancePolicyExportCreatedDetails.policy_type.validator),
     ("export_name", GovernancePolicyExportCreatedDetails.export_name.validator),
@@ -108542,10 +108290,7 @@ GovernancePolicyExportRemovedDetails._all_field_names_ = set(
     ]
 )
 GovernancePolicyExportRemovedDetails._all_fields_ = [
-    (
-        "governance_policy_id",
-        GovernancePolicyExportRemovedDetails.governance_policy_id.validator,
-    ),
+    ("governance_policy_id", GovernancePolicyExportRemovedDetails.governance_policy_id.validator),
     ("name", GovernancePolicyExportRemovedDetails.name.validator),
     ("policy_type", GovernancePolicyExportRemovedDetails.policy_type.validator),
     ("export_name", GovernancePolicyExportRemovedDetails.export_name.validator),
@@ -108572,10 +108317,7 @@ GovernancePolicyRemoveFoldersDetails._all_field_names_ = set(
     ]
 )
 GovernancePolicyRemoveFoldersDetails._all_fields_ = [
-    (
-        "governance_policy_id",
-        GovernancePolicyRemoveFoldersDetails.governance_policy_id.validator,
-    ),
+    ("governance_policy_id", GovernancePolicyRemoveFoldersDetails.governance_policy_id.validator),
     ("name", GovernancePolicyRemoveFoldersDetails.name.validator),
     ("policy_type", GovernancePolicyRemoveFoldersDetails.policy_type.validator),
     ("folders", GovernancePolicyRemoveFoldersDetails.folders.validator),
@@ -108599,10 +108341,7 @@ GovernancePolicyReportCreatedDetails._all_field_names_ = set(
     ]
 )
 GovernancePolicyReportCreatedDetails._all_fields_ = [
-    (
-        "governance_policy_id",
-        GovernancePolicyReportCreatedDetails.governance_policy_id.validator,
-    ),
+    ("governance_policy_id", GovernancePolicyReportCreatedDetails.governance_policy_id.validator),
     ("name", GovernancePolicyReportCreatedDetails.name.validator),
     ("policy_type", GovernancePolicyReportCreatedDetails.policy_type.validator),
 ]
@@ -108767,23 +108506,14 @@ GroupExternalSharingSettingOverrideChangedDetails._all_field_names_ = set(
     ]
 )
 GroupExternalSharingSettingOverrideChangedDetails._all_fields_ = [
-    (
-        "new_value",
-        GroupExternalSharingSettingOverrideChangedDetails.new_value.validator,
-    ),
-    (
-        "previous_value",
-        GroupExternalSharingSettingOverrideChangedDetails.previous_value.validator,
-    ),
+    ("new_value", GroupExternalSharingSettingOverrideChangedDetails.new_value.validator),
+    ("previous_value", GroupExternalSharingSettingOverrideChangedDetails.previous_value.validator),
 ]
 
 GroupExternalSharingSettingOverrideChangedType.description.validator = bv.String()
 GroupExternalSharingSettingOverrideChangedType._all_field_names_ = set(["description"])
 GroupExternalSharingSettingOverrideChangedType._all_fields_ = [
-    (
-        "description",
-        GroupExternalSharingSettingOverrideChangedType.description.validator,
-    )
+    ("description", GroupExternalSharingSettingOverrideChangedType.description.validator)
 ]
 
 GroupJoinPolicy._open_validator = bv.Void()
@@ -108939,10 +108669,7 @@ GuestAdminSignedInViaTrustedTeamsDetails._all_field_names_ = set(
 )
 GuestAdminSignedInViaTrustedTeamsDetails._all_fields_ = [
     ("team_name", GuestAdminSignedInViaTrustedTeamsDetails.team_name.validator),
-    (
-        "trusted_team_name",
-        GuestAdminSignedInViaTrustedTeamsDetails.trusted_team_name.validator,
-    ),
+    ("trusted_team_name", GuestAdminSignedInViaTrustedTeamsDetails.trusted_team_name.validator),
 ]
 
 GuestAdminSignedInViaTrustedTeamsType.description.validator = bv.String()
@@ -108961,10 +108688,7 @@ GuestAdminSignedOutViaTrustedTeamsDetails._all_field_names_ = set(
 )
 GuestAdminSignedOutViaTrustedTeamsDetails._all_fields_ = [
     ("team_name", GuestAdminSignedOutViaTrustedTeamsDetails.team_name.validator),
-    (
-        "trusted_team_name",
-        GuestAdminSignedOutViaTrustedTeamsDetails.trusted_team_name.validator,
-    ),
+    ("trusted_team_name", GuestAdminSignedOutViaTrustedTeamsDetails.trusted_team_name.validator),
 ]
 
 GuestAdminSignedOutViaTrustedTeamsType.description.validator = bv.String()
@@ -109072,10 +108796,7 @@ InviteAcceptanceEmailPolicyChangedDetails._all_field_names_ = set(
 )
 InviteAcceptanceEmailPolicyChangedDetails._all_fields_ = [
     ("new_value", InviteAcceptanceEmailPolicyChangedDetails.new_value.validator),
-    (
-        "previous_value",
-        InviteAcceptanceEmailPolicyChangedDetails.previous_value.validator,
-    ),
+    ("previous_value", InviteAcceptanceEmailPolicyChangedDetails.previous_value.validator),
 ]
 
 InviteAcceptanceEmailPolicyChangedType.description.validator = bv.String()
@@ -109130,10 +108851,7 @@ JoinTeamDetails._all_fields_ = [
     ("linked_devices", JoinTeamDetails.linked_devices.validator),
     ("linked_shared_folders", JoinTeamDetails.linked_shared_folders.validator),
     ("was_linked_apps_truncated", JoinTeamDetails.was_linked_apps_truncated.validator),
-    (
-        "was_linked_devices_truncated",
-        JoinTeamDetails.was_linked_devices_truncated.validator,
-    ),
+    ("was_linked_devices_truncated", JoinTeamDetails.was_linked_devices_truncated.validator),
     (
         "was_linked_shared_folders_truncated",
         JoinTeamDetails.was_linked_shared_folders_truncated.validator,
@@ -109593,10 +109311,7 @@ MalwareExclusionState._all_field_names_ = set(
     ]
 )
 MalwareExclusionState._all_fields_ = [
-    (
-        "excluded_file_hashes_count",
-        MalwareExclusionState.excluded_file_hashes_count.validator,
-    ),
+    ("excluded_file_hashes_count", MalwareExclusionState.excluded_file_hashes_count.validator),
     (
         "file_path_from_last_exclusion",
         MalwareExclusionState.file_path_from_last_exclusion.validator,
@@ -109632,10 +109347,7 @@ MediaHubAddingPeoplePolicyChangedDetails._all_field_names_ = set(
 )
 MediaHubAddingPeoplePolicyChangedDetails._all_fields_ = [
     ("new_value", MediaHubAddingPeoplePolicyChangedDetails.new_value.validator),
-    (
-        "previous_value",
-        MediaHubAddingPeoplePolicyChangedDetails.previous_value.validator,
-    ),
+    ("previous_value", MediaHubAddingPeoplePolicyChangedDetails.previous_value.validator),
 ]
 
 MediaHubAddingPeoplePolicyChangedType.description.validator = bv.String()
@@ -109713,10 +109425,7 @@ MediaHubLinkSharingPolicyChangedDetails._all_field_names_ = set(
 )
 MediaHubLinkSharingPolicyChangedDetails._all_fields_ = [
     ("new_value", MediaHubLinkSharingPolicyChangedDetails.new_value.validator),
-    (
-        "previous_value",
-        MediaHubLinkSharingPolicyChangedDetails.previous_value.validator,
-    ),
+    ("previous_value", MediaHubLinkSharingPolicyChangedDetails.previous_value.validator),
 ]
 
 MediaHubLinkSharingPolicyChangedType.description.validator = bv.String()
@@ -109810,10 +109519,7 @@ MediaHubSharedLinkAudienceChangedDetails._all_field_names_ = set(
 )
 MediaHubSharedLinkAudienceChangedDetails._all_fields_ = [
     ("target_type", MediaHubSharedLinkAudienceChangedDetails.target_type.validator),
-    (
-        "previous_value",
-        MediaHubSharedLinkAudienceChangedDetails.previous_value.validator,
-    ),
+    ("previous_value", MediaHubSharedLinkAudienceChangedDetails.previous_value.validator),
     ("new_value", MediaHubSharedLinkAudienceChangedDetails.new_value.validator),
 ]
 
@@ -109872,14 +109578,8 @@ MediaHubSharedLinkDownloadSettingChangedDetails._all_field_names_ = set(
     ]
 )
 MediaHubSharedLinkDownloadSettingChangedDetails._all_fields_ = [
-    (
-        "target_type",
-        MediaHubSharedLinkDownloadSettingChangedDetails.target_type.validator,
-    ),
-    (
-        "previous_value",
-        MediaHubSharedLinkDownloadSettingChangedDetails.previous_value.validator,
-    ),
+    ("target_type", MediaHubSharedLinkDownloadSettingChangedDetails.target_type.validator),
+    ("previous_value", MediaHubSharedLinkDownloadSettingChangedDetails.previous_value.validator),
     ("new_value", MediaHubSharedLinkDownloadSettingChangedDetails.new_value.validator),
 ]
 
@@ -109922,10 +109622,7 @@ MemberAccessDetailsCreateReportFailedDetails.failure_reason.validator = (
 )
 MemberAccessDetailsCreateReportFailedDetails._all_field_names_ = set(["failure_reason"])
 MemberAccessDetailsCreateReportFailedDetails._all_fields_ = [
-    (
-        "failure_reason",
-        MemberAccessDetailsCreateReportFailedDetails.failure_reason.validator,
-    )
+    ("failure_reason", MemberAccessDetailsCreateReportFailedDetails.failure_reason.validator)
 ]
 
 MemberAccessDetailsCreateReportFailedType.description.validator = bv.String()
@@ -110269,10 +109966,7 @@ MemberSpaceLimitsChangeCapsTypePolicyDetails._all_field_names_ = set(
     ]
 )
 MemberSpaceLimitsChangeCapsTypePolicyDetails._all_fields_ = [
-    (
-        "previous_value",
-        MemberSpaceLimitsChangeCapsTypePolicyDetails.previous_value.validator,
-    ),
+    ("previous_value", MemberSpaceLimitsChangeCapsTypePolicyDetails.previous_value.validator),
     ("new_value", MemberSpaceLimitsChangeCapsTypePolicyDetails.new_value.validator),
 ]
 
@@ -110291,10 +109985,7 @@ MemberSpaceLimitsChangeCustomQuotaDetails._all_field_names_ = set(
     ]
 )
 MemberSpaceLimitsChangeCustomQuotaDetails._all_fields_ = [
-    (
-        "previous_value",
-        MemberSpaceLimitsChangeCustomQuotaDetails.previous_value.validator,
-    ),
+    ("previous_value", MemberSpaceLimitsChangeCustomQuotaDetails.previous_value.validator),
     ("new_value", MemberSpaceLimitsChangeCustomQuotaDetails.new_value.validator),
 ]
 
@@ -110500,10 +110191,7 @@ MicrosoftOfficeAddinChangePolicyDetails._all_field_names_ = set(
 )
 MicrosoftOfficeAddinChangePolicyDetails._all_fields_ = [
     ("new_value", MicrosoftOfficeAddinChangePolicyDetails.new_value.validator),
-    (
-        "previous_value",
-        MicrosoftOfficeAddinChangePolicyDetails.previous_value.validator,
-    ),
+    ("previous_value", MicrosoftOfficeAddinChangePolicyDetails.previous_value.validator),
 ]
 
 MicrosoftOfficeAddinChangePolicyType.description.validator = bv.String()
@@ -111118,14 +110806,8 @@ PaperContentRemoveFromFolderDetails._all_field_names_ = set(
 )
 PaperContentRemoveFromFolderDetails._all_fields_ = [
     ("event_uuid", PaperContentRemoveFromFolderDetails.event_uuid.validator),
-    (
-        "target_asset_index",
-        PaperContentRemoveFromFolderDetails.target_asset_index.validator,
-    ),
-    (
-        "parent_asset_index",
-        PaperContentRemoveFromFolderDetails.parent_asset_index.validator,
-    ),
+    ("target_asset_index", PaperContentRemoveFromFolderDetails.target_asset_index.validator),
+    ("parent_asset_index", PaperContentRemoveFromFolderDetails.parent_asset_index.validator),
 ]
 
 PaperContentRemoveFromFolderType.description.validator = bv.String()
@@ -111284,14 +110966,8 @@ PaperDocChangeSharingPolicyDetails._all_field_names_ = set(
 )
 PaperDocChangeSharingPolicyDetails._all_fields_ = [
     ("event_uuid", PaperDocChangeSharingPolicyDetails.event_uuid.validator),
-    (
-        "public_sharing_policy",
-        PaperDocChangeSharingPolicyDetails.public_sharing_policy.validator,
-    ),
-    (
-        "team_sharing_policy",
-        PaperDocChangeSharingPolicyDetails.team_sharing_policy.validator,
-    ),
+    ("public_sharing_policy", PaperDocChangeSharingPolicyDetails.public_sharing_policy.validator),
+    ("team_sharing_policy", PaperDocChangeSharingPolicyDetails.team_sharing_policy.validator),
 ]
 
 PaperDocChangeSharingPolicyType.description.validator = bv.String()
@@ -111312,10 +110988,7 @@ PaperDocChangeSubscriptionDetails._all_field_names_ = set(
 )
 PaperDocChangeSubscriptionDetails._all_fields_ = [
     ("event_uuid", PaperDocChangeSubscriptionDetails.event_uuid.validator),
-    (
-        "new_subscription_level",
-        PaperDocChangeSubscriptionDetails.new_subscription_level.validator,
-    ),
+    ("new_subscription_level", PaperDocChangeSubscriptionDetails.new_subscription_level.validator),
     (
         "previous_subscription_level",
         PaperDocChangeSubscriptionDetails.previous_subscription_level.validator,
@@ -111906,10 +111579,7 @@ PasswordStrengthRequirementsChangePolicyDetails._all_field_names_ = set(
     ]
 )
 PasswordStrengthRequirementsChangePolicyDetails._all_fields_ = [
-    (
-        "previous_value",
-        PasswordStrengthRequirementsChangePolicyDetails.previous_value.validator,
-    ),
+    ("previous_value", PasswordStrengthRequirementsChangePolicyDetails.previous_value.validator),
     ("new_value", PasswordStrengthRequirementsChangePolicyDetails.new_value.validator),
 ]
 
@@ -112187,10 +111857,7 @@ RansomwareAlertCreateReportFailedDetails.failure_reason.validator = (
 )
 RansomwareAlertCreateReportFailedDetails._all_field_names_ = set(["failure_reason"])
 RansomwareAlertCreateReportFailedDetails._all_fields_ = [
-    (
-        "failure_reason",
-        RansomwareAlertCreateReportFailedDetails.failure_reason.validator,
-    )
+    ("failure_reason", RansomwareAlertCreateReportFailedDetails.failure_reason.validator)
 ]
 
 RansomwareAlertCreateReportFailedType.description.validator = bv.String()
@@ -112258,10 +111925,7 @@ RecipientsConfiguration._all_field_names_ = set(
     ]
 )
 RecipientsConfiguration._all_fields_ = [
-    (
-        "recipient_setting_type",
-        RecipientsConfiguration.recipient_setting_type.validator,
-    ),
+    ("recipient_setting_type", RecipientsConfiguration.recipient_setting_type.validator),
     ("emails", RecipientsConfiguration.emails.validator),
     ("groups", RecipientsConfiguration.groups.validator),
 ]
@@ -112531,10 +112195,7 @@ ResellerSupportSessionStartType._all_fields_ = [
 RewindFolderDetails.rewind_folder_target_ts_ms.validator = common.DropboxTimestamp_validator
 RewindFolderDetails._all_field_names_ = set(["rewind_folder_target_ts_ms"])
 RewindFolderDetails._all_fields_ = [
-    (
-        "rewind_folder_target_ts_ms",
-        RewindFolderDetails.rewind_folder_target_ts_ms.validator,
-    )
+    ("rewind_folder_target_ts_ms", RewindFolderDetails.rewind_folder_target_ts_ms.validator)
 ]
 
 RewindFolderType.description.validator = bv.String()
@@ -112732,10 +112393,7 @@ SendAndTrackLinkCreatedType._all_fields_ = [
 SendAndTrackLinkDeletedDetails.shared_content_link.validator = bv.String()
 SendAndTrackLinkDeletedDetails._all_field_names_ = set(["shared_content_link"])
 SendAndTrackLinkDeletedDetails._all_fields_ = [
-    (
-        "shared_content_link",
-        SendAndTrackLinkDeletedDetails.shared_content_link.validator,
-    )
+    ("shared_content_link", SendAndTrackLinkDeletedDetails.shared_content_link.validator)
 ]
 
 SendAndTrackLinkDeletedType.description.validator = bv.String()
@@ -112857,10 +112515,7 @@ SendExternalSharingPolicyChangedDetails._all_field_names_ = set(
 )
 SendExternalSharingPolicyChangedDetails._all_fields_ = [
     ("new_value", SendExternalSharingPolicyChangedDetails.new_value.validator),
-    (
-        "previous_value",
-        SendExternalSharingPolicyChangedDetails.previous_value.validator,
-    ),
+    ("previous_value", SendExternalSharingPolicyChangedDetails.previous_value.validator),
 ]
 
 SendExternalSharingPolicyChangedType.description.validator = bv.String()
@@ -112935,18 +112590,12 @@ SfAllowNonMembersToViewSharedLinksDetails._all_field_names_ = set(
     ]
 )
 SfAllowNonMembersToViewSharedLinksDetails._all_fields_ = [
-    (
-        "target_asset_index",
-        SfAllowNonMembersToViewSharedLinksDetails.target_asset_index.validator,
-    ),
+    ("target_asset_index", SfAllowNonMembersToViewSharedLinksDetails.target_asset_index.validator),
     (
         "original_folder_name",
         SfAllowNonMembersToViewSharedLinksDetails.original_folder_name.validator,
     ),
-    (
-        "shared_folder_type",
-        SfAllowNonMembersToViewSharedLinksDetails.shared_folder_type.validator,
-    ),
+    ("shared_folder_type", SfAllowNonMembersToViewSharedLinksDetails.shared_folder_type.validator),
 ]
 
 SfAllowNonMembersToViewSharedLinksType.description.validator = bv.String()
@@ -112969,14 +112618,8 @@ SfExternalInviteWarnDetails._all_field_names_ = set(
 )
 SfExternalInviteWarnDetails._all_fields_ = [
     ("target_asset_index", SfExternalInviteWarnDetails.target_asset_index.validator),
-    (
-        "original_folder_name",
-        SfExternalInviteWarnDetails.original_folder_name.validator,
-    ),
-    (
-        "new_sharing_permission",
-        SfExternalInviteWarnDetails.new_sharing_permission.validator,
-    ),
+    ("original_folder_name", SfExternalInviteWarnDetails.original_folder_name.validator),
+    ("new_sharing_permission", SfExternalInviteWarnDetails.new_sharing_permission.validator),
     (
         "previous_sharing_permission",
         SfExternalInviteWarnDetails.previous_sharing_permission.validator,
@@ -113003,18 +112646,12 @@ SfFbInviteChangeRoleDetails._all_field_names_ = set(
 )
 SfFbInviteChangeRoleDetails._all_fields_ = [
     ("target_asset_index", SfFbInviteChangeRoleDetails.target_asset_index.validator),
-    (
-        "original_folder_name",
-        SfFbInviteChangeRoleDetails.original_folder_name.validator,
-    ),
+    ("original_folder_name", SfFbInviteChangeRoleDetails.original_folder_name.validator),
     (
         "previous_sharing_permission",
         SfFbInviteChangeRoleDetails.previous_sharing_permission.validator,
     ),
-    (
-        "new_sharing_permission",
-        SfFbInviteChangeRoleDetails.new_sharing_permission.validator,
-    ),
+    ("new_sharing_permission", SfFbInviteChangeRoleDetails.new_sharing_permission.validator),
 ]
 
 SfFbInviteChangeRoleType.description.validator = bv.String()
@@ -113101,14 +112738,8 @@ SfTeamInviteChangeRoleDetails._all_field_names_ = set(
 )
 SfTeamInviteChangeRoleDetails._all_fields_ = [
     ("target_asset_index", SfTeamInviteChangeRoleDetails.target_asset_index.validator),
-    (
-        "original_folder_name",
-        SfTeamInviteChangeRoleDetails.original_folder_name.validator,
-    ),
-    (
-        "new_sharing_permission",
-        SfTeamInviteChangeRoleDetails.new_sharing_permission.validator,
-    ),
+    ("original_folder_name", SfTeamInviteChangeRoleDetails.original_folder_name.validator),
+    ("new_sharing_permission", SfTeamInviteChangeRoleDetails.new_sharing_permission.validator),
     (
         "previous_sharing_permission",
         SfTeamInviteChangeRoleDetails.previous_sharing_permission.validator,
@@ -113168,10 +112799,7 @@ SfTeamJoinFromOobLinkDetails._all_field_names_ = set(
 )
 SfTeamJoinFromOobLinkDetails._all_fields_ = [
     ("target_asset_index", SfTeamJoinFromOobLinkDetails.target_asset_index.validator),
-    (
-        "original_folder_name",
-        SfTeamJoinFromOobLinkDetails.original_folder_name.validator,
-    ),
+    ("original_folder_name", SfTeamJoinFromOobLinkDetails.original_folder_name.validator),
     ("token_key", SfTeamJoinFromOobLinkDetails.token_key.validator),
     ("sharing_permission", SfTeamJoinFromOobLinkDetails.sharing_permission.validator),
 ]
@@ -113277,10 +112905,7 @@ SharedContentChangeDownloadsPolicyDetails._all_field_names_ = set(
 )
 SharedContentChangeDownloadsPolicyDetails._all_fields_ = [
     ("new_value", SharedContentChangeDownloadsPolicyDetails.new_value.validator),
-    (
-        "previous_value",
-        SharedContentChangeDownloadsPolicyDetails.previous_value.validator,
-    ),
+    ("previous_value", SharedContentChangeDownloadsPolicyDetails.previous_value.validator),
 ]
 
 SharedContentChangeDownloadsPolicyType.description.validator = bv.String()
@@ -113306,10 +112931,7 @@ SharedContentChangeInviteeRoleDetails._all_fields_ = [
         "previous_access_level",
         SharedContentChangeInviteeRoleDetails.previous_access_level.validator,
     ),
-    (
-        "new_access_level",
-        SharedContentChangeInviteeRoleDetails.new_access_level.validator,
-    ),
+    ("new_access_level", SharedContentChangeInviteeRoleDetails.new_access_level.validator),
     ("invitee", SharedContentChangeInviteeRoleDetails.invitee.validator),
 ]
 
@@ -113383,14 +113005,8 @@ SharedContentChangeMemberRoleDetails._all_field_names_ = set(
     ]
 )
 SharedContentChangeMemberRoleDetails._all_fields_ = [
-    (
-        "previous_access_level",
-        SharedContentChangeMemberRoleDetails.previous_access_level.validator,
-    ),
-    (
-        "new_access_level",
-        SharedContentChangeMemberRoleDetails.new_access_level.validator,
-    ),
+    ("previous_access_level", SharedContentChangeMemberRoleDetails.previous_access_level.validator),
+    ("new_access_level", SharedContentChangeMemberRoleDetails.new_access_level.validator),
 ]
 
 SharedContentChangeMemberRoleType.description.validator = bv.String()
@@ -113411,10 +113027,7 @@ SharedContentChangeViewerInfoPolicyDetails._all_field_names_ = set(
 )
 SharedContentChangeViewerInfoPolicyDetails._all_fields_ = [
     ("new_value", SharedContentChangeViewerInfoPolicyDetails.new_value.validator),
-    (
-        "previous_value",
-        SharedContentChangeViewerInfoPolicyDetails.previous_value.validator,
-    ),
+    ("previous_value", SharedContentChangeViewerInfoPolicyDetails.previous_value.validator),
 ]
 
 SharedContentChangeViewerInfoPolicyType.description.validator = bv.String()
@@ -113426,10 +113039,7 @@ SharedContentChangeViewerInfoPolicyType._all_fields_ = [
 SharedContentClaimInvitationDetails.shared_content_link.validator = bv.Nullable(bv.String())
 SharedContentClaimInvitationDetails._all_field_names_ = set(["shared_content_link"])
 SharedContentClaimInvitationDetails._all_fields_ = [
-    (
-        "shared_content_link",
-        SharedContentClaimInvitationDetails.shared_content_link.validator,
-    )
+    ("shared_content_link", SharedContentClaimInvitationDetails.shared_content_link.validator)
 ]
 
 SharedContentClaimInvitationType.description.validator = bv.String()
@@ -113453,10 +113063,7 @@ SharedContentCopyDetails._all_field_names_ = set(
 SharedContentCopyDetails._all_fields_ = [
     ("shared_content_link", SharedContentCopyDetails.shared_content_link.validator),
     ("shared_content_owner", SharedContentCopyDetails.shared_content_owner.validator),
-    (
-        "shared_content_access_level",
-        SharedContentCopyDetails.shared_content_access_level.validator,
-    ),
+    ("shared_content_access_level", SharedContentCopyDetails.shared_content_access_level.validator),
     ("destination_path", SharedContentCopyDetails.destination_path.validator),
 ]
 
@@ -113476,10 +113083,7 @@ SharedContentDownloadDetails._all_field_names_ = set(
 )
 SharedContentDownloadDetails._all_fields_ = [
     ("shared_content_link", SharedContentDownloadDetails.shared_content_link.validator),
-    (
-        "shared_content_owner",
-        SharedContentDownloadDetails.shared_content_owner.validator,
-    ),
+    ("shared_content_owner", SharedContentDownloadDetails.shared_content_owner.validator),
     (
         "shared_content_access_level",
         SharedContentDownloadDetails.shared_content_access_level.validator,
@@ -113556,10 +113160,7 @@ SharedContentRemoveMemberType._all_fields_ = [
 SharedContentRequestAccessDetails.shared_content_link.validator = bv.Nullable(bv.String())
 SharedContentRequestAccessDetails._all_field_names_ = set(["shared_content_link"])
 SharedContentRequestAccessDetails._all_fields_ = [
-    (
-        "shared_content_link",
-        SharedContentRequestAccessDetails.shared_content_link.validator,
-    )
+    ("shared_content_link", SharedContentRequestAccessDetails.shared_content_link.validator)
 ]
 
 SharedContentRequestAccessType.description.validator = bv.String()
@@ -113631,10 +113232,7 @@ SharedContentViewDetails._all_field_names_ = set(
 SharedContentViewDetails._all_fields_ = [
     ("shared_content_link", SharedContentViewDetails.shared_content_link.validator),
     ("shared_content_owner", SharedContentViewDetails.shared_content_owner.validator),
-    (
-        "shared_content_access_level",
-        SharedContentViewDetails.shared_content_access_level.validator,
-    ),
+    ("shared_content_access_level", SharedContentViewDetails.shared_content_access_level.validator),
 ]
 
 SharedContentViewType.description.validator = bv.String()
@@ -113675,23 +113273,14 @@ SharedFolderChangeMembersInheritancePolicyDetails._all_field_names_ = set(
     ]
 )
 SharedFolderChangeMembersInheritancePolicyDetails._all_fields_ = [
-    (
-        "new_value",
-        SharedFolderChangeMembersInheritancePolicyDetails.new_value.validator,
-    ),
-    (
-        "previous_value",
-        SharedFolderChangeMembersInheritancePolicyDetails.previous_value.validator,
-    ),
+    ("new_value", SharedFolderChangeMembersInheritancePolicyDetails.new_value.validator),
+    ("previous_value", SharedFolderChangeMembersInheritancePolicyDetails.previous_value.validator),
 ]
 
 SharedFolderChangeMembersInheritancePolicyType.description.validator = bv.String()
 SharedFolderChangeMembersInheritancePolicyType._all_field_names_ = set(["description"])
 SharedFolderChangeMembersInheritancePolicyType._all_fields_ = [
-    (
-        "description",
-        SharedFolderChangeMembersInheritancePolicyType.description.validator,
-    )
+    ("description", SharedFolderChangeMembersInheritancePolicyType.description.validator)
 ]
 
 SharedFolderChangeMembersManagementPolicyDetails.new_value.validator = (
@@ -113708,10 +113297,7 @@ SharedFolderChangeMembersManagementPolicyDetails._all_field_names_ = set(
 )
 SharedFolderChangeMembersManagementPolicyDetails._all_fields_ = [
     ("new_value", SharedFolderChangeMembersManagementPolicyDetails.new_value.validator),
-    (
-        "previous_value",
-        SharedFolderChangeMembersManagementPolicyDetails.previous_value.validator,
-    ),
+    ("previous_value", SharedFolderChangeMembersManagementPolicyDetails.previous_value.validator),
 ]
 
 SharedFolderChangeMembersManagementPolicyType.description.validator = bv.String()
@@ -113820,10 +113406,7 @@ SharedFolderTransferOwnershipDetails._all_field_names_ = set(
     ]
 )
 SharedFolderTransferOwnershipDetails._all_fields_ = [
-    (
-        "previous_owner_email",
-        SharedFolderTransferOwnershipDetails.previous_owner_email.validator,
-    ),
+    ("previous_owner_email", SharedFolderTransferOwnershipDetails.previous_owner_email.validator),
     ("new_owner_email", SharedFolderTransferOwnershipDetails.new_owner_email.validator),
 ]
 
@@ -113891,10 +113474,7 @@ SharedLinkAddExpiryDetails._all_field_names_ = set(
 )
 SharedLinkAddExpiryDetails._all_fields_ = [
     ("new_value", SharedLinkAddExpiryDetails.new_value.validator),
-    (
-        "is_consolidation_action",
-        SharedLinkAddExpiryDetails.is_consolidation_action.validator,
-    ),
+    ("is_consolidation_action", SharedLinkAddExpiryDetails.is_consolidation_action.validator),
 ]
 
 SharedLinkAddExpiryType.description.validator = bv.String()
@@ -113918,10 +113498,7 @@ SharedLinkChangeExpiryDetails._all_field_names_ = set(
 SharedLinkChangeExpiryDetails._all_fields_ = [
     ("new_value", SharedLinkChangeExpiryDetails.new_value.validator),
     ("previous_value", SharedLinkChangeExpiryDetails.previous_value.validator),
-    (
-        "is_consolidation_action",
-        SharedLinkChangeExpiryDetails.is_consolidation_action.validator,
-    ),
+    ("is_consolidation_action", SharedLinkChangeExpiryDetails.is_consolidation_action.validator),
 ]
 
 SharedLinkChangeExpiryType.description.validator = bv.String()
@@ -113972,10 +113549,7 @@ SharedLinkCreateDetails.shared_link_access_level.validator = bv.Nullable(
 )
 SharedLinkCreateDetails._all_field_names_ = set(["shared_link_access_level"])
 SharedLinkCreateDetails._all_fields_ = [
-    (
-        "shared_link_access_level",
-        SharedLinkCreateDetails.shared_link_access_level.validator,
-    )
+    ("shared_link_access_level", SharedLinkCreateDetails.shared_link_access_level.validator)
 ]
 
 SharedLinkCreateType.description.validator = bv.String()
@@ -114012,10 +113586,7 @@ SharedLinkDefaultPermissionsPolicyChangedDetails._all_field_names_ = set(
 )
 SharedLinkDefaultPermissionsPolicyChangedDetails._all_fields_ = [
     ("new_value", SharedLinkDefaultPermissionsPolicyChangedDetails.new_value.validator),
-    (
-        "previous_value",
-        SharedLinkDefaultPermissionsPolicyChangedDetails.previous_value.validator,
-    ),
+    ("previous_value", SharedLinkDefaultPermissionsPolicyChangedDetails.previous_value.validator),
 ]
 
 SharedLinkDefaultPermissionsPolicyChangedType.description.validator = bv.String()
@@ -114088,10 +113659,7 @@ SharedLinkSettingsAddExpirationDetails._all_fields_ = [
         "shared_content_access_level",
         SharedLinkSettingsAddExpirationDetails.shared_content_access_level.validator,
     ),
-    (
-        "shared_content_link",
-        SharedLinkSettingsAddExpirationDetails.shared_content_link.validator,
-    ),
+    ("shared_content_link", SharedLinkSettingsAddExpirationDetails.shared_content_link.validator),
     ("new_value", SharedLinkSettingsAddExpirationDetails.new_value.validator),
 ]
 
@@ -114116,10 +113684,7 @@ SharedLinkSettingsAddPasswordDetails._all_fields_ = [
         "shared_content_access_level",
         SharedLinkSettingsAddPasswordDetails.shared_content_access_level.validator,
     ),
-    (
-        "shared_content_link",
-        SharedLinkSettingsAddPasswordDetails.shared_content_link.validator,
-    ),
+    ("shared_content_link", SharedLinkSettingsAddPasswordDetails.shared_content_link.validator),
 ]
 
 SharedLinkSettingsAddPasswordType.description.validator = bv.String()
@@ -114207,15 +113772,9 @@ SharedLinkSettingsChangeAudienceDetails._all_fields_ = [
         "shared_content_access_level",
         SharedLinkSettingsChangeAudienceDetails.shared_content_access_level.validator,
     ),
-    (
-        "shared_content_link",
-        SharedLinkSettingsChangeAudienceDetails.shared_content_link.validator,
-    ),
+    ("shared_content_link", SharedLinkSettingsChangeAudienceDetails.shared_content_link.validator),
     ("new_value", SharedLinkSettingsChangeAudienceDetails.new_value.validator),
-    (
-        "previous_value",
-        SharedLinkSettingsChangeAudienceDetails.previous_value.validator,
-    ),
+    ("previous_value", SharedLinkSettingsChangeAudienceDetails.previous_value.validator),
 ]
 
 SharedLinkSettingsChangeAudienceType.description.validator = bv.String()
@@ -114252,10 +113811,7 @@ SharedLinkSettingsChangeExpirationDetails._all_fields_ = [
         SharedLinkSettingsChangeExpirationDetails.shared_content_link.validator,
     ),
     ("new_value", SharedLinkSettingsChangeExpirationDetails.new_value.validator),
-    (
-        "previous_value",
-        SharedLinkSettingsChangeExpirationDetails.previous_value.validator,
-    ),
+    ("previous_value", SharedLinkSettingsChangeExpirationDetails.previous_value.validator),
 ]
 
 SharedLinkSettingsChangeExpirationType.description.validator = bv.String()
@@ -114279,10 +113835,7 @@ SharedLinkSettingsChangePasswordDetails._all_fields_ = [
         "shared_content_access_level",
         SharedLinkSettingsChangePasswordDetails.shared_content_access_level.validator,
     ),
-    (
-        "shared_content_link",
-        SharedLinkSettingsChangePasswordDetails.shared_content_link.validator,
-    ),
+    ("shared_content_link", SharedLinkSettingsChangePasswordDetails.shared_content_link.validator),
 ]
 
 SharedLinkSettingsChangePasswordType.description.validator = bv.String()
@@ -114314,10 +113867,7 @@ SharedLinkSettingsRemoveExpirationDetails._all_fields_ = [
         "shared_content_link",
         SharedLinkSettingsRemoveExpirationDetails.shared_content_link.validator,
     ),
-    (
-        "previous_value",
-        SharedLinkSettingsRemoveExpirationDetails.previous_value.validator,
-    ),
+    ("previous_value", SharedLinkSettingsRemoveExpirationDetails.previous_value.validator),
 ]
 
 SharedLinkSettingsRemoveExpirationType.description.validator = bv.String()
@@ -114341,10 +113891,7 @@ SharedLinkSettingsRemovePasswordDetails._all_fields_ = [
         "shared_content_access_level",
         SharedLinkSettingsRemovePasswordDetails.shared_content_access_level.validator,
     ),
-    (
-        "shared_content_link",
-        SharedLinkSettingsRemovePasswordDetails.shared_content_link.validator,
-    ),
+    ("shared_content_link", SharedLinkSettingsRemovePasswordDetails.shared_content_link.validator),
 ]
 
 SharedLinkSettingsRemovePasswordType.description.validator = bv.String()
@@ -114442,10 +113989,7 @@ SharingChangeLinkAllowChangeExpirationPolicyDetails._all_field_names_ = set(
     ]
 )
 SharingChangeLinkAllowChangeExpirationPolicyDetails._all_fields_ = [
-    (
-        "new_value",
-        SharingChangeLinkAllowChangeExpirationPolicyDetails.new_value.validator,
-    ),
+    ("new_value", SharingChangeLinkAllowChangeExpirationPolicyDetails.new_value.validator),
     (
         "previous_value",
         SharingChangeLinkAllowChangeExpirationPolicyDetails.previous_value.validator,
@@ -114455,10 +113999,7 @@ SharingChangeLinkAllowChangeExpirationPolicyDetails._all_fields_ = [
 SharingChangeLinkAllowChangeExpirationPolicyType.description.validator = bv.String()
 SharingChangeLinkAllowChangeExpirationPolicyType._all_field_names_ = set(["description"])
 SharingChangeLinkAllowChangeExpirationPolicyType._all_fields_ = [
-    (
-        "description",
-        SharingChangeLinkAllowChangeExpirationPolicyType.description.validator,
-    )
+    ("description", SharingChangeLinkAllowChangeExpirationPolicyType.description.validator)
 ]
 
 SharingChangeLinkDefaultExpirationPolicyDetails.new_value.validator = (
@@ -114475,10 +114016,7 @@ SharingChangeLinkDefaultExpirationPolicyDetails._all_field_names_ = set(
 )
 SharingChangeLinkDefaultExpirationPolicyDetails._all_fields_ = [
     ("new_value", SharingChangeLinkDefaultExpirationPolicyDetails.new_value.validator),
-    (
-        "previous_value",
-        SharingChangeLinkDefaultExpirationPolicyDetails.previous_value.validator,
-    ),
+    ("previous_value", SharingChangeLinkDefaultExpirationPolicyDetails.previous_value.validator),
 ]
 
 SharingChangeLinkDefaultExpirationPolicyType.description.validator = bv.String()
@@ -114501,10 +114039,7 @@ SharingChangeLinkEnforcePasswordPolicyDetails._all_field_names_ = set(
 )
 SharingChangeLinkEnforcePasswordPolicyDetails._all_fields_ = [
     ("new_value", SharingChangeLinkEnforcePasswordPolicyDetails.new_value.validator),
-    (
-        "previous_value",
-        SharingChangeLinkEnforcePasswordPolicyDetails.previous_value.validator,
-    ),
+    ("previous_value", SharingChangeLinkEnforcePasswordPolicyDetails.previous_value.validator),
 ]
 
 SharingChangeLinkEnforcePasswordPolicyType.description.validator = bv.String()
@@ -114716,10 +114251,7 @@ ShowcaseChangeExternalSharingPolicyDetails._all_field_names_ = set(
 )
 ShowcaseChangeExternalSharingPolicyDetails._all_fields_ = [
     ("new_value", ShowcaseChangeExternalSharingPolicyDetails.new_value.validator),
-    (
-        "previous_value",
-        ShowcaseChangeExternalSharingPolicyDetails.previous_value.validator,
-    ),
+    ("previous_value", ShowcaseChangeExternalSharingPolicyDetails.previous_value.validator),
 ]
 
 ShowcaseChangeExternalSharingPolicyType.description.validator = bv.String()
@@ -115074,10 +114606,7 @@ SignExternalSharingPolicyChangedDetails._all_field_names_ = set(
 )
 SignExternalSharingPolicyChangedDetails._all_fields_ = [
     ("new_value", SignExternalSharingPolicyChangedDetails.new_value.validator),
-    (
-        "previous_value",
-        SignExternalSharingPolicyChangedDetails.previous_value.validator,
-    ),
+    ("previous_value", SignExternalSharingPolicyChangedDetails.previous_value.validator),
 ]
 
 SignExternalSharingPolicyChangedType.description.validator = bv.String()
@@ -115251,10 +114780,7 @@ SignTemplateCreationPermissionChangedDetails._all_field_names_ = set(
 )
 SignTemplateCreationPermissionChangedDetails._all_fields_ = [
     ("new_value", SignTemplateCreationPermissionChangedDetails.new_value.validator),
-    (
-        "previous_value",
-        SignTemplateCreationPermissionChangedDetails.previous_value.validator,
-    ),
+    ("previous_value", SignTemplateCreationPermissionChangedDetails.previous_value.validator),
 ]
 
 SignTemplateCreationPermissionChangedType.description.validator = bv.String()
@@ -115466,10 +114992,7 @@ SsoChangeCertDetails._all_field_names_ = set(
     ]
 )
 SsoChangeCertDetails._all_fields_ = [
-    (
-        "previous_certificate_details",
-        SsoChangeCertDetails.previous_certificate_details.validator,
-    ),
+    ("previous_certificate_details", SsoChangeCertDetails.previous_certificate_details.validator),
     ("new_certificate_details", SsoChangeCertDetails.new_certificate_details.validator),
 ]
 
@@ -115614,10 +115137,7 @@ StackCrossTeamAccessPolicyChangedDetails._all_field_names_ = set(
 )
 StackCrossTeamAccessPolicyChangedDetails._all_fields_ = [
     ("new_value", StackCrossTeamAccessPolicyChangedDetails.new_value.validator),
-    (
-        "previous_value",
-        StackCrossTeamAccessPolicyChangedDetails.previous_value.validator,
-    ),
+    ("previous_value", StackCrossTeamAccessPolicyChangedDetails.previous_value.validator),
 ]
 
 StackCrossTeamAccessPolicyChangedType.description.validator = bv.String()
@@ -115713,10 +115233,7 @@ TeamDetails._all_fields_ = [("team", TeamDetails.team.validator)]
 TeamEncryptionKeyActivateKeyDetails.key_management_type.validator = bv.String()
 TeamEncryptionKeyActivateKeyDetails._all_field_names_ = set(["key_management_type"])
 TeamEncryptionKeyActivateKeyDetails._all_fields_ = [
-    (
-        "key_management_type",
-        TeamEncryptionKeyActivateKeyDetails.key_management_type.validator,
-    )
+    ("key_management_type", TeamEncryptionKeyActivateKeyDetails.key_management_type.validator)
 ]
 
 TeamEncryptionKeyActivateKeyType.description.validator = bv.String()
@@ -115980,14 +115497,8 @@ TeamFolderSpaceLimitsChangeCapsTypeDetails._all_field_names_ = set(
     ]
 )
 TeamFolderSpaceLimitsChangeCapsTypeDetails._all_fields_ = [
-    (
-        "previous_caps_type",
-        TeamFolderSpaceLimitsChangeCapsTypeDetails.previous_caps_type.validator,
-    ),
-    (
-        "new_caps_type",
-        TeamFolderSpaceLimitsChangeCapsTypeDetails.new_caps_type.validator,
-    ),
+    ("previous_caps_type", TeamFolderSpaceLimitsChangeCapsTypeDetails.previous_caps_type.validator),
+    ("new_caps_type", TeamFolderSpaceLimitsChangeCapsTypeDetails.new_caps_type.validator),
 ]
 
 TeamFolderSpaceLimitsChangeCapsTypeType.description.validator = bv.String()
@@ -116009,10 +115520,7 @@ TeamFolderSpaceLimitsChangeLimitDetails._all_fields_ = [
         "previous_limit_bytes",
         TeamFolderSpaceLimitsChangeLimitDetails.previous_limit_bytes.validator,
     ),
-    (
-        "new_limit_bytes",
-        TeamFolderSpaceLimitsChangeLimitDetails.new_limit_bytes.validator,
-    ),
+    ("new_limit_bytes", TeamFolderSpaceLimitsChangeLimitDetails.new_limit_bytes.validator),
 ]
 
 TeamFolderSpaceLimitsChangeLimitType.description.validator = bv.String()
@@ -116038,19 +115546,13 @@ TeamFolderSpaceLimitsChangeNotificationTargetDetails._all_fields_ = [
         "previous_target",
         TeamFolderSpaceLimitsChangeNotificationTargetDetails.previous_target.validator,
     ),
-    (
-        "new_target",
-        TeamFolderSpaceLimitsChangeNotificationTargetDetails.new_target.validator,
-    ),
+    ("new_target", TeamFolderSpaceLimitsChangeNotificationTargetDetails.new_target.validator),
 ]
 
 TeamFolderSpaceLimitsChangeNotificationTargetType.description.validator = bv.String()
 TeamFolderSpaceLimitsChangeNotificationTargetType._all_field_names_ = set(["description"])
 TeamFolderSpaceLimitsChangeNotificationTargetType._all_fields_ = [
-    (
-        "description",
-        TeamFolderSpaceLimitsChangeNotificationTargetType.description.validator,
-    )
+    ("description", TeamFolderSpaceLimitsChangeNotificationTargetType.description.validator)
 ]
 
 TeamFoldersCreateReportDetails._all_field_names_ = set([])
@@ -116086,10 +115588,7 @@ TeamInviteDetails._all_field_names_ = set(
 )
 TeamInviteDetails._all_fields_ = [
     ("invite_method", TeamInviteDetails.invite_method.validator),
-    (
-        "additional_license_purchase",
-        TeamInviteDetails.additional_license_purchase.validator,
-    ),
+    ("additional_license_purchase", TeamInviteDetails.additional_license_purchase.validator),
 ]
 
 TeamLinkedAppLogInfo._field_names_ = set([])
@@ -116153,10 +115652,7 @@ TeamMemberStorageRequestPolicyChangedDetails._all_field_names_ = set(
 )
 TeamMemberStorageRequestPolicyChangedDetails._all_fields_ = [
     ("new_value", TeamMemberStorageRequestPolicyChangedDetails.new_value.validator),
-    (
-        "previous_value",
-        TeamMemberStorageRequestPolicyChangedDetails.previous_value.validator,
-    ),
+    ("previous_value", TeamMemberStorageRequestPolicyChangedDetails.previous_value.validator),
 ]
 
 TeamMemberStorageRequestPolicyChangedType.description.validator = bv.String()
@@ -116194,10 +115690,7 @@ TeamMergeRequestAcceptedDetails.request_accepted_details.validator = (
 )
 TeamMergeRequestAcceptedDetails._all_field_names_ = set(["request_accepted_details"])
 TeamMergeRequestAcceptedDetails._all_fields_ = [
-    (
-        "request_accepted_details",
-        TeamMergeRequestAcceptedDetails.request_accepted_details.validator,
-    )
+    ("request_accepted_details", TeamMergeRequestAcceptedDetails.request_accepted_details.validator)
 ]
 
 TeamMergeRequestAcceptedExtraDetails._primary_team_validator = (
@@ -116224,20 +115717,14 @@ TeamMergeRequestAcceptedShownToPrimaryTeamDetails._all_field_names_ = set(
     ]
 )
 TeamMergeRequestAcceptedShownToPrimaryTeamDetails._all_fields_ = [
-    (
-        "secondary_team",
-        TeamMergeRequestAcceptedShownToPrimaryTeamDetails.secondary_team.validator,
-    ),
+    ("secondary_team", TeamMergeRequestAcceptedShownToPrimaryTeamDetails.secondary_team.validator),
     ("sent_by", TeamMergeRequestAcceptedShownToPrimaryTeamDetails.sent_by.validator),
 ]
 
 TeamMergeRequestAcceptedShownToPrimaryTeamType.description.validator = bv.String()
 TeamMergeRequestAcceptedShownToPrimaryTeamType._all_field_names_ = set(["description"])
 TeamMergeRequestAcceptedShownToPrimaryTeamType._all_fields_ = [
-    (
-        "description",
-        TeamMergeRequestAcceptedShownToPrimaryTeamType.description.validator,
-    )
+    ("description", TeamMergeRequestAcceptedShownToPrimaryTeamType.description.validator)
 ]
 
 TeamMergeRequestAcceptedShownToSecondaryTeamDetails.primary_team.validator = bv.String()
@@ -116249,20 +115736,14 @@ TeamMergeRequestAcceptedShownToSecondaryTeamDetails._all_field_names_ = set(
     ]
 )
 TeamMergeRequestAcceptedShownToSecondaryTeamDetails._all_fields_ = [
-    (
-        "primary_team",
-        TeamMergeRequestAcceptedShownToSecondaryTeamDetails.primary_team.validator,
-    ),
+    ("primary_team", TeamMergeRequestAcceptedShownToSecondaryTeamDetails.primary_team.validator),
     ("sent_by", TeamMergeRequestAcceptedShownToSecondaryTeamDetails.sent_by.validator),
 ]
 
 TeamMergeRequestAcceptedShownToSecondaryTeamType.description.validator = bv.String()
 TeamMergeRequestAcceptedShownToSecondaryTeamType._all_field_names_ = set(["description"])
 TeamMergeRequestAcceptedShownToSecondaryTeamType._all_fields_ = [
-    (
-        "description",
-        TeamMergeRequestAcceptedShownToSecondaryTeamType.description.validator,
-    )
+    ("description", TeamMergeRequestAcceptedShownToSecondaryTeamType.description.validator)
 ]
 
 TeamMergeRequestAcceptedType.description.validator = bv.String()
@@ -116288,10 +115769,7 @@ TeamMergeRequestCanceledDetails.request_canceled_details.validator = (
 )
 TeamMergeRequestCanceledDetails._all_field_names_ = set(["request_canceled_details"])
 TeamMergeRequestCanceledDetails._all_fields_ = [
-    (
-        "request_canceled_details",
-        TeamMergeRequestCanceledDetails.request_canceled_details.validator,
-    )
+    ("request_canceled_details", TeamMergeRequestCanceledDetails.request_canceled_details.validator)
 ]
 
 TeamMergeRequestCanceledExtraDetails._primary_team_validator = (
@@ -116318,20 +115796,14 @@ TeamMergeRequestCanceledShownToPrimaryTeamDetails._all_field_names_ = set(
     ]
 )
 TeamMergeRequestCanceledShownToPrimaryTeamDetails._all_fields_ = [
-    (
-        "secondary_team",
-        TeamMergeRequestCanceledShownToPrimaryTeamDetails.secondary_team.validator,
-    ),
+    ("secondary_team", TeamMergeRequestCanceledShownToPrimaryTeamDetails.secondary_team.validator),
     ("sent_by", TeamMergeRequestCanceledShownToPrimaryTeamDetails.sent_by.validator),
 ]
 
 TeamMergeRequestCanceledShownToPrimaryTeamType.description.validator = bv.String()
 TeamMergeRequestCanceledShownToPrimaryTeamType._all_field_names_ = set(["description"])
 TeamMergeRequestCanceledShownToPrimaryTeamType._all_fields_ = [
-    (
-        "description",
-        TeamMergeRequestCanceledShownToPrimaryTeamType.description.validator,
-    )
+    ("description", TeamMergeRequestCanceledShownToPrimaryTeamType.description.validator)
 ]
 
 TeamMergeRequestCanceledShownToSecondaryTeamDetails.sent_to.validator = bv.String()
@@ -116350,10 +115822,7 @@ TeamMergeRequestCanceledShownToSecondaryTeamDetails._all_fields_ = [
 TeamMergeRequestCanceledShownToSecondaryTeamType.description.validator = bv.String()
 TeamMergeRequestCanceledShownToSecondaryTeamType._all_field_names_ = set(["description"])
 TeamMergeRequestCanceledShownToSecondaryTeamType._all_fields_ = [
-    (
-        "description",
-        TeamMergeRequestCanceledShownToSecondaryTeamType.description.validator,
-    )
+    ("description", TeamMergeRequestCanceledShownToSecondaryTeamType.description.validator)
 ]
 
 TeamMergeRequestCanceledType.description.validator = bv.String()
@@ -116367,10 +115836,7 @@ TeamMergeRequestExpiredDetails.request_expired_details.validator = (
 )
 TeamMergeRequestExpiredDetails._all_field_names_ = set(["request_expired_details"])
 TeamMergeRequestExpiredDetails._all_fields_ = [
-    (
-        "request_expired_details",
-        TeamMergeRequestExpiredDetails.request_expired_details.validator,
-    )
+    ("request_expired_details", TeamMergeRequestExpiredDetails.request_expired_details.validator)
 ]
 
 TeamMergeRequestExpiredExtraDetails._primary_team_validator = (
@@ -116397,10 +115863,7 @@ TeamMergeRequestExpiredShownToPrimaryTeamDetails._all_field_names_ = set(
     ]
 )
 TeamMergeRequestExpiredShownToPrimaryTeamDetails._all_fields_ = [
-    (
-        "secondary_team",
-        TeamMergeRequestExpiredShownToPrimaryTeamDetails.secondary_team.validator,
-    ),
+    ("secondary_team", TeamMergeRequestExpiredShownToPrimaryTeamDetails.secondary_team.validator),
     ("sent_by", TeamMergeRequestExpiredShownToPrimaryTeamDetails.sent_by.validator),
 ]
 
@@ -116419,10 +115882,7 @@ TeamMergeRequestExpiredShownToSecondaryTeamDetails._all_fields_ = [
 TeamMergeRequestExpiredShownToSecondaryTeamType.description.validator = bv.String()
 TeamMergeRequestExpiredShownToSecondaryTeamType._all_field_names_ = set(["description"])
 TeamMergeRequestExpiredShownToSecondaryTeamType._all_fields_ = [
-    (
-        "description",
-        TeamMergeRequestExpiredShownToSecondaryTeamType.description.validator,
-    )
+    ("description", TeamMergeRequestExpiredShownToSecondaryTeamType.description.validator)
 ]
 
 TeamMergeRequestExpiredType.description.validator = bv.String()
@@ -116440,20 +115900,14 @@ TeamMergeRequestRejectedShownToPrimaryTeamDetails._all_field_names_ = set(
     ]
 )
 TeamMergeRequestRejectedShownToPrimaryTeamDetails._all_fields_ = [
-    (
-        "secondary_team",
-        TeamMergeRequestRejectedShownToPrimaryTeamDetails.secondary_team.validator,
-    ),
+    ("secondary_team", TeamMergeRequestRejectedShownToPrimaryTeamDetails.secondary_team.validator),
     ("sent_by", TeamMergeRequestRejectedShownToPrimaryTeamDetails.sent_by.validator),
 ]
 
 TeamMergeRequestRejectedShownToPrimaryTeamType.description.validator = bv.String()
 TeamMergeRequestRejectedShownToPrimaryTeamType._all_field_names_ = set(["description"])
 TeamMergeRequestRejectedShownToPrimaryTeamType._all_fields_ = [
-    (
-        "description",
-        TeamMergeRequestRejectedShownToPrimaryTeamType.description.validator,
-    )
+    ("description", TeamMergeRequestRejectedShownToPrimaryTeamType.description.validator)
 ]
 
 TeamMergeRequestRejectedShownToSecondaryTeamDetails.sent_by.validator = bv.String()
@@ -116465,10 +115919,7 @@ TeamMergeRequestRejectedShownToSecondaryTeamDetails._all_fields_ = [
 TeamMergeRequestRejectedShownToSecondaryTeamType.description.validator = bv.String()
 TeamMergeRequestRejectedShownToSecondaryTeamType._all_field_names_ = set(["description"])
 TeamMergeRequestRejectedShownToSecondaryTeamType._all_fields_ = [
-    (
-        "description",
-        TeamMergeRequestRejectedShownToSecondaryTeamType.description.validator,
-    )
+    ("description", TeamMergeRequestRejectedShownToSecondaryTeamType.description.validator)
 ]
 
 TeamMergeRequestReminderDetails.request_reminder_details.validator = (
@@ -116476,10 +115927,7 @@ TeamMergeRequestReminderDetails.request_reminder_details.validator = (
 )
 TeamMergeRequestReminderDetails._all_field_names_ = set(["request_reminder_details"])
 TeamMergeRequestReminderDetails._all_fields_ = [
-    (
-        "request_reminder_details",
-        TeamMergeRequestReminderDetails.request_reminder_details.validator,
-    )
+    ("request_reminder_details", TeamMergeRequestReminderDetails.request_reminder_details.validator)
 ]
 
 TeamMergeRequestReminderExtraDetails._primary_team_validator = (
@@ -116506,20 +115954,14 @@ TeamMergeRequestReminderShownToPrimaryTeamDetails._all_field_names_ = set(
     ]
 )
 TeamMergeRequestReminderShownToPrimaryTeamDetails._all_fields_ = [
-    (
-        "secondary_team",
-        TeamMergeRequestReminderShownToPrimaryTeamDetails.secondary_team.validator,
-    ),
+    ("secondary_team", TeamMergeRequestReminderShownToPrimaryTeamDetails.secondary_team.validator),
     ("sent_to", TeamMergeRequestReminderShownToPrimaryTeamDetails.sent_to.validator),
 ]
 
 TeamMergeRequestReminderShownToPrimaryTeamType.description.validator = bv.String()
 TeamMergeRequestReminderShownToPrimaryTeamType._all_field_names_ = set(["description"])
 TeamMergeRequestReminderShownToPrimaryTeamType._all_fields_ = [
-    (
-        "description",
-        TeamMergeRequestReminderShownToPrimaryTeamType.description.validator,
-    )
+    ("description", TeamMergeRequestReminderShownToPrimaryTeamType.description.validator)
 ]
 
 TeamMergeRequestReminderShownToSecondaryTeamDetails.sent_to.validator = bv.String()
@@ -116531,10 +115973,7 @@ TeamMergeRequestReminderShownToSecondaryTeamDetails._all_fields_ = [
 TeamMergeRequestReminderShownToSecondaryTeamType.description.validator = bv.String()
 TeamMergeRequestReminderShownToSecondaryTeamType._all_field_names_ = set(["description"])
 TeamMergeRequestReminderShownToSecondaryTeamType._all_fields_ = [
-    (
-        "description",
-        TeamMergeRequestReminderShownToSecondaryTeamType.description.validator,
-    )
+    ("description", TeamMergeRequestReminderShownToSecondaryTeamType.description.validator)
 ]
 
 TeamMergeRequestReminderType.description.validator = bv.String()
@@ -116564,10 +116003,7 @@ TeamMergeRequestSentShownToPrimaryTeamDetails._all_field_names_ = set(
     ]
 )
 TeamMergeRequestSentShownToPrimaryTeamDetails._all_fields_ = [
-    (
-        "secondary_team",
-        TeamMergeRequestSentShownToPrimaryTeamDetails.secondary_team.validator,
-    ),
+    ("secondary_team", TeamMergeRequestSentShownToPrimaryTeamDetails.secondary_team.validator),
     ("sent_to", TeamMergeRequestSentShownToPrimaryTeamDetails.sent_to.validator),
 ]
 
@@ -116647,10 +116083,7 @@ TeamProfileChangeDefaultLanguageDetails._all_field_names_ = set(
 )
 TeamProfileChangeDefaultLanguageDetails._all_fields_ = [
     ("new_value", TeamProfileChangeDefaultLanguageDetails.new_value.validator),
-    (
-        "previous_value",
-        TeamProfileChangeDefaultLanguageDetails.previous_value.validator,
-    ),
+    ("previous_value", TeamProfileChangeDefaultLanguageDetails.previous_value.validator),
 ]
 
 TeamProfileChangeDefaultLanguageType.description.validator = bv.String()
@@ -116746,10 +116179,7 @@ TeamSelectiveSyncSettingsChangedDetails._all_field_names_ = set(
     ]
 )
 TeamSelectiveSyncSettingsChangedDetails._all_fields_ = [
-    (
-        "previous_value",
-        TeamSelectiveSyncSettingsChangedDetails.previous_value.validator,
-    ),
+    ("previous_value", TeamSelectiveSyncSettingsChangedDetails.previous_value.validator),
     ("new_value", TeamSelectiveSyncSettingsChangedDetails.new_value.validator),
 ]
 
@@ -117259,10 +116689,7 @@ WebSessionsChangeActiveSessionLimitDetails._all_field_names_ = set(
     ]
 )
 WebSessionsChangeActiveSessionLimitDetails._all_fields_ = [
-    (
-        "previous_value",
-        WebSessionsChangeActiveSessionLimitDetails.previous_value.validator,
-    ),
+    ("previous_value", WebSessionsChangeActiveSessionLimitDetails.previous_value.validator),
     ("new_value", WebSessionsChangeActiveSessionLimitDetails.new_value.validator),
 ]
 
@@ -117286,10 +116713,7 @@ WebSessionsChangeFixedLengthPolicyDetails._all_field_names_ = set(
 )
 WebSessionsChangeFixedLengthPolicyDetails._all_fields_ = [
     ("new_value", WebSessionsChangeFixedLengthPolicyDetails.new_value.validator),
-    (
-        "previous_value",
-        WebSessionsChangeFixedLengthPolicyDetails.previous_value.validator,
-    ),
+    ("previous_value", WebSessionsChangeFixedLengthPolicyDetails.previous_value.validator),
 ]
 
 WebSessionsChangeFixedLengthPolicyType.description.validator = bv.String()
@@ -117312,10 +116736,7 @@ WebSessionsChangeIdleLengthPolicyDetails._all_field_names_ = set(
 )
 WebSessionsChangeIdleLengthPolicyDetails._all_fields_ = [
     ("new_value", WebSessionsChangeIdleLengthPolicyDetails.new_value.validator),
-    (
-        "previous_value",
-        WebSessionsChangeIdleLengthPolicyDetails.previous_value.validator,
-    ),
+    ("previous_value", WebSessionsChangeIdleLengthPolicyDetails.previous_value.validator),
 ]
 
 WebSessionsChangeIdleLengthPolicyType.description.validator = bv.String()

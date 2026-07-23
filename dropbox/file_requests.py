@@ -1015,13 +1015,7 @@ class UpdateFileRequestArgs(bb.Struct):
     _has_required_fields = True
 
     def __init__(
-        self,
-        id=None,
-        title=None,
-        destination=None,
-        deadline=None,
-        open=None,
-        description=None,
+        self, id=None, title=None, destination=None, deadline=None, open=None, description=None
     ):
         self._id_value = bb.NOT_SET
         self._title_value = bb.NOT_SET

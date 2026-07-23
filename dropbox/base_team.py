@@ -244,10 +244,7 @@ class DropboxTeamBase(object):
             :class:`dropbox.team.ListMemberDevicesError`
         """
         arg = team.ListMemberDevicesArg(
-            team_member_id,
-            include_web_sessions,
-            include_desktop_clients,
-            include_mobile_clients,
+            team_member_id, include_web_sessions, include_desktop_clients, include_mobile_clients
         )
         r = self.request(
             team.devices_list_member_devices,
@@ -293,10 +290,7 @@ class DropboxTeamBase(object):
             :class:`dropbox.team.ListMembersDevicesError`
         """
         arg = team.ListMembersDevicesArg(
-            cursor,
-            include_web_sessions,
-            include_desktop_clients,
-            include_mobile_clients,
+            cursor, include_web_sessions, include_desktop_clients, include_mobile_clients
         )
         r = self.request(
             team.devices_list_members_devices,
@@ -346,10 +340,7 @@ class DropboxTeamBase(object):
             DeprecationWarning,
         )
         arg = team.ListTeamDevicesArg(
-            cursor,
-            include_web_sessions,
-            include_desktop_clients,
-            include_mobile_clients,
+            cursor, include_web_sessions, include_desktop_clients, include_mobile_clients
         )
         r = self.request(
             team.devices_list_team_devices,
@@ -794,11 +785,7 @@ class DropboxTeamBase(object):
             :class:`dropbox.team.GroupUpdateError`
         """
         arg = team.GroupUpdateArgs(
-            group,
-            return_members,
-            new_group_name,
-            new_group_external_id,
-            new_group_management_type,
+            group, return_members, new_group_name, new_group_external_id, new_group_management_type
         )
         r = self.request(
             team.groups_update,
