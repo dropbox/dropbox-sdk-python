@@ -37,12 +37,7 @@ class ApiExifGpsMetadata(bb.Struct):
     _has_required_fields = False
 
     def __init__(
-        self,
-        latitude=None,
-        longitude=None,
-        altitude=None,
-        timestamp=None,
-        datestamp=None,
+        self, latitude=None, longitude=None, altitude=None, timestamp=None, datestamp=None
     ):
         self._latitude_value = bb.NOT_SET
         self._longitude_value = bb.NOT_SET

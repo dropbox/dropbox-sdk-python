@@ -671,13 +671,7 @@ class DropboxBase(object):
         return r
 
     def file_requests_create(
-        self,
-        title,
-        destination,
-        deadline=None,
-        open=True,
-        description=None,
-        video_project_id=None,
+        self, title, destination, deadline=None, open=True, description=None, video_project_id=None
     ):
         """
         Creates a file request for this user.
@@ -1037,11 +1031,7 @@ class DropboxBase(object):
             DeprecationWarning,
         )
         arg = files.RelocationArg(
-            from_path,
-            to_path,
-            allow_shared_folder,
-            autorename,
-            allow_ownership_transfer,
+            from_path, to_path, allow_shared_folder, autorename, allow_ownership_transfer
         )
         r = self.request(
             files.copy,
@@ -1083,11 +1073,7 @@ class DropboxBase(object):
             :class:`dropbox.files.RelocationError`
         """
         arg = files.RelocationArg(
-            from_path,
-            to_path,
-            allow_shared_folder,
-            autorename,
-            allow_ownership_transfer,
+            from_path, to_path, allow_shared_folder, autorename, allow_ownership_transfer
         )
         r = self.request(
             files.copy_v2,
@@ -1098,11 +1084,7 @@ class DropboxBase(object):
         return r
 
     def files_copy_batch(
-        self,
-        entries,
-        autorename=False,
-        allow_shared_folder=False,
-        allow_ownership_transfer=False,
+        self, entries, autorename=False, allow_shared_folder=False, allow_ownership_transfer=False
     ):
         """
         Copy multiple files or folders to different locations at once in the
@@ -2597,11 +2579,7 @@ class DropboxBase(object):
             DeprecationWarning,
         )
         arg = files.RelocationArg(
-            from_path,
-            to_path,
-            allow_shared_folder,
-            autorename,
-            allow_ownership_transfer,
+            from_path, to_path, allow_shared_folder, autorename, allow_ownership_transfer
         )
         r = self.request(
             files.move,
@@ -2644,11 +2622,7 @@ class DropboxBase(object):
             :class:`dropbox.files.RelocationError`
         """
         arg = files.RelocationArg(
-            from_path,
-            to_path,
-            allow_shared_folder,
-            autorename,
-            allow_ownership_transfer,
+            from_path, to_path, allow_shared_folder, autorename, allow_ownership_transfer
         )
         r = self.request(
             files.move_v2,
@@ -2659,11 +2633,7 @@ class DropboxBase(object):
         return r
 
     def files_move_batch(
-        self,
-        entries,
-        autorename=False,
-        allow_shared_folder=False,
-        allow_ownership_transfer=False,
+        self, entries, autorename=False, allow_shared_folder=False, allow_ownership_transfer=False
     ):
         """
         Move multiple files or folders to different locations at once in the
@@ -4784,12 +4754,7 @@ class DropboxBase(object):
         return r
 
     def sharing_add_folder_member(
-        self,
-        shared_folder_id,
-        members,
-        quiet=False,
-        custom_message=None,
-        fp_sealed_result=None,
+        self, shared_folder_id, members, quiet=False, custom_message=None, fp_sealed_result=None
     ):
         """
         Allows an owner or editor (if the ACL update policy allows) of a shared

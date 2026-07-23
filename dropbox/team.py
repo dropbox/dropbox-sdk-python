@@ -1560,14 +1560,7 @@ class DevicesActive(bb.Struct):
     _has_required_fields = True
 
     def __init__(
-        self,
-        windows=None,
-        macos=None,
-        linux=None,
-        ios=None,
-        android=None,
-        other=None,
-        total=None,
+        self, windows=None, macos=None, linux=None, ios=None, android=None, other=None, total=None
     ):
         self._windows_value = bb.NOT_SET
         self._macos_value = bb.NOT_SET
@@ -6215,10 +6208,7 @@ class ListMemberDevicesResult(bb.Struct):
     _has_required_fields = False
 
     def __init__(
-        self,
-        active_web_sessions=None,
-        desktop_client_sessions=None,
-        mobile_client_sessions=None,
+        self, active_web_sessions=None, desktop_client_sessions=None, mobile_client_sessions=None
     ):
         self._active_web_sessions_value = bb.NOT_SET
         self._desktop_client_sessions_value = bb.NOT_SET
@@ -7581,11 +7571,7 @@ class MemberDevices(bb.Struct):
     _has_required_fields = True
 
     def __init__(
-        self,
-        team_member_id=None,
-        web_sessions=None,
-        desktop_clients=None,
-        mobile_clients=None,
+        self, team_member_id=None, web_sessions=None, desktop_clients=None, mobile_clients=None
     ):
         self._team_member_id_value = bb.NOT_SET
         self._web_sessions_value = bb.NOT_SET
@@ -15706,10 +15692,7 @@ DesktopClientSession._all_fields_ = DeviceSession._all_fields_ + [
     ("client_type", DesktopClientSession.client_type.validator),
     ("client_version", DesktopClientSession.client_version.validator),
     ("platform", DesktopClientSession.platform.validator),
-    (
-        "is_delete_on_unlink_supported",
-        DesktopClientSession.is_delete_on_unlink_supported.validator,
-    ),
+    ("is_delete_on_unlink_supported", DesktopClientSession.is_delete_on_unlink_supported.validator),
 ]
 
 DesktopPlatform._windows_validator = bv.Void()
@@ -15948,23 +15931,11 @@ GetActivityReport._all_fields_ = BaseDfbReport._all_fields_ + [
     ("active_users_28_day", GetActivityReport.active_users_28_day.validator),
     ("active_users_7_day", GetActivityReport.active_users_7_day.validator),
     ("active_users_1_day", GetActivityReport.active_users_1_day.validator),
-    (
-        "active_shared_folders_28_day",
-        GetActivityReport.active_shared_folders_28_day.validator,
-    ),
-    (
-        "active_shared_folders_7_day",
-        GetActivityReport.active_shared_folders_7_day.validator,
-    ),
-    (
-        "active_shared_folders_1_day",
-        GetActivityReport.active_shared_folders_1_day.validator,
-    ),
+    ("active_shared_folders_28_day", GetActivityReport.active_shared_folders_28_day.validator),
+    ("active_shared_folders_7_day", GetActivityReport.active_shared_folders_7_day.validator),
+    ("active_shared_folders_1_day", GetActivityReport.active_shared_folders_1_day.validator),
     ("shared_links_created", GetActivityReport.shared_links_created.validator),
-    (
-        "shared_links_viewed_by_team",
-        GetActivityReport.shared_links_viewed_by_team.validator,
-    ),
+    ("shared_links_viewed_by_team", GetActivityReport.shared_links_viewed_by_team.validator),
     (
         "shared_links_viewed_by_outside_user",
         GetActivityReport.shared_links_viewed_by_outside_user.validator,
@@ -15973,10 +15944,7 @@ GetActivityReport._all_fields_ = BaseDfbReport._all_fields_ + [
         "shared_links_viewed_by_not_logged_in",
         GetActivityReport.shared_links_viewed_by_not_logged_in.validator,
     ),
-    (
-        "shared_links_viewed_total",
-        GetActivityReport.shared_links_viewed_total.validator,
-    ),
+    ("shared_links_viewed_total", GetActivityReport.shared_links_viewed_total.validator),
 ]
 
 GetDevicesReport.active_1_day.validator = DevicesActive_validator
@@ -16520,17 +16488,11 @@ LegalHoldHeldRevisionMetadata._all_field_names_ = set(
 )
 LegalHoldHeldRevisionMetadata._all_fields_ = [
     ("new_filename", LegalHoldHeldRevisionMetadata.new_filename.validator),
-    (
-        "original_revision_id",
-        LegalHoldHeldRevisionMetadata.original_revision_id.validator,
-    ),
+    ("original_revision_id", LegalHoldHeldRevisionMetadata.original_revision_id.validator),
     ("original_file_path", LegalHoldHeldRevisionMetadata.original_file_path.validator),
     ("server_modified", LegalHoldHeldRevisionMetadata.server_modified.validator),
     ("author_member_id", LegalHoldHeldRevisionMetadata.author_member_id.validator),
-    (
-        "author_member_status",
-        LegalHoldHeldRevisionMetadata.author_member_status.validator,
-    ),
+    ("author_member_status", LegalHoldHeldRevisionMetadata.author_member_status.validator),
     ("author_email", LegalHoldHeldRevisionMetadata.author_email.validator),
     ("file_type", LegalHoldHeldRevisionMetadata.file_type.validator),
     ("size", LegalHoldHeldRevisionMetadata.size.validator),
@@ -16925,14 +16887,8 @@ ListMemberDevicesResult._all_field_names_ = set(
 )
 ListMemberDevicesResult._all_fields_ = [
     ("active_web_sessions", ListMemberDevicesResult.active_web_sessions.validator),
-    (
-        "desktop_client_sessions",
-        ListMemberDevicesResult.desktop_client_sessions.validator,
-    ),
-    (
-        "mobile_client_sessions",
-        ListMemberDevicesResult.mobile_client_sessions.validator,
-    ),
+    ("desktop_client_sessions", ListMemberDevicesResult.desktop_client_sessions.validator),
+    ("mobile_client_sessions", ListMemberDevicesResult.mobile_client_sessions.validator),
 ]
 
 ListMembersAppsArg.cursor.validator = bv.Nullable(bv.String())
@@ -16980,10 +16936,7 @@ ListMembersDevicesArg._all_field_names_ = set(
 ListMembersDevicesArg._all_fields_ = [
     ("cursor", ListMembersDevicesArg.cursor.validator),
     ("include_web_sessions", ListMembersDevicesArg.include_web_sessions.validator),
-    (
-        "include_desktop_clients",
-        ListMembersDevicesArg.include_desktop_clients.validator,
-    ),
+    ("include_desktop_clients", ListMembersDevicesArg.include_desktop_clients.validator),
     ("include_mobile_clients", ListMembersDevicesArg.include_mobile_clients.validator),
 ]
 
@@ -17844,10 +17797,7 @@ MembersSetProfileArg._all_fields_ = [
     ("new_given_name", MembersSetProfileArg.new_given_name.validator),
     ("new_surname", MembersSetProfileArg.new_surname.validator),
     ("new_persistent_id", MembersSetProfileArg.new_persistent_id.validator),
-    (
-        "new_is_directory_restricted",
-        MembersSetProfileArg.new_is_directory_restricted.validator,
-    ),
+    ("new_is_directory_restricted", MembersSetProfileArg.new_is_directory_restricted.validator),
 ]
 
 MembersSetProfileError._external_id_and_new_external_id_unsafe_validator = bv.Void()
@@ -18151,10 +18101,7 @@ RevokeDeviceSessionBatchResult.revoke_devices_status.validator = bv.List(
 )
 RevokeDeviceSessionBatchResult._all_field_names_ = set(["revoke_devices_status"])
 RevokeDeviceSessionBatchResult._all_fields_ = [
-    (
-        "revoke_devices_status",
-        RevokeDeviceSessionBatchResult.revoke_devices_status.validator,
-    )
+    ("revoke_devices_status", RevokeDeviceSessionBatchResult.revoke_devices_status.validator)
 ]
 
 RevokeDeviceSessionError._device_session_not_found_validator = bv.Void()
@@ -18219,10 +18166,7 @@ RevokeLinkedAppBatchResult.revoke_linked_app_status.validator = bv.List(
 )
 RevokeLinkedAppBatchResult._all_field_names_ = set(["revoke_linked_app_status"])
 RevokeLinkedAppBatchResult._all_fields_ = [
-    (
-        "revoke_linked_app_status",
-        RevokeLinkedAppBatchResult.revoke_linked_app_status.validator,
-    )
+    ("revoke_linked_app_status", RevokeLinkedAppBatchResult.revoke_linked_app_status.validator)
 ]
 
 RevokeLinkedAppError._app_not_found_validator = bv.Void()
@@ -18655,10 +18599,7 @@ TeamFolderUpdateSyncSettingsArg._all_field_names_ = TeamFolderIdArg._all_field_n
 )
 TeamFolderUpdateSyncSettingsArg._all_fields_ = TeamFolderIdArg._all_fields_ + [
     ("sync_setting", TeamFolderUpdateSyncSettingsArg.sync_setting.validator),
-    (
-        "content_sync_settings",
-        TeamFolderUpdateSyncSettingsArg.content_sync_settings.validator,
-    ),
+    ("content_sync_settings", TeamFolderUpdateSyncSettingsArg.content_sync_settings.validator),
 ]
 
 TeamFolderUpdateSyncSettingsError._sync_settings_error_validator = files.SyncSettingsError_validator

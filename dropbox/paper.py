@@ -976,12 +976,7 @@ class ListPaperDocsArgs(bb.Struct):
     _has_required_fields = False
 
     def __init__(
-        self,
-        filter_by=None,
-        sort_by=None,
-        sort_order=None,
-        limit=None,
-        stop_at_date=None,
+        self, filter_by=None, sort_by=None, sort_order=None, limit=None, stop_at_date=None
     ):
         self._filter_by_value = bb.NOT_SET
         self._sort_by_value = bb.NOT_SET
@@ -2968,10 +2963,7 @@ FoldersContainingPaperDoc._all_field_names_ = set(
     ]
 )
 FoldersContainingPaperDoc._all_fields_ = [
-    (
-        "folder_sharing_policy_type",
-        FoldersContainingPaperDoc.folder_sharing_policy_type.validator,
-    ),
+    ("folder_sharing_policy_type", FoldersContainingPaperDoc.folder_sharing_policy_type.validator),
     ("folders", FoldersContainingPaperDoc.folders.validator),
 ]
 
