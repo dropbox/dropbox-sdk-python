@@ -16,7 +16,7 @@ jobs:
     steps:
       - uses: actions/checkout@v7
       - name: Setup Python environment
-        uses: actions/setup-python@v6
+        uses: actions/setup-python@v7
         with:
           python-version: '3.11'
       - name: Setup virtual environment
@@ -36,7 +36,7 @@ jobs:
           coverage run --rcfile=.coveragerc -m pytest test/unit/
           coverage xml
       - name: Upload coverage artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: unit-coverage
           path: coverage.xml
@@ -53,7 +53,7 @@ jobs:
     steps:
       - uses: actions/checkout@v7
       - name: Download coverage artifact
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
         with:
           name: unit-coverage
       - name: Configure AWS credentials (OIDC)
@@ -83,7 +83,7 @@ jobs:
     steps:
       - uses: actions/checkout@v7
       - name: Setup Python environment
-        uses: actions/setup-python@v6
+        uses: actions/setup-python@v7
         with:
           python-version: '3.11'
       - name: Setup virtual environment
