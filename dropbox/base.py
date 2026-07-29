@@ -671,13 +671,7 @@ class DropboxBase(object):
         return r
 
     def file_requests_create(
-        self,
-        title,
-        destination,
-        deadline=None,
-        open=True,
-        description=None,
-        video_project_id=None,
+        self, title, destination, deadline=None, open=True, description=None, video_project_id=None
     ):
         """
         Creates a file request for this user.
@@ -1037,11 +1031,7 @@ class DropboxBase(object):
             DeprecationWarning,
         )
         arg = files.RelocationArg(
-            from_path,
-            to_path,
-            allow_shared_folder,
-            autorename,
-            allow_ownership_transfer,
+            from_path, to_path, allow_shared_folder, autorename, allow_ownership_transfer
         )
         r = self.request(
             files.copy,
@@ -1083,11 +1073,7 @@ class DropboxBase(object):
             :class:`dropbox.files.RelocationError`
         """
         arg = files.RelocationArg(
-            from_path,
-            to_path,
-            allow_shared_folder,
-            autorename,
-            allow_ownership_transfer,
+            from_path, to_path, allow_shared_folder, autorename, allow_ownership_transfer
         )
         r = self.request(
             files.copy_v2,
@@ -1098,11 +1084,7 @@ class DropboxBase(object):
         return r
 
     def files_copy_batch(
-        self,
-        entries,
-        autorename=False,
-        allow_shared_folder=False,
-        allow_ownership_transfer=False,
+        self, entries, autorename=False, allow_shared_folder=False, allow_ownership_transfer=False
     ):
         """
         Copy multiple files or folders to different locations at once in the
@@ -2597,11 +2579,7 @@ class DropboxBase(object):
             DeprecationWarning,
         )
         arg = files.RelocationArg(
-            from_path,
-            to_path,
-            allow_shared_folder,
-            autorename,
-            allow_ownership_transfer,
+            from_path, to_path, allow_shared_folder, autorename, allow_ownership_transfer
         )
         r = self.request(
             files.move,
@@ -2644,11 +2622,7 @@ class DropboxBase(object):
             :class:`dropbox.files.RelocationError`
         """
         arg = files.RelocationArg(
-            from_path,
-            to_path,
-            allow_shared_folder,
-            autorename,
-            allow_ownership_transfer,
+            from_path, to_path, allow_shared_folder, autorename, allow_ownership_transfer
         )
         r = self.request(
             files.move_v2,
@@ -2659,11 +2633,7 @@ class DropboxBase(object):
         return r
 
     def files_move_batch(
-        self,
-        entries,
-        autorename=False,
-        allow_shared_folder=False,
-        allow_ownership_transfer=False,
+        self, entries, autorename=False, allow_shared_folder=False, allow_ownership_transfer=False
     ):
         """
         Move multiple files or folders to different locations at once in the
@@ -4506,27 +4476,19 @@ class DropboxBase(object):
     def riviera_get_markdown_async(self, file_id_or_url=None, enable_ocr=False, embed_images=False):
         """
         Asynchronous document-to-markdown conversion for supported file formats.
+        Supported formats: .binder, .docx, .html, .paper, .papert, .pptx, .xlsx,
+        .gsheet, .ods, .pdf. Unsupported formats return an
+        `unsupported_format_error`. Size limit: the source file must be at most
+        50 MB. Larger files are rejected.
 
         Route attributes:
             scope: files.content.read
 
         :param file_id_or_url: Identifier of the document to convert. Callers
-            must set exactly one of the oneof variants: - file_id: a
-            Dropbox-issued file id (format: "id:<id>") for a file the
-            authenticated user has access to. - path: an absolute Dropbox path,
-            e.g. "/folder/report.docx". - url: either a Dropbox shared link
-            (www.dropbox.com) or an external HTTPS URL pointing to a supported
-            document file. - Dropbox shared links are resolved internally using
-            the caller's authenticated identity and the link's visibility /
-            download settings. They therefore require an authenticated user
-            context (anonymous `url` requests against Dropbox links are rejected
-            with an `ACCESS_ERROR`). Links protected by a password are rejected
-            with `shared_link_password_protected`; links with downloads disabled
-            are rejected with `link_download_disabled_error`. - External URLs
-            are fetched over HTTPS through the backend's egress proxy and must
-            point at a supported document file extension. The referenced file
-            must be a document in a supported format; requests against
-            unsupported formats return `unsupported_format_error`.
+            must set exactly one of the `FileIdOrUrl` variants. The referenced
+            file must be a document in a supported format (see the route
+            description for the list); requests against unsupported formats
+            return `unsupported_format_error`.
         :type file_id_or_url: Nullable[:class:`dropbox.riviera.FileIdOrUrl`]
         :param enable_ocr: Enable OCR for PDF documents. Processing is slower
             when enabled.
@@ -4572,30 +4534,29 @@ class DropboxBase(object):
 
     def riviera_get_metadata_async(self, file_id_or_url=None):
         """
-        Asynchronous file metadata extraction for supported file formats.
+        Asynchronous file metadata extraction for supported file formats. The
+        kind of metadata returned depends on the file type: - Image (EXIF)
+        formats: .3fr, .arw, .avif, .bmp, .cr2, .cr3, .crw, .dcr, .dcs, .dng,
+        .erf, .gif, .heic, .j2c, .j2k, .jp2, .jpc, .jpeg, .jpf, .jpg, .jpg2,
+        .jpm, .jpx, .kdc, .mef, .mos, .mrw, .nef, .nrw, .orf, .pef, .png, .ppm,
+        .r3d, .raf, .rw2, .rwl, .sr2, .tga, .tif, .tiff, .wbmp, .web, .webp,
+        .x3f. - Audio/video (media) formats: .aac, .aif, .aiff, .flac, .m4a,
+        .m4r, .mp3, .oga, .ogg, .wav, .wma, .3gp, .3gpp, .3gpp2, .asf, .avi,
+        .dv, .flv, .m2t, .m2ts, .m4v, .mkv, .mov, .mp4, .mpeg, .mpg, .mts, .mxf,
+        .oggtheora, .ogv, .rm, .ts, .vob, .webm, .wmv. - PDF format: .pdf. - MS
+        Office formats: .docx, .pptx, .xlsx. Unsupported formats return an
+        `unsupported_format_error`.
 
         Route attributes:
             scope: files.content.read
 
         :param file_id_or_url: Identifier of the file to extract metadata from.
-            Callers must set exactly one of the oneof variants: - file_id: a
-            Dropbox-issued file id (format: "id:<id>") for a file the
-            authenticated user has access to. - path: an absolute Dropbox path,
-            e.g. "/folder/photo.jpg". - url: either a Dropbox shared link
-            (www.dropbox.com) or an external HTTPS URL pointing to a supported
-            file. - Dropbox shared links are resolved internally using the
-            caller's authenticated identity and the link's visibility / download
-            settings. They therefore require an authenticated user context
-            (anonymous `url` requests against Dropbox links are rejected with an
-            `ACCESS_ERROR`). Links protected by a password are rejected with
-            `shared_link_password_protected`; links with downloads disabled are
-            rejected with `link_download_disabled_error`. - External URLs are
-            fetched over HTTPS through the backend's egress proxy and must point
-            at a supported file extension. The kind of metadata returned is
-            determined by the file type: image files return EXIF metadata,
-            audio/video files return media metadata, PDFs return PDF metadata,
-            and MS Office documents (docx, pptx, xlsx) return Office metadata.
-            Requests against unsupported formats return
+            Callers must set exactly one of the `FileIdOrUrl` variants. The kind
+            of metadata returned is determined by the file type: image files
+            return EXIF metadata, audio/video files return media metadata, PDFs
+            return PDF metadata, and MS Office documents (docx, pptx, xlsx)
+            return Office metadata. See the route description for the supported
+            formats. Requests against unsupported formats return
             `unsupported_format_error`.
         :type file_id_or_url: Nullable[:class:`dropbox.riviera.FileIdOrUrl`]
         :rtype: :class:`dropbox.async_.LaunchResultBase`
@@ -4637,39 +4598,34 @@ class DropboxBase(object):
     def riviera_get_transcript_async(
         self,
         file_id_or_url=None,
-        timestamp_level=riviera.TimestampLevel.unknown,
+        timestamp_level=riviera.TimestampLevel.sentence,
         included_special_words="",
         audio_language="",
     ):
         """
-        Asynchronous transcript generation for audio and video files.
+        Asynchronous transcript generation for audio and video files. Supported
+        audio formats: .aac, .aif, .aiff, .flac, .m4a, .m4r, .mp3, .oga, .ogg,
+        .wav, .wma. Supported video formats: .3gp, .3gpp, .3gpp2, .asf, .avi,
+        .dv, .flv, .m2t, .m2ts, .m4v, .mkv, .mov, .mp4, .mpeg, .mpg, .mts, .mxf,
+        .oggtheora, .ogv, .rm, .ts, .vob, .webm, .wmv. Unsupported formats
+        return an `unsupported_format_error`. Size limits: the source file must
+        be at most 10 GB and its audio track at most 1 hour in duration. Files
+        exceeding these limits are rejected.
 
         Route attributes:
             scope: files.content.read
 
         :param file_id_or_url: Identifier of the media asset to transcribe.
-            Callers must set exactly one of the oneof variants: - file_id: a
-            Dropbox-issued file id (format: "id:<id>") for a file the
-            authenticated user has access to. - path: an absolute Dropbox path,
-            e.g. "/folder/recording.mp4". - url: either a Dropbox shared link
-            (www.dropbox.com) or an external HTTPS URL pointing to a supported
-            audio/video file. - Dropbox shared links are resolved internally
-            using the caller's authenticated identity and the link's visibility
-            / download settings. They therefore require an authenticated user
-            context (anonymous `url` requests against Dropbox links are rejected
-            with an `ACCESS_ERROR`). Links protected by a password are rejected
-            with `shared_link_password_protected`; links with downloads disabled
-            are rejected with `link_download_disabled_error`. - External URLs
-            are fetched over HTTPS through the backend's egress proxy and must
-            point at a supported audio/video file extension. The referenced
-            asset must be an audio or video file in a supported format; requests
-            against files with no audio track return a `no_audio_error`.
+            Callers must set exactly one of the `FileIdOrUrl` variants. The
+            referenced asset must be an audio or video file in a supported
+            format (see the route description for the list); requests against
+            files with no audio track return a `no_audio_error`.
         :type file_id_or_url: Nullable[:class:`dropbox.riviera.FileIdOrUrl`]
         :param timestamp_level: Granularity of the time offsets returned for
-            each transcript segment. Defaults to `SENTENCE. - SENTENCE: one
-            segment per spoken sentence (recommended). - WORD: one segment per
-            word, useful for fine-grained alignment such as captioning or
-            highlight-as-you-listen experiences.
+            each transcript segment. Defaults to `SENTENCE` when the field is
+            omitted. - SENTENCE: one segment per spoken sentence (recommended).
+            - WORD: one segment per word, useful for fine-grained alignment such
+            as captioning or highlight-as-you-listen experiences.
         :type timestamp_level: :class:`dropbox.riviera.TimestampLevel`
         :param included_special_words: Comma-delimited list of non-lexical
             filler words to preserve in the transcript output, e.g. `"uh, ah,
@@ -4784,12 +4740,7 @@ class DropboxBase(object):
         return r
 
     def sharing_add_folder_member(
-        self,
-        shared_folder_id,
-        members,
-        quiet=False,
-        custom_message=None,
-        fp_sealed_result=None,
+        self, shared_folder_id, members, quiet=False, custom_message=None, fp_sealed_result=None
     ):
         """
         Allows an owner or editor (if the ACL update policy allows) of a shared

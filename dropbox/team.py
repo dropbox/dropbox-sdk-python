@@ -908,6 +908,673 @@ class BaseTeamFolderError(bb.Union):
 BaseTeamFolderError_validator = bv.Union(BaseTeamFolderError)
 
 
+class BulkSuspendArg(bb.Struct):
+    """
+    Launches one action-specific bulk suspend job.
+
+    :ivar BulkSuspendArg.members:
+        Must contain between 1 and 500 targets. The launch handler also rejects
+        duplicate client item IDs and duplicate member selectors.
+    """
+
+    __slots__ = [
+        "_members_value",
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self, members=None):
+        self._members_value = bb.NOT_SET
+        if members is not None:
+            self.members = members
+
+    # Instance attribute type: list of [BulkSuspendMemberTarget] (validator is set below)
+    members = bb.Attribute("members")
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(BulkSuspendArg, self)._process_custom_annotations(
+            annotation_type, field_path, processor
+        )
+
+
+BulkSuspendArg_validator = bv.Struct(BulkSuspendArg)
+
+
+class BulkSuspendComplete(bb.Struct):
+    __slots__ = [
+        "_requested_value",
+        "_suspended_value",
+        "_failed_value",
+        "_unknown_value",
+        "_report_delivery_value",
+    ]
+
+    _has_required_fields = True
+
+    def __init__(
+        self, requested=None, suspended=None, failed=None, unknown=None, report_delivery=None
+    ):
+        self._requested_value = bb.NOT_SET
+        self._suspended_value = bb.NOT_SET
+        self._failed_value = bb.NOT_SET
+        self._unknown_value = bb.NOT_SET
+        self._report_delivery_value = bb.NOT_SET
+        if requested is not None:
+            self.requested = requested
+        if suspended is not None:
+            self.suspended = suspended
+        if failed is not None:
+            self.failed = failed
+        if unknown is not None:
+            self.unknown = unknown
+        if report_delivery is not None:
+            self.report_delivery = report_delivery
+
+    # Instance attribute type: int (validator is set below)
+    requested = bb.Attribute("requested")
+
+    # Instance attribute type: int (validator is set below)
+    suspended = bb.Attribute("suspended")
+
+    # Instance attribute type: int (validator is set below)
+    failed = bb.Attribute("failed")
+
+    # Instance attribute type: int (validator is set below)
+    unknown = bb.Attribute("unknown")
+
+    # Instance attribute type: BulkSuspendReportDeliveryStatus (validator is set below)
+    report_delivery = bb.Attribute("report_delivery", user_defined=True)
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(BulkSuspendComplete, self)._process_custom_annotations(
+            annotation_type, field_path, processor
+        )
+
+
+BulkSuspendComplete_validator = bv.Struct(BulkSuspendComplete)
+
+
+class BulkSuspendError(bb.Union):
+    """
+    A typed launch rejection. Authorization failures continue to use the API v2
+    authentication/permission error surface.
+
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+    """
+
+    _catch_all = "other"
+    # Attribute is overwritten below the class definition
+    invalid_request = None
+    # Attribute is overwritten below the class definition
+    too_many_members = None
+    # Attribute is overwritten below the class definition
+    duplicate_client_item_id = None
+    # Attribute is overwritten below the class definition
+    duplicate_team_member_id = None
+    # Attribute is overwritten below the class definition
+    acting_admin = None
+    # Attribute is overwritten below the class definition
+    last_admin = None
+    # Attribute is overwritten below the class definition
+    other = None
+
+    def is_invalid_request(self):
+        """
+        Check if the union tag is ``invalid_request``.
+
+        :rtype: bool
+        """
+        return self._tag == "invalid_request"
+
+    def is_too_many_members(self):
+        """
+        Check if the union tag is ``too_many_members``.
+
+        :rtype: bool
+        """
+        return self._tag == "too_many_members"
+
+    def is_duplicate_client_item_id(self):
+        """
+        Check if the union tag is ``duplicate_client_item_id``.
+
+        :rtype: bool
+        """
+        return self._tag == "duplicate_client_item_id"
+
+    def is_duplicate_team_member_id(self):
+        """
+        Check if the union tag is ``duplicate_team_member_id``.
+
+        :rtype: bool
+        """
+        return self._tag == "duplicate_team_member_id"
+
+    def is_acting_admin(self):
+        """
+        Check if the union tag is ``acting_admin``.
+
+        :rtype: bool
+        """
+        return self._tag == "acting_admin"
+
+    def is_last_admin(self):
+        """
+        Check if the union tag is ``last_admin``.
+
+        :rtype: bool
+        """
+        return self._tag == "last_admin"
+
+    def is_other(self):
+        """
+        Check if the union tag is ``other``.
+
+        :rtype: bool
+        """
+        return self._tag == "other"
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(BulkSuspendError, self)._process_custom_annotations(
+            annotation_type, field_path, processor
+        )
+
+
+BulkSuspendError_validator = bv.Union(BulkSuspendError)
+
+
+class BulkSuspendJobStatus(async_.PollResultBase):
+    """
+    Coarse job state. Live row progress and report contents are intentionally
+    omitted; callers receive row details in the terminal email report.
+
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+    """
+
+    _catch_all = "other"
+    # Attribute is overwritten below the class definition
+    other = None
+
+    @classmethod
+    def complete(cls, val):
+        """
+        Create an instance of this class set to the ``complete`` tag with value
+        ``val``.
+
+        :param BulkSuspendComplete val:
+        :rtype: BulkSuspendJobStatus
+        """
+        return cls("complete", val)
+
+    @classmethod
+    def failed(cls, val):
+        """
+        Create an instance of this class set to the ``failed`` tag with value
+        ``val``.
+
+        :param BulkSuspendTaskFailure val:
+        :rtype: BulkSuspendJobStatus
+        """
+        return cls("failed", val)
+
+    def is_complete(self):
+        """
+        Check if the union tag is ``complete``.
+
+        :rtype: bool
+        """
+        return self._tag == "complete"
+
+    def is_failed(self):
+        """
+        Check if the union tag is ``failed``.
+
+        :rtype: bool
+        """
+        return self._tag == "failed"
+
+    def is_other(self):
+        """
+        Check if the union tag is ``other``.
+
+        :rtype: bool
+        """
+        return self._tag == "other"
+
+    def get_complete(self):
+        """
+        Only call this if :meth:`is_complete` is true.
+
+        :rtype: BulkSuspendComplete
+        """
+        if not self.is_complete():
+            raise AttributeError("tag 'complete' not set")
+        return self._value
+
+    def get_failed(self):
+        """
+        Only call this if :meth:`is_failed` is true.
+
+        :rtype: BulkSuspendTaskFailure
+        """
+        if not self.is_failed():
+            raise AttributeError("tag 'failed' not set")
+        return self._value
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(BulkSuspendJobStatus, self)._process_custom_annotations(
+            annotation_type, field_path, processor
+        )
+
+
+BulkSuspendJobStatus_validator = bv.Union(BulkSuspendJobStatus)
+
+
+class BulkSuspendMemberTarget(bb.Struct):
+    """
+    One member selected for suspension. The opaque client item ID correlates the
+    eventual report row with the caller's input without sending CSV data.
+    """
+
+    __slots__ = [
+        "_client_item_id_value",
+        "_suspend_arg_value",
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self, client_item_id=None, suspend_arg=None):
+        self._client_item_id_value = bb.NOT_SET
+        self._suspend_arg_value = bb.NOT_SET
+        if client_item_id is not None:
+            self.client_item_id = client_item_id
+        if suspend_arg is not None:
+            self.suspend_arg = suspend_arg
+
+    # Instance attribute type: str (validator is set below)
+    client_item_id = bb.Attribute("client_item_id")
+
+    # Instance attribute type: MembersDeactivateArg (validator is set below)
+    suspend_arg = bb.Attribute("suspend_arg", user_defined=True)
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(BulkSuspendMemberTarget, self)._process_custom_annotations(
+            annotation_type, field_path, processor
+        )
+
+
+BulkSuspendMemberTarget_validator = bv.Struct(BulkSuspendMemberTarget)
+
+
+class BulkSuspendReportDeliveryStatus(bb.Union):
+    """
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+    """
+
+    _catch_all = "other"
+    # Attribute is overwritten below the class definition
+    bulk_suspend_report_delivery_status_unspecified = None
+    # Attribute is overwritten below the class definition
+    bulk_suspend_report_delivery_status_pending = None
+    # Attribute is overwritten below the class definition
+    bulk_suspend_report_delivery_status_delivered = None
+    # Attribute is overwritten below the class definition
+    bulk_suspend_report_delivery_status_failed = None
+    # Attribute is overwritten below the class definition
+    other = None
+
+    def is_bulk_suspend_report_delivery_status_unspecified(self):
+        """
+        Check if the union tag is ``bulk_suspend_report_delivery_status_unspecified``.
+
+        :rtype: bool
+        """
+        return self._tag == "bulk_suspend_report_delivery_status_unspecified"
+
+    def is_bulk_suspend_report_delivery_status_pending(self):
+        """
+        Check if the union tag is ``bulk_suspend_report_delivery_status_pending``.
+
+        :rtype: bool
+        """
+        return self._tag == "bulk_suspend_report_delivery_status_pending"
+
+    def is_bulk_suspend_report_delivery_status_delivered(self):
+        """
+        Check if the union tag is ``bulk_suspend_report_delivery_status_delivered``.
+
+        :rtype: bool
+        """
+        return self._tag == "bulk_suspend_report_delivery_status_delivered"
+
+    def is_bulk_suspend_report_delivery_status_failed(self):
+        """
+        Check if the union tag is ``bulk_suspend_report_delivery_status_failed``.
+
+        :rtype: bool
+        """
+        return self._tag == "bulk_suspend_report_delivery_status_failed"
+
+    def is_other(self):
+        """
+        Check if the union tag is ``other``.
+
+        :rtype: bool
+        """
+        return self._tag == "other"
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(BulkSuspendReportDeliveryStatus, self)._process_custom_annotations(
+            annotation_type, field_path, processor
+        )
+
+
+BulkSuspendReportDeliveryStatus_validator = bv.Union(BulkSuspendReportDeliveryStatus)
+
+
+class UserSelectorError(bb.Union):
+    """
+    Error that can be returned whenever a struct derived from
+    :class:`UserSelectorArg` is used.
+
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+
+    :ivar UserSelectorError.user_not_found:
+        No matching user found. The provided team_member_id, email, or
+        external_id does not exist on this team.
+    """
+
+    _catch_all = None
+    # Attribute is overwritten below the class definition
+    user_not_found = None
+
+    def is_user_not_found(self):
+        """
+        Check if the union tag is ``user_not_found``.
+
+        :rtype: bool
+        """
+        return self._tag == "user_not_found"
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(UserSelectorError, self)._process_custom_annotations(
+            annotation_type, field_path, processor
+        )
+
+
+UserSelectorError_validator = bv.Union(UserSelectorError)
+
+
+class MembersDeactivateError(UserSelectorError):
+    """
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+
+    :ivar MembersDeactivateError.user_not_in_team:
+        The user is not a member of the team.
+    """
+
+    _catch_all = "other"
+    # Attribute is overwritten below the class definition
+    user_not_in_team = None
+    # Attribute is overwritten below the class definition
+    other = None
+
+    def is_user_not_in_team(self):
+        """
+        Check if the union tag is ``user_not_in_team``.
+
+        :rtype: bool
+        """
+        return self._tag == "user_not_in_team"
+
+    def is_other(self):
+        """
+        Check if the union tag is ``other``.
+
+        :rtype: bool
+        """
+        return self._tag == "other"
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(MembersDeactivateError, self)._process_custom_annotations(
+            annotation_type, field_path, processor
+        )
+
+
+MembersDeactivateError_validator = bv.Union(MembersDeactivateError)
+
+
+class MembersSuspendError(MembersDeactivateError):
+    """
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+
+    :ivar MembersSuspendError.suspend_inactive_user:
+        The user is not active, so it cannot be suspended.
+    :ivar MembersSuspendError.suspend_last_admin:
+        The user is the last admin of the team, so it cannot be suspended.
+    :ivar MembersSuspendError.team_license_limit:
+        Team is full. The organization has no available licenses.
+    """
+
+    # Attribute is overwritten below the class definition
+    suspend_inactive_user = None
+    # Attribute is overwritten below the class definition
+    suspend_last_admin = None
+    # Attribute is overwritten below the class definition
+    team_license_limit = None
+
+    def is_suspend_inactive_user(self):
+        """
+        Check if the union tag is ``suspend_inactive_user``.
+
+        :rtype: bool
+        """
+        return self._tag == "suspend_inactive_user"
+
+    def is_suspend_last_admin(self):
+        """
+        Check if the union tag is ``suspend_last_admin``.
+
+        :rtype: bool
+        """
+        return self._tag == "suspend_last_admin"
+
+    def is_team_license_limit(self):
+        """
+        Check if the union tag is ``team_license_limit``.
+
+        :rtype: bool
+        """
+        return self._tag == "team_license_limit"
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(MembersSuspendError, self)._process_custom_annotations(
+            annotation_type, field_path, processor
+        )
+
+
+MembersSuspendError_validator = bv.Union(MembersSuspendError)
+
+
+class BulkSuspendRowFailure(MembersSuspendError):
+    """
+    Stable machine-readable reasons used by the terminal row report.
+
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+    """
+
+    # Attribute is overwritten below the class definition
+    protected_acting_admin = None
+    # Attribute is overwritten below the class definition
+    permission_changed = None
+    # Attribute is overwritten below the class definition
+    suspend_failed = None
+
+    def is_protected_acting_admin(self):
+        """
+        Check if the union tag is ``protected_acting_admin``.
+
+        :rtype: bool
+        """
+        return self._tag == "protected_acting_admin"
+
+    def is_permission_changed(self):
+        """
+        Check if the union tag is ``permission_changed``.
+
+        :rtype: bool
+        """
+        return self._tag == "permission_changed"
+
+    def is_suspend_failed(self):
+        """
+        Check if the union tag is ``suspend_failed``.
+
+        :rtype: bool
+        """
+        return self._tag == "suspend_failed"
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(BulkSuspendRowFailure, self)._process_custom_annotations(
+            annotation_type, field_path, processor
+        )
+
+
+BulkSuspendRowFailure_validator = bv.Union(BulkSuspendRowFailure)
+
+
+class BulkSuspendRowOutcome(bb.Union):
+    """
+    The terminal outcome for one requested member. Row outcomes are delivered in
+    the report rather than embedded in the status response.
+
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+    """
+
+    _catch_all = "other"
+    # Attribute is overwritten below the class definition
+    suspended = None
+    # Attribute is overwritten below the class definition
+    unknown = None
+    # Attribute is overwritten below the class definition
+    other = None
+
+    @classmethod
+    def failed(cls, val):
+        """
+        Create an instance of this class set to the ``failed`` tag with value
+        ``val``.
+
+        :param BulkSuspendRowFailure val:
+        :rtype: BulkSuspendRowOutcome
+        """
+        return cls("failed", val)
+
+    def is_suspended(self):
+        """
+        Check if the union tag is ``suspended``.
+
+        :rtype: bool
+        """
+        return self._tag == "suspended"
+
+    def is_failed(self):
+        """
+        Check if the union tag is ``failed``.
+
+        :rtype: bool
+        """
+        return self._tag == "failed"
+
+    def is_unknown(self):
+        """
+        Check if the union tag is ``unknown``.
+
+        :rtype: bool
+        """
+        return self._tag == "unknown"
+
+    def is_other(self):
+        """
+        Check if the union tag is ``other``.
+
+        :rtype: bool
+        """
+        return self._tag == "other"
+
+    def get_failed(self):
+        """
+        Only call this if :meth:`is_failed` is true.
+
+        :rtype: BulkSuspendRowFailure
+        """
+        if not self.is_failed():
+            raise AttributeError("tag 'failed' not set")
+        return self._value
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(BulkSuspendRowOutcome, self)._process_custom_annotations(
+            annotation_type, field_path, processor
+        )
+
+
+BulkSuspendRowOutcome_validator = bv.Union(BulkSuspendRowOutcome)
+
+
+class BulkSuspendTaskFailure(bb.Union):
+    """
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+    """
+
+    _catch_all = "other"
+    # Attribute is overwritten below the class definition
+    unusable_result = None
+    # Attribute is overwritten below the class definition
+    other = None
+
+    def is_unusable_result(self):
+        """
+        Check if the union tag is ``unusable_result``.
+
+        :rtype: bool
+        """
+        return self._tag == "unusable_result"
+
+    def is_other(self):
+        """
+        Check if the union tag is ``other``.
+
+        :rtype: bool
+        """
+        return self._tag == "other"
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(BulkSuspendTaskFailure, self)._process_custom_annotations(
+            annotation_type, field_path, processor
+        )
+
+
+BulkSuspendTaskFailure_validator = bv.Union(BulkSuspendTaskFailure)
+
+
 class CustomQuotaError(bb.Union):
     """
     Error returned when getting member custom quota.
@@ -1560,14 +2227,7 @@ class DevicesActive(bb.Struct):
     _has_required_fields = True
 
     def __init__(
-        self,
-        windows=None,
-        macos=None,
-        linux=None,
-        ios=None,
-        android=None,
-        other=None,
-        total=None,
+        self, windows=None, macos=None, linux=None, ios=None, android=None, other=None, total=None
     ):
         self._windows_value = bb.NOT_SET
         self._macos_value = bb.NOT_SET
@@ -6215,10 +6875,7 @@ class ListMemberDevicesResult(bb.Struct):
     _has_required_fields = False
 
     def __init__(
-        self,
-        active_web_sessions=None,
-        desktop_client_sessions=None,
-        mobile_client_sessions=None,
+        self, active_web_sessions=None, desktop_client_sessions=None, mobile_client_sessions=None
     ):
         self._active_web_sessions_value = bb.NOT_SET
         self._desktop_client_sessions_value = bb.NOT_SET
@@ -7581,11 +8238,7 @@ class MemberDevices(bb.Struct):
     _has_required_fields = True
 
     def __init__(
-        self,
-        team_member_id=None,
-        web_sessions=None,
-        desktop_clients=None,
-        mobile_clients=None,
+        self, team_member_id=None, web_sessions=None, desktop_clients=None, mobile_clients=None
     ):
         self._team_member_id_value = bb.NOT_SET
         self._web_sessions_value = bb.NOT_SET
@@ -7839,41 +8492,6 @@ class MemberProfile(bb.Struct):
 
 
 MemberProfile_validator = bv.Struct(MemberProfile)
-
-
-class UserSelectorError(bb.Union):
-    """
-    Error that can be returned whenever a struct derived from
-    :class:`UserSelectorArg` is used.
-
-    This class acts as a tagged union. Only one of the ``is_*`` methods will
-    return true. To get the associated value of a tag (if one exists), use the
-    corresponding ``get_*`` method.
-
-    :ivar UserSelectorError.user_not_found:
-        No matching user found. The provided team_member_id, email, or
-        external_id does not exist on this team.
-    """
-
-    _catch_all = None
-    # Attribute is overwritten below the class definition
-    user_not_found = None
-
-    def is_user_not_found(self):
-        """
-        Check if the union tag is ``user_not_found``.
-
-        :rtype: bool
-        """
-        return self._tag == "user_not_found"
-
-    def _process_custom_annotations(self, annotation_type, field_path, processor):
-        super(UserSelectorError, self)._process_custom_annotations(
-            annotation_type, field_path, processor
-        )
-
-
-UserSelectorError_validator = bv.Union(UserSelectorError)
 
 
 class MemberSelectorError(UserSelectorError):
@@ -8395,47 +9013,6 @@ class MembersDeactivateArg(MembersDeactivateBaseArg):
 
 
 MembersDeactivateArg_validator = bv.Struct(MembersDeactivateArg)
-
-
-class MembersDeactivateError(UserSelectorError):
-    """
-    This class acts as a tagged union. Only one of the ``is_*`` methods will
-    return true. To get the associated value of a tag (if one exists), use the
-    corresponding ``get_*`` method.
-
-    :ivar MembersDeactivateError.user_not_in_team:
-        The user is not a member of the team.
-    """
-
-    _catch_all = "other"
-    # Attribute is overwritten below the class definition
-    user_not_in_team = None
-    # Attribute is overwritten below the class definition
-    other = None
-
-    def is_user_not_in_team(self):
-        """
-        Check if the union tag is ``user_not_in_team``.
-
-        :rtype: bool
-        """
-        return self._tag == "user_not_in_team"
-
-    def is_other(self):
-        """
-        Check if the union tag is ``other``.
-
-        :rtype: bool
-        """
-        return self._tag == "other"
-
-    def _process_custom_annotations(self, annotation_type, field_path, processor):
-        super(MembersDeactivateError, self)._process_custom_annotations(
-            annotation_type, field_path, processor
-        )
-
-
-MembersDeactivateError_validator = bv.Union(MembersDeactivateError)
 
 
 class MembersPermanentlyDeleteFilesError(MembersDeactivateError):
@@ -10426,60 +11003,6 @@ class MembersSetProfilePhotoError(MemberSelectorError):
 
 
 MembersSetProfilePhotoError_validator = bv.Union(MembersSetProfilePhotoError)
-
-
-class MembersSuspendError(MembersDeactivateError):
-    """
-    This class acts as a tagged union. Only one of the ``is_*`` methods will
-    return true. To get the associated value of a tag (if one exists), use the
-    corresponding ``get_*`` method.
-
-    :ivar MembersSuspendError.suspend_inactive_user:
-        The user is not active, so it cannot be suspended.
-    :ivar MembersSuspendError.suspend_last_admin:
-        The user is the last admin of the team, so it cannot be suspended.
-    :ivar MembersSuspendError.team_license_limit:
-        Team is full. The organization has no available licenses.
-    """
-
-    # Attribute is overwritten below the class definition
-    suspend_inactive_user = None
-    # Attribute is overwritten below the class definition
-    suspend_last_admin = None
-    # Attribute is overwritten below the class definition
-    team_license_limit = None
-
-    def is_suspend_inactive_user(self):
-        """
-        Check if the union tag is ``suspend_inactive_user``.
-
-        :rtype: bool
-        """
-        return self._tag == "suspend_inactive_user"
-
-    def is_suspend_last_admin(self):
-        """
-        Check if the union tag is ``suspend_last_admin``.
-
-        :rtype: bool
-        """
-        return self._tag == "suspend_last_admin"
-
-    def is_team_license_limit(self):
-        """
-        Check if the union tag is ``team_license_limit``.
-
-        :rtype: bool
-        """
-        return self._tag == "team_license_limit"
-
-    def _process_custom_annotations(self, annotation_type, field_path, processor):
-        super(MembersSuspendError, self)._process_custom_annotations(
-            annotation_type, field_path, processor
-        )
-
-
-MembersSuspendError_validator = bv.Union(MembersSuspendError)
 
 
 class MembersTransferFormerMembersFilesError(MembersTransferFilesError):
@@ -12592,7 +13115,22 @@ class TeamFolderActivateError(BaseTeamFolderError):
     This class acts as a tagged union. Only one of the ``is_*`` methods will
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
+
+    :ivar TeamFolderActivateError.folder_count_limit_exceeded:
+        The team has reached the maximum number of team folders allowed by its
+        plan.
     """
+
+    # Attribute is overwritten below the class definition
+    folder_count_limit_exceeded = None
+
+    def is_folder_count_limit_exceeded(self):
+        """
+        Check if the union tag is ``folder_count_limit_exceeded``.
+
+        :rtype: bool
+        """
+        return self._tag == "folder_count_limit_exceeded"
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(TeamFolderActivateError, self)._process_custom_annotations(
@@ -13525,7 +14063,22 @@ class TeamFolderRestoreError(BaseTeamFolderError):
     This class acts as a tagged union. Only one of the ``is_*`` methods will
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
+
+    :ivar TeamFolderRestoreError.folder_count_limit_exceeded:
+        The team has reached the maximum number of team folders allowed by its
+        plan.
     """
+
+    # Attribute is overwritten below the class definition
+    folder_count_limit_exceeded = None
+
+    def is_folder_count_limit_exceeded(self):
+        """
+        Check if the union tag is ``folder_count_limit_exceeded``.
+
+        :rtype: bool
+        """
+        return self._tag == "folder_count_limit_exceeded"
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(TeamFolderRestoreError, self)._process_custom_annotations(
@@ -15615,6 +16168,182 @@ BaseTeamFolderError._tagmap = {
 
 BaseTeamFolderError.other = BaseTeamFolderError("other")
 
+BulkSuspendArg.members.validator = bv.List(BulkSuspendMemberTarget_validator)
+BulkSuspendArg._all_field_names_ = set(["members"])
+BulkSuspendArg._all_fields_ = [("members", BulkSuspendArg.members.validator)]
+
+BulkSuspendComplete.requested.validator = bv.Int64()
+BulkSuspendComplete.suspended.validator = bv.Int64()
+BulkSuspendComplete.failed.validator = bv.Int64()
+BulkSuspendComplete.unknown.validator = bv.Int64()
+BulkSuspendComplete.report_delivery.validator = BulkSuspendReportDeliveryStatus_validator
+BulkSuspendComplete._all_field_names_ = set(
+    [
+        "requested",
+        "suspended",
+        "failed",
+        "unknown",
+        "report_delivery",
+    ]
+)
+BulkSuspendComplete._all_fields_ = [
+    ("requested", BulkSuspendComplete.requested.validator),
+    ("suspended", BulkSuspendComplete.suspended.validator),
+    ("failed", BulkSuspendComplete.failed.validator),
+    ("unknown", BulkSuspendComplete.unknown.validator),
+    ("report_delivery", BulkSuspendComplete.report_delivery.validator),
+]
+
+BulkSuspendError._invalid_request_validator = bv.Void()
+BulkSuspendError._too_many_members_validator = bv.Void()
+BulkSuspendError._duplicate_client_item_id_validator = bv.Void()
+BulkSuspendError._duplicate_team_member_id_validator = bv.Void()
+BulkSuspendError._acting_admin_validator = bv.Void()
+BulkSuspendError._last_admin_validator = bv.Void()
+BulkSuspendError._other_validator = bv.Void()
+BulkSuspendError._tagmap = {
+    "invalid_request": BulkSuspendError._invalid_request_validator,
+    "too_many_members": BulkSuspendError._too_many_members_validator,
+    "duplicate_client_item_id": BulkSuspendError._duplicate_client_item_id_validator,
+    "duplicate_team_member_id": BulkSuspendError._duplicate_team_member_id_validator,
+    "acting_admin": BulkSuspendError._acting_admin_validator,
+    "last_admin": BulkSuspendError._last_admin_validator,
+    "other": BulkSuspendError._other_validator,
+}
+
+BulkSuspendError.invalid_request = BulkSuspendError("invalid_request")
+BulkSuspendError.too_many_members = BulkSuspendError("too_many_members")
+BulkSuspendError.duplicate_client_item_id = BulkSuspendError("duplicate_client_item_id")
+BulkSuspendError.duplicate_team_member_id = BulkSuspendError("duplicate_team_member_id")
+BulkSuspendError.acting_admin = BulkSuspendError("acting_admin")
+BulkSuspendError.last_admin = BulkSuspendError("last_admin")
+BulkSuspendError.other = BulkSuspendError("other")
+
+BulkSuspendJobStatus._complete_validator = BulkSuspendComplete_validator
+BulkSuspendJobStatus._failed_validator = BulkSuspendTaskFailure_validator
+BulkSuspendJobStatus._other_validator = bv.Void()
+BulkSuspendJobStatus._tagmap = {
+    "complete": BulkSuspendJobStatus._complete_validator,
+    "failed": BulkSuspendJobStatus._failed_validator,
+    "other": BulkSuspendJobStatus._other_validator,
+}
+BulkSuspendJobStatus._tagmap.update(async_.PollResultBase._tagmap)
+
+BulkSuspendJobStatus.other = BulkSuspendJobStatus("other")
+
+BulkSuspendMemberTarget.client_item_id.validator = bv.String()
+BulkSuspendMemberTarget.suspend_arg.validator = MembersDeactivateArg_validator
+BulkSuspendMemberTarget._all_field_names_ = set(
+    [
+        "client_item_id",
+        "suspend_arg",
+    ]
+)
+BulkSuspendMemberTarget._all_fields_ = [
+    ("client_item_id", BulkSuspendMemberTarget.client_item_id.validator),
+    ("suspend_arg", BulkSuspendMemberTarget.suspend_arg.validator),
+]
+
+BulkSuspendReportDeliveryStatus._bulk_suspend_report_delivery_status_unspecified_validator = (
+    bv.Void()
+)
+BulkSuspendReportDeliveryStatus._bulk_suspend_report_delivery_status_pending_validator = bv.Void()
+BulkSuspendReportDeliveryStatus._bulk_suspend_report_delivery_status_delivered_validator = bv.Void()
+BulkSuspendReportDeliveryStatus._bulk_suspend_report_delivery_status_failed_validator = bv.Void()
+BulkSuspendReportDeliveryStatus._other_validator = bv.Void()
+BulkSuspendReportDeliveryStatus._tagmap = {
+    "bulk_suspend_report_delivery_status_unspecified": BulkSuspendReportDeliveryStatus._bulk_suspend_report_delivery_status_unspecified_validator,
+    "bulk_suspend_report_delivery_status_pending": BulkSuspendReportDeliveryStatus._bulk_suspend_report_delivery_status_pending_validator,
+    "bulk_suspend_report_delivery_status_delivered": BulkSuspendReportDeliveryStatus._bulk_suspend_report_delivery_status_delivered_validator,
+    "bulk_suspend_report_delivery_status_failed": BulkSuspendReportDeliveryStatus._bulk_suspend_report_delivery_status_failed_validator,
+    "other": BulkSuspendReportDeliveryStatus._other_validator,
+}
+
+BulkSuspendReportDeliveryStatus.bulk_suspend_report_delivery_status_unspecified = (
+    BulkSuspendReportDeliveryStatus("bulk_suspend_report_delivery_status_unspecified")
+)
+BulkSuspendReportDeliveryStatus.bulk_suspend_report_delivery_status_pending = (
+    BulkSuspendReportDeliveryStatus("bulk_suspend_report_delivery_status_pending")
+)
+BulkSuspendReportDeliveryStatus.bulk_suspend_report_delivery_status_delivered = (
+    BulkSuspendReportDeliveryStatus("bulk_suspend_report_delivery_status_delivered")
+)
+BulkSuspendReportDeliveryStatus.bulk_suspend_report_delivery_status_failed = (
+    BulkSuspendReportDeliveryStatus("bulk_suspend_report_delivery_status_failed")
+)
+BulkSuspendReportDeliveryStatus.other = BulkSuspendReportDeliveryStatus("other")
+
+UserSelectorError._user_not_found_validator = bv.Void()
+UserSelectorError._tagmap = {
+    "user_not_found": UserSelectorError._user_not_found_validator,
+}
+
+UserSelectorError.user_not_found = UserSelectorError("user_not_found")
+
+MembersDeactivateError._user_not_in_team_validator = bv.Void()
+MembersDeactivateError._other_validator = bv.Void()
+MembersDeactivateError._tagmap = {
+    "user_not_in_team": MembersDeactivateError._user_not_in_team_validator,
+    "other": MembersDeactivateError._other_validator,
+}
+MembersDeactivateError._tagmap.update(UserSelectorError._tagmap)
+
+MembersDeactivateError.user_not_in_team = MembersDeactivateError("user_not_in_team")
+MembersDeactivateError.other = MembersDeactivateError("other")
+
+MembersSuspendError._suspend_inactive_user_validator = bv.Void()
+MembersSuspendError._suspend_last_admin_validator = bv.Void()
+MembersSuspendError._team_license_limit_validator = bv.Void()
+MembersSuspendError._tagmap = {
+    "suspend_inactive_user": MembersSuspendError._suspend_inactive_user_validator,
+    "suspend_last_admin": MembersSuspendError._suspend_last_admin_validator,
+    "team_license_limit": MembersSuspendError._team_license_limit_validator,
+}
+MembersSuspendError._tagmap.update(MembersDeactivateError._tagmap)
+
+MembersSuspendError.suspend_inactive_user = MembersSuspendError("suspend_inactive_user")
+MembersSuspendError.suspend_last_admin = MembersSuspendError("suspend_last_admin")
+MembersSuspendError.team_license_limit = MembersSuspendError("team_license_limit")
+
+BulkSuspendRowFailure._protected_acting_admin_validator = bv.Void()
+BulkSuspendRowFailure._permission_changed_validator = bv.Void()
+BulkSuspendRowFailure._suspend_failed_validator = bv.Void()
+BulkSuspendRowFailure._tagmap = {
+    "protected_acting_admin": BulkSuspendRowFailure._protected_acting_admin_validator,
+    "permission_changed": BulkSuspendRowFailure._permission_changed_validator,
+    "suspend_failed": BulkSuspendRowFailure._suspend_failed_validator,
+}
+BulkSuspendRowFailure._tagmap.update(MembersSuspendError._tagmap)
+
+BulkSuspendRowFailure.protected_acting_admin = BulkSuspendRowFailure("protected_acting_admin")
+BulkSuspendRowFailure.permission_changed = BulkSuspendRowFailure("permission_changed")
+BulkSuspendRowFailure.suspend_failed = BulkSuspendRowFailure("suspend_failed")
+
+BulkSuspendRowOutcome._suspended_validator = bv.Void()
+BulkSuspendRowOutcome._failed_validator = BulkSuspendRowFailure_validator
+BulkSuspendRowOutcome._unknown_validator = bv.Void()
+BulkSuspendRowOutcome._other_validator = bv.Void()
+BulkSuspendRowOutcome._tagmap = {
+    "suspended": BulkSuspendRowOutcome._suspended_validator,
+    "failed": BulkSuspendRowOutcome._failed_validator,
+    "unknown": BulkSuspendRowOutcome._unknown_validator,
+    "other": BulkSuspendRowOutcome._other_validator,
+}
+
+BulkSuspendRowOutcome.suspended = BulkSuspendRowOutcome("suspended")
+BulkSuspendRowOutcome.unknown = BulkSuspendRowOutcome("unknown")
+BulkSuspendRowOutcome.other = BulkSuspendRowOutcome("other")
+
+BulkSuspendTaskFailure._unusable_result_validator = bv.Void()
+BulkSuspendTaskFailure._other_validator = bv.Void()
+BulkSuspendTaskFailure._tagmap = {
+    "unusable_result": BulkSuspendTaskFailure._unusable_result_validator,
+    "other": BulkSuspendTaskFailure._other_validator,
+}
+
+BulkSuspendTaskFailure.unusable_result = BulkSuspendTaskFailure("unusable_result")
+BulkSuspendTaskFailure.other = BulkSuspendTaskFailure("other")
+
 CustomQuotaError._too_many_users_validator = bv.Void()
 CustomQuotaError._other_validator = bv.Void()
 CustomQuotaError._tagmap = {
@@ -15706,10 +16435,7 @@ DesktopClientSession._all_fields_ = DeviceSession._all_fields_ + [
     ("client_type", DesktopClientSession.client_type.validator),
     ("client_version", DesktopClientSession.client_version.validator),
     ("platform", DesktopClientSession.platform.validator),
-    (
-        "is_delete_on_unlink_supported",
-        DesktopClientSession.is_delete_on_unlink_supported.validator,
-    ),
+    ("is_delete_on_unlink_supported", DesktopClientSession.is_delete_on_unlink_supported.validator),
 ]
 
 DesktopPlatform._windows_validator = bv.Void()
@@ -15948,23 +16674,11 @@ GetActivityReport._all_fields_ = BaseDfbReport._all_fields_ + [
     ("active_users_28_day", GetActivityReport.active_users_28_day.validator),
     ("active_users_7_day", GetActivityReport.active_users_7_day.validator),
     ("active_users_1_day", GetActivityReport.active_users_1_day.validator),
-    (
-        "active_shared_folders_28_day",
-        GetActivityReport.active_shared_folders_28_day.validator,
-    ),
-    (
-        "active_shared_folders_7_day",
-        GetActivityReport.active_shared_folders_7_day.validator,
-    ),
-    (
-        "active_shared_folders_1_day",
-        GetActivityReport.active_shared_folders_1_day.validator,
-    ),
+    ("active_shared_folders_28_day", GetActivityReport.active_shared_folders_28_day.validator),
+    ("active_shared_folders_7_day", GetActivityReport.active_shared_folders_7_day.validator),
+    ("active_shared_folders_1_day", GetActivityReport.active_shared_folders_1_day.validator),
     ("shared_links_created", GetActivityReport.shared_links_created.validator),
-    (
-        "shared_links_viewed_by_team",
-        GetActivityReport.shared_links_viewed_by_team.validator,
-    ),
+    ("shared_links_viewed_by_team", GetActivityReport.shared_links_viewed_by_team.validator),
     (
         "shared_links_viewed_by_outside_user",
         GetActivityReport.shared_links_viewed_by_outside_user.validator,
@@ -15973,10 +16687,7 @@ GetActivityReport._all_fields_ = BaseDfbReport._all_fields_ + [
         "shared_links_viewed_by_not_logged_in",
         GetActivityReport.shared_links_viewed_by_not_logged_in.validator,
     ),
-    (
-        "shared_links_viewed_total",
-        GetActivityReport.shared_links_viewed_total.validator,
-    ),
+    ("shared_links_viewed_total", GetActivityReport.shared_links_viewed_total.validator),
 ]
 
 GetDevicesReport.active_1_day.validator = DevicesActive_validator
@@ -16520,17 +17231,11 @@ LegalHoldHeldRevisionMetadata._all_field_names_ = set(
 )
 LegalHoldHeldRevisionMetadata._all_fields_ = [
     ("new_filename", LegalHoldHeldRevisionMetadata.new_filename.validator),
-    (
-        "original_revision_id",
-        LegalHoldHeldRevisionMetadata.original_revision_id.validator,
-    ),
+    ("original_revision_id", LegalHoldHeldRevisionMetadata.original_revision_id.validator),
     ("original_file_path", LegalHoldHeldRevisionMetadata.original_file_path.validator),
     ("server_modified", LegalHoldHeldRevisionMetadata.server_modified.validator),
     ("author_member_id", LegalHoldHeldRevisionMetadata.author_member_id.validator),
-    (
-        "author_member_status",
-        LegalHoldHeldRevisionMetadata.author_member_status.validator,
-    ),
+    ("author_member_status", LegalHoldHeldRevisionMetadata.author_member_status.validator),
     ("author_email", LegalHoldHeldRevisionMetadata.author_email.validator),
     ("file_type", LegalHoldHeldRevisionMetadata.file_type.validator),
     ("size", LegalHoldHeldRevisionMetadata.size.validator),
@@ -16925,14 +17630,8 @@ ListMemberDevicesResult._all_field_names_ = set(
 )
 ListMemberDevicesResult._all_fields_ = [
     ("active_web_sessions", ListMemberDevicesResult.active_web_sessions.validator),
-    (
-        "desktop_client_sessions",
-        ListMemberDevicesResult.desktop_client_sessions.validator,
-    ),
-    (
-        "mobile_client_sessions",
-        ListMemberDevicesResult.mobile_client_sessions.validator,
-    ),
+    ("desktop_client_sessions", ListMemberDevicesResult.desktop_client_sessions.validator),
+    ("mobile_client_sessions", ListMemberDevicesResult.mobile_client_sessions.validator),
 ]
 
 ListMembersAppsArg.cursor.validator = bv.Nullable(bv.String())
@@ -16980,10 +17679,7 @@ ListMembersDevicesArg._all_field_names_ = set(
 ListMembersDevicesArg._all_fields_ = [
     ("cursor", ListMembersDevicesArg.cursor.validator),
     ("include_web_sessions", ListMembersDevicesArg.include_web_sessions.validator),
-    (
-        "include_desktop_clients",
-        ListMembersDevicesArg.include_desktop_clients.validator,
-    ),
+    ("include_desktop_clients", ListMembersDevicesArg.include_desktop_clients.validator),
     ("include_mobile_clients", ListMembersDevicesArg.include_mobile_clients.validator),
 ]
 
@@ -17264,13 +17960,6 @@ MemberProfile._all_fields_ = [
     ("profile_photo_url", MemberProfile.profile_photo_url.validator),
 ]
 
-UserSelectorError._user_not_found_validator = bv.Void()
-UserSelectorError._tagmap = {
-    "user_not_found": UserSelectorError._user_not_found_validator,
-}
-
-UserSelectorError.user_not_found = UserSelectorError("user_not_found")
-
 MemberSelectorError._user_not_in_team_validator = bv.Void()
 MemberSelectorError._tagmap = {
     "user_not_in_team": MemberSelectorError._user_not_in_team_validator,
@@ -17357,17 +18046,6 @@ MembersDeactivateArg._all_field_names_ = MembersDeactivateBaseArg._all_field_nam
 MembersDeactivateArg._all_fields_ = MembersDeactivateBaseArg._all_fields_ + [
     ("wipe_data", MembersDeactivateArg.wipe_data.validator)
 ]
-
-MembersDeactivateError._user_not_in_team_validator = bv.Void()
-MembersDeactivateError._other_validator = bv.Void()
-MembersDeactivateError._tagmap = {
-    "user_not_in_team": MembersDeactivateError._user_not_in_team_validator,
-    "other": MembersDeactivateError._other_validator,
-}
-MembersDeactivateError._tagmap.update(UserSelectorError._tagmap)
-
-MembersDeactivateError.user_not_in_team = MembersDeactivateError("user_not_in_team")
-MembersDeactivateError.other = MembersDeactivateError("other")
 
 MembersPermanentlyDeleteFilesError._transfer_in_progress_validator = bv.Void()
 MembersPermanentlyDeleteFilesError._already_transferred_validator = bv.Void()
@@ -17844,10 +18522,7 @@ MembersSetProfileArg._all_fields_ = [
     ("new_given_name", MembersSetProfileArg.new_given_name.validator),
     ("new_surname", MembersSetProfileArg.new_surname.validator),
     ("new_persistent_id", MembersSetProfileArg.new_persistent_id.validator),
-    (
-        "new_is_directory_restricted",
-        MembersSetProfileArg.new_is_directory_restricted.validator,
-    ),
+    ("new_is_directory_restricted", MembersSetProfileArg.new_is_directory_restricted.validator),
 ]
 
 MembersSetProfileError._external_id_and_new_external_id_unsafe_validator = bv.Void()
@@ -17920,20 +18595,6 @@ MembersSetProfilePhotoError.set_profile_disallowed = MembersSetProfilePhotoError
     "set_profile_disallowed"
 )
 MembersSetProfilePhotoError.other = MembersSetProfilePhotoError("other")
-
-MembersSuspendError._suspend_inactive_user_validator = bv.Void()
-MembersSuspendError._suspend_last_admin_validator = bv.Void()
-MembersSuspendError._team_license_limit_validator = bv.Void()
-MembersSuspendError._tagmap = {
-    "suspend_inactive_user": MembersSuspendError._suspend_inactive_user_validator,
-    "suspend_last_admin": MembersSuspendError._suspend_last_admin_validator,
-    "team_license_limit": MembersSuspendError._team_license_limit_validator,
-}
-MembersSuspendError._tagmap.update(MembersDeactivateError._tagmap)
-
-MembersSuspendError.suspend_inactive_user = MembersSuspendError("suspend_inactive_user")
-MembersSuspendError.suspend_last_admin = MembersSuspendError("suspend_last_admin")
-MembersSuspendError.team_license_limit = MembersSuspendError("team_license_limit")
 
 MembersTransferFormerMembersFilesError._user_data_is_being_transferred_validator = bv.Void()
 MembersTransferFormerMembersFilesError._user_not_removed_validator = bv.Void()
@@ -18151,10 +18812,7 @@ RevokeDeviceSessionBatchResult.revoke_devices_status.validator = bv.List(
 )
 RevokeDeviceSessionBatchResult._all_field_names_ = set(["revoke_devices_status"])
 RevokeDeviceSessionBatchResult._all_fields_ = [
-    (
-        "revoke_devices_status",
-        RevokeDeviceSessionBatchResult.revoke_devices_status.validator,
-    )
+    ("revoke_devices_status", RevokeDeviceSessionBatchResult.revoke_devices_status.validator)
 ]
 
 RevokeDeviceSessionError._device_session_not_found_validator = bv.Void()
@@ -18219,10 +18877,7 @@ RevokeLinkedAppBatchResult.revoke_linked_app_status.validator = bv.List(
 )
 RevokeLinkedAppBatchResult._all_field_names_ = set(["revoke_linked_app_status"])
 RevokeLinkedAppBatchResult._all_fields_ = [
-    (
-        "revoke_linked_app_status",
-        RevokeLinkedAppBatchResult.revoke_linked_app_status.validator,
-    )
+    ("revoke_linked_app_status", RevokeLinkedAppBatchResult.revoke_linked_app_status.validator)
 ]
 
 RevokeLinkedAppError._app_not_found_validator = bv.Void()
@@ -18419,8 +19074,15 @@ TeamFolderAccessError.invalid_team_folder_id = TeamFolderAccessError("invalid_te
 TeamFolderAccessError.no_access = TeamFolderAccessError("no_access")
 TeamFolderAccessError.other = TeamFolderAccessError("other")
 
-TeamFolderActivateError._tagmap = {}
+TeamFolderActivateError._folder_count_limit_exceeded_validator = bv.Void()
+TeamFolderActivateError._tagmap = {
+    "folder_count_limit_exceeded": TeamFolderActivateError._folder_count_limit_exceeded_validator,
+}
 TeamFolderActivateError._tagmap.update(BaseTeamFolderError._tagmap)
+
+TeamFolderActivateError.folder_count_limit_exceeded = TeamFolderActivateError(
+    "folder_count_limit_exceeded"
+)
 
 TeamFolderIdArg.team_folder_id.validator = common.SharedFolderId_validator
 TeamFolderIdArg._all_field_names_ = set(["team_folder_id"])
@@ -18609,8 +19271,15 @@ TeamFolderRenameError.invalid_folder_name = TeamFolderRenameError("invalid_folde
 TeamFolderRenameError.folder_name_already_used = TeamFolderRenameError("folder_name_already_used")
 TeamFolderRenameError.folder_name_reserved = TeamFolderRenameError("folder_name_reserved")
 
-TeamFolderRestoreError._tagmap = {}
+TeamFolderRestoreError._folder_count_limit_exceeded_validator = bv.Void()
+TeamFolderRestoreError._tagmap = {
+    "folder_count_limit_exceeded": TeamFolderRestoreError._folder_count_limit_exceeded_validator,
+}
 TeamFolderRestoreError._tagmap.update(BaseTeamFolderError._tagmap)
+
+TeamFolderRestoreError.folder_count_limit_exceeded = TeamFolderRestoreError(
+    "folder_count_limit_exceeded"
+)
 
 TeamFolderStatus._active_validator = bv.Void()
 TeamFolderStatus._archived_validator = bv.Void()
@@ -18655,10 +19324,7 @@ TeamFolderUpdateSyncSettingsArg._all_field_names_ = TeamFolderIdArg._all_field_n
 )
 TeamFolderUpdateSyncSettingsArg._all_fields_ = TeamFolderIdArg._all_fields_ + [
     ("sync_setting", TeamFolderUpdateSyncSettingsArg.sync_setting.validator),
-    (
-        "content_sync_settings",
-        TeamFolderUpdateSyncSettingsArg.content_sync_settings.validator,
-    ),
+    ("content_sync_settings", TeamFolderUpdateSyncSettingsArg.content_sync_settings.validator),
 ]
 
 TeamFolderUpdateSyncSettingsError._sync_settings_error_validator = files.SyncSettingsError_validator
@@ -19425,6 +20091,24 @@ members_add_job_status_get_v2 = bb.Route(
     async_.PollError_validator,
     {"auth": "team", "host": "api", "style": "rpc"},
 )
+members_bulk_suspend = bb.Route(
+    "members/bulk_suspend",
+    1,
+    False,
+    BulkSuspendArg_validator,
+    async_.LaunchResultBase_validator,
+    BulkSuspendError_validator,
+    {"auth": "team", "host": "api", "style": "rpc"},
+)
+members_bulk_suspend_job_status_check = bb.Route(
+    "members/bulk_suspend/job_status/check",
+    1,
+    False,
+    async_.PollArg_validator,
+    BulkSuspendJobStatus_validator,
+    async_.PollError_validator,
+    {"auth": "team", "host": "api", "style": "rpc"},
+)
 members_delete_former_member_files = bb.Route(
     "members/delete_former_member_files",
     1,
@@ -19928,6 +20612,8 @@ ROUTES = {
     "members/add:2": members_add_v2,
     "members/add/job_status/get": members_add_job_status_get,
     "members/add/job_status/get:2": members_add_job_status_get_v2,
+    "members/bulk_suspend": members_bulk_suspend,
+    "members/bulk_suspend/job_status/check": members_bulk_suspend_job_status_check,
     "members/delete_former_member_files": members_delete_former_member_files,
     "members/delete_profile_photo": members_delete_profile_photo,
     "members/delete_profile_photo:2": members_delete_profile_photo_v2,
