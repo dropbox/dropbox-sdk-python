@@ -29,13 +29,7 @@ class AccountPhotoGetArg(bb.Struct):
 
     _has_required_fields = True
 
-    def __init__(
-        self,
-        dbx_account_id=None,
-        size=None,
-        circle_crop=None,
-        expect_account_photo=None,
-    ):
+    def __init__(self, dbx_account_id=None, size=None, circle_crop=None, expect_account_photo=None):
         self._dbx_account_id_value = bb.NOT_SET
         self._size_value = bb.NOT_SET
         self._circle_crop_value = bb.NOT_SET

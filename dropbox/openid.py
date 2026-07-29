@@ -154,13 +154,7 @@ class UserInfoResult(bb.Struct):
     _has_required_fields = False
 
     def __init__(
-        self,
-        family_name=None,
-        given_name=None,
-        email=None,
-        email_verified=None,
-        iss=None,
-        sub=None,
+        self, family_name=None, given_name=None, email=None, email_verified=None, iss=None, sub=None
     ):
         self._family_name_value = bb.NOT_SET
         self._given_name_value = bb.NOT_SET

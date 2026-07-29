@@ -4024,12 +4024,7 @@ class GroupMembershipInfo(MembershipInfo):
     _has_required_fields = True
 
     def __init__(
-        self,
-        access_type=None,
-        group=None,
-        permissions=None,
-        initials=None,
-        is_inherited=None,
+        self, access_type=None, group=None, permissions=None, initials=None, is_inherited=None
     ):
         super(GroupMembershipInfo, self).__init__(access_type, permissions, initials, is_inherited)
         self._group_value = bb.NOT_SET
@@ -10916,7 +10911,7 @@ class SharedLinkSettings(bb.Struct):
         link's access level specified in the `link_access_level` field of
         `LinkPermissions`. This is used in conjunction with team policies and
         shared folder policies to determine the final effective audience type in
-        the `effective_audience` field of `LinkPermissions.
+        the `effective_audience` field of `LinkPermissions`.
     :ivar SharedLinkSettings.access:
         Requested access level you want the audience to gain from this link.
         Note, modifying access level for an existing link is not supported.
@@ -12408,12 +12403,7 @@ class UserMembershipInfo(MembershipInfo):
     _has_required_fields = True
 
     def __init__(
-        self,
-        access_type=None,
-        user=None,
-        permissions=None,
-        initials=None,
-        is_inherited=None,
+        self, access_type=None, user=None, permissions=None, initials=None, is_inherited=None
     ):
         super(UserMembershipInfo, self).__init__(access_type, permissions, initials, is_inherited)
         self._user_value = bb.NOT_SET
@@ -12518,12 +12508,7 @@ class UserInfo(bb.Struct):
     _has_required_fields = True
 
     def __init__(
-        self,
-        account_id=None,
-        email=None,
-        display_name=None,
-        same_team=None,
-        team_member_id=None,
+        self, account_id=None, email=None, display_name=None, same_team=None, team_member_id=None
     ):
         self._account_id_value = bb.NOT_SET
         self._email_value = bb.NOT_SET
@@ -15162,10 +15147,7 @@ SharedFolderMetadataBase._all_fields_ = [
     ("is_team_folder", SharedFolderMetadataBase.is_team_folder.validator),
     ("owner_display_names", SharedFolderMetadataBase.owner_display_names.validator),
     ("owner_team", SharedFolderMetadataBase.owner_team.validator),
-    (
-        "parent_shared_folder_id",
-        SharedFolderMetadataBase.parent_shared_folder_id.validator,
-    ),
+    ("parent_shared_folder_id", SharedFolderMetadataBase.parent_shared_folder_id.validator),
     ("path_display", SharedFolderMetadataBase.path_display.validator),
     ("path_lower", SharedFolderMetadataBase.path_lower.validator),
     ("parent_folder_name", SharedFolderMetadataBase.parent_folder_name.validator),

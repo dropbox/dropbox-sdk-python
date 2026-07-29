@@ -37,12 +37,7 @@ class ApiExifGpsMetadata(bb.Struct):
     _has_required_fields = False
 
     def __init__(
-        self,
-        latitude=None,
-        longitude=None,
-        altitude=None,
-        timestamp=None,
-        datestamp=None,
+        self, latitude=None, longitude=None, altitude=None, timestamp=None, datestamp=None
     ):
         self._latitude_value = bb.NOT_SET
         self._longitude_value = bb.NOT_SET
@@ -697,10 +692,25 @@ ApiTranscriptSegment_validator = bv.Struct(ApiTranscriptSegment)
 
 class ContentApiV2Error(bb.Union):
     """
+    Reason a transcript job failed. Returned in the `failed` variant of
+    `GetTranscriptAsyncCheckResult`. This is a semantic error union: the HTTP
+    status of the poll request itself is unaffected (a poll that surfaces a
+    failed job is still a normal successful poll response). Callers should
+    branch on the variant.
+
     This class acts as a tagged union. Only one of the ``is_*`` methods will
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
+    :ivar ContentApiV2Error.server_error:
+        An unexpected, typically transient, server-side failure. The string is a
+        human-readable message; retrying with backoff may succeed.
+    :vartype ContentApiV2Error.server_error: str
+    :ivar ContentApiV2Error.user_error:
+        The request could not be processed as supplied (a problem with the
+        caller's input). The string is a human-readable message; retrying the
+        same request will not help.
+    :vartype ContentApiV2Error.user_error: str
     :ivar ContentApiV2Error.not_found_error:
         The referenced file does not exist or is not accessible.
     :ivar ContentApiV2Error.is_a_folder_error:
@@ -838,6 +848,9 @@ class ContentApiV2Error(bb.Union):
 
     def get_server_error(self):
         """
+        An unexpected, typically transient, server-side failure. The string is a
+        human-readable message; retrying with backoff may succeed.
+
         Only call this if :meth:`is_server_error` is true.
 
         :rtype: str
@@ -848,6 +861,10 @@ class ContentApiV2Error(bb.Union):
 
     def get_user_error(self):
         """
+        The request could not be processed as supplied (a problem with the
+        caller's input). The string is a human-readable message; retrying the
+        same request will not help.
+
         Only call this if :meth:`is_user_error` is true.
 
         :rtype: str
@@ -875,108 +892,31 @@ class ContentApiV2Error(bb.Union):
 ContentApiV2Error_validator = bv.Union(ContentApiV2Error)
 
 
-class ErrorCode(bb.Union):
-    """
-    This class acts as a tagged union. Only one of the ``is_*`` methods will
-    return true. To get the associated value of a tag (if one exists), use the
-    corresponding ``get_*`` method.
-
-    :ivar ErrorCode.bad_request:
-        400
-    :ivar ErrorCode.api_error:
-        409
-    :ivar ErrorCode.access_error:
-        403
-    :ivar ErrorCode.ratelimit_error:
-        429
-    :ivar ErrorCode.unavailable:
-        503
-    """
-
-    _catch_all = "other"
-    # Attribute is overwritten below the class definition
-    unknown_error = None
-    # Attribute is overwritten below the class definition
-    bad_request = None
-    # Attribute is overwritten below the class definition
-    api_error = None
-    # Attribute is overwritten below the class definition
-    access_error = None
-    # Attribute is overwritten below the class definition
-    ratelimit_error = None
-    # Attribute is overwritten below the class definition
-    unavailable = None
-    # Attribute is overwritten below the class definition
-    other = None
-
-    def is_unknown_error(self):
-        """
-        Check if the union tag is ``unknown_error``.
-
-        :rtype: bool
-        """
-        return self._tag == "unknown_error"
-
-    def is_bad_request(self):
-        """
-        Check if the union tag is ``bad_request``.
-
-        :rtype: bool
-        """
-        return self._tag == "bad_request"
-
-    def is_api_error(self):
-        """
-        Check if the union tag is ``api_error``.
-
-        :rtype: bool
-        """
-        return self._tag == "api_error"
-
-    def is_access_error(self):
-        """
-        Check if the union tag is ``access_error``.
-
-        :rtype: bool
-        """
-        return self._tag == "access_error"
-
-    def is_ratelimit_error(self):
-        """
-        Check if the union tag is ``ratelimit_error``.
-
-        :rtype: bool
-        """
-        return self._tag == "ratelimit_error"
-
-    def is_unavailable(self):
-        """
-        Check if the union tag is ``unavailable``.
-
-        :rtype: bool
-        """
-        return self._tag == "unavailable"
-
-    def is_other(self):
-        """
-        Check if the union tag is ``other``.
-
-        :rtype: bool
-        """
-        return self._tag == "other"
-
-    def _process_custom_annotations(self, annotation_type, field_path, processor):
-        super(ErrorCode, self)._process_custom_annotations(annotation_type, field_path, processor)
-
-
-ErrorCode_validator = bv.Union(ErrorCode)
-
-
 class FileIdOrUrl(bb.Union):
     """
     This class acts as a tagged union. Only one of the ``is_*`` methods will
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
+
+    :ivar FileIdOrUrl.file_id:
+        A Dropbox-issued file id (format: "id:<id>") for a file the
+        authenticated user has access to.
+    :vartype FileIdOrUrl.file_id: str
+    :ivar FileIdOrUrl.url:
+        Either a Dropbox shared link (www.dropbox.com) or an external HTTP or
+        HTTPS URL pointing to a supported file. - Dropbox shared links are
+        resolved internally using the caller's authenticated identity and the
+        link's visibility / download settings. They therefore require an
+        authenticated user context (anonymous `url` requests against Dropbox
+        links are rejected with an `access_error`). Links protected by a
+        password are rejected with `shared_link_password_protected`; links with
+        downloads disabled are rejected with `link_download_disabled_error`. -
+        External URLs are fetched through the backend's egress proxy and must
+        point at a supported file extension.
+    :vartype FileIdOrUrl.url: str
+    :ivar FileIdOrUrl.path:
+        An absolute Dropbox path, e.g. "/folder/example.pdf".
+    :vartype FileIdOrUrl.path: str
     """
 
     _catch_all = "other"
@@ -1050,6 +990,9 @@ class FileIdOrUrl(bb.Union):
 
     def get_file_id(self):
         """
+        A Dropbox-issued file id (format: "id:<id>") for a file the
+        authenticated user has access to.
+
         Only call this if :meth:`is_file_id` is true.
 
         :rtype: str
@@ -1060,6 +1003,17 @@ class FileIdOrUrl(bb.Union):
 
     def get_url(self):
         """
+        Either a Dropbox shared link (www.dropbox.com) or an external HTTP or
+        HTTPS URL pointing to a supported file. - Dropbox shared links are
+        resolved internally using the caller's authenticated identity and the
+        link's visibility / download settings. They therefore require an
+        authenticated user context (anonymous `url` requests against Dropbox
+        links are rejected with an `access_error`). Links protected by a
+        password are rejected with `shared_link_password_protected`; links with
+        downloads disabled are rejected with `link_download_disabled_error`. -
+        External URLs are fetched through the backend's egress proxy and must
+        point at a supported file extension.
+
         Only call this if :meth:`is_url` is true.
 
         :rtype: str
@@ -1070,6 +1024,8 @@ class FileIdOrUrl(bb.Union):
 
     def get_path(self):
         """
+        An absolute Dropbox path, e.g. "/folder/example.pdf".
+
         Only call this if :meth:`is_path` is true.
 
         :rtype: str
@@ -1093,21 +1049,9 @@ class GetMarkdownArgs(bb.Struct):
 
     :ivar GetMarkdownArgs.file_id_or_url:
         Identifier of the document to convert. Callers must set exactly one of
-        the oneof variants: - file_id: a Dropbox-issued file id (format:
-        "id:<id>") for a file the authenticated user has access to. - path: an
-        absolute Dropbox path, e.g. "/folder/report.docx". - url: either a
-        Dropbox shared link (www.dropbox.com) or an external HTTPS URL pointing
-        to a supported document file. - Dropbox shared links are resolved
-        internally using the caller's authenticated identity and the link's
-        visibility / download settings. They therefore require an authenticated
-        user context (anonymous `url` requests against Dropbox links are
-        rejected with an `ACCESS_ERROR`). Links protected by a password are
-        rejected with `shared_link_password_protected`; links with downloads
-        disabled are rejected with `link_download_disabled_error`. - External
-        URLs are fetched over HTTPS through the backend's egress proxy and must
-        point at a supported document file extension. The referenced file must
-        be a document in a supported format; requests against unsupported
-        formats return `unsupported_format_error`.
+        the `FileIdOrUrl` variants. The referenced file must be a document in a
+        supported format (see the route description for the list); requests
+        against unsupported formats return `unsupported_format_error`.
     :ivar GetMarkdownArgs.enable_ocr:
         Enable OCR for PDF documents. Processing is slower when enabled.
     :ivar GetMarkdownArgs.embed_images:
@@ -1184,7 +1128,7 @@ class GetMarkdownAsyncCheckResult(bb.Union):
         Create an instance of this class set to the ``failed`` tag with value
         ``val``.
 
-        :param GetMarkdownAsyncError val:
+        :param MarkdownConversionApiV2Error val:
         :rtype: GetMarkdownAsyncCheckResult
         """
         return cls("failed", val)
@@ -1235,7 +1179,7 @@ class GetMarkdownAsyncCheckResult(bb.Union):
         """
         Only call this if :meth:`is_failed` is true.
 
-        :rtype: GetMarkdownAsyncError
+        :rtype: MarkdownConversionApiV2Error
         """
         if not self.is_failed():
             raise AttributeError("tag 'failed' not set")
@@ -1248,37 +1192,6 @@ class GetMarkdownAsyncCheckResult(bb.Union):
 
 
 GetMarkdownAsyncCheckResult_validator = bv.Union(GetMarkdownAsyncCheckResult)
-
-
-class GetMarkdownAsyncError(bb.Struct):
-    __slots__ = [
-        "_error_code_value",
-        "_error_details_value",
-    ]
-
-    _has_required_fields = False
-
-    def __init__(self, error_code=None, error_details=None):
-        self._error_code_value = bb.NOT_SET
-        self._error_details_value = bb.NOT_SET
-        if error_code is not None:
-            self.error_code = error_code
-        if error_details is not None:
-            self.error_details = error_details
-
-    # Instance attribute type: ErrorCode (validator is set below)
-    error_code = bb.Attribute("error_code", user_defined=True)
-
-    # Instance attribute type: MarkdownConversionApiV2Error (validator is set below)
-    error_details = bb.Attribute("error_details", nullable=True, user_defined=True)
-
-    def _process_custom_annotations(self, annotation_type, field_path, processor):
-        super(GetMarkdownAsyncError, self)._process_custom_annotations(
-            annotation_type, field_path, processor
-        )
-
-
-GetMarkdownAsyncError_validator = bv.Struct(GetMarkdownAsyncError)
 
 
 class GetMarkdownResult(bb.Struct):
@@ -1318,23 +1231,12 @@ class GetMetadataArgs(bb.Struct):
 
     :ivar GetMetadataArgs.file_id_or_url:
         Identifier of the file to extract metadata from. Callers must set
-        exactly one of the oneof variants: - file_id: a Dropbox-issued file id
-        (format: "id:<id>") for a file the authenticated user has access to. -
-        path: an absolute Dropbox path, e.g. "/folder/photo.jpg". - url: either
-        a Dropbox shared link (www.dropbox.com) or an external HTTPS URL
-        pointing to a supported file. - Dropbox shared links are resolved
-        internally using the caller's authenticated identity and the link's
-        visibility / download settings. They therefore require an authenticated
-        user context (anonymous `url` requests against Dropbox links are
-        rejected with an `ACCESS_ERROR`). Links protected by a password are
-        rejected with `shared_link_password_protected`; links with downloads
-        disabled are rejected with `link_download_disabled_error`. - External
-        URLs are fetched over HTTPS through the backend's egress proxy and must
-        point at a supported file extension. The kind of metadata returned is
-        determined by the file type: image files return EXIF metadata,
+        exactly one of the `FileIdOrUrl` variants. The kind of metadata returned
+        is determined by the file type: image files return EXIF metadata,
         audio/video files return media metadata, PDFs return PDF metadata, and
-        MS Office documents (docx, pptx, xlsx) return Office metadata. Requests
-        against unsupported formats return `unsupported_format_error`.
+        MS Office documents (docx, pptx, xlsx) return Office metadata. See the
+        route description for the supported formats. Requests against
+        unsupported formats return `unsupported_format_error`.
     """
 
     __slots__ = [
@@ -1392,7 +1294,7 @@ class GetMetadataAsyncCheckResult(bb.Union):
         Create an instance of this class set to the ``failed`` tag with value
         ``val``.
 
-        :param GetMetadataAsyncError val:
+        :param MetadataExtractionApiV2Error val:
         :rtype: GetMetadataAsyncCheckResult
         """
         return cls("failed", val)
@@ -1443,7 +1345,7 @@ class GetMetadataAsyncCheckResult(bb.Union):
         """
         Only call this if :meth:`is_failed` is true.
 
-        :rtype: GetMetadataAsyncError
+        :rtype: MetadataExtractionApiV2Error
         """
         if not self.is_failed():
             raise AttributeError("tag 'failed' not set")
@@ -1456,37 +1358,6 @@ class GetMetadataAsyncCheckResult(bb.Union):
 
 
 GetMetadataAsyncCheckResult_validator = bv.Union(GetMetadataAsyncCheckResult)
-
-
-class GetMetadataAsyncError(bb.Struct):
-    __slots__ = [
-        "_error_code_value",
-        "_error_details_value",
-    ]
-
-    _has_required_fields = False
-
-    def __init__(self, error_code=None, error_details=None):
-        self._error_code_value = bb.NOT_SET
-        self._error_details_value = bb.NOT_SET
-        if error_code is not None:
-            self.error_code = error_code
-        if error_details is not None:
-            self.error_details = error_details
-
-    # Instance attribute type: ErrorCode (validator is set below)
-    error_code = bb.Attribute("error_code", user_defined=True)
-
-    # Instance attribute type: MetadataExtractionApiV2Error (validator is set below)
-    error_details = bb.Attribute("error_details", nullable=True, user_defined=True)
-
-    def _process_custom_annotations(self, annotation_type, field_path, processor):
-        super(GetMetadataAsyncError, self)._process_custom_annotations(
-            annotation_type, field_path, processor
-        )
-
-
-GetMetadataAsyncError_validator = bv.Struct(GetMetadataAsyncError)
 
 
 class GetMetadataResult(bb.Struct):
@@ -1534,26 +1405,16 @@ class GetTranscriptArgs(bb.Struct):
 
     :ivar GetTranscriptArgs.file_id_or_url:
         Identifier of the media asset to transcribe. Callers must set exactly
-        one of the oneof variants: - file_id: a Dropbox-issued file id (format:
-        "id:<id>") for a file the authenticated user has access to. - path: an
-        absolute Dropbox path, e.g. "/folder/recording.mp4". - url: either a
-        Dropbox shared link (www.dropbox.com) or an external HTTPS URL pointing
-        to a supported audio/video file. - Dropbox shared links are resolved
-        internally using the caller's authenticated identity and the link's
-        visibility / download settings. They therefore require an authenticated
-        user context (anonymous `url` requests against Dropbox links are
-        rejected with an `ACCESS_ERROR`). Links protected by a password are
-        rejected with `shared_link_password_protected`; links with downloads
-        disabled are rejected with `link_download_disabled_error`. - External
-        URLs are fetched over HTTPS through the backend's egress proxy and must
-        point at a supported audio/video file extension. The referenced asset
-        must be an audio or video file in a supported format; requests against
-        files with no audio track return a `no_audio_error`.
+        one of the `FileIdOrUrl` variants. The referenced asset must be an audio
+        or video file in a supported format (see the route description for the
+        list); requests against files with no audio track return a
+        `no_audio_error`.
     :ivar GetTranscriptArgs.timestamp_level:
         Granularity of the time offsets returned for each transcript segment.
-        Defaults to `SENTENCE. - SENTENCE: one segment per spoken sentence
-        (recommended). - WORD: one segment per word, useful for fine-grained
-        alignment such as captioning or highlight-as-you-listen experiences.
+        Defaults to `SENTENCE` when the field is omitted. - SENTENCE: one
+        segment per spoken sentence (recommended). - WORD: one segment per word,
+        useful for fine-grained alignment such as captioning or
+        highlight-as-you-listen experiences.
     :ivar GetTranscriptArgs.included_special_words:
         Comma-delimited list of non-lexical filler words to preserve in the
         transcript output, e.g. `"uh, ah, uhm"`. By default these fillers are
@@ -1649,7 +1510,7 @@ class GetTranscriptAsyncCheckResult(bb.Union):
         Create an instance of this class set to the ``failed`` tag with value
         ``val``.
 
-        :param GetTranscriptAsyncError val:
+        :param ContentApiV2Error val:
         :rtype: GetTranscriptAsyncCheckResult
         """
         return cls("failed", val)
@@ -1700,7 +1561,7 @@ class GetTranscriptAsyncCheckResult(bb.Union):
         """
         Only call this if :meth:`is_failed` is true.
 
-        :rtype: GetTranscriptAsyncError
+        :rtype: ContentApiV2Error
         """
         if not self.is_failed():
             raise AttributeError("tag 'failed' not set")
@@ -1713,37 +1574,6 @@ class GetTranscriptAsyncCheckResult(bb.Union):
 
 
 GetTranscriptAsyncCheckResult_validator = bv.Union(GetTranscriptAsyncCheckResult)
-
-
-class GetTranscriptAsyncError(bb.Struct):
-    __slots__ = [
-        "_error_code_value",
-        "_error_details_value",
-    ]
-
-    _has_required_fields = False
-
-    def __init__(self, error_code=None, error_details=None):
-        self._error_code_value = bb.NOT_SET
-        self._error_details_value = bb.NOT_SET
-        if error_code is not None:
-            self.error_code = error_code
-        if error_details is not None:
-            self.error_details = error_details
-
-    # Instance attribute type: ErrorCode (validator is set below)
-    error_code = bb.Attribute("error_code", user_defined=True)
-
-    # Instance attribute type: ContentApiV2Error (validator is set below)
-    error_details = bb.Attribute("error_details", nullable=True, user_defined=True)
-
-    def _process_custom_annotations(self, annotation_type, field_path, processor):
-        super(GetTranscriptAsyncError, self)._process_custom_annotations(
-            annotation_type, field_path, processor
-        )
-
-
-GetTranscriptAsyncError_validator = bv.Struct(GetTranscriptAsyncError)
 
 
 class GetTranscriptResult(bb.Struct):
@@ -1779,10 +1609,25 @@ GetTranscriptResult_validator = bv.Struct(GetTranscriptResult)
 
 class MarkdownConversionApiV2Error(bb.Union):
     """
+    Reason a markdown conversion job failed. Returned in the `failed` variant of
+    `GetMarkdownAsyncCheckResult`. This is a semantic error union: the HTTP
+    status of the poll request itself is unaffected (a poll that surfaces a
+    failed job is still a normal successful poll response). Callers should
+    branch on the variant.
+
     This class acts as a tagged union. Only one of the ``is_*`` methods will
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
+    :ivar MarkdownConversionApiV2Error.server_error:
+        An unexpected, typically transient, server-side failure. The string is a
+        human-readable message; retrying with backoff may succeed.
+    :vartype MarkdownConversionApiV2Error.server_error: str
+    :ivar MarkdownConversionApiV2Error.user_error:
+        The request could not be processed as supplied (a problem with the
+        caller's input). The string is a human-readable message; retrying the
+        same request will not help.
+    :vartype MarkdownConversionApiV2Error.user_error: str
     :ivar MarkdownConversionApiV2Error.not_found_error:
         The referenced file does not exist or is not accessible.
     :ivar MarkdownConversionApiV2Error.is_a_folder_error:
@@ -1911,6 +1756,9 @@ class MarkdownConversionApiV2Error(bb.Union):
 
     def get_server_error(self):
         """
+        An unexpected, typically transient, server-side failure. The string is a
+        human-readable message; retrying with backoff may succeed.
+
         Only call this if :meth:`is_server_error` is true.
 
         :rtype: str
@@ -1921,6 +1769,10 @@ class MarkdownConversionApiV2Error(bb.Union):
 
     def get_user_error(self):
         """
+        The request could not be processed as supplied (a problem with the
+        caller's input). The string is a human-readable message; retrying the
+        same request will not help.
+
         Only call this if :meth:`is_user_error` is true.
 
         :rtype: str
@@ -1964,10 +1816,25 @@ MediaDurationError_validator = bv.Struct(MediaDurationError)
 
 class MetadataExtractionApiV2Error(bb.Union):
     """
+    Reason a metadata extraction job failed. Returned in the `failed` variant of
+    `GetMetadataAsyncCheckResult`. This is a semantic error union: the HTTP
+    status of the poll request itself is unaffected (a poll that surfaces a
+    failed job is still a normal successful poll response). Callers should
+    branch on the variant.
+
     This class acts as a tagged union. Only one of the ``is_*`` methods will
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
 
+    :ivar MetadataExtractionApiV2Error.server_error:
+        An unexpected, typically transient, server-side failure. The string is a
+        human-readable message; retrying with backoff may succeed.
+    :vartype MetadataExtractionApiV2Error.server_error: str
+    :ivar MetadataExtractionApiV2Error.user_error:
+        The request could not be processed as supplied (a problem with the
+        caller's input). The string is a human-readable message; retrying the
+        same request will not help.
+    :vartype MetadataExtractionApiV2Error.user_error: str
     :ivar MetadataExtractionApiV2Error.not_found_error:
         The referenced file does not exist or is not accessible.
     :ivar MetadataExtractionApiV2Error.is_a_folder_error:
@@ -2096,6 +1963,9 @@ class MetadataExtractionApiV2Error(bb.Union):
 
     def get_server_error(self):
         """
+        An unexpected, typically transient, server-side failure. The string is a
+        human-readable message; retrying with backoff may succeed.
+
         Only call this if :meth:`is_server_error` is true.
 
         :rtype: str
@@ -2106,6 +1976,10 @@ class MetadataExtractionApiV2Error(bb.Union):
 
     def get_user_error(self):
         """
+        The request could not be processed as supplied (a problem with the
+        caller's input). The string is a human-readable message; retrying the
+        same request will not help.
+
         Only call this if :meth:`is_user_error` is true.
 
         :rtype: str
@@ -2283,21 +2157,11 @@ class TimestampLevel(bb.Union):
 
     _catch_all = "other"
     # Attribute is overwritten below the class definition
-    unknown = None
-    # Attribute is overwritten below the class definition
     sentence = None
     # Attribute is overwritten below the class definition
     word = None
     # Attribute is overwritten below the class definition
     other = None
-
-    def is_unknown(self):
-        """
-        Check if the union tag is ``unknown``.
-
-        :rtype: bool
-        """
-        return self._tag == "unknown"
 
     def is_sentence(self):
         """
@@ -2743,31 +2607,6 @@ ContentApiV2Error.not_found_error = ContentApiV2Error("not_found_error")
 ContentApiV2Error.is_a_folder_error = ContentApiV2Error("is_a_folder_error")
 ContentApiV2Error.other = ContentApiV2Error("other")
 
-ErrorCode._unknown_error_validator = bv.Void()
-ErrorCode._bad_request_validator = bv.Void()
-ErrorCode._api_error_validator = bv.Void()
-ErrorCode._access_error_validator = bv.Void()
-ErrorCode._ratelimit_error_validator = bv.Void()
-ErrorCode._unavailable_validator = bv.Void()
-ErrorCode._other_validator = bv.Void()
-ErrorCode._tagmap = {
-    "unknown_error": ErrorCode._unknown_error_validator,
-    "bad_request": ErrorCode._bad_request_validator,
-    "api_error": ErrorCode._api_error_validator,
-    "access_error": ErrorCode._access_error_validator,
-    "ratelimit_error": ErrorCode._ratelimit_error_validator,
-    "unavailable": ErrorCode._unavailable_validator,
-    "other": ErrorCode._other_validator,
-}
-
-ErrorCode.unknown_error = ErrorCode("unknown_error")
-ErrorCode.bad_request = ErrorCode("bad_request")
-ErrorCode.api_error = ErrorCode("api_error")
-ErrorCode.access_error = ErrorCode("access_error")
-ErrorCode.ratelimit_error = ErrorCode("ratelimit_error")
-ErrorCode.unavailable = ErrorCode("unavailable")
-ErrorCode.other = ErrorCode("other")
-
 FileIdOrUrl._file_id_validator = bv.String()
 FileIdOrUrl._url_validator = bv.String()
 FileIdOrUrl._path_validator = bv.String()
@@ -2799,7 +2638,7 @@ GetMarkdownArgs._all_fields_ = [
 
 GetMarkdownAsyncCheckResult._in_progress_validator = bv.Void()
 GetMarkdownAsyncCheckResult._complete_validator = GetMarkdownResult_validator
-GetMarkdownAsyncCheckResult._failed_validator = GetMarkdownAsyncError_validator
+GetMarkdownAsyncCheckResult._failed_validator = MarkdownConversionApiV2Error_validator
 GetMarkdownAsyncCheckResult._other_validator = bv.Void()
 GetMarkdownAsyncCheckResult._tagmap = {
     "in_progress": GetMarkdownAsyncCheckResult._in_progress_validator,
@@ -2811,19 +2650,6 @@ GetMarkdownAsyncCheckResult._tagmap = {
 GetMarkdownAsyncCheckResult.in_progress = GetMarkdownAsyncCheckResult("in_progress")
 GetMarkdownAsyncCheckResult.other = GetMarkdownAsyncCheckResult("other")
 
-GetMarkdownAsyncError.error_code.validator = ErrorCode_validator
-GetMarkdownAsyncError.error_details.validator = bv.Nullable(MarkdownConversionApiV2Error_validator)
-GetMarkdownAsyncError._all_field_names_ = set(
-    [
-        "error_code",
-        "error_details",
-    ]
-)
-GetMarkdownAsyncError._all_fields_ = [
-    ("error_code", GetMarkdownAsyncError.error_code.validator),
-    ("error_details", GetMarkdownAsyncError.error_details.validator),
-]
-
 GetMarkdownResult.markdown.validator = bv.String()
 GetMarkdownResult._all_field_names_ = set(["markdown"])
 GetMarkdownResult._all_fields_ = [("markdown", GetMarkdownResult.markdown.validator)]
@@ -2834,7 +2660,7 @@ GetMetadataArgs._all_fields_ = [("file_id_or_url", GetMetadataArgs.file_id_or_ur
 
 GetMetadataAsyncCheckResult._in_progress_validator = bv.Void()
 GetMetadataAsyncCheckResult._complete_validator = GetMetadataResult_validator
-GetMetadataAsyncCheckResult._failed_validator = GetMetadataAsyncError_validator
+GetMetadataAsyncCheckResult._failed_validator = MetadataExtractionApiV2Error_validator
 GetMetadataAsyncCheckResult._other_validator = bv.Void()
 GetMetadataAsyncCheckResult._tagmap = {
     "in_progress": GetMetadataAsyncCheckResult._in_progress_validator,
@@ -2845,19 +2671,6 @@ GetMetadataAsyncCheckResult._tagmap = {
 
 GetMetadataAsyncCheckResult.in_progress = GetMetadataAsyncCheckResult("in_progress")
 GetMetadataAsyncCheckResult.other = GetMetadataAsyncCheckResult("other")
-
-GetMetadataAsyncError.error_code.validator = ErrorCode_validator
-GetMetadataAsyncError.error_details.validator = bv.Nullable(MetadataExtractionApiV2Error_validator)
-GetMetadataAsyncError._all_field_names_ = set(
-    [
-        "error_code",
-        "error_details",
-    ]
-)
-GetMetadataAsyncError._all_fields_ = [
-    ("error_code", GetMetadataAsyncError.error_code.validator),
-    ("error_details", GetMetadataAsyncError.error_details.validator),
-]
 
 GetMetadataResult.metadata_type.validator = MetadataType_validator
 GetMetadataResult.metadata.validator = bv.Nullable(MetadataUnion_validator)
@@ -2893,7 +2706,7 @@ GetTranscriptArgs._all_fields_ = [
 
 GetTranscriptAsyncCheckResult._in_progress_validator = bv.Void()
 GetTranscriptAsyncCheckResult._complete_validator = GetTranscriptResult_validator
-GetTranscriptAsyncCheckResult._failed_validator = GetTranscriptAsyncError_validator
+GetTranscriptAsyncCheckResult._failed_validator = ContentApiV2Error_validator
 GetTranscriptAsyncCheckResult._other_validator = bv.Void()
 GetTranscriptAsyncCheckResult._tagmap = {
     "in_progress": GetTranscriptAsyncCheckResult._in_progress_validator,
@@ -2904,19 +2717,6 @@ GetTranscriptAsyncCheckResult._tagmap = {
 
 GetTranscriptAsyncCheckResult.in_progress = GetTranscriptAsyncCheckResult("in_progress")
 GetTranscriptAsyncCheckResult.other = GetTranscriptAsyncCheckResult("other")
-
-GetTranscriptAsyncError.error_code.validator = ErrorCode_validator
-GetTranscriptAsyncError.error_details.validator = bv.Nullable(ContentApiV2Error_validator)
-GetTranscriptAsyncError._all_field_names_ = set(
-    [
-        "error_code",
-        "error_details",
-    ]
-)
-GetTranscriptAsyncError._all_fields_ = [
-    ("error_code", GetTranscriptAsyncError.error_code.validator),
-    ("error_details", GetTranscriptAsyncError.error_details.validator),
-]
 
 GetTranscriptResult.structured_transcript.validator = bv.Nullable(ApiStructuredTranscript_validator)
 GetTranscriptResult._all_field_names_ = set(["structured_transcript"])
@@ -3053,18 +2853,15 @@ OfficeFileType.office_filetype_powerpoint = OfficeFileType("office_filetype_powe
 OfficeFileType.office_filetype_excel = OfficeFileType("office_filetype_excel")
 OfficeFileType.other = OfficeFileType("other")
 
-TimestampLevel._unknown_validator = bv.Void()
 TimestampLevel._sentence_validator = bv.Void()
 TimestampLevel._word_validator = bv.Void()
 TimestampLevel._other_validator = bv.Void()
 TimestampLevel._tagmap = {
-    "unknown": TimestampLevel._unknown_validator,
     "sentence": TimestampLevel._sentence_validator,
     "word": TimestampLevel._word_validator,
     "other": TimestampLevel._other_validator,
 }
 
-TimestampLevel.unknown = TimestampLevel("unknown")
 TimestampLevel.sentence = TimestampLevel("sentence")
 TimestampLevel.word = TimestampLevel("word")
 TimestampLevel.other = TimestampLevel("other")
@@ -3142,14 +2939,11 @@ ApiTranscriptSegment.start_time.default = 0.0
 ApiTranscriptSegment.end_time.default = 0.0
 GetMarkdownArgs.enable_ocr.default = False
 GetMarkdownArgs.embed_images.default = False
-GetMarkdownAsyncError.error_code.default = ErrorCode.unknown_error
 GetMarkdownResult.markdown.default = ""
-GetMetadataAsyncError.error_code.default = ErrorCode.unknown_error
 GetMetadataResult.metadata_type.default = MetadataType.metadata_type_unknown
-GetTranscriptArgs.timestamp_level.default = TimestampLevel.unknown
+GetTranscriptArgs.timestamp_level.default = TimestampLevel.sentence
 GetTranscriptArgs.included_special_words.default = ""
 GetTranscriptArgs.audio_language.default = ""
-GetTranscriptAsyncError.error_code.default = ErrorCode.unknown_error
 MediaDurationError.limit.default = 0
 get_markdown_async = bb.Route(
     "get_markdown_async",
