@@ -2003,11 +2003,7 @@ class AdminAlertingTriggeredAlertDetails(bb.Struct):
     _has_required_fields = True
 
     def __init__(
-        self,
-        alert_name=None,
-        alert_severity=None,
-        alert_category=None,
-        alert_instance_id=None,
+        self, alert_name=None, alert_severity=None, alert_category=None, alert_instance_id=None
     ):
         self._alert_name_value = bb.NOT_SET
         self._alert_severity_value = bb.NOT_SET
@@ -3995,11 +3991,7 @@ class BinderRenamePageDetails(bb.Struct):
     _has_required_fields = True
 
     def __init__(
-        self,
-        event_uuid=None,
-        doc_title=None,
-        binder_item_name=None,
-        previous_binder_item_name=None,
+        self, event_uuid=None, doc_title=None, binder_item_name=None, previous_binder_item_name=None
     ):
         self._event_uuid_value = bb.NOT_SET
         self._doc_title_value = bb.NOT_SET
@@ -4083,11 +4075,7 @@ class BinderRenameSectionDetails(bb.Struct):
     _has_required_fields = True
 
     def __init__(
-        self,
-        event_uuid=None,
-        doc_title=None,
-        binder_item_name=None,
-        previous_binder_item_name=None,
+        self, event_uuid=None, doc_title=None, binder_item_name=None, previous_binder_item_name=None
     ):
         self._event_uuid_value = bb.NOT_SET
         self._doc_title_value = bb.NOT_SET
@@ -6711,11 +6699,7 @@ class DashClonedStackDetails(bb.Struct):
     _has_required_fields = True
 
     def __init__(
-        self,
-        stack_name=None,
-        actor_email=None,
-        new_cloned_stack_name=None,
-        stack_type=None,
+        self, stack_name=None, actor_email=None, new_cloned_stack_name=None, stack_type=None
     ):
         self._stack_name_value = bb.NOT_SET
         self._actor_email_value = bb.NOT_SET
@@ -11411,12 +11395,7 @@ class EmailIngestReceiveFileDetails(bb.Struct):
     _has_required_fields = True
 
     def __init__(
-        self,
-        inbox_name=None,
-        attachment_names=None,
-        subject=None,
-        from_name=None,
-        from_email=None,
+        self, inbox_name=None, attachment_names=None, subject=None, from_name=None, from_email=None
     ):
         self._inbox_name_value = bb.NOT_SET
         self._attachment_names_value = bb.NOT_SET
@@ -15339,6 +15318,17 @@ class EventDetails(bb.Union):
         return cls("member_delete_profile_photo_details", val)
 
     @classmethod
+    def member_folder_contents_accessed_details(cls, val):
+        """
+        Create an instance of this class set to the
+        ``member_folder_contents_accessed_details`` tag with value ``val``.
+
+        :param MemberFolderContentsAccessedDetails val:
+        :rtype: EventDetails
+        """
+        return cls("member_folder_contents_accessed_details", val)
+
+    @classmethod
     def member_permanently_delete_account_contents_details(cls, val):
         """
         Create an instance of this class set to the
@@ -16078,6 +16068,83 @@ class EventDetails(bb.Union):
         :rtype: EventDetails
         """
         return cls("password_reset_all_details", val)
+
+    @classmethod
+    def protect_action_add_collaborator_details(cls, val):
+        """
+        Create an instance of this class set to the
+        ``protect_action_add_collaborator_details`` tag with value ``val``.
+
+        :param ProtectActionAddCollaboratorDetails val:
+        :rtype: EventDetails
+        """
+        return cls("protect_action_add_collaborator_details", val)
+
+    @classmethod
+    def protect_action_add_link_details(cls, val):
+        """
+        Create an instance of this class set to the
+        ``protect_action_add_link_details`` tag with value ``val``.
+
+        :param ProtectActionAddLinkDetails val:
+        :rtype: EventDetails
+        """
+        return cls("protect_action_add_link_details", val)
+
+    @classmethod
+    def protect_action_delete_details(cls, val):
+        """
+        Create an instance of this class set to the
+        ``protect_action_delete_details`` tag with value ``val``.
+
+        :param ProtectActionDeleteDetails val:
+        :rtype: EventDetails
+        """
+        return cls("protect_action_delete_details", val)
+
+    @classmethod
+    def protect_action_export_details(cls, val):
+        """
+        Create an instance of this class set to the
+        ``protect_action_export_details`` tag with value ``val``.
+
+        :param ProtectActionExportDetails val:
+        :rtype: EventDetails
+        """
+        return cls("protect_action_export_details", val)
+
+    @classmethod
+    def protect_action_remove_collaborator_details(cls, val):
+        """
+        Create an instance of this class set to the
+        ``protect_action_remove_collaborator_details`` tag with value ``val``.
+
+        :param ProtectActionRemoveCollaboratorDetails val:
+        :rtype: EventDetails
+        """
+        return cls("protect_action_remove_collaborator_details", val)
+
+    @classmethod
+    def protect_action_remove_link_details(cls, val):
+        """
+        Create an instance of this class set to the
+        ``protect_action_remove_link_details`` tag with value ``val``.
+
+        :param ProtectActionRemoveLinkDetails val:
+        :rtype: EventDetails
+        """
+        return cls("protect_action_remove_link_details", val)
+
+    @classmethod
+    def protect_action_stop_sharing_details(cls, val):
+        """
+        Create an instance of this class set to the
+        ``protect_action_stop_sharing_details`` tag with value ``val``.
+
+        :param ProtectActionStopSharingDetails val:
+        :rtype: EventDetails
+        """
+        return cls("protect_action_stop_sharing_details", val)
 
     @classmethod
     def protect_internal_domains_changed_details(cls, val):
@@ -21589,6 +21656,14 @@ class EventDetails(bb.Union):
         """
         return self._tag == "member_delete_profile_photo_details"
 
+    def is_member_folder_contents_accessed_details(self):
+        """
+        Check if the union tag is ``member_folder_contents_accessed_details``.
+
+        :rtype: bool
+        """
+        return self._tag == "member_folder_contents_accessed_details"
+
     def is_member_permanently_delete_account_contents_details(self):
         """
         Check if the union tag is ``member_permanently_delete_account_contents_details``.
@@ -22124,6 +22199,62 @@ class EventDetails(bb.Union):
         :rtype: bool
         """
         return self._tag == "password_reset_all_details"
+
+    def is_protect_action_add_collaborator_details(self):
+        """
+        Check if the union tag is ``protect_action_add_collaborator_details``.
+
+        :rtype: bool
+        """
+        return self._tag == "protect_action_add_collaborator_details"
+
+    def is_protect_action_add_link_details(self):
+        """
+        Check if the union tag is ``protect_action_add_link_details``.
+
+        :rtype: bool
+        """
+        return self._tag == "protect_action_add_link_details"
+
+    def is_protect_action_delete_details(self):
+        """
+        Check if the union tag is ``protect_action_delete_details``.
+
+        :rtype: bool
+        """
+        return self._tag == "protect_action_delete_details"
+
+    def is_protect_action_export_details(self):
+        """
+        Check if the union tag is ``protect_action_export_details``.
+
+        :rtype: bool
+        """
+        return self._tag == "protect_action_export_details"
+
+    def is_protect_action_remove_collaborator_details(self):
+        """
+        Check if the union tag is ``protect_action_remove_collaborator_details``.
+
+        :rtype: bool
+        """
+        return self._tag == "protect_action_remove_collaborator_details"
+
+    def is_protect_action_remove_link_details(self):
+        """
+        Check if the union tag is ``protect_action_remove_link_details``.
+
+        :rtype: bool
+        """
+        return self._tag == "protect_action_remove_link_details"
+
+    def is_protect_action_stop_sharing_details(self):
+        """
+        Check if the union tag is ``protect_action_stop_sharing_details``.
+
+        :rtype: bool
+        """
+        return self._tag == "protect_action_stop_sharing_details"
 
     def is_protect_internal_domains_changed_details(self):
         """
@@ -26981,6 +27112,16 @@ class EventDetails(bb.Union):
             raise AttributeError("tag 'member_delete_profile_photo_details' not set")
         return self._value
 
+    def get_member_folder_contents_accessed_details(self):
+        """
+        Only call this if :meth:`is_member_folder_contents_accessed_details` is true.
+
+        :rtype: MemberFolderContentsAccessedDetails
+        """
+        if not self.is_member_folder_contents_accessed_details():
+            raise AttributeError("tag 'member_folder_contents_accessed_details' not set")
+        return self._value
+
     def get_member_permanently_delete_account_contents_details(self):
         """
         Only call this if :meth:`is_member_permanently_delete_account_contents_details` is true.
@@ -27649,6 +27790,76 @@ class EventDetails(bb.Union):
         """
         if not self.is_password_reset_all_details():
             raise AttributeError("tag 'password_reset_all_details' not set")
+        return self._value
+
+    def get_protect_action_add_collaborator_details(self):
+        """
+        Only call this if :meth:`is_protect_action_add_collaborator_details` is true.
+
+        :rtype: ProtectActionAddCollaboratorDetails
+        """
+        if not self.is_protect_action_add_collaborator_details():
+            raise AttributeError("tag 'protect_action_add_collaborator_details' not set")
+        return self._value
+
+    def get_protect_action_add_link_details(self):
+        """
+        Only call this if :meth:`is_protect_action_add_link_details` is true.
+
+        :rtype: ProtectActionAddLinkDetails
+        """
+        if not self.is_protect_action_add_link_details():
+            raise AttributeError("tag 'protect_action_add_link_details' not set")
+        return self._value
+
+    def get_protect_action_delete_details(self):
+        """
+        Only call this if :meth:`is_protect_action_delete_details` is true.
+
+        :rtype: ProtectActionDeleteDetails
+        """
+        if not self.is_protect_action_delete_details():
+            raise AttributeError("tag 'protect_action_delete_details' not set")
+        return self._value
+
+    def get_protect_action_export_details(self):
+        """
+        Only call this if :meth:`is_protect_action_export_details` is true.
+
+        :rtype: ProtectActionExportDetails
+        """
+        if not self.is_protect_action_export_details():
+            raise AttributeError("tag 'protect_action_export_details' not set")
+        return self._value
+
+    def get_protect_action_remove_collaborator_details(self):
+        """
+        Only call this if :meth:`is_protect_action_remove_collaborator_details` is true.
+
+        :rtype: ProtectActionRemoveCollaboratorDetails
+        """
+        if not self.is_protect_action_remove_collaborator_details():
+            raise AttributeError("tag 'protect_action_remove_collaborator_details' not set")
+        return self._value
+
+    def get_protect_action_remove_link_details(self):
+        """
+        Only call this if :meth:`is_protect_action_remove_link_details` is true.
+
+        :rtype: ProtectActionRemoveLinkDetails
+        """
+        if not self.is_protect_action_remove_link_details():
+            raise AttributeError("tag 'protect_action_remove_link_details' not set")
+        return self._value
+
+    def get_protect_action_stop_sharing_details(self):
+        """
+        Only call this if :meth:`is_protect_action_stop_sharing_details` is true.
+
+        :rtype: ProtectActionStopSharingDetails
+        """
+        if not self.is_protect_action_stop_sharing_details():
+            raise AttributeError("tag 'protect_action_stop_sharing_details' not set")
         return self._value
 
     def get_protect_internal_domains_changed_details(self):
@@ -31603,7 +31814,7 @@ class EventType(bb.Union):
         (file_operations) Unpinned item from folder overview
     :vartype EventType.folder_overview_item_unpinned: FolderOverviewItemUnpinnedType
     :ivar EventType.media_hub_file_downloaded:
-        (file_operations) Downloaded files in Media Hub
+        (file_operations) Downloaded files in Replay
     :vartype EventType.media_hub_file_downloaded: MediaHubFileDownloadedType
     :ivar EventType.object_label_added:
         (file_operations) Added a label
@@ -31794,6 +32005,9 @@ class EventType(bb.Union):
     :ivar EventType.member_delete_profile_photo:
         (members) Deleted team member profile photo
     :vartype EventType.member_delete_profile_photo: MemberDeleteProfilePhotoType
+    :ivar EventType.member_folder_contents_accessed:
+        (members) Admin browsed a team member's folder contents
+    :vartype EventType.member_folder_contents_accessed: MemberFolderContentsAccessedType
     :ivar EventType.member_permanently_delete_account_contents:
         (members) Permanently deleted contents of deleted team member account
     :vartype EventType.member_permanently_delete_account_contents: MemberPermanentlyDeleteAccountContentsType
@@ -32004,6 +32218,27 @@ class EventType(bb.Union):
     :ivar EventType.password_reset_all:
         (passwords) Reset all team member passwords
     :vartype EventType.password_reset_all: PasswordResetAllType
+    :ivar EventType.protect_action_add_collaborator:
+        (protect) Added collaborators via Dropbox Protect
+    :vartype EventType.protect_action_add_collaborator: ProtectActionAddCollaboratorType
+    :ivar EventType.protect_action_add_link:
+        (protect) Added a link via Dropbox Protect
+    :vartype EventType.protect_action_add_link: ProtectActionAddLinkType
+    :ivar EventType.protect_action_delete:
+        (protect) Deleted content via Dropbox Protect
+    :vartype EventType.protect_action_delete: ProtectActionDeleteType
+    :ivar EventType.protect_action_export:
+        (protect) Exported content via Dropbox Protect
+    :vartype EventType.protect_action_export: ProtectActionExportType
+    :ivar EventType.protect_action_remove_collaborator:
+        (protect) Removed collaborators via Dropbox Protect
+    :vartype EventType.protect_action_remove_collaborator: ProtectActionRemoveCollaboratorType
+    :ivar EventType.protect_action_remove_link:
+        (protect) Removed a link via Dropbox Protect
+    :vartype EventType.protect_action_remove_link: ProtectActionRemoveLinkType
+    :ivar EventType.protect_action_stop_sharing:
+        (protect) Stopped sharing content via Dropbox Protect
+    :vartype EventType.protect_action_stop_sharing: ProtectActionStopSharingType
     :ivar EventType.protect_internal_domains_changed:
         (protect) Modified Protect internal domains list
     :vartype EventType.protect_internal_domains_changed: ProtectInternalDomainsChangedType
@@ -32116,25 +32351,25 @@ class EventType(bb.Union):
         (sharing) Viewed transfer
     :vartype EventType.file_transfers_transfer_view: FileTransfersTransferViewType
     :ivar EventType.media_hub_project_team_add:
-        (sharing) Added member to Media Hub project
+        (sharing) Added member to Replay project
     :vartype EventType.media_hub_project_team_add: MediaHubProjectTeamAddType
     :ivar EventType.media_hub_project_team_delete:
-        (sharing) Removed member from Media Hub project
+        (sharing) Removed member from Replay project
     :vartype EventType.media_hub_project_team_delete: MediaHubProjectTeamDeleteType
     :ivar EventType.media_hub_project_team_role_changed:
-        (sharing) Changed member role in Media Hub project
+        (sharing) Changed member role in Replay project
     :vartype EventType.media_hub_project_team_role_changed: MediaHubProjectTeamRoleChangedType
     :ivar EventType.media_hub_shared_link_audience_changed:
-        (sharing) Changed Media Hub shared link audience
+        (sharing) Changed Replay shared link audience
     :vartype EventType.media_hub_shared_link_audience_changed: MediaHubSharedLinkAudienceChangedType
     :ivar EventType.media_hub_shared_link_created:
-        (sharing) Created Media Hub shared link
+        (sharing) Created Replay shared link
     :vartype EventType.media_hub_shared_link_created: MediaHubSharedLinkCreatedType
     :ivar EventType.media_hub_shared_link_download_setting_changed:
-        (sharing) Changed Media Hub shared link download setting
+        (sharing) Changed Replay shared link download setting
     :vartype EventType.media_hub_shared_link_download_setting_changed: MediaHubSharedLinkDownloadSettingChangedType
     :ivar EventType.media_hub_shared_link_revoked:
-        (sharing) Revoked Media Hub shared link
+        (sharing) Revoked Replay shared link
     :vartype EventType.media_hub_shared_link_revoked: MediaHubSharedLinkRevokedType
     :ivar EventType.note_acl_invite_only:
         (sharing) Changed Paper doc to invite-only (deprecated, no longer
@@ -32732,14 +32967,13 @@ class EventType(bb.Union):
         (team_policies) Changed invite accept email policy for team
     :vartype EventType.invite_acceptance_email_policy_changed: InviteAcceptanceEmailPolicyChangedType
     :ivar EventType.media_hub_adding_people_policy_changed:
-        (team_policies) Changed the policy for adding people to Media Hub
-        content
+        (team_policies) Changed the policy for adding people to Replay content
     :vartype EventType.media_hub_adding_people_policy_changed: MediaHubAddingPeoplePolicyChangedType
     :ivar EventType.media_hub_download_policy_changed:
-        (team_policies) Changed the policy for downloading Media Hub content
+        (team_policies) Changed the policy for downloading Replay content
     :vartype EventType.media_hub_download_policy_changed: MediaHubDownloadPolicyChangedType
     :ivar EventType.media_hub_link_sharing_policy_changed:
-        (team_policies) Changed the policy for sharing Media Hub content
+        (team_policies) Changed the policy for sharing Replay content
     :vartype EventType.media_hub_link_sharing_policy_changed: MediaHubLinkSharingPolicyChangedType
     :ivar EventType.member_requests_change_policy:
         (team_policies) Changed whether users can find team when not invited
@@ -35411,6 +35645,17 @@ class EventType(bb.Union):
         return cls("member_delete_profile_photo", val)
 
     @classmethod
+    def member_folder_contents_accessed(cls, val):
+        """
+        Create an instance of this class set to the
+        ``member_folder_contents_accessed`` tag with value ``val``.
+
+        :param MemberFolderContentsAccessedType val:
+        :rtype: EventType
+        """
+        return cls("member_folder_contents_accessed", val)
+
+    @classmethod
     def member_permanently_delete_account_contents(cls, val):
         """
         Create an instance of this class set to the
@@ -36146,6 +36391,83 @@ class EventType(bb.Union):
         :rtype: EventType
         """
         return cls("password_reset_all", val)
+
+    @classmethod
+    def protect_action_add_collaborator(cls, val):
+        """
+        Create an instance of this class set to the
+        ``protect_action_add_collaborator`` tag with value ``val``.
+
+        :param ProtectActionAddCollaboratorType val:
+        :rtype: EventType
+        """
+        return cls("protect_action_add_collaborator", val)
+
+    @classmethod
+    def protect_action_add_link(cls, val):
+        """
+        Create an instance of this class set to the ``protect_action_add_link``
+        tag with value ``val``.
+
+        :param ProtectActionAddLinkType val:
+        :rtype: EventType
+        """
+        return cls("protect_action_add_link", val)
+
+    @classmethod
+    def protect_action_delete(cls, val):
+        """
+        Create an instance of this class set to the ``protect_action_delete``
+        tag with value ``val``.
+
+        :param ProtectActionDeleteType val:
+        :rtype: EventType
+        """
+        return cls("protect_action_delete", val)
+
+    @classmethod
+    def protect_action_export(cls, val):
+        """
+        Create an instance of this class set to the ``protect_action_export``
+        tag with value ``val``.
+
+        :param ProtectActionExportType val:
+        :rtype: EventType
+        """
+        return cls("protect_action_export", val)
+
+    @classmethod
+    def protect_action_remove_collaborator(cls, val):
+        """
+        Create an instance of this class set to the
+        ``protect_action_remove_collaborator`` tag with value ``val``.
+
+        :param ProtectActionRemoveCollaboratorType val:
+        :rtype: EventType
+        """
+        return cls("protect_action_remove_collaborator", val)
+
+    @classmethod
+    def protect_action_remove_link(cls, val):
+        """
+        Create an instance of this class set to the
+        ``protect_action_remove_link`` tag with value ``val``.
+
+        :param ProtectActionRemoveLinkType val:
+        :rtype: EventType
+        """
+        return cls("protect_action_remove_link", val)
+
+    @classmethod
+    def protect_action_stop_sharing(cls, val):
+        """
+        Create an instance of this class set to the
+        ``protect_action_stop_sharing`` tag with value ``val``.
+
+        :param ProtectActionStopSharingType val:
+        :rtype: EventType
+        """
+        return cls("protect_action_stop_sharing", val)
 
     @classmethod
     def protect_internal_domains_changed(cls, val):
@@ -41603,6 +41925,14 @@ class EventType(bb.Union):
         """
         return self._tag == "member_delete_profile_photo"
 
+    def is_member_folder_contents_accessed(self):
+        """
+        Check if the union tag is ``member_folder_contents_accessed``.
+
+        :rtype: bool
+        """
+        return self._tag == "member_folder_contents_accessed"
+
     def is_member_permanently_delete_account_contents(self):
         """
         Check if the union tag is ``member_permanently_delete_account_contents``.
@@ -42138,6 +42468,62 @@ class EventType(bb.Union):
         :rtype: bool
         """
         return self._tag == "password_reset_all"
+
+    def is_protect_action_add_collaborator(self):
+        """
+        Check if the union tag is ``protect_action_add_collaborator``.
+
+        :rtype: bool
+        """
+        return self._tag == "protect_action_add_collaborator"
+
+    def is_protect_action_add_link(self):
+        """
+        Check if the union tag is ``protect_action_add_link``.
+
+        :rtype: bool
+        """
+        return self._tag == "protect_action_add_link"
+
+    def is_protect_action_delete(self):
+        """
+        Check if the union tag is ``protect_action_delete``.
+
+        :rtype: bool
+        """
+        return self._tag == "protect_action_delete"
+
+    def is_protect_action_export(self):
+        """
+        Check if the union tag is ``protect_action_export``.
+
+        :rtype: bool
+        """
+        return self._tag == "protect_action_export"
+
+    def is_protect_action_remove_collaborator(self):
+        """
+        Check if the union tag is ``protect_action_remove_collaborator``.
+
+        :rtype: bool
+        """
+        return self._tag == "protect_action_remove_collaborator"
+
+    def is_protect_action_remove_link(self):
+        """
+        Check if the union tag is ``protect_action_remove_link``.
+
+        :rtype: bool
+        """
+        return self._tag == "protect_action_remove_link"
+
+    def is_protect_action_stop_sharing(self):
+        """
+        Check if the union tag is ``protect_action_stop_sharing``.
+
+        :rtype: bool
+        """
+        return self._tag == "protect_action_stop_sharing"
 
     def is_protect_internal_domains_changed(self):
         """
@@ -46642,7 +47028,7 @@ class EventType(bb.Union):
 
     def get_media_hub_file_downloaded(self):
         """
-        (file_operations) Downloaded files in Media Hub
+        (file_operations) Downloaded files in Replay
 
         Only call this if :meth:`is_media_hub_file_downloaded` is true.
 
@@ -47397,6 +47783,18 @@ class EventType(bb.Union):
         """
         if not self.is_member_delete_profile_photo():
             raise AttributeError("tag 'member_delete_profile_photo' not set")
+        return self._value
+
+    def get_member_folder_contents_accessed(self):
+        """
+        (members) Admin browsed a team member's folder contents
+
+        Only call this if :meth:`is_member_folder_contents_accessed` is true.
+
+        :rtype: MemberFolderContentsAccessedType
+        """
+        if not self.is_member_folder_contents_accessed():
+            raise AttributeError("tag 'member_folder_contents_accessed' not set")
         return self._value
 
     def get_member_permanently_delete_account_contents(self):
@@ -48212,6 +48610,90 @@ class EventType(bb.Union):
             raise AttributeError("tag 'password_reset_all' not set")
         return self._value
 
+    def get_protect_action_add_collaborator(self):
+        """
+        (protect) Added collaborators via Dropbox Protect
+
+        Only call this if :meth:`is_protect_action_add_collaborator` is true.
+
+        :rtype: ProtectActionAddCollaboratorType
+        """
+        if not self.is_protect_action_add_collaborator():
+            raise AttributeError("tag 'protect_action_add_collaborator' not set")
+        return self._value
+
+    def get_protect_action_add_link(self):
+        """
+        (protect) Added a link via Dropbox Protect
+
+        Only call this if :meth:`is_protect_action_add_link` is true.
+
+        :rtype: ProtectActionAddLinkType
+        """
+        if not self.is_protect_action_add_link():
+            raise AttributeError("tag 'protect_action_add_link' not set")
+        return self._value
+
+    def get_protect_action_delete(self):
+        """
+        (protect) Deleted content via Dropbox Protect
+
+        Only call this if :meth:`is_protect_action_delete` is true.
+
+        :rtype: ProtectActionDeleteType
+        """
+        if not self.is_protect_action_delete():
+            raise AttributeError("tag 'protect_action_delete' not set")
+        return self._value
+
+    def get_protect_action_export(self):
+        """
+        (protect) Exported content via Dropbox Protect
+
+        Only call this if :meth:`is_protect_action_export` is true.
+
+        :rtype: ProtectActionExportType
+        """
+        if not self.is_protect_action_export():
+            raise AttributeError("tag 'protect_action_export' not set")
+        return self._value
+
+    def get_protect_action_remove_collaborator(self):
+        """
+        (protect) Removed collaborators via Dropbox Protect
+
+        Only call this if :meth:`is_protect_action_remove_collaborator` is true.
+
+        :rtype: ProtectActionRemoveCollaboratorType
+        """
+        if not self.is_protect_action_remove_collaborator():
+            raise AttributeError("tag 'protect_action_remove_collaborator' not set")
+        return self._value
+
+    def get_protect_action_remove_link(self):
+        """
+        (protect) Removed a link via Dropbox Protect
+
+        Only call this if :meth:`is_protect_action_remove_link` is true.
+
+        :rtype: ProtectActionRemoveLinkType
+        """
+        if not self.is_protect_action_remove_link():
+            raise AttributeError("tag 'protect_action_remove_link' not set")
+        return self._value
+
+    def get_protect_action_stop_sharing(self):
+        """
+        (protect) Stopped sharing content via Dropbox Protect
+
+        Only call this if :meth:`is_protect_action_stop_sharing` is true.
+
+        :rtype: ProtectActionStopSharingType
+        """
+        if not self.is_protect_action_stop_sharing():
+            raise AttributeError("tag 'protect_action_stop_sharing' not set")
+        return self._value
+
     def get_protect_internal_domains_changed(self):
         """
         (protect) Modified Protect internal domains list
@@ -48658,7 +49140,7 @@ class EventType(bb.Union):
 
     def get_media_hub_project_team_add(self):
         """
-        (sharing) Added member to Media Hub project
+        (sharing) Added member to Replay project
 
         Only call this if :meth:`is_media_hub_project_team_add` is true.
 
@@ -48670,7 +49152,7 @@ class EventType(bb.Union):
 
     def get_media_hub_project_team_delete(self):
         """
-        (sharing) Removed member from Media Hub project
+        (sharing) Removed member from Replay project
 
         Only call this if :meth:`is_media_hub_project_team_delete` is true.
 
@@ -48682,7 +49164,7 @@ class EventType(bb.Union):
 
     def get_media_hub_project_team_role_changed(self):
         """
-        (sharing) Changed member role in Media Hub project
+        (sharing) Changed member role in Replay project
 
         Only call this if :meth:`is_media_hub_project_team_role_changed` is true.
 
@@ -48694,7 +49176,7 @@ class EventType(bb.Union):
 
     def get_media_hub_shared_link_audience_changed(self):
         """
-        (sharing) Changed Media Hub shared link audience
+        (sharing) Changed Replay shared link audience
 
         Only call this if :meth:`is_media_hub_shared_link_audience_changed` is true.
 
@@ -48706,7 +49188,7 @@ class EventType(bb.Union):
 
     def get_media_hub_shared_link_created(self):
         """
-        (sharing) Created Media Hub shared link
+        (sharing) Created Replay shared link
 
         Only call this if :meth:`is_media_hub_shared_link_created` is true.
 
@@ -48718,7 +49200,7 @@ class EventType(bb.Union):
 
     def get_media_hub_shared_link_download_setting_changed(self):
         """
-        (sharing) Changed Media Hub shared link download setting
+        (sharing) Changed Replay shared link download setting
 
         Only call this if :meth:`is_media_hub_shared_link_download_setting_changed` is true.
 
@@ -48730,7 +49212,7 @@ class EventType(bb.Union):
 
     def get_media_hub_shared_link_revoked(self):
         """
-        (sharing) Revoked Media Hub shared link
+        (sharing) Revoked Replay shared link
 
         Only call this if :meth:`is_media_hub_shared_link_revoked` is true.
 
@@ -51013,8 +51495,7 @@ class EventType(bb.Union):
 
     def get_media_hub_adding_people_policy_changed(self):
         """
-        (team_policies) Changed the policy for adding people to Media Hub
-        content
+        (team_policies) Changed the policy for adding people to Replay content
 
         Only call this if :meth:`is_media_hub_adding_people_policy_changed` is true.
 
@@ -51026,7 +51507,7 @@ class EventType(bb.Union):
 
     def get_media_hub_download_policy_changed(self):
         """
-        (team_policies) Changed the policy for downloading Media Hub content
+        (team_policies) Changed the policy for downloading Replay content
 
         Only call this if :meth:`is_media_hub_download_policy_changed` is true.
 
@@ -51038,7 +51519,7 @@ class EventType(bb.Union):
 
     def get_media_hub_link_sharing_policy_changed(self):
         """
-        (team_policies) Changed the policy for sharing Media Hub content
+        (team_policies) Changed the policy for sharing Replay content
 
         Only call this if :meth:`is_media_hub_link_sharing_policy_changed` is true.
 
@@ -52709,7 +53190,7 @@ class EventTypeArg(bb.Union):
     :ivar EventTypeArg.folder_overview_item_unpinned:
         (file_operations) Unpinned item from folder overview
     :ivar EventTypeArg.media_hub_file_downloaded:
-        (file_operations) Downloaded files in Media Hub
+        (file_operations) Downloaded files in Replay
     :ivar EventTypeArg.object_label_added:
         (file_operations) Added a label
     :ivar EventTypeArg.object_label_removed:
@@ -52837,6 +53318,8 @@ class EventTypeArg(bb.Union):
         (members) Cleared manually added contacts
     :ivar EventTypeArg.member_delete_profile_photo:
         (members) Deleted team member profile photo
+    :ivar EventTypeArg.member_folder_contents_accessed:
+        (members) Admin browsed a team member's folder contents
     :ivar EventTypeArg.member_permanently_delete_account_contents:
         (members) Permanently deleted contents of deleted team member account
     :ivar EventTypeArg.member_remove_external_id:
@@ -52980,6 +53463,20 @@ class EventTypeArg(bb.Union):
         (passwords) Reset password
     :ivar EventTypeArg.password_reset_all:
         (passwords) Reset all team member passwords
+    :ivar EventTypeArg.protect_action_add_collaborator:
+        (protect) Added collaborators via Dropbox Protect
+    :ivar EventTypeArg.protect_action_add_link:
+        (protect) Added a link via Dropbox Protect
+    :ivar EventTypeArg.protect_action_delete:
+        (protect) Deleted content via Dropbox Protect
+    :ivar EventTypeArg.protect_action_export:
+        (protect) Exported content via Dropbox Protect
+    :ivar EventTypeArg.protect_action_remove_collaborator:
+        (protect) Removed collaborators via Dropbox Protect
+    :ivar EventTypeArg.protect_action_remove_link:
+        (protect) Removed a link via Dropbox Protect
+    :ivar EventTypeArg.protect_action_stop_sharing:
+        (protect) Stopped sharing content via Dropbox Protect
     :ivar EventTypeArg.protect_internal_domains_changed:
         (protect) Modified Protect internal domains list
     :ivar EventTypeArg.classification_create_report:
@@ -53055,19 +53552,19 @@ class EventTypeArg(bb.Union):
     :ivar EventTypeArg.file_transfers_transfer_view:
         (sharing) Viewed transfer
     :ivar EventTypeArg.media_hub_project_team_add:
-        (sharing) Added member to Media Hub project
+        (sharing) Added member to Replay project
     :ivar EventTypeArg.media_hub_project_team_delete:
-        (sharing) Removed member from Media Hub project
+        (sharing) Removed member from Replay project
     :ivar EventTypeArg.media_hub_project_team_role_changed:
-        (sharing) Changed member role in Media Hub project
+        (sharing) Changed member role in Replay project
     :ivar EventTypeArg.media_hub_shared_link_audience_changed:
-        (sharing) Changed Media Hub shared link audience
+        (sharing) Changed Replay shared link audience
     :ivar EventTypeArg.media_hub_shared_link_created:
-        (sharing) Created Media Hub shared link
+        (sharing) Created Replay shared link
     :ivar EventTypeArg.media_hub_shared_link_download_setting_changed:
-        (sharing) Changed Media Hub shared link download setting
+        (sharing) Changed Replay shared link download setting
     :ivar EventTypeArg.media_hub_shared_link_revoked:
-        (sharing) Revoked Media Hub shared link
+        (sharing) Revoked Replay shared link
     :ivar EventTypeArg.note_acl_invite_only:
         (sharing) Changed Paper doc to invite-only (deprecated, no longer
         logged)
@@ -53478,12 +53975,11 @@ class EventTypeArg(bb.Union):
     :ivar EventTypeArg.invite_acceptance_email_policy_changed:
         (team_policies) Changed invite accept email policy for team
     :ivar EventTypeArg.media_hub_adding_people_policy_changed:
-        (team_policies) Changed the policy for adding people to Media Hub
-        content
+        (team_policies) Changed the policy for adding people to Replay content
     :ivar EventTypeArg.media_hub_download_policy_changed:
-        (team_policies) Changed the policy for downloading Media Hub content
+        (team_policies) Changed the policy for downloading Replay content
     :ivar EventTypeArg.media_hub_link_sharing_policy_changed:
-        (team_policies) Changed the policy for sharing Media Hub content
+        (team_policies) Changed the policy for sharing Replay content
     :ivar EventTypeArg.member_requests_change_policy:
         (team_policies) Changed whether users can find team when not invited
     :ivar EventTypeArg.member_send_invite_policy_changed:
@@ -54156,6 +54652,8 @@ class EventTypeArg(bb.Union):
     # Attribute is overwritten below the class definition
     member_delete_profile_photo = None
     # Attribute is overwritten below the class definition
+    member_folder_contents_accessed = None
+    # Attribute is overwritten below the class definition
     member_permanently_delete_account_contents = None
     # Attribute is overwritten below the class definition
     member_remove_external_id = None
@@ -54289,6 +54787,20 @@ class EventTypeArg(bb.Union):
     password_reset = None
     # Attribute is overwritten below the class definition
     password_reset_all = None
+    # Attribute is overwritten below the class definition
+    protect_action_add_collaborator = None
+    # Attribute is overwritten below the class definition
+    protect_action_add_link = None
+    # Attribute is overwritten below the class definition
+    protect_action_delete = None
+    # Attribute is overwritten below the class definition
+    protect_action_export = None
+    # Attribute is overwritten below the class definition
+    protect_action_remove_collaborator = None
+    # Attribute is overwritten below the class definition
+    protect_action_remove_link = None
+    # Attribute is overwritten below the class definition
+    protect_action_stop_sharing = None
     # Attribute is overwritten below the class definition
     protect_internal_domains_changed = None
     # Attribute is overwritten below the class definition
@@ -56648,6 +57160,14 @@ class EventTypeArg(bb.Union):
         """
         return self._tag == "member_delete_profile_photo"
 
+    def is_member_folder_contents_accessed(self):
+        """
+        Check if the union tag is ``member_folder_contents_accessed``.
+
+        :rtype: bool
+        """
+        return self._tag == "member_folder_contents_accessed"
+
     def is_member_permanently_delete_account_contents(self):
         """
         Check if the union tag is ``member_permanently_delete_account_contents``.
@@ -57183,6 +57703,62 @@ class EventTypeArg(bb.Union):
         :rtype: bool
         """
         return self._tag == "password_reset_all"
+
+    def is_protect_action_add_collaborator(self):
+        """
+        Check if the union tag is ``protect_action_add_collaborator``.
+
+        :rtype: bool
+        """
+        return self._tag == "protect_action_add_collaborator"
+
+    def is_protect_action_add_link(self):
+        """
+        Check if the union tag is ``protect_action_add_link``.
+
+        :rtype: bool
+        """
+        return self._tag == "protect_action_add_link"
+
+    def is_protect_action_delete(self):
+        """
+        Check if the union tag is ``protect_action_delete``.
+
+        :rtype: bool
+        """
+        return self._tag == "protect_action_delete"
+
+    def is_protect_action_export(self):
+        """
+        Check if the union tag is ``protect_action_export``.
+
+        :rtype: bool
+        """
+        return self._tag == "protect_action_export"
+
+    def is_protect_action_remove_collaborator(self):
+        """
+        Check if the union tag is ``protect_action_remove_collaborator``.
+
+        :rtype: bool
+        """
+        return self._tag == "protect_action_remove_collaborator"
+
+    def is_protect_action_remove_link(self):
+        """
+        Check if the union tag is ``protect_action_remove_link``.
+
+        :rtype: bool
+        """
+        return self._tag == "protect_action_remove_link"
+
+    def is_protect_action_stop_sharing(self):
+        """
+        Check if the union tag is ``protect_action_stop_sharing``.
+
+        :rtype: bool
+        """
+        return self._tag == "protect_action_stop_sharing"
 
     def is_protect_internal_domains_changed(self):
         """
@@ -60253,10 +60829,7 @@ class ExternalDriveBackupEligibilityStatusCheckedDetails(bb.Struct):
     _has_required_fields = True
 
     def __init__(
-        self,
-        desktop_device_session_info=None,
-        status=None,
-        number_of_external_drive_backup=None,
+        self, desktop_device_session_info=None, status=None, number_of_external_drive_backup=None
     ):
         self._desktop_device_session_info_value = bb.NOT_SET
         self._status_value = bb.NOT_SET
@@ -64235,14 +64808,7 @@ class FolderLogInfo(FileOrFolderLogInfo):
 
     _has_required_fields = True
 
-    def __init__(
-        self,
-        path=None,
-        display_name=None,
-        file_id=None,
-        file_size=None,
-        file_count=None,
-    ):
+    def __init__(self, path=None, display_name=None, file_id=None, file_size=None, file_count=None):
         super(FolderLogInfo, self).__init__(path, display_name, file_id, file_size)
         self._file_count_value = bb.NOT_SET
         if file_count is not None:
@@ -64968,12 +65534,7 @@ class GovernancePolicyAddFolderFailedDetails(bb.Struct):
     _has_required_fields = True
 
     def __init__(
-        self,
-        governance_policy_id=None,
-        name=None,
-        folder=None,
-        policy_type=None,
-        reason=None,
+        self, governance_policy_id=None, name=None, folder=None, policy_type=None, reason=None
     ):
         self._governance_policy_id_value = bb.NOT_SET
         self._name_value = bb.NOT_SET
@@ -65145,11 +65706,7 @@ class GovernancePolicyContentDisposedDetails(bb.Struct):
     _has_required_fields = True
 
     def __init__(
-        self,
-        governance_policy_id=None,
-        name=None,
-        disposition_type=None,
-        policy_type=None,
+        self, governance_policy_id=None, name=None, disposition_type=None, policy_type=None
     ):
         self._governance_policy_id_value = bb.NOT_SET
         self._name_value = bb.NOT_SET
@@ -65236,12 +65793,7 @@ class GovernancePolicyCreateDetails(bb.Struct):
     _has_required_fields = True
 
     def __init__(
-        self,
-        governance_policy_id=None,
-        name=None,
-        duration=None,
-        policy_type=None,
-        folders=None,
+        self, governance_policy_id=None, name=None, duration=None, policy_type=None, folders=None
     ):
         self._governance_policy_id_value = bb.NOT_SET
         self._name_value = bb.NOT_SET
@@ -65777,12 +66329,7 @@ class GovernancePolicyRemoveFoldersDetails(bb.Struct):
     _has_required_fields = True
 
     def __init__(
-        self,
-        governance_policy_id=None,
-        name=None,
-        policy_type=None,
-        folders=None,
-        reason=None,
+        self, governance_policy_id=None, name=None, policy_type=None, folders=None, reason=None
     ):
         self._governance_policy_id_value = bb.NOT_SET
         self._name_value = bb.NOT_SET
@@ -65948,12 +66495,7 @@ class GovernancePolicyZipPartDownloadedDetails(bb.Struct):
     _has_required_fields = True
 
     def __init__(
-        self,
-        governance_policy_id=None,
-        name=None,
-        export_name=None,
-        policy_type=None,
-        part=None,
+        self, governance_policy_id=None, name=None, export_name=None, policy_type=None, part=None
     ):
         self._governance_policy_id_value = bb.NOT_SET
         self._name_value = bb.NOT_SET
@@ -69538,7 +70080,7 @@ MediaHubAddingPeoplePolicy_validator = bv.Union(MediaHubAddingPeoplePolicy)
 
 class MediaHubAddingPeoplePolicyChangedDetails(bb.Struct):
     """
-    Changed the policy for adding people to Media Hub content.
+    Changed the policy for adding people to Replay content.
 
     :ivar MediaHubAddingPeoplePolicyChangedDetails.new_value:
         To.
@@ -69654,7 +70196,7 @@ MediaHubDownloadPolicy_validator = bv.Union(MediaHubDownloadPolicy)
 
 class MediaHubDownloadPolicyChangedDetails(bb.Struct):
     """
-    Changed the policy for downloading Media Hub content.
+    Changed the policy for downloading Replay content.
 
     :ivar MediaHubDownloadPolicyChangedDetails.new_value:
         To.
@@ -69718,7 +70260,7 @@ MediaHubDownloadPolicyChangedType_validator = bv.Struct(MediaHubDownloadPolicyCh
 
 class MediaHubFileDownloadedDetails(bb.Struct):
     """
-    Downloaded files in Media Hub.
+    Downloaded files in Replay.
     """
 
     __slots__ = []
@@ -69823,7 +70365,7 @@ MediaHubLinkSharingPolicy_validator = bv.Union(MediaHubLinkSharingPolicy)
 
 class MediaHubLinkSharingPolicyChangedDetails(bb.Struct):
     """
-    Changed the policy for sharing Media Hub content.
+    Changed the policy for sharing Replay content.
 
     :ivar MediaHubLinkSharingPolicyChangedDetails.new_value:
         To.
@@ -69885,6 +70427,46 @@ class MediaHubLinkSharingPolicyChangedType(bb.Struct):
 
 
 MediaHubLinkSharingPolicyChangedType_validator = bv.Struct(MediaHubLinkSharingPolicyChangedType)
+
+
+class MediaHubProjectLogInfo(bb.Struct):
+    """
+    Replay project
+
+    :ivar MediaHubProjectLogInfo.project_name:
+        Replay project name.
+    :ivar MediaHubProjectLogInfo.project_id:
+        Replay project ID.
+    """
+
+    __slots__ = [
+        "_project_name_value",
+        "_project_id_value",
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self, project_name=None, project_id=None):
+        self._project_name_value = bb.NOT_SET
+        self._project_id_value = bb.NOT_SET
+        if project_name is not None:
+            self.project_name = project_name
+        if project_id is not None:
+            self.project_id = project_id
+
+    # Instance attribute type: str (validator is set below)
+    project_name = bb.Attribute("project_name")
+
+    # Instance attribute type: str (validator is set below)
+    project_id = bb.Attribute("project_id", nullable=True)
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(MediaHubProjectLogInfo, self)._process_custom_annotations(
+            annotation_type, field_path, processor
+        )
+
+
+MediaHubProjectLogInfo_validator = bv.Struct(MediaHubProjectLogInfo)
 
 
 class MediaHubProjectRole(bb.Union):
@@ -69949,15 +70531,25 @@ MediaHubProjectRole_validator = bv.Union(MediaHubProjectRole)
 
 class MediaHubProjectTeamAddDetails(bb.Struct):
     """
-    Added member to Media Hub project.
+    Added member to Replay project.
+
+    :ivar MediaHubProjectTeamAddDetails.project:
+        Replay project.
     """
 
-    __slots__ = []
+    __slots__ = [
+        "_project_value",
+    ]
 
     _has_required_fields = False
 
-    def __init__(self):
-        pass
+    def __init__(self, project=None):
+        self._project_value = bb.NOT_SET
+        if project is not None:
+            self.project = project
+
+    # Instance attribute type: MediaHubProjectLogInfo (validator is set below)
+    project = bb.Attribute("project", nullable=True, user_defined=True)
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(MediaHubProjectTeamAddDetails, self)._process_custom_annotations(
@@ -69994,15 +70586,25 @@ MediaHubProjectTeamAddType_validator = bv.Struct(MediaHubProjectTeamAddType)
 
 class MediaHubProjectTeamDeleteDetails(bb.Struct):
     """
-    Removed member from Media Hub project.
+    Removed member from Replay project.
+
+    :ivar MediaHubProjectTeamDeleteDetails.project:
+        Replay project.
     """
 
-    __slots__ = []
+    __slots__ = [
+        "_project_value",
+    ]
 
     _has_required_fields = False
 
-    def __init__(self):
-        pass
+    def __init__(self, project=None):
+        self._project_value = bb.NOT_SET
+        if project is not None:
+            self.project = project
+
+    # Instance attribute type: MediaHubProjectLogInfo (validator is set below)
+    project = bb.Attribute("project", nullable=True, user_defined=True)
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(MediaHubProjectTeamDeleteDetails, self)._process_custom_annotations(
@@ -70039,34 +70641,43 @@ MediaHubProjectTeamDeleteType_validator = bv.Struct(MediaHubProjectTeamDeleteTyp
 
 class MediaHubProjectTeamRoleChangedDetails(bb.Struct):
     """
-    Changed member role in Media Hub project.
+    Changed member role in Replay project.
 
     :ivar MediaHubProjectTeamRoleChangedDetails.previous_role:
         Previous Media Hub project role.
     :ivar MediaHubProjectTeamRoleChangedDetails.new_role:
         New Media Hub project role.
+    :ivar MediaHubProjectTeamRoleChangedDetails.project:
+        Replay project.
     """
 
     __slots__ = [
         "_previous_role_value",
         "_new_role_value",
+        "_project_value",
     ]
 
     _has_required_fields = True
 
-    def __init__(self, previous_role=None, new_role=None):
+    def __init__(self, previous_role=None, new_role=None, project=None):
         self._previous_role_value = bb.NOT_SET
         self._new_role_value = bb.NOT_SET
+        self._project_value = bb.NOT_SET
         if previous_role is not None:
             self.previous_role = previous_role
         if new_role is not None:
             self.new_role = new_role
+        if project is not None:
+            self.project = project
 
     # Instance attribute type: MediaHubProjectRole (validator is set below)
     previous_role = bb.Attribute("previous_role", user_defined=True)
 
     # Instance attribute type: MediaHubProjectRole (validator is set below)
     new_role = bb.Attribute("new_role", user_defined=True)
+
+    # Instance attribute type: MediaHubProjectLogInfo (validator is set below)
+    project = bb.Attribute("project", nullable=True, user_defined=True)
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(MediaHubProjectTeamRoleChangedDetails, self)._process_custom_annotations(
@@ -70163,7 +70774,7 @@ MediaHubSharedLinkAudience_validator = bv.Union(MediaHubSharedLinkAudience)
 
 class MediaHubSharedLinkAudienceChangedDetails(bb.Struct):
     """
-    Changed Media Hub shared link audience.
+    Changed Replay shared link audience.
 
     :ivar MediaHubSharedLinkAudienceChangedDetails.target_type:
         Media Hub shared link target type.
@@ -70171,26 +70782,32 @@ class MediaHubSharedLinkAudienceChangedDetails(bb.Struct):
         Previous Media Hub shared link audience.
     :ivar MediaHubSharedLinkAudienceChangedDetails.new_value:
         New Media Hub shared link audience.
+    :ivar MediaHubSharedLinkAudienceChangedDetails.project:
+        Replay project.
     """
 
     __slots__ = [
         "_target_type_value",
         "_previous_value_value",
         "_new_value_value",
+        "_project_value",
     ]
 
     _has_required_fields = True
 
-    def __init__(self, target_type=None, previous_value=None, new_value=None):
+    def __init__(self, target_type=None, previous_value=None, new_value=None, project=None):
         self._target_type_value = bb.NOT_SET
         self._previous_value_value = bb.NOT_SET
         self._new_value_value = bb.NOT_SET
+        self._project_value = bb.NOT_SET
         if target_type is not None:
             self.target_type = target_type
         if previous_value is not None:
             self.previous_value = previous_value
         if new_value is not None:
             self.new_value = new_value
+        if project is not None:
+            self.project = project
 
     # Instance attribute type: MediaHubSharedLinkTargetType (validator is set below)
     target_type = bb.Attribute("target_type", user_defined=True)
@@ -70200,6 +70817,9 @@ class MediaHubSharedLinkAudienceChangedDetails(bb.Struct):
 
     # Instance attribute type: MediaHubSharedLinkAudience (validator is set below)
     new_value = bb.Attribute("new_value", user_defined=True)
+
+    # Instance attribute type: MediaHubProjectLogInfo (validator is set below)
+    project = bb.Attribute("project", nullable=True, user_defined=True)
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(MediaHubSharedLinkAudienceChangedDetails, self)._process_custom_annotations(
@@ -70238,34 +70858,43 @@ MediaHubSharedLinkAudienceChangedType_validator = bv.Struct(MediaHubSharedLinkAu
 
 class MediaHubSharedLinkCreatedDetails(bb.Struct):
     """
-    Created Media Hub shared link.
+    Created Replay shared link.
 
     :ivar MediaHubSharedLinkCreatedDetails.target_type:
         Media Hub shared link target type.
     :ivar MediaHubSharedLinkCreatedDetails.audience:
         Media Hub shared link audience.
+    :ivar MediaHubSharedLinkCreatedDetails.project:
+        Replay project.
     """
 
     __slots__ = [
         "_target_type_value",
         "_audience_value",
+        "_project_value",
     ]
 
     _has_required_fields = True
 
-    def __init__(self, target_type=None, audience=None):
+    def __init__(self, target_type=None, audience=None, project=None):
         self._target_type_value = bb.NOT_SET
         self._audience_value = bb.NOT_SET
+        self._project_value = bb.NOT_SET
         if target_type is not None:
             self.target_type = target_type
         if audience is not None:
             self.audience = audience
+        if project is not None:
+            self.project = project
 
     # Instance attribute type: MediaHubSharedLinkTargetType (validator is set below)
     target_type = bb.Attribute("target_type", user_defined=True)
 
     # Instance attribute type: MediaHubSharedLinkAudience (validator is set below)
     audience = bb.Attribute("audience", user_defined=True)
+
+    # Instance attribute type: MediaHubProjectLogInfo (validator is set below)
+    project = bb.Attribute("project", nullable=True, user_defined=True)
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(MediaHubSharedLinkCreatedDetails, self)._process_custom_annotations(
@@ -70352,7 +70981,7 @@ MediaHubSharedLinkDownloadSetting_validator = bv.Union(MediaHubSharedLinkDownloa
 
 class MediaHubSharedLinkDownloadSettingChangedDetails(bb.Struct):
     """
-    Changed Media Hub shared link download setting.
+    Changed Replay shared link download setting.
 
     :ivar MediaHubSharedLinkDownloadSettingChangedDetails.target_type:
         Media Hub shared link target type.
@@ -70360,26 +70989,32 @@ class MediaHubSharedLinkDownloadSettingChangedDetails(bb.Struct):
         Previous Media Hub shared link download setting.
     :ivar MediaHubSharedLinkDownloadSettingChangedDetails.new_value:
         New Media Hub shared link download setting.
+    :ivar MediaHubSharedLinkDownloadSettingChangedDetails.project:
+        Replay project.
     """
 
     __slots__ = [
         "_target_type_value",
         "_previous_value_value",
         "_new_value_value",
+        "_project_value",
     ]
 
     _has_required_fields = True
 
-    def __init__(self, target_type=None, previous_value=None, new_value=None):
+    def __init__(self, target_type=None, previous_value=None, new_value=None, project=None):
         self._target_type_value = bb.NOT_SET
         self._previous_value_value = bb.NOT_SET
         self._new_value_value = bb.NOT_SET
+        self._project_value = bb.NOT_SET
         if target_type is not None:
             self.target_type = target_type
         if previous_value is not None:
             self.previous_value = previous_value
         if new_value is not None:
             self.new_value = new_value
+        if project is not None:
+            self.project = project
 
     # Instance attribute type: MediaHubSharedLinkTargetType (validator is set below)
     target_type = bb.Attribute("target_type", user_defined=True)
@@ -70389,6 +71024,9 @@ class MediaHubSharedLinkDownloadSettingChangedDetails(bb.Struct):
 
     # Instance attribute type: MediaHubSharedLinkDownloadSetting (validator is set below)
     new_value = bb.Attribute("new_value", user_defined=True)
+
+    # Instance attribute type: MediaHubProjectLogInfo (validator is set below)
+    project = bb.Attribute("project", nullable=True, user_defined=True)
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(MediaHubSharedLinkDownloadSettingChangedDetails, self)._process_custom_annotations(
@@ -70429,25 +71067,34 @@ MediaHubSharedLinkDownloadSettingChangedType_validator = bv.Struct(
 
 class MediaHubSharedLinkRevokedDetails(bb.Struct):
     """
-    Revoked Media Hub shared link.
+    Revoked Replay shared link.
 
     :ivar MediaHubSharedLinkRevokedDetails.target_type:
         Media Hub shared link target type.
+    :ivar MediaHubSharedLinkRevokedDetails.project:
+        Replay project.
     """
 
     __slots__ = [
         "_target_type_value",
+        "_project_value",
     ]
 
     _has_required_fields = True
 
-    def __init__(self, target_type=None):
+    def __init__(self, target_type=None, project=None):
         self._target_type_value = bb.NOT_SET
+        self._project_value = bb.NOT_SET
         if target_type is not None:
             self.target_type = target_type
+        if project is not None:
+            self.project = project
 
     # Instance attribute type: MediaHubSharedLinkTargetType (validator is set below)
     target_type = bb.Attribute("target_type", user_defined=True)
+
+    # Instance attribute type: MediaHubProjectLogInfo (validator is set below)
+    project = bb.Attribute("project", nullable=True, user_defined=True)
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(MediaHubSharedLinkRevokedDetails, self)._process_custom_annotations(
@@ -71164,12 +71811,7 @@ class MemberChangeStatusDetails(bb.Struct):
     _has_required_fields = True
 
     def __init__(
-        self,
-        new_value=None,
-        previous_value=None,
-        action=None,
-        new_team=None,
-        previous_team=None,
+        self, new_value=None, previous_value=None, action=None, new_team=None, previous_team=None
     ):
         self._previous_value_value = bb.NOT_SET
         self._new_value_value = bb.NOT_SET
@@ -71323,6 +71965,51 @@ class MemberDeleteProfilePhotoType(bb.Struct):
 
 
 MemberDeleteProfilePhotoType_validator = bv.Struct(MemberDeleteProfilePhotoType)
+
+
+class MemberFolderContentsAccessedDetails(bb.Struct):
+    """
+    Admin browsed a team member's folder contents.
+    """
+
+    __slots__ = []
+
+    _has_required_fields = False
+
+    def __init__(self):
+        pass
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(MemberFolderContentsAccessedDetails, self)._process_custom_annotations(
+            annotation_type, field_path, processor
+        )
+
+
+MemberFolderContentsAccessedDetails_validator = bv.Struct(MemberFolderContentsAccessedDetails)
+
+
+class MemberFolderContentsAccessedType(bb.Struct):
+    __slots__ = [
+        "_description_value",
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self, description=None):
+        self._description_value = bb.NOT_SET
+        if description is not None:
+            self.description = description
+
+    # Instance attribute type: str (validator is set below)
+    description = bb.Attribute("description")
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(MemberFolderContentsAccessedType, self)._process_custom_annotations(
+            annotation_type, field_path, processor
+        )
+
+
+MemberFolderContentsAccessedType_validator = bv.Struct(MemberFolderContentsAccessedType)
 
 
 class MemberPermanentlyDeleteAccountContentsDetails(bb.Struct):
@@ -75757,10 +76444,7 @@ class PaperDocChangeSubscriptionDetails(bb.Struct):
     _has_required_fields = True
 
     def __init__(
-        self,
-        event_uuid=None,
-        new_subscription_level=None,
-        previous_subscription_level=None,
+        self, event_uuid=None, new_subscription_level=None, previous_subscription_level=None
     ):
         self._event_uuid_value = bb.NOT_SET
         self._new_subscription_level_value = bb.NOT_SET
@@ -77197,10 +77881,7 @@ class PaperFolderChangeSubscriptionDetails(bb.Struct):
     _has_required_fields = True
 
     def __init__(
-        self,
-        event_uuid=None,
-        new_subscription_level=None,
-        previous_subscription_level=None,
+        self, event_uuid=None, new_subscription_level=None, previous_subscription_level=None
     ):
         self._event_uuid_value = bb.NOT_SET
         self._new_subscription_level_value = bb.NOT_SET
@@ -79075,6 +79756,391 @@ class ProductRemovedFromMemberType(bb.Struct):
 
 
 ProductRemovedFromMemberType_validator = bv.Struct(ProductRemovedFromMemberType)
+
+
+class ProtectActionAddCollaboratorDetails(bb.Struct):
+    """
+    Added collaborators via Dropbox Protect.
+
+    :ivar ProtectActionAddCollaboratorDetails.action_id:
+        Action ID.
+    """
+
+    __slots__ = [
+        "_action_id_value",
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self, action_id=None):
+        self._action_id_value = bb.NOT_SET
+        if action_id is not None:
+            self.action_id = action_id
+
+    # Instance attribute type: str (validator is set below)
+    action_id = bb.Attribute("action_id")
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(ProtectActionAddCollaboratorDetails, self)._process_custom_annotations(
+            annotation_type, field_path, processor
+        )
+
+
+ProtectActionAddCollaboratorDetails_validator = bv.Struct(ProtectActionAddCollaboratorDetails)
+
+
+class ProtectActionAddCollaboratorType(bb.Struct):
+    __slots__ = [
+        "_description_value",
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self, description=None):
+        self._description_value = bb.NOT_SET
+        if description is not None:
+            self.description = description
+
+    # Instance attribute type: str (validator is set below)
+    description = bb.Attribute("description")
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(ProtectActionAddCollaboratorType, self)._process_custom_annotations(
+            annotation_type, field_path, processor
+        )
+
+
+ProtectActionAddCollaboratorType_validator = bv.Struct(ProtectActionAddCollaboratorType)
+
+
+class ProtectActionAddLinkDetails(bb.Struct):
+    """
+    Added a link via Dropbox Protect.
+
+    :ivar ProtectActionAddLinkDetails.action_id:
+        Action ID.
+    """
+
+    __slots__ = [
+        "_action_id_value",
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self, action_id=None):
+        self._action_id_value = bb.NOT_SET
+        if action_id is not None:
+            self.action_id = action_id
+
+    # Instance attribute type: str (validator is set below)
+    action_id = bb.Attribute("action_id")
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(ProtectActionAddLinkDetails, self)._process_custom_annotations(
+            annotation_type, field_path, processor
+        )
+
+
+ProtectActionAddLinkDetails_validator = bv.Struct(ProtectActionAddLinkDetails)
+
+
+class ProtectActionAddLinkType(bb.Struct):
+    __slots__ = [
+        "_description_value",
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self, description=None):
+        self._description_value = bb.NOT_SET
+        if description is not None:
+            self.description = description
+
+    # Instance attribute type: str (validator is set below)
+    description = bb.Attribute("description")
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(ProtectActionAddLinkType, self)._process_custom_annotations(
+            annotation_type, field_path, processor
+        )
+
+
+ProtectActionAddLinkType_validator = bv.Struct(ProtectActionAddLinkType)
+
+
+class ProtectActionDeleteDetails(bb.Struct):
+    """
+    Deleted content via Dropbox Protect.
+
+    :ivar ProtectActionDeleteDetails.action_id:
+        Action ID.
+    """
+
+    __slots__ = [
+        "_action_id_value",
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self, action_id=None):
+        self._action_id_value = bb.NOT_SET
+        if action_id is not None:
+            self.action_id = action_id
+
+    # Instance attribute type: str (validator is set below)
+    action_id = bb.Attribute("action_id")
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(ProtectActionDeleteDetails, self)._process_custom_annotations(
+            annotation_type, field_path, processor
+        )
+
+
+ProtectActionDeleteDetails_validator = bv.Struct(ProtectActionDeleteDetails)
+
+
+class ProtectActionDeleteType(bb.Struct):
+    __slots__ = [
+        "_description_value",
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self, description=None):
+        self._description_value = bb.NOT_SET
+        if description is not None:
+            self.description = description
+
+    # Instance attribute type: str (validator is set below)
+    description = bb.Attribute("description")
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(ProtectActionDeleteType, self)._process_custom_annotations(
+            annotation_type, field_path, processor
+        )
+
+
+ProtectActionDeleteType_validator = bv.Struct(ProtectActionDeleteType)
+
+
+class ProtectActionExportDetails(bb.Struct):
+    """
+    Exported content via Dropbox Protect.
+
+    :ivar ProtectActionExportDetails.action_id:
+        Action ID.
+    """
+
+    __slots__ = [
+        "_action_id_value",
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self, action_id=None):
+        self._action_id_value = bb.NOT_SET
+        if action_id is not None:
+            self.action_id = action_id
+
+    # Instance attribute type: str (validator is set below)
+    action_id = bb.Attribute("action_id")
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(ProtectActionExportDetails, self)._process_custom_annotations(
+            annotation_type, field_path, processor
+        )
+
+
+ProtectActionExportDetails_validator = bv.Struct(ProtectActionExportDetails)
+
+
+class ProtectActionExportType(bb.Struct):
+    __slots__ = [
+        "_description_value",
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self, description=None):
+        self._description_value = bb.NOT_SET
+        if description is not None:
+            self.description = description
+
+    # Instance attribute type: str (validator is set below)
+    description = bb.Attribute("description")
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(ProtectActionExportType, self)._process_custom_annotations(
+            annotation_type, field_path, processor
+        )
+
+
+ProtectActionExportType_validator = bv.Struct(ProtectActionExportType)
+
+
+class ProtectActionRemoveCollaboratorDetails(bb.Struct):
+    """
+    Removed collaborators via Dropbox Protect.
+
+    :ivar ProtectActionRemoveCollaboratorDetails.action_id:
+        Action ID.
+    """
+
+    __slots__ = [
+        "_action_id_value",
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self, action_id=None):
+        self._action_id_value = bb.NOT_SET
+        if action_id is not None:
+            self.action_id = action_id
+
+    # Instance attribute type: str (validator is set below)
+    action_id = bb.Attribute("action_id")
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(ProtectActionRemoveCollaboratorDetails, self)._process_custom_annotations(
+            annotation_type, field_path, processor
+        )
+
+
+ProtectActionRemoveCollaboratorDetails_validator = bv.Struct(ProtectActionRemoveCollaboratorDetails)
+
+
+class ProtectActionRemoveCollaboratorType(bb.Struct):
+    __slots__ = [
+        "_description_value",
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self, description=None):
+        self._description_value = bb.NOT_SET
+        if description is not None:
+            self.description = description
+
+    # Instance attribute type: str (validator is set below)
+    description = bb.Attribute("description")
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(ProtectActionRemoveCollaboratorType, self)._process_custom_annotations(
+            annotation_type, field_path, processor
+        )
+
+
+ProtectActionRemoveCollaboratorType_validator = bv.Struct(ProtectActionRemoveCollaboratorType)
+
+
+class ProtectActionRemoveLinkDetails(bb.Struct):
+    """
+    Removed a link via Dropbox Protect.
+
+    :ivar ProtectActionRemoveLinkDetails.action_id:
+        Action ID.
+    """
+
+    __slots__ = [
+        "_action_id_value",
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self, action_id=None):
+        self._action_id_value = bb.NOT_SET
+        if action_id is not None:
+            self.action_id = action_id
+
+    # Instance attribute type: str (validator is set below)
+    action_id = bb.Attribute("action_id")
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(ProtectActionRemoveLinkDetails, self)._process_custom_annotations(
+            annotation_type, field_path, processor
+        )
+
+
+ProtectActionRemoveLinkDetails_validator = bv.Struct(ProtectActionRemoveLinkDetails)
+
+
+class ProtectActionRemoveLinkType(bb.Struct):
+    __slots__ = [
+        "_description_value",
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self, description=None):
+        self._description_value = bb.NOT_SET
+        if description is not None:
+            self.description = description
+
+    # Instance attribute type: str (validator is set below)
+    description = bb.Attribute("description")
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(ProtectActionRemoveLinkType, self)._process_custom_annotations(
+            annotation_type, field_path, processor
+        )
+
+
+ProtectActionRemoveLinkType_validator = bv.Struct(ProtectActionRemoveLinkType)
+
+
+class ProtectActionStopSharingDetails(bb.Struct):
+    """
+    Stopped sharing content via Dropbox Protect.
+
+    :ivar ProtectActionStopSharingDetails.action_id:
+        Action ID.
+    """
+
+    __slots__ = [
+        "_action_id_value",
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self, action_id=None):
+        self._action_id_value = bb.NOT_SET
+        if action_id is not None:
+            self.action_id = action_id
+
+    # Instance attribute type: str (validator is set below)
+    action_id = bb.Attribute("action_id")
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(ProtectActionStopSharingDetails, self)._process_custom_annotations(
+            annotation_type, field_path, processor
+        )
+
+
+ProtectActionStopSharingDetails_validator = bv.Struct(ProtectActionStopSharingDetails)
+
+
+class ProtectActionStopSharingType(bb.Struct):
+    __slots__ = [
+        "_description_value",
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self, description=None):
+        self._description_value = bb.NOT_SET
+        if description is not None:
+            self.description = description
+
+    # Instance attribute type: str (validator is set below)
+    description = bb.Attribute("description")
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(ProtectActionStopSharingType, self)._process_custom_annotations(
+            annotation_type, field_path, processor
+        )
+
+
+ProtectActionStopSharingType_validator = bv.Struct(ProtectActionStopSharingType)
 
 
 class ProtectInternalDomainsChangedDetails(bb.Struct):
@@ -82050,12 +83116,7 @@ class SfAllowNonMembersToViewSharedLinksDetails(bb.Struct):
 
     _has_required_fields = True
 
-    def __init__(
-        self,
-        target_asset_index=None,
-        original_folder_name=None,
-        shared_folder_type=None,
-    ):
+    def __init__(self, target_asset_index=None, original_folder_name=None, shared_folder_type=None):
         self._target_asset_index_value = bb.NOT_SET
         self._original_folder_name_value = bb.NOT_SET
         self._shared_folder_type_value = bb.NOT_SET
@@ -82306,12 +83367,7 @@ class SfFbInviteDetails(bb.Struct):
 
     _has_required_fields = True
 
-    def __init__(
-        self,
-        target_asset_index=None,
-        original_folder_name=None,
-        sharing_permission=None,
-    ):
+    def __init__(self, target_asset_index=None, original_folder_name=None, sharing_permission=None):
         self._target_asset_index_value = bb.NOT_SET
         self._original_folder_name_value = bb.NOT_SET
         self._sharing_permission_value = bb.NOT_SET
@@ -82655,12 +83711,7 @@ class SfTeamInviteDetails(bb.Struct):
 
     _has_required_fields = True
 
-    def __init__(
-        self,
-        target_asset_index=None,
-        original_folder_name=None,
-        sharing_permission=None,
-    ):
+    def __init__(self, target_asset_index=None, original_folder_name=None, sharing_permission=None):
         self._target_asset_index_value = bb.NOT_SET
         self._original_folder_name_value = bb.NOT_SET
         self._sharing_permission_value = bb.NOT_SET
@@ -83760,10 +84811,7 @@ class SharedContentDownloadDetails(bb.Struct):
     _has_required_fields = True
 
     def __init__(
-        self,
-        shared_content_link=None,
-        shared_content_access_level=None,
-        shared_content_owner=None,
+        self, shared_content_link=None, shared_content_access_level=None, shared_content_owner=None
     ):
         self._shared_content_link_value = bb.NOT_SET
         self._shared_content_owner_value = bb.NOT_SET
@@ -84317,10 +85365,7 @@ class SharedContentViewDetails(bb.Struct):
     _has_required_fields = True
 
     def __init__(
-        self,
-        shared_content_link=None,
-        shared_content_access_level=None,
-        shared_content_owner=None,
+        self, shared_content_link=None, shared_content_access_level=None, shared_content_owner=None
     ):
         self._shared_content_link_value = bb.NOT_SET
         self._shared_content_owner_value = bb.NOT_SET
@@ -86403,10 +87448,7 @@ class SharedLinkSettingsRemoveExpirationDetails(bb.Struct):
     _has_required_fields = True
 
     def __init__(
-        self,
-        shared_content_access_level=None,
-        shared_content_link=None,
-        previous_value=None,
+        self, shared_content_access_level=None, shared_content_link=None, previous_value=None
     ):
         self._shared_content_access_level_value = bb.NOT_SET
         self._shared_content_link_value = bb.NOT_SET
@@ -97937,10 +98979,7 @@ AccountCaptureChangeAvailabilityDetails._all_field_names_ = set(
 )
 AccountCaptureChangeAvailabilityDetails._all_fields_ = [
     ("new_value", AccountCaptureChangeAvailabilityDetails.new_value.validator),
-    (
-        "previous_value",
-        AccountCaptureChangeAvailabilityDetails.previous_value.validator,
-    ),
+    ("previous_value", AccountCaptureChangeAvailabilityDetails.previous_value.validator),
 ]
 
 AccountCaptureChangeAvailabilityType.description.validator = bv.String()
@@ -97994,10 +99033,7 @@ AccountCaptureNotificationEmailsSentDetails._all_field_names_ = set(
 )
 AccountCaptureNotificationEmailsSentDetails._all_fields_ = [
     ("domain_name", AccountCaptureNotificationEmailsSentDetails.domain_name.validator),
-    (
-        "notification_type",
-        AccountCaptureNotificationEmailsSentDetails.notification_type.validator,
-    ),
+    ("notification_type", AccountCaptureNotificationEmailsSentDetails.notification_type.validator),
 ]
 
 AccountCaptureNotificationEmailsSentType.description.validator = bv.String()
@@ -98254,19 +99290,13 @@ AdminAlertingAlertConfiguration._all_field_names_ = set(
 AdminAlertingAlertConfiguration._all_fields_ = [
     ("alert_state", AdminAlertingAlertConfiguration.alert_state.validator),
     ("sensitivity_level", AdminAlertingAlertConfiguration.sensitivity_level.validator),
-    (
-        "recipients_settings",
-        AdminAlertingAlertConfiguration.recipients_settings.validator,
-    ),
+    ("recipients_settings", AdminAlertingAlertConfiguration.recipients_settings.validator),
     ("text", AdminAlertingAlertConfiguration.text.validator),
     (
         "excluded_file_extensions",
         AdminAlertingAlertConfiguration.excluded_file_extensions.validator,
     ),
-    (
-        "malware_exclusion_state",
-        AdminAlertingAlertConfiguration.malware_exclusion_state.validator,
-    ),
+    ("malware_exclusion_state", AdminAlertingAlertConfiguration.malware_exclusion_state.validator),
 ]
 
 AdminAlertingAlertSensitivity._high_validator = bv.Void()
@@ -98316,10 +99346,7 @@ AdminAlertingAlertStateChangedDetails._all_fields_ = [
     ("alert_name", AdminAlertingAlertStateChangedDetails.alert_name.validator),
     ("alert_severity", AdminAlertingAlertStateChangedDetails.alert_severity.validator),
     ("alert_category", AdminAlertingAlertStateChangedDetails.alert_category.validator),
-    (
-        "alert_instance_id",
-        AdminAlertingAlertStateChangedDetails.alert_instance_id.validator,
-    ),
+    ("alert_instance_id", AdminAlertingAlertStateChangedDetails.alert_instance_id.validator),
     ("previous_value", AdminAlertingAlertStateChangedDetails.previous_value.validator),
     ("new_value", AdminAlertingAlertStateChangedDetails.new_value.validator),
 ]
@@ -98363,10 +99390,7 @@ AdminAlertingChangedAlertConfigDetails._all_fields_ = [
         "previous_alert_config",
         AdminAlertingChangedAlertConfigDetails.previous_alert_config.validator,
     ),
-    (
-        "new_alert_config",
-        AdminAlertingChangedAlertConfigDetails.new_alert_config.validator,
-    ),
+    ("new_alert_config", AdminAlertingChangedAlertConfigDetails.new_alert_config.validator),
 ]
 
 AdminAlertingChangedAlertConfigType.description.validator = bv.String()
@@ -98391,10 +99415,7 @@ AdminAlertingTriggeredAlertDetails._all_fields_ = [
     ("alert_name", AdminAlertingTriggeredAlertDetails.alert_name.validator),
     ("alert_severity", AdminAlertingTriggeredAlertDetails.alert_severity.validator),
     ("alert_category", AdminAlertingTriggeredAlertDetails.alert_category.validator),
-    (
-        "alert_instance_id",
-        AdminAlertingTriggeredAlertDetails.alert_instance_id.validator,
-    ),
+    ("alert_instance_id", AdminAlertingTriggeredAlertDetails.alert_instance_id.validator),
 ]
 
 AdminAlertingTriggeredAlertType.description.validator = bv.String()
@@ -98548,23 +99569,14 @@ AiThirdPartySharingDropboxBasePolicyChangedDetails._all_field_names_ = set(
     ]
 )
 AiThirdPartySharingDropboxBasePolicyChangedDetails._all_fields_ = [
-    (
-        "new_value",
-        AiThirdPartySharingDropboxBasePolicyChangedDetails.new_value.validator,
-    ),
-    (
-        "previous_value",
-        AiThirdPartySharingDropboxBasePolicyChangedDetails.previous_value.validator,
-    ),
+    ("new_value", AiThirdPartySharingDropboxBasePolicyChangedDetails.new_value.validator),
+    ("previous_value", AiThirdPartySharingDropboxBasePolicyChangedDetails.previous_value.validator),
 ]
 
 AiThirdPartySharingDropboxBasePolicyChangedType.description.validator = bv.String()
 AiThirdPartySharingDropboxBasePolicyChangedType._all_field_names_ = set(["description"])
 AiThirdPartySharingDropboxBasePolicyChangedType._all_fields_ = [
-    (
-        "description",
-        AiThirdPartySharingDropboxBasePolicyChangedType.description.validator,
-    )
+    ("description", AiThirdPartySharingDropboxBasePolicyChangedType.description.validator)
 ]
 
 AlertRecipientsSettingType._custom_list_validator = bv.Void()
@@ -98897,10 +99909,7 @@ BinderRenamePageDetails._all_fields_ = [
     ("event_uuid", BinderRenamePageDetails.event_uuid.validator),
     ("doc_title", BinderRenamePageDetails.doc_title.validator),
     ("binder_item_name", BinderRenamePageDetails.binder_item_name.validator),
-    (
-        "previous_binder_item_name",
-        BinderRenamePageDetails.previous_binder_item_name.validator,
-    ),
+    ("previous_binder_item_name", BinderRenamePageDetails.previous_binder_item_name.validator),
 ]
 
 BinderRenamePageType.description.validator = bv.String()
@@ -98923,10 +99932,7 @@ BinderRenameSectionDetails._all_fields_ = [
     ("event_uuid", BinderRenameSectionDetails.event_uuid.validator),
     ("doc_title", BinderRenameSectionDetails.doc_title.validator),
     ("binder_item_name", BinderRenameSectionDetails.binder_item_name.validator),
-    (
-        "previous_binder_item_name",
-        BinderRenameSectionDetails.previous_binder_item_name.validator,
-    ),
+    ("previous_binder_item_name", BinderRenameSectionDetails.previous_binder_item_name.validator),
 ]
 
 BinderRenameSectionType.description.validator = bv.String()
@@ -99157,14 +100163,8 @@ ChangedEnterpriseConnectedTeamStatusDetails._all_field_names_ = set(
 )
 ChangedEnterpriseConnectedTeamStatusDetails._all_fields_ = [
     ("action", ChangedEnterpriseConnectedTeamStatusDetails.action.validator),
-    (
-        "additional_info",
-        ChangedEnterpriseConnectedTeamStatusDetails.additional_info.validator,
-    ),
-    (
-        "previous_value",
-        ChangedEnterpriseConnectedTeamStatusDetails.previous_value.validator,
-    ),
+    ("additional_info", ChangedEnterpriseConnectedTeamStatusDetails.additional_info.validator),
+    ("previous_value", ChangedEnterpriseConnectedTeamStatusDetails.previous_value.validator),
     ("new_value", ChangedEnterpriseConnectedTeamStatusDetails.new_value.validator),
 ]
 
@@ -99189,10 +100189,7 @@ ClassificationChangePolicyDetails._all_field_names_ = set(
 ClassificationChangePolicyDetails._all_fields_ = [
     ("previous_value", ClassificationChangePolicyDetails.previous_value.validator),
     ("new_value", ClassificationChangePolicyDetails.new_value.validator),
-    (
-        "classification_type",
-        ClassificationChangePolicyDetails.classification_type.validator,
-    ),
+    ("classification_type", ClassificationChangePolicyDetails.classification_type.validator),
 ]
 
 ClassificationChangePolicyType.description.validator = bv.String()
@@ -99315,10 +100312,7 @@ ContentAdministrationPolicyChangedDetails._all_field_names_ = set(
 )
 ContentAdministrationPolicyChangedDetails._all_fields_ = [
     ("new_value", ContentAdministrationPolicyChangedDetails.new_value.validator),
-    (
-        "previous_value",
-        ContentAdministrationPolicyChangedDetails.previous_value.validator,
-    ),
+    ("previous_value", ContentAdministrationPolicyChangedDetails.previous_value.validator),
 ]
 
 ContentAdministrationPolicyChangedType.description.validator = bv.String()
@@ -99353,10 +100347,7 @@ ContentDeletionProtectionChangePolicyDetails._all_fields_ = [
         "new_threshold_bytes",
         ContentDeletionProtectionChangePolicyDetails.new_threshold_bytes.validator,
     ),
-    (
-        "previous_value",
-        ContentDeletionProtectionChangePolicyDetails.previous_value.validator,
-    ),
+    ("previous_value", ContentDeletionProtectionChangePolicyDetails.previous_value.validator),
     (
         "previous_threshold_bytes",
         ContentDeletionProtectionChangePolicyDetails.previous_threshold_bytes.validator,
@@ -99535,10 +100526,7 @@ DashAdminAddedOrgWideConnectorDetails._all_field_names_ = set(
 )
 DashAdminAddedOrgWideConnectorDetails._all_fields_ = [
     ("connector_name", DashAdminAddedOrgWideConnectorDetails.connector_name.validator),
-    (
-        "connector_status",
-        DashAdminAddedOrgWideConnectorDetails.connector_status.validator,
-    ),
+    ("connector_status", DashAdminAddedOrgWideConnectorDetails.connector_status.validator),
 ]
 
 DashAdminAddedOrgWideConnectorType.description.validator = bv.String()
@@ -99598,14 +100586,8 @@ DashAdminRemovedOrgWideConnectorDetails._all_field_names_ = set(
     ]
 )
 DashAdminRemovedOrgWideConnectorDetails._all_fields_ = [
-    (
-        "connector_name",
-        DashAdminRemovedOrgWideConnectorDetails.connector_name.validator,
-    ),
-    (
-        "connector_status",
-        DashAdminRemovedOrgWideConnectorDetails.connector_status.validator,
-    ),
+    ("connector_name", DashAdminRemovedOrgWideConnectorDetails.connector_name.validator),
+    ("connector_status", DashAdminRemovedOrgWideConnectorDetails.connector_status.validator),
 ]
 
 DashAdminRemovedOrgWideConnectorType.description.validator = bv.String()
@@ -99819,10 +100801,7 @@ DashExternalSharingPolicyChangedDetails._all_field_names_ = set(
 )
 DashExternalSharingPolicyChangedDetails._all_fields_ = [
     ("new_value", DashExternalSharingPolicyChangedDetails.new_value.validator),
-    (
-        "previous_value",
-        DashExternalSharingPolicyChangedDetails.previous_value.validator,
-    ),
+    ("previous_value", DashExternalSharingPolicyChangedDetails.previous_value.validator),
 ]
 
 DashExternalSharingPolicyChangedType.description.validator = bv.String()
@@ -99849,16 +100828,10 @@ DashExternalUserOpenedStackDetails._all_field_names_ = set(
 )
 DashExternalUserOpenedStackDetails._all_fields_ = [
     ("stack_name", DashExternalUserOpenedStackDetails.stack_name.validator),
-    (
-        "stack_sharing_scope",
-        DashExternalUserOpenedStackDetails.stack_sharing_scope.validator,
-    ),
+    ("stack_sharing_scope", DashExternalUserOpenedStackDetails.stack_sharing_scope.validator),
     ("is_invited", DashExternalUserOpenedStackDetails.is_invited.validator),
     ("is_verified", DashExternalUserOpenedStackDetails.is_verified.validator),
-    (
-        "stack_owner_team_id",
-        DashExternalUserOpenedStackDetails.stack_owner_team_id.validator,
-    ),
+    ("stack_owner_team_id", DashExternalUserOpenedStackDetails.stack_owner_team_id.validator),
     ("stack_type", DashExternalUserOpenedStackDetails.stack_type.validator),
 ]
 
@@ -100169,10 +101142,7 @@ DataPlacementRestrictionChangePolicyDetails._all_field_names_ = set(
     ]
 )
 DataPlacementRestrictionChangePolicyDetails._all_fields_ = [
-    (
-        "previous_value",
-        DataPlacementRestrictionChangePolicyDetails.previous_value.validator,
-    ),
+    ("previous_value", DataPlacementRestrictionChangePolicyDetails.previous_value.validator),
     ("new_value", DataPlacementRestrictionChangePolicyDetails.new_value.validator),
 ]
 
@@ -100289,18 +101259,9 @@ DeviceSessionLogInfo._pytype_to_tag_and_subtype_ = {
         ("desktop_device_session",),
         DesktopDeviceSessionLogInfo_validator,
     ),
-    LegacyDeviceSessionLogInfo: (
-        ("legacy_device_session",),
-        LegacyDeviceSessionLogInfo_validator,
-    ),
-    MobileDeviceSessionLogInfo: (
-        ("mobile_device_session",),
-        MobileDeviceSessionLogInfo_validator,
-    ),
-    WebDeviceSessionLogInfo: (
-        ("web_device_session",),
-        WebDeviceSessionLogInfo_validator,
-    ),
+    LegacyDeviceSessionLogInfo: (("legacy_device_session",), LegacyDeviceSessionLogInfo_validator),
+    MobileDeviceSessionLogInfo: (("mobile_device_session",), MobileDeviceSessionLogInfo_validator),
+    WebDeviceSessionLogInfo: (("web_device_session",), WebDeviceSessionLogInfo_validator),
 }
 DeviceSessionLogInfo._is_catch_all_ = True
 
@@ -100386,10 +101347,7 @@ DeviceApprovalsChangeDesktopPolicyDetails._all_field_names_ = set(
 )
 DeviceApprovalsChangeDesktopPolicyDetails._all_fields_ = [
     ("new_value", DeviceApprovalsChangeDesktopPolicyDetails.new_value.validator),
-    (
-        "previous_value",
-        DeviceApprovalsChangeDesktopPolicyDetails.previous_value.validator,
-    ),
+    ("previous_value", DeviceApprovalsChangeDesktopPolicyDetails.previous_value.validator),
 ]
 
 DeviceApprovalsChangeDesktopPolicyType.description.validator = bv.String()
@@ -100412,10 +101370,7 @@ DeviceApprovalsChangeMobilePolicyDetails._all_field_names_ = set(
 )
 DeviceApprovalsChangeMobilePolicyDetails._all_fields_ = [
     ("new_value", DeviceApprovalsChangeMobilePolicyDetails.new_value.validator),
-    (
-        "previous_value",
-        DeviceApprovalsChangeMobilePolicyDetails.previous_value.validator,
-    ),
+    ("previous_value", DeviceApprovalsChangeMobilePolicyDetails.previous_value.validator),
 ]
 
 DeviceApprovalsChangeMobilePolicyType.description.validator = bv.String()
@@ -100438,10 +101393,7 @@ DeviceApprovalsChangeOverageActionDetails._all_field_names_ = set(
 )
 DeviceApprovalsChangeOverageActionDetails._all_fields_ = [
     ("new_value", DeviceApprovalsChangeOverageActionDetails.new_value.validator),
-    (
-        "previous_value",
-        DeviceApprovalsChangeOverageActionDetails.previous_value.validator,
-    ),
+    ("previous_value", DeviceApprovalsChangeOverageActionDetails.previous_value.validator),
 ]
 
 DeviceApprovalsChangeOverageActionType.description.validator = bv.String()
@@ -100464,10 +101416,7 @@ DeviceApprovalsChangeUnlinkActionDetails._all_field_names_ = set(
 )
 DeviceApprovalsChangeUnlinkActionDetails._all_fields_ = [
     ("new_value", DeviceApprovalsChangeUnlinkActionDetails.new_value.validator),
-    (
-        "previous_value",
-        DeviceApprovalsChangeUnlinkActionDetails.previous_value.validator,
-    ),
+    ("previous_value", DeviceApprovalsChangeUnlinkActionDetails.previous_value.validator),
 ]
 
 DeviceApprovalsChangeUnlinkActionType.description.validator = bv.String()
@@ -100809,10 +101758,7 @@ DomainVerificationAddDomainFailDetails._all_field_names_ = set(
 )
 DomainVerificationAddDomainFailDetails._all_fields_ = [
     ("domain_name", DomainVerificationAddDomainFailDetails.domain_name.validator),
-    (
-        "verification_method",
-        DomainVerificationAddDomainFailDetails.verification_method.validator,
-    ),
+    ("verification_method", DomainVerificationAddDomainFailDetails.verification_method.validator),
 ]
 
 DomainVerificationAddDomainFailType.description.validator = bv.String()
@@ -100889,10 +101835,7 @@ DropboxPasswordsNewDeviceEnrolledDetails._all_field_names_ = set(
     ]
 )
 DropboxPasswordsNewDeviceEnrolledDetails._all_fields_ = [
-    (
-        "is_first_device",
-        DropboxPasswordsNewDeviceEnrolledDetails.is_first_device.validator,
-    ),
+    ("is_first_device", DropboxPasswordsNewDeviceEnrolledDetails.is_first_device.validator),
     ("platform", DropboxPasswordsNewDeviceEnrolledDetails.platform.validator),
 ]
 
@@ -101251,10 +102194,7 @@ EnterpriseSettingsLockingDetails._all_field_names_ = set(
 )
 EnterpriseSettingsLockingDetails._all_fields_ = [
     ("team_name", EnterpriseSettingsLockingDetails.team_name.validator),
-    (
-        "settings_page_name",
-        EnterpriseSettingsLockingDetails.settings_page_name.validator,
-    ),
+    ("settings_page_name", EnterpriseSettingsLockingDetails.settings_page_name.validator),
     (
         "previous_settings_page_locking_state",
         EnterpriseSettingsLockingDetails.previous_settings_page_locking_state.validator,
@@ -101767,6 +102707,9 @@ EventDetails._member_delete_manual_contacts_details_validator = (
 EventDetails._member_delete_profile_photo_details_validator = (
     MemberDeleteProfilePhotoDetails_validator
 )
+EventDetails._member_folder_contents_accessed_details_validator = (
+    MemberFolderContentsAccessedDetails_validator
+)
 EventDetails._member_permanently_delete_account_contents_details_validator = (
     MemberPermanentlyDeleteAccountContentsDetails_validator
 )
@@ -101884,6 +102827,21 @@ EventDetails._paper_published_link_view_details_validator = PaperPublishedLinkVi
 EventDetails._password_change_details_validator = PasswordChangeDetails_validator
 EventDetails._password_reset_details_validator = PasswordResetDetails_validator
 EventDetails._password_reset_all_details_validator = PasswordResetAllDetails_validator
+EventDetails._protect_action_add_collaborator_details_validator = (
+    ProtectActionAddCollaboratorDetails_validator
+)
+EventDetails._protect_action_add_link_details_validator = ProtectActionAddLinkDetails_validator
+EventDetails._protect_action_delete_details_validator = ProtectActionDeleteDetails_validator
+EventDetails._protect_action_export_details_validator = ProtectActionExportDetails_validator
+EventDetails._protect_action_remove_collaborator_details_validator = (
+    ProtectActionRemoveCollaboratorDetails_validator
+)
+EventDetails._protect_action_remove_link_details_validator = (
+    ProtectActionRemoveLinkDetails_validator
+)
+EventDetails._protect_action_stop_sharing_details_validator = (
+    ProtectActionStopSharingDetails_validator
+)
 EventDetails._protect_internal_domains_changed_details_validator = (
     ProtectInternalDomainsChangedDetails_validator
 )
@@ -102884,6 +103842,7 @@ EventDetails._tagmap = {
     "member_change_status_details": EventDetails._member_change_status_details_validator,
     "member_delete_manual_contacts_details": EventDetails._member_delete_manual_contacts_details_validator,
     "member_delete_profile_photo_details": EventDetails._member_delete_profile_photo_details_validator,
+    "member_folder_contents_accessed_details": EventDetails._member_folder_contents_accessed_details_validator,
     "member_permanently_delete_account_contents_details": EventDetails._member_permanently_delete_account_contents_details_validator,
     "member_remove_external_id_details": EventDetails._member_remove_external_id_details_validator,
     "member_set_profile_photo_details": EventDetails._member_set_profile_photo_details_validator,
@@ -102951,6 +103910,13 @@ EventDetails._tagmap = {
     "password_change_details": EventDetails._password_change_details_validator,
     "password_reset_details": EventDetails._password_reset_details_validator,
     "password_reset_all_details": EventDetails._password_reset_all_details_validator,
+    "protect_action_add_collaborator_details": EventDetails._protect_action_add_collaborator_details_validator,
+    "protect_action_add_link_details": EventDetails._protect_action_add_link_details_validator,
+    "protect_action_delete_details": EventDetails._protect_action_delete_details_validator,
+    "protect_action_export_details": EventDetails._protect_action_export_details_validator,
+    "protect_action_remove_collaborator_details": EventDetails._protect_action_remove_collaborator_details_validator,
+    "protect_action_remove_link_details": EventDetails._protect_action_remove_link_details_validator,
+    "protect_action_stop_sharing_details": EventDetails._protect_action_stop_sharing_details_validator,
     "protect_internal_domains_changed_details": EventDetails._protect_internal_domains_changed_details_validator,
     "classification_create_report_details": EventDetails._classification_create_report_details_validator,
     "classification_create_report_fail_details": EventDetails._classification_create_report_fail_details_validator,
@@ -103594,6 +104560,7 @@ EventType._member_change_reseller_role_validator = MemberChangeResellerRoleType_
 EventType._member_change_status_validator = MemberChangeStatusType_validator
 EventType._member_delete_manual_contacts_validator = MemberDeleteManualContactsType_validator
 EventType._member_delete_profile_photo_validator = MemberDeleteProfilePhotoType_validator
+EventType._member_folder_contents_accessed_validator = MemberFolderContentsAccessedType_validator
 EventType._member_permanently_delete_account_contents_validator = (
     MemberPermanentlyDeleteAccountContentsType_validator
 )
@@ -103671,6 +104638,15 @@ EventType._paper_published_link_view_validator = PaperPublishedLinkViewType_vali
 EventType._password_change_validator = PasswordChangeType_validator
 EventType._password_reset_validator = PasswordResetType_validator
 EventType._password_reset_all_validator = PasswordResetAllType_validator
+EventType._protect_action_add_collaborator_validator = ProtectActionAddCollaboratorType_validator
+EventType._protect_action_add_link_validator = ProtectActionAddLinkType_validator
+EventType._protect_action_delete_validator = ProtectActionDeleteType_validator
+EventType._protect_action_export_validator = ProtectActionExportType_validator
+EventType._protect_action_remove_collaborator_validator = (
+    ProtectActionRemoveCollaboratorType_validator
+)
+EventType._protect_action_remove_link_validator = ProtectActionRemoveLinkType_validator
+EventType._protect_action_stop_sharing_validator = ProtectActionStopSharingType_validator
 EventType._protect_internal_domains_changed_validator = ProtectInternalDomainsChangedType_validator
 EventType._classification_create_report_validator = ClassificationCreateReportType_validator
 EventType._classification_create_report_fail_validator = (
@@ -104432,6 +105408,7 @@ EventType._tagmap = {
     "member_change_status": EventType._member_change_status_validator,
     "member_delete_manual_contacts": EventType._member_delete_manual_contacts_validator,
     "member_delete_profile_photo": EventType._member_delete_profile_photo_validator,
+    "member_folder_contents_accessed": EventType._member_folder_contents_accessed_validator,
     "member_permanently_delete_account_contents": EventType._member_permanently_delete_account_contents_validator,
     "member_remove_external_id": EventType._member_remove_external_id_validator,
     "member_set_profile_photo": EventType._member_set_profile_photo_validator,
@@ -104499,6 +105476,13 @@ EventType._tagmap = {
     "password_change": EventType._password_change_validator,
     "password_reset": EventType._password_reset_validator,
     "password_reset_all": EventType._password_reset_all_validator,
+    "protect_action_add_collaborator": EventType._protect_action_add_collaborator_validator,
+    "protect_action_add_link": EventType._protect_action_add_link_validator,
+    "protect_action_delete": EventType._protect_action_delete_validator,
+    "protect_action_export": EventType._protect_action_export_validator,
+    "protect_action_remove_collaborator": EventType._protect_action_remove_collaborator_validator,
+    "protect_action_remove_link": EventType._protect_action_remove_link_validator,
+    "protect_action_stop_sharing": EventType._protect_action_stop_sharing_validator,
     "protect_internal_domains_changed": EventType._protect_internal_domains_changed_validator,
     "classification_create_report": EventType._classification_create_report_validator,
     "classification_create_report_fail": EventType._classification_create_report_fail_validator,
@@ -105055,6 +106039,7 @@ EventTypeArg._member_change_reseller_role_validator = bv.Void()
 EventTypeArg._member_change_status_validator = bv.Void()
 EventTypeArg._member_delete_manual_contacts_validator = bv.Void()
 EventTypeArg._member_delete_profile_photo_validator = bv.Void()
+EventTypeArg._member_folder_contents_accessed_validator = bv.Void()
 EventTypeArg._member_permanently_delete_account_contents_validator = bv.Void()
 EventTypeArg._member_remove_external_id_validator = bv.Void()
 EventTypeArg._member_set_profile_photo_validator = bv.Void()
@@ -105122,6 +106107,13 @@ EventTypeArg._paper_published_link_view_validator = bv.Void()
 EventTypeArg._password_change_validator = bv.Void()
 EventTypeArg._password_reset_validator = bv.Void()
 EventTypeArg._password_reset_all_validator = bv.Void()
+EventTypeArg._protect_action_add_collaborator_validator = bv.Void()
+EventTypeArg._protect_action_add_link_validator = bv.Void()
+EventTypeArg._protect_action_delete_validator = bv.Void()
+EventTypeArg._protect_action_export_validator = bv.Void()
+EventTypeArg._protect_action_remove_collaborator_validator = bv.Void()
+EventTypeArg._protect_action_remove_link_validator = bv.Void()
+EventTypeArg._protect_action_stop_sharing_validator = bv.Void()
 EventTypeArg._protect_internal_domains_changed_validator = bv.Void()
 EventTypeArg._classification_create_report_validator = bv.Void()
 EventTypeArg._classification_create_report_fail_validator = bv.Void()
@@ -105675,6 +106667,7 @@ EventTypeArg._tagmap = {
     "member_change_status": EventTypeArg._member_change_status_validator,
     "member_delete_manual_contacts": EventTypeArg._member_delete_manual_contacts_validator,
     "member_delete_profile_photo": EventTypeArg._member_delete_profile_photo_validator,
+    "member_folder_contents_accessed": EventTypeArg._member_folder_contents_accessed_validator,
     "member_permanently_delete_account_contents": EventTypeArg._member_permanently_delete_account_contents_validator,
     "member_remove_external_id": EventTypeArg._member_remove_external_id_validator,
     "member_set_profile_photo": EventTypeArg._member_set_profile_photo_validator,
@@ -105742,6 +106735,13 @@ EventTypeArg._tagmap = {
     "password_change": EventTypeArg._password_change_validator,
     "password_reset": EventTypeArg._password_reset_validator,
     "password_reset_all": EventTypeArg._password_reset_all_validator,
+    "protect_action_add_collaborator": EventTypeArg._protect_action_add_collaborator_validator,
+    "protect_action_add_link": EventTypeArg._protect_action_add_link_validator,
+    "protect_action_delete": EventTypeArg._protect_action_delete_validator,
+    "protect_action_export": EventTypeArg._protect_action_export_validator,
+    "protect_action_remove_collaborator": EventTypeArg._protect_action_remove_collaborator_validator,
+    "protect_action_remove_link": EventTypeArg._protect_action_remove_link_validator,
+    "protect_action_stop_sharing": EventTypeArg._protect_action_stop_sharing_validator,
     "protect_internal_domains_changed": EventTypeArg._protect_internal_domains_changed_validator,
     "classification_create_report": EventTypeArg._classification_create_report_validator,
     "classification_create_report_fail": EventTypeArg._classification_create_report_fail_validator,
@@ -106364,6 +107364,7 @@ EventTypeArg.member_change_reseller_role = EventTypeArg("member_change_reseller_
 EventTypeArg.member_change_status = EventTypeArg("member_change_status")
 EventTypeArg.member_delete_manual_contacts = EventTypeArg("member_delete_manual_contacts")
 EventTypeArg.member_delete_profile_photo = EventTypeArg("member_delete_profile_photo")
+EventTypeArg.member_folder_contents_accessed = EventTypeArg("member_folder_contents_accessed")
 EventTypeArg.member_permanently_delete_account_contents = EventTypeArg(
     "member_permanently_delete_account_contents"
 )
@@ -106441,6 +107442,13 @@ EventTypeArg.paper_published_link_view = EventTypeArg("paper_published_link_view
 EventTypeArg.password_change = EventTypeArg("password_change")
 EventTypeArg.password_reset = EventTypeArg("password_reset")
 EventTypeArg.password_reset_all = EventTypeArg("password_reset_all")
+EventTypeArg.protect_action_add_collaborator = EventTypeArg("protect_action_add_collaborator")
+EventTypeArg.protect_action_add_link = EventTypeArg("protect_action_add_link")
+EventTypeArg.protect_action_delete = EventTypeArg("protect_action_delete")
+EventTypeArg.protect_action_export = EventTypeArg("protect_action_export")
+EventTypeArg.protect_action_remove_collaborator = EventTypeArg("protect_action_remove_collaborator")
+EventTypeArg.protect_action_remove_link = EventTypeArg("protect_action_remove_link")
+EventTypeArg.protect_action_stop_sharing = EventTypeArg("protect_action_stop_sharing")
 EventTypeArg.protect_internal_domains_changed = EventTypeArg("protect_internal_domains_changed")
 EventTypeArg.classification_create_report = EventTypeArg("classification_create_report")
 EventTypeArg.classification_create_report_fail = EventTypeArg("classification_create_report_fail")
@@ -107006,10 +108014,7 @@ ExtendedVersionHistoryChangePolicyDetails._all_field_names_ = set(
 )
 ExtendedVersionHistoryChangePolicyDetails._all_fields_ = [
     ("new_value", ExtendedVersionHistoryChangePolicyDetails.new_value.validator),
-    (
-        "previous_value",
-        ExtendedVersionHistoryChangePolicyDetails.previous_value.validator,
-    ),
+    ("previous_value", ExtendedVersionHistoryChangePolicyDetails.previous_value.validator),
 ]
 
 ExtendedVersionHistoryChangePolicyType.description.validator = bv.String()
@@ -107090,10 +108095,7 @@ ExternalDriveBackupEligibilityStatusCheckedDetails._all_fields_ = [
 ExternalDriveBackupEligibilityStatusCheckedType.description.validator = bv.String()
 ExternalDriveBackupEligibilityStatusCheckedType._all_field_names_ = set(["description"])
 ExternalDriveBackupEligibilityStatusCheckedType._all_fields_ = [
-    (
-        "description",
-        ExternalDriveBackupEligibilityStatusCheckedType.description.validator,
-    )
+    ("description", ExternalDriveBackupEligibilityStatusCheckedType.description.validator)
 ]
 
 ExternalDriveBackupPolicy._default_validator = bv.Void()
@@ -107124,10 +108126,7 @@ ExternalDriveBackupPolicyChangedDetails._all_field_names_ = set(
 )
 ExternalDriveBackupPolicyChangedDetails._all_fields_ = [
     ("new_value", ExternalDriveBackupPolicyChangedDetails.new_value.validator),
-    (
-        "previous_value",
-        ExternalDriveBackupPolicyChangedDetails.previous_value.validator,
-    ),
+    ("previous_value", ExternalDriveBackupPolicyChangedDetails.previous_value.validator),
 ]
 
 ExternalDriveBackupPolicyChangedType.description.validator = bv.String()
@@ -107180,10 +108179,7 @@ ExternalDriveBackupStatusChangedDetails._all_fields_ = [
         "desktop_device_session_info",
         ExternalDriveBackupStatusChangedDetails.desktop_device_session_info.validator,
     ),
-    (
-        "previous_value",
-        ExternalDriveBackupStatusChangedDetails.previous_value.validator,
-    ),
+    ("previous_value", ExternalDriveBackupStatusChangedDetails.previous_value.validator),
     ("new_value", ExternalDriveBackupStatusChangedDetails.new_value.validator),
 ]
 
@@ -107253,10 +108249,7 @@ FailureDetailsLogInfo._all_field_names_ = set(
 )
 FailureDetailsLogInfo._all_fields_ = [
     ("user_friendly_message", FailureDetailsLogInfo.user_friendly_message.validator),
-    (
-        "technical_error_message",
-        FailureDetailsLogInfo.technical_error_message.validator,
-    ),
+    ("technical_error_message", FailureDetailsLogInfo.technical_error_message.validator),
 ]
 
 FedAdminRole._enterprise_admin_validator = bv.Void()
@@ -107598,10 +108591,7 @@ FileProviderMigrationPolicyChangedDetails._all_field_names_ = set(
 )
 FileProviderMigrationPolicyChangedDetails._all_fields_ = [
     ("new_value", FileProviderMigrationPolicyChangedDetails.new_value.validator),
-    (
-        "previous_value",
-        FileProviderMigrationPolicyChangedDetails.previous_value.validator,
-    ),
+    ("previous_value", FileProviderMigrationPolicyChangedDetails.previous_value.validator),
 ]
 
 FileProviderMigrationPolicyChangedType.description.validator = bv.String()
@@ -107776,14 +108766,8 @@ FileRequestReceiveFileDetails._all_field_names_ = set(
 )
 FileRequestReceiveFileDetails._all_fields_ = [
     ("file_request_id", FileRequestReceiveFileDetails.file_request_id.validator),
-    (
-        "file_request_details",
-        FileRequestReceiveFileDetails.file_request_details.validator,
-    ),
-    (
-        "submitted_file_names",
-        FileRequestReceiveFileDetails.submitted_file_names.validator,
-    ),
+    ("file_request_details", FileRequestReceiveFileDetails.file_request_details.validator),
+    ("submitted_file_names", FileRequestReceiveFileDetails.submitted_file_names.validator),
     ("submitter_name", FileRequestReceiveFileDetails.submitter_name.validator),
     ("submitter_email", FileRequestReceiveFileDetails.submitter_email.validator),
 ]
@@ -107884,10 +108868,7 @@ FileSaveCopyReferenceDetails.relocate_action_details.validator = bv.List(
 )
 FileSaveCopyReferenceDetails._all_field_names_ = set(["relocate_action_details"])
 FileSaveCopyReferenceDetails._all_fields_ = [
-    (
-        "relocate_action_details",
-        FileSaveCopyReferenceDetails.relocate_action_details.validator,
-    )
+    ("relocate_action_details", FileSaveCopyReferenceDetails.relocate_action_details.validator)
 ]
 
 FileSaveCopyReferenceType.description.validator = bv.String()
@@ -107955,10 +108936,7 @@ FileTransfersTransferDeleteType._all_fields_ = [
 FileTransfersTransferDownloadDetails.file_transfer_id.validator = bv.String()
 FileTransfersTransferDownloadDetails._all_field_names_ = set(["file_transfer_id"])
 FileTransfersTransferDownloadDetails._all_fields_ = [
-    (
-        "file_transfer_id",
-        FileTransfersTransferDownloadDetails.file_transfer_id.validator,
-    )
+    ("file_transfer_id", FileTransfersTransferDownloadDetails.file_transfer_id.validator)
 ]
 
 FileTransfersTransferDownloadType.description.validator = bv.String()
@@ -108086,10 +109064,7 @@ FolderLinkRestrictionPolicyChangedDetails._all_field_names_ = set(
 )
 FolderLinkRestrictionPolicyChangedDetails._all_fields_ = [
     ("new_value", FolderLinkRestrictionPolicyChangedDetails.new_value.validator),
-    (
-        "previous_value",
-        FolderLinkRestrictionPolicyChangedDetails.previous_value.validator,
-    ),
+    ("previous_value", FolderLinkRestrictionPolicyChangedDetails.previous_value.validator),
 ]
 
 FolderLinkRestrictionPolicyChangedType.description.validator = bv.String()
@@ -108305,10 +109280,7 @@ GovernancePolicyAddFolderFailedDetails._all_field_names_ = set(
     ]
 )
 GovernancePolicyAddFolderFailedDetails._all_fields_ = [
-    (
-        "governance_policy_id",
-        GovernancePolicyAddFolderFailedDetails.governance_policy_id.validator,
-    ),
+    ("governance_policy_id", GovernancePolicyAddFolderFailedDetails.governance_policy_id.validator),
     ("name", GovernancePolicyAddFolderFailedDetails.name.validator),
     ("policy_type", GovernancePolicyAddFolderFailedDetails.policy_type.validator),
     ("folder", GovernancePolicyAddFolderFailedDetails.folder.validator),
@@ -108334,10 +109306,7 @@ GovernancePolicyAddFoldersDetails._all_field_names_ = set(
     ]
 )
 GovernancePolicyAddFoldersDetails._all_fields_ = [
-    (
-        "governance_policy_id",
-        GovernancePolicyAddFoldersDetails.governance_policy_id.validator,
-    ),
+    ("governance_policy_id", GovernancePolicyAddFoldersDetails.governance_policy_id.validator),
     ("name", GovernancePolicyAddFoldersDetails.name.validator),
     ("policy_type", GovernancePolicyAddFoldersDetails.policy_type.validator),
     ("folders", GovernancePolicyAddFoldersDetails.folders.validator),
@@ -108362,16 +109331,10 @@ GovernancePolicyContentDisposedDetails._all_field_names_ = set(
     ]
 )
 GovernancePolicyContentDisposedDetails._all_fields_ = [
-    (
-        "governance_policy_id",
-        GovernancePolicyContentDisposedDetails.governance_policy_id.validator,
-    ),
+    ("governance_policy_id", GovernancePolicyContentDisposedDetails.governance_policy_id.validator),
     ("name", GovernancePolicyContentDisposedDetails.name.validator),
     ("policy_type", GovernancePolicyContentDisposedDetails.policy_type.validator),
-    (
-        "disposition_type",
-        GovernancePolicyContentDisposedDetails.disposition_type.validator,
-    ),
+    ("disposition_type", GovernancePolicyContentDisposedDetails.disposition_type.validator),
 ]
 
 GovernancePolicyContentDisposedType.description.validator = bv.String()
@@ -108395,10 +109358,7 @@ GovernancePolicyCreateDetails._all_field_names_ = set(
     ]
 )
 GovernancePolicyCreateDetails._all_fields_ = [
-    (
-        "governance_policy_id",
-        GovernancePolicyCreateDetails.governance_policy_id.validator,
-    ),
+    ("governance_policy_id", GovernancePolicyCreateDetails.governance_policy_id.validator),
     ("name", GovernancePolicyCreateDetails.name.validator),
     ("policy_type", GovernancePolicyCreateDetails.policy_type.validator),
     ("duration", GovernancePolicyCreateDetails.duration.validator),
@@ -108422,10 +109382,7 @@ GovernancePolicyDeleteDetails._all_field_names_ = set(
     ]
 )
 GovernancePolicyDeleteDetails._all_fields_ = [
-    (
-        "governance_policy_id",
-        GovernancePolicyDeleteDetails.governance_policy_id.validator,
-    ),
+    ("governance_policy_id", GovernancePolicyDeleteDetails.governance_policy_id.validator),
     ("name", GovernancePolicyDeleteDetails.name.validator),
     ("policy_type", GovernancePolicyDeleteDetails.policy_type.validator),
 ]
@@ -108453,10 +109410,7 @@ GovernancePolicyEditDetailsDetails._all_field_names_ = set(
     ]
 )
 GovernancePolicyEditDetailsDetails._all_fields_ = [
-    (
-        "governance_policy_id",
-        GovernancePolicyEditDetailsDetails.governance_policy_id.validator,
-    ),
+    ("governance_policy_id", GovernancePolicyEditDetailsDetails.governance_policy_id.validator),
     ("name", GovernancePolicyEditDetailsDetails.name.validator),
     ("policy_type", GovernancePolicyEditDetailsDetails.policy_type.validator),
     ("attribute", GovernancePolicyEditDetailsDetails.attribute.validator),
@@ -108485,10 +109439,7 @@ GovernancePolicyEditDurationDetails._all_field_names_ = set(
     ]
 )
 GovernancePolicyEditDurationDetails._all_fields_ = [
-    (
-        "governance_policy_id",
-        GovernancePolicyEditDurationDetails.governance_policy_id.validator,
-    ),
+    ("governance_policy_id", GovernancePolicyEditDurationDetails.governance_policy_id.validator),
     ("name", GovernancePolicyEditDurationDetails.name.validator),
     ("policy_type", GovernancePolicyEditDurationDetails.policy_type.validator),
     ("previous_value", GovernancePolicyEditDurationDetails.previous_value.validator),
@@ -108514,10 +109465,7 @@ GovernancePolicyExportCreatedDetails._all_field_names_ = set(
     ]
 )
 GovernancePolicyExportCreatedDetails._all_fields_ = [
-    (
-        "governance_policy_id",
-        GovernancePolicyExportCreatedDetails.governance_policy_id.validator,
-    ),
+    ("governance_policy_id", GovernancePolicyExportCreatedDetails.governance_policy_id.validator),
     ("name", GovernancePolicyExportCreatedDetails.name.validator),
     ("policy_type", GovernancePolicyExportCreatedDetails.policy_type.validator),
     ("export_name", GovernancePolicyExportCreatedDetails.export_name.validator),
@@ -108542,10 +109490,7 @@ GovernancePolicyExportRemovedDetails._all_field_names_ = set(
     ]
 )
 GovernancePolicyExportRemovedDetails._all_fields_ = [
-    (
-        "governance_policy_id",
-        GovernancePolicyExportRemovedDetails.governance_policy_id.validator,
-    ),
+    ("governance_policy_id", GovernancePolicyExportRemovedDetails.governance_policy_id.validator),
     ("name", GovernancePolicyExportRemovedDetails.name.validator),
     ("policy_type", GovernancePolicyExportRemovedDetails.policy_type.validator),
     ("export_name", GovernancePolicyExportRemovedDetails.export_name.validator),
@@ -108572,10 +109517,7 @@ GovernancePolicyRemoveFoldersDetails._all_field_names_ = set(
     ]
 )
 GovernancePolicyRemoveFoldersDetails._all_fields_ = [
-    (
-        "governance_policy_id",
-        GovernancePolicyRemoveFoldersDetails.governance_policy_id.validator,
-    ),
+    ("governance_policy_id", GovernancePolicyRemoveFoldersDetails.governance_policy_id.validator),
     ("name", GovernancePolicyRemoveFoldersDetails.name.validator),
     ("policy_type", GovernancePolicyRemoveFoldersDetails.policy_type.validator),
     ("folders", GovernancePolicyRemoveFoldersDetails.folders.validator),
@@ -108599,10 +109541,7 @@ GovernancePolicyReportCreatedDetails._all_field_names_ = set(
     ]
 )
 GovernancePolicyReportCreatedDetails._all_fields_ = [
-    (
-        "governance_policy_id",
-        GovernancePolicyReportCreatedDetails.governance_policy_id.validator,
-    ),
+    ("governance_policy_id", GovernancePolicyReportCreatedDetails.governance_policy_id.validator),
     ("name", GovernancePolicyReportCreatedDetails.name.validator),
     ("policy_type", GovernancePolicyReportCreatedDetails.policy_type.validator),
 ]
@@ -108767,23 +109706,14 @@ GroupExternalSharingSettingOverrideChangedDetails._all_field_names_ = set(
     ]
 )
 GroupExternalSharingSettingOverrideChangedDetails._all_fields_ = [
-    (
-        "new_value",
-        GroupExternalSharingSettingOverrideChangedDetails.new_value.validator,
-    ),
-    (
-        "previous_value",
-        GroupExternalSharingSettingOverrideChangedDetails.previous_value.validator,
-    ),
+    ("new_value", GroupExternalSharingSettingOverrideChangedDetails.new_value.validator),
+    ("previous_value", GroupExternalSharingSettingOverrideChangedDetails.previous_value.validator),
 ]
 
 GroupExternalSharingSettingOverrideChangedType.description.validator = bv.String()
 GroupExternalSharingSettingOverrideChangedType._all_field_names_ = set(["description"])
 GroupExternalSharingSettingOverrideChangedType._all_fields_ = [
-    (
-        "description",
-        GroupExternalSharingSettingOverrideChangedType.description.validator,
-    )
+    ("description", GroupExternalSharingSettingOverrideChangedType.description.validator)
 ]
 
 GroupJoinPolicy._open_validator = bv.Void()
@@ -108939,10 +109869,7 @@ GuestAdminSignedInViaTrustedTeamsDetails._all_field_names_ = set(
 )
 GuestAdminSignedInViaTrustedTeamsDetails._all_fields_ = [
     ("team_name", GuestAdminSignedInViaTrustedTeamsDetails.team_name.validator),
-    (
-        "trusted_team_name",
-        GuestAdminSignedInViaTrustedTeamsDetails.trusted_team_name.validator,
-    ),
+    ("trusted_team_name", GuestAdminSignedInViaTrustedTeamsDetails.trusted_team_name.validator),
 ]
 
 GuestAdminSignedInViaTrustedTeamsType.description.validator = bv.String()
@@ -108961,10 +109888,7 @@ GuestAdminSignedOutViaTrustedTeamsDetails._all_field_names_ = set(
 )
 GuestAdminSignedOutViaTrustedTeamsDetails._all_fields_ = [
     ("team_name", GuestAdminSignedOutViaTrustedTeamsDetails.team_name.validator),
-    (
-        "trusted_team_name",
-        GuestAdminSignedOutViaTrustedTeamsDetails.trusted_team_name.validator,
-    ),
+    ("trusted_team_name", GuestAdminSignedOutViaTrustedTeamsDetails.trusted_team_name.validator),
 ]
 
 GuestAdminSignedOutViaTrustedTeamsType.description.validator = bv.String()
@@ -109072,10 +109996,7 @@ InviteAcceptanceEmailPolicyChangedDetails._all_field_names_ = set(
 )
 InviteAcceptanceEmailPolicyChangedDetails._all_fields_ = [
     ("new_value", InviteAcceptanceEmailPolicyChangedDetails.new_value.validator),
-    (
-        "previous_value",
-        InviteAcceptanceEmailPolicyChangedDetails.previous_value.validator,
-    ),
+    ("previous_value", InviteAcceptanceEmailPolicyChangedDetails.previous_value.validator),
 ]
 
 InviteAcceptanceEmailPolicyChangedType.description.validator = bv.String()
@@ -109130,10 +110051,7 @@ JoinTeamDetails._all_fields_ = [
     ("linked_devices", JoinTeamDetails.linked_devices.validator),
     ("linked_shared_folders", JoinTeamDetails.linked_shared_folders.validator),
     ("was_linked_apps_truncated", JoinTeamDetails.was_linked_apps_truncated.validator),
-    (
-        "was_linked_devices_truncated",
-        JoinTeamDetails.was_linked_devices_truncated.validator,
-    ),
+    ("was_linked_devices_truncated", JoinTeamDetails.was_linked_devices_truncated.validator),
     (
         "was_linked_shared_folders_truncated",
         JoinTeamDetails.was_linked_shared_folders_truncated.validator,
@@ -109593,10 +110511,7 @@ MalwareExclusionState._all_field_names_ = set(
     ]
 )
 MalwareExclusionState._all_fields_ = [
-    (
-        "excluded_file_hashes_count",
-        MalwareExclusionState.excluded_file_hashes_count.validator,
-    ),
+    ("excluded_file_hashes_count", MalwareExclusionState.excluded_file_hashes_count.validator),
     (
         "file_path_from_last_exclusion",
         MalwareExclusionState.file_path_from_last_exclusion.validator,
@@ -109632,10 +110547,7 @@ MediaHubAddingPeoplePolicyChangedDetails._all_field_names_ = set(
 )
 MediaHubAddingPeoplePolicyChangedDetails._all_fields_ = [
     ("new_value", MediaHubAddingPeoplePolicyChangedDetails.new_value.validator),
-    (
-        "previous_value",
-        MediaHubAddingPeoplePolicyChangedDetails.previous_value.validator,
-    ),
+    ("previous_value", MediaHubAddingPeoplePolicyChangedDetails.previous_value.validator),
 ]
 
 MediaHubAddingPeoplePolicyChangedType.description.validator = bv.String()
@@ -109713,16 +110625,26 @@ MediaHubLinkSharingPolicyChangedDetails._all_field_names_ = set(
 )
 MediaHubLinkSharingPolicyChangedDetails._all_fields_ = [
     ("new_value", MediaHubLinkSharingPolicyChangedDetails.new_value.validator),
-    (
-        "previous_value",
-        MediaHubLinkSharingPolicyChangedDetails.previous_value.validator,
-    ),
+    ("previous_value", MediaHubLinkSharingPolicyChangedDetails.previous_value.validator),
 ]
 
 MediaHubLinkSharingPolicyChangedType.description.validator = bv.String()
 MediaHubLinkSharingPolicyChangedType._all_field_names_ = set(["description"])
 MediaHubLinkSharingPolicyChangedType._all_fields_ = [
     ("description", MediaHubLinkSharingPolicyChangedType.description.validator)
+]
+
+MediaHubProjectLogInfo.project_name.validator = bv.String()
+MediaHubProjectLogInfo.project_id.validator = bv.Nullable(bv.String())
+MediaHubProjectLogInfo._all_field_names_ = set(
+    [
+        "project_name",
+        "project_id",
+    ]
+)
+MediaHubProjectLogInfo._all_fields_ = [
+    ("project_name", MediaHubProjectLogInfo.project_name.validator),
+    ("project_id", MediaHubProjectLogInfo.project_id.validator),
 ]
 
 MediaHubProjectRole._editor_validator = bv.Void()
@@ -109741,8 +110663,11 @@ MediaHubProjectRole.owner = MediaHubProjectRole("owner")
 MediaHubProjectRole.reviewer = MediaHubProjectRole("reviewer")
 MediaHubProjectRole.other = MediaHubProjectRole("other")
 
-MediaHubProjectTeamAddDetails._all_field_names_ = set([])
-MediaHubProjectTeamAddDetails._all_fields_ = []
+MediaHubProjectTeamAddDetails.project.validator = bv.Nullable(MediaHubProjectLogInfo_validator)
+MediaHubProjectTeamAddDetails._all_field_names_ = set(["project"])
+MediaHubProjectTeamAddDetails._all_fields_ = [
+    ("project", MediaHubProjectTeamAddDetails.project.validator)
+]
 
 MediaHubProjectTeamAddType.description.validator = bv.String()
 MediaHubProjectTeamAddType._all_field_names_ = set(["description"])
@@ -109750,8 +110675,11 @@ MediaHubProjectTeamAddType._all_fields_ = [
     ("description", MediaHubProjectTeamAddType.description.validator)
 ]
 
-MediaHubProjectTeamDeleteDetails._all_field_names_ = set([])
-MediaHubProjectTeamDeleteDetails._all_fields_ = []
+MediaHubProjectTeamDeleteDetails.project.validator = bv.Nullable(MediaHubProjectLogInfo_validator)
+MediaHubProjectTeamDeleteDetails._all_field_names_ = set(["project"])
+MediaHubProjectTeamDeleteDetails._all_fields_ = [
+    ("project", MediaHubProjectTeamDeleteDetails.project.validator)
+]
 
 MediaHubProjectTeamDeleteType.description.validator = bv.String()
 MediaHubProjectTeamDeleteType._all_field_names_ = set(["description"])
@@ -109761,15 +110689,20 @@ MediaHubProjectTeamDeleteType._all_fields_ = [
 
 MediaHubProjectTeamRoleChangedDetails.previous_role.validator = MediaHubProjectRole_validator
 MediaHubProjectTeamRoleChangedDetails.new_role.validator = MediaHubProjectRole_validator
+MediaHubProjectTeamRoleChangedDetails.project.validator = bv.Nullable(
+    MediaHubProjectLogInfo_validator
+)
 MediaHubProjectTeamRoleChangedDetails._all_field_names_ = set(
     [
         "previous_role",
         "new_role",
+        "project",
     ]
 )
 MediaHubProjectTeamRoleChangedDetails._all_fields_ = [
     ("previous_role", MediaHubProjectTeamRoleChangedDetails.previous_role.validator),
     ("new_role", MediaHubProjectTeamRoleChangedDetails.new_role.validator),
+    ("project", MediaHubProjectTeamRoleChangedDetails.project.validator),
 ]
 
 MediaHubProjectTeamRoleChangedType.description.validator = bv.String()
@@ -109801,20 +110734,22 @@ MediaHubSharedLinkAudienceChangedDetails.previous_value.validator = (
     MediaHubSharedLinkAudience_validator
 )
 MediaHubSharedLinkAudienceChangedDetails.new_value.validator = MediaHubSharedLinkAudience_validator
+MediaHubSharedLinkAudienceChangedDetails.project.validator = bv.Nullable(
+    MediaHubProjectLogInfo_validator
+)
 MediaHubSharedLinkAudienceChangedDetails._all_field_names_ = set(
     [
         "target_type",
         "previous_value",
         "new_value",
+        "project",
     ]
 )
 MediaHubSharedLinkAudienceChangedDetails._all_fields_ = [
     ("target_type", MediaHubSharedLinkAudienceChangedDetails.target_type.validator),
-    (
-        "previous_value",
-        MediaHubSharedLinkAudienceChangedDetails.previous_value.validator,
-    ),
+    ("previous_value", MediaHubSharedLinkAudienceChangedDetails.previous_value.validator),
     ("new_value", MediaHubSharedLinkAudienceChangedDetails.new_value.validator),
+    ("project", MediaHubSharedLinkAudienceChangedDetails.project.validator),
 ]
 
 MediaHubSharedLinkAudienceChangedType.description.validator = bv.String()
@@ -109825,15 +110760,18 @@ MediaHubSharedLinkAudienceChangedType._all_fields_ = [
 
 MediaHubSharedLinkCreatedDetails.target_type.validator = MediaHubSharedLinkTargetType_validator
 MediaHubSharedLinkCreatedDetails.audience.validator = MediaHubSharedLinkAudience_validator
+MediaHubSharedLinkCreatedDetails.project.validator = bv.Nullable(MediaHubProjectLogInfo_validator)
 MediaHubSharedLinkCreatedDetails._all_field_names_ = set(
     [
         "target_type",
         "audience",
+        "project",
     ]
 )
 MediaHubSharedLinkCreatedDetails._all_fields_ = [
     ("target_type", MediaHubSharedLinkCreatedDetails.target_type.validator),
     ("audience", MediaHubSharedLinkCreatedDetails.audience.validator),
+    ("project", MediaHubSharedLinkCreatedDetails.project.validator),
 ]
 
 MediaHubSharedLinkCreatedType.description.validator = bv.String()
@@ -109864,23 +110802,22 @@ MediaHubSharedLinkDownloadSettingChangedDetails.previous_value.validator = (
 MediaHubSharedLinkDownloadSettingChangedDetails.new_value.validator = (
     MediaHubSharedLinkDownloadSetting_validator
 )
+MediaHubSharedLinkDownloadSettingChangedDetails.project.validator = bv.Nullable(
+    MediaHubProjectLogInfo_validator
+)
 MediaHubSharedLinkDownloadSettingChangedDetails._all_field_names_ = set(
     [
         "target_type",
         "previous_value",
         "new_value",
+        "project",
     ]
 )
 MediaHubSharedLinkDownloadSettingChangedDetails._all_fields_ = [
-    (
-        "target_type",
-        MediaHubSharedLinkDownloadSettingChangedDetails.target_type.validator,
-    ),
-    (
-        "previous_value",
-        MediaHubSharedLinkDownloadSettingChangedDetails.previous_value.validator,
-    ),
+    ("target_type", MediaHubSharedLinkDownloadSettingChangedDetails.target_type.validator),
+    ("previous_value", MediaHubSharedLinkDownloadSettingChangedDetails.previous_value.validator),
     ("new_value", MediaHubSharedLinkDownloadSettingChangedDetails.new_value.validator),
+    ("project", MediaHubSharedLinkDownloadSettingChangedDetails.project.validator),
 ]
 
 MediaHubSharedLinkDownloadSettingChangedType.description.validator = bv.String()
@@ -109890,9 +110827,16 @@ MediaHubSharedLinkDownloadSettingChangedType._all_fields_ = [
 ]
 
 MediaHubSharedLinkRevokedDetails.target_type.validator = MediaHubSharedLinkTargetType_validator
-MediaHubSharedLinkRevokedDetails._all_field_names_ = set(["target_type"])
+MediaHubSharedLinkRevokedDetails.project.validator = bv.Nullable(MediaHubProjectLogInfo_validator)
+MediaHubSharedLinkRevokedDetails._all_field_names_ = set(
+    [
+        "target_type",
+        "project",
+    ]
+)
 MediaHubSharedLinkRevokedDetails._all_fields_ = [
-    ("target_type", MediaHubSharedLinkRevokedDetails.target_type.validator)
+    ("target_type", MediaHubSharedLinkRevokedDetails.target_type.validator),
+    ("project", MediaHubSharedLinkRevokedDetails.project.validator),
 ]
 
 MediaHubSharedLinkRevokedType.description.validator = bv.String()
@@ -109922,10 +110866,7 @@ MemberAccessDetailsCreateReportFailedDetails.failure_reason.validator = (
 )
 MemberAccessDetailsCreateReportFailedDetails._all_field_names_ = set(["failure_reason"])
 MemberAccessDetailsCreateReportFailedDetails._all_fields_ = [
-    (
-        "failure_reason",
-        MemberAccessDetailsCreateReportFailedDetails.failure_reason.validator,
-    )
+    ("failure_reason", MemberAccessDetailsCreateReportFailedDetails.failure_reason.validator)
 ]
 
 MemberAccessDetailsCreateReportFailedType.description.validator = bv.String()
@@ -110116,6 +111057,15 @@ MemberDeleteProfilePhotoType._all_fields_ = [
     ("description", MemberDeleteProfilePhotoType.description.validator)
 ]
 
+MemberFolderContentsAccessedDetails._all_field_names_ = set([])
+MemberFolderContentsAccessedDetails._all_fields_ = []
+
+MemberFolderContentsAccessedType.description.validator = bv.String()
+MemberFolderContentsAccessedType._all_field_names_ = set(["description"])
+MemberFolderContentsAccessedType._all_fields_ = [
+    ("description", MemberFolderContentsAccessedType.description.validator)
+]
+
 MemberPermanentlyDeleteAccountContentsDetails._all_field_names_ = set([])
 MemberPermanentlyDeleteAccountContentsDetails._all_fields_ = []
 
@@ -110269,10 +111219,7 @@ MemberSpaceLimitsChangeCapsTypePolicyDetails._all_field_names_ = set(
     ]
 )
 MemberSpaceLimitsChangeCapsTypePolicyDetails._all_fields_ = [
-    (
-        "previous_value",
-        MemberSpaceLimitsChangeCapsTypePolicyDetails.previous_value.validator,
-    ),
+    ("previous_value", MemberSpaceLimitsChangeCapsTypePolicyDetails.previous_value.validator),
     ("new_value", MemberSpaceLimitsChangeCapsTypePolicyDetails.new_value.validator),
 ]
 
@@ -110291,10 +111238,7 @@ MemberSpaceLimitsChangeCustomQuotaDetails._all_field_names_ = set(
     ]
 )
 MemberSpaceLimitsChangeCustomQuotaDetails._all_fields_ = [
-    (
-        "previous_value",
-        MemberSpaceLimitsChangeCustomQuotaDetails.previous_value.validator,
-    ),
+    ("previous_value", MemberSpaceLimitsChangeCustomQuotaDetails.previous_value.validator),
     ("new_value", MemberSpaceLimitsChangeCustomQuotaDetails.new_value.validator),
 ]
 
@@ -110500,10 +111444,7 @@ MicrosoftOfficeAddinChangePolicyDetails._all_field_names_ = set(
 )
 MicrosoftOfficeAddinChangePolicyDetails._all_fields_ = [
     ("new_value", MicrosoftOfficeAddinChangePolicyDetails.new_value.validator),
-    (
-        "previous_value",
-        MicrosoftOfficeAddinChangePolicyDetails.previous_value.validator,
-    ),
+    ("previous_value", MicrosoftOfficeAddinChangePolicyDetails.previous_value.validator),
 ]
 
 MicrosoftOfficeAddinChangePolicyType.description.validator = bv.String()
@@ -111118,14 +112059,8 @@ PaperContentRemoveFromFolderDetails._all_field_names_ = set(
 )
 PaperContentRemoveFromFolderDetails._all_fields_ = [
     ("event_uuid", PaperContentRemoveFromFolderDetails.event_uuid.validator),
-    (
-        "target_asset_index",
-        PaperContentRemoveFromFolderDetails.target_asset_index.validator,
-    ),
-    (
-        "parent_asset_index",
-        PaperContentRemoveFromFolderDetails.parent_asset_index.validator,
-    ),
+    ("target_asset_index", PaperContentRemoveFromFolderDetails.target_asset_index.validator),
+    ("parent_asset_index", PaperContentRemoveFromFolderDetails.parent_asset_index.validator),
 ]
 
 PaperContentRemoveFromFolderType.description.validator = bv.String()
@@ -111284,14 +112219,8 @@ PaperDocChangeSharingPolicyDetails._all_field_names_ = set(
 )
 PaperDocChangeSharingPolicyDetails._all_fields_ = [
     ("event_uuid", PaperDocChangeSharingPolicyDetails.event_uuid.validator),
-    (
-        "public_sharing_policy",
-        PaperDocChangeSharingPolicyDetails.public_sharing_policy.validator,
-    ),
-    (
-        "team_sharing_policy",
-        PaperDocChangeSharingPolicyDetails.team_sharing_policy.validator,
-    ),
+    ("public_sharing_policy", PaperDocChangeSharingPolicyDetails.public_sharing_policy.validator),
+    ("team_sharing_policy", PaperDocChangeSharingPolicyDetails.team_sharing_policy.validator),
 ]
 
 PaperDocChangeSharingPolicyType.description.validator = bv.String()
@@ -111312,10 +112241,7 @@ PaperDocChangeSubscriptionDetails._all_field_names_ = set(
 )
 PaperDocChangeSubscriptionDetails._all_fields_ = [
     ("event_uuid", PaperDocChangeSubscriptionDetails.event_uuid.validator),
-    (
-        "new_subscription_level",
-        PaperDocChangeSubscriptionDetails.new_subscription_level.validator,
-    ),
+    ("new_subscription_level", PaperDocChangeSubscriptionDetails.new_subscription_level.validator),
     (
         "previous_subscription_level",
         PaperDocChangeSubscriptionDetails.previous_subscription_level.validator,
@@ -111906,10 +112832,7 @@ PasswordStrengthRequirementsChangePolicyDetails._all_field_names_ = set(
     ]
 )
 PasswordStrengthRequirementsChangePolicyDetails._all_fields_ = [
-    (
-        "previous_value",
-        PasswordStrengthRequirementsChangePolicyDetails.previous_value.validator,
-    ),
+    ("previous_value", PasswordStrengthRequirementsChangePolicyDetails.previous_value.validator),
     ("new_value", PasswordStrengthRequirementsChangePolicyDetails.new_value.validator),
 ]
 
@@ -112135,6 +113058,90 @@ ProductRemovedFromMemberType._all_fields_ = [
     ("description", ProductRemovedFromMemberType.description.validator)
 ]
 
+ProtectActionAddCollaboratorDetails.action_id.validator = bv.String()
+ProtectActionAddCollaboratorDetails._all_field_names_ = set(["action_id"])
+ProtectActionAddCollaboratorDetails._all_fields_ = [
+    ("action_id", ProtectActionAddCollaboratorDetails.action_id.validator)
+]
+
+ProtectActionAddCollaboratorType.description.validator = bv.String()
+ProtectActionAddCollaboratorType._all_field_names_ = set(["description"])
+ProtectActionAddCollaboratorType._all_fields_ = [
+    ("description", ProtectActionAddCollaboratorType.description.validator)
+]
+
+ProtectActionAddLinkDetails.action_id.validator = bv.String()
+ProtectActionAddLinkDetails._all_field_names_ = set(["action_id"])
+ProtectActionAddLinkDetails._all_fields_ = [
+    ("action_id", ProtectActionAddLinkDetails.action_id.validator)
+]
+
+ProtectActionAddLinkType.description.validator = bv.String()
+ProtectActionAddLinkType._all_field_names_ = set(["description"])
+ProtectActionAddLinkType._all_fields_ = [
+    ("description", ProtectActionAddLinkType.description.validator)
+]
+
+ProtectActionDeleteDetails.action_id.validator = bv.String()
+ProtectActionDeleteDetails._all_field_names_ = set(["action_id"])
+ProtectActionDeleteDetails._all_fields_ = [
+    ("action_id", ProtectActionDeleteDetails.action_id.validator)
+]
+
+ProtectActionDeleteType.description.validator = bv.String()
+ProtectActionDeleteType._all_field_names_ = set(["description"])
+ProtectActionDeleteType._all_fields_ = [
+    ("description", ProtectActionDeleteType.description.validator)
+]
+
+ProtectActionExportDetails.action_id.validator = bv.String()
+ProtectActionExportDetails._all_field_names_ = set(["action_id"])
+ProtectActionExportDetails._all_fields_ = [
+    ("action_id", ProtectActionExportDetails.action_id.validator)
+]
+
+ProtectActionExportType.description.validator = bv.String()
+ProtectActionExportType._all_field_names_ = set(["description"])
+ProtectActionExportType._all_fields_ = [
+    ("description", ProtectActionExportType.description.validator)
+]
+
+ProtectActionRemoveCollaboratorDetails.action_id.validator = bv.String()
+ProtectActionRemoveCollaboratorDetails._all_field_names_ = set(["action_id"])
+ProtectActionRemoveCollaboratorDetails._all_fields_ = [
+    ("action_id", ProtectActionRemoveCollaboratorDetails.action_id.validator)
+]
+
+ProtectActionRemoveCollaboratorType.description.validator = bv.String()
+ProtectActionRemoveCollaboratorType._all_field_names_ = set(["description"])
+ProtectActionRemoveCollaboratorType._all_fields_ = [
+    ("description", ProtectActionRemoveCollaboratorType.description.validator)
+]
+
+ProtectActionRemoveLinkDetails.action_id.validator = bv.String()
+ProtectActionRemoveLinkDetails._all_field_names_ = set(["action_id"])
+ProtectActionRemoveLinkDetails._all_fields_ = [
+    ("action_id", ProtectActionRemoveLinkDetails.action_id.validator)
+]
+
+ProtectActionRemoveLinkType.description.validator = bv.String()
+ProtectActionRemoveLinkType._all_field_names_ = set(["description"])
+ProtectActionRemoveLinkType._all_fields_ = [
+    ("description", ProtectActionRemoveLinkType.description.validator)
+]
+
+ProtectActionStopSharingDetails.action_id.validator = bv.String()
+ProtectActionStopSharingDetails._all_field_names_ = set(["action_id"])
+ProtectActionStopSharingDetails._all_fields_ = [
+    ("action_id", ProtectActionStopSharingDetails.action_id.validator)
+]
+
+ProtectActionStopSharingType.description.validator = bv.String()
+ProtectActionStopSharingType._all_field_names_ = set(["description"])
+ProtectActionStopSharingType._all_fields_ = [
+    ("description", ProtectActionStopSharingType.description.validator)
+]
+
 ProtectInternalDomainsChangedDetails.domains_added.validator = bv.Nullable(bv.List(bv.String()))
 ProtectInternalDomainsChangedDetails.domains_removed.validator = bv.Nullable(bv.List(bv.String()))
 ProtectInternalDomainsChangedDetails._all_field_names_ = set(
@@ -112187,10 +113194,7 @@ RansomwareAlertCreateReportFailedDetails.failure_reason.validator = (
 )
 RansomwareAlertCreateReportFailedDetails._all_field_names_ = set(["failure_reason"])
 RansomwareAlertCreateReportFailedDetails._all_fields_ = [
-    (
-        "failure_reason",
-        RansomwareAlertCreateReportFailedDetails.failure_reason.validator,
-    )
+    ("failure_reason", RansomwareAlertCreateReportFailedDetails.failure_reason.validator)
 ]
 
 RansomwareAlertCreateReportFailedType.description.validator = bv.String()
@@ -112258,10 +113262,7 @@ RecipientsConfiguration._all_field_names_ = set(
     ]
 )
 RecipientsConfiguration._all_fields_ = [
-    (
-        "recipient_setting_type",
-        RecipientsConfiguration.recipient_setting_type.validator,
-    ),
+    ("recipient_setting_type", RecipientsConfiguration.recipient_setting_type.validator),
     ("emails", RecipientsConfiguration.emails.validator),
     ("groups", RecipientsConfiguration.groups.validator),
 ]
@@ -112531,10 +113532,7 @@ ResellerSupportSessionStartType._all_fields_ = [
 RewindFolderDetails.rewind_folder_target_ts_ms.validator = common.DropboxTimestamp_validator
 RewindFolderDetails._all_field_names_ = set(["rewind_folder_target_ts_ms"])
 RewindFolderDetails._all_fields_ = [
-    (
-        "rewind_folder_target_ts_ms",
-        RewindFolderDetails.rewind_folder_target_ts_ms.validator,
-    )
+    ("rewind_folder_target_ts_ms", RewindFolderDetails.rewind_folder_target_ts_ms.validator)
 ]
 
 RewindFolderType.description.validator = bv.String()
@@ -112732,10 +113730,7 @@ SendAndTrackLinkCreatedType._all_fields_ = [
 SendAndTrackLinkDeletedDetails.shared_content_link.validator = bv.String()
 SendAndTrackLinkDeletedDetails._all_field_names_ = set(["shared_content_link"])
 SendAndTrackLinkDeletedDetails._all_fields_ = [
-    (
-        "shared_content_link",
-        SendAndTrackLinkDeletedDetails.shared_content_link.validator,
-    )
+    ("shared_content_link", SendAndTrackLinkDeletedDetails.shared_content_link.validator)
 ]
 
 SendAndTrackLinkDeletedType.description.validator = bv.String()
@@ -112857,10 +113852,7 @@ SendExternalSharingPolicyChangedDetails._all_field_names_ = set(
 )
 SendExternalSharingPolicyChangedDetails._all_fields_ = [
     ("new_value", SendExternalSharingPolicyChangedDetails.new_value.validator),
-    (
-        "previous_value",
-        SendExternalSharingPolicyChangedDetails.previous_value.validator,
-    ),
+    ("previous_value", SendExternalSharingPolicyChangedDetails.previous_value.validator),
 ]
 
 SendExternalSharingPolicyChangedType.description.validator = bv.String()
@@ -112935,18 +113927,12 @@ SfAllowNonMembersToViewSharedLinksDetails._all_field_names_ = set(
     ]
 )
 SfAllowNonMembersToViewSharedLinksDetails._all_fields_ = [
-    (
-        "target_asset_index",
-        SfAllowNonMembersToViewSharedLinksDetails.target_asset_index.validator,
-    ),
+    ("target_asset_index", SfAllowNonMembersToViewSharedLinksDetails.target_asset_index.validator),
     (
         "original_folder_name",
         SfAllowNonMembersToViewSharedLinksDetails.original_folder_name.validator,
     ),
-    (
-        "shared_folder_type",
-        SfAllowNonMembersToViewSharedLinksDetails.shared_folder_type.validator,
-    ),
+    ("shared_folder_type", SfAllowNonMembersToViewSharedLinksDetails.shared_folder_type.validator),
 ]
 
 SfAllowNonMembersToViewSharedLinksType.description.validator = bv.String()
@@ -112969,14 +113955,8 @@ SfExternalInviteWarnDetails._all_field_names_ = set(
 )
 SfExternalInviteWarnDetails._all_fields_ = [
     ("target_asset_index", SfExternalInviteWarnDetails.target_asset_index.validator),
-    (
-        "original_folder_name",
-        SfExternalInviteWarnDetails.original_folder_name.validator,
-    ),
-    (
-        "new_sharing_permission",
-        SfExternalInviteWarnDetails.new_sharing_permission.validator,
-    ),
+    ("original_folder_name", SfExternalInviteWarnDetails.original_folder_name.validator),
+    ("new_sharing_permission", SfExternalInviteWarnDetails.new_sharing_permission.validator),
     (
         "previous_sharing_permission",
         SfExternalInviteWarnDetails.previous_sharing_permission.validator,
@@ -113003,18 +113983,12 @@ SfFbInviteChangeRoleDetails._all_field_names_ = set(
 )
 SfFbInviteChangeRoleDetails._all_fields_ = [
     ("target_asset_index", SfFbInviteChangeRoleDetails.target_asset_index.validator),
-    (
-        "original_folder_name",
-        SfFbInviteChangeRoleDetails.original_folder_name.validator,
-    ),
+    ("original_folder_name", SfFbInviteChangeRoleDetails.original_folder_name.validator),
     (
         "previous_sharing_permission",
         SfFbInviteChangeRoleDetails.previous_sharing_permission.validator,
     ),
-    (
-        "new_sharing_permission",
-        SfFbInviteChangeRoleDetails.new_sharing_permission.validator,
-    ),
+    ("new_sharing_permission", SfFbInviteChangeRoleDetails.new_sharing_permission.validator),
 ]
 
 SfFbInviteChangeRoleType.description.validator = bv.String()
@@ -113101,14 +114075,8 @@ SfTeamInviteChangeRoleDetails._all_field_names_ = set(
 )
 SfTeamInviteChangeRoleDetails._all_fields_ = [
     ("target_asset_index", SfTeamInviteChangeRoleDetails.target_asset_index.validator),
-    (
-        "original_folder_name",
-        SfTeamInviteChangeRoleDetails.original_folder_name.validator,
-    ),
-    (
-        "new_sharing_permission",
-        SfTeamInviteChangeRoleDetails.new_sharing_permission.validator,
-    ),
+    ("original_folder_name", SfTeamInviteChangeRoleDetails.original_folder_name.validator),
+    ("new_sharing_permission", SfTeamInviteChangeRoleDetails.new_sharing_permission.validator),
     (
         "previous_sharing_permission",
         SfTeamInviteChangeRoleDetails.previous_sharing_permission.validator,
@@ -113168,10 +114136,7 @@ SfTeamJoinFromOobLinkDetails._all_field_names_ = set(
 )
 SfTeamJoinFromOobLinkDetails._all_fields_ = [
     ("target_asset_index", SfTeamJoinFromOobLinkDetails.target_asset_index.validator),
-    (
-        "original_folder_name",
-        SfTeamJoinFromOobLinkDetails.original_folder_name.validator,
-    ),
+    ("original_folder_name", SfTeamJoinFromOobLinkDetails.original_folder_name.validator),
     ("token_key", SfTeamJoinFromOobLinkDetails.token_key.validator),
     ("sharing_permission", SfTeamJoinFromOobLinkDetails.sharing_permission.validator),
 ]
@@ -113277,10 +114242,7 @@ SharedContentChangeDownloadsPolicyDetails._all_field_names_ = set(
 )
 SharedContentChangeDownloadsPolicyDetails._all_fields_ = [
     ("new_value", SharedContentChangeDownloadsPolicyDetails.new_value.validator),
-    (
-        "previous_value",
-        SharedContentChangeDownloadsPolicyDetails.previous_value.validator,
-    ),
+    ("previous_value", SharedContentChangeDownloadsPolicyDetails.previous_value.validator),
 ]
 
 SharedContentChangeDownloadsPolicyType.description.validator = bv.String()
@@ -113306,10 +114268,7 @@ SharedContentChangeInviteeRoleDetails._all_fields_ = [
         "previous_access_level",
         SharedContentChangeInviteeRoleDetails.previous_access_level.validator,
     ),
-    (
-        "new_access_level",
-        SharedContentChangeInviteeRoleDetails.new_access_level.validator,
-    ),
+    ("new_access_level", SharedContentChangeInviteeRoleDetails.new_access_level.validator),
     ("invitee", SharedContentChangeInviteeRoleDetails.invitee.validator),
 ]
 
@@ -113383,14 +114342,8 @@ SharedContentChangeMemberRoleDetails._all_field_names_ = set(
     ]
 )
 SharedContentChangeMemberRoleDetails._all_fields_ = [
-    (
-        "previous_access_level",
-        SharedContentChangeMemberRoleDetails.previous_access_level.validator,
-    ),
-    (
-        "new_access_level",
-        SharedContentChangeMemberRoleDetails.new_access_level.validator,
-    ),
+    ("previous_access_level", SharedContentChangeMemberRoleDetails.previous_access_level.validator),
+    ("new_access_level", SharedContentChangeMemberRoleDetails.new_access_level.validator),
 ]
 
 SharedContentChangeMemberRoleType.description.validator = bv.String()
@@ -113411,10 +114364,7 @@ SharedContentChangeViewerInfoPolicyDetails._all_field_names_ = set(
 )
 SharedContentChangeViewerInfoPolicyDetails._all_fields_ = [
     ("new_value", SharedContentChangeViewerInfoPolicyDetails.new_value.validator),
-    (
-        "previous_value",
-        SharedContentChangeViewerInfoPolicyDetails.previous_value.validator,
-    ),
+    ("previous_value", SharedContentChangeViewerInfoPolicyDetails.previous_value.validator),
 ]
 
 SharedContentChangeViewerInfoPolicyType.description.validator = bv.String()
@@ -113426,10 +114376,7 @@ SharedContentChangeViewerInfoPolicyType._all_fields_ = [
 SharedContentClaimInvitationDetails.shared_content_link.validator = bv.Nullable(bv.String())
 SharedContentClaimInvitationDetails._all_field_names_ = set(["shared_content_link"])
 SharedContentClaimInvitationDetails._all_fields_ = [
-    (
-        "shared_content_link",
-        SharedContentClaimInvitationDetails.shared_content_link.validator,
-    )
+    ("shared_content_link", SharedContentClaimInvitationDetails.shared_content_link.validator)
 ]
 
 SharedContentClaimInvitationType.description.validator = bv.String()
@@ -113453,10 +114400,7 @@ SharedContentCopyDetails._all_field_names_ = set(
 SharedContentCopyDetails._all_fields_ = [
     ("shared_content_link", SharedContentCopyDetails.shared_content_link.validator),
     ("shared_content_owner", SharedContentCopyDetails.shared_content_owner.validator),
-    (
-        "shared_content_access_level",
-        SharedContentCopyDetails.shared_content_access_level.validator,
-    ),
+    ("shared_content_access_level", SharedContentCopyDetails.shared_content_access_level.validator),
     ("destination_path", SharedContentCopyDetails.destination_path.validator),
 ]
 
@@ -113476,10 +114420,7 @@ SharedContentDownloadDetails._all_field_names_ = set(
 )
 SharedContentDownloadDetails._all_fields_ = [
     ("shared_content_link", SharedContentDownloadDetails.shared_content_link.validator),
-    (
-        "shared_content_owner",
-        SharedContentDownloadDetails.shared_content_owner.validator,
-    ),
+    ("shared_content_owner", SharedContentDownloadDetails.shared_content_owner.validator),
     (
         "shared_content_access_level",
         SharedContentDownloadDetails.shared_content_access_level.validator,
@@ -113556,10 +114497,7 @@ SharedContentRemoveMemberType._all_fields_ = [
 SharedContentRequestAccessDetails.shared_content_link.validator = bv.Nullable(bv.String())
 SharedContentRequestAccessDetails._all_field_names_ = set(["shared_content_link"])
 SharedContentRequestAccessDetails._all_fields_ = [
-    (
-        "shared_content_link",
-        SharedContentRequestAccessDetails.shared_content_link.validator,
-    )
+    ("shared_content_link", SharedContentRequestAccessDetails.shared_content_link.validator)
 ]
 
 SharedContentRequestAccessType.description.validator = bv.String()
@@ -113631,10 +114569,7 @@ SharedContentViewDetails._all_field_names_ = set(
 SharedContentViewDetails._all_fields_ = [
     ("shared_content_link", SharedContentViewDetails.shared_content_link.validator),
     ("shared_content_owner", SharedContentViewDetails.shared_content_owner.validator),
-    (
-        "shared_content_access_level",
-        SharedContentViewDetails.shared_content_access_level.validator,
-    ),
+    ("shared_content_access_level", SharedContentViewDetails.shared_content_access_level.validator),
 ]
 
 SharedContentViewType.description.validator = bv.String()
@@ -113675,23 +114610,14 @@ SharedFolderChangeMembersInheritancePolicyDetails._all_field_names_ = set(
     ]
 )
 SharedFolderChangeMembersInheritancePolicyDetails._all_fields_ = [
-    (
-        "new_value",
-        SharedFolderChangeMembersInheritancePolicyDetails.new_value.validator,
-    ),
-    (
-        "previous_value",
-        SharedFolderChangeMembersInheritancePolicyDetails.previous_value.validator,
-    ),
+    ("new_value", SharedFolderChangeMembersInheritancePolicyDetails.new_value.validator),
+    ("previous_value", SharedFolderChangeMembersInheritancePolicyDetails.previous_value.validator),
 ]
 
 SharedFolderChangeMembersInheritancePolicyType.description.validator = bv.String()
 SharedFolderChangeMembersInheritancePolicyType._all_field_names_ = set(["description"])
 SharedFolderChangeMembersInheritancePolicyType._all_fields_ = [
-    (
-        "description",
-        SharedFolderChangeMembersInheritancePolicyType.description.validator,
-    )
+    ("description", SharedFolderChangeMembersInheritancePolicyType.description.validator)
 ]
 
 SharedFolderChangeMembersManagementPolicyDetails.new_value.validator = (
@@ -113708,10 +114634,7 @@ SharedFolderChangeMembersManagementPolicyDetails._all_field_names_ = set(
 )
 SharedFolderChangeMembersManagementPolicyDetails._all_fields_ = [
     ("new_value", SharedFolderChangeMembersManagementPolicyDetails.new_value.validator),
-    (
-        "previous_value",
-        SharedFolderChangeMembersManagementPolicyDetails.previous_value.validator,
-    ),
+    ("previous_value", SharedFolderChangeMembersManagementPolicyDetails.previous_value.validator),
 ]
 
 SharedFolderChangeMembersManagementPolicyType.description.validator = bv.String()
@@ -113820,10 +114743,7 @@ SharedFolderTransferOwnershipDetails._all_field_names_ = set(
     ]
 )
 SharedFolderTransferOwnershipDetails._all_fields_ = [
-    (
-        "previous_owner_email",
-        SharedFolderTransferOwnershipDetails.previous_owner_email.validator,
-    ),
+    ("previous_owner_email", SharedFolderTransferOwnershipDetails.previous_owner_email.validator),
     ("new_owner_email", SharedFolderTransferOwnershipDetails.new_owner_email.validator),
 ]
 
@@ -113891,10 +114811,7 @@ SharedLinkAddExpiryDetails._all_field_names_ = set(
 )
 SharedLinkAddExpiryDetails._all_fields_ = [
     ("new_value", SharedLinkAddExpiryDetails.new_value.validator),
-    (
-        "is_consolidation_action",
-        SharedLinkAddExpiryDetails.is_consolidation_action.validator,
-    ),
+    ("is_consolidation_action", SharedLinkAddExpiryDetails.is_consolidation_action.validator),
 ]
 
 SharedLinkAddExpiryType.description.validator = bv.String()
@@ -113918,10 +114835,7 @@ SharedLinkChangeExpiryDetails._all_field_names_ = set(
 SharedLinkChangeExpiryDetails._all_fields_ = [
     ("new_value", SharedLinkChangeExpiryDetails.new_value.validator),
     ("previous_value", SharedLinkChangeExpiryDetails.previous_value.validator),
-    (
-        "is_consolidation_action",
-        SharedLinkChangeExpiryDetails.is_consolidation_action.validator,
-    ),
+    ("is_consolidation_action", SharedLinkChangeExpiryDetails.is_consolidation_action.validator),
 ]
 
 SharedLinkChangeExpiryType.description.validator = bv.String()
@@ -113972,10 +114886,7 @@ SharedLinkCreateDetails.shared_link_access_level.validator = bv.Nullable(
 )
 SharedLinkCreateDetails._all_field_names_ = set(["shared_link_access_level"])
 SharedLinkCreateDetails._all_fields_ = [
-    (
-        "shared_link_access_level",
-        SharedLinkCreateDetails.shared_link_access_level.validator,
-    )
+    ("shared_link_access_level", SharedLinkCreateDetails.shared_link_access_level.validator)
 ]
 
 SharedLinkCreateType.description.validator = bv.String()
@@ -114012,10 +114923,7 @@ SharedLinkDefaultPermissionsPolicyChangedDetails._all_field_names_ = set(
 )
 SharedLinkDefaultPermissionsPolicyChangedDetails._all_fields_ = [
     ("new_value", SharedLinkDefaultPermissionsPolicyChangedDetails.new_value.validator),
-    (
-        "previous_value",
-        SharedLinkDefaultPermissionsPolicyChangedDetails.previous_value.validator,
-    ),
+    ("previous_value", SharedLinkDefaultPermissionsPolicyChangedDetails.previous_value.validator),
 ]
 
 SharedLinkDefaultPermissionsPolicyChangedType.description.validator = bv.String()
@@ -114088,10 +114996,7 @@ SharedLinkSettingsAddExpirationDetails._all_fields_ = [
         "shared_content_access_level",
         SharedLinkSettingsAddExpirationDetails.shared_content_access_level.validator,
     ),
-    (
-        "shared_content_link",
-        SharedLinkSettingsAddExpirationDetails.shared_content_link.validator,
-    ),
+    ("shared_content_link", SharedLinkSettingsAddExpirationDetails.shared_content_link.validator),
     ("new_value", SharedLinkSettingsAddExpirationDetails.new_value.validator),
 ]
 
@@ -114116,10 +115021,7 @@ SharedLinkSettingsAddPasswordDetails._all_fields_ = [
         "shared_content_access_level",
         SharedLinkSettingsAddPasswordDetails.shared_content_access_level.validator,
     ),
-    (
-        "shared_content_link",
-        SharedLinkSettingsAddPasswordDetails.shared_content_link.validator,
-    ),
+    ("shared_content_link", SharedLinkSettingsAddPasswordDetails.shared_content_link.validator),
 ]
 
 SharedLinkSettingsAddPasswordType.description.validator = bv.String()
@@ -114207,15 +115109,9 @@ SharedLinkSettingsChangeAudienceDetails._all_fields_ = [
         "shared_content_access_level",
         SharedLinkSettingsChangeAudienceDetails.shared_content_access_level.validator,
     ),
-    (
-        "shared_content_link",
-        SharedLinkSettingsChangeAudienceDetails.shared_content_link.validator,
-    ),
+    ("shared_content_link", SharedLinkSettingsChangeAudienceDetails.shared_content_link.validator),
     ("new_value", SharedLinkSettingsChangeAudienceDetails.new_value.validator),
-    (
-        "previous_value",
-        SharedLinkSettingsChangeAudienceDetails.previous_value.validator,
-    ),
+    ("previous_value", SharedLinkSettingsChangeAudienceDetails.previous_value.validator),
 ]
 
 SharedLinkSettingsChangeAudienceType.description.validator = bv.String()
@@ -114252,10 +115148,7 @@ SharedLinkSettingsChangeExpirationDetails._all_fields_ = [
         SharedLinkSettingsChangeExpirationDetails.shared_content_link.validator,
     ),
     ("new_value", SharedLinkSettingsChangeExpirationDetails.new_value.validator),
-    (
-        "previous_value",
-        SharedLinkSettingsChangeExpirationDetails.previous_value.validator,
-    ),
+    ("previous_value", SharedLinkSettingsChangeExpirationDetails.previous_value.validator),
 ]
 
 SharedLinkSettingsChangeExpirationType.description.validator = bv.String()
@@ -114279,10 +115172,7 @@ SharedLinkSettingsChangePasswordDetails._all_fields_ = [
         "shared_content_access_level",
         SharedLinkSettingsChangePasswordDetails.shared_content_access_level.validator,
     ),
-    (
-        "shared_content_link",
-        SharedLinkSettingsChangePasswordDetails.shared_content_link.validator,
-    ),
+    ("shared_content_link", SharedLinkSettingsChangePasswordDetails.shared_content_link.validator),
 ]
 
 SharedLinkSettingsChangePasswordType.description.validator = bv.String()
@@ -114314,10 +115204,7 @@ SharedLinkSettingsRemoveExpirationDetails._all_fields_ = [
         "shared_content_link",
         SharedLinkSettingsRemoveExpirationDetails.shared_content_link.validator,
     ),
-    (
-        "previous_value",
-        SharedLinkSettingsRemoveExpirationDetails.previous_value.validator,
-    ),
+    ("previous_value", SharedLinkSettingsRemoveExpirationDetails.previous_value.validator),
 ]
 
 SharedLinkSettingsRemoveExpirationType.description.validator = bv.String()
@@ -114341,10 +115228,7 @@ SharedLinkSettingsRemovePasswordDetails._all_fields_ = [
         "shared_content_access_level",
         SharedLinkSettingsRemovePasswordDetails.shared_content_access_level.validator,
     ),
-    (
-        "shared_content_link",
-        SharedLinkSettingsRemovePasswordDetails.shared_content_link.validator,
-    ),
+    ("shared_content_link", SharedLinkSettingsRemovePasswordDetails.shared_content_link.validator),
 ]
 
 SharedLinkSettingsRemovePasswordType.description.validator = bv.String()
@@ -114442,10 +115326,7 @@ SharingChangeLinkAllowChangeExpirationPolicyDetails._all_field_names_ = set(
     ]
 )
 SharingChangeLinkAllowChangeExpirationPolicyDetails._all_fields_ = [
-    (
-        "new_value",
-        SharingChangeLinkAllowChangeExpirationPolicyDetails.new_value.validator,
-    ),
+    ("new_value", SharingChangeLinkAllowChangeExpirationPolicyDetails.new_value.validator),
     (
         "previous_value",
         SharingChangeLinkAllowChangeExpirationPolicyDetails.previous_value.validator,
@@ -114455,10 +115336,7 @@ SharingChangeLinkAllowChangeExpirationPolicyDetails._all_fields_ = [
 SharingChangeLinkAllowChangeExpirationPolicyType.description.validator = bv.String()
 SharingChangeLinkAllowChangeExpirationPolicyType._all_field_names_ = set(["description"])
 SharingChangeLinkAllowChangeExpirationPolicyType._all_fields_ = [
-    (
-        "description",
-        SharingChangeLinkAllowChangeExpirationPolicyType.description.validator,
-    )
+    ("description", SharingChangeLinkAllowChangeExpirationPolicyType.description.validator)
 ]
 
 SharingChangeLinkDefaultExpirationPolicyDetails.new_value.validator = (
@@ -114475,10 +115353,7 @@ SharingChangeLinkDefaultExpirationPolicyDetails._all_field_names_ = set(
 )
 SharingChangeLinkDefaultExpirationPolicyDetails._all_fields_ = [
     ("new_value", SharingChangeLinkDefaultExpirationPolicyDetails.new_value.validator),
-    (
-        "previous_value",
-        SharingChangeLinkDefaultExpirationPolicyDetails.previous_value.validator,
-    ),
+    ("previous_value", SharingChangeLinkDefaultExpirationPolicyDetails.previous_value.validator),
 ]
 
 SharingChangeLinkDefaultExpirationPolicyType.description.validator = bv.String()
@@ -114501,10 +115376,7 @@ SharingChangeLinkEnforcePasswordPolicyDetails._all_field_names_ = set(
 )
 SharingChangeLinkEnforcePasswordPolicyDetails._all_fields_ = [
     ("new_value", SharingChangeLinkEnforcePasswordPolicyDetails.new_value.validator),
-    (
-        "previous_value",
-        SharingChangeLinkEnforcePasswordPolicyDetails.previous_value.validator,
-    ),
+    ("previous_value", SharingChangeLinkEnforcePasswordPolicyDetails.previous_value.validator),
 ]
 
 SharingChangeLinkEnforcePasswordPolicyType.description.validator = bv.String()
@@ -114716,10 +115588,7 @@ ShowcaseChangeExternalSharingPolicyDetails._all_field_names_ = set(
 )
 ShowcaseChangeExternalSharingPolicyDetails._all_fields_ = [
     ("new_value", ShowcaseChangeExternalSharingPolicyDetails.new_value.validator),
-    (
-        "previous_value",
-        ShowcaseChangeExternalSharingPolicyDetails.previous_value.validator,
-    ),
+    ("previous_value", ShowcaseChangeExternalSharingPolicyDetails.previous_value.validator),
 ]
 
 ShowcaseChangeExternalSharingPolicyType.description.validator = bv.String()
@@ -115074,10 +115943,7 @@ SignExternalSharingPolicyChangedDetails._all_field_names_ = set(
 )
 SignExternalSharingPolicyChangedDetails._all_fields_ = [
     ("new_value", SignExternalSharingPolicyChangedDetails.new_value.validator),
-    (
-        "previous_value",
-        SignExternalSharingPolicyChangedDetails.previous_value.validator,
-    ),
+    ("previous_value", SignExternalSharingPolicyChangedDetails.previous_value.validator),
 ]
 
 SignExternalSharingPolicyChangedType.description.validator = bv.String()
@@ -115251,10 +116117,7 @@ SignTemplateCreationPermissionChangedDetails._all_field_names_ = set(
 )
 SignTemplateCreationPermissionChangedDetails._all_fields_ = [
     ("new_value", SignTemplateCreationPermissionChangedDetails.new_value.validator),
-    (
-        "previous_value",
-        SignTemplateCreationPermissionChangedDetails.previous_value.validator,
-    ),
+    ("previous_value", SignTemplateCreationPermissionChangedDetails.previous_value.validator),
 ]
 
 SignTemplateCreationPermissionChangedType.description.validator = bv.String()
@@ -115466,10 +116329,7 @@ SsoChangeCertDetails._all_field_names_ = set(
     ]
 )
 SsoChangeCertDetails._all_fields_ = [
-    (
-        "previous_certificate_details",
-        SsoChangeCertDetails.previous_certificate_details.validator,
-    ),
+    ("previous_certificate_details", SsoChangeCertDetails.previous_certificate_details.validator),
     ("new_certificate_details", SsoChangeCertDetails.new_certificate_details.validator),
 ]
 
@@ -115614,10 +116474,7 @@ StackCrossTeamAccessPolicyChangedDetails._all_field_names_ = set(
 )
 StackCrossTeamAccessPolicyChangedDetails._all_fields_ = [
     ("new_value", StackCrossTeamAccessPolicyChangedDetails.new_value.validator),
-    (
-        "previous_value",
-        StackCrossTeamAccessPolicyChangedDetails.previous_value.validator,
-    ),
+    ("previous_value", StackCrossTeamAccessPolicyChangedDetails.previous_value.validator),
 ]
 
 StackCrossTeamAccessPolicyChangedType.description.validator = bv.String()
@@ -115713,10 +116570,7 @@ TeamDetails._all_fields_ = [("team", TeamDetails.team.validator)]
 TeamEncryptionKeyActivateKeyDetails.key_management_type.validator = bv.String()
 TeamEncryptionKeyActivateKeyDetails._all_field_names_ = set(["key_management_type"])
 TeamEncryptionKeyActivateKeyDetails._all_fields_ = [
-    (
-        "key_management_type",
-        TeamEncryptionKeyActivateKeyDetails.key_management_type.validator,
-    )
+    ("key_management_type", TeamEncryptionKeyActivateKeyDetails.key_management_type.validator)
 ]
 
 TeamEncryptionKeyActivateKeyType.description.validator = bv.String()
@@ -115980,14 +116834,8 @@ TeamFolderSpaceLimitsChangeCapsTypeDetails._all_field_names_ = set(
     ]
 )
 TeamFolderSpaceLimitsChangeCapsTypeDetails._all_fields_ = [
-    (
-        "previous_caps_type",
-        TeamFolderSpaceLimitsChangeCapsTypeDetails.previous_caps_type.validator,
-    ),
-    (
-        "new_caps_type",
-        TeamFolderSpaceLimitsChangeCapsTypeDetails.new_caps_type.validator,
-    ),
+    ("previous_caps_type", TeamFolderSpaceLimitsChangeCapsTypeDetails.previous_caps_type.validator),
+    ("new_caps_type", TeamFolderSpaceLimitsChangeCapsTypeDetails.new_caps_type.validator),
 ]
 
 TeamFolderSpaceLimitsChangeCapsTypeType.description.validator = bv.String()
@@ -116009,10 +116857,7 @@ TeamFolderSpaceLimitsChangeLimitDetails._all_fields_ = [
         "previous_limit_bytes",
         TeamFolderSpaceLimitsChangeLimitDetails.previous_limit_bytes.validator,
     ),
-    (
-        "new_limit_bytes",
-        TeamFolderSpaceLimitsChangeLimitDetails.new_limit_bytes.validator,
-    ),
+    ("new_limit_bytes", TeamFolderSpaceLimitsChangeLimitDetails.new_limit_bytes.validator),
 ]
 
 TeamFolderSpaceLimitsChangeLimitType.description.validator = bv.String()
@@ -116038,19 +116883,13 @@ TeamFolderSpaceLimitsChangeNotificationTargetDetails._all_fields_ = [
         "previous_target",
         TeamFolderSpaceLimitsChangeNotificationTargetDetails.previous_target.validator,
     ),
-    (
-        "new_target",
-        TeamFolderSpaceLimitsChangeNotificationTargetDetails.new_target.validator,
-    ),
+    ("new_target", TeamFolderSpaceLimitsChangeNotificationTargetDetails.new_target.validator),
 ]
 
 TeamFolderSpaceLimitsChangeNotificationTargetType.description.validator = bv.String()
 TeamFolderSpaceLimitsChangeNotificationTargetType._all_field_names_ = set(["description"])
 TeamFolderSpaceLimitsChangeNotificationTargetType._all_fields_ = [
-    (
-        "description",
-        TeamFolderSpaceLimitsChangeNotificationTargetType.description.validator,
-    )
+    ("description", TeamFolderSpaceLimitsChangeNotificationTargetType.description.validator)
 ]
 
 TeamFoldersCreateReportDetails._all_field_names_ = set([])
@@ -116086,10 +116925,7 @@ TeamInviteDetails._all_field_names_ = set(
 )
 TeamInviteDetails._all_fields_ = [
     ("invite_method", TeamInviteDetails.invite_method.validator),
-    (
-        "additional_license_purchase",
-        TeamInviteDetails.additional_license_purchase.validator,
-    ),
+    ("additional_license_purchase", TeamInviteDetails.additional_license_purchase.validator),
 ]
 
 TeamLinkedAppLogInfo._field_names_ = set([])
@@ -116153,10 +116989,7 @@ TeamMemberStorageRequestPolicyChangedDetails._all_field_names_ = set(
 )
 TeamMemberStorageRequestPolicyChangedDetails._all_fields_ = [
     ("new_value", TeamMemberStorageRequestPolicyChangedDetails.new_value.validator),
-    (
-        "previous_value",
-        TeamMemberStorageRequestPolicyChangedDetails.previous_value.validator,
-    ),
+    ("previous_value", TeamMemberStorageRequestPolicyChangedDetails.previous_value.validator),
 ]
 
 TeamMemberStorageRequestPolicyChangedType.description.validator = bv.String()
@@ -116194,10 +117027,7 @@ TeamMergeRequestAcceptedDetails.request_accepted_details.validator = (
 )
 TeamMergeRequestAcceptedDetails._all_field_names_ = set(["request_accepted_details"])
 TeamMergeRequestAcceptedDetails._all_fields_ = [
-    (
-        "request_accepted_details",
-        TeamMergeRequestAcceptedDetails.request_accepted_details.validator,
-    )
+    ("request_accepted_details", TeamMergeRequestAcceptedDetails.request_accepted_details.validator)
 ]
 
 TeamMergeRequestAcceptedExtraDetails._primary_team_validator = (
@@ -116224,20 +117054,14 @@ TeamMergeRequestAcceptedShownToPrimaryTeamDetails._all_field_names_ = set(
     ]
 )
 TeamMergeRequestAcceptedShownToPrimaryTeamDetails._all_fields_ = [
-    (
-        "secondary_team",
-        TeamMergeRequestAcceptedShownToPrimaryTeamDetails.secondary_team.validator,
-    ),
+    ("secondary_team", TeamMergeRequestAcceptedShownToPrimaryTeamDetails.secondary_team.validator),
     ("sent_by", TeamMergeRequestAcceptedShownToPrimaryTeamDetails.sent_by.validator),
 ]
 
 TeamMergeRequestAcceptedShownToPrimaryTeamType.description.validator = bv.String()
 TeamMergeRequestAcceptedShownToPrimaryTeamType._all_field_names_ = set(["description"])
 TeamMergeRequestAcceptedShownToPrimaryTeamType._all_fields_ = [
-    (
-        "description",
-        TeamMergeRequestAcceptedShownToPrimaryTeamType.description.validator,
-    )
+    ("description", TeamMergeRequestAcceptedShownToPrimaryTeamType.description.validator)
 ]
 
 TeamMergeRequestAcceptedShownToSecondaryTeamDetails.primary_team.validator = bv.String()
@@ -116249,20 +117073,14 @@ TeamMergeRequestAcceptedShownToSecondaryTeamDetails._all_field_names_ = set(
     ]
 )
 TeamMergeRequestAcceptedShownToSecondaryTeamDetails._all_fields_ = [
-    (
-        "primary_team",
-        TeamMergeRequestAcceptedShownToSecondaryTeamDetails.primary_team.validator,
-    ),
+    ("primary_team", TeamMergeRequestAcceptedShownToSecondaryTeamDetails.primary_team.validator),
     ("sent_by", TeamMergeRequestAcceptedShownToSecondaryTeamDetails.sent_by.validator),
 ]
 
 TeamMergeRequestAcceptedShownToSecondaryTeamType.description.validator = bv.String()
 TeamMergeRequestAcceptedShownToSecondaryTeamType._all_field_names_ = set(["description"])
 TeamMergeRequestAcceptedShownToSecondaryTeamType._all_fields_ = [
-    (
-        "description",
-        TeamMergeRequestAcceptedShownToSecondaryTeamType.description.validator,
-    )
+    ("description", TeamMergeRequestAcceptedShownToSecondaryTeamType.description.validator)
 ]
 
 TeamMergeRequestAcceptedType.description.validator = bv.String()
@@ -116288,10 +117106,7 @@ TeamMergeRequestCanceledDetails.request_canceled_details.validator = (
 )
 TeamMergeRequestCanceledDetails._all_field_names_ = set(["request_canceled_details"])
 TeamMergeRequestCanceledDetails._all_fields_ = [
-    (
-        "request_canceled_details",
-        TeamMergeRequestCanceledDetails.request_canceled_details.validator,
-    )
+    ("request_canceled_details", TeamMergeRequestCanceledDetails.request_canceled_details.validator)
 ]
 
 TeamMergeRequestCanceledExtraDetails._primary_team_validator = (
@@ -116318,20 +117133,14 @@ TeamMergeRequestCanceledShownToPrimaryTeamDetails._all_field_names_ = set(
     ]
 )
 TeamMergeRequestCanceledShownToPrimaryTeamDetails._all_fields_ = [
-    (
-        "secondary_team",
-        TeamMergeRequestCanceledShownToPrimaryTeamDetails.secondary_team.validator,
-    ),
+    ("secondary_team", TeamMergeRequestCanceledShownToPrimaryTeamDetails.secondary_team.validator),
     ("sent_by", TeamMergeRequestCanceledShownToPrimaryTeamDetails.sent_by.validator),
 ]
 
 TeamMergeRequestCanceledShownToPrimaryTeamType.description.validator = bv.String()
 TeamMergeRequestCanceledShownToPrimaryTeamType._all_field_names_ = set(["description"])
 TeamMergeRequestCanceledShownToPrimaryTeamType._all_fields_ = [
-    (
-        "description",
-        TeamMergeRequestCanceledShownToPrimaryTeamType.description.validator,
-    )
+    ("description", TeamMergeRequestCanceledShownToPrimaryTeamType.description.validator)
 ]
 
 TeamMergeRequestCanceledShownToSecondaryTeamDetails.sent_to.validator = bv.String()
@@ -116350,10 +117159,7 @@ TeamMergeRequestCanceledShownToSecondaryTeamDetails._all_fields_ = [
 TeamMergeRequestCanceledShownToSecondaryTeamType.description.validator = bv.String()
 TeamMergeRequestCanceledShownToSecondaryTeamType._all_field_names_ = set(["description"])
 TeamMergeRequestCanceledShownToSecondaryTeamType._all_fields_ = [
-    (
-        "description",
-        TeamMergeRequestCanceledShownToSecondaryTeamType.description.validator,
-    )
+    ("description", TeamMergeRequestCanceledShownToSecondaryTeamType.description.validator)
 ]
 
 TeamMergeRequestCanceledType.description.validator = bv.String()
@@ -116367,10 +117173,7 @@ TeamMergeRequestExpiredDetails.request_expired_details.validator = (
 )
 TeamMergeRequestExpiredDetails._all_field_names_ = set(["request_expired_details"])
 TeamMergeRequestExpiredDetails._all_fields_ = [
-    (
-        "request_expired_details",
-        TeamMergeRequestExpiredDetails.request_expired_details.validator,
-    )
+    ("request_expired_details", TeamMergeRequestExpiredDetails.request_expired_details.validator)
 ]
 
 TeamMergeRequestExpiredExtraDetails._primary_team_validator = (
@@ -116397,10 +117200,7 @@ TeamMergeRequestExpiredShownToPrimaryTeamDetails._all_field_names_ = set(
     ]
 )
 TeamMergeRequestExpiredShownToPrimaryTeamDetails._all_fields_ = [
-    (
-        "secondary_team",
-        TeamMergeRequestExpiredShownToPrimaryTeamDetails.secondary_team.validator,
-    ),
+    ("secondary_team", TeamMergeRequestExpiredShownToPrimaryTeamDetails.secondary_team.validator),
     ("sent_by", TeamMergeRequestExpiredShownToPrimaryTeamDetails.sent_by.validator),
 ]
 
@@ -116419,10 +117219,7 @@ TeamMergeRequestExpiredShownToSecondaryTeamDetails._all_fields_ = [
 TeamMergeRequestExpiredShownToSecondaryTeamType.description.validator = bv.String()
 TeamMergeRequestExpiredShownToSecondaryTeamType._all_field_names_ = set(["description"])
 TeamMergeRequestExpiredShownToSecondaryTeamType._all_fields_ = [
-    (
-        "description",
-        TeamMergeRequestExpiredShownToSecondaryTeamType.description.validator,
-    )
+    ("description", TeamMergeRequestExpiredShownToSecondaryTeamType.description.validator)
 ]
 
 TeamMergeRequestExpiredType.description.validator = bv.String()
@@ -116440,20 +117237,14 @@ TeamMergeRequestRejectedShownToPrimaryTeamDetails._all_field_names_ = set(
     ]
 )
 TeamMergeRequestRejectedShownToPrimaryTeamDetails._all_fields_ = [
-    (
-        "secondary_team",
-        TeamMergeRequestRejectedShownToPrimaryTeamDetails.secondary_team.validator,
-    ),
+    ("secondary_team", TeamMergeRequestRejectedShownToPrimaryTeamDetails.secondary_team.validator),
     ("sent_by", TeamMergeRequestRejectedShownToPrimaryTeamDetails.sent_by.validator),
 ]
 
 TeamMergeRequestRejectedShownToPrimaryTeamType.description.validator = bv.String()
 TeamMergeRequestRejectedShownToPrimaryTeamType._all_field_names_ = set(["description"])
 TeamMergeRequestRejectedShownToPrimaryTeamType._all_fields_ = [
-    (
-        "description",
-        TeamMergeRequestRejectedShownToPrimaryTeamType.description.validator,
-    )
+    ("description", TeamMergeRequestRejectedShownToPrimaryTeamType.description.validator)
 ]
 
 TeamMergeRequestRejectedShownToSecondaryTeamDetails.sent_by.validator = bv.String()
@@ -116465,10 +117256,7 @@ TeamMergeRequestRejectedShownToSecondaryTeamDetails._all_fields_ = [
 TeamMergeRequestRejectedShownToSecondaryTeamType.description.validator = bv.String()
 TeamMergeRequestRejectedShownToSecondaryTeamType._all_field_names_ = set(["description"])
 TeamMergeRequestRejectedShownToSecondaryTeamType._all_fields_ = [
-    (
-        "description",
-        TeamMergeRequestRejectedShownToSecondaryTeamType.description.validator,
-    )
+    ("description", TeamMergeRequestRejectedShownToSecondaryTeamType.description.validator)
 ]
 
 TeamMergeRequestReminderDetails.request_reminder_details.validator = (
@@ -116476,10 +117264,7 @@ TeamMergeRequestReminderDetails.request_reminder_details.validator = (
 )
 TeamMergeRequestReminderDetails._all_field_names_ = set(["request_reminder_details"])
 TeamMergeRequestReminderDetails._all_fields_ = [
-    (
-        "request_reminder_details",
-        TeamMergeRequestReminderDetails.request_reminder_details.validator,
-    )
+    ("request_reminder_details", TeamMergeRequestReminderDetails.request_reminder_details.validator)
 ]
 
 TeamMergeRequestReminderExtraDetails._primary_team_validator = (
@@ -116506,20 +117291,14 @@ TeamMergeRequestReminderShownToPrimaryTeamDetails._all_field_names_ = set(
     ]
 )
 TeamMergeRequestReminderShownToPrimaryTeamDetails._all_fields_ = [
-    (
-        "secondary_team",
-        TeamMergeRequestReminderShownToPrimaryTeamDetails.secondary_team.validator,
-    ),
+    ("secondary_team", TeamMergeRequestReminderShownToPrimaryTeamDetails.secondary_team.validator),
     ("sent_to", TeamMergeRequestReminderShownToPrimaryTeamDetails.sent_to.validator),
 ]
 
 TeamMergeRequestReminderShownToPrimaryTeamType.description.validator = bv.String()
 TeamMergeRequestReminderShownToPrimaryTeamType._all_field_names_ = set(["description"])
 TeamMergeRequestReminderShownToPrimaryTeamType._all_fields_ = [
-    (
-        "description",
-        TeamMergeRequestReminderShownToPrimaryTeamType.description.validator,
-    )
+    ("description", TeamMergeRequestReminderShownToPrimaryTeamType.description.validator)
 ]
 
 TeamMergeRequestReminderShownToSecondaryTeamDetails.sent_to.validator = bv.String()
@@ -116531,10 +117310,7 @@ TeamMergeRequestReminderShownToSecondaryTeamDetails._all_fields_ = [
 TeamMergeRequestReminderShownToSecondaryTeamType.description.validator = bv.String()
 TeamMergeRequestReminderShownToSecondaryTeamType._all_field_names_ = set(["description"])
 TeamMergeRequestReminderShownToSecondaryTeamType._all_fields_ = [
-    (
-        "description",
-        TeamMergeRequestReminderShownToSecondaryTeamType.description.validator,
-    )
+    ("description", TeamMergeRequestReminderShownToSecondaryTeamType.description.validator)
 ]
 
 TeamMergeRequestReminderType.description.validator = bv.String()
@@ -116564,10 +117340,7 @@ TeamMergeRequestSentShownToPrimaryTeamDetails._all_field_names_ = set(
     ]
 )
 TeamMergeRequestSentShownToPrimaryTeamDetails._all_fields_ = [
-    (
-        "secondary_team",
-        TeamMergeRequestSentShownToPrimaryTeamDetails.secondary_team.validator,
-    ),
+    ("secondary_team", TeamMergeRequestSentShownToPrimaryTeamDetails.secondary_team.validator),
     ("sent_to", TeamMergeRequestSentShownToPrimaryTeamDetails.sent_to.validator),
 ]
 
@@ -116647,10 +117420,7 @@ TeamProfileChangeDefaultLanguageDetails._all_field_names_ = set(
 )
 TeamProfileChangeDefaultLanguageDetails._all_fields_ = [
     ("new_value", TeamProfileChangeDefaultLanguageDetails.new_value.validator),
-    (
-        "previous_value",
-        TeamProfileChangeDefaultLanguageDetails.previous_value.validator,
-    ),
+    ("previous_value", TeamProfileChangeDefaultLanguageDetails.previous_value.validator),
 ]
 
 TeamProfileChangeDefaultLanguageType.description.validator = bv.String()
@@ -116746,10 +117516,7 @@ TeamSelectiveSyncSettingsChangedDetails._all_field_names_ = set(
     ]
 )
 TeamSelectiveSyncSettingsChangedDetails._all_fields_ = [
-    (
-        "previous_value",
-        TeamSelectiveSyncSettingsChangedDetails.previous_value.validator,
-    ),
+    ("previous_value", TeamSelectiveSyncSettingsChangedDetails.previous_value.validator),
     ("new_value", TeamSelectiveSyncSettingsChangedDetails.new_value.validator),
 ]
 
@@ -117259,10 +118026,7 @@ WebSessionsChangeActiveSessionLimitDetails._all_field_names_ = set(
     ]
 )
 WebSessionsChangeActiveSessionLimitDetails._all_fields_ = [
-    (
-        "previous_value",
-        WebSessionsChangeActiveSessionLimitDetails.previous_value.validator,
-    ),
+    ("previous_value", WebSessionsChangeActiveSessionLimitDetails.previous_value.validator),
     ("new_value", WebSessionsChangeActiveSessionLimitDetails.new_value.validator),
 ]
 
@@ -117286,10 +118050,7 @@ WebSessionsChangeFixedLengthPolicyDetails._all_field_names_ = set(
 )
 WebSessionsChangeFixedLengthPolicyDetails._all_fields_ = [
     ("new_value", WebSessionsChangeFixedLengthPolicyDetails.new_value.validator),
-    (
-        "previous_value",
-        WebSessionsChangeFixedLengthPolicyDetails.previous_value.validator,
-    ),
+    ("previous_value", WebSessionsChangeFixedLengthPolicyDetails.previous_value.validator),
 ]
 
 WebSessionsChangeFixedLengthPolicyType.description.validator = bv.String()
@@ -117312,10 +118073,7 @@ WebSessionsChangeIdleLengthPolicyDetails._all_field_names_ = set(
 )
 WebSessionsChangeIdleLengthPolicyDetails._all_fields_ = [
     ("new_value", WebSessionsChangeIdleLengthPolicyDetails.new_value.validator),
-    (
-        "previous_value",
-        WebSessionsChangeIdleLengthPolicyDetails.previous_value.validator,
-    ),
+    ("previous_value", WebSessionsChangeIdleLengthPolicyDetails.previous_value.validator),
 ]
 
 WebSessionsChangeIdleLengthPolicyType.description.validator = bv.String()

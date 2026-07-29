@@ -244,10 +244,7 @@ class DropboxTeamBase(object):
             :class:`dropbox.team.ListMemberDevicesError`
         """
         arg = team.ListMemberDevicesArg(
-            team_member_id,
-            include_web_sessions,
-            include_desktop_clients,
-            include_mobile_clients,
+            team_member_id, include_web_sessions, include_desktop_clients, include_mobile_clients
         )
         r = self.request(
             team.devices_list_member_devices,
@@ -293,10 +290,7 @@ class DropboxTeamBase(object):
             :class:`dropbox.team.ListMembersDevicesError`
         """
         arg = team.ListMembersDevicesArg(
-            cursor,
-            include_web_sessions,
-            include_desktop_clients,
-            include_mobile_clients,
+            cursor, include_web_sessions, include_desktop_clients, include_mobile_clients
         )
         r = self.request(
             team.devices_list_members_devices,
@@ -346,10 +340,7 @@ class DropboxTeamBase(object):
             DeprecationWarning,
         )
         arg = team.ListTeamDevicesArg(
-            cursor,
-            include_web_sessions,
-            include_desktop_clients,
-            include_mobile_clients,
+            cursor, include_web_sessions, include_desktop_clients, include_mobile_clients
         )
         r = self.request(
             team.devices_list_team_devices,
@@ -794,11 +785,7 @@ class DropboxTeamBase(object):
             :class:`dropbox.team.GroupUpdateError`
         """
         arg = team.GroupUpdateArgs(
-            group,
-            return_members,
-            new_group_name,
-            new_group_external_id,
-            new_group_management_type,
+            group, return_members, new_group_name, new_group_external_id, new_group_management_type
         )
         r = self.request(
             team.groups_update,
@@ -1429,6 +1416,57 @@ class DropboxTeamBase(object):
         arg = async_.PollArg(async_job_id)
         r = self.request(
             team.members_add_job_status_get_v2,
+            "team",
+            arg,
+            None,
+        )
+        return r
+
+    def team_members_bulk_suspend(self, members):
+        """
+        Launch a bulk suspend job. The server enforces a maximum of 500 members.
+
+        Route attributes:
+            scope: members.write
+
+        :param members: Must contain between 1 and 500 targets. The launch
+            handler also rejects duplicate client item IDs and duplicate member
+            selectors.
+        :type members: List[:class:`dropbox.team.BulkSuspendMemberTarget`]
+        :rtype: :class:`dropbox.async_.LaunchResultBase`
+        :raises: :class:`.exceptions.ApiError`
+
+        If this raises, ApiError will contain:
+            :class:`dropbox.team.BulkSuspendError`
+        """
+        arg = team.BulkSuspendArg(members)
+        r = self.request(
+            team.members_bulk_suspend,
+            "team",
+            arg,
+            None,
+        )
+        return r
+
+    def team_members_bulk_suspend_job_status_check(self, async_job_id):
+        """
+        Poll a previously launched bulk suspend job.
+
+        Route attributes:
+            scope: members.write
+
+        :param async_job_id: Id of the asynchronous job. This is the value of a
+            response returned from the method that launched the job.
+        :type async_job_id: str
+        :rtype: :class:`dropbox.team.BulkSuspendJobStatus`
+        :raises: :class:`.exceptions.ApiError`
+
+        If this raises, ApiError will contain:
+            :class:`dropbox.async_.PollError`
+        """
+        arg = async_.PollArg(async_job_id)
+        r = self.request(
+            team.members_bulk_suspend_job_status_check,
             "team",
             arg,
             None,
@@ -2620,6 +2658,10 @@ class DropboxTeamBase(object):
         :param team_folder_id: The ID of the team folder.
         :type team_folder_id: str
         :rtype: :class:`dropbox.team.TeamFolderMetadata`
+        :raises: :class:`.exceptions.ApiError`
+
+        If this raises, ApiError will contain:
+            :class:`dropbox.team.TeamFolderActivateError`
         """
         arg = team.TeamFolderIdArg(team_folder_id)
         r = self.request(
@@ -2845,6 +2887,10 @@ class DropboxTeamBase(object):
         :param team_folder_id: The ID of the team folder.
         :type team_folder_id: str
         :rtype: :class:`dropbox.team.TeamFolderMetadata`
+        :raises: :class:`.exceptions.ApiError`
+
+        If this raises, ApiError will contain:
+            :class:`dropbox.team.TeamFolderRestoreError`
         """
         arg = team.TeamFolderIdArg(team_folder_id)
         r = self.request(
