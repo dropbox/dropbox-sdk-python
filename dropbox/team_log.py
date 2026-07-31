@@ -16158,6 +16158,39 @@ class EventDetails(bb.Union):
         return cls("protect_internal_domains_changed_details", val)
 
     @classmethod
+    def protect_policy_activated_details(cls, val):
+        """
+        Create an instance of this class set to the
+        ``protect_policy_activated_details`` tag with value ``val``.
+
+        :param ProtectPolicyActivatedDetails val:
+        :rtype: EventDetails
+        """
+        return cls("protect_policy_activated_details", val)
+
+    @classmethod
+    def protect_policy_deactivated_details(cls, val):
+        """
+        Create an instance of this class set to the
+        ``protect_policy_deactivated_details`` tag with value ``val``.
+
+        :param ProtectPolicyDeactivatedDetails val:
+        :rtype: EventDetails
+        """
+        return cls("protect_policy_deactivated_details", val)
+
+    @classmethod
+    def protect_policy_updated_details(cls, val):
+        """
+        Create an instance of this class set to the
+        ``protect_policy_updated_details`` tag with value ``val``.
+
+        :param ProtectPolicyUpdatedDetails val:
+        :rtype: EventDetails
+        """
+        return cls("protect_policy_updated_details", val)
+
+    @classmethod
     def classification_create_report_details(cls, val):
         """
         Create an instance of this class set to the
@@ -22264,6 +22297,30 @@ class EventDetails(bb.Union):
         """
         return self._tag == "protect_internal_domains_changed_details"
 
+    def is_protect_policy_activated_details(self):
+        """
+        Check if the union tag is ``protect_policy_activated_details``.
+
+        :rtype: bool
+        """
+        return self._tag == "protect_policy_activated_details"
+
+    def is_protect_policy_deactivated_details(self):
+        """
+        Check if the union tag is ``protect_policy_deactivated_details``.
+
+        :rtype: bool
+        """
+        return self._tag == "protect_policy_deactivated_details"
+
+    def is_protect_policy_updated_details(self):
+        """
+        Check if the union tag is ``protect_policy_updated_details``.
+
+        :rtype: bool
+        """
+        return self._tag == "protect_policy_updated_details"
+
     def is_classification_create_report_details(self):
         """
         Check if the union tag is ``classification_create_report_details``.
@@ -27872,6 +27929,36 @@ class EventDetails(bb.Union):
             raise AttributeError("tag 'protect_internal_domains_changed_details' not set")
         return self._value
 
+    def get_protect_policy_activated_details(self):
+        """
+        Only call this if :meth:`is_protect_policy_activated_details` is true.
+
+        :rtype: ProtectPolicyActivatedDetails
+        """
+        if not self.is_protect_policy_activated_details():
+            raise AttributeError("tag 'protect_policy_activated_details' not set")
+        return self._value
+
+    def get_protect_policy_deactivated_details(self):
+        """
+        Only call this if :meth:`is_protect_policy_deactivated_details` is true.
+
+        :rtype: ProtectPolicyDeactivatedDetails
+        """
+        if not self.is_protect_policy_deactivated_details():
+            raise AttributeError("tag 'protect_policy_deactivated_details' not set")
+        return self._value
+
+    def get_protect_policy_updated_details(self):
+        """
+        Only call this if :meth:`is_protect_policy_updated_details` is true.
+
+        :rtype: ProtectPolicyUpdatedDetails
+        """
+        if not self.is_protect_policy_updated_details():
+            raise AttributeError("tag 'protect_policy_updated_details' not set")
+        return self._value
+
     def get_classification_create_report_details(self):
         """
         Only call this if :meth:`is_classification_create_report_details` is true.
@@ -32242,6 +32329,15 @@ class EventType(bb.Union):
     :ivar EventType.protect_internal_domains_changed:
         (protect) Modified Protect internal domains list
     :vartype EventType.protect_internal_domains_changed: ProtectInternalDomainsChangedType
+    :ivar EventType.protect_policy_activated:
+        (protect) Activated a Dropbox Protect policy
+    :vartype EventType.protect_policy_activated: ProtectPolicyActivatedType
+    :ivar EventType.protect_policy_deactivated:
+        (protect) Deactivated a Dropbox Protect policy
+    :vartype EventType.protect_policy_deactivated: ProtectPolicyDeactivatedType
+    :ivar EventType.protect_policy_updated:
+        (protect) Updated a Dropbox Protect policy
+    :vartype EventType.protect_policy_updated: ProtectPolicyUpdatedType
     :ivar EventType.classification_create_report:
         (reports) Created Classification report
     :vartype EventType.classification_create_report: ClassificationCreateReportType
@@ -36479,6 +36575,39 @@ class EventType(bb.Union):
         :rtype: EventType
         """
         return cls("protect_internal_domains_changed", val)
+
+    @classmethod
+    def protect_policy_activated(cls, val):
+        """
+        Create an instance of this class set to the ``protect_policy_activated``
+        tag with value ``val``.
+
+        :param ProtectPolicyActivatedType val:
+        :rtype: EventType
+        """
+        return cls("protect_policy_activated", val)
+
+    @classmethod
+    def protect_policy_deactivated(cls, val):
+        """
+        Create an instance of this class set to the
+        ``protect_policy_deactivated`` tag with value ``val``.
+
+        :param ProtectPolicyDeactivatedType val:
+        :rtype: EventType
+        """
+        return cls("protect_policy_deactivated", val)
+
+    @classmethod
+    def protect_policy_updated(cls, val):
+        """
+        Create an instance of this class set to the ``protect_policy_updated``
+        tag with value ``val``.
+
+        :param ProtectPolicyUpdatedType val:
+        :rtype: EventType
+        """
+        return cls("protect_policy_updated", val)
 
     @classmethod
     def classification_create_report(cls, val):
@@ -42532,6 +42661,30 @@ class EventType(bb.Union):
         :rtype: bool
         """
         return self._tag == "protect_internal_domains_changed"
+
+    def is_protect_policy_activated(self):
+        """
+        Check if the union tag is ``protect_policy_activated``.
+
+        :rtype: bool
+        """
+        return self._tag == "protect_policy_activated"
+
+    def is_protect_policy_deactivated(self):
+        """
+        Check if the union tag is ``protect_policy_deactivated``.
+
+        :rtype: bool
+        """
+        return self._tag == "protect_policy_deactivated"
+
+    def is_protect_policy_updated(self):
+        """
+        Check if the union tag is ``protect_policy_updated``.
+
+        :rtype: bool
+        """
+        return self._tag == "protect_policy_updated"
 
     def is_classification_create_report(self):
         """
@@ -48706,6 +48859,42 @@ class EventType(bb.Union):
             raise AttributeError("tag 'protect_internal_domains_changed' not set")
         return self._value
 
+    def get_protect_policy_activated(self):
+        """
+        (protect) Activated a Dropbox Protect policy
+
+        Only call this if :meth:`is_protect_policy_activated` is true.
+
+        :rtype: ProtectPolicyActivatedType
+        """
+        if not self.is_protect_policy_activated():
+            raise AttributeError("tag 'protect_policy_activated' not set")
+        return self._value
+
+    def get_protect_policy_deactivated(self):
+        """
+        (protect) Deactivated a Dropbox Protect policy
+
+        Only call this if :meth:`is_protect_policy_deactivated` is true.
+
+        :rtype: ProtectPolicyDeactivatedType
+        """
+        if not self.is_protect_policy_deactivated():
+            raise AttributeError("tag 'protect_policy_deactivated' not set")
+        return self._value
+
+    def get_protect_policy_updated(self):
+        """
+        (protect) Updated a Dropbox Protect policy
+
+        Only call this if :meth:`is_protect_policy_updated` is true.
+
+        :rtype: ProtectPolicyUpdatedType
+        """
+        if not self.is_protect_policy_updated():
+            raise AttributeError("tag 'protect_policy_updated' not set")
+        return self._value
+
     def get_classification_create_report(self):
         """
         (reports) Created Classification report
@@ -53479,6 +53668,12 @@ class EventTypeArg(bb.Union):
         (protect) Stopped sharing content via Dropbox Protect
     :ivar EventTypeArg.protect_internal_domains_changed:
         (protect) Modified Protect internal domains list
+    :ivar EventTypeArg.protect_policy_activated:
+        (protect) Activated a Dropbox Protect policy
+    :ivar EventTypeArg.protect_policy_deactivated:
+        (protect) Deactivated a Dropbox Protect policy
+    :ivar EventTypeArg.protect_policy_updated:
+        (protect) Updated a Dropbox Protect policy
     :ivar EventTypeArg.classification_create_report:
         (reports) Created Classification report
     :ivar EventTypeArg.classification_create_report_fail:
@@ -54803,6 +54998,12 @@ class EventTypeArg(bb.Union):
     protect_action_stop_sharing = None
     # Attribute is overwritten below the class definition
     protect_internal_domains_changed = None
+    # Attribute is overwritten below the class definition
+    protect_policy_activated = None
+    # Attribute is overwritten below the class definition
+    protect_policy_deactivated = None
+    # Attribute is overwritten below the class definition
+    protect_policy_updated = None
     # Attribute is overwritten below the class definition
     classification_create_report = None
     # Attribute is overwritten below the class definition
@@ -57767,6 +57968,30 @@ class EventTypeArg(bb.Union):
         :rtype: bool
         """
         return self._tag == "protect_internal_domains_changed"
+
+    def is_protect_policy_activated(self):
+        """
+        Check if the union tag is ``protect_policy_activated``.
+
+        :rtype: bool
+        """
+        return self._tag == "protect_policy_activated"
+
+    def is_protect_policy_deactivated(self):
+        """
+        Check if the union tag is ``protect_policy_deactivated``.
+
+        :rtype: bool
+        """
+        return self._tag == "protect_policy_deactivated"
+
+    def is_protect_policy_updated(self):
+        """
+        Check if the union tag is ``protect_policy_updated``.
+
+        :rtype: bool
+        """
+        return self._tag == "protect_policy_updated"
 
     def is_classification_create_report(self):
         """
@@ -80205,6 +80430,171 @@ class ProtectInternalDomainsChangedType(bb.Struct):
 
 
 ProtectInternalDomainsChangedType_validator = bv.Struct(ProtectInternalDomainsChangedType)
+
+
+class ProtectPolicyActivatedDetails(bb.Struct):
+    """
+    Activated a Dropbox Protect policy.
+
+    :ivar ProtectPolicyActivatedDetails.policy_id:
+        Policy ID.
+    """
+
+    __slots__ = [
+        "_policy_id_value",
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self, policy_id=None):
+        self._policy_id_value = bb.NOT_SET
+        if policy_id is not None:
+            self.policy_id = policy_id
+
+    # Instance attribute type: str (validator is set below)
+    policy_id = bb.Attribute("policy_id")
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(ProtectPolicyActivatedDetails, self)._process_custom_annotations(
+            annotation_type, field_path, processor
+        )
+
+
+ProtectPolicyActivatedDetails_validator = bv.Struct(ProtectPolicyActivatedDetails)
+
+
+class ProtectPolicyActivatedType(bb.Struct):
+    __slots__ = [
+        "_description_value",
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self, description=None):
+        self._description_value = bb.NOT_SET
+        if description is not None:
+            self.description = description
+
+    # Instance attribute type: str (validator is set below)
+    description = bb.Attribute("description")
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(ProtectPolicyActivatedType, self)._process_custom_annotations(
+            annotation_type, field_path, processor
+        )
+
+
+ProtectPolicyActivatedType_validator = bv.Struct(ProtectPolicyActivatedType)
+
+
+class ProtectPolicyDeactivatedDetails(bb.Struct):
+    """
+    Deactivated a Dropbox Protect policy.
+
+    :ivar ProtectPolicyDeactivatedDetails.policy_id:
+        Policy ID.
+    """
+
+    __slots__ = [
+        "_policy_id_value",
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self, policy_id=None):
+        self._policy_id_value = bb.NOT_SET
+        if policy_id is not None:
+            self.policy_id = policy_id
+
+    # Instance attribute type: str (validator is set below)
+    policy_id = bb.Attribute("policy_id")
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(ProtectPolicyDeactivatedDetails, self)._process_custom_annotations(
+            annotation_type, field_path, processor
+        )
+
+
+ProtectPolicyDeactivatedDetails_validator = bv.Struct(ProtectPolicyDeactivatedDetails)
+
+
+class ProtectPolicyDeactivatedType(bb.Struct):
+    __slots__ = [
+        "_description_value",
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self, description=None):
+        self._description_value = bb.NOT_SET
+        if description is not None:
+            self.description = description
+
+    # Instance attribute type: str (validator is set below)
+    description = bb.Attribute("description")
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(ProtectPolicyDeactivatedType, self)._process_custom_annotations(
+            annotation_type, field_path, processor
+        )
+
+
+ProtectPolicyDeactivatedType_validator = bv.Struct(ProtectPolicyDeactivatedType)
+
+
+class ProtectPolicyUpdatedDetails(bb.Struct):
+    """
+    Updated a Dropbox Protect policy.
+
+    :ivar ProtectPolicyUpdatedDetails.policy_id:
+        Policy ID.
+    """
+
+    __slots__ = [
+        "_policy_id_value",
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self, policy_id=None):
+        self._policy_id_value = bb.NOT_SET
+        if policy_id is not None:
+            self.policy_id = policy_id
+
+    # Instance attribute type: str (validator is set below)
+    policy_id = bb.Attribute("policy_id")
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(ProtectPolicyUpdatedDetails, self)._process_custom_annotations(
+            annotation_type, field_path, processor
+        )
+
+
+ProtectPolicyUpdatedDetails_validator = bv.Struct(ProtectPolicyUpdatedDetails)
+
+
+class ProtectPolicyUpdatedType(bb.Struct):
+    __slots__ = [
+        "_description_value",
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self, description=None):
+        self._description_value = bb.NOT_SET
+        if description is not None:
+            self.description = description
+
+    # Instance attribute type: str (validator is set below)
+    description = bb.Attribute("description")
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(ProtectPolicyUpdatedType, self)._process_custom_annotations(
+            annotation_type, field_path, processor
+        )
+
+
+ProtectPolicyUpdatedType_validator = bv.Struct(ProtectPolicyUpdatedType)
 
 
 class QuickActionType(bb.Union):
@@ -102845,6 +103235,11 @@ EventDetails._protect_action_stop_sharing_details_validator = (
 EventDetails._protect_internal_domains_changed_details_validator = (
     ProtectInternalDomainsChangedDetails_validator
 )
+EventDetails._protect_policy_activated_details_validator = ProtectPolicyActivatedDetails_validator
+EventDetails._protect_policy_deactivated_details_validator = (
+    ProtectPolicyDeactivatedDetails_validator
+)
+EventDetails._protect_policy_updated_details_validator = ProtectPolicyUpdatedDetails_validator
 EventDetails._classification_create_report_details_validator = (
     ClassificationCreateReportDetails_validator
 )
@@ -103918,6 +104313,9 @@ EventDetails._tagmap = {
     "protect_action_remove_link_details": EventDetails._protect_action_remove_link_details_validator,
     "protect_action_stop_sharing_details": EventDetails._protect_action_stop_sharing_details_validator,
     "protect_internal_domains_changed_details": EventDetails._protect_internal_domains_changed_details_validator,
+    "protect_policy_activated_details": EventDetails._protect_policy_activated_details_validator,
+    "protect_policy_deactivated_details": EventDetails._protect_policy_deactivated_details_validator,
+    "protect_policy_updated_details": EventDetails._protect_policy_updated_details_validator,
     "classification_create_report_details": EventDetails._classification_create_report_details_validator,
     "classification_create_report_fail_details": EventDetails._classification_create_report_fail_details_validator,
     "emm_create_exceptions_report_details": EventDetails._emm_create_exceptions_report_details_validator,
@@ -104648,6 +105046,9 @@ EventType._protect_action_remove_collaborator_validator = (
 EventType._protect_action_remove_link_validator = ProtectActionRemoveLinkType_validator
 EventType._protect_action_stop_sharing_validator = ProtectActionStopSharingType_validator
 EventType._protect_internal_domains_changed_validator = ProtectInternalDomainsChangedType_validator
+EventType._protect_policy_activated_validator = ProtectPolicyActivatedType_validator
+EventType._protect_policy_deactivated_validator = ProtectPolicyDeactivatedType_validator
+EventType._protect_policy_updated_validator = ProtectPolicyUpdatedType_validator
 EventType._classification_create_report_validator = ClassificationCreateReportType_validator
 EventType._classification_create_report_fail_validator = (
     ClassificationCreateReportFailType_validator
@@ -105484,6 +105885,9 @@ EventType._tagmap = {
     "protect_action_remove_link": EventType._protect_action_remove_link_validator,
     "protect_action_stop_sharing": EventType._protect_action_stop_sharing_validator,
     "protect_internal_domains_changed": EventType._protect_internal_domains_changed_validator,
+    "protect_policy_activated": EventType._protect_policy_activated_validator,
+    "protect_policy_deactivated": EventType._protect_policy_deactivated_validator,
+    "protect_policy_updated": EventType._protect_policy_updated_validator,
     "classification_create_report": EventType._classification_create_report_validator,
     "classification_create_report_fail": EventType._classification_create_report_fail_validator,
     "emm_create_exceptions_report": EventType._emm_create_exceptions_report_validator,
@@ -106115,6 +106519,9 @@ EventTypeArg._protect_action_remove_collaborator_validator = bv.Void()
 EventTypeArg._protect_action_remove_link_validator = bv.Void()
 EventTypeArg._protect_action_stop_sharing_validator = bv.Void()
 EventTypeArg._protect_internal_domains_changed_validator = bv.Void()
+EventTypeArg._protect_policy_activated_validator = bv.Void()
+EventTypeArg._protect_policy_deactivated_validator = bv.Void()
+EventTypeArg._protect_policy_updated_validator = bv.Void()
 EventTypeArg._classification_create_report_validator = bv.Void()
 EventTypeArg._classification_create_report_fail_validator = bv.Void()
 EventTypeArg._emm_create_exceptions_report_validator = bv.Void()
@@ -106743,6 +107150,9 @@ EventTypeArg._tagmap = {
     "protect_action_remove_link": EventTypeArg._protect_action_remove_link_validator,
     "protect_action_stop_sharing": EventTypeArg._protect_action_stop_sharing_validator,
     "protect_internal_domains_changed": EventTypeArg._protect_internal_domains_changed_validator,
+    "protect_policy_activated": EventTypeArg._protect_policy_activated_validator,
+    "protect_policy_deactivated": EventTypeArg._protect_policy_deactivated_validator,
+    "protect_policy_updated": EventTypeArg._protect_policy_updated_validator,
     "classification_create_report": EventTypeArg._classification_create_report_validator,
     "classification_create_report_fail": EventTypeArg._classification_create_report_fail_validator,
     "emm_create_exceptions_report": EventTypeArg._emm_create_exceptions_report_validator,
@@ -107450,6 +107860,9 @@ EventTypeArg.protect_action_remove_collaborator = EventTypeArg("protect_action_r
 EventTypeArg.protect_action_remove_link = EventTypeArg("protect_action_remove_link")
 EventTypeArg.protect_action_stop_sharing = EventTypeArg("protect_action_stop_sharing")
 EventTypeArg.protect_internal_domains_changed = EventTypeArg("protect_internal_domains_changed")
+EventTypeArg.protect_policy_activated = EventTypeArg("protect_policy_activated")
+EventTypeArg.protect_policy_deactivated = EventTypeArg("protect_policy_deactivated")
+EventTypeArg.protect_policy_updated = EventTypeArg("protect_policy_updated")
 EventTypeArg.classification_create_report = EventTypeArg("classification_create_report")
 EventTypeArg.classification_create_report_fail = EventTypeArg("classification_create_report_fail")
 EventTypeArg.emm_create_exceptions_report = EventTypeArg("emm_create_exceptions_report")
@@ -113159,6 +113572,42 @@ ProtectInternalDomainsChangedType.description.validator = bv.String()
 ProtectInternalDomainsChangedType._all_field_names_ = set(["description"])
 ProtectInternalDomainsChangedType._all_fields_ = [
     ("description", ProtectInternalDomainsChangedType.description.validator)
+]
+
+ProtectPolicyActivatedDetails.policy_id.validator = bv.String()
+ProtectPolicyActivatedDetails._all_field_names_ = set(["policy_id"])
+ProtectPolicyActivatedDetails._all_fields_ = [
+    ("policy_id", ProtectPolicyActivatedDetails.policy_id.validator)
+]
+
+ProtectPolicyActivatedType.description.validator = bv.String()
+ProtectPolicyActivatedType._all_field_names_ = set(["description"])
+ProtectPolicyActivatedType._all_fields_ = [
+    ("description", ProtectPolicyActivatedType.description.validator)
+]
+
+ProtectPolicyDeactivatedDetails.policy_id.validator = bv.String()
+ProtectPolicyDeactivatedDetails._all_field_names_ = set(["policy_id"])
+ProtectPolicyDeactivatedDetails._all_fields_ = [
+    ("policy_id", ProtectPolicyDeactivatedDetails.policy_id.validator)
+]
+
+ProtectPolicyDeactivatedType.description.validator = bv.String()
+ProtectPolicyDeactivatedType._all_field_names_ = set(["description"])
+ProtectPolicyDeactivatedType._all_fields_ = [
+    ("description", ProtectPolicyDeactivatedType.description.validator)
+]
+
+ProtectPolicyUpdatedDetails.policy_id.validator = bv.String()
+ProtectPolicyUpdatedDetails._all_field_names_ = set(["policy_id"])
+ProtectPolicyUpdatedDetails._all_fields_ = [
+    ("policy_id", ProtectPolicyUpdatedDetails.policy_id.validator)
+]
+
+ProtectPolicyUpdatedType.description.validator = bv.String()
+ProtectPolicyUpdatedType._all_field_names_ = set(["description"])
+ProtectPolicyUpdatedType._all_fields_ = [
+    ("description", ProtectPolicyUpdatedType.description.validator)
 ]
 
 QuickActionType._delete_shared_link_validator = bv.Void()
