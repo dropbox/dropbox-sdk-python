@@ -4595,6 +4595,67 @@ class DropboxBase(object):
         )
         return r
 
+    def riviera_get_text_async(self, file_id_or_url=None):
+        """
+        Asynchronous plain-text extraction from documents. Supported formats
+        include: - Word processing: .doc, .docx, .docm, .rtf. - Presentations:
+        .ppt, .pptx, .pptm. - Spreadsheets: .xls, .xlsx, .xlsm. - PDF: .pdf. -
+        Dropbox document types: .paper, .papert, .binder, .gdoc, .gsheet,
+        .gslides. - Plain text / subtitles: .txt, .vtt. Unsupported formats
+        return an `unsupported_format_error`. For the `url` variant only Dropbox
+        shared links are supported; external URLs return
+        `unsupported_format_error`.
+
+        Route attributes:
+            scope: files.content.read
+
+        :param file_id_or_url: Identifier of the document to extract text from.
+            Callers must set exactly one of the `FileIdOrUrl` variants. Text
+            extraction is supported for common document formats (Word,
+            PowerPoint, Excel, PDF, RTF, and Dropbox document types); see the
+            route description for the supported formats. Requests against
+            unsupported formats return `unsupported_format_error`. NOTE: for the
+            `url` variant, only Dropbox shared links (www.dropbox.com) are
+            supported. External (non-Dropbox) URLs are not supported and return
+            `unsupported_format_error`; import the file into Dropbox and
+            reference it by `file_id` or `path` instead.
+        :type file_id_or_url: Nullable[:class:`dropbox.riviera.FileIdOrUrl`]
+        :rtype: :class:`dropbox.async_.LaunchResultBase`
+        """
+        arg = riviera.GetTextArgs(file_id_or_url)
+        r = self.request(
+            riviera.get_text_async,
+            "riviera",
+            arg,
+            None,
+        )
+        return r
+
+    def riviera_get_text_async_check(self, async_job_id):
+        """
+        Returns the status or result of specified get_text_async task.
+
+        Route attributes:
+            scope: files.content.read
+
+        :param async_job_id: Id of the asynchronous job. This is the value of a
+            response returned from the method that launched the job.
+        :type async_job_id: str
+        :rtype: :class:`dropbox.riviera.GetTextAsyncCheckResult`
+        :raises: :class:`.exceptions.ApiError`
+
+        If this raises, ApiError will contain:
+            :class:`dropbox.async_.PollError`
+        """
+        arg = async_.PollArg(async_job_id)
+        r = self.request(
+            riviera.get_text_async_check,
+            "riviera",
+            arg,
+            None,
+        )
+        return r
+
     def riviera_get_transcript_async(
         self,
         file_id_or_url=None,
