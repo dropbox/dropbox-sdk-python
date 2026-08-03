@@ -1397,6 +1397,174 @@ class GetMetadataResult(bb.Struct):
 GetMetadataResult_validator = bv.Struct(GetMetadataResult)
 
 
+class GetTextArgs(bb.Struct):
+    """
+    Arguments for the asynchronous `get_text_async` route. Exactly one of
+    `file_id`, `path`, or `url` must be supplied via `file_id_or_url` to
+    identify the document whose plain-text content should be extracted.
+
+    :ivar GetTextArgs.file_id_or_url:
+        Identifier of the document to extract text from. Callers must set
+        exactly one of the `FileIdOrUrl` variants. Text extraction is supported
+        for common document formats (Word, PowerPoint, Excel, PDF, RTF, and
+        Dropbox document types); see the route description for the supported
+        formats. Requests against unsupported formats return
+        `unsupported_format_error`. NOTE: for the `url` variant, only Dropbox
+        shared links (www.dropbox.com) are supported. External (non-Dropbox)
+        URLs are not supported and return `unsupported_format_error`; import the
+        file into Dropbox and reference it by `file_id` or `path` instead.
+    """
+
+    __slots__ = [
+        "_file_id_or_url_value",
+    ]
+
+    _has_required_fields = False
+
+    def __init__(self, file_id_or_url=None):
+        self._file_id_or_url_value = bb.NOT_SET
+        if file_id_or_url is not None:
+            self.file_id_or_url = file_id_or_url
+
+    # Instance attribute type: FileIdOrUrl (validator is set below)
+    file_id_or_url = bb.Attribute("file_id_or_url", nullable=True, user_defined=True)
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(GetTextArgs, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+
+GetTextArgs_validator = bv.Struct(GetTextArgs)
+
+
+class GetTextAsyncCheckResult(bb.Union):
+    """
+    Result type for EventBus async check - must end in "CheckResult"
+
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+    """
+
+    _catch_all = "other"
+    # Attribute is overwritten below the class definition
+    in_progress = None
+    # Attribute is overwritten below the class definition
+    other = None
+
+    @classmethod
+    def complete(cls, val):
+        """
+        Create an instance of this class set to the ``complete`` tag with value
+        ``val``.
+
+        :param GetTextResult val:
+        :rtype: GetTextAsyncCheckResult
+        """
+        return cls("complete", val)
+
+    @classmethod
+    def failed(cls, val):
+        """
+        Create an instance of this class set to the ``failed`` tag with value
+        ``val``.
+
+        :param TextExtractionApiV2Error val:
+        :rtype: GetTextAsyncCheckResult
+        """
+        return cls("failed", val)
+
+    def is_in_progress(self):
+        """
+        Check if the union tag is ``in_progress``.
+
+        :rtype: bool
+        """
+        return self._tag == "in_progress"
+
+    def is_complete(self):
+        """
+        Check if the union tag is ``complete``.
+
+        :rtype: bool
+        """
+        return self._tag == "complete"
+
+    def is_failed(self):
+        """
+        Check if the union tag is ``failed``.
+
+        :rtype: bool
+        """
+        return self._tag == "failed"
+
+    def is_other(self):
+        """
+        Check if the union tag is ``other``.
+
+        :rtype: bool
+        """
+        return self._tag == "other"
+
+    def get_complete(self):
+        """
+        Only call this if :meth:`is_complete` is true.
+
+        :rtype: GetTextResult
+        """
+        if not self.is_complete():
+            raise AttributeError("tag 'complete' not set")
+        return self._value
+
+    def get_failed(self):
+        """
+        Only call this if :meth:`is_failed` is true.
+
+        :rtype: TextExtractionApiV2Error
+        """
+        if not self.is_failed():
+            raise AttributeError("tag 'failed' not set")
+        return self._value
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(GetTextAsyncCheckResult, self)._process_custom_annotations(
+            annotation_type, field_path, processor
+        )
+
+
+GetTextAsyncCheckResult_validator = bv.Union(GetTextAsyncCheckResult)
+
+
+class GetTextResult(bb.Struct):
+    """
+    :ivar GetTextResult.text:
+        The plain-text content extracted from the document. For multi-page
+        documents the text is concatenated in document order. May be empty when
+        no text is detected in the source.
+    """
+
+    __slots__ = [
+        "_text_value",
+    ]
+
+    _has_required_fields = False
+
+    def __init__(self, text=None):
+        self._text_value = bb.NOT_SET
+        if text is not None:
+            self.text = text
+
+    # Instance attribute type: str (validator is set below)
+    text = bb.Attribute("text")
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(GetTextResult, self)._process_custom_annotations(
+            annotation_type, field_path, processor
+        )
+
+
+GetTextResult_validator = bv.Struct(GetTextResult)
+
+
 class GetTranscriptArgs(bb.Struct):
     """
     Arguments for the asynchronous `get_transcript_async` route. Exactly one of
@@ -2148,6 +2316,189 @@ class OfficeFileType(bb.Union):
 OfficeFileType_validator = bv.Union(OfficeFileType)
 
 
+class TextExtractionApiV2Error(bb.Union):
+    """
+    Reason a text extraction job failed. Returned in the `failed` variant of
+    `GetTextAsyncCheckResult`. This is a semantic error union: the HTTP status
+    of the poll request itself is unaffected (a poll that surfaces a failed job
+    is still a normal successful poll response). Callers should branch on the
+    variant.
+
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+
+    :ivar TextExtractionApiV2Error.server_error:
+        An unexpected, typically transient, server-side failure. The string is a
+        human-readable message; retrying with backoff may succeed.
+    :vartype TextExtractionApiV2Error.server_error: str
+    :ivar TextExtractionApiV2Error.user_error:
+        The request could not be processed as supplied (a problem with the
+        caller's input). The string is a human-readable message; retrying the
+        same request will not help.
+    :vartype TextExtractionApiV2Error.user_error: str
+    :ivar TextExtractionApiV2Error.not_found_error:
+        The referenced file does not exist or is not accessible.
+    :ivar TextExtractionApiV2Error.is_a_folder_error:
+        The target is a folder, not a file.
+    """
+
+    _catch_all = "other"
+    # Attribute is overwritten below the class definition
+    unsupported_format_error = None
+    # Attribute is overwritten below the class definition
+    link_download_disabled_error = None
+    # Attribute is overwritten below the class definition
+    shared_link_password_protected = None
+    # Attribute is overwritten below the class definition
+    limit_exceeded_error = None
+    # Attribute is overwritten below the class definition
+    conversion_failure_error = None
+    # Attribute is overwritten below the class definition
+    not_found_error = None
+    # Attribute is overwritten below the class definition
+    is_a_folder_error = None
+    # Attribute is overwritten below the class definition
+    other = None
+
+    @classmethod
+    def server_error(cls, val):
+        """
+        Create an instance of this class set to the ``server_error`` tag with
+        value ``val``.
+
+        :param str val:
+        :rtype: TextExtractionApiV2Error
+        """
+        return cls("server_error", val)
+
+    @classmethod
+    def user_error(cls, val):
+        """
+        Create an instance of this class set to the ``user_error`` tag with
+        value ``val``.
+
+        :param str val:
+        :rtype: TextExtractionApiV2Error
+        """
+        return cls("user_error", val)
+
+    def is_server_error(self):
+        """
+        Check if the union tag is ``server_error``.
+
+        :rtype: bool
+        """
+        return self._tag == "server_error"
+
+    def is_user_error(self):
+        """
+        Check if the union tag is ``user_error``.
+
+        :rtype: bool
+        """
+        return self._tag == "user_error"
+
+    def is_unsupported_format_error(self):
+        """
+        Check if the union tag is ``unsupported_format_error``.
+
+        :rtype: bool
+        """
+        return self._tag == "unsupported_format_error"
+
+    def is_link_download_disabled_error(self):
+        """
+        Check if the union tag is ``link_download_disabled_error``.
+
+        :rtype: bool
+        """
+        return self._tag == "link_download_disabled_error"
+
+    def is_shared_link_password_protected(self):
+        """
+        Check if the union tag is ``shared_link_password_protected``.
+
+        :rtype: bool
+        """
+        return self._tag == "shared_link_password_protected"
+
+    def is_limit_exceeded_error(self):
+        """
+        Check if the union tag is ``limit_exceeded_error``.
+
+        :rtype: bool
+        """
+        return self._tag == "limit_exceeded_error"
+
+    def is_conversion_failure_error(self):
+        """
+        Check if the union tag is ``conversion_failure_error``.
+
+        :rtype: bool
+        """
+        return self._tag == "conversion_failure_error"
+
+    def is_not_found_error(self):
+        """
+        Check if the union tag is ``not_found_error``.
+
+        :rtype: bool
+        """
+        return self._tag == "not_found_error"
+
+    def is_is_a_folder_error(self):
+        """
+        Check if the union tag is ``is_a_folder_error``.
+
+        :rtype: bool
+        """
+        return self._tag == "is_a_folder_error"
+
+    def is_other(self):
+        """
+        Check if the union tag is ``other``.
+
+        :rtype: bool
+        """
+        return self._tag == "other"
+
+    def get_server_error(self):
+        """
+        An unexpected, typically transient, server-side failure. The string is a
+        human-readable message; retrying with backoff may succeed.
+
+        Only call this if :meth:`is_server_error` is true.
+
+        :rtype: str
+        """
+        if not self.is_server_error():
+            raise AttributeError("tag 'server_error' not set")
+        return self._value
+
+    def get_user_error(self):
+        """
+        The request could not be processed as supplied (a problem with the
+        caller's input). The string is a human-readable message; retrying the
+        same request will not help.
+
+        Only call this if :meth:`is_user_error` is true.
+
+        :rtype: str
+        """
+        if not self.is_user_error():
+            raise AttributeError("tag 'user_error' not set")
+        return self._value
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(TextExtractionApiV2Error, self)._process_custom_annotations(
+            annotation_type, field_path, processor
+        )
+
+
+TextExtractionApiV2Error_validator = bv.Union(TextExtractionApiV2Error)
+
+
 class TimestampLevel(bb.Union):
     """
     This class acts as a tagged union. Only one of the ``is_*`` methods will
@@ -2685,6 +3036,28 @@ GetMetadataResult._all_fields_ = [
     ("metadata", GetMetadataResult.metadata.validator),
 ]
 
+GetTextArgs.file_id_or_url.validator = bv.Nullable(FileIdOrUrl_validator)
+GetTextArgs._all_field_names_ = set(["file_id_or_url"])
+GetTextArgs._all_fields_ = [("file_id_or_url", GetTextArgs.file_id_or_url.validator)]
+
+GetTextAsyncCheckResult._in_progress_validator = bv.Void()
+GetTextAsyncCheckResult._complete_validator = GetTextResult_validator
+GetTextAsyncCheckResult._failed_validator = TextExtractionApiV2Error_validator
+GetTextAsyncCheckResult._other_validator = bv.Void()
+GetTextAsyncCheckResult._tagmap = {
+    "in_progress": GetTextAsyncCheckResult._in_progress_validator,
+    "complete": GetTextAsyncCheckResult._complete_validator,
+    "failed": GetTextAsyncCheckResult._failed_validator,
+    "other": GetTextAsyncCheckResult._other_validator,
+}
+
+GetTextAsyncCheckResult.in_progress = GetTextAsyncCheckResult("in_progress")
+GetTextAsyncCheckResult.other = GetTextAsyncCheckResult("other")
+
+GetTextResult.text.validator = bv.String()
+GetTextResult._all_field_names_ = set(["text"])
+GetTextResult._all_fields_ = [("text", GetTextResult.text.validator)]
+
 GetTranscriptArgs.file_id_or_url.validator = bv.Nullable(FileIdOrUrl_validator)
 GetTranscriptArgs.timestamp_level.validator = TimestampLevel_validator
 GetTranscriptArgs.included_special_words.validator = bv.String()
@@ -2853,6 +3226,46 @@ OfficeFileType.office_filetype_powerpoint = OfficeFileType("office_filetype_powe
 OfficeFileType.office_filetype_excel = OfficeFileType("office_filetype_excel")
 OfficeFileType.other = OfficeFileType("other")
 
+TextExtractionApiV2Error._server_error_validator = bv.String()
+TextExtractionApiV2Error._user_error_validator = bv.String()
+TextExtractionApiV2Error._unsupported_format_error_validator = bv.Void()
+TextExtractionApiV2Error._link_download_disabled_error_validator = bv.Void()
+TextExtractionApiV2Error._shared_link_password_protected_validator = bv.Void()
+TextExtractionApiV2Error._limit_exceeded_error_validator = bv.Void()
+TextExtractionApiV2Error._conversion_failure_error_validator = bv.Void()
+TextExtractionApiV2Error._not_found_error_validator = bv.Void()
+TextExtractionApiV2Error._is_a_folder_error_validator = bv.Void()
+TextExtractionApiV2Error._other_validator = bv.Void()
+TextExtractionApiV2Error._tagmap = {
+    "server_error": TextExtractionApiV2Error._server_error_validator,
+    "user_error": TextExtractionApiV2Error._user_error_validator,
+    "unsupported_format_error": TextExtractionApiV2Error._unsupported_format_error_validator,
+    "link_download_disabled_error": TextExtractionApiV2Error._link_download_disabled_error_validator,
+    "shared_link_password_protected": TextExtractionApiV2Error._shared_link_password_protected_validator,
+    "limit_exceeded_error": TextExtractionApiV2Error._limit_exceeded_error_validator,
+    "conversion_failure_error": TextExtractionApiV2Error._conversion_failure_error_validator,
+    "not_found_error": TextExtractionApiV2Error._not_found_error_validator,
+    "is_a_folder_error": TextExtractionApiV2Error._is_a_folder_error_validator,
+    "other": TextExtractionApiV2Error._other_validator,
+}
+
+TextExtractionApiV2Error.unsupported_format_error = TextExtractionApiV2Error(
+    "unsupported_format_error"
+)
+TextExtractionApiV2Error.link_download_disabled_error = TextExtractionApiV2Error(
+    "link_download_disabled_error"
+)
+TextExtractionApiV2Error.shared_link_password_protected = TextExtractionApiV2Error(
+    "shared_link_password_protected"
+)
+TextExtractionApiV2Error.limit_exceeded_error = TextExtractionApiV2Error("limit_exceeded_error")
+TextExtractionApiV2Error.conversion_failure_error = TextExtractionApiV2Error(
+    "conversion_failure_error"
+)
+TextExtractionApiV2Error.not_found_error = TextExtractionApiV2Error("not_found_error")
+TextExtractionApiV2Error.is_a_folder_error = TextExtractionApiV2Error("is_a_folder_error")
+TextExtractionApiV2Error.other = TextExtractionApiV2Error("other")
+
 TimestampLevel._sentence_validator = bv.Void()
 TimestampLevel._word_validator = bv.Void()
 TimestampLevel._other_validator = bv.Void()
@@ -2941,6 +3354,7 @@ GetMarkdownArgs.enable_ocr.default = False
 GetMarkdownArgs.embed_images.default = False
 GetMarkdownResult.markdown.default = ""
 GetMetadataResult.metadata_type.default = MetadataType.metadata_type_unknown
+GetTextResult.text.default = ""
 GetTranscriptArgs.timestamp_level.default = TimestampLevel.sentence
 GetTranscriptArgs.included_special_words.default = ""
 GetTranscriptArgs.audio_language.default = ""
@@ -2981,6 +3395,24 @@ get_metadata_async_check = bb.Route(
     async_.PollError_validator,
     {"auth": "app, user", "host": "api", "style": "rpc"},
 )
+get_text_async = bb.Route(
+    "get_text_async",
+    1,
+    False,
+    GetTextArgs_validator,
+    async_.LaunchResultBase_validator,
+    bv.Void(),
+    {"auth": "app, user", "host": "api", "style": "rpc"},
+)
+get_text_async_check = bb.Route(
+    "get_text_async/check",
+    1,
+    False,
+    async_.PollArg_validator,
+    GetTextAsyncCheckResult_validator,
+    async_.PollError_validator,
+    {"auth": "app, user", "host": "api", "style": "rpc"},
+)
 get_transcript_async = bb.Route(
     "get_transcript_async",
     1,
@@ -3005,6 +3437,8 @@ ROUTES = {
     "get_markdown_async/check": get_markdown_async_check,
     "get_metadata_async": get_metadata_async,
     "get_metadata_async/check": get_metadata_async_check,
+    "get_text_async": get_text_async,
+    "get_text_async/check": get_text_async_check,
     "get_transcript_async": get_transcript_async,
     "get_transcript_async/check": get_transcript_async_check,
 }
