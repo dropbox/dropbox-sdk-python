@@ -2626,27 +2626,15 @@ TeamSharingPolicies._all_field_names_ = set(
     ]
 )
 TeamSharingPolicies._all_fields_ = [
-    (
-        "shared_folder_member_policy",
-        TeamSharingPolicies.shared_folder_member_policy.validator,
-    ),
-    (
-        "shared_folder_join_policy",
-        TeamSharingPolicies.shared_folder_join_policy.validator,
-    ),
-    (
-        "shared_link_create_policy",
-        TeamSharingPolicies.shared_link_create_policy.validator,
-    ),
+    ("shared_folder_member_policy", TeamSharingPolicies.shared_folder_member_policy.validator),
+    ("shared_folder_join_policy", TeamSharingPolicies.shared_folder_join_policy.validator),
+    ("shared_link_create_policy", TeamSharingPolicies.shared_link_create_policy.validator),
     ("group_creation_policy", TeamSharingPolicies.group_creation_policy.validator),
     (
         "shared_folder_link_restriction_policy",
         TeamSharingPolicies.shared_folder_link_restriction_policy.validator,
     ),
-    (
-        "enforce_link_password_policy",
-        TeamSharingPolicies.enforce_link_password_policy.validator,
-    ),
+    ("enforce_link_password_policy", TeamSharingPolicies.enforce_link_password_policy.validator),
     (
         "default_link_expiration_days_policy",
         TeamSharingPolicies.default_link_expiration_days_policy.validator,

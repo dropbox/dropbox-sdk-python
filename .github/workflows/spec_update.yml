@@ -83,7 +83,10 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
+          pip install ruff
           python generate_base_client.py
+          ruff format dropbox
+          ruff check --fix dropbox
 
       - name: Close Old Pull Requests
         id: close-old-prs
@@ -128,8 +131,8 @@ jobs:
         env:
           GH_TOKEN: ${{ steps.app-token.outputs.token }}
 
-      # - name: Enable Pull Request Automerge
-      #   if: steps.create-pr.outputs.pull-request-number
-      #   run: gh pr merge --merge --auto "${{ steps.create-pr.outputs.pull-request-number }}"
-      #   env:
-      #     GH_TOKEN: ${{ steps.app-token.outputs.token }}
+      - name: Enable Pull Request Automerge
+        if: steps.create-pr.outputs.pull-request-number
+        run: gh pr merge --squash --auto "${{ steps.create-pr.outputs.pull-request-number }}"
+        env:
+          GH_TOKEN: ${{ steps.app-token.outputs.token }}
