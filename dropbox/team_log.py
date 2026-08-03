@@ -16180,6 +16180,17 @@ class EventDetails(bb.Union):
         return cls("protect_policy_deactivated_details", val)
 
     @classmethod
+    def protect_policy_scheduled_details(cls, val):
+        """
+        Create an instance of this class set to the
+        ``protect_policy_scheduled_details`` tag with value ``val``.
+
+        :param ProtectPolicyScheduledDetails val:
+        :rtype: EventDetails
+        """
+        return cls("protect_policy_scheduled_details", val)
+
+    @classmethod
     def protect_policy_updated_details(cls, val):
         """
         Create an instance of this class set to the
@@ -22313,6 +22324,14 @@ class EventDetails(bb.Union):
         """
         return self._tag == "protect_policy_deactivated_details"
 
+    def is_protect_policy_scheduled_details(self):
+        """
+        Check if the union tag is ``protect_policy_scheduled_details``.
+
+        :rtype: bool
+        """
+        return self._tag == "protect_policy_scheduled_details"
+
     def is_protect_policy_updated_details(self):
         """
         Check if the union tag is ``protect_policy_updated_details``.
@@ -27949,6 +27968,16 @@ class EventDetails(bb.Union):
             raise AttributeError("tag 'protect_policy_deactivated_details' not set")
         return self._value
 
+    def get_protect_policy_scheduled_details(self):
+        """
+        Only call this if :meth:`is_protect_policy_scheduled_details` is true.
+
+        :rtype: ProtectPolicyScheduledDetails
+        """
+        if not self.is_protect_policy_scheduled_details():
+            raise AttributeError("tag 'protect_policy_scheduled_details' not set")
+        return self._value
+
     def get_protect_policy_updated_details(self):
         """
         Only call this if :meth:`is_protect_policy_updated_details` is true.
@@ -32335,6 +32364,9 @@ class EventType(bb.Union):
     :ivar EventType.protect_policy_deactivated:
         (protect) Deactivated a Dropbox Protect policy
     :vartype EventType.protect_policy_deactivated: ProtectPolicyDeactivatedType
+    :ivar EventType.protect_policy_scheduled:
+        (protect) Scheduled a Dropbox Protect policy
+    :vartype EventType.protect_policy_scheduled: ProtectPolicyScheduledType
     :ivar EventType.protect_policy_updated:
         (protect) Updated a Dropbox Protect policy
     :vartype EventType.protect_policy_updated: ProtectPolicyUpdatedType
@@ -36597,6 +36629,17 @@ class EventType(bb.Union):
         :rtype: EventType
         """
         return cls("protect_policy_deactivated", val)
+
+    @classmethod
+    def protect_policy_scheduled(cls, val):
+        """
+        Create an instance of this class set to the ``protect_policy_scheduled``
+        tag with value ``val``.
+
+        :param ProtectPolicyScheduledType val:
+        :rtype: EventType
+        """
+        return cls("protect_policy_scheduled", val)
 
     @classmethod
     def protect_policy_updated(cls, val):
@@ -42677,6 +42720,14 @@ class EventType(bb.Union):
         :rtype: bool
         """
         return self._tag == "protect_policy_deactivated"
+
+    def is_protect_policy_scheduled(self):
+        """
+        Check if the union tag is ``protect_policy_scheduled``.
+
+        :rtype: bool
+        """
+        return self._tag == "protect_policy_scheduled"
 
     def is_protect_policy_updated(self):
         """
@@ -48883,6 +48934,18 @@ class EventType(bb.Union):
             raise AttributeError("tag 'protect_policy_deactivated' not set")
         return self._value
 
+    def get_protect_policy_scheduled(self):
+        """
+        (protect) Scheduled a Dropbox Protect policy
+
+        Only call this if :meth:`is_protect_policy_scheduled` is true.
+
+        :rtype: ProtectPolicyScheduledType
+        """
+        if not self.is_protect_policy_scheduled():
+            raise AttributeError("tag 'protect_policy_scheduled' not set")
+        return self._value
+
     def get_protect_policy_updated(self):
         """
         (protect) Updated a Dropbox Protect policy
@@ -53672,6 +53735,8 @@ class EventTypeArg(bb.Union):
         (protect) Activated a Dropbox Protect policy
     :ivar EventTypeArg.protect_policy_deactivated:
         (protect) Deactivated a Dropbox Protect policy
+    :ivar EventTypeArg.protect_policy_scheduled:
+        (protect) Scheduled a Dropbox Protect policy
     :ivar EventTypeArg.protect_policy_updated:
         (protect) Updated a Dropbox Protect policy
     :ivar EventTypeArg.classification_create_report:
@@ -55002,6 +55067,8 @@ class EventTypeArg(bb.Union):
     protect_policy_activated = None
     # Attribute is overwritten below the class definition
     protect_policy_deactivated = None
+    # Attribute is overwritten below the class definition
+    protect_policy_scheduled = None
     # Attribute is overwritten below the class definition
     protect_policy_updated = None
     # Attribute is overwritten below the class definition
@@ -57984,6 +58051,14 @@ class EventTypeArg(bb.Union):
         :rtype: bool
         """
         return self._tag == "protect_policy_deactivated"
+
+    def is_protect_policy_scheduled(self):
+        """
+        Check if the union tag is ``protect_policy_scheduled``.
+
+        :rtype: bool
+        """
+        return self._tag == "protect_policy_scheduled"
 
     def is_protect_policy_updated(self):
         """
@@ -80540,6 +80615,61 @@ class ProtectPolicyDeactivatedType(bb.Struct):
 
 
 ProtectPolicyDeactivatedType_validator = bv.Struct(ProtectPolicyDeactivatedType)
+
+
+class ProtectPolicyScheduledDetails(bb.Struct):
+    """
+    Scheduled a Dropbox Protect policy.
+
+    :ivar ProtectPolicyScheduledDetails.policy_id:
+        Policy ID.
+    """
+
+    __slots__ = [
+        "_policy_id_value",
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self, policy_id=None):
+        self._policy_id_value = bb.NOT_SET
+        if policy_id is not None:
+            self.policy_id = policy_id
+
+    # Instance attribute type: str (validator is set below)
+    policy_id = bb.Attribute("policy_id")
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(ProtectPolicyScheduledDetails, self)._process_custom_annotations(
+            annotation_type, field_path, processor
+        )
+
+
+ProtectPolicyScheduledDetails_validator = bv.Struct(ProtectPolicyScheduledDetails)
+
+
+class ProtectPolicyScheduledType(bb.Struct):
+    __slots__ = [
+        "_description_value",
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self, description=None):
+        self._description_value = bb.NOT_SET
+        if description is not None:
+            self.description = description
+
+    # Instance attribute type: str (validator is set below)
+    description = bb.Attribute("description")
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(ProtectPolicyScheduledType, self)._process_custom_annotations(
+            annotation_type, field_path, processor
+        )
+
+
+ProtectPolicyScheduledType_validator = bv.Struct(ProtectPolicyScheduledType)
 
 
 class ProtectPolicyUpdatedDetails(bb.Struct):
@@ -103239,6 +103369,7 @@ EventDetails._protect_policy_activated_details_validator = ProtectPolicyActivate
 EventDetails._protect_policy_deactivated_details_validator = (
     ProtectPolicyDeactivatedDetails_validator
 )
+EventDetails._protect_policy_scheduled_details_validator = ProtectPolicyScheduledDetails_validator
 EventDetails._protect_policy_updated_details_validator = ProtectPolicyUpdatedDetails_validator
 EventDetails._classification_create_report_details_validator = (
     ClassificationCreateReportDetails_validator
@@ -104315,6 +104446,7 @@ EventDetails._tagmap = {
     "protect_internal_domains_changed_details": EventDetails._protect_internal_domains_changed_details_validator,
     "protect_policy_activated_details": EventDetails._protect_policy_activated_details_validator,
     "protect_policy_deactivated_details": EventDetails._protect_policy_deactivated_details_validator,
+    "protect_policy_scheduled_details": EventDetails._protect_policy_scheduled_details_validator,
     "protect_policy_updated_details": EventDetails._protect_policy_updated_details_validator,
     "classification_create_report_details": EventDetails._classification_create_report_details_validator,
     "classification_create_report_fail_details": EventDetails._classification_create_report_fail_details_validator,
@@ -105048,6 +105180,7 @@ EventType._protect_action_stop_sharing_validator = ProtectActionStopSharingType_
 EventType._protect_internal_domains_changed_validator = ProtectInternalDomainsChangedType_validator
 EventType._protect_policy_activated_validator = ProtectPolicyActivatedType_validator
 EventType._protect_policy_deactivated_validator = ProtectPolicyDeactivatedType_validator
+EventType._protect_policy_scheduled_validator = ProtectPolicyScheduledType_validator
 EventType._protect_policy_updated_validator = ProtectPolicyUpdatedType_validator
 EventType._classification_create_report_validator = ClassificationCreateReportType_validator
 EventType._classification_create_report_fail_validator = (
@@ -105887,6 +106020,7 @@ EventType._tagmap = {
     "protect_internal_domains_changed": EventType._protect_internal_domains_changed_validator,
     "protect_policy_activated": EventType._protect_policy_activated_validator,
     "protect_policy_deactivated": EventType._protect_policy_deactivated_validator,
+    "protect_policy_scheduled": EventType._protect_policy_scheduled_validator,
     "protect_policy_updated": EventType._protect_policy_updated_validator,
     "classification_create_report": EventType._classification_create_report_validator,
     "classification_create_report_fail": EventType._classification_create_report_fail_validator,
@@ -106521,6 +106655,7 @@ EventTypeArg._protect_action_stop_sharing_validator = bv.Void()
 EventTypeArg._protect_internal_domains_changed_validator = bv.Void()
 EventTypeArg._protect_policy_activated_validator = bv.Void()
 EventTypeArg._protect_policy_deactivated_validator = bv.Void()
+EventTypeArg._protect_policy_scheduled_validator = bv.Void()
 EventTypeArg._protect_policy_updated_validator = bv.Void()
 EventTypeArg._classification_create_report_validator = bv.Void()
 EventTypeArg._classification_create_report_fail_validator = bv.Void()
@@ -107152,6 +107287,7 @@ EventTypeArg._tagmap = {
     "protect_internal_domains_changed": EventTypeArg._protect_internal_domains_changed_validator,
     "protect_policy_activated": EventTypeArg._protect_policy_activated_validator,
     "protect_policy_deactivated": EventTypeArg._protect_policy_deactivated_validator,
+    "protect_policy_scheduled": EventTypeArg._protect_policy_scheduled_validator,
     "protect_policy_updated": EventTypeArg._protect_policy_updated_validator,
     "classification_create_report": EventTypeArg._classification_create_report_validator,
     "classification_create_report_fail": EventTypeArg._classification_create_report_fail_validator,
@@ -107862,6 +107998,7 @@ EventTypeArg.protect_action_stop_sharing = EventTypeArg("protect_action_stop_sha
 EventTypeArg.protect_internal_domains_changed = EventTypeArg("protect_internal_domains_changed")
 EventTypeArg.protect_policy_activated = EventTypeArg("protect_policy_activated")
 EventTypeArg.protect_policy_deactivated = EventTypeArg("protect_policy_deactivated")
+EventTypeArg.protect_policy_scheduled = EventTypeArg("protect_policy_scheduled")
 EventTypeArg.protect_policy_updated = EventTypeArg("protect_policy_updated")
 EventTypeArg.classification_create_report = EventTypeArg("classification_create_report")
 EventTypeArg.classification_create_report_fail = EventTypeArg("classification_create_report_fail")
@@ -113596,6 +113733,18 @@ ProtectPolicyDeactivatedType.description.validator = bv.String()
 ProtectPolicyDeactivatedType._all_field_names_ = set(["description"])
 ProtectPolicyDeactivatedType._all_fields_ = [
     ("description", ProtectPolicyDeactivatedType.description.validator)
+]
+
+ProtectPolicyScheduledDetails.policy_id.validator = bv.String()
+ProtectPolicyScheduledDetails._all_field_names_ = set(["policy_id"])
+ProtectPolicyScheduledDetails._all_fields_ = [
+    ("policy_id", ProtectPolicyScheduledDetails.policy_id.validator)
+]
+
+ProtectPolicyScheduledType.description.validator = bv.String()
+ProtectPolicyScheduledType._all_field_names_ = set(["description"])
+ProtectPolicyScheduledType._all_fields_ = [
+    ("description", ProtectPolicyScheduledType.description.validator)
 ]
 
 ProtectPolicyUpdatedDetails.policy_id.validator = bv.String()
