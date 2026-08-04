@@ -1397,6 +1397,190 @@ class GetMetadataResult(bb.Struct):
 GetMetadataResult_validator = bv.Struct(GetMetadataResult)
 
 
+class GetOcrArgs(bb.Struct):
+    """
+    Arguments for the asynchronous `get_ocr_async` route. Exactly one of
+    `file_id`, `path`, or `url` must be supplied via `file_id_or_url` to
+    identify the image or PDF whose text should be extracted via OCR (optical
+    character recognition).
+
+    :ivar GetOcrArgs.file_id_or_url:
+        Identifier of the file to run OCR on. Callers must set exactly one of
+        the `FileIdOrUrl` variants. OCR is supported for image files and PDFs,
+        including scanned / non-text PDFs; see the route description for the
+        supported formats. Requests against unsupported formats return
+        `unsupported_format_error`. NOTE: for the `url` variant, only Dropbox
+        shared links (www.dropbox.com) are supported. External (non-Dropbox)
+        URLs are not supported and return `unsupported_format_error`; import the
+        file into Dropbox and reference it by `file_id` or `path` instead.
+    """
+
+    __slots__ = [
+        "_file_id_or_url_value",
+    ]
+
+    _has_required_fields = False
+
+    def __init__(self, file_id_or_url=None):
+        self._file_id_or_url_value = bb.NOT_SET
+        if file_id_or_url is not None:
+            self.file_id_or_url = file_id_or_url
+
+    # Instance attribute type: FileIdOrUrl (validator is set below)
+    file_id_or_url = bb.Attribute("file_id_or_url", nullable=True, user_defined=True)
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(GetOcrArgs, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+
+GetOcrArgs_validator = bv.Struct(GetOcrArgs)
+
+
+class GetOcrAsyncCheckResult(bb.Union):
+    """
+    Result type for EventBus async check - must end in "CheckResult"
+
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+    """
+
+    _catch_all = "other"
+    # Attribute is overwritten below the class definition
+    in_progress = None
+    # Attribute is overwritten below the class definition
+    other = None
+
+    @classmethod
+    def complete(cls, val):
+        """
+        Create an instance of this class set to the ``complete`` tag with value
+        ``val``.
+
+        :param GetOcrResult val:
+        :rtype: GetOcrAsyncCheckResult
+        """
+        return cls("complete", val)
+
+    @classmethod
+    def failed(cls, val):
+        """
+        Create an instance of this class set to the ``failed`` tag with value
+        ``val``.
+
+        :param OcrExtractionApiV2Error val:
+        :rtype: GetOcrAsyncCheckResult
+        """
+        return cls("failed", val)
+
+    def is_in_progress(self):
+        """
+        Check if the union tag is ``in_progress``.
+
+        :rtype: bool
+        """
+        return self._tag == "in_progress"
+
+    def is_complete(self):
+        """
+        Check if the union tag is ``complete``.
+
+        :rtype: bool
+        """
+        return self._tag == "complete"
+
+    def is_failed(self):
+        """
+        Check if the union tag is ``failed``.
+
+        :rtype: bool
+        """
+        return self._tag == "failed"
+
+    def is_other(self):
+        """
+        Check if the union tag is ``other``.
+
+        :rtype: bool
+        """
+        return self._tag == "other"
+
+    def get_complete(self):
+        """
+        Only call this if :meth:`is_complete` is true.
+
+        :rtype: GetOcrResult
+        """
+        if not self.is_complete():
+            raise AttributeError("tag 'complete' not set")
+        return self._value
+
+    def get_failed(self):
+        """
+        Only call this if :meth:`is_failed` is true.
+
+        :rtype: OcrExtractionApiV2Error
+        """
+        if not self.is_failed():
+            raise AttributeError("tag 'failed' not set")
+        return self._value
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(GetOcrAsyncCheckResult, self)._process_custom_annotations(
+            annotation_type, field_path, processor
+        )
+
+
+GetOcrAsyncCheckResult_validator = bv.Union(GetOcrAsyncCheckResult)
+
+
+class GetOcrResult(bb.Struct):
+    """
+    :ivar GetOcrResult.text:
+        The plain-text content extracted from the file via OCR. Words within a
+        line are separated by a single space, lines are newline-separated in
+        reading order, and for multi-page PDFs pages are separated by a blank
+        line in page order. May be empty when no text is detected in the source.
+    :ivar GetOcrResult.hocr:
+        The same content as hOCR: HTML that carries the position of every
+        recognized word. Each page is a `<section>` holding `<p class="line">`
+        elements with one `<span>` per word, and each element carries `data-x`,
+        `data-y`, `data-width`, and `data-height` attributes in pixels relative
+        to the upright page (whose dimensions are on the `<section>`). Use this
+        when you need word coordinates -- to highlight matches over a page
+        image, for example; use `text` when you just need the words.
+    """
+
+    __slots__ = [
+        "_text_value",
+        "_hocr_value",
+    ]
+
+    _has_required_fields = False
+
+    def __init__(self, text=None, hocr=None):
+        self._text_value = bb.NOT_SET
+        self._hocr_value = bb.NOT_SET
+        if text is not None:
+            self.text = text
+        if hocr is not None:
+            self.hocr = hocr
+
+    # Instance attribute type: str (validator is set below)
+    text = bb.Attribute("text")
+
+    # Instance attribute type: str (validator is set below)
+    hocr = bb.Attribute("hocr")
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(GetOcrResult, self)._process_custom_annotations(
+            annotation_type, field_path, processor
+        )
+
+
+GetOcrResult_validator = bv.Struct(GetOcrResult)
+
+
 class GetTextArgs(bb.Struct):
     """
     Arguments for the asynchronous `get_text_async` route. Exactly one of
@@ -2246,6 +2430,189 @@ class MetadataType(bb.Union):
 MetadataType_validator = bv.Union(MetadataType)
 
 
+class OcrExtractionApiV2Error(bb.Union):
+    """
+    Reason an OCR extraction job failed. Returned in the `failed` variant of
+    `GetOcrAsyncCheckResult`. This is a semantic error union: the HTTP status of
+    the poll request itself is unaffected (a poll that surfaces a failed job is
+    still a normal successful poll response). Callers should branch on the
+    variant.
+
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+
+    :ivar OcrExtractionApiV2Error.server_error:
+        An unexpected, typically transient, server-side failure. The string is a
+        human-readable message; retrying with backoff may succeed.
+    :vartype OcrExtractionApiV2Error.server_error: str
+    :ivar OcrExtractionApiV2Error.user_error:
+        The request could not be processed as supplied (a problem with the
+        caller's input). The string is a human-readable message; retrying the
+        same request will not help.
+    :vartype OcrExtractionApiV2Error.user_error: str
+    :ivar OcrExtractionApiV2Error.not_found_error:
+        The referenced file does not exist or is not accessible.
+    :ivar OcrExtractionApiV2Error.is_a_folder_error:
+        The target is a folder, not a file.
+    """
+
+    _catch_all = "other"
+    # Attribute is overwritten below the class definition
+    unsupported_format_error = None
+    # Attribute is overwritten below the class definition
+    link_download_disabled_error = None
+    # Attribute is overwritten below the class definition
+    shared_link_password_protected = None
+    # Attribute is overwritten below the class definition
+    limit_exceeded_error = None
+    # Attribute is overwritten below the class definition
+    conversion_failure_error = None
+    # Attribute is overwritten below the class definition
+    not_found_error = None
+    # Attribute is overwritten below the class definition
+    is_a_folder_error = None
+    # Attribute is overwritten below the class definition
+    other = None
+
+    @classmethod
+    def server_error(cls, val):
+        """
+        Create an instance of this class set to the ``server_error`` tag with
+        value ``val``.
+
+        :param str val:
+        :rtype: OcrExtractionApiV2Error
+        """
+        return cls("server_error", val)
+
+    @classmethod
+    def user_error(cls, val):
+        """
+        Create an instance of this class set to the ``user_error`` tag with
+        value ``val``.
+
+        :param str val:
+        :rtype: OcrExtractionApiV2Error
+        """
+        return cls("user_error", val)
+
+    def is_server_error(self):
+        """
+        Check if the union tag is ``server_error``.
+
+        :rtype: bool
+        """
+        return self._tag == "server_error"
+
+    def is_user_error(self):
+        """
+        Check if the union tag is ``user_error``.
+
+        :rtype: bool
+        """
+        return self._tag == "user_error"
+
+    def is_unsupported_format_error(self):
+        """
+        Check if the union tag is ``unsupported_format_error``.
+
+        :rtype: bool
+        """
+        return self._tag == "unsupported_format_error"
+
+    def is_link_download_disabled_error(self):
+        """
+        Check if the union tag is ``link_download_disabled_error``.
+
+        :rtype: bool
+        """
+        return self._tag == "link_download_disabled_error"
+
+    def is_shared_link_password_protected(self):
+        """
+        Check if the union tag is ``shared_link_password_protected``.
+
+        :rtype: bool
+        """
+        return self._tag == "shared_link_password_protected"
+
+    def is_limit_exceeded_error(self):
+        """
+        Check if the union tag is ``limit_exceeded_error``.
+
+        :rtype: bool
+        """
+        return self._tag == "limit_exceeded_error"
+
+    def is_conversion_failure_error(self):
+        """
+        Check if the union tag is ``conversion_failure_error``.
+
+        :rtype: bool
+        """
+        return self._tag == "conversion_failure_error"
+
+    def is_not_found_error(self):
+        """
+        Check if the union tag is ``not_found_error``.
+
+        :rtype: bool
+        """
+        return self._tag == "not_found_error"
+
+    def is_is_a_folder_error(self):
+        """
+        Check if the union tag is ``is_a_folder_error``.
+
+        :rtype: bool
+        """
+        return self._tag == "is_a_folder_error"
+
+    def is_other(self):
+        """
+        Check if the union tag is ``other``.
+
+        :rtype: bool
+        """
+        return self._tag == "other"
+
+    def get_server_error(self):
+        """
+        An unexpected, typically transient, server-side failure. The string is a
+        human-readable message; retrying with backoff may succeed.
+
+        Only call this if :meth:`is_server_error` is true.
+
+        :rtype: str
+        """
+        if not self.is_server_error():
+            raise AttributeError("tag 'server_error' not set")
+        return self._value
+
+    def get_user_error(self):
+        """
+        The request could not be processed as supplied (a problem with the
+        caller's input). The string is a human-readable message; retrying the
+        same request will not help.
+
+        Only call this if :meth:`is_user_error` is true.
+
+        :rtype: str
+        """
+        if not self.is_user_error():
+            raise AttributeError("tag 'user_error' not set")
+        return self._value
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(OcrExtractionApiV2Error, self)._process_custom_annotations(
+            annotation_type, field_path, processor
+        )
+
+
+OcrExtractionApiV2Error_validator = bv.Union(OcrExtractionApiV2Error)
+
+
 class OfficeFileType(bb.Union):
     """
     The kind of MS Office document that produced an `ApiOfficeMetadata` result.
@@ -3036,6 +3403,37 @@ GetMetadataResult._all_fields_ = [
     ("metadata", GetMetadataResult.metadata.validator),
 ]
 
+GetOcrArgs.file_id_or_url.validator = bv.Nullable(FileIdOrUrl_validator)
+GetOcrArgs._all_field_names_ = set(["file_id_or_url"])
+GetOcrArgs._all_fields_ = [("file_id_or_url", GetOcrArgs.file_id_or_url.validator)]
+
+GetOcrAsyncCheckResult._in_progress_validator = bv.Void()
+GetOcrAsyncCheckResult._complete_validator = GetOcrResult_validator
+GetOcrAsyncCheckResult._failed_validator = OcrExtractionApiV2Error_validator
+GetOcrAsyncCheckResult._other_validator = bv.Void()
+GetOcrAsyncCheckResult._tagmap = {
+    "in_progress": GetOcrAsyncCheckResult._in_progress_validator,
+    "complete": GetOcrAsyncCheckResult._complete_validator,
+    "failed": GetOcrAsyncCheckResult._failed_validator,
+    "other": GetOcrAsyncCheckResult._other_validator,
+}
+
+GetOcrAsyncCheckResult.in_progress = GetOcrAsyncCheckResult("in_progress")
+GetOcrAsyncCheckResult.other = GetOcrAsyncCheckResult("other")
+
+GetOcrResult.text.validator = bv.String()
+GetOcrResult.hocr.validator = bv.String()
+GetOcrResult._all_field_names_ = set(
+    [
+        "text",
+        "hocr",
+    ]
+)
+GetOcrResult._all_fields_ = [
+    ("text", GetOcrResult.text.validator),
+    ("hocr", GetOcrResult.hocr.validator),
+]
+
 GetTextArgs.file_id_or_url.validator = bv.Nullable(FileIdOrUrl_validator)
 GetTextArgs._all_field_names_ = set(["file_id_or_url"])
 GetTextArgs._all_fields_ = [("file_id_or_url", GetTextArgs.file_id_or_url.validator)]
@@ -3207,6 +3605,46 @@ MetadataType.metadata_type_pdf = MetadataType("metadata_type_pdf")
 MetadataType.metadata_type_office = MetadataType("metadata_type_office")
 MetadataType.other = MetadataType("other")
 
+OcrExtractionApiV2Error._server_error_validator = bv.String()
+OcrExtractionApiV2Error._user_error_validator = bv.String()
+OcrExtractionApiV2Error._unsupported_format_error_validator = bv.Void()
+OcrExtractionApiV2Error._link_download_disabled_error_validator = bv.Void()
+OcrExtractionApiV2Error._shared_link_password_protected_validator = bv.Void()
+OcrExtractionApiV2Error._limit_exceeded_error_validator = bv.Void()
+OcrExtractionApiV2Error._conversion_failure_error_validator = bv.Void()
+OcrExtractionApiV2Error._not_found_error_validator = bv.Void()
+OcrExtractionApiV2Error._is_a_folder_error_validator = bv.Void()
+OcrExtractionApiV2Error._other_validator = bv.Void()
+OcrExtractionApiV2Error._tagmap = {
+    "server_error": OcrExtractionApiV2Error._server_error_validator,
+    "user_error": OcrExtractionApiV2Error._user_error_validator,
+    "unsupported_format_error": OcrExtractionApiV2Error._unsupported_format_error_validator,
+    "link_download_disabled_error": OcrExtractionApiV2Error._link_download_disabled_error_validator,
+    "shared_link_password_protected": OcrExtractionApiV2Error._shared_link_password_protected_validator,
+    "limit_exceeded_error": OcrExtractionApiV2Error._limit_exceeded_error_validator,
+    "conversion_failure_error": OcrExtractionApiV2Error._conversion_failure_error_validator,
+    "not_found_error": OcrExtractionApiV2Error._not_found_error_validator,
+    "is_a_folder_error": OcrExtractionApiV2Error._is_a_folder_error_validator,
+    "other": OcrExtractionApiV2Error._other_validator,
+}
+
+OcrExtractionApiV2Error.unsupported_format_error = OcrExtractionApiV2Error(
+    "unsupported_format_error"
+)
+OcrExtractionApiV2Error.link_download_disabled_error = OcrExtractionApiV2Error(
+    "link_download_disabled_error"
+)
+OcrExtractionApiV2Error.shared_link_password_protected = OcrExtractionApiV2Error(
+    "shared_link_password_protected"
+)
+OcrExtractionApiV2Error.limit_exceeded_error = OcrExtractionApiV2Error("limit_exceeded_error")
+OcrExtractionApiV2Error.conversion_failure_error = OcrExtractionApiV2Error(
+    "conversion_failure_error"
+)
+OcrExtractionApiV2Error.not_found_error = OcrExtractionApiV2Error("not_found_error")
+OcrExtractionApiV2Error.is_a_folder_error = OcrExtractionApiV2Error("is_a_folder_error")
+OcrExtractionApiV2Error.other = OcrExtractionApiV2Error("other")
+
 OfficeFileType._office_filetype_unknown_validator = bv.Void()
 OfficeFileType._office_filetype_word_validator = bv.Void()
 OfficeFileType._office_filetype_powerpoint_validator = bv.Void()
@@ -3354,6 +3792,8 @@ GetMarkdownArgs.enable_ocr.default = False
 GetMarkdownArgs.embed_images.default = False
 GetMarkdownResult.markdown.default = ""
 GetMetadataResult.metadata_type.default = MetadataType.metadata_type_unknown
+GetOcrResult.text.default = ""
+GetOcrResult.hocr.default = ""
 GetTextResult.text.default = ""
 GetTranscriptArgs.timestamp_level.default = TimestampLevel.sentence
 GetTranscriptArgs.included_special_words.default = ""
@@ -3392,6 +3832,24 @@ get_metadata_async_check = bb.Route(
     False,
     async_.PollArg_validator,
     GetMetadataAsyncCheckResult_validator,
+    async_.PollError_validator,
+    {"auth": "app, user", "host": "api", "style": "rpc"},
+)
+get_ocr_async = bb.Route(
+    "get_ocr_async",
+    1,
+    False,
+    GetOcrArgs_validator,
+    async_.LaunchResultBase_validator,
+    bv.Void(),
+    {"auth": "app, user", "host": "api", "style": "rpc"},
+)
+get_ocr_async_check = bb.Route(
+    "get_ocr_async/check",
+    1,
+    False,
+    async_.PollArg_validator,
+    GetOcrAsyncCheckResult_validator,
     async_.PollError_validator,
     {"auth": "app, user", "host": "api", "style": "rpc"},
 )
@@ -3437,6 +3895,8 @@ ROUTES = {
     "get_markdown_async/check": get_markdown_async_check,
     "get_metadata_async": get_metadata_async,
     "get_metadata_async/check": get_metadata_async_check,
+    "get_ocr_async": get_ocr_async,
+    "get_ocr_async/check": get_ocr_async_check,
     "get_text_async": get_text_async,
     "get_text_async/check": get_text_async_check,
     "get_transcript_async": get_transcript_async,

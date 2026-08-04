@@ -4595,6 +4595,68 @@ class DropboxBase(object):
         )
         return r
 
+    def riviera_get_ocr_async(self, file_id_or_url=None):
+        """
+        Asynchronous OCR (optical character recognition) text extraction for
+        images and PDFs, including scanned / non-text PDFs. Supported formats: -
+        Image formats: .bmp, .gif, .heic, .jpeg, .jpg, .png, .tif, .tiff, .webp.
+        - PDF format: .pdf. Unsupported formats return an
+        `unsupported_format_error`. For the `url` variant only Dropbox shared
+        links are supported; external URLs return `unsupported_format_error`.
+        Text-based PDFs already carry a text layer, so OCR is not run against
+        them and the result is empty; use `get_text_async` to read the embedded
+        text layer of such a PDF. The result carries the extracted words as
+        plain text, plus the same content as hOCR with per-word coordinates.
+
+        Route attributes:
+            scope: files.content.read
+
+        :param file_id_or_url: Identifier of the file to run OCR on. Callers
+            must set exactly one of the `FileIdOrUrl` variants. OCR is supported
+            for image files and PDFs, including scanned / non-text PDFs; see the
+            route description for the supported formats. Requests against
+            unsupported formats return `unsupported_format_error`. NOTE: for the
+            `url` variant, only Dropbox shared links (www.dropbox.com) are
+            supported. External (non-Dropbox) URLs are not supported and return
+            `unsupported_format_error`; import the file into Dropbox and
+            reference it by `file_id` or `path` instead.
+        :type file_id_or_url: Nullable[:class:`dropbox.riviera.FileIdOrUrl`]
+        :rtype: :class:`dropbox.async_.LaunchResultBase`
+        """
+        arg = riviera.GetOcrArgs(file_id_or_url)
+        r = self.request(
+            riviera.get_ocr_async,
+            "riviera",
+            arg,
+            None,
+        )
+        return r
+
+    def riviera_get_ocr_async_check(self, async_job_id):
+        """
+        Returns the status or result of specified get_ocr_async task.
+
+        Route attributes:
+            scope: files.content.read
+
+        :param async_job_id: Id of the asynchronous job. This is the value of a
+            response returned from the method that launched the job.
+        :type async_job_id: str
+        :rtype: :class:`dropbox.riviera.GetOcrAsyncCheckResult`
+        :raises: :class:`.exceptions.ApiError`
+
+        If this raises, ApiError will contain:
+            :class:`dropbox.async_.PollError`
+        """
+        arg = async_.PollArg(async_job_id)
+        r = self.request(
+            riviera.get_ocr_async_check,
+            "riviera",
+            arg,
+            None,
+        )
+        return r
+
     def riviera_get_text_async(self, file_id_or_url=None):
         """
         Asynchronous plain-text extraction from documents. Supported formats
