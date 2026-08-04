@@ -284,7 +284,15 @@ class _DropboxTransport(object):
             ),
         )
 
-    def request(self, route, namespace, request_arg, request_binary, timeout=None):
+    def request(
+        self,
+        route,
+        namespace,
+        request_arg,
+        request_binary,
+        timeout=None,
+        extra_headers=None,
+    ):
         """
         Makes a request to the Dropbox API and in the process validates that
         the route argument and result are the expected data types. The
@@ -304,6 +312,7 @@ class _DropboxTransport(object):
             server. After the timeout the client will give up on
             connection. If `None`, will use default timeout set on
             Dropbox object.  Defaults to `None`.
+        :param dict extra_headers: Additional HTTP headers for this request.
         :return: The route's result.
         """
 
@@ -338,6 +347,7 @@ class _DropboxTransport(object):
             auth_type,
             request_binary,
             timeout=timeout,
+            extra_headers=extra_headers,
         )
         decoded_obj_result = json.loads(res.obj_result)
         if isinstance(res, RouteResult):
@@ -521,6 +531,7 @@ class _DropboxTransport(object):
         auth_type,
         request_binary,
         timeout=None,
+        extra_headers=None,
     ):
         """
         See :meth:`request_json_object` for description of parameters.
@@ -542,6 +553,7 @@ class _DropboxTransport(object):
                     auth_type,
                     request_binary,
                     timeout=timeout,
+                    extra_headers=extra_headers,
                 )
             except AuthError as e:
                 if e.error and e.error.is_expired_access_token():
@@ -591,6 +603,7 @@ class _DropboxTransport(object):
         auth_type,
         request_binary,
         timeout=None,
+        extra_headers=None,
     ):
         """
         See :meth:`request_json_string_with_retry` for description of
@@ -611,11 +624,13 @@ class _DropboxTransport(object):
         url = self._get_route_url(fq_hostname, func_name)
 
         headers = {"User-Agent": self._user_agent}
+        managed_auth_header = None
+
         auth_types = auth_type.replace(" ", "").split(",")
         if (USER_AUTH in auth_types or TEAM_AUTH in auth_types) and self._oauth2_access_token:
-            headers["Authorization"] = "Bearer %s" % self._oauth2_access_token
             if self._headers:
                 headers.update(self._headers)
+            managed_auth_header = "Bearer %s" % self._oauth2_access_token
         elif APP_AUTH in auth_types:
             if self._app_key is None or self._app_secret is None:
                 raise BadInputException(
@@ -624,13 +639,19 @@ class _DropboxTransport(object):
             auth_header = base64.b64encode(
                 "{}:{}".format(self._app_key, self._app_secret).encode("utf-8")
             )
-            headers["Authorization"] = "Basic {}".format(auth_header.decode("utf-8"))
             if self._headers:
                 headers.update(self._headers)
+            managed_auth_header = "Basic {}".format(auth_header.decode("utf-8"))
         elif auth_type == NO_AUTH:
             pass
         else:
             raise BadInputException("Unhandled auth type: {}".format(auth_type))
+
+        if extra_headers:
+            headers.update(extra_headers)
+
+        if managed_auth_header:
+            headers["Authorization"] = managed_auth_header
 
         # The contents of the body of the HTTP request
         body = None

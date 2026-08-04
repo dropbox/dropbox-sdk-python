@@ -67,7 +67,17 @@ def main():
 
     o = subprocess.check_output(
         (
-            ["python", "-m", "stone.cli", "python_client", dropbox_pkg_path]
+            [
+                "python",
+                "-m",
+                "stone.cli",
+                os.path.join(
+                    os.path.dirname(__file__),
+                    "generator",
+                    "dropbox_python_client.stoneg.py",
+                ),
+                dropbox_pkg_path,
+            ]
             + specs
             + ["-a", "host", "-a", "style", "-a", "auth", "-a", "scope"]
             + [

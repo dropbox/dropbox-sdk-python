@@ -33,7 +33,9 @@ class DropboxBase(object):
     __metaclass__ = ABCMeta
 
     @abstractmethod
-    def request(self, route, namespace, request_arg, request_binary, timeout=None):
+    def request(
+        self, route, namespace, request_arg, request_binary, timeout=None, extra_headers=None
+    ):
         pass
 
     # ------------------------------------------
@@ -1491,13 +1493,14 @@ class DropboxBase(object):
         )
         return r
 
-    def files_download(self, path, rev=None):
+    def files_download(self, path, rev=None, extra_headers=None):
         """
         Download a file from a user's Dropbox.
 
         Route attributes:
             scope: files.content.read
 
+        :param object extra_headers: Additional HTTP headers for this request.
         :param path: The path of the file to download.
         :type path: str
         :param rev: Field is deprecated. Please specify revision in ``path``
@@ -1522,10 +1525,11 @@ class DropboxBase(object):
             "files",
             arg,
             None,
+            extra_headers=extra_headers,
         )
         return r
 
-    def files_download_to_file(self, download_path, path, rev=None):
+    def files_download_to_file(self, download_path, path, rev=None, extra_headers=None):
         """
         Download a file from a user's Dropbox.
 
@@ -1533,6 +1537,7 @@ class DropboxBase(object):
             scope: files.content.read
 
         :param str download_path: Path on local machine to save file.
+        :param object extra_headers: Additional HTTP headers for this request.
         :param path: The path of the file to download.
         :type path: str
         :param rev: Field is deprecated. Please specify revision in ``path``
@@ -1550,6 +1555,7 @@ class DropboxBase(object):
             "files",
             arg,
             None,
+            extra_headers=extra_headers,
         )
         self._save_body_to_file(download_path, r[1])
         return r[0]
