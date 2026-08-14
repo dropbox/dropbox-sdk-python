@@ -201,14 +201,22 @@ class DropboxPythonClientBackend(python_client.PythonClientBackend):
                 "'{}'".format(namespace.name),
                 "arg",
                 "None",
-                "extra_headers=extra_headers",
             ]
 
-            self.generate_multiline_list(
-                args,
-                "r = self.request",
-                compact=False,
-            )
+            self.emit("if extra_headers is None:")
+            with self.indent():
+                self.generate_multiline_list(
+                    args,
+                    "r = self.request",
+                    compact=False,
+                )
+            self.emit("else:")
+            with self.indent():
+                self.generate_multiline_list(
+                    args + ["extra_headers=extra_headers"],
+                    "r = self.request",
+                    compact=False,
+                )
 
             if download_to_file:
                 self.emit("self._save_body_to_file(download_path, r[1])")

@@ -15,6 +15,7 @@ Dropbox for Python Documentation
    api/contacts
    api/dropbox
    api/exceptions
+   api/file_transfer
    api/file_properties
    api/file_requests
    api/files

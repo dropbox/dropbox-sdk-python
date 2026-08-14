@@ -57,7 +57,43 @@ We provide `Examples`_ to help get you started with a lot of the basic functiona
     - `Commandline OAuth PKCE <https://github.com/dropbox/dropbox-sdk-python/blob/main/example/oauth/commandline-oauth-pkce.py>`_ - Shows a simple example of commandline oauth using PKCE.
 - **Other Examples**
     - `Updown <https://github.com/dropbox/dropbox-sdk-python/blob/main/example/updown.py>`_ - Sample application that uploads the contents of your ``Downloads`` folder to Dropbox.
+    - `Reliable file transfer <https://github.com/dropbox/dropbox-sdk-python/blob/main/example/file_transfer.py>`_ - Downloads and uploads files with retry, progress, and content validation helpers.
     - `Backup and Restore <https://github.com/dropbox/dropbox-sdk-python/tree/main/example/back-up-and-restore>`_ - Sample application that shows how you can backup a file and restore previous versions if the file was modified/corrupted in any way.
+
+Reliable File Transfers
+=======================
+
+Use ``dropbox.file_transfer`` when copying Dropbox files to or from local
+storage and you want retry, progress, validation, byte/file targets, stream/file
+sources, and optional parallel ranged transfers around the generated
+``files_*`` methods.
+
+.. code-block:: python
+
+    import dropbox
+    from dropbox import files
+    from dropbox.file_transfer import (
+        DownloadOptions,
+        File,
+        FileUpload,
+        Uploader,
+        UploadOptions,
+        Downloader,
+    )
+
+    dbx = dropbox.Dropbox("YOUR_ACCESS_TOKEN")
+
+    Downloader(dbx).download(
+        "/large-file.bin",
+        File("large-file.bin"),
+        DownloadOptions(parallel_downloads=4),
+    )
+
+    Uploader(dbx).upload(
+        FileUpload("large-file.bin"),
+        files.CommitInfo("/large-file.bin", mode=files.WriteMode.overwrite),
+        UploadOptions(parallel_uploads=4),
+    )
 
 Getting Help
 ============

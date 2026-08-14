@@ -1520,13 +1520,16 @@ class DropboxBase(object):
         context manager to ensure this.
         """
         arg = files.DownloadArg(path, rev)
-        r = self.request(
-            files.download,
-            "files",
-            arg,
-            None,
-            extra_headers=extra_headers,
-        )
+        if extra_headers is None:
+            r = self.request(files.download, "files", arg, None)
+        else:
+            r = self.request(
+                files.download,
+                "files",
+                arg,
+                None,
+                extra_headers=extra_headers,
+            )
         return r
 
     def files_download_to_file(self, download_path, path, rev=None, extra_headers=None):
@@ -1550,13 +1553,16 @@ class DropboxBase(object):
             :class:`dropbox.files.DownloadError`
         """
         arg = files.DownloadArg(path, rev)
-        r = self.request(
-            files.download,
-            "files",
-            arg,
-            None,
-            extra_headers=extra_headers,
-        )
+        if extra_headers is None:
+            r = self.request(files.download, "files", arg, None)
+        else:
+            r = self.request(
+                files.download,
+                "files",
+                arg,
+                None,
+                extra_headers=extra_headers,
+            )
         self._save_body_to_file(download_path, r[1])
         return r[0]
 
