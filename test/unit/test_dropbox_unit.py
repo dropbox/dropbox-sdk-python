@@ -20,7 +20,7 @@ from dropbox.dropbox_client import (
     RouteResult,
     USER_AUTH,
 )
-from dropbox.exceptions import AuthError, BadInputError
+from dropbox.exceptions import ApiError, AuthError, BadInputError
 from dropbox.oauth import OAuth2FlowNoRedirectResult, DropboxOAuth2FlowNoRedirect
 
 APP_KEY = "dummy_app_key"
@@ -433,6 +433,16 @@ class TestClient:
 
         assert captured["extra_headers"] == extra_headers
 
+    def test_files_download_without_headers_supports_legacy_request_override(self):
+        dbx = Dropbox(oauth2_access_token=ACCESS_TOKEN)
+
+        def legacy_request(route, namespace, request_arg, request_binary, timeout=None):
+            return object(), object()
+
+        dbx.request = legacy_request
+
+        dbx.files_download("/test.txt")
+
     def test_base_request_signature_accepts_extra_headers(self):
         parameters = inspect.signature(DropboxBase.request).parameters
 
@@ -481,6 +491,23 @@ class TestClient:
         assert headers["Range"] == "bytes=0-99"
         assert headers["X-Client-Header"] == "client-value"
         assert headers["Dropbox-API-Arg"] == '{"path": "/test.txt"}'
+
+    def test_files_download_with_range_headers_preserves_api_errors(self):
+        session_obj = create_session()
+        post_response = requests.Response()
+        post_response.status_code = 409
+        post_response.headers = {
+            "content-type": "application/json",
+            "x-dropbox-request-id": "request-id",
+        }
+        post_response._content = b'{"error": {".tag": "path", "path": {".tag": "not_found"}}}'
+        session_obj.post = mock.MagicMock(return_value=post_response)
+        dbx = Dropbox(oauth2_access_token=ACCESS_TOKEN, session=session_obj)
+
+        with pytest.raises(ApiError) as error:
+            dbx.files_download("/missing.txt", extra_headers={"Range": "bytes=0-0"})
+
+        assert error.value.error.is_path()
 
     def test_Dropbox_with_expired_offline_token(self, session_instance):
         # Test Offline Case w/ invalid access
