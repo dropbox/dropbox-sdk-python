@@ -1521,7 +1521,12 @@ class DropboxBase(object):
         """
         arg = files.DownloadArg(path, rev)
         if extra_headers is None:
-            r = self.request(files.download, "files", arg, None)
+            r = self.request(
+                files.download,
+                "files",
+                arg,
+                None,
+            )
         else:
             r = self.request(
                 files.download,
@@ -1554,7 +1559,12 @@ class DropboxBase(object):
         """
         arg = files.DownloadArg(path, rev)
         if extra_headers is None:
-            r = self.request(files.download, "files", arg, None)
+            r = self.request(
+                files.download,
+                "files",
+                arg,
+                None,
+            )
         else:
             r = self.request(
                 files.download,
