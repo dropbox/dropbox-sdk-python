@@ -16125,6 +16125,17 @@ class EventDetails(bb.Union):
         return cls("protect_action_remove_collaborator_details", val)
 
     @classmethod
+    def protect_action_remove_domains_details(cls, val):
+        """
+        Create an instance of this class set to the
+        ``protect_action_remove_domains_details`` tag with value ``val``.
+
+        :param ProtectActionRemoveDomainsDetails val:
+        :rtype: EventDetails
+        """
+        return cls("protect_action_remove_domains_details", val)
+
+    @classmethod
     def protect_action_remove_link_details(cls, val):
         """
         Create an instance of this class set to the
@@ -22319,6 +22330,14 @@ class EventDetails(bb.Union):
         """
         return self._tag == "protect_action_remove_collaborator_details"
 
+    def is_protect_action_remove_domains_details(self):
+        """
+        Check if the union tag is ``protect_action_remove_domains_details``.
+
+        :rtype: bool
+        """
+        return self._tag == "protect_action_remove_domains_details"
+
     def is_protect_action_remove_link_details(self):
         """
         Check if the union tag is ``protect_action_remove_link_details``.
@@ -27977,6 +27996,16 @@ class EventDetails(bb.Union):
             raise AttributeError("tag 'protect_action_remove_collaborator_details' not set")
         return self._value
 
+    def get_protect_action_remove_domains_details(self):
+        """
+        Only call this if :meth:`is_protect_action_remove_domains_details` is true.
+
+        :rtype: ProtectActionRemoveDomainsDetails
+        """
+        if not self.is_protect_action_remove_domains_details():
+            raise AttributeError("tag 'protect_action_remove_domains_details' not set")
+        return self._value
+
     def get_protect_action_remove_link_details(self):
         """
         Only call this if :meth:`is_protect_action_remove_link_details` is true.
@@ -32442,6 +32471,9 @@ class EventType(bb.Union):
     :ivar EventType.protect_action_remove_collaborator:
         (protect) Removed collaborators via Dropbox Protect
     :vartype EventType.protect_action_remove_collaborator: ProtectActionRemoveCollaboratorType
+    :ivar EventType.protect_action_remove_domains:
+        (protect) Removed domains via Dropbox Protect
+    :vartype EventType.protect_action_remove_domains: ProtectActionRemoveDomainsType
     :ivar EventType.protect_action_remove_link:
         (protect) Removed a link via Dropbox Protect
     :vartype EventType.protect_action_remove_link: ProtectActionRemoveLinkType
@@ -36677,6 +36709,17 @@ class EventType(bb.Union):
         :rtype: EventType
         """
         return cls("protect_action_remove_collaborator", val)
+
+    @classmethod
+    def protect_action_remove_domains(cls, val):
+        """
+        Create an instance of this class set to the
+        ``protect_action_remove_domains`` tag with value ``val``.
+
+        :param ProtectActionRemoveDomainsType val:
+        :rtype: EventType
+        """
+        return cls("protect_action_remove_domains", val)
 
     @classmethod
     def protect_action_remove_link(cls, val):
@@ -42818,6 +42861,14 @@ class EventType(bb.Union):
         :rtype: bool
         """
         return self._tag == "protect_action_remove_collaborator"
+
+    def is_protect_action_remove_domains(self):
+        """
+        Check if the union tag is ``protect_action_remove_domains``.
+
+        :rtype: bool
+        """
+        return self._tag == "protect_action_remove_domains"
 
     def is_protect_action_remove_link(self):
         """
@@ -49036,6 +49087,18 @@ class EventType(bb.Union):
             raise AttributeError("tag 'protect_action_remove_collaborator' not set")
         return self._value
 
+    def get_protect_action_remove_domains(self):
+        """
+        (protect) Removed domains via Dropbox Protect
+
+        Only call this if :meth:`is_protect_action_remove_domains` is true.
+
+        :rtype: ProtectActionRemoveDomainsType
+        """
+        if not self.is_protect_action_remove_domains():
+            raise AttributeError("tag 'protect_action_remove_domains' not set")
+        return self._value
+
     def get_protect_action_remove_link(self):
         """
         (protect) Removed a link via Dropbox Protect
@@ -53928,6 +53991,8 @@ class EventTypeArg(bb.Union):
         (protect) Exported content via Dropbox Protect
     :ivar EventTypeArg.protect_action_remove_collaborator:
         (protect) Removed collaborators via Dropbox Protect
+    :ivar EventTypeArg.protect_action_remove_domains:
+        (protect) Removed domains via Dropbox Protect
     :ivar EventTypeArg.protect_action_remove_link:
         (protect) Removed a link via Dropbox Protect
     :ivar EventTypeArg.protect_action_stop_sharing:
@@ -55267,6 +55332,8 @@ class EventTypeArg(bb.Union):
     protect_action_export = None
     # Attribute is overwritten below the class definition
     protect_action_remove_collaborator = None
+    # Attribute is overwritten below the class definition
+    protect_action_remove_domains = None
     # Attribute is overwritten below the class definition
     protect_action_remove_link = None
     # Attribute is overwritten below the class definition
@@ -58227,6 +58294,14 @@ class EventTypeArg(bb.Union):
         :rtype: bool
         """
         return self._tag == "protect_action_remove_collaborator"
+
+    def is_protect_action_remove_domains(self):
+        """
+        Check if the union tag is ``protect_action_remove_domains``.
+
+        :rtype: bool
+        """
+        return self._tag == "protect_action_remove_domains"
 
     def is_protect_action_remove_link(self):
         """
@@ -80666,6 +80741,61 @@ class ProtectActionRemoveCollaboratorType(bb.Struct):
 
 
 ProtectActionRemoveCollaboratorType_validator = bv.Struct(ProtectActionRemoveCollaboratorType)
+
+
+class ProtectActionRemoveDomainsDetails(bb.Struct):
+    """
+    Removed domains via Dropbox Protect.
+
+    :ivar ProtectActionRemoveDomainsDetails.action_id:
+        Action ID.
+    """
+
+    __slots__ = [
+        "_action_id_value",
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self, action_id=None):
+        self._action_id_value = bb.NOT_SET
+        if action_id is not None:
+            self.action_id = action_id
+
+    # Instance attribute type: str (validator is set below)
+    action_id = bb.Attribute("action_id")
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(ProtectActionRemoveDomainsDetails, self)._process_custom_annotations(
+            annotation_type, field_path, processor
+        )
+
+
+ProtectActionRemoveDomainsDetails_validator = bv.Struct(ProtectActionRemoveDomainsDetails)
+
+
+class ProtectActionRemoveDomainsType(bb.Struct):
+    __slots__ = [
+        "_description_value",
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self, description=None):
+        self._description_value = bb.NOT_SET
+        if description is not None:
+            self.description = description
+
+    # Instance attribute type: str (validator is set below)
+    description = bb.Attribute("description")
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(ProtectActionRemoveDomainsType, self)._process_custom_annotations(
+            annotation_type, field_path, processor
+        )
+
+
+ProtectActionRemoveDomainsType_validator = bv.Struct(ProtectActionRemoveDomainsType)
 
 
 class ProtectActionRemoveLinkDetails(bb.Struct):
@@ -104654,6 +104784,9 @@ EventDetails._protect_action_export_details_validator = ProtectActionExportDetai
 EventDetails._protect_action_remove_collaborator_details_validator = (
     ProtectActionRemoveCollaboratorDetails_validator
 )
+EventDetails._protect_action_remove_domains_details_validator = (
+    ProtectActionRemoveDomainsDetails_validator
+)
 EventDetails._protect_action_remove_link_details_validator = (
     ProtectActionRemoveLinkDetails_validator
 )
@@ -105746,6 +105879,7 @@ EventDetails._tagmap = {
     "protect_action_delete_details": EventDetails._protect_action_delete_details_validator,
     "protect_action_export_details": EventDetails._protect_action_export_details_validator,
     "protect_action_remove_collaborator_details": EventDetails._protect_action_remove_collaborator_details_validator,
+    "protect_action_remove_domains_details": EventDetails._protect_action_remove_domains_details_validator,
     "protect_action_remove_link_details": EventDetails._protect_action_remove_link_details_validator,
     "protect_action_stop_sharing_details": EventDetails._protect_action_stop_sharing_details_validator,
     "protect_internal_domains_changed_details": EventDetails._protect_internal_domains_changed_details_validator,
@@ -106483,6 +106617,7 @@ EventType._protect_action_export_validator = ProtectActionExportType_validator
 EventType._protect_action_remove_collaborator_validator = (
     ProtectActionRemoveCollaboratorType_validator
 )
+EventType._protect_action_remove_domains_validator = ProtectActionRemoveDomainsType_validator
 EventType._protect_action_remove_link_validator = ProtectActionRemoveLinkType_validator
 EventType._protect_action_stop_sharing_validator = ProtectActionStopSharingType_validator
 EventType._protect_internal_domains_changed_validator = ProtectInternalDomainsChangedType_validator
@@ -107330,6 +107465,7 @@ EventType._tagmap = {
     "protect_action_delete": EventType._protect_action_delete_validator,
     "protect_action_export": EventType._protect_action_export_validator,
     "protect_action_remove_collaborator": EventType._protect_action_remove_collaborator_validator,
+    "protect_action_remove_domains": EventType._protect_action_remove_domains_validator,
     "protect_action_remove_link": EventType._protect_action_remove_link_validator,
     "protect_action_stop_sharing": EventType._protect_action_stop_sharing_validator,
     "protect_internal_domains_changed": EventType._protect_internal_domains_changed_validator,
@@ -107968,6 +108104,7 @@ EventTypeArg._protect_action_add_link_validator = bv.Void()
 EventTypeArg._protect_action_delete_validator = bv.Void()
 EventTypeArg._protect_action_export_validator = bv.Void()
 EventTypeArg._protect_action_remove_collaborator_validator = bv.Void()
+EventTypeArg._protect_action_remove_domains_validator = bv.Void()
 EventTypeArg._protect_action_remove_link_validator = bv.Void()
 EventTypeArg._protect_action_stop_sharing_validator = bv.Void()
 EventTypeArg._protect_internal_domains_changed_validator = bv.Void()
@@ -108603,6 +108740,7 @@ EventTypeArg._tagmap = {
     "protect_action_delete": EventTypeArg._protect_action_delete_validator,
     "protect_action_export": EventTypeArg._protect_action_export_validator,
     "protect_action_remove_collaborator": EventTypeArg._protect_action_remove_collaborator_validator,
+    "protect_action_remove_domains": EventTypeArg._protect_action_remove_domains_validator,
     "protect_action_remove_link": EventTypeArg._protect_action_remove_link_validator,
     "protect_action_stop_sharing": EventTypeArg._protect_action_stop_sharing_validator,
     "protect_internal_domains_changed": EventTypeArg._protect_internal_domains_changed_validator,
@@ -109317,6 +109455,7 @@ EventTypeArg.protect_action_add_link = EventTypeArg("protect_action_add_link")
 EventTypeArg.protect_action_delete = EventTypeArg("protect_action_delete")
 EventTypeArg.protect_action_export = EventTypeArg("protect_action_export")
 EventTypeArg.protect_action_remove_collaborator = EventTypeArg("protect_action_remove_collaborator")
+EventTypeArg.protect_action_remove_domains = EventTypeArg("protect_action_remove_domains")
 EventTypeArg.protect_action_remove_link = EventTypeArg("protect_action_remove_link")
 EventTypeArg.protect_action_stop_sharing = EventTypeArg("protect_action_stop_sharing")
 EventTypeArg.protect_internal_domains_changed = EventTypeArg("protect_internal_domains_changed")
@@ -115035,6 +115174,18 @@ ProtectActionRemoveCollaboratorType.description.validator = bv.String()
 ProtectActionRemoveCollaboratorType._all_field_names_ = set(["description"])
 ProtectActionRemoveCollaboratorType._all_fields_ = [
     ("description", ProtectActionRemoveCollaboratorType.description.validator)
+]
+
+ProtectActionRemoveDomainsDetails.action_id.validator = bv.String()
+ProtectActionRemoveDomainsDetails._all_field_names_ = set(["action_id"])
+ProtectActionRemoveDomainsDetails._all_fields_ = [
+    ("action_id", ProtectActionRemoveDomainsDetails.action_id.validator)
+]
+
+ProtectActionRemoveDomainsType.description.validator = bv.String()
+ProtectActionRemoveDomainsType._all_field_names_ = set(["description"])
+ProtectActionRemoveDomainsType._all_fields_ = [
+    ("description", ProtectActionRemoveDomainsType.description.validator)
 ]
 
 ProtectActionRemoveLinkDetails.action_id.validator = bv.String()
