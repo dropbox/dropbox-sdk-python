@@ -14788,7 +14788,7 @@ UploadSessionAppendArg._all_fields_ = [
 ]
 
 UploadSessionAppendBatchArg.entries.validator = bv.List(
-    UploadSessionAppendBatchArgEntry_validator, max_items=1000
+    UploadSessionAppendBatchArgEntry_validator, max_items=500
 )
 UploadSessionAppendBatchArg.content_hash.validator = bv.Nullable(Sha256HexHash_validator)
 UploadSessionAppendBatchArg._all_field_names_ = set(
