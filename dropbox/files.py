@@ -6635,6 +6635,10 @@ class RelocationError(bb.Union):
         Some content cannot be moved into the Family Room folder under certain
         circumstances, see detailed error.
     :vartype RelocationError.cant_move_into_family: MoveIntoFamilyError
+    :ivar RelocationError.team_folder_insufficient_quota:
+        The destination team folder has reached its storage limit.
+    :ivar RelocationError.member_folder_insufficient_quota:
+        The user's member folder has reached its storage limit.
     """
 
     _catch_all = "other"
@@ -6656,6 +6660,10 @@ class RelocationError(bb.Union):
     internal_error = None
     # Attribute is overwritten below the class definition
     cant_move_shared_folder = None
+    # Attribute is overwritten below the class definition
+    team_folder_insufficient_quota = None
+    # Attribute is overwritten below the class definition
+    member_folder_insufficient_quota = None
     # Attribute is overwritten below the class definition
     other = None
 
@@ -6825,6 +6833,22 @@ class RelocationError(bb.Union):
         :rtype: bool
         """
         return self._tag == "cant_move_into_family"
+
+    def is_team_folder_insufficient_quota(self):
+        """
+        Check if the union tag is ``team_folder_insufficient_quota``.
+
+        :rtype: bool
+        """
+        return self._tag == "team_folder_insufficient_quota"
+
+    def is_member_folder_insufficient_quota(self):
+        """
+        Check if the union tag is ``member_folder_insufficient_quota``.
+
+        :rtype: bool
+        """
+        return self._tag == "member_folder_insufficient_quota"
 
     def is_other(self):
         """
@@ -12177,6 +12201,10 @@ class WriteError(bb.Union):
     :ivar WriteError.access_restricted:
         The user doesn't have permission to perform the action due to
         restrictions set by a team administrator
+    :ivar WriteError.team_folder_insufficient_space:
+        The destination team folder has reached its storage limit.
+    :ivar WriteError.member_folder_insufficient_space:
+        The user's member folder has reached its storage limit.
     """
 
     _catch_all = "other"
@@ -12194,6 +12222,10 @@ class WriteError(bb.Union):
     too_many_write_operations = None
     # Attribute is overwritten below the class definition
     access_restricted = None
+    # Attribute is overwritten below the class definition
+    team_folder_insufficient_space = None
+    # Attribute is overwritten below the class definition
+    member_folder_insufficient_space = None
     # Attribute is overwritten below the class definition
     other = None
 
@@ -12290,6 +12322,22 @@ class WriteError(bb.Union):
         :rtype: bool
         """
         return self._tag == "access_restricted"
+
+    def is_team_folder_insufficient_space(self):
+        """
+        Check if the union tag is ``team_folder_insufficient_space``.
+
+        :rtype: bool
+        """
+        return self._tag == "team_folder_insufficient_space"
+
+    def is_member_folder_insufficient_space(self):
+        """
+        Check if the union tag is ``member_folder_insufficient_space``.
+
+        :rtype: bool
+        """
+        return self._tag == "member_folder_insufficient_space"
 
     def is_other(self):
         """
@@ -13992,6 +14040,8 @@ RelocationError._internal_error_validator = bv.Void()
 RelocationError._cant_move_shared_folder_validator = bv.Void()
 RelocationError._cant_move_into_vault_validator = MoveIntoVaultError_validator
 RelocationError._cant_move_into_family_validator = MoveIntoFamilyError_validator
+RelocationError._team_folder_insufficient_quota_validator = bv.Void()
+RelocationError._member_folder_insufficient_quota_validator = bv.Void()
 RelocationError._other_validator = bv.Void()
 RelocationError._tagmap = {
     "from_lookup": RelocationError._from_lookup_validator,
@@ -14008,6 +14058,8 @@ RelocationError._tagmap = {
     "cant_move_shared_folder": RelocationError._cant_move_shared_folder_validator,
     "cant_move_into_vault": RelocationError._cant_move_into_vault_validator,
     "cant_move_into_family": RelocationError._cant_move_into_family_validator,
+    "team_folder_insufficient_quota": RelocationError._team_folder_insufficient_quota_validator,
+    "member_folder_insufficient_quota": RelocationError._member_folder_insufficient_quota_validator,
     "other": RelocationError._other_validator,
 }
 
@@ -14020,6 +14072,10 @@ RelocationError.cant_transfer_ownership = RelocationError("cant_transfer_ownersh
 RelocationError.insufficient_quota = RelocationError("insufficient_quota")
 RelocationError.internal_error = RelocationError("internal_error")
 RelocationError.cant_move_shared_folder = RelocationError("cant_move_shared_folder")
+RelocationError.team_folder_insufficient_quota = RelocationError("team_folder_insufficient_quota")
+RelocationError.member_folder_insufficient_quota = RelocationError(
+    "member_folder_insufficient_quota"
+)
 RelocationError.other = RelocationError("other")
 
 RelocationBatchError._too_many_write_operations_validator = bv.Void()
@@ -15201,6 +15257,8 @@ WriteError._team_folder_validator = bv.Void()
 WriteError._operation_suppressed_validator = bv.Void()
 WriteError._too_many_write_operations_validator = bv.Void()
 WriteError._access_restricted_validator = bv.Void()
+WriteError._team_folder_insufficient_space_validator = bv.Void()
+WriteError._member_folder_insufficient_space_validator = bv.Void()
 WriteError._other_validator = bv.Void()
 WriteError._tagmap = {
     "malformed_path": WriteError._malformed_path_validator,
@@ -15212,6 +15270,8 @@ WriteError._tagmap = {
     "operation_suppressed": WriteError._operation_suppressed_validator,
     "too_many_write_operations": WriteError._too_many_write_operations_validator,
     "access_restricted": WriteError._access_restricted_validator,
+    "team_folder_insufficient_space": WriteError._team_folder_insufficient_space_validator,
+    "member_folder_insufficient_space": WriteError._member_folder_insufficient_space_validator,
     "other": WriteError._other_validator,
 }
 
@@ -15222,6 +15282,8 @@ WriteError.team_folder = WriteError("team_folder")
 WriteError.operation_suppressed = WriteError("operation_suppressed")
 WriteError.too_many_write_operations = WriteError("too_many_write_operations")
 WriteError.access_restricted = WriteError("access_restricted")
+WriteError.team_folder_insufficient_space = WriteError("team_folder_insufficient_space")
+WriteError.member_folder_insufficient_space = WriteError("member_folder_insufficient_space")
 WriteError.other = WriteError("other")
 
 WriteMode._add_validator = bv.Void()
