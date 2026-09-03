@@ -4494,6 +4494,84 @@ class DropboxBase(object):
     # ------------------------------------------
     # Routes in riviera namespace
 
+    def riviera_get_keyframes_async(
+        self, file_id_or_url=None, scene_change_threshold=0.0, include_images=False
+    ):
+        """
+        Asynchronous scene-change keyframe extraction for video files. Detects
+        scene changes in the source video and returns one representative
+        keyframe per detected scene, each tagged with its timestamp (seconds
+        from the start of the video) and scene-change score. Set `include_images
+        = true` to also receive each frame as a base64-encoded JPEG; when the
+        field is omitted the response carries keyframe metadata only. Supported
+        video formats: .3gp, .3gpp, .3gpp2, .asf, .avi, .dv, .flv, .m2t, .m2ts,
+        .m4v, .mkv, .mov, .mp4, .mpeg, .mpg, .mts, .mxf, .oggtheora, .ogv, .rm,
+        .ts, .vob, .webm, .wmv. Unsupported formats return an
+        `unsupported_format_error`. Limits: the source file must be at most 10
+        GB. To keep responses within service limits the number of keyframes and
+        the total image payload are bounded; requests that would exceed these
+        limits return a `limit_exceeded_error` -- raise `scene_change_threshold`
+        or set `include_images = false` to stay within bounds.
+
+        Route attributes:
+            scope: files.content.read
+
+        :param file_id_or_url: Identifier of the video file to extract keyframes
+            from. Callers must set exactly one of the `FileIdOrUrl` variants.
+            Keyframe extraction is supported for video files only; see the route
+            description for the supported formats. Requests against unsupported
+            formats return `unsupported_format_error`.
+        :type file_id_or_url: Nullable[:class:`dropbox.riviera.FileIdOrUrl`]
+        :param scene_change_threshold: Sensitivity of scene-change detection. A
+            keyframe is emitted whenever the frame-to-frame scene score crosses
+            this threshold, so a LOWER value yields MORE keyframes. Valid range
+            is (0.0, 1.0]. When omitted (0.0) the service uses a default of 0.3,
+            which is a good starting point for most videos.
+        :type scene_change_threshold: float
+        :param include_images: When true, each returned keyframe includes the
+            JPEG image bytes, base64-encoded, in `ApiKeyframe.image_base64`.
+            When false, the response contains only per-keyframe metadata
+            (timestamp and scene score) and `image_base64` is left empty --
+            useful when you only need the scene boundaries and want a small
+            response. NOTE: because the field defaults to false in proto3,
+            callers who want images must set this explicitly to true.
+        :type include_images: bool
+        :rtype: :class:`dropbox.async_.LaunchResultBase`
+        """
+        arg = riviera.GetKeyframesArgs(file_id_or_url, scene_change_threshold, include_images)
+        r = self.request(
+            riviera.get_keyframes_async,
+            "riviera",
+            arg,
+            None,
+        )
+        return r
+
+    def riviera_get_keyframes_async_check(self, async_job_id):
+        """
+        Returns the status or result of specified get_keyframes_async task.
+
+        Route attributes:
+            scope: files.content.read
+
+        :param async_job_id: Id of the asynchronous job. This is the value of a
+            response returned from the method that launched the job.
+        :type async_job_id: str
+        :rtype: :class:`dropbox.riviera.GetKeyframesAsyncCheckResult`
+        :raises: :class:`.exceptions.ApiError`
+
+        If this raises, ApiError will contain:
+            :class:`dropbox.async_.PollError`
+        """
+        arg = async_.PollArg(async_job_id)
+        r = self.request(
+            riviera.get_keyframes_async_check,
+            "riviera",
+            arg,
+            None,
+        )
+        return r
+
     def riviera_get_markdown_async(self, file_id_or_url=None, enable_ocr=False, embed_images=False):
         """
         Asynchronous document-to-markdown conversion for supported file formats.

@@ -243,6 +243,59 @@ class ApiExifMetadata(bb.Struct):
 ApiExifMetadata_validator = bv.Struct(ApiExifMetadata)
 
 
+class ApiKeyframe(bb.Struct):
+    """
+    A single extracted scene-change keyframe.
+
+    :ivar ApiKeyframe.timestamp:
+        Presentation timestamp of the keyframe, in seconds from the start of the
+        video.
+    :ivar ApiKeyframe.scene_score:
+        Scene-change score that triggered this keyframe, in the range [0.0,
+        1.0]. Higher values indicate a more pronounced scene change relative to
+        the preceding frame. The first keyframe of a video is always reported as
+        1.0: the start of a video is a scene boundary by definition, so that
+        score is not a measured frame-to-frame comparison.
+    :ivar ApiKeyframe.image_base64:
+        The extracted frame as a base64-encoded JPEG image. Empty when the
+        request set `include_images = false`.
+    """
+
+    __slots__ = [
+        "_timestamp_value",
+        "_scene_score_value",
+        "_image_base64_value",
+    ]
+
+    _has_required_fields = False
+
+    def __init__(self, timestamp=None, scene_score=None, image_base64=None):
+        self._timestamp_value = bb.NOT_SET
+        self._scene_score_value = bb.NOT_SET
+        self._image_base64_value = bb.NOT_SET
+        if timestamp is not None:
+            self.timestamp = timestamp
+        if scene_score is not None:
+            self.scene_score = scene_score
+        if image_base64 is not None:
+            self.image_base64 = image_base64
+
+    # Instance attribute type: float (validator is set below)
+    timestamp = bb.Attribute("timestamp")
+
+    # Instance attribute type: float (validator is set below)
+    scene_score = bb.Attribute("scene_score")
+
+    # Instance attribute type: str (validator is set below)
+    image_base64 = bb.Attribute("image_base64")
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(ApiKeyframe, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+
+ApiKeyframe_validator = bv.Struct(ApiKeyframe)
+
+
 class ApiMediaMetadata(bb.Struct):
     """
     Audio/video container and per-stream metadata. Mirrors the useful subset of
@@ -1039,6 +1092,199 @@ class FileIdOrUrl(bb.Union):
 
 
 FileIdOrUrl_validator = bv.Union(FileIdOrUrl)
+
+
+class GetKeyframesArgs(bb.Struct):
+    """
+    Arguments for the asynchronous `get_keyframes_async` route. Exactly one of
+    `file_id`, `path`, or `url` must be supplied via `file_id_or_url` to
+    identify the video whose scene-change keyframes should be extracted.
+
+    :ivar GetKeyframesArgs.file_id_or_url:
+        Identifier of the video file to extract keyframes from. Callers must set
+        exactly one of the `FileIdOrUrl` variants. Keyframe extraction is
+        supported for video files only; see the route description for the
+        supported formats. Requests against unsupported formats return
+        `unsupported_format_error`.
+    :ivar GetKeyframesArgs.scene_change_threshold:
+        Sensitivity of scene-change detection. A keyframe is emitted whenever
+        the frame-to-frame scene score crosses this threshold, so a LOWER value
+        yields MORE keyframes. Valid range is (0.0, 1.0]. When omitted (0.0) the
+        service uses a default of 0.3, which is a good starting point for most
+        videos.
+    :ivar GetKeyframesArgs.include_images:
+        When true, each returned keyframe includes the JPEG image bytes,
+        base64-encoded, in `ApiKeyframe.image_base64`. When false, the response
+        contains only per-keyframe metadata (timestamp and scene score) and
+        `image_base64` is left empty -- useful when you only need the scene
+        boundaries and want a small response. NOTE: because the field defaults
+        to false in proto3, callers who want images must set this explicitly to
+        true.
+    """
+
+    __slots__ = [
+        "_file_id_or_url_value",
+        "_scene_change_threshold_value",
+        "_include_images_value",
+    ]
+
+    _has_required_fields = False
+
+    def __init__(self, file_id_or_url=None, scene_change_threshold=None, include_images=None):
+        self._file_id_or_url_value = bb.NOT_SET
+        self._scene_change_threshold_value = bb.NOT_SET
+        self._include_images_value = bb.NOT_SET
+        if file_id_or_url is not None:
+            self.file_id_or_url = file_id_or_url
+        if scene_change_threshold is not None:
+            self.scene_change_threshold = scene_change_threshold
+        if include_images is not None:
+            self.include_images = include_images
+
+    # Instance attribute type: FileIdOrUrl (validator is set below)
+    file_id_or_url = bb.Attribute("file_id_or_url", nullable=True, user_defined=True)
+
+    # Instance attribute type: float (validator is set below)
+    scene_change_threshold = bb.Attribute("scene_change_threshold")
+
+    # Instance attribute type: bool (validator is set below)
+    include_images = bb.Attribute("include_images")
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(GetKeyframesArgs, self)._process_custom_annotations(
+            annotation_type, field_path, processor
+        )
+
+
+GetKeyframesArgs_validator = bv.Struct(GetKeyframesArgs)
+
+
+class GetKeyframesAsyncCheckResult(bb.Union):
+    """
+    Result type for EventBus async check - must end in "CheckResult"
+
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+    """
+
+    _catch_all = "other"
+    # Attribute is overwritten below the class definition
+    in_progress = None
+    # Attribute is overwritten below the class definition
+    other = None
+
+    @classmethod
+    def complete(cls, val):
+        """
+        Create an instance of this class set to the ``complete`` tag with value
+        ``val``.
+
+        :param GetKeyframesResult val:
+        :rtype: GetKeyframesAsyncCheckResult
+        """
+        return cls("complete", val)
+
+    @classmethod
+    def failed(cls, val):
+        """
+        Create an instance of this class set to the ``failed`` tag with value
+        ``val``.
+
+        :param KeyframesExtractionApiV2Error val:
+        :rtype: GetKeyframesAsyncCheckResult
+        """
+        return cls("failed", val)
+
+    def is_in_progress(self):
+        """
+        Check if the union tag is ``in_progress``.
+
+        :rtype: bool
+        """
+        return self._tag == "in_progress"
+
+    def is_complete(self):
+        """
+        Check if the union tag is ``complete``.
+
+        :rtype: bool
+        """
+        return self._tag == "complete"
+
+    def is_failed(self):
+        """
+        Check if the union tag is ``failed``.
+
+        :rtype: bool
+        """
+        return self._tag == "failed"
+
+    def is_other(self):
+        """
+        Check if the union tag is ``other``.
+
+        :rtype: bool
+        """
+        return self._tag == "other"
+
+    def get_complete(self):
+        """
+        Only call this if :meth:`is_complete` is true.
+
+        :rtype: GetKeyframesResult
+        """
+        if not self.is_complete():
+            raise AttributeError("tag 'complete' not set")
+        return self._value
+
+    def get_failed(self):
+        """
+        Only call this if :meth:`is_failed` is true.
+
+        :rtype: KeyframesExtractionApiV2Error
+        """
+        if not self.is_failed():
+            raise AttributeError("tag 'failed' not set")
+        return self._value
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(GetKeyframesAsyncCheckResult, self)._process_custom_annotations(
+            annotation_type, field_path, processor
+        )
+
+
+GetKeyframesAsyncCheckResult_validator = bv.Union(GetKeyframesAsyncCheckResult)
+
+
+class GetKeyframesResult(bb.Struct):
+    """
+    :ivar GetKeyframesResult.frames:
+        The extracted keyframes, ordered by `timestamp`. May be empty when no
+        scene changes are detected in the source.
+    """
+
+    __slots__ = [
+        "_frames_value",
+    ]
+
+    _has_required_fields = False
+
+    def __init__(self, frames=None):
+        self._frames_value = bb.NOT_SET
+        if frames is not None:
+            self.frames = frames
+
+    # Instance attribute type: list of [ApiKeyframe] (validator is set below)
+    frames = bb.Attribute("frames", nullable=True)
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(GetKeyframesResult, self)._process_custom_annotations(
+            annotation_type, field_path, processor
+        )
+
+
+GetKeyframesResult_validator = bv.Struct(GetKeyframesResult)
 
 
 class GetMarkdownArgs(bb.Struct):
@@ -1957,6 +2203,194 @@ class GetTranscriptResult(bb.Struct):
 
 
 GetTranscriptResult_validator = bv.Struct(GetTranscriptResult)
+
+
+class KeyframesExtractionApiV2Error(bb.Union):
+    """
+    Reason a keyframe extraction job failed. Returned in the `failed` variant of
+    `GetKeyframesAsyncCheckResult`. This is a semantic error union: the HTTP
+    status of the poll request itself is unaffected (a poll that surfaces a
+    failed job is still a normal successful poll response). Callers should
+    branch on the variant.
+
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+
+    :ivar KeyframesExtractionApiV2Error.server_error:
+        An unexpected, typically transient, server-side failure. The string is a
+        human-readable message; retrying with backoff may succeed.
+    :vartype KeyframesExtractionApiV2Error.server_error: str
+    :ivar KeyframesExtractionApiV2Error.user_error:
+        The request could not be processed as supplied (a problem with the
+        caller's input). The string is a human-readable message; retrying the
+        same request will not help.
+    :vartype KeyframesExtractionApiV2Error.user_error: str
+    :ivar KeyframesExtractionApiV2Error.limit_exceeded_error:
+        The request exceeded a service limit -- for example the source video is
+        too large, or the extraction produced more keyframes / more total image
+        data than the response can carry. Lower the resolution, raise
+        `scene_change_threshold`, or set `include_images = false`.
+    :ivar KeyframesExtractionApiV2Error.not_found_error:
+        The referenced file does not exist or is not accessible.
+    :ivar KeyframesExtractionApiV2Error.is_a_folder_error:
+        The target is a folder, not a file.
+    """
+
+    _catch_all = "other"
+    # Attribute is overwritten below the class definition
+    unsupported_format_error = None
+    # Attribute is overwritten below the class definition
+    link_download_disabled_error = None
+    # Attribute is overwritten below the class definition
+    shared_link_password_protected = None
+    # Attribute is overwritten below the class definition
+    limit_exceeded_error = None
+    # Attribute is overwritten below the class definition
+    conversion_failure_error = None
+    # Attribute is overwritten below the class definition
+    not_found_error = None
+    # Attribute is overwritten below the class definition
+    is_a_folder_error = None
+    # Attribute is overwritten below the class definition
+    other = None
+
+    @classmethod
+    def server_error(cls, val):
+        """
+        Create an instance of this class set to the ``server_error`` tag with
+        value ``val``.
+
+        :param str val:
+        :rtype: KeyframesExtractionApiV2Error
+        """
+        return cls("server_error", val)
+
+    @classmethod
+    def user_error(cls, val):
+        """
+        Create an instance of this class set to the ``user_error`` tag with
+        value ``val``.
+
+        :param str val:
+        :rtype: KeyframesExtractionApiV2Error
+        """
+        return cls("user_error", val)
+
+    def is_server_error(self):
+        """
+        Check if the union tag is ``server_error``.
+
+        :rtype: bool
+        """
+        return self._tag == "server_error"
+
+    def is_user_error(self):
+        """
+        Check if the union tag is ``user_error``.
+
+        :rtype: bool
+        """
+        return self._tag == "user_error"
+
+    def is_unsupported_format_error(self):
+        """
+        Check if the union tag is ``unsupported_format_error``.
+
+        :rtype: bool
+        """
+        return self._tag == "unsupported_format_error"
+
+    def is_link_download_disabled_error(self):
+        """
+        Check if the union tag is ``link_download_disabled_error``.
+
+        :rtype: bool
+        """
+        return self._tag == "link_download_disabled_error"
+
+    def is_shared_link_password_protected(self):
+        """
+        Check if the union tag is ``shared_link_password_protected``.
+
+        :rtype: bool
+        """
+        return self._tag == "shared_link_password_protected"
+
+    def is_limit_exceeded_error(self):
+        """
+        Check if the union tag is ``limit_exceeded_error``.
+
+        :rtype: bool
+        """
+        return self._tag == "limit_exceeded_error"
+
+    def is_conversion_failure_error(self):
+        """
+        Check if the union tag is ``conversion_failure_error``.
+
+        :rtype: bool
+        """
+        return self._tag == "conversion_failure_error"
+
+    def is_not_found_error(self):
+        """
+        Check if the union tag is ``not_found_error``.
+
+        :rtype: bool
+        """
+        return self._tag == "not_found_error"
+
+    def is_is_a_folder_error(self):
+        """
+        Check if the union tag is ``is_a_folder_error``.
+
+        :rtype: bool
+        """
+        return self._tag == "is_a_folder_error"
+
+    def is_other(self):
+        """
+        Check if the union tag is ``other``.
+
+        :rtype: bool
+        """
+        return self._tag == "other"
+
+    def get_server_error(self):
+        """
+        An unexpected, typically transient, server-side failure. The string is a
+        human-readable message; retrying with backoff may succeed.
+
+        Only call this if :meth:`is_server_error` is true.
+
+        :rtype: str
+        """
+        if not self.is_server_error():
+            raise AttributeError("tag 'server_error' not set")
+        return self._value
+
+    def get_user_error(self):
+        """
+        The request could not be processed as supplied (a problem with the
+        caller's input). The string is a human-readable message; retrying the
+        same request will not help.
+
+        Only call this if :meth:`is_user_error` is true.
+
+        :rtype: str
+        """
+        if not self.is_user_error():
+            raise AttributeError("tag 'user_error' not set")
+        return self._value
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(KeyframesExtractionApiV2Error, self)._process_custom_annotations(
+            annotation_type, field_path, processor
+        )
+
+
+KeyframesExtractionApiV2Error_validator = bv.Union(KeyframesExtractionApiV2Error)
 
 
 class MarkdownConversionApiV2Error(bb.Union):
@@ -3136,6 +3570,22 @@ ApiExifMetadata._all_fields_ = [
     ("gps_metadata", ApiExifMetadata.gps_metadata.validator),
 ]
 
+ApiKeyframe.timestamp.validator = bv.Float64()
+ApiKeyframe.scene_score.validator = bv.Float64()
+ApiKeyframe.image_base64.validator = bv.String()
+ApiKeyframe._all_field_names_ = set(
+    [
+        "timestamp",
+        "scene_score",
+        "image_base64",
+    ]
+)
+ApiKeyframe._all_fields_ = [
+    ("timestamp", ApiKeyframe.timestamp.validator),
+    ("scene_score", ApiKeyframe.scene_score.validator),
+    ("image_base64", ApiKeyframe.image_base64.validator),
+]
+
 ApiMediaMetadata.bitrate_bps.validator = bv.UInt64()
 ApiMediaMetadata.duration_s.validator = bv.Float64()
 ApiMediaMetadata.creation_time.validator = bv.String()
@@ -3338,6 +3788,40 @@ FileIdOrUrl._tagmap = {
 
 FileIdOrUrl.other = FileIdOrUrl("other")
 
+GetKeyframesArgs.file_id_or_url.validator = bv.Nullable(FileIdOrUrl_validator)
+GetKeyframesArgs.scene_change_threshold.validator = bv.Float64()
+GetKeyframesArgs.include_images.validator = bv.Boolean()
+GetKeyframesArgs._all_field_names_ = set(
+    [
+        "file_id_or_url",
+        "scene_change_threshold",
+        "include_images",
+    ]
+)
+GetKeyframesArgs._all_fields_ = [
+    ("file_id_or_url", GetKeyframesArgs.file_id_or_url.validator),
+    ("scene_change_threshold", GetKeyframesArgs.scene_change_threshold.validator),
+    ("include_images", GetKeyframesArgs.include_images.validator),
+]
+
+GetKeyframesAsyncCheckResult._in_progress_validator = bv.Void()
+GetKeyframesAsyncCheckResult._complete_validator = GetKeyframesResult_validator
+GetKeyframesAsyncCheckResult._failed_validator = KeyframesExtractionApiV2Error_validator
+GetKeyframesAsyncCheckResult._other_validator = bv.Void()
+GetKeyframesAsyncCheckResult._tagmap = {
+    "in_progress": GetKeyframesAsyncCheckResult._in_progress_validator,
+    "complete": GetKeyframesAsyncCheckResult._complete_validator,
+    "failed": GetKeyframesAsyncCheckResult._failed_validator,
+    "other": GetKeyframesAsyncCheckResult._other_validator,
+}
+
+GetKeyframesAsyncCheckResult.in_progress = GetKeyframesAsyncCheckResult("in_progress")
+GetKeyframesAsyncCheckResult.other = GetKeyframesAsyncCheckResult("other")
+
+GetKeyframesResult.frames.validator = bv.Nullable(bv.List(ApiKeyframe_validator))
+GetKeyframesResult._all_field_names_ = set(["frames"])
+GetKeyframesResult._all_fields_ = [("frames", GetKeyframesResult.frames.validator)]
+
 GetMarkdownArgs.file_id_or_url.validator = bv.Nullable(FileIdOrUrl_validator)
 GetMarkdownArgs.enable_ocr.validator = bv.Boolean()
 GetMarkdownArgs.embed_images.validator = bv.Boolean()
@@ -3494,6 +3978,48 @@ GetTranscriptResult._all_field_names_ = set(["structured_transcript"])
 GetTranscriptResult._all_fields_ = [
     ("structured_transcript", GetTranscriptResult.structured_transcript.validator)
 ]
+
+KeyframesExtractionApiV2Error._server_error_validator = bv.String()
+KeyframesExtractionApiV2Error._user_error_validator = bv.String()
+KeyframesExtractionApiV2Error._unsupported_format_error_validator = bv.Void()
+KeyframesExtractionApiV2Error._link_download_disabled_error_validator = bv.Void()
+KeyframesExtractionApiV2Error._shared_link_password_protected_validator = bv.Void()
+KeyframesExtractionApiV2Error._limit_exceeded_error_validator = bv.Void()
+KeyframesExtractionApiV2Error._conversion_failure_error_validator = bv.Void()
+KeyframesExtractionApiV2Error._not_found_error_validator = bv.Void()
+KeyframesExtractionApiV2Error._is_a_folder_error_validator = bv.Void()
+KeyframesExtractionApiV2Error._other_validator = bv.Void()
+KeyframesExtractionApiV2Error._tagmap = {
+    "server_error": KeyframesExtractionApiV2Error._server_error_validator,
+    "user_error": KeyframesExtractionApiV2Error._user_error_validator,
+    "unsupported_format_error": KeyframesExtractionApiV2Error._unsupported_format_error_validator,
+    "link_download_disabled_error": KeyframesExtractionApiV2Error._link_download_disabled_error_validator,
+    "shared_link_password_protected": KeyframesExtractionApiV2Error._shared_link_password_protected_validator,
+    "limit_exceeded_error": KeyframesExtractionApiV2Error._limit_exceeded_error_validator,
+    "conversion_failure_error": KeyframesExtractionApiV2Error._conversion_failure_error_validator,
+    "not_found_error": KeyframesExtractionApiV2Error._not_found_error_validator,
+    "is_a_folder_error": KeyframesExtractionApiV2Error._is_a_folder_error_validator,
+    "other": KeyframesExtractionApiV2Error._other_validator,
+}
+
+KeyframesExtractionApiV2Error.unsupported_format_error = KeyframesExtractionApiV2Error(
+    "unsupported_format_error"
+)
+KeyframesExtractionApiV2Error.link_download_disabled_error = KeyframesExtractionApiV2Error(
+    "link_download_disabled_error"
+)
+KeyframesExtractionApiV2Error.shared_link_password_protected = KeyframesExtractionApiV2Error(
+    "shared_link_password_protected"
+)
+KeyframesExtractionApiV2Error.limit_exceeded_error = KeyframesExtractionApiV2Error(
+    "limit_exceeded_error"
+)
+KeyframesExtractionApiV2Error.conversion_failure_error = KeyframesExtractionApiV2Error(
+    "conversion_failure_error"
+)
+KeyframesExtractionApiV2Error.not_found_error = KeyframesExtractionApiV2Error("not_found_error")
+KeyframesExtractionApiV2Error.is_a_folder_error = KeyframesExtractionApiV2Error("is_a_folder_error")
+KeyframesExtractionApiV2Error.other = KeyframesExtractionApiV2Error("other")
 
 MarkdownConversionApiV2Error._server_error_validator = bv.String()
 MarkdownConversionApiV2Error._user_error_validator = bv.String()
@@ -3752,6 +4278,9 @@ ApiExifMetadata.focal_length.default = ""
 ApiExifMetadata.megapixels.default = 0.0
 ApiExifMetadata.artist.default = ""
 ApiExifMetadata.copyright.default = ""
+ApiKeyframe.timestamp.default = 0.0
+ApiKeyframe.scene_score.default = 0.0
+ApiKeyframe.image_base64.default = ""
 ApiMediaMetadata.bitrate_bps.default = 0
 ApiMediaMetadata.duration_s.default = 0.0
 ApiMediaMetadata.creation_time.default = ""
@@ -3788,6 +4317,8 @@ ApiStructuredTranscript.transcript_locale.default = ""
 ApiTranscriptSegment.text.default = ""
 ApiTranscriptSegment.start_time.default = 0.0
 ApiTranscriptSegment.end_time.default = 0.0
+GetKeyframesArgs.scene_change_threshold.default = 0.0
+GetKeyframesArgs.include_images.default = False
 GetMarkdownArgs.enable_ocr.default = False
 GetMarkdownArgs.embed_images.default = False
 GetMarkdownResult.markdown.default = ""
@@ -3799,6 +4330,24 @@ GetTranscriptArgs.timestamp_level.default = TimestampLevel.sentence
 GetTranscriptArgs.included_special_words.default = ""
 GetTranscriptArgs.audio_language.default = ""
 MediaDurationError.limit.default = 0
+get_keyframes_async = bb.Route(
+    "get_keyframes_async",
+    1,
+    False,
+    GetKeyframesArgs_validator,
+    async_.LaunchResultBase_validator,
+    bv.Void(),
+    {"auth": "app, user", "host": "api", "style": "rpc"},
+)
+get_keyframes_async_check = bb.Route(
+    "get_keyframes_async/check",
+    1,
+    False,
+    async_.PollArg_validator,
+    GetKeyframesAsyncCheckResult_validator,
+    async_.PollError_validator,
+    {"auth": "app, user", "host": "api", "style": "rpc"},
+)
 get_markdown_async = bb.Route(
     "get_markdown_async",
     1,
@@ -3891,6 +4440,8 @@ get_transcript_async_check = bb.Route(
 )
 
 ROUTES = {
+    "get_keyframes_async": get_keyframes_async,
+    "get_keyframes_async/check": get_keyframes_async_check,
     "get_markdown_async": get_markdown_async,
     "get_markdown_async/check": get_markdown_async_check,
     "get_metadata_async": get_metadata_async,

@@ -161,7 +161,11 @@ class AuthError(bb.Union):
     corresponding ``get_*`` method.
 
     :ivar AuthError.invalid_access_token:
-        The access token is invalid.
+        The access token is invalid. This can happen if the access token has
+        been revoked by Dropbox or the user. To fix this, you should
+        re-authenticate the user. Note: Access tokens that are not returned
+        exactly as provisioned will return this error. Be sure not to truncate
+        or otherwise malform access tokens provided by Dropbox.
     :ivar AuthError.invalid_select_user:
         The user specified in 'Dropbox-API-Select-User' is no longer on the
         team.
@@ -296,8 +300,7 @@ class InvalidAccountTypeError(bb.Union):
     corresponding ``get_*`` method.
 
     :ivar InvalidAccountTypeError.endpoint:
-        Current account type doesn't have permission to access this route
-        endpoint.
+        Current account type doesn't have permission to access this endpoint.
     :ivar InvalidAccountTypeError.feature:
         Current account type doesn't have permission to access this feature.
     """
