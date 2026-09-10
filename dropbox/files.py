@@ -10181,6 +10181,7 @@ class UploadArg(CommitInfo):
     :ivar UploadArg.content_hash:
         A hash of the file content uploaded in this call. If provided and the
         uploaded content does not match this hash, an error will be returned.
+        Optional, but recommended to avoid committing data corrupted in transit.
         For more information see our `Content hash
         <https://www.dropbox.com/developers/reference/content-hash>`_ page.
     """
@@ -10366,6 +10367,7 @@ class UploadSessionAppendArg(bb.Struct):
     :ivar UploadSessionAppendArg.content_hash:
         A hash of the file content uploaded in this call. If provided and the
         uploaded content does not match this hash, an error will be returned.
+        Optional, but recommended to avoid committing data corrupted in transit.
         For more information see our `Content hash
         <https://www.dropbox.com/developers/reference/content-hash>`_ page.
     """
@@ -10412,10 +10414,10 @@ class UploadSessionAppendBatchArg(bb.Struct):
     :ivar UploadSessionAppendBatchArg.entries:
         Append information for each file in the batch.
     :ivar UploadSessionAppendBatchArg.content_hash:
-        A hash of the entire request body which is all the concatenated pieces
-        of file content that were uploaded in this call. If provided and the
-        uploaded content does not match this hash, an error will be returned.
-        For more information see our `Content hash
+        A single hash of all the concatenated file contents uploaded in this
+        call. If provided and the uploaded content does not match this hash, an
+        error will be returned. Optional, but recommended to avoid committing
+        data corrupted in transit. For more information see our `Content hash
         <https://www.dropbox.com/developers/reference/content-hash>`_ page.
     """
 
@@ -11000,6 +11002,7 @@ class UploadSessionFinishArg(bb.Struct):
     :ivar UploadSessionFinishArg.content_hash:
         A hash of the file content uploaded in this call. If provided and the
         uploaded content does not match this hash, an error will be returned.
+        Optional, but recommended to avoid committing data corrupted in transit.
         For more information see our `Content hash
         <https://www.dropbox.com/developers/reference/content-hash>`_ page.
     """
@@ -11732,6 +11735,7 @@ class UploadSessionStartArg(bb.Struct):
     :ivar UploadSessionStartArg.content_hash:
         A hash of the file content uploaded in this call. If provided and the
         uploaded content does not match this hash, an error will be returned.
+        Optional, but recommended to avoid committing data corrupted in transit.
         For more information see our `Content hash
         <https://www.dropbox.com/developers/reference/content-hash>`_ page.
     """
