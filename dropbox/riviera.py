@@ -17,13 +17,16 @@ class ApiExifGpsMetadata(bb.Struct):
     source file.
 
     :ivar ApiExifGpsMetadata.latitude:
-        Latitude / longitude in decimal degrees (positive = N/E, negative =
-        S/W).
+        Latitude in decimal degrees (positive = north, negative = south).
+    :ivar ApiExifGpsMetadata.longitude:
+        Longitude in decimal degrees (positive = east, negative = west).
     :ivar ApiExifGpsMetadata.altitude:
         Altitude in meters, as reported by the source (string to preserve the
         original representation, which may include a reference direction).
     :ivar ApiExifGpsMetadata.timestamp:
-        Timestamp / datestamp of the GPS fix, in the EXIF-provided format.
+        Time of the GPS fix, in the EXIF-provided format.
+    :ivar ApiExifGpsMetadata.datestamp:
+        Date of the GPS fix, in the EXIF-provided format.
     """
 
     __slots__ = [
@@ -81,20 +84,47 @@ ApiExifGpsMetadata_validator = bv.Struct(ApiExifGpsMetadata)
 
 class ApiExifMetadata(bb.Struct):
     """
-    Image EXIF metadata. Mirrors the useful subset of the internal
-    `riviera.ExifMetadata` message. Fields are best-effort and may be empty.
+    Image EXIF metadata. Fields are populated on a best-effort basis and may be
+    empty when absent from the source file.
 
+    :ivar ApiExifMetadata.image_width:
+        Width of the image, in pixels.
+    :ivar ApiExifMetadata.image_height:
+        Height of the image, in pixels.
+    :ivar ApiExifMetadata.camera_make:
+        Manufacturer of the device that captured the image, e.g. "Apple".
+    :ivar ApiExifMetadata.camera_model:
+        Model of the device that captured the image, e.g. "iPhone 15 Pro".
+    :ivar ApiExifMetadata.lens_model:
+        Model of the lens the image was captured with, when the source records
+        it.
     :ivar ApiExifMetadata.date_time_original:
         Capture time in the EXIF-provided format (local time of the camera).
     :ivar ApiExifMetadata.offset_time_original:
-        Timezone offset for `date_time_original`, e.g. "+09:00".
+        Timezone offset for ``ApiExifMetadata.date_time_original``, e.g.
+        "+09:00".
     :ivar ApiExifMetadata.orientation:
         EXIF orientation value (1-8). See the EXIF spec; 1 is the normal upright
         orientation.
     :ivar ApiExifMetadata.exposure_time:
-        fraction in string form, e.g. "1/250"
+        Exposure time the image was captured with, as a fractional-second
+        string, e.g. "1/250".
+    :ivar ApiExifMetadata.aperture_value:
+        Aperture the image was captured at, as reported by the EXIF aperture
+        tag.
+    :ivar ApiExifMetadata.iso_speed:
+        ISO sensitivity the image was captured at.
     :ivar ApiExifMetadata.focal_length:
-        e.g. "26.0 mm"
+        Focal length the image was captured at, including the unit, e.g. "26.0
+        mm".
+    :ivar ApiExifMetadata.megapixels:
+        Total pixel count of the image, in megapixels.
+    :ivar ApiExifMetadata.artist:
+        Creator credited in the EXIF artist tag.
+    :ivar ApiExifMetadata.copyright:
+        Copyright notice from the EXIF copyright tag.
+    :ivar ApiExifMetadata.gps_metadata:
+        Location tags from the image, when the source recorded a location.
     """
 
     __slots__ = [
@@ -298,11 +328,17 @@ ApiKeyframe_validator = bv.Struct(ApiKeyframe)
 
 class ApiMediaMetadata(bb.Struct):
     """
-    Audio/video container and per-stream metadata. Mirrors the useful subset of
-    the internal `riviera.MediaMetadata` message.
+    Audio/video container and per-stream metadata. Fields are populated on a
+    best-effort basis and may be empty when absent from the source file.
 
+    :ivar ApiMediaMetadata.bitrate_bps:
+        Overall bitrate of the container, in bits per second.
+    :ivar ApiMediaMetadata.duration_s:
+        Duration of the media, in seconds.
     :ivar ApiMediaMetadata.creation_time:
         Container-level creation time, when present.
+    :ivar ApiMediaMetadata.streams:
+        The audio and video streams the container holds, in container order.
     """
 
     __slots__ = [
@@ -353,14 +389,35 @@ class ApiMediaStream(bb.Struct):
     """
     A single audio or video stream within a media file.
 
+    :ivar ApiMediaStream.index:
+        Zero-based index of the stream within the container.
     :ivar ApiMediaStream.codec_type:
-        "audio", "video", etc.
+        Kind of media the stream carries, e.g. "audio" or "video".
+    :ivar ApiMediaStream.codec_name:
+        Name of the codec the stream is encoded with, e.g. "h264" or "aac".
+    :ivar ApiMediaStream.bitrate_bps:
+        Bitrate of this stream, in bits per second.
+    :ivar ApiMediaStream.duration_s:
+        Duration of this stream, in seconds.
     :ivar ApiMediaStream.width:
-        Video-specific fields (zero / empty for audio streams).
+        Width of the video frame, in pixels. Zero for audio streams.
+    :ivar ApiMediaStream.height:
+        Height of the video frame, in pixels. Zero for audio streams.
+    :ivar ApiMediaStream.frames_per_second:
+        Frame rate of the stream, in frames per second. Zero for audio streams.
+    :ivar ApiMediaStream.rotation:
+        Rotation to apply on playback, in degrees, as recorded in the stream
+        metadata. Zero for audio streams and for video that needs no rotation.
     :ivar ApiMediaStream.display_aspect_ratio:
-        e.g. "16:9"
+        Aspect ratio the video should be displayed at, as a "width:height"
+        string, e.g. "16:9". Empty for audio streams.
     :ivar ApiMediaStream.channels:
-        Audio-specific fields (zero / empty for video streams).
+        Number of audio channels in the stream. Zero for video streams.
+    :ivar ApiMediaStream.channel_layout:
+        Layout of the audio channels, e.g. "stereo". Empty for video streams.
+    :ivar ApiMediaStream.sample_rate_s:
+        Sample rate of the audio stream, in samples per second. Zero for video
+        streams.
     :ivar ApiMediaStream.language_iso_639:
         ISO 639 language code for the stream, when present.
     """
@@ -497,14 +554,38 @@ ApiMediaStream_validator = bv.Struct(ApiMediaStream)
 
 class ApiOfficeMetadata(bb.Struct):
     """
-    MS Office document metadata. Mirrors the internal `riviera.OfficeMetadata`
-    message. Some fields apply only to specific document types (e.g. `slides`
-    for PowerPoint, `words`/`pages` for Word).
+    MS Office document metadata. Some fields apply only to specific document
+    types (e.g. ``ApiOfficeMetadata.slides`` for PowerPoint,
+    ``ApiOfficeMetadata.words`` and ``ApiOfficeMetadata.pages`` for Word).
 
+    :ivar ApiOfficeMetadata.file_type:
+        Which kind of Office document this metadata was extracted from.
+    :ivar ApiOfficeMetadata.creator:
+        Author recorded in the document properties.
+    :ivar ApiOfficeMetadata.company:
+        Company recorded in the document properties.
+    :ivar ApiOfficeMetadata.title:
+        Title recorded in the document properties.
+    :ivar ApiOfficeMetadata.subject:
+        Subject recorded in the document properties.
+    :ivar ApiOfficeMetadata.keywords:
+        Keywords recorded in the document properties, in the document's own
+        formatting (typically a single comma- or space-separated string).
+    :ivar ApiOfficeMetadata.description:
+        Description recorded in the document properties.
+    :ivar ApiOfficeMetadata.total_edit_time_minutes:
+        Total editing time recorded in the document properties, in minutes.
     :ivar ApiOfficeMetadata.pages:
-        Word only.
+        Page count recorded in the document properties. Word documents only;
+        zero for PowerPoint and Excel.
+    :ivar ApiOfficeMetadata.words:
+        Word count recorded in the document properties. Word documents only;
+        zero for PowerPoint and Excel.
     :ivar ApiOfficeMetadata.slides:
-        PowerPoint only.
+        Slide count recorded in the document properties. PowerPoint documents
+        only; zero for Word and Excel.
+    :ivar ApiOfficeMetadata.revision_number:
+        Revision number recorded in the document properties.
     """
 
     __slots__ = [
@@ -625,8 +706,12 @@ class ApiPdfMetadata(bb.Struct):
     """
     PDF document metadata.
 
+    :ivar ApiPdfMetadata.pages:
+        Number of pages in the document.
     :ivar ApiPdfMetadata.width:
-        Width / height of the first page, in PDF points.
+        Width of the first page, in PDF points.
+    :ivar ApiPdfMetadata.height:
+        Height of the first page, in PDF points.
     """
 
     __slots__ = [
@@ -668,7 +753,14 @@ ApiPdfMetadata_validator = bv.Struct(ApiPdfMetadata)
 
 class ApiStructuredTranscript(bb.Struct):
     """
-    Structured transcript for APIv2
+    A transcript, split into segments.
+
+    :ivar ApiStructuredTranscript.segments:
+        The segments of the transcript, in playback order.
+    :ivar ApiStructuredTranscript.transcript_locale:
+        The language of the transcript, as an ISO 639-1 code (e.g. "en"). This
+        is the language detected in the audio, or the one supplied in
+        ``GetTranscriptArgs.audio_language``.
     """
 
     __slots__ = [
@@ -703,7 +795,17 @@ ApiStructuredTranscript_validator = bv.Struct(ApiStructuredTranscript)
 
 class ApiTranscriptSegment(bb.Struct):
     """
-    Transcript segment for APIv2
+    A contiguous span of transcribed speech. The span covered by a segment
+    depends on the requested :class:`TimestampLevel`.
+
+    :ivar ApiTranscriptSegment.text:
+        The transcribed text of this segment.
+    :ivar ApiTranscriptSegment.start_time:
+        Offset of the start of this segment, in seconds from the beginning of
+        the media.
+    :ivar ApiTranscriptSegment.end_time:
+        Offset of the end of this segment, in seconds from the beginning of the
+        media.
     """
 
     __slots__ = [
@@ -745,11 +847,11 @@ ApiTranscriptSegment_validator = bv.Struct(ApiTranscriptSegment)
 
 class ContentApiV2Error(bb.Union):
     """
-    Reason a transcript job failed. Returned in the `failed` variant of
-    `GetTranscriptAsyncCheckResult`. This is a semantic error union: the HTTP
-    status of the poll request itself is unaffected (a poll that surfaces a
-    failed job is still a normal successful poll response). Callers should
-    branch on the variant.
+    Reason a transcript job failed. Returned in the
+    ``GetTranscriptAsyncCheckResult.failed`` variant. This is a semantic error
+    union: the HTTP status of the poll request itself is unaffected (a poll that
+    surfaces a failed job is still a normal successful poll response). Callers
+    should branch on the variant.
 
     This class acts as a tagged union. Only one of the ``is_*`` methods will
     return true. To get the associated value of a tag (if one exists), use the
@@ -764,6 +866,20 @@ class ContentApiV2Error(bb.Union):
         caller's input). The string is a human-readable message; retrying the
         same request will not help.
     :vartype ContentApiV2Error.user_error: str
+    :ivar ContentApiV2Error.media_duration_error:
+        The audio to transcribe is longer than the supported maximum.
+    :vartype ContentApiV2Error.media_duration_error: MediaDurationError
+    :ivar ContentApiV2Error.no_audio_error:
+        The file has no audio track, or no audio content could be detected in
+        it.
+    :ivar ContentApiV2Error.link_download_disabled_error:
+        ``FileIdOrUrl.url`` referenced a Dropbox shared link whose owner has
+        disabled downloads.
+    :ivar ContentApiV2Error.shared_link_password_protected:
+        ``FileIdOrUrl.url`` referenced a password-protected Dropbox shared link.
+        Riviera cannot supply the password, so such links cannot be transcribed.
+    :ivar ContentApiV2Error.limit_exceeded_error:
+        A resource limit was exceeded while producing the result.
     :ivar ContentApiV2Error.not_found_error:
         The referenced file does not exist or is not accessible.
     :ivar ContentApiV2Error.is_a_folder_error:
@@ -928,6 +1044,8 @@ class ContentApiV2Error(bb.Union):
 
     def get_media_duration_error(self):
         """
+        The audio to transcribe is longer than the supported maximum.
+
         Only call this if :meth:`is_media_duration_error` is true.
 
         :rtype: MediaDurationError
@@ -952,20 +1070,19 @@ class FileIdOrUrl(bb.Union):
     corresponding ``get_*`` method.
 
     :ivar FileIdOrUrl.file_id:
-        A Dropbox-issued file id (format: "id:<id>") for a file the
-        authenticated user has access to.
+        A Dropbox-issued file ID for a file the authenticated user has access
+        to, e.g. "id:a4ayc_80_OEAAAAAAAAAYa".
     :vartype FileIdOrUrl.file_id: str
     :ivar FileIdOrUrl.url:
-        Either a Dropbox shared link (www.dropbox.com) or an external HTTP or
-        HTTPS URL pointing to a supported file. - Dropbox shared links are
-        resolved internally using the caller's authenticated identity and the
-        link's visibility / download settings. They therefore require an
-        authenticated user context (anonymous `url` requests against Dropbox
-        links are rejected with an `access_error`). Links protected by a
-        password are rejected with `shared_link_password_protected`; links with
-        downloads disabled are rejected with `link_download_disabled_error`. -
-        External URLs are fetched through the backend's egress proxy and must
-        point at a supported file extension.
+        Either a Dropbox shared link (www.dropbox.com) or an internet-accessible
+        URL pointing to a supported file. - Dropbox shared links are resolved
+        internally using the caller's authenticated identity and the link's
+        visibility / download settings. They therefore require an authenticated
+        user context; requests made with app auth alone are rejected.
+        Password-protected links and links with downloads disabled are rejected
+        as well. - Other URLs are fetched by Dropbox's servers, so they must be
+        reachable from the public internet -- not only from the calling
+        application's network -- and must point at a supported file extension.
     :vartype FileIdOrUrl.url: str
     :ivar FileIdOrUrl.path:
         An absolute Dropbox path, e.g. "/folder/example.pdf".
@@ -1043,8 +1160,8 @@ class FileIdOrUrl(bb.Union):
 
     def get_file_id(self):
         """
-        A Dropbox-issued file id (format: "id:<id>") for a file the
-        authenticated user has access to.
+        A Dropbox-issued file ID for a file the authenticated user has access
+        to, e.g. "id:a4ayc_80_OEAAAAAAAAAYa".
 
         Only call this if :meth:`is_file_id` is true.
 
@@ -1056,16 +1173,15 @@ class FileIdOrUrl(bb.Union):
 
     def get_url(self):
         """
-        Either a Dropbox shared link (www.dropbox.com) or an external HTTP or
-        HTTPS URL pointing to a supported file. - Dropbox shared links are
-        resolved internally using the caller's authenticated identity and the
-        link's visibility / download settings. They therefore require an
-        authenticated user context (anonymous `url` requests against Dropbox
-        links are rejected with an `access_error`). Links protected by a
-        password are rejected with `shared_link_password_protected`; links with
-        downloads disabled are rejected with `link_download_disabled_error`. -
-        External URLs are fetched through the backend's egress proxy and must
-        point at a supported file extension.
+        Either a Dropbox shared link (www.dropbox.com) or an internet-accessible
+        URL pointing to a supported file. - Dropbox shared links are resolved
+        internally using the caller's authenticated identity and the link's
+        visibility / download settings. They therefore require an authenticated
+        user context; requests made with app auth alone are rejected.
+        Password-protected links and links with downloads disabled are rejected
+        as well. - Other URLs are fetched by Dropbox's servers, so they must be
+        reachable from the public internet -- not only from the calling
+        application's network -- and must point at a supported file extension.
 
         Only call this if :meth:`is_url` is true.
 
@@ -1289,15 +1405,18 @@ GetKeyframesResult_validator = bv.Struct(GetKeyframesResult)
 
 class GetMarkdownArgs(bb.Struct):
     """
-    Arguments for the asynchronous `get_markdown_async` route. Exactly one of
-    `file_id`, `path`, or `url` must be supplied via `file_id_or_url` to
-    identify the document to convert to markdown.
+    Arguments for the asynchronous
+    :meth:`dropbox.dropbox_client.Dropbox.riviera_get_markdown_async` route.
+    Exactly one of ``FileIdOrUrl.file_id``, ``FileIdOrUrl.path``, or
+    ``FileIdOrUrl.url`` must be supplied via ``GetMarkdownArgs.file_id_or_url``
+    to identify the document to convert to markdown.
 
     :ivar GetMarkdownArgs.file_id_or_url:
         Identifier of the document to convert. Callers must set exactly one of
-        the `FileIdOrUrl` variants. The referenced file must be a document in a
-        supported format (see the route description for the list); requests
-        against unsupported formats return `unsupported_format_error`.
+        the :class:`FileIdOrUrl` variants. The referenced file must be a
+        document in a supported format (see the route description for the list);
+        requests against unsupported formats fail with
+        ``MarkdownConversionApiV2Error.user_error``.
     :ivar GetMarkdownArgs.enable_ocr:
         Enable OCR for PDF documents. Processing is slower when enabled.
     :ivar GetMarkdownArgs.embed_images:
@@ -1344,11 +1463,23 @@ GetMarkdownArgs_validator = bv.Struct(GetMarkdownArgs)
 
 class GetMarkdownAsyncCheckResult(bb.Union):
     """
-    Result type for EventBus async check
+    Status of a markdown conversion job started by
+    :meth:`dropbox.dropbox_client.Dropbox.riviera_get_markdown_async`, as
+    returned by
+    :meth:`dropbox.dropbox_client.Dropbox.riviera_get_markdown_async_check`.
 
     This class acts as a tagged union. Only one of the ``is_*`` methods will
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
+
+    :ivar GetMarkdownAsyncCheckResult.in_progress:
+        The job has not finished yet. Poll again.
+    :ivar GetMarkdownAsyncCheckResult.complete:
+        The job finished successfully.
+    :vartype GetMarkdownAsyncCheckResult.complete: GetMarkdownResult
+    :ivar GetMarkdownAsyncCheckResult.failed:
+        The job finished unsuccessfully.
+    :vartype GetMarkdownAsyncCheckResult.failed: MarkdownConversionApiV2Error
     """
 
     _catch_all = "other"
@@ -1413,6 +1544,8 @@ class GetMarkdownAsyncCheckResult(bb.Union):
 
     def get_complete(self):
         """
+        The job finished successfully.
+
         Only call this if :meth:`is_complete` is true.
 
         :rtype: GetMarkdownResult
@@ -1423,6 +1556,8 @@ class GetMarkdownAsyncCheckResult(bb.Union):
 
     def get_failed(self):
         """
+        The job finished unsuccessfully.
+
         Only call this if :meth:`is_failed` is true.
 
         :rtype: MarkdownConversionApiV2Error
@@ -1443,7 +1578,7 @@ GetMarkdownAsyncCheckResult_validator = bv.Union(GetMarkdownAsyncCheckResult)
 class GetMarkdownResult(bb.Struct):
     """
     :ivar GetMarkdownResult.markdown:
-        The converted markdown content
+        The markdown the source document was converted to.
     """
 
     __slots__ = [
@@ -1471,18 +1606,21 @@ GetMarkdownResult_validator = bv.Struct(GetMarkdownResult)
 
 class GetMetadataArgs(bb.Struct):
     """
-    Arguments for the asynchronous `get_metadata_async` route. Exactly one of
-    `file_id`, `path`, or `url` must be supplied via `file_id_or_url` to
-    identify the file whose metadata should be extracted.
+    Arguments for the asynchronous
+    :meth:`dropbox.dropbox_client.Dropbox.riviera_get_metadata_async` route.
+    Exactly one of ``FileIdOrUrl.file_id``, ``FileIdOrUrl.path``, or
+    ``FileIdOrUrl.url`` must be supplied via ``GetMetadataArgs.file_id_or_url``
+    to identify the file whose metadata should be extracted.
 
     :ivar GetMetadataArgs.file_id_or_url:
         Identifier of the file to extract metadata from. Callers must set
-        exactly one of the `FileIdOrUrl` variants. The kind of metadata returned
-        is determined by the file type: image files return EXIF metadata,
-        audio/video files return media metadata, PDFs return PDF metadata, and
-        MS Office documents (docx, pptx, xlsx) return Office metadata. See the
-        route description for the supported formats. Requests against
-        unsupported formats return `unsupported_format_error`.
+        exactly one of the :class:`FileIdOrUrl` variants. The kind of metadata
+        returned is determined by the file type: image files return EXIF
+        metadata, audio/video files return media metadata, PDFs return PDF
+        metadata, and MS Office documents (docx, pptx, xlsx) return Office
+        metadata. See the route description for the supported formats. Requests
+        against unsupported formats fail with
+        ``MetadataExtractionApiV2Error.user_error``.
     """
 
     __slots__ = [
@@ -1510,11 +1648,23 @@ GetMetadataArgs_validator = bv.Struct(GetMetadataArgs)
 
 class GetMetadataAsyncCheckResult(bb.Union):
     """
-    Result type for EventBus async check - must end in "CheckResult"
+    Status of a metadata extraction job started by
+    :meth:`dropbox.dropbox_client.Dropbox.riviera_get_metadata_async`, as
+    returned by
+    :meth:`dropbox.dropbox_client.Dropbox.riviera_get_metadata_async_check`.
 
     This class acts as a tagged union. Only one of the ``is_*`` methods will
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
+
+    :ivar GetMetadataAsyncCheckResult.in_progress:
+        The job has not finished yet. Poll again.
+    :ivar GetMetadataAsyncCheckResult.complete:
+        The job finished successfully.
+    :vartype GetMetadataAsyncCheckResult.complete: GetMetadataResult
+    :ivar GetMetadataAsyncCheckResult.failed:
+        The job finished unsuccessfully.
+    :vartype GetMetadataAsyncCheckResult.failed: MetadataExtractionApiV2Error
     """
 
     _catch_all = "other"
@@ -1579,6 +1729,8 @@ class GetMetadataAsyncCheckResult(bb.Union):
 
     def get_complete(self):
         """
+        The job finished successfully.
+
         Only call this if :meth:`is_complete` is true.
 
         :rtype: GetMetadataResult
@@ -1589,6 +1741,8 @@ class GetMetadataAsyncCheckResult(bb.Union):
 
     def get_failed(self):
         """
+        The job finished unsuccessfully.
+
         Only call this if :meth:`is_failed` is true.
 
         :rtype: MetadataExtractionApiV2Error
@@ -1610,7 +1764,7 @@ class GetMetadataResult(bb.Struct):
     """
     :ivar GetMetadataResult.metadata_type:
         The kind of metadata that was extracted for the requested file. Callers
-        should read the matching field of the `metadata` oneof.
+        should read the matching variant of ``GetMetadataResult.metadata``.
     """
 
     __slots__ = [
@@ -1997,32 +2151,32 @@ GetTextResult_validator = bv.Struct(GetTextResult)
 
 class GetTranscriptArgs(bb.Struct):
     """
-    Arguments for the asynchronous `get_transcript_async` route. Exactly one of
-    `file_id`, `path`, or `url` must be supplied via `file_id_or_url` to
-    identify the audio or video asset to transcribe.
+    Arguments for the asynchronous
+    :meth:`dropbox.dropbox_client.Dropbox.riviera_get_transcript_async` route.
+    Exactly one of ``FileIdOrUrl.file_id``, ``FileIdOrUrl.path``, or
+    ``FileIdOrUrl.url`` must be supplied via
+    ``GetTranscriptArgs.file_id_or_url`` to identify the audio or video asset to
+    transcribe.
 
     :ivar GetTranscriptArgs.file_id_or_url:
         Identifier of the media asset to transcribe. Callers must set exactly
-        one of the `FileIdOrUrl` variants. The referenced asset must be an audio
-        or video file in a supported format (see the route description for the
-        list); requests against files with no audio track return a
-        `no_audio_error`.
+        one of the :class:`FileIdOrUrl` variants. The referenced asset must be
+        an audio or video file in a supported format (see the route description
+        for the list); requests against files with no audio track fail with
+        ``ContentApiV2Error.no_audio_error``.
     :ivar GetTranscriptArgs.timestamp_level:
         Granularity of the time offsets returned for each transcript segment.
-        Defaults to `SENTENCE` when the field is omitted. - SENTENCE: one
-        segment per spoken sentence (recommended). - WORD: one segment per word,
-        useful for fine-grained alignment such as captioning or
-        highlight-as-you-listen experiences.
+        Defaults to ``TimestampLevel.sentence`` when the field is omitted.
     :ivar GetTranscriptArgs.included_special_words:
         Comma-delimited list of non-lexical filler words to preserve in the
         transcript output, e.g. `"uh, ah, uhm"`. By default these fillers are
         stripped. Unrecognized tokens are ignored. Leave empty to use the
         default filtering behavior.
     :ivar GetTranscriptArgs.audio_language:
-        Optional ISO 639-1 two-letter language code hinting the spoken language
-        of the source audio (e.g. "en", "ja"). When empty, the service
-        auto-detects the language; supplying a hint improves accuracy and
-        latency for short or ambiguous clips. Unsupported languages fall back to
+        Hint for the spoken language of the source audio, as an ISO 639-1 code
+        (e.g. "en", "ja"). When empty, the service auto-detects the language;
+        supplying a hint improves accuracy and latency for short or ambiguous
+        clips. Languages the service does not support fall back to
         auto-detection.
     """
 
@@ -2078,11 +2232,23 @@ GetTranscriptArgs_validator = bv.Struct(GetTranscriptArgs)
 
 class GetTranscriptAsyncCheckResult(bb.Union):
     """
-    Result type for EventBus async check - must end in "CheckResult"
+    Status of a transcript job started by
+    :meth:`dropbox.dropbox_client.Dropbox.riviera_get_transcript_async`, as
+    returned by
+    :meth:`dropbox.dropbox_client.Dropbox.riviera_get_transcript_async_check`.
 
     This class acts as a tagged union. Only one of the ``is_*`` methods will
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
+
+    :ivar GetTranscriptAsyncCheckResult.in_progress:
+        The job has not finished yet. Poll again.
+    :ivar GetTranscriptAsyncCheckResult.complete:
+        The job finished successfully.
+    :vartype GetTranscriptAsyncCheckResult.complete: GetTranscriptResult
+    :ivar GetTranscriptAsyncCheckResult.failed:
+        The job finished unsuccessfully.
+    :vartype GetTranscriptAsyncCheckResult.failed: ContentApiV2Error
     """
 
     _catch_all = "other"
@@ -2147,6 +2313,8 @@ class GetTranscriptAsyncCheckResult(bb.Union):
 
     def get_complete(self):
         """
+        The job finished successfully.
+
         Only call this if :meth:`is_complete` is true.
 
         :rtype: GetTranscriptResult
@@ -2157,6 +2325,8 @@ class GetTranscriptAsyncCheckResult(bb.Union):
 
     def get_failed(self):
         """
+        The job finished unsuccessfully.
+
         Only call this if :meth:`is_failed` is true.
 
         :rtype: ContentApiV2Error
@@ -2177,9 +2347,7 @@ GetTranscriptAsyncCheckResult_validator = bv.Union(GetTranscriptAsyncCheckResult
 class GetTranscriptResult(bb.Struct):
     """
     :ivar GetTranscriptResult.structured_transcript:
-        The structured transcript produced for the requested media asset, with
-        per-segment text, start/end offsets (in seconds from the beginning of
-        the media), and the detected or caller-supplied locale.
+        The transcript produced for the requested media asset.
     """
 
     __slots__ = [
@@ -2226,11 +2394,22 @@ class KeyframesExtractionApiV2Error(bb.Union):
         caller's input). The string is a human-readable message; retrying the
         same request will not help.
     :vartype KeyframesExtractionApiV2Error.user_error: str
+    :ivar KeyframesExtractionApiV2Error.unsupported_format_error:
+        The source file is not in a format this route supports.
+    :ivar KeyframesExtractionApiV2Error.link_download_disabled_error:
+        ``FileIdOrUrl.url`` referenced a Dropbox shared link whose owner has
+        disabled downloads.
+    :ivar KeyframesExtractionApiV2Error.shared_link_password_protected:
+        ``FileIdOrUrl.url`` referenced a password-protected Dropbox shared link.
+        Riviera cannot supply the password, so such links cannot be processed.
     :ivar KeyframesExtractionApiV2Error.limit_exceeded_error:
         The request exceeded a service limit -- for example the source video is
         too large, or the extraction produced more keyframes / more total image
         data than the response can carry. Lower the resolution, raise
         `scene_change_threshold`, or set `include_images = false`.
+    :ivar KeyframesExtractionApiV2Error.conversion_failure_error:
+        The source file was readable but could not be processed, for example
+        because it is corrupt.
     :ivar KeyframesExtractionApiV2Error.not_found_error:
         The referenced file does not exist or is not accessible.
     :ivar KeyframesExtractionApiV2Error.is_a_folder_error:
@@ -2395,11 +2574,11 @@ KeyframesExtractionApiV2Error_validator = bv.Union(KeyframesExtractionApiV2Error
 
 class MarkdownConversionApiV2Error(bb.Union):
     """
-    Reason a markdown conversion job failed. Returned in the `failed` variant of
-    `GetMarkdownAsyncCheckResult`. This is a semantic error union: the HTTP
-    status of the poll request itself is unaffected (a poll that surfaces a
-    failed job is still a normal successful poll response). Callers should
-    branch on the variant.
+    Reason a markdown conversion job failed. Returned in the
+    ``GetMarkdownAsyncCheckResult.failed`` variant. This is a semantic error
+    union: the HTTP status of the poll request itself is unaffected (a poll that
+    surfaces a failed job is still a normal successful poll response). Callers
+    should branch on the variant.
 
     This class acts as a tagged union. Only one of the ``is_*`` methods will
     return true. To get the associated value of a tag (if one exists), use the
@@ -2411,9 +2590,23 @@ class MarkdownConversionApiV2Error(bb.Union):
     :vartype MarkdownConversionApiV2Error.server_error: str
     :ivar MarkdownConversionApiV2Error.user_error:
         The request could not be processed as supplied (a problem with the
-        caller's input). The string is a human-readable message; retrying the
+        caller's input) -- for example an unsupported file format or a file over
+        the size limit. The string is a human-readable message; retrying the
         same request will not help.
     :vartype MarkdownConversionApiV2Error.user_error: str
+    :ivar MarkdownConversionApiV2Error.unsupported_format_error:
+        The source file is not in a format this route can convert.
+    :ivar MarkdownConversionApiV2Error.link_download_disabled_error:
+        ``FileIdOrUrl.url`` referenced a Dropbox shared link whose owner has
+        disabled downloads.
+    :ivar MarkdownConversionApiV2Error.shared_link_password_protected:
+        ``FileIdOrUrl.url`` referenced a password-protected Dropbox shared link.
+        Riviera cannot supply the password, so such links cannot be converted.
+    :ivar MarkdownConversionApiV2Error.limit_exceeded_error:
+        A resource limit was exceeded while producing the result.
+    :ivar MarkdownConversionApiV2Error.conversion_failure_error:
+        The source file was readable but could not be converted, for example
+        because it is corrupt.
     :ivar MarkdownConversionApiV2Error.not_found_error:
         The referenced file does not exist or is not accessible.
     :ivar MarkdownConversionApiV2Error.is_a_folder_error:
@@ -2556,7 +2749,8 @@ class MarkdownConversionApiV2Error(bb.Union):
     def get_user_error(self):
         """
         The request could not be processed as supplied (a problem with the
-        caller's input). The string is a human-readable message; retrying the
+        caller's input) -- for example an unsupported file format or a file over
+        the size limit. The string is a human-readable message; retrying the
         same request will not help.
 
         Only call this if :meth:`is_user_error` is true.
@@ -2577,6 +2771,11 @@ MarkdownConversionApiV2Error_validator = bv.Union(MarkdownConversionApiV2Error)
 
 
 class MediaDurationError(bb.Struct):
+    """
+    :ivar MediaDurationError.limit:
+        The maximum supported duration, in seconds, of the audio to transcribe.
+    """
+
     __slots__ = [
         "_limit_value",
     ]
@@ -2602,11 +2801,11 @@ MediaDurationError_validator = bv.Struct(MediaDurationError)
 
 class MetadataExtractionApiV2Error(bb.Union):
     """
-    Reason a metadata extraction job failed. Returned in the `failed` variant of
-    `GetMetadataAsyncCheckResult`. This is a semantic error union: the HTTP
-    status of the poll request itself is unaffected (a poll that surfaces a
-    failed job is still a normal successful poll response). Callers should
-    branch on the variant.
+    Reason a metadata extraction job failed. Returned in the
+    ``GetMetadataAsyncCheckResult.failed`` variant. This is a semantic error
+    union: the HTTP status of the poll request itself is unaffected (a poll that
+    surfaces a failed job is still a normal successful poll response). Callers
+    should branch on the variant.
 
     This class acts as a tagged union. Only one of the ``is_*`` methods will
     return true. To get the associated value of a tag (if one exists), use the
@@ -2618,9 +2817,24 @@ class MetadataExtractionApiV2Error(bb.Union):
     :vartype MetadataExtractionApiV2Error.server_error: str
     :ivar MetadataExtractionApiV2Error.user_error:
         The request could not be processed as supplied (a problem with the
-        caller's input). The string is a human-readable message; retrying the
-        same request will not help.
+        caller's input) -- for example an unsupported file format or a file over
+        the size limit for its metadata kind. The string is a human-readable
+        message; retrying the same request will not help.
     :vartype MetadataExtractionApiV2Error.user_error: str
+    :ivar MetadataExtractionApiV2Error.unsupported_format_error:
+        The source file is not in a format this route can extract metadata from.
+    :ivar MetadataExtractionApiV2Error.link_download_disabled_error:
+        ``FileIdOrUrl.url`` referenced a Dropbox shared link whose owner has
+        disabled downloads.
+    :ivar MetadataExtractionApiV2Error.shared_link_password_protected:
+        ``FileIdOrUrl.url`` referenced a password-protected Dropbox shared link.
+        Riviera cannot supply the password, so metadata cannot be extracted from
+        such links.
+    :ivar MetadataExtractionApiV2Error.limit_exceeded_error:
+        A resource limit was exceeded while producing the result.
+    :ivar MetadataExtractionApiV2Error.conversion_failure_error:
+        The source file was readable but its metadata could not be extracted,
+        for example because the file is corrupt.
     :ivar MetadataExtractionApiV2Error.not_found_error:
         The referenced file does not exist or is not accessible.
     :ivar MetadataExtractionApiV2Error.is_a_folder_error:
@@ -2763,8 +2977,9 @@ class MetadataExtractionApiV2Error(bb.Union):
     def get_user_error(self):
         """
         The request could not be processed as supplied (a problem with the
-        caller's input). The string is a human-readable message; retrying the
-        same request will not help.
+        caller's input) -- for example an unsupported file format or a file over
+        the size limit for its metadata kind. The string is a human-readable
+        message; retrying the same request will not help.
 
         Only call this if :meth:`is_user_error` is true.
 
@@ -2785,12 +3000,30 @@ MetadataExtractionApiV2Error_validator = bv.Union(MetadataExtractionApiV2Error)
 
 class MetadataType(bb.Union):
     """
-    Which metadata variant is populated in a `GetMetadataResult`, derived from
-    the file type.
+    Which metadata variant is populated in a :class:`GetMetadataResult`, derived
+    from the file type.
 
     This class acts as a tagged union. Only one of the ``is_*`` methods will
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
+
+    :ivar MetadataType.metadata_type_unknown:
+        No metadata kind applies to the file, so no variant of
+        ``GetMetadataResult.metadata`` is populated. Riviera only produces
+        metadata for the formats listed on
+        :meth:`dropbox.dropbox_client.Dropbox.riviera_get_metadata_async`; a
+        request for any other file normally fails with
+        ``MetadataExtractionApiV2Error.user_error`` rather than completing with
+        this value. An app that does receive it should treat the file as having
+        no extractable metadata; retrying will not change the outcome.
+    :ivar MetadataType.metadata_type_exif:
+        ``metadata_union.exif`` is populated.
+    :ivar MetadataType.metadata_type_media:
+        ``metadata_union.media`` is populated.
+    :ivar MetadataType.metadata_type_pdf:
+        ``metadata_union.pdf`` is populated.
+    :ivar MetadataType.metadata_type_office:
+        ``metadata_union.office`` is populated.
     """
 
     _catch_all = "other"
@@ -2885,6 +3118,19 @@ class OcrExtractionApiV2Error(bb.Union):
         caller's input). The string is a human-readable message; retrying the
         same request will not help.
     :vartype OcrExtractionApiV2Error.user_error: str
+    :ivar OcrExtractionApiV2Error.unsupported_format_error:
+        The source file is not in a format this route supports.
+    :ivar OcrExtractionApiV2Error.link_download_disabled_error:
+        ``FileIdOrUrl.url`` referenced a Dropbox shared link whose owner has
+        disabled downloads.
+    :ivar OcrExtractionApiV2Error.shared_link_password_protected:
+        ``FileIdOrUrl.url`` referenced a password-protected Dropbox shared link.
+        Riviera cannot supply the password, so such links cannot be processed.
+    :ivar OcrExtractionApiV2Error.limit_exceeded_error:
+        A resource limit was exceeded while producing the result.
+    :ivar OcrExtractionApiV2Error.conversion_failure_error:
+        The source file was readable but could not be processed, for example
+        because it is corrupt.
     :ivar OcrExtractionApiV2Error.not_found_error:
         The referenced file does not exist or is not accessible.
     :ivar OcrExtractionApiV2Error.is_a_folder_error:
@@ -3049,7 +3295,8 @@ OcrExtractionApiV2Error_validator = bv.Union(OcrExtractionApiV2Error)
 
 class OfficeFileType(bb.Union):
     """
-    The kind of MS Office document that produced an `ApiOfficeMetadata` result.
+    The kind of MS Office document that produced an :class:`ApiOfficeMetadata`
+    result.
 
     This class acts as a tagged union. Only one of the ``is_*`` methods will
     return true. To get the associated value of a tag (if one exists), use the
@@ -3138,6 +3385,19 @@ class TextExtractionApiV2Error(bb.Union):
         caller's input). The string is a human-readable message; retrying the
         same request will not help.
     :vartype TextExtractionApiV2Error.user_error: str
+    :ivar TextExtractionApiV2Error.unsupported_format_error:
+        The source file is not in a format this route supports.
+    :ivar TextExtractionApiV2Error.link_download_disabled_error:
+        ``FileIdOrUrl.url`` referenced a Dropbox shared link whose owner has
+        disabled downloads.
+    :ivar TextExtractionApiV2Error.shared_link_password_protected:
+        ``FileIdOrUrl.url`` referenced a password-protected Dropbox shared link.
+        Riviera cannot supply the password, so such links cannot be processed.
+    :ivar TextExtractionApiV2Error.limit_exceeded_error:
+        A resource limit was exceeded while producing the result.
+    :ivar TextExtractionApiV2Error.conversion_failure_error:
+        The source file was readable but could not be processed, for example
+        because it is corrupt.
     :ivar TextExtractionApiV2Error.not_found_error:
         The referenced file does not exist or is not accessible.
     :ivar TextExtractionApiV2Error.is_a_folder_error:
@@ -3302,9 +3562,18 @@ TextExtractionApiV2Error_validator = bv.Union(TextExtractionApiV2Error)
 
 class TimestampLevel(bb.Union):
     """
+    Granularity of the time offsets returned for each transcript segment.
+
     This class acts as a tagged union. Only one of the ``is_*`` methods will
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
+
+    :ivar TimestampLevel.sentence:
+        One segment per spoken sentence (recommended). This is the default when
+        ``GetTranscriptArgs.timestamp_level`` is omitted.
+    :ivar TimestampLevel.word:
+        One segment per word, useful for fine-grained alignment such as
+        captioning or highlight-as-you-listen experiences.
     """
 
     _catch_all = "other"
@@ -3350,11 +3619,25 @@ TimestampLevel_validator = bv.Union(TimestampLevel)
 
 class MetadataUnion(bb.Union):
     """
-    Exactly one variant is populated, corresponding to `metadata_type`.
+    The extracted metadata. Exactly one variant is populated, corresponding to
+    ``GetMetadataResult.metadata_type``.
 
     This class acts as a tagged union. Only one of the ``is_*`` methods will
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
+
+    :ivar MetadataUnion.exif:
+        EXIF metadata, for image files.
+    :vartype MetadataUnion.exif: ApiExifMetadata
+    :ivar MetadataUnion.media:
+        Container and per-stream metadata, for audio and video files.
+    :vartype MetadataUnion.media: ApiMediaMetadata
+    :ivar MetadataUnion.pdf:
+        Document metadata, for PDFs.
+    :vartype MetadataUnion.pdf: ApiPdfMetadata
+    :ivar MetadataUnion.office:
+        Document metadata, for MS Office files.
+    :vartype MetadataUnion.office: ApiOfficeMetadata
     """
 
     _catch_all = "other"
@@ -3447,6 +3730,8 @@ class MetadataUnion(bb.Union):
 
     def get_exif(self):
         """
+        EXIF metadata, for image files.
+
         Only call this if :meth:`is_exif` is true.
 
         :rtype: ApiExifMetadata
@@ -3457,6 +3742,8 @@ class MetadataUnion(bb.Union):
 
     def get_media(self):
         """
+        Container and per-stream metadata, for audio and video files.
+
         Only call this if :meth:`is_media` is true.
 
         :rtype: ApiMediaMetadata
@@ -3467,6 +3754,8 @@ class MetadataUnion(bb.Union):
 
     def get_pdf(self):
         """
+        Document metadata, for PDFs.
+
         Only call this if :meth:`is_pdf` is true.
 
         :rtype: ApiPdfMetadata
@@ -3477,6 +3766,8 @@ class MetadataUnion(bb.Union):
 
     def get_office(self):
         """
+        Document metadata, for MS Office files.
+
         Only call this if :meth:`is_office` is true.
 
         :rtype: ApiOfficeMetadata

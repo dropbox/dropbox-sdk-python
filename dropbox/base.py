@@ -4587,18 +4587,24 @@ class DropboxBase(object):
         """
         Asynchronous document-to-markdown conversion for supported file formats.
         Supported formats: .binder, .docx, .html, .paper, .papert, .pptx, .xlsx,
-        .gsheet, .ods, .pdf. Unsupported formats return an
-        `unsupported_format_error`. Size limit: the source file must be at most
-        50 MB. Larger files are rejected.
+        .gsheet, .ods, .pdf. Files in other formats fail with
+        ``MarkdownConversionApiV2Error.user_error``. Size limit: the source file
+        must be at most 50 MB. Larger files fail with
+        ``MarkdownConversionApiV2Error.user_error``. The markdown is not
+        returned by this route. Poll :meth:`riviera_get_markdown_async_check`
+        with the returned async job ID until it reports
+        ``GetMarkdownAsyncCheckResult.complete`` or
+        ``GetMarkdownAsyncCheckResult.failed``.
 
         Route attributes:
             scope: files.content.read
 
         :param file_id_or_url: Identifier of the document to convert. Callers
-            must set exactly one of the `FileIdOrUrl` variants. The referenced
-            file must be a document in a supported format (see the route
-            description for the list); requests against unsupported formats
-            return `unsupported_format_error`.
+            must set exactly one of the :class:`dropbox.riviera.FileIdOrUrl`
+            variants. The referenced file must be a document in a supported
+            format (see the route description for the list); requests against
+            unsupported formats fail with
+            ``MarkdownConversionApiV2Error.user_error``.
         :type file_id_or_url: Nullable[:class:`dropbox.riviera.FileIdOrUrl`]
         :param enable_ocr: Enable OCR for PDF documents. Processing is slower
             when enabled.
@@ -4654,20 +4660,29 @@ class DropboxBase(object):
         .m4r, .mp3, .oga, .ogg, .wav, .wma, .3gp, .3gpp, .3gpp2, .asf, .avi,
         .dv, .flv, .m2t, .m2ts, .m4v, .mkv, .mov, .mp4, .mpeg, .mpg, .mts, .mxf,
         .oggtheora, .ogv, .rm, .ts, .vob, .webm, .wmv. - PDF format: .pdf. - MS
-        Office formats: .docx, .pptx, .xlsx. Unsupported formats return an
-        `unsupported_format_error`.
+        Office formats: .docx, .pptx, .xlsx. Files in other formats fail with
+        ``MetadataExtractionApiV2Error.user_error``. Size limits depend on the
+        kind of metadata being extracted: at most 200 MB for image (EXIF) files,
+        100 GB for audio/video files, 500 MB for PDFs, and 288 MB for MS Office
+        files. Files over the limit for their kind fail with
+        ``MetadataExtractionApiV2Error.user_error``. The metadata is not
+        returned by this route. Poll :meth:`riviera_get_metadata_async_check`
+        with the returned async job ID until it reports
+        ``GetMetadataAsyncCheckResult.complete`` or
+        ``GetMetadataAsyncCheckResult.failed``.
 
         Route attributes:
             scope: files.content.read
 
         :param file_id_or_url: Identifier of the file to extract metadata from.
-            Callers must set exactly one of the `FileIdOrUrl` variants. The kind
-            of metadata returned is determined by the file type: image files
-            return EXIF metadata, audio/video files return media metadata, PDFs
-            return PDF metadata, and MS Office documents (docx, pptx, xlsx)
-            return Office metadata. See the route description for the supported
-            formats. Requests against unsupported formats return
-            `unsupported_format_error`.
+            Callers must set exactly one of the
+            :class:`dropbox.riviera.FileIdOrUrl` variants. The kind of metadata
+            returned is determined by the file type: image files return EXIF
+            metadata, audio/video files return media metadata, PDFs return PDF
+            metadata, and MS Office documents (docx, pptx, xlsx) return Office
+            metadata. See the route description for the supported formats.
+            Requests against unsupported formats fail with
+            ``MetadataExtractionApiV2Error.user_error``.
         :type file_id_or_url: Nullable[:class:`dropbox.riviera.FileIdOrUrl`]
         :rtype: :class:`dropbox.async_.LaunchResultBase`
         """
@@ -4840,36 +4855,39 @@ class DropboxBase(object):
         audio formats: .aac, .aif, .aiff, .flac, .m4a, .m4r, .mp3, .oga, .ogg,
         .wav, .wma. Supported video formats: .3gp, .3gpp, .3gpp2, .asf, .avi,
         .dv, .flv, .m2t, .m2ts, .m4v, .mkv, .mov, .mp4, .mpeg, .mpg, .mts, .mxf,
-        .oggtheora, .ogv, .rm, .ts, .vob, .webm, .wmv. Unsupported formats
-        return an `unsupported_format_error`. Size limits: the source file must
-        be at most 10 GB and its audio track at most 1 hour in duration. Files
-        exceeding these limits are rejected.
+        .oggtheora, .ogv, .rm, .ts, .vob, .webm, .wmv. Files in other formats
+        fail with ``ContentApiV2Error.user_error``. Size limits: the source file
+        must be at most 10 GB and its audio track at most 1 hour in duration.
+        Files exceeding either limit fail with ``ContentApiV2Error.user_error``.
+        The transcript is not returned by this route. Poll
+        :meth:`riviera_get_transcript_async_check` with the returned async job
+        ID until it reports ``GetTranscriptAsyncCheckResult.complete`` or
+        ``GetTranscriptAsyncCheckResult.failed``.
 
         Route attributes:
             scope: files.content.read
 
         :param file_id_or_url: Identifier of the media asset to transcribe.
-            Callers must set exactly one of the `FileIdOrUrl` variants. The
-            referenced asset must be an audio or video file in a supported
-            format (see the route description for the list); requests against
-            files with no audio track return a `no_audio_error`.
+            Callers must set exactly one of the
+            :class:`dropbox.riviera.FileIdOrUrl` variants. The referenced asset
+            must be an audio or video file in a supported format (see the route
+            description for the list); requests against files with no audio
+            track fail with ``ContentApiV2Error.no_audio_error``.
         :type file_id_or_url: Nullable[:class:`dropbox.riviera.FileIdOrUrl`]
         :param timestamp_level: Granularity of the time offsets returned for
-            each transcript segment. Defaults to `SENTENCE` when the field is
-            omitted. - SENTENCE: one segment per spoken sentence (recommended).
-            - WORD: one segment per word, useful for fine-grained alignment such
-            as captioning or highlight-as-you-listen experiences.
+            each transcript segment. Defaults to ``TimestampLevel.sentence``
+            when the field is omitted.
         :type timestamp_level: :class:`dropbox.riviera.TimestampLevel`
         :param included_special_words: Comma-delimited list of non-lexical
             filler words to preserve in the transcript output, e.g. `"uh, ah,
             uhm"`. By default these fillers are stripped. Unrecognized tokens
             are ignored. Leave empty to use the default filtering behavior.
         :type included_special_words: str
-        :param audio_language: Optional ISO 639-1 two-letter language code
-            hinting the spoken language of the source audio (e.g. "en", "ja").
-            When empty, the service auto-detects the language; supplying a hint
-            improves accuracy and latency for short or ambiguous clips.
-            Unsupported languages fall back to auto-detection.
+        :param audio_language: Hint for the spoken language of the source audio,
+            as an ISO 639-1 code (e.g. "en", "ja"). When empty, the service
+            auto-detects the language; supplying a hint improves accuracy and
+            latency for short or ambiguous clips. Languages the service does not
+            support fall back to auto-detection.
         :type audio_language: str
         :rtype: :class:`dropbox.async_.LaunchResultBase`
         """
