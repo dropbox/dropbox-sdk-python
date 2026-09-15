@@ -1954,7 +1954,6 @@ class DropboxBase(object):
         format=files.ThumbnailFormat.jpeg,
         size=files.ThumbnailSize.w64h64,
         mode=files.ThumbnailMode.strict,
-        quality=files.ThumbnailQuality.quality_80,
         exclude_media_info=None,
     ):
         """
@@ -1978,9 +1977,6 @@ class DropboxBase(object):
         :param mode: How to resize and crop the image to achieve the desired
             size.
         :type mode: :class:`dropbox.files.ThumbnailMode`
-        :param quality: Field is only returned for "internal" callers. Quality
-            of the thumbnail image.
-        :type quality: :class:`dropbox.files.ThumbnailQuality`
         :param exclude_media_info: Normally, ``FileMetadata.media_info`` is set
             for photo and video. When this flag is true,
             ``FileMetadata.media_info`` is not populated. This improves latency
@@ -1999,7 +1995,7 @@ class DropboxBase(object):
         <https://docs.python.org/2/library/contextlib.html#contextlib.closing>`_
         context manager to ensure this.
         """
-        arg = files.ThumbnailArg(path, format, size, mode, quality, exclude_media_info)
+        arg = files.ThumbnailArg(path, format, size, mode, exclude_media_info)
         r = self.request(
             files.get_thumbnail,
             "files",
@@ -2015,7 +2011,6 @@ class DropboxBase(object):
         format=files.ThumbnailFormat.jpeg,
         size=files.ThumbnailSize.w64h64,
         mode=files.ThumbnailMode.strict,
-        quality=files.ThumbnailQuality.quality_80,
         exclude_media_info=None,
     ):
         """
@@ -2040,9 +2035,6 @@ class DropboxBase(object):
         :param mode: How to resize and crop the image to achieve the desired
             size.
         :type mode: :class:`dropbox.files.ThumbnailMode`
-        :param quality: Field is only returned for "internal" callers. Quality
-            of the thumbnail image.
-        :type quality: :class:`dropbox.files.ThumbnailQuality`
         :param exclude_media_info: Normally, ``FileMetadata.media_info`` is set
             for photo and video. When this flag is true,
             ``FileMetadata.media_info`` is not populated. This improves latency
@@ -2054,7 +2046,7 @@ class DropboxBase(object):
         If this raises, ApiError will contain:
             :class:`dropbox.files.ThumbnailError`
         """
-        arg = files.ThumbnailArg(path, format, size, mode, quality, exclude_media_info)
+        arg = files.ThumbnailArg(path, format, size, mode, exclude_media_info)
         r = self.request(
             files.get_thumbnail,
             "files",
@@ -2070,7 +2062,6 @@ class DropboxBase(object):
         format=files.ThumbnailFormat.jpeg,
         size=files.ThumbnailSize.w64h64,
         mode=files.ThumbnailMode.strict,
-        quality=files.ThumbnailQuality.quality_80,
         exclude_media_info=None,
         preserve_transparency=False,
     ):
@@ -2097,9 +2088,6 @@ class DropboxBase(object):
         :param mode: How to resize and crop the image to achieve the desired
             size.
         :type mode: :class:`dropbox.files.ThumbnailMode`
-        :param quality: Field is only returned for "internal" callers. Quality
-            of the thumbnail image.
-        :type quality: :class:`dropbox.files.ThumbnailQuality`
         :param exclude_media_info: Normally, ``FileMetadata.media_info`` is set
             for photo and video. When this flag is true,
             ``FileMetadata.media_info`` is not populated. This improves latency
@@ -2124,7 +2112,7 @@ class DropboxBase(object):
         context manager to ensure this.
         """
         arg = files.ThumbnailV2Arg(
-            resource, format, size, mode, quality, exclude_media_info, preserve_transparency
+            resource, format, size, mode, exclude_media_info, preserve_transparency
         )
         r = self.request(
             files.get_thumbnail_v2,
@@ -2141,7 +2129,6 @@ class DropboxBase(object):
         format=files.ThumbnailFormat.jpeg,
         size=files.ThumbnailSize.w64h64,
         mode=files.ThumbnailMode.strict,
-        quality=files.ThumbnailQuality.quality_80,
         exclude_media_info=None,
         preserve_transparency=False,
     ):
@@ -2169,9 +2156,6 @@ class DropboxBase(object):
         :param mode: How to resize and crop the image to achieve the desired
             size.
         :type mode: :class:`dropbox.files.ThumbnailMode`
-        :param quality: Field is only returned for "internal" callers. Quality
-            of the thumbnail image.
-        :type quality: :class:`dropbox.files.ThumbnailQuality`
         :param exclude_media_info: Normally, ``FileMetadata.media_info`` is set
             for photo and video. When this flag is true,
             ``FileMetadata.media_info`` is not populated. This improves latency
@@ -2189,7 +2173,7 @@ class DropboxBase(object):
             :class:`dropbox.files.ThumbnailV2Error`
         """
         arg = files.ThumbnailV2Arg(
-            resource, format, size, mode, quality, exclude_media_info, preserve_transparency
+            resource, format, size, mode, exclude_media_info, preserve_transparency
         )
         r = self.request(
             files.get_thumbnail_v2,
@@ -4954,7 +4938,6 @@ class DropboxBase(object):
         quiet=False,
         access_level=None,
         add_message_as_comment=False,
-        fp_sealed_result=None,
     ):
         """
         Adds specified members to a file.
@@ -4980,9 +4963,6 @@ class DropboxBase(object):
         :param add_message_as_comment: If the custom message should be added as
             a comment on the file. Only meant for Paper files.
         :type add_message_as_comment: bool
-        :param fp_sealed_result: Field is only returned for "internal" callers.
-            The FingerprintJS Sealed Client Result value
-        :type fp_sealed_result: Nullable[str]
         :rtype: List[:class:`dropbox.sharing.FileMemberActionResult`]
         :raises: :class:`.exceptions.ApiError`
 
@@ -4990,13 +4970,7 @@ class DropboxBase(object):
             :class:`dropbox.sharing.AddFileMemberError`
         """
         arg = sharing.AddFileMemberArgs(
-            file,
-            members,
-            custom_message,
-            quiet,
-            access_level,
-            add_message_as_comment,
-            fp_sealed_result,
+            file, members, custom_message, quiet, access_level, add_message_as_comment
         )
         r = self.request(
             sharing.add_file_member,
@@ -5007,7 +4981,7 @@ class DropboxBase(object):
         return r
 
     def sharing_add_folder_member(
-        self, shared_folder_id, members, quiet=False, custom_message=None, fp_sealed_result=None
+        self, shared_folder_id, members, quiet=False, custom_message=None
     ):
         """
         Allows an owner or editor (if the ACL update policy allows) of a shared
@@ -5029,18 +5003,13 @@ class DropboxBase(object):
         :param custom_message: Optional message to display to added members in
             their invitation.
         :type custom_message: Nullable[str]
-        :param fp_sealed_result: Field is only returned for "internal" callers.
-            The FingerprintJS Sealed Client Result value
-        :type fp_sealed_result: Nullable[str]
         :rtype: None
         :raises: :class:`.exceptions.ApiError`
 
         If this raises, ApiError will contain:
             :class:`dropbox.sharing.AddFolderMemberError`
         """
-        arg = sharing.AddFolderMemberArg(
-            shared_folder_id, members, quiet, custom_message, fp_sealed_result
-        )
+        arg = sharing.AddFolderMemberArg(shared_folder_id, members, quiet, custom_message)
         r = self.request(
             sharing.add_folder_member,
             "sharing",
