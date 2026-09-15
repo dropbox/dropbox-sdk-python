@@ -2072,6 +2072,7 @@ class DropboxBase(object):
         mode=files.ThumbnailMode.strict,
         quality=files.ThumbnailQuality.quality_80,
         exclude_media_info=None,
+        preserve_transparency=False,
     ):
         """
         Get a thumbnail for an image. This method currently supports files with
@@ -2104,6 +2105,11 @@ class DropboxBase(object):
             ``FileMetadata.media_info`` is not populated. This improves latency
             for use cases where `media_info` is not needed.
         :type exclude_media_info: Nullable[bool]
+        :param preserve_transparency: Whether to preserve the original image's
+            transparency in the thumbnail. This is supported only when the
+            output format is PNG or WebP. Requests that set this flag with JPEG
+            output return an error.
+        :type preserve_transparency: bool
         :rtype: (:class:`dropbox.files.PreviewResult`,
                  :class:`requests.models.Response`)
         :raises: :class:`.exceptions.ApiError`
@@ -2117,7 +2123,9 @@ class DropboxBase(object):
         <https://docs.python.org/2/library/contextlib.html#contextlib.closing>`_
         context manager to ensure this.
         """
-        arg = files.ThumbnailV2Arg(resource, format, size, mode, quality, exclude_media_info)
+        arg = files.ThumbnailV2Arg(
+            resource, format, size, mode, quality, exclude_media_info, preserve_transparency
+        )
         r = self.request(
             files.get_thumbnail_v2,
             "files",
@@ -2135,6 +2143,7 @@ class DropboxBase(object):
         mode=files.ThumbnailMode.strict,
         quality=files.ThumbnailQuality.quality_80,
         exclude_media_info=None,
+        preserve_transparency=False,
     ):
         """
         Get a thumbnail for an image. This method currently supports files with
@@ -2168,13 +2177,20 @@ class DropboxBase(object):
             ``FileMetadata.media_info`` is not populated. This improves latency
             for use cases where `media_info` is not needed.
         :type exclude_media_info: Nullable[bool]
+        :param preserve_transparency: Whether to preserve the original image's
+            transparency in the thumbnail. This is supported only when the
+            output format is PNG or WebP. Requests that set this flag with JPEG
+            output return an error.
+        :type preserve_transparency: bool
         :rtype: :class:`dropbox.files.PreviewResult`
         :raises: :class:`.exceptions.ApiError`
 
         If this raises, ApiError will contain:
             :class:`dropbox.files.ThumbnailV2Error`
         """
-        arg = files.ThumbnailV2Arg(resource, format, size, mode, quality, exclude_media_info)
+        arg = files.ThumbnailV2Arg(
+            resource, format, size, mode, quality, exclude_media_info, preserve_transparency
+        )
         r = self.request(
             files.get_thumbnail_v2,
             "files",
