@@ -9913,6 +9913,10 @@ class ThumbnailV2Arg(bb.Struct):
         Normally, ``FileMetadata.media_info`` is set for photo and video. When
         this flag is true, ``FileMetadata.media_info`` is not populated. This
         improves latency for use cases where `media_info` is not needed.
+    :ivar ThumbnailV2Arg.preserve_transparency:
+        Whether to preserve the original image's transparency in the thumbnail.
+        This is supported only when the output format is PNG or WebP. Requests
+        that set this flag with JPEG output return an error.
     """
 
     __slots__ = [
@@ -9922,6 +9926,7 @@ class ThumbnailV2Arg(bb.Struct):
         "_mode_value",
         "_quality_value",
         "_exclude_media_info_value",
+        "_preserve_transparency_value",
     ]
 
     _has_required_fields = True
@@ -9934,6 +9939,7 @@ class ThumbnailV2Arg(bb.Struct):
         mode=None,
         quality=None,
         exclude_media_info=None,
+        preserve_transparency=None,
     ):
         self._resource_value = bb.NOT_SET
         self._format_value = bb.NOT_SET
@@ -9941,6 +9947,7 @@ class ThumbnailV2Arg(bb.Struct):
         self._mode_value = bb.NOT_SET
         self._quality_value = bb.NOT_SET
         self._exclude_media_info_value = bb.NOT_SET
+        self._preserve_transparency_value = bb.NOT_SET
         if resource is not None:
             self.resource = resource
         if format is not None:
@@ -9953,6 +9960,8 @@ class ThumbnailV2Arg(bb.Struct):
             self.quality = quality
         if exclude_media_info is not None:
             self.exclude_media_info = exclude_media_info
+        if preserve_transparency is not None:
+            self.preserve_transparency = preserve_transparency
 
     # Instance attribute type: PathOrLink (validator is set below)
     resource = bb.Attribute("resource", user_defined=True)
@@ -9971,6 +9980,9 @@ class ThumbnailV2Arg(bb.Struct):
 
     # Instance attribute type: bool (validator is set below)
     exclude_media_info = bb.Attribute("exclude_media_info", nullable=True)
+
+    # Instance attribute type: bool (validator is set below)
+    preserve_transparency = bb.Attribute("preserve_transparency")
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(ThumbnailV2Arg, self)._process_custom_annotations(
@@ -10002,6 +10014,8 @@ class ThumbnailV2Error(bb.Union):
         Access to this shared link is forbidden.
     :ivar ThumbnailV2Error.not_found:
         The shared link does not exist.
+    :ivar ThumbnailV2Error.unsupported_output_format:
+        Transparency preservation is supported only for PNG and WebP output.
     """
 
     _catch_all = "other"
@@ -10017,6 +10031,8 @@ class ThumbnailV2Error(bb.Union):
     access_denied = None
     # Attribute is overwritten below the class definition
     not_found = None
+    # Attribute is overwritten below the class definition
+    unsupported_output_format = None
     # Attribute is overwritten below the class definition
     other = None
 
@@ -10086,6 +10102,14 @@ class ThumbnailV2Error(bb.Union):
         :rtype: bool
         """
         return self._tag == "not_found"
+
+    def is_unsupported_output_format(self):
+        """
+        Check if the union tag is ``unsupported_output_format``.
+
+        :rtype: bool
+        """
+        return self._tag == "unsupported_output_format"
 
     def is_other(self):
         """
@@ -14751,6 +14775,7 @@ ThumbnailV2Arg.size.validator = ThumbnailSize_validator
 ThumbnailV2Arg.mode.validator = ThumbnailMode_validator
 ThumbnailV2Arg.quality.validator = ThumbnailQuality_validator
 ThumbnailV2Arg.exclude_media_info.validator = bv.Nullable(bv.Boolean())
+ThumbnailV2Arg.preserve_transparency.validator = bv.Boolean()
 ThumbnailV2Arg._all_field_names_ = set(
     [
         "resource",
@@ -14758,6 +14783,7 @@ ThumbnailV2Arg._all_field_names_ = set(
         "size",
         "mode",
         "exclude_media_info",
+        "preserve_transparency",
     ]
 )
 ThumbnailV2Arg._all_fields_ = [
@@ -14766,6 +14792,7 @@ ThumbnailV2Arg._all_fields_ = [
     ("size", ThumbnailV2Arg.size.validator),
     ("mode", ThumbnailV2Arg.mode.validator),
     ("exclude_media_info", ThumbnailV2Arg.exclude_media_info.validator),
+    ("preserve_transparency", ThumbnailV2Arg.preserve_transparency.validator),
 ]
 ThumbnailV2Arg._all_internal_field_names_ = set(["quality"])
 ThumbnailV2Arg._all_internal_fields_ = [("quality", ThumbnailV2Arg.quality.validator)]
@@ -14777,6 +14804,7 @@ ThumbnailV2Error._encrypted_content_validator = bv.Void()
 ThumbnailV2Error._conversion_error_validator = bv.Void()
 ThumbnailV2Error._access_denied_validator = bv.Void()
 ThumbnailV2Error._not_found_validator = bv.Void()
+ThumbnailV2Error._unsupported_output_format_validator = bv.Void()
 ThumbnailV2Error._other_validator = bv.Void()
 ThumbnailV2Error._tagmap = {
     "path": ThumbnailV2Error._path_validator,
@@ -14786,6 +14814,7 @@ ThumbnailV2Error._tagmap = {
     "conversion_error": ThumbnailV2Error._conversion_error_validator,
     "access_denied": ThumbnailV2Error._access_denied_validator,
     "not_found": ThumbnailV2Error._not_found_validator,
+    "unsupported_output_format": ThumbnailV2Error._unsupported_output_format_validator,
     "other": ThumbnailV2Error._other_validator,
 }
 
@@ -14795,6 +14824,7 @@ ThumbnailV2Error.encrypted_content = ThumbnailV2Error("encrypted_content")
 ThumbnailV2Error.conversion_error = ThumbnailV2Error("conversion_error")
 ThumbnailV2Error.access_denied = ThumbnailV2Error("access_denied")
 ThumbnailV2Error.not_found = ThumbnailV2Error("not_found")
+ThumbnailV2Error.unsupported_output_format = ThumbnailV2Error("unsupported_output_format")
 ThumbnailV2Error.other = ThumbnailV2Error("other")
 
 UnlockFileArg.path.validator = WritePathOrId_validator
@@ -15349,6 +15379,7 @@ ThumbnailV2Arg.format.default = ThumbnailFormat.jpeg
 ThumbnailV2Arg.size.default = ThumbnailSize.w64h64
 ThumbnailV2Arg.mode.default = ThumbnailMode.strict
 ThumbnailV2Arg.quality.default = ThumbnailQuality.quality_80
+ThumbnailV2Arg.preserve_transparency.default = False
 UploadSessionAppendArg.close.default = False
 UploadSessionAppendBatchArgEntry.close.default = False
 UploadSessionStartArg.close.default = False
