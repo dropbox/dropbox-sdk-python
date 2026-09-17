@@ -12198,6 +12198,8 @@ class WriteError(bb.Union):
         The destination team folder has reached its storage limit.
     :ivar WriteError.member_folder_insufficient_space:
         The user's member folder has reached its storage limit.
+    :ivar WriteError.upload_traffic_limit_reached:
+        The user has reached their monthly upload traffic limit.
     """
 
     _catch_all = "other"
@@ -12219,6 +12221,8 @@ class WriteError(bb.Union):
     team_folder_insufficient_space = None
     # Attribute is overwritten below the class definition
     member_folder_insufficient_space = None
+    # Attribute is overwritten below the class definition
+    upload_traffic_limit_reached = None
     # Attribute is overwritten below the class definition
     other = None
 
@@ -12331,6 +12335,14 @@ class WriteError(bb.Union):
         :rtype: bool
         """
         return self._tag == "member_folder_insufficient_space"
+
+    def is_upload_traffic_limit_reached(self):
+        """
+        Check if the union tag is ``upload_traffic_limit_reached``.
+
+        :rtype: bool
+        """
+        return self._tag == "upload_traffic_limit_reached"
 
     def is_other(self):
         """
@@ -15246,6 +15258,7 @@ WriteError._too_many_write_operations_validator = bv.Void()
 WriteError._access_restricted_validator = bv.Void()
 WriteError._team_folder_insufficient_space_validator = bv.Void()
 WriteError._member_folder_insufficient_space_validator = bv.Void()
+WriteError._upload_traffic_limit_reached_validator = bv.Void()
 WriteError._other_validator = bv.Void()
 WriteError._tagmap = {
     "malformed_path": WriteError._malformed_path_validator,
@@ -15259,6 +15272,7 @@ WriteError._tagmap = {
     "access_restricted": WriteError._access_restricted_validator,
     "team_folder_insufficient_space": WriteError._team_folder_insufficient_space_validator,
     "member_folder_insufficient_space": WriteError._member_folder_insufficient_space_validator,
+    "upload_traffic_limit_reached": WriteError._upload_traffic_limit_reached_validator,
     "other": WriteError._other_validator,
 }
 
@@ -15271,6 +15285,7 @@ WriteError.too_many_write_operations = WriteError("too_many_write_operations")
 WriteError.access_restricted = WriteError("access_restricted")
 WriteError.team_folder_insufficient_space = WriteError("team_folder_insufficient_space")
 WriteError.member_folder_insufficient_space = WriteError("member_folder_insufficient_space")
+WriteError.upload_traffic_limit_reached = WriteError("upload_traffic_limit_reached")
 WriteError.other = WriteError("other")
 
 WriteMode._add_validator = bv.Void()
