@@ -24,6 +24,7 @@ jobs:
     permissions:
       contents: read
     outputs:
+      sha: ${{ steps.release.outputs.sha }}
       tag: ${{ steps.release.outputs.tag }}
       version: ${{ steps.release.outputs.version }}
     steps:
@@ -78,20 +79,21 @@ jobs:
             fi
           fi
 
-          echo "tag=$tag" >> "$GITHUB_OUTPUT"
-          echo "version=${tag#v}" >> "$GITHUB_OUTPUT"
+          {
+            echo "sha=$(git rev-parse HEAD)"
+            echo "tag=$tag"
+            echo "version=${tag#v}"
+          } >> "$GITHUB_OUTPUT"
 
-  publish:
+  checks:
     needs: prepare
     runs-on: ubuntu-latest
     permissions:
-      id-token: write
       contents: read
-    env:
-      SETUPTOOLS_SCM_PRETEND_VERSION: ${{ needs.prepare.outputs.version }}
     steps:
       - uses: actions/checkout@v7
         with:
+          ref: ${{ needs.prepare.outputs.sha }}
           fetch-depth: 0
 
       - name: Setup Python environment
@@ -117,18 +119,111 @@ jobs:
           python -m build
           twine check dist/*
 
-      - name: Verify built package version
-        env:
-          VERSION: ${{ needs.prepare.outputs.version }}
-        run: |
-          python -m pip install --force-reinstall dist/*.whl
-          python -c 'import os, dropbox; assert dropbox.__version__ == os.environ["VERSION"], (dropbox.__version__, os.environ["VERSION"])'
+      - name: Install checked wheel
+        run: python -m pip install --force-reinstall dist/*.whl
 
       - name: Run unit tests
         run: pytest -v test/unit/
 
       - name: Build documentation
         run: sphinx-build -b html docs build/html
+
+  create-tag:
+    if: github.event_name == 'workflow_dispatch'
+    needs: [prepare, checks]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: ${{ needs.prepare.outputs.sha }}
+          fetch-depth: 0
+
+      - name: Create and push release tag
+        env:
+          RELEASE_SHA: ${{ needs.prepare.outputs.sha }}
+          RELEASE_TAG: ${{ needs.prepare.outputs.tag }}
+        run: |
+          set -euo pipefail
+          if ! remote_tag=$(git ls-remote --tags origin "refs/tags/$RELEASE_TAG"); then
+            echo "Unable to check whether tag $RELEASE_TAG already exists."
+            exit 1
+          fi
+          if [[ -n "$remote_tag" ]]; then
+            echo "Tag $RELEASE_TAG already exists."
+            exit 1
+          fi
+          git tag -a "$RELEASE_TAG" "$RELEASE_SHA" -m "$RELEASE_TAG"
+          git push origin "refs/tags/$RELEASE_TAG"
+
+  publish:
+    if: >-
+      always() &&
+      needs.prepare.result == 'success' &&
+      needs.checks.result == 'success' &&
+      (github.event_name == 'release' || needs.create-tag.result == 'success')
+    needs: [prepare, checks, create-tag]
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: refs/tags/${{ needs.prepare.outputs.tag }}
+          fetch-depth: 0
+
+      - name: Verify release tag
+        env:
+          RELEASE_SHA: ${{ needs.prepare.outputs.sha }}
+          RELEASE_TAG: ${{ needs.prepare.outputs.tag }}
+        run: |
+          set -euo pipefail
+          tag_sha=$(git rev-parse "$RELEASE_TAG^{commit}")
+          if [[ "$tag_sha" != "$RELEASE_SHA" ]]; then
+            echo "Tag $RELEASE_TAG points to $tag_sha, not validated commit $RELEASE_SHA."
+            exit 1
+          fi
+
+      - name: Setup Python environment
+        uses: actions/setup-python@v7
+        with:
+          python-version: "3.11"
+          cache: pip
+
+      - name: Install publishing dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install build twine
+
+      - name: Build final distributions from tag
+        run: |
+          python -m build
+          twine check dist/*
+
+      - name: Verify built package version
+        env:
+          VERSION: ${{ needs.prepare.outputs.version }}
+        run: |
+          python - <<'PY'
+          import email
+          import glob
+          import os
+          import zipfile
+
+          wheels = glob.glob("dist/*.whl")
+          assert len(wheels) == 1, wheels
+          with zipfile.ZipFile(wheels[0]) as wheel:
+              metadata_file = next(
+                  name for name in wheel.namelist() if name.endswith(".dist-info/METADATA")
+              )
+              metadata = email.message_from_bytes(wheel.read(metadata_file))
+          assert metadata["Version"] == os.environ["VERSION"], (
+              metadata["Version"],
+              os.environ["VERSION"],
+          )
+          PY
 
       - name: Configure AWS credentials (OIDC)
         uses: aws-actions/configure-aws-credentials@v6
@@ -168,6 +263,6 @@ jobs:
         run: |
           gh release create "$RELEASE_TAG" \
             --repo "$GITHUB_REPOSITORY" \
-            --target "$GITHUB_SHA" \
             --title "$RELEASE_TAG" \
+            --verify-tag \
             --generate-notes
