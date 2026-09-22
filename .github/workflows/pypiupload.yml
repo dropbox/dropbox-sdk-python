@@ -93,8 +93,18 @@ jobs:
     steps:
       - uses: actions/checkout@v7
         with:
-          ref: ${{ needs.prepare.outputs.sha }}
           fetch-depth: 0
+
+      - name: Verify validated commit
+        env:
+          RELEASE_SHA: ${{ needs.prepare.outputs.sha }}
+        run: |
+          set -euo pipefail
+          checkout_sha=$(git rev-parse HEAD)
+          if [[ "$checkout_sha" != "$RELEASE_SHA" ]]; then
+            echo "Checked out $checkout_sha, not validated commit $RELEASE_SHA."
+            exit 1
+          fi
 
       - name: Setup Python environment
         uses: actions/setup-python@v7
@@ -136,7 +146,6 @@ jobs:
     steps:
       - uses: actions/checkout@v7
         with:
-          ref: ${{ needs.prepare.outputs.sha }}
           fetch-depth: 0
 
       - name: Create and push release tag
@@ -145,6 +154,11 @@ jobs:
           RELEASE_TAG: ${{ needs.prepare.outputs.tag }}
         run: |
           set -euo pipefail
+          checkout_sha=$(git rev-parse HEAD)
+          if [[ "$checkout_sha" != "$RELEASE_SHA" ]]; then
+            echo "Checked out $checkout_sha, not validated commit $RELEASE_SHA."
+            exit 1
+          fi
           if ! remote_tag=$(git ls-remote --tags origin "refs/tags/$RELEASE_TAG"); then
             echo "Unable to check whether tag $RELEASE_TAG already exists."
             exit 1
