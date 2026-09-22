@@ -65,7 +65,9 @@ jobs:
           set -euo pipefail
 
           if [[ "$GITHUB_EVENT_NAME" == "workflow_dispatch" ]]; then
-            if [[ "$GITHUB_REF" != "refs/heads/main" ]]; then
+            if [[ "$GITHUB_REF" != "refs/heads/main" &&
+                  ! ( "$MANUAL_DESTINATION" == "testpypi" &&
+                      "$GITHUB_REF" == "refs/heads/andreymarkelov/admin-release-action" ) ]]; then
               echo "Manual releases must run from main, not $GITHUB_REF."
               exit 1
             fi
