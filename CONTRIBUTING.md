@@ -73,10 +73,14 @@ The documentation will be built into `build/html`.
 Repository admins can cut a new version from the GitHub Actions page:
 
 1. Select the **Release** workflow and click **Run workflow**.
-2. Select the `main` branch and enter the version as `X.Y.Z` (without the `v` prefix).
-3. Run the workflow. It validates the request, tests and publishes version `X.Y.Z` to PyPI, and then creates the GitHub release and `vX.Y.Z` tag with generated release notes.
+2. Select the `main` branch, choose the `pypi` destination, and enter the version as `X.Y.Z` (without the `v` prefix).
+3. Run the workflow. It validates and tests the exact `main` commit, creates the `vX.Y.Z` tag, builds and verifies the distributions from that tag, publishes them to PyPI with Trusted Publishing, and then creates the GitHub Release with generated release notes.
 
 Creating a GitHub release manually with a `vX.Y.Z` tag remains supported and automatically publishes version `X.Y.Z` to PyPI.
+
+To validate Trusted Publishing without making a production release, run the same workflow manually from `main` with the `testpypi` destination. The workflow publishes the checked artifacts only to TestPyPI with a unique `X.Y.Z.dev<run-id>` version; it does not create a tag or GitHub Release.
+
+TestPyPI requires its own one-time Trusted Publisher configuration; the production PyPI configuration does not apply there. Configure the `dropbox` project (or a pending publisher if the project does not exist yet) for GitHub owner `dropbox`, repository `dropbox-sdk-python`, workflow `pypiupload.yml`, and no environment restriction.
 
 [issues]: https://github.com/dropbox/dropbox-sdk-python/issues
 [pr]: https://github.com/dropbox/dropbox-sdk-python/pulls

@@ -1,11 +1,19 @@
 name: Release
-run-name: Release ${{ inputs.version || github.event.release.tag_name }}
+run-name: ${{ inputs.destination || 'pypi' }} ${{ inputs.version || github.event.release.tag_name }}
 
 on:
   workflow_dispatch:
     inputs:
+      destination:
+        description: Publish destination
+        required: true
+        type: choice
+        default: testpypi
+        options:
+          - testpypi
+          - pypi
       version:
-        description: Version to release (for example, 12.3.0)
+        description: Base version without v (for example, 12.3.0)
         required: true
         type: string
   release:
@@ -24,8 +32,10 @@ jobs:
     permissions:
       contents: read
     outputs:
+      package-version: ${{ steps.release.outputs.package-version }}
       sha: ${{ steps.release.outputs.sha }}
       tag: ${{ steps.release.outputs.tag }}
+      test: ${{ steps.release.outputs.test }}
       version: ${{ steps.release.outputs.version }}
     steps:
       - uses: actions/checkout@v7
@@ -48,6 +58,7 @@ jobs:
       - name: Validate release
         id: release
         env:
+          MANUAL_DESTINATION: ${{ inputs.destination }}
           MANUAL_VERSION: ${{ inputs.version }}
           RELEASE_EVENT_TAG: ${{ github.event.release.tag_name }}
         run: |
@@ -59,8 +70,16 @@ jobs:
               exit 1
             fi
             tag="v$MANUAL_VERSION"
+            test=false
+            package_version="$MANUAL_VERSION"
+            if [[ "$MANUAL_DESTINATION" == "testpypi" ]]; then
+              test=true
+              package_version="${MANUAL_VERSION}.dev${GITHUB_RUN_ID}"
+            fi
           else
             tag="$RELEASE_EVENT_TAG"
+            test=false
+            package_version="${tag#v}"
           fi
 
           if [[ ! "$tag" =~ ^v(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)$ ]]; then
@@ -68,7 +87,7 @@ jobs:
             exit 1
           fi
 
-          if [[ "$GITHUB_EVENT_NAME" == "workflow_dispatch" ]]; then
+          if [[ "$GITHUB_EVENT_NAME" == "workflow_dispatch" && "$test" == "false" ]]; then
             if ! remote_tag=$(git ls-remote --tags origin "refs/tags/$tag"); then
               echo "Unable to check whether tag $tag already exists."
               exit 1
@@ -80,8 +99,10 @@ jobs:
           fi
 
           {
+            echo "package-version=$package_version"
             echo "sha=$(git rev-parse HEAD)"
             echo "tag=$tag"
+            echo "test=$test"
             echo "version=${tag#v}"
           } >> "$GITHUB_OUTPUT"
 
@@ -128,7 +149,7 @@ jobs:
         run: sphinx-build -b html docs build/html
 
   create-tag:
-    if: github.event_name == 'workflow_dispatch'
+    if: github.event_name == 'workflow_dispatch' && inputs.destination == 'pypi'
     needs: [prepare, checks]
     runs-on: ubuntu-latest
     permissions:
@@ -156,24 +177,26 @@ jobs:
           git tag -a "$RELEASE_TAG" "$RELEASE_SHA" -m "$RELEASE_TAG"
           git push origin "refs/tags/$RELEASE_TAG"
 
-  publish:
+  build-distributions:
     if: >-
       always() &&
       needs.prepare.result == 'success' &&
       needs.checks.result == 'success' &&
-      (github.event_name == 'release' || needs.create-tag.result == 'success')
+      (needs.prepare.outputs.test == 'true' ||
+       github.event_name == 'release' ||
+       needs.create-tag.result == 'success')
     needs: [prepare, checks, create-tag]
     runs-on: ubuntu-latest
     permissions:
-      id-token: write
       contents: read
     steps:
       - uses: actions/checkout@v7
         with:
-          ref: refs/tags/${{ needs.prepare.outputs.tag }}
+          ref: ${{ needs.prepare.outputs.test == 'true' && needs.prepare.outputs.sha || format('refs/tags/{0}', needs.prepare.outputs.tag) }}
           fetch-depth: 0
 
       - name: Verify release tag
+        if: needs.prepare.outputs.test != 'true'
         env:
           RELEASE_SHA: ${{ needs.prepare.outputs.sha }}
           RELEASE_TAG: ${{ needs.prepare.outputs.tag }}
@@ -190,19 +213,25 @@ jobs:
         with:
           python-version: "3.11"
 
-      - name: Install publishing dependencies
+      - name: Install build dependencies
         run: |
           python -m pip install --upgrade pip
           python -m pip install build twine
 
-      - name: Build final distributions from tag
+      - name: Configure unique TestPyPI version
+        if: needs.prepare.outputs.test == 'true'
+        env:
+          PACKAGE_VERSION: ${{ needs.prepare.outputs.package-version }}
+        run: echo "SETUPTOOLS_SCM_PRETEND_VERSION=$PACKAGE_VERSION" >> "$GITHUB_ENV"
+
+      - name: Build distributions
         run: |
           python -m build
           twine check dist/*
 
       - name: Verify built package version
         env:
-          VERSION: ${{ needs.prepare.outputs.version }}
+          VERSION: ${{ needs.prepare.outputs.package-version }}
         run: |
           python - <<'PY'
           import email
@@ -223,29 +252,52 @@ jobs:
           )
           PY
 
-      - name: Configure AWS credentials (OIDC)
-        uses: aws-actions/configure-aws-credentials@v6
+      - name: Upload distributions
+        uses: actions/upload-artifact@v7
         with:
-          role-to-assume: arn:aws:iam::082972943155:role/oidc-github-dropbox-dropbox-sdk-python-repo
-          aws-region: us-west-2
+          name: release-distributions
+          path: dist/*
+          if-no-files-found: error
 
-      - name: Get PyPI token from AWS Secrets Manager
-        uses: aws-actions/aws-secretsmanager-get-secrets@v3
+  publish:
+    if: needs.prepare.outputs.test != 'true'
+    needs: [prepare, build-distributions]
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+    steps:
+      - name: Download distributions
+        uses: actions/download-artifact@v8
         with:
-          # Referenced by friendly name; Secrets Manager appends a random suffix to
-          # the full ARN, so the name is the stable identifier.
-          secret-ids: |
-            PYPI_SECRET,pypi-api-token-dropbox-sdk-python
-          parse-json-secrets: false
+          name: release-distributions
+          path: dist
 
       - name: Publish to PyPI
-        env:
-          TWINE_USERNAME: __token__
-          TWINE_PASSWORD: ${{ env.PYPI_SECRET }}
-        run: twine upload dist/*
+        uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          packages-dir: dist/
+
+  publish-testpypi:
+    if: needs.prepare.outputs.test == 'true'
+    needs: [prepare, build-distributions]
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+    steps:
+      - name: Download distributions
+        uses: actions/download-artifact@v8
+        with:
+          name: release-distributions
+          path: dist
+
+      - name: Publish to TestPyPI
+        uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          packages-dir: dist/
+          repository-url: https://test.pypi.org/legacy/
 
   create-release:
-    if: github.event_name == 'workflow_dispatch'
+    if: github.event_name == 'workflow_dispatch' && inputs.destination == 'pypi'
     needs: [prepare, publish]
     runs-on: ubuntu-latest
     permissions:
