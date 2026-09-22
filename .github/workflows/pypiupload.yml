@@ -1,54 +1,284 @@
-# This workflow will upload a Python Package using Twine when a release is created
-# For more information see: https://help.github.com/en/actions/language-and-framework-guides/using-python-with-github-actions#publishing-to-package-registries
-
-name: Publish to PyPi
+name: Release
+run-name: Release ${{ inputs.version || github.event.release.tag_name }}
 
 on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: Version without v (for example, 12.3.0)
+        required: true
+        type: string
   release:
     types: [created]
-  workflow_dispatch:  # Allow manual trigger for testing
 
-permissions:  # least privilege; the deploy job overrides this for OIDC
+permissions:
   contents: read
 
+concurrency:
+  group: release
+  cancel-in-progress: false
+
 jobs:
-  deploy:
+  prepare:
     runs-on: ubuntu-latest
-    permissions:  # required for OIDC authentication
-      id-token: write
+    permissions:
       contents: read
-
+    outputs:
+      sha: ${{ steps.release.outputs.sha }}
+      tag: ${{ steps.release.outputs.tag }}
+      version: ${{ steps.release.outputs.version }}
     steps:
-    - uses: actions/checkout@v7
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
 
-    - name: Configure AWS credentials (OIDC)
-      uses: aws-actions/configure-aws-credentials@v6
-      with:
-        role-to-assume: arn:aws:iam::082972943155:role/oidc-github-dropbox-dropbox-sdk-python-repo
-        aws-region: us-west-2
-    - name: Get PyPI token from AWS Secrets Manager
-      id: get-secret
-      uses: aws-actions/aws-secretsmanager-get-secrets@v3
-      with:
-        # Referenced by friendly name; Secrets Manager appends a random suffix to
-        # the full ARN, so the name is the stable identifier.
-        secret-ids: |
-          PYPI_SECRET,pypi-api-token-dropbox-sdk-python
-        parse-json-secrets: false
-    - name: Setup Python environment
-      uses: actions/setup-python@v7
-      with:
-        python-version: "3.x"
-    - name: Install dependencies
-      run: |
-        python -m pip install --upgrade pip
-        python -m pip install build twine
-    - name: Build sdist and wheel
-      run: python -m build
-    - name: Publish
-      env:
-        TWINE_USERNAME: __token__
-        TWINE_PASSWORD: ${{ env.PYPI_SECRET }}
-      run: |
-        twine check dist/*
-        twine upload dist/*
+      - name: Require repository admin permission
+        if: github.event_name == 'workflow_dispatch'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          permission=$(gh api \
+            "repos/$GITHUB_REPOSITORY/collaborators/$GITHUB_ACTOR/permission" \
+            --jq '.permission')
+          if [[ "$permission" != "admin" ]]; then
+            echo "Only repository admins can run a release; $GITHUB_ACTOR has $permission permission."
+            exit 1
+          fi
+
+      - name: Validate release
+        id: release
+        env:
+          MANUAL_VERSION: ${{ inputs.version }}
+          RELEASE_EVENT_TAG: ${{ github.event.release.tag_name }}
+        run: |
+          set -euo pipefail
+
+          if [[ "$GITHUB_EVENT_NAME" == "workflow_dispatch" ]]; then
+            if [[ "$GITHUB_REF" != "refs/heads/main" ]]; then
+              echo "Manual releases must run from main, not $GITHUB_REF."
+              exit 1
+            fi
+            tag="v$MANUAL_VERSION"
+          else
+            tag="$RELEASE_EVENT_TAG"
+          fi
+
+          if [[ ! "$tag" =~ ^v(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)$ ]]; then
+            echo "Invalid release tag: $tag. Expected vX.Y.Z with no leading zeroes."
+            exit 1
+          fi
+
+          if [[ "$GITHUB_EVENT_NAME" == "workflow_dispatch" ]]; then
+            if ! remote_tag=$(git ls-remote --tags origin "refs/tags/$tag"); then
+              echo "Unable to check whether tag $tag already exists."
+              exit 1
+            fi
+            if [[ -n "$remote_tag" ]]; then
+              echo "Tag $tag already exists."
+              exit 1
+            fi
+          fi
+
+          {
+            echo "sha=$(git rev-parse HEAD)"
+            echo "tag=$tag"
+            echo "version=${tag#v}"
+          } >> "$GITHUB_OUTPUT"
+
+  checks:
+    needs: prepare
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+
+      - name: Verify validated commit
+        env:
+          RELEASE_SHA: ${{ needs.prepare.outputs.sha }}
+        run: |
+          set -euo pipefail
+          checkout_sha=$(git rev-parse HEAD)
+          if [[ "$checkout_sha" != "$RELEASE_SHA" ]]; then
+            echo "Checked out $checkout_sha, not validated commit $RELEASE_SHA."
+            exit 1
+          fi
+
+      - name: Setup Python environment
+        uses: actions/setup-python@v7
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install build pytest ruff sphinx twine
+          python -m pip install -r requirements.txt
+          python -m pip install -r test/requirements.txt
+
+      - name: Run linter
+        run: |
+          ruff check --exclude dropbox/_version.py dropbox example test
+          ruff format --check --exclude dropbox/_version.py dropbox example test
+
+      - name: Build and validate distributions
+        run: |
+          python -m build
+          twine check dist/*
+
+      - name: Install checked wheel
+        run: python -m pip install --force-reinstall dist/*.whl
+
+      - name: Run unit tests
+        run: pytest -v test/unit/
+
+      - name: Build documentation
+        run: sphinx-build -b html docs build/html
+
+  create-tag:
+    if: github.event_name == 'workflow_dispatch'
+    needs: [prepare, checks]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+
+      - name: Create and push release tag
+        env:
+          RELEASE_SHA: ${{ needs.prepare.outputs.sha }}
+          RELEASE_TAG: ${{ needs.prepare.outputs.tag }}
+        run: |
+          set -euo pipefail
+          checkout_sha=$(git rev-parse HEAD)
+          if [[ "$checkout_sha" != "$RELEASE_SHA" ]]; then
+            echo "Checked out $checkout_sha, not validated commit $RELEASE_SHA."
+            exit 1
+          fi
+          if ! remote_tag=$(git ls-remote --tags origin "refs/tags/$RELEASE_TAG"); then
+            echo "Unable to check whether tag $RELEASE_TAG already exists."
+            exit 1
+          fi
+          if [[ -n "$remote_tag" ]]; then
+            echo "Tag $RELEASE_TAG already exists."
+            exit 1
+          fi
+          git tag -a "$RELEASE_TAG" "$RELEASE_SHA" -m "$RELEASE_TAG"
+          git push origin "refs/tags/$RELEASE_TAG"
+
+  build-distributions:
+    if: >-
+      always() &&
+      needs.prepare.result == 'success' &&
+      needs.checks.result == 'success' &&
+      (github.event_name == 'release' ||
+       needs.create-tag.result == 'success')
+    needs: [prepare, checks, create-tag]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: refs/tags/${{ needs.prepare.outputs.tag }}
+          fetch-depth: 0
+
+      - name: Verify release tag
+        env:
+          RELEASE_SHA: ${{ needs.prepare.outputs.sha }}
+          RELEASE_TAG: ${{ needs.prepare.outputs.tag }}
+        run: |
+          set -euo pipefail
+          tag_sha=$(git rev-parse "$RELEASE_TAG^{commit}")
+          if [[ "$tag_sha" != "$RELEASE_SHA" ]]; then
+            echo "Tag $RELEASE_TAG points to $tag_sha, not validated commit $RELEASE_SHA."
+            exit 1
+          fi
+
+      - name: Setup Python environment
+        uses: actions/setup-python@v7
+        with:
+          python-version: "3.11"
+
+      - name: Install build dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install build twine
+
+      - name: Build distributions
+        run: |
+          python -m build
+          twine check dist/*
+
+      - name: Verify built package version
+        env:
+          VERSION: ${{ needs.prepare.outputs.version }}
+        run: |
+          python - <<'PY'
+          import email
+          import glob
+          import os
+          import zipfile
+
+          wheels = glob.glob("dist/*.whl")
+          assert len(wheels) == 1, wheels
+          with zipfile.ZipFile(wheels[0]) as wheel:
+              metadata_file = next(
+                  name for name in wheel.namelist() if name.endswith(".dist-info/METADATA")
+              )
+              metadata = email.message_from_bytes(wheel.read(metadata_file))
+          assert metadata["Version"] == os.environ["VERSION"], (
+              metadata["Version"],
+              os.environ["VERSION"],
+          )
+          PY
+
+      - name: Upload distributions
+        uses: actions/upload-artifact@v7
+        with:
+          name: release-distributions
+          path: dist/*
+          if-no-files-found: error
+
+  publish:
+    if: always() && needs.build-distributions.result == 'success'
+    needs: build-distributions
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+    steps:
+      - name: Download distributions
+        uses: actions/download-artifact@v8
+        with:
+          name: release-distributions
+          path: dist
+
+      - name: Publish to PyPI
+        uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          packages-dir: dist/
+
+  create-release:
+    if: github.event_name == 'workflow_dispatch'
+    needs: [prepare, publish]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      # Events created with GITHUB_TOKEN do not start another workflow. PyPI is
+      # therefore published above. Documentation is hosted by Read the Docs, not
+      # by a downstream GitHub Actions workflow.
+      - name: Create GitHub release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RELEASE_TAG: ${{ needs.prepare.outputs.tag }}
+        run: |
+          gh release create "$RELEASE_TAG" \
+            --repo "$GITHUB_REPOSITORY" \
+            --title "$RELEASE_TAG" \
+            --verify-tag \
+            --generate-notes

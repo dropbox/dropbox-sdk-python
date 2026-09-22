@@ -68,6 +68,16 @@ $ tox -e docs
 
 The documentation will be built into `build/html`.
 
+## Cutting New Versions (for Dropboxers)
+
+Repository admins can cut a new version from the GitHub Actions page:
+
+1. Select the **Release** workflow and click **Run workflow**.
+2. Select the `main` branch and enter the version as `X.Y.Z` (without the `v` prefix).
+3. Run the workflow. It validates and tests the exact `main` commit, creates the immutable `vX.Y.Z` tag, builds and verifies the distributions from that tag, uploads them as a GitHub artifact, publishes those artifacts to PyPI with Trusted Publishing, and then creates the GitHub Release with generated release notes.
+
+Creating a GitHub release manually with a `vX.Y.Z` tag remains supported and automatically publishes version `X.Y.Z` to PyPI.
+
 [issues]: https://github.com/dropbox/dropbox-sdk-python/issues
 [pr]: https://github.com/dropbox/dropbox-sdk-python/pulls
 [coc]: https://github.com/dropbox/dropbox-sdk-python/blob/main/CODE_OF_CONDUCT.md
