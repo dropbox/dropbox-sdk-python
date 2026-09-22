@@ -262,7 +262,10 @@ jobs:
           if-no-files-found: error
 
   publish:
-    if: needs.prepare.outputs.test != 'true'
+    if: >-
+      always() &&
+      needs.build-distributions.result == 'success' &&
+      needs.prepare.outputs.test != 'true'
     needs: [prepare, build-distributions]
     runs-on: ubuntu-latest
     permissions:
@@ -280,7 +283,10 @@ jobs:
           packages-dir: dist/
 
   publish-testpypi:
-    if: needs.prepare.outputs.test == 'true'
+    if: >-
+      always() &&
+      needs.build-distributions.result == 'success' &&
+      needs.prepare.outputs.test == 'true'
     needs: [prepare, build-distributions]
     runs-on: ubuntu-latest
     permissions:
