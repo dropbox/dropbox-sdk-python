@@ -128,18 +128,24 @@ UserInfoError_validator = bv.Union(UserInfoError)
 class UserInfoResult(bb.Struct):
     """
     :ivar UserInfoResult.family_name:
-        Last name of user.
+        Last name of the user.
     :ivar UserInfoResult.given_name:
-        First name of user.
+        First name of the user.
     :ivar UserInfoResult.email:
-        Email address of user.
+        The user's email address. Be aware it's possible that the user has since
+        lost access to their email. Note: email is not a unique or stable
+        identifier for a Dropbox account. Users can change their email, and
+        emails can be reused by different accounts. Apps should not use email as
+        a key for account identification; use ``sub`` instead.
     :ivar UserInfoResult.email_verified:
-        If user is email verified.
+        If the user's email address is verified.
     :ivar UserInfoResult.iss:
-        Issuer of token (in this case Dropbox).
+        Issuer of the token (in this case Dropbox).
     :ivar UserInfoResult.sub:
         An identifier for the user. This is the Dropbox account_id, a string
-        value such as dbid:AAH4f99T0taONIb-OurWxbNQ6ywGRopQngc.
+        value such as dbid:AAH4f99T0taONIb-OurWxbNQ6ywGRopQngc. The account_id
+        is a unique and stable identifier for a Dropbox account, suitable for
+        use as a key in authentication and account management.
     """
 
     __slots__ = [
