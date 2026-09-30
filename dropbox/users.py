@@ -23,13 +23,16 @@ class Account(bb.Struct):
     queried and the user making the query.
 
     :ivar Account.account_id:
-        The user's unique Dropbox ID.
+        The user's unique and stable Dropbox ID.
     :ivar Account.name:
         Details of a user's name.
     :ivar Account.email:
         The user's email address. Do not rely on this without checking the
         ``email_verified`` field. Even then, it's possible that the user has
-        since lost access to their email.
+        since lost access to their email. Note: email is not a unique or stable
+        identifier for a Dropbox account. Users can change their email, and
+        emails can be reused by different accounts. Apps should not use email as
+        a key for account identification; use ``account_id`` instead.
     :ivar Account.email_verified:
         Whether the user has verified their email address.
     :ivar Account.profile_photo_url:

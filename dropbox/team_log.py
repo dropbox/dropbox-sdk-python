@@ -19021,6 +19021,17 @@ class EventDetails(bb.Union):
         return cls("paper_enabled_users_group_removal_details", val)
 
     @classmethod
+    def paper_offline_mode_policy_changed_details(cls, val):
+        """
+        Create an instance of this class set to the
+        ``paper_offline_mode_policy_changed_details`` tag with value ``val``.
+
+        :param PaperOfflineModePolicyChangedDetails val:
+        :rtype: EventDetails
+        """
+        return cls("paper_offline_mode_policy_changed_details", val)
+
+    @classmethod
     def passkey_login_policy_changed_details(cls, val):
         """
         Create an instance of this class set to the
@@ -24409,6 +24420,14 @@ class EventDetails(bb.Union):
         :rtype: bool
         """
         return self._tag == "paper_enabled_users_group_removal_details"
+
+    def is_paper_offline_mode_policy_changed_details(self):
+        """
+        Check if the union tag is ``paper_offline_mode_policy_changed_details``.
+
+        :rtype: bool
+        """
+        return self._tag == "paper_offline_mode_policy_changed_details"
 
     def is_passkey_login_policy_changed_details(self):
         """
@@ -30616,6 +30635,16 @@ class EventDetails(bb.Union):
             raise AttributeError("tag 'paper_enabled_users_group_removal_details' not set")
         return self._value
 
+    def get_paper_offline_mode_policy_changed_details(self):
+        """
+        Only call this if :meth:`is_paper_offline_mode_policy_changed_details` is true.
+
+        :rtype: PaperOfflineModePolicyChangedDetails
+        """
+        if not self.is_paper_offline_mode_policy_changed_details():
+            raise AttributeError("tag 'paper_offline_mode_policy_changed_details' not set")
+        return self._value
+
     def get_passkey_login_policy_changed_details(self):
         """
         Only call this if :meth:`is_passkey_login_policy_changed_details` is true.
@@ -33293,6 +33322,9 @@ class EventType(bb.Union):
     :ivar EventType.paper_enabled_users_group_removal:
         (team_policies) Removed users from Paper-enabled users list
     :vartype EventType.paper_enabled_users_group_removal: PaperEnabledUsersGroupRemovalType
+    :ivar EventType.paper_offline_mode_policy_changed:
+        (team_policies) Enabled/disabled Paper offline mode for team
+    :vartype EventType.paper_offline_mode_policy_changed: PaperOfflineModePolicyChangedType
     :ivar EventType.passkey_login_policy_changed:
         (team_policies) Changed passkey login policy for team
     :vartype EventType.passkey_login_policy_changed: PasskeyLoginPolicyChangedType
@@ -39577,6 +39609,17 @@ class EventType(bb.Union):
         return cls("paper_enabled_users_group_removal", val)
 
     @classmethod
+    def paper_offline_mode_policy_changed(cls, val):
+        """
+        Create an instance of this class set to the
+        ``paper_offline_mode_policy_changed`` tag with value ``val``.
+
+        :param PaperOfflineModePolicyChangedType val:
+        :rtype: EventType
+        """
+        return cls("paper_offline_mode_policy_changed", val)
+
+    @classmethod
     def passkey_login_policy_changed(cls, val):
         """
         Create an instance of this class set to the
@@ -44941,6 +44984,14 @@ class EventType(bb.Union):
         :rtype: bool
         """
         return self._tag == "paper_enabled_users_group_removal"
+
+    def is_paper_offline_mode_policy_changed(self):
+        """
+        Check if the union tag is ``paper_offline_mode_policy_changed``.
+
+        :rtype: bool
+        """
+        return self._tag == "paper_offline_mode_policy_changed"
 
     def is_passkey_login_policy_changed(self):
         """
@@ -52251,6 +52302,18 @@ class EventType(bb.Union):
             raise AttributeError("tag 'paper_enabled_users_group_removal' not set")
         return self._value
 
+    def get_paper_offline_mode_policy_changed(self):
+        """
+        (team_policies) Enabled/disabled Paper offline mode for team
+
+        Only call this if :meth:`is_paper_offline_mode_policy_changed` is true.
+
+        :rtype: PaperOfflineModePolicyChangedType
+        """
+        if not self.is_paper_offline_mode_policy_changed():
+            raise AttributeError("tag 'paper_offline_mode_policy_changed' not set")
+        return self._value
+
     def get_passkey_login_policy_changed(self):
         """
         (team_policies) Changed passkey login policy for team
@@ -54553,6 +54616,8 @@ class EventTypeArg(bb.Union):
         (team_policies) Added users to Paper-enabled users list
     :ivar EventTypeArg.paper_enabled_users_group_removal:
         (team_policies) Removed users from Paper-enabled users list
+    :ivar EventTypeArg.paper_offline_mode_policy_changed:
+        (team_policies) Enabled/disabled Paper offline mode for team
     :ivar EventTypeArg.passkey_login_policy_changed:
         (team_policies) Changed passkey login policy for team
     :ivar EventTypeArg.password_strength_requirements_change_policy:
@@ -55852,6 +55917,8 @@ class EventTypeArg(bb.Union):
     paper_enabled_users_group_addition = None
     # Attribute is overwritten below the class definition
     paper_enabled_users_group_removal = None
+    # Attribute is overwritten below the class definition
+    paper_offline_mode_policy_changed = None
     # Attribute is overwritten below the class definition
     passkey_login_policy_changed = None
     # Attribute is overwritten below the class definition
@@ -60374,6 +60441,14 @@ class EventTypeArg(bb.Union):
         :rtype: bool
         """
         return self._tag == "paper_enabled_users_group_removal"
+
+    def is_paper_offline_mode_policy_changed(self):
+        """
+        Check if the union tag is ``paper_offline_mode_policy_changed``.
+
+        :rtype: bool
+        """
+        return self._tag == "paper_offline_mode_policy_changed"
 
     def is_passkey_login_policy_changed(self):
         """
@@ -78908,6 +78983,130 @@ class PaperMemberPolicy(bb.Union):
 
 
 PaperMemberPolicy_validator = bv.Union(PaperMemberPolicy)
+
+
+class PaperOfflineModePolicy(bb.Union):
+    """
+    Policy for controlling if team members can use Paper offline mode
+
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+    """
+
+    _catch_all = "other"
+    # Attribute is overwritten below the class definition
+    default = None
+    # Attribute is overwritten below the class definition
+    disabled = None
+    # Attribute is overwritten below the class definition
+    enabled = None
+    # Attribute is overwritten below the class definition
+    other = None
+
+    def is_default(self):
+        """
+        Check if the union tag is ``default``.
+
+        :rtype: bool
+        """
+        return self._tag == "default"
+
+    def is_disabled(self):
+        """
+        Check if the union tag is ``disabled``.
+
+        :rtype: bool
+        """
+        return self._tag == "disabled"
+
+    def is_enabled(self):
+        """
+        Check if the union tag is ``enabled``.
+
+        :rtype: bool
+        """
+        return self._tag == "enabled"
+
+    def is_other(self):
+        """
+        Check if the union tag is ``other``.
+
+        :rtype: bool
+        """
+        return self._tag == "other"
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(PaperOfflineModePolicy, self)._process_custom_annotations(
+            annotation_type, field_path, processor
+        )
+
+
+PaperOfflineModePolicy_validator = bv.Union(PaperOfflineModePolicy)
+
+
+class PaperOfflineModePolicyChangedDetails(bb.Struct):
+    """
+    Enabled/disabled Paper offline mode for team.
+
+    :ivar PaperOfflineModePolicyChangedDetails.new_value:
+        New Paper offline mode policy.
+    :ivar PaperOfflineModePolicyChangedDetails.previous_value:
+        Previous Paper offline mode policy.
+    """
+
+    __slots__ = [
+        "_new_value_value",
+        "_previous_value_value",
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self, new_value=None, previous_value=None):
+        self._new_value_value = bb.NOT_SET
+        self._previous_value_value = bb.NOT_SET
+        if new_value is not None:
+            self.new_value = new_value
+        if previous_value is not None:
+            self.previous_value = previous_value
+
+    # Instance attribute type: PaperOfflineModePolicy (validator is set below)
+    new_value = bb.Attribute("new_value", user_defined=True)
+
+    # Instance attribute type: PaperOfflineModePolicy (validator is set below)
+    previous_value = bb.Attribute("previous_value", user_defined=True)
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(PaperOfflineModePolicyChangedDetails, self)._process_custom_annotations(
+            annotation_type, field_path, processor
+        )
+
+
+PaperOfflineModePolicyChangedDetails_validator = bv.Struct(PaperOfflineModePolicyChangedDetails)
+
+
+class PaperOfflineModePolicyChangedType(bb.Struct):
+    __slots__ = [
+        "_description_value",
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self, description=None):
+        self._description_value = bb.NOT_SET
+        if description is not None:
+            self.description = description
+
+    # Instance attribute type: str (validator is set below)
+    description = bb.Attribute("description")
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(PaperOfflineModePolicyChangedType, self)._process_custom_annotations(
+            annotation_type, field_path, processor
+        )
+
+
+PaperOfflineModePolicyChangedType_validator = bv.Struct(PaperOfflineModePolicyChangedType)
 
 
 class PaperPublishedLinkChangePermissionDetails(bb.Struct):
@@ -105368,6 +105567,9 @@ EventDetails._paper_enabled_users_group_addition_details_validator = (
 EventDetails._paper_enabled_users_group_removal_details_validator = (
     PaperEnabledUsersGroupRemovalDetails_validator
 )
+EventDetails._paper_offline_mode_policy_changed_details_validator = (
+    PaperOfflineModePolicyChangedDetails_validator
+)
 EventDetails._passkey_login_policy_changed_details_validator = (
     PasskeyLoginPolicyChangedDetails_validator
 )
@@ -106139,6 +106341,7 @@ EventDetails._tagmap = {
     "paper_desktop_policy_changed_details": EventDetails._paper_desktop_policy_changed_details_validator,
     "paper_enabled_users_group_addition_details": EventDetails._paper_enabled_users_group_addition_details_validator,
     "paper_enabled_users_group_removal_details": EventDetails._paper_enabled_users_group_removal_details_validator,
+    "paper_offline_mode_policy_changed_details": EventDetails._paper_offline_mode_policy_changed_details_validator,
     "passkey_login_policy_changed_details": EventDetails._passkey_login_policy_changed_details_validator,
     "password_strength_requirements_change_policy_details": EventDetails._password_strength_requirements_change_policy_details_validator,
     "permanent_delete_change_policy_details": EventDetails._permanent_delete_change_policy_details_validator,
@@ -107017,6 +107220,7 @@ EventType._paper_enabled_users_group_addition_validator = (
     PaperEnabledUsersGroupAdditionType_validator
 )
 EventType._paper_enabled_users_group_removal_validator = PaperEnabledUsersGroupRemovalType_validator
+EventType._paper_offline_mode_policy_changed_validator = PaperOfflineModePolicyChangedType_validator
 EventType._passkey_login_policy_changed_validator = PasskeyLoginPolicyChangedType_validator
 EventType._password_strength_requirements_change_policy_validator = (
     PasswordStrengthRequirementsChangePolicyType_validator
@@ -107725,6 +107929,7 @@ EventType._tagmap = {
     "paper_desktop_policy_changed": EventType._paper_desktop_policy_changed_validator,
     "paper_enabled_users_group_addition": EventType._paper_enabled_users_group_addition_validator,
     "paper_enabled_users_group_removal": EventType._paper_enabled_users_group_removal_validator,
+    "paper_offline_mode_policy_changed": EventType._paper_offline_mode_policy_changed_validator,
     "passkey_login_policy_changed": EventType._passkey_login_policy_changed_validator,
     "password_strength_requirements_change_policy": EventType._password_strength_requirements_change_policy_validator,
     "permanent_delete_change_policy": EventType._permanent_delete_change_policy_validator,
@@ -108364,6 +108569,7 @@ EventTypeArg._paper_default_folder_policy_changed_validator = bv.Void()
 EventTypeArg._paper_desktop_policy_changed_validator = bv.Void()
 EventTypeArg._paper_enabled_users_group_addition_validator = bv.Void()
 EventTypeArg._paper_enabled_users_group_removal_validator = bv.Void()
+EventTypeArg._paper_offline_mode_policy_changed_validator = bv.Void()
 EventTypeArg._passkey_login_policy_changed_validator = bv.Void()
 EventTypeArg._password_strength_requirements_change_policy_validator = bv.Void()
 EventTypeArg._permanent_delete_change_policy_validator = bv.Void()
@@ -109000,6 +109206,7 @@ EventTypeArg._tagmap = {
     "paper_desktop_policy_changed": EventTypeArg._paper_desktop_policy_changed_validator,
     "paper_enabled_users_group_addition": EventTypeArg._paper_enabled_users_group_addition_validator,
     "paper_enabled_users_group_removal": EventTypeArg._paper_enabled_users_group_removal_validator,
+    "paper_offline_mode_policy_changed": EventTypeArg._paper_offline_mode_policy_changed_validator,
     "passkey_login_policy_changed": EventTypeArg._passkey_login_policy_changed_validator,
     "password_strength_requirements_change_policy": EventTypeArg._password_strength_requirements_change_policy_validator,
     "permanent_delete_change_policy": EventTypeArg._permanent_delete_change_policy_validator,
@@ -109835,6 +110042,7 @@ EventTypeArg.paper_default_folder_policy_changed = EventTypeArg(
 EventTypeArg.paper_desktop_policy_changed = EventTypeArg("paper_desktop_policy_changed")
 EventTypeArg.paper_enabled_users_group_addition = EventTypeArg("paper_enabled_users_group_addition")
 EventTypeArg.paper_enabled_users_group_removal = EventTypeArg("paper_enabled_users_group_removal")
+EventTypeArg.paper_offline_mode_policy_changed = EventTypeArg("paper_offline_mode_policy_changed")
 EventTypeArg.passkey_login_policy_changed = EventTypeArg("passkey_login_policy_changed")
 EventTypeArg.password_strength_requirements_change_policy = EventTypeArg(
     "password_strength_requirements_change_policy"
@@ -114713,6 +114921,41 @@ PaperMemberPolicy.anyone_with_link = PaperMemberPolicy("anyone_with_link")
 PaperMemberPolicy.only_team = PaperMemberPolicy("only_team")
 PaperMemberPolicy.team_and_explicitly_shared = PaperMemberPolicy("team_and_explicitly_shared")
 PaperMemberPolicy.other = PaperMemberPolicy("other")
+
+PaperOfflineModePolicy._default_validator = bv.Void()
+PaperOfflineModePolicy._disabled_validator = bv.Void()
+PaperOfflineModePolicy._enabled_validator = bv.Void()
+PaperOfflineModePolicy._other_validator = bv.Void()
+PaperOfflineModePolicy._tagmap = {
+    "default": PaperOfflineModePolicy._default_validator,
+    "disabled": PaperOfflineModePolicy._disabled_validator,
+    "enabled": PaperOfflineModePolicy._enabled_validator,
+    "other": PaperOfflineModePolicy._other_validator,
+}
+
+PaperOfflineModePolicy.default = PaperOfflineModePolicy("default")
+PaperOfflineModePolicy.disabled = PaperOfflineModePolicy("disabled")
+PaperOfflineModePolicy.enabled = PaperOfflineModePolicy("enabled")
+PaperOfflineModePolicy.other = PaperOfflineModePolicy("other")
+
+PaperOfflineModePolicyChangedDetails.new_value.validator = PaperOfflineModePolicy_validator
+PaperOfflineModePolicyChangedDetails.previous_value.validator = PaperOfflineModePolicy_validator
+PaperOfflineModePolicyChangedDetails._all_field_names_ = set(
+    [
+        "new_value",
+        "previous_value",
+    ]
+)
+PaperOfflineModePolicyChangedDetails._all_fields_ = [
+    ("new_value", PaperOfflineModePolicyChangedDetails.new_value.validator),
+    ("previous_value", PaperOfflineModePolicyChangedDetails.previous_value.validator),
+]
+
+PaperOfflineModePolicyChangedType.description.validator = bv.String()
+PaperOfflineModePolicyChangedType._all_field_names_ = set(["description"])
+PaperOfflineModePolicyChangedType._all_fields_ = [
+    ("description", PaperOfflineModePolicyChangedType.description.validator)
+]
 
 PaperPublishedLinkChangePermissionDetails.event_uuid.validator = bv.String()
 PaperPublishedLinkChangePermissionDetails.new_permission_level.validator = bv.String()
