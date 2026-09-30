@@ -322,9 +322,7 @@ class TestDropbox:
     def test_versioned_route(self, dbx_from_env):
         # Upload a test file. Use overwrite so a leftover file from an aborted
         # run cannot cause a spurious write conflict.
-        dbx_from_env.files_upload(
-            DUMMY_PAYLOAD, STATIC_FILE, mode=WriteMode.overwrite
-        )
+        dbx_from_env.files_upload(DUMMY_PAYLOAD, STATIC_FILE, mode=WriteMode.overwrite)
 
         # Delete the file with v2 route
         resp = dbx_from_env.files_delete_v2(STATIC_FILE)
