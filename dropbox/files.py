@@ -5620,6 +5620,8 @@ MoveIntoFamilyError_validator = bv.Union(MoveIntoFamilyError)
 
 class MoveIntoVaultError(bb.Union):
     """
+    Deprecated: the server no longer emits this error.
+
     This class acts as a tagged union. Only one of the ``is_*`` methods will
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
@@ -6628,8 +6630,9 @@ class RelocationError(bb.Union):
     :ivar RelocationError.cant_move_shared_folder:
         Can't move the shared folder to the given destination.
     :ivar RelocationError.cant_move_into_vault:
-        Some content cannot be moved into Vault under certain circumstances, see
-        detailed error.
+        Field is deprecated. Some content cannot be moved into Vault under
+        certain circumstances, see detailed error. Deprecated: the server no
+        longer emits this error.
     :vartype RelocationError.cant_move_into_vault: MoveIntoVaultError
     :ivar RelocationError.cant_move_into_family:
         Some content cannot be moved into the Family Room folder under certain
@@ -6890,8 +6893,9 @@ class RelocationError(bb.Union):
 
     def get_cant_move_into_vault(self):
         """
-        Some content cannot be moved into Vault under certain circumstances, see
-        detailed error.
+        Field is deprecated. Some content cannot be moved into Vault under
+        certain circumstances, see detailed error. Deprecated: the server no
+        longer emits this error.
 
         Only call this if :meth:`is_cant_move_into_vault` is true.
 
