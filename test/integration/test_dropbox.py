@@ -8,6 +8,7 @@ import random
 import re
 import string
 import sys
+import uuid
 import pytest
 
 import dropbox.dropbox_client as dropbox_client
@@ -37,6 +38,7 @@ from dropbox.files import (
     ListFolderError,
     PathOrLink,
     SharedLinkFileInfo,
+    WriteMode,
 )
 from dropbox.common import (
     PathRoot,
@@ -157,7 +159,12 @@ DUMMY_PAYLOAD = string.ascii_letters.encode("ascii")
 
 RANDOM_FOLDER = random.sample(string.ascii_letters, 15)
 TIMESTAMP = str(datetime.datetime.now(datetime.timezone.utc))
-STATIC_FILE = "/test.txt"
+# Unique per test process (once per pytest run = once per CI workflow run) so
+# concurrent runs against the shared test account never collide on the same
+# paths. See test/integration/README or CI notes for why this matters.
+RUN_ID = "%s-%s" % (TIMESTAMP, uuid.uuid4().hex)
+TEST_FOLDER = "/Test/%s" % RUN_ID
+STATIC_FILE = "%s/test.txt" % TEST_FOLDER
 
 
 @pytest.fixture(scope="module")
@@ -165,15 +172,24 @@ def pytest_setup():
     print("Setup")
     dbx = _refresh_dbx()
 
-    try:
-        dbx.files_delete(STATIC_FILE)
-    except Exception:
-        print("File not found")
+    # Paths are unique per run, but clean up defensively in case a prior aborted
+    # run left this run's namespace behind (extremely unlikely with the UUID).
+    for path in (TEST_FOLDER, "/Test/%s" % TIMESTAMP):
+        try:
+            dbx.files_delete_v2(path)
+        except Exception:
+            print("File not found: %s" % path)
 
-    try:
-        dbx.files_delete("/Test/%s" % TIMESTAMP)
-    except Exception:
-        print("File not found")
+    yield
+
+    # Teardown: always remove this run's namespace so the shared test account
+    # does not accumulate cruft and stale files cannot poison later runs.
+    print("Teardown")
+    for path in (TEST_FOLDER, "/Test/%s" % TIMESTAMP):
+        try:
+            dbx.files_delete_v2(path)
+        except Exception:
+            print("Nothing to clean up: %s" % path)
 
 
 @pytest.mark.usefixtures(
@@ -304,8 +320,9 @@ class TestDropbox:
         assert cm.value.error.is_invalid_root()
 
     def test_versioned_route(self, dbx_from_env):
-        # Upload a test file
-        dbx_from_env.files_upload(DUMMY_PAYLOAD, STATIC_FILE)
+        # Upload a test file. Use overwrite so a leftover file from an aborted
+        # run cannot cause a spurious write conflict.
+        dbx_from_env.files_upload(DUMMY_PAYLOAD, STATIC_FILE, mode=WriteMode.overwrite)
 
         # Delete the file with v2 route
         resp = dbx_from_env.files_delete_v2(STATIC_FILE)
