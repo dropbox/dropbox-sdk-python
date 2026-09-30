@@ -263,9 +263,6 @@ class AddFileMemberArgs(bb.Struct):
     :ivar AddFileMemberArgs.add_message_as_comment:
         If the custom message should be added as a comment on the file. Only
         meant for Paper files.
-    :ivar AddFileMemberArgs.fp_sealed_result:
-        Field is only returned for "internal" callers. The FingerprintJS Sealed
-        Client Result value
     """
 
     __slots__ = [
@@ -275,7 +272,6 @@ class AddFileMemberArgs(bb.Struct):
         "_quiet_value",
         "_access_level_value",
         "_add_message_as_comment_value",
-        "_fp_sealed_result_value",
     ]
 
     _has_required_fields = True
@@ -288,7 +284,6 @@ class AddFileMemberArgs(bb.Struct):
         quiet=None,
         access_level=None,
         add_message_as_comment=None,
-        fp_sealed_result=None,
     ):
         self._file_value = bb.NOT_SET
         self._members_value = bb.NOT_SET
@@ -296,7 +291,6 @@ class AddFileMemberArgs(bb.Struct):
         self._quiet_value = bb.NOT_SET
         self._access_level_value = bb.NOT_SET
         self._add_message_as_comment_value = bb.NOT_SET
-        self._fp_sealed_result_value = bb.NOT_SET
         if file is not None:
             self.file = file
         if members is not None:
@@ -309,8 +303,6 @@ class AddFileMemberArgs(bb.Struct):
             self.access_level = access_level
         if add_message_as_comment is not None:
             self.add_message_as_comment = add_message_as_comment
-        if fp_sealed_result is not None:
-            self.fp_sealed_result = fp_sealed_result
 
     # Instance attribute type: str (validator is set below)
     file = bb.Attribute("file")
@@ -329,9 +321,6 @@ class AddFileMemberArgs(bb.Struct):
 
     # Instance attribute type: bool (validator is set below)
     add_message_as_comment = bb.Attribute("add_message_as_comment")
-
-    # Instance attribute type: str (validator is set below)
-    fp_sealed_result = bb.Attribute("fp_sealed_result", nullable=True)
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(AddFileMemberArgs, self)._process_custom_annotations(
@@ -479,9 +468,6 @@ class AddFolderMemberArg(bb.Struct):
         notifications of their invite.
     :ivar AddFolderMemberArg.custom_message:
         Optional message to display to added members in their invitation.
-    :ivar AddFolderMemberArg.fp_sealed_result:
-        Field is only returned for "internal" callers. The FingerprintJS Sealed
-        Client Result value
     """
 
     __slots__ = [
@@ -489,24 +475,15 @@ class AddFolderMemberArg(bb.Struct):
         "_members_value",
         "_quiet_value",
         "_custom_message_value",
-        "_fp_sealed_result_value",
     ]
 
     _has_required_fields = True
 
-    def __init__(
-        self,
-        shared_folder_id=None,
-        members=None,
-        quiet=None,
-        custom_message=None,
-        fp_sealed_result=None,
-    ):
+    def __init__(self, shared_folder_id=None, members=None, quiet=None, custom_message=None):
         self._shared_folder_id_value = bb.NOT_SET
         self._members_value = bb.NOT_SET
         self._quiet_value = bb.NOT_SET
         self._custom_message_value = bb.NOT_SET
-        self._fp_sealed_result_value = bb.NOT_SET
         if shared_folder_id is not None:
             self.shared_folder_id = shared_folder_id
         if members is not None:
@@ -515,8 +492,6 @@ class AddFolderMemberArg(bb.Struct):
             self.quiet = quiet
         if custom_message is not None:
             self.custom_message = custom_message
-        if fp_sealed_result is not None:
-            self.fp_sealed_result = fp_sealed_result
 
     # Instance attribute type: str (validator is set below)
     shared_folder_id = bb.Attribute("shared_folder_id")
@@ -529,9 +504,6 @@ class AddFolderMemberArg(bb.Struct):
 
     # Instance attribute type: str (validator is set below)
     custom_message = bb.Attribute("custom_message", nullable=True)
-
-    # Instance attribute type: str (validator is set below)
-    fp_sealed_result = bb.Attribute("fp_sealed_result", nullable=True)
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(AddFolderMemberArg, self)._process_custom_annotations(
@@ -12821,7 +12793,6 @@ AddFileMemberArgs.custom_message.validator = bv.Nullable(bv.String())
 AddFileMemberArgs.quiet.validator = bv.Boolean()
 AddFileMemberArgs.access_level.validator = bv.Nullable(AccessLevel_validator)
 AddFileMemberArgs.add_message_as_comment.validator = bv.Boolean()
-AddFileMemberArgs.fp_sealed_result.validator = bv.Nullable(bv.String())
 AddFileMemberArgs._all_field_names_ = set(
     [
         "file",
@@ -12839,10 +12810,6 @@ AddFileMemberArgs._all_fields_ = [
     ("quiet", AddFileMemberArgs.quiet.validator),
     ("access_level", AddFileMemberArgs.access_level.validator),
     ("add_message_as_comment", AddFileMemberArgs.add_message_as_comment.validator),
-]
-AddFileMemberArgs._all_internal_field_names_ = set(["fp_sealed_result"])
-AddFileMemberArgs._all_internal_fields_ = [
-    ("fp_sealed_result", AddFileMemberArgs.fp_sealed_result.validator)
 ]
 
 AddFileMemberError._user_error_validator = SharingUserError_validator
@@ -12869,7 +12836,6 @@ AddFolderMemberArg.shared_folder_id.validator = common.SharedFolderId_validator
 AddFolderMemberArg.members.validator = bv.List(AddMember_validator)
 AddFolderMemberArg.quiet.validator = bv.Boolean()
 AddFolderMemberArg.custom_message.validator = bv.Nullable(bv.String(min_length=1))
-AddFolderMemberArg.fp_sealed_result.validator = bv.Nullable(bv.String())
 AddFolderMemberArg._all_field_names_ = set(
     [
         "shared_folder_id",
@@ -12883,10 +12849,6 @@ AddFolderMemberArg._all_fields_ = [
     ("members", AddFolderMemberArg.members.validator),
     ("quiet", AddFolderMemberArg.quiet.validator),
     ("custom_message", AddFolderMemberArg.custom_message.validator),
-]
-AddFolderMemberArg._all_internal_field_names_ = set(["fp_sealed_result"])
-AddFolderMemberArg._all_internal_fields_ = [
-    ("fp_sealed_result", AddFolderMemberArg.fp_sealed_result.validator)
 ]
 
 AddFolderMemberError._access_error_validator = SharedFolderAccessError_validator
