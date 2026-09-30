@@ -1,0 +1,76 @@
+name: Spec Update Watchdog
+
+# Alerts when an automated spec-update PR was opened but never merged.
+#
+# The Spec Update workflow opens a PR and arms auto-merge, then finishes green
+# regardless of what happens next -- so a PR that stalls (failing CI, merge
+# conflict, review required, auto-merge disabled) sits open silently. This job
+# asserts the end-state invariant "no labelled spec-update PR is still open"
+# and fails loudly when it is violated.
+#
+# Delivery to Slack is via the GitHub Slack app -- no credential lives in this
+# job. Subscribe once per repo in the target channel:
+#   /github subscribe <owner>/<repo> workflows:{name:"Spec Update Watchdog" event:"schedule"}
+
+on:
+  schedule:
+    # 02:00 UTC, a couple hours after nightly spec updates normally land.
+    - cron: '0 2 * * *'
+  workflow_dispatch:
+
+permissions:
+  pull-requests: read
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    env:
+      GH_TOKEN: ${{ github.token }}
+      LABEL: automated-spec-update
+      # Ignore PRs younger than this so a run that is legitimately mid-CI does
+      # not trip the alarm.
+      GRACE_MINUTES: '60'
+    steps:
+      - name: Flag unmerged spec-update PRs
+        run: |
+          set -euo pipefail
+
+          prs=$(gh pr list -R "$GITHUB_REPOSITORY" --label "$LABEL" --state open \
+            --json number,title,url,createdAt,mergeStateStatus,statusCheckRollup)
+
+          now=$(date -u +%s)
+          stalled=0
+          summary=$(mktemp)
+
+          while IFS=$'\t' read -r number url created title mergestate; do
+            [ -n "$number" ] || continue
+            created_s=$(date -u -d "$created" +%s)
+            age_min=$(( (now - created_s) / 60 ))
+            [ "$age_min" -ge "$GRACE_MINUTES" ] || continue
+
+            stalled=$((stalled + 1))
+            failing=$(echo "$prs" | jq -r --argjson n "$number" '
+              .[] | select(.number == $n) | .statusCheckRollup // []
+              | map(select(.conclusion == "FAILURE" or .conclusion == "TIMED_OUT" or .conclusion == "CANCELLED"))
+              | map(.name // .context) | join(", ")')
+            {
+              echo "- **[#${number}](${url})** — ${title}"
+              echo "  - open for ${age_min} min · merge state: \`${mergestate}\`"
+              [ -n "$failing" ] && echo "  - failing checks: ${failing}"
+            } >> "$summary"
+          done < <(echo "$prs" | jq -r '.[] | [.number, .url, .createdAt, .title, .mergeStateStatus] | @tsv')
+
+          if [ "$stalled" -eq 0 ]; then
+            echo "No spec-update PRs stalled beyond ${GRACE_MINUTES} min. ✅"
+            exit 0
+          fi
+
+          {
+            echo "### ⚠️ ${stalled} automated spec-update PR(s) not merged"
+            echo
+            cat "$summary"
+          } >> "$GITHUB_STEP_SUMMARY"
+
+          echo "::error::${stalled} automated spec-update PR(s) open past the grace window — see job summary."
+          cat "$summary"
+          exit 1
