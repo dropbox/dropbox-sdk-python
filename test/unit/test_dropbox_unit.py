@@ -4,8 +4,8 @@ import inspect
 import json
 import pickle
 from datetime import datetime, timedelta
+from unittest import mock
 
-import mock
 import pytest
 import requests
 
