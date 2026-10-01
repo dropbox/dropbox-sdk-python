@@ -9349,9 +9349,11 @@ class SharePathError(bb.Union):
     :ivar SharePathError.inside_osx_package:
         We do not support sharing a folder inside a Mac OS X package.
     :ivar SharePathError.is_vault:
-        We do not support sharing the Vault folder.
+        Field is deprecated. We do not support sharing the Vault folder.
+        Deprecated: Vault sharing errors are no longer emitted.
     :ivar SharePathError.is_vault_locked:
-        We do not support sharing a folder inside a locked Vault.
+        Field is deprecated. We do not support sharing a folder inside a locked
+        Vault. Deprecated: Vault sharing errors are no longer emitted.
     :ivar SharePathError.is_family:
         We do not support sharing the Family folder.
     """
@@ -9593,9 +9595,11 @@ class SharePathErrorBaseV2(bb.Union):
     :ivar SharePathErrorBaseV2.inside_osx_package:
         We do not support sharing a folder inside a Mac OS X package.
     :ivar SharePathErrorBaseV2.is_vault:
-        We do not support sharing the Vault folder.
+        Field is deprecated. We do not support sharing the Vault folder.
+        Deprecated: Vault sharing errors are no longer emitted.
     :ivar SharePathErrorBaseV2.is_vault_locked:
-        We do not support sharing a folder inside a locked Vault.
+        Field is deprecated. We do not support sharing a folder inside a locked
+        Vault. Deprecated: Vault sharing errors are no longer emitted.
     """
 
     _catch_all = "other"
