@@ -2264,6 +2264,58 @@ class DropboxTeamBase(object):
         )
         return None
 
+    def team_members_suspend_batch(self, members):
+        """
+        Launch a member suspension batch. The server enforces a maximum of 500
+        members.
+
+        Route attributes:
+            scope: members.write
+
+        :param members: Must contain between 1 and 500 targets. The launch
+            handler also rejects duplicate client item IDs and duplicate member
+            selectors.
+        :type members: List[:class:`dropbox.team.MembersSuspendBatchTarget`]
+        :rtype: :class:`dropbox.async_.LaunchResultBase`
+        :raises: :class:`.exceptions.ApiError`
+
+        If this raises, ApiError will contain:
+            :class:`dropbox.team.MembersSuspendBatchError`
+        """
+        arg = team.MembersSuspendBatchArg(members)
+        r = self.request(
+            team.members_suspend_batch,
+            "team",
+            arg,
+            None,
+        )
+        return r
+
+    def team_members_suspend_batch_job_status_check(self, async_job_id):
+        """
+        Poll a previously launched member suspension batch job.
+
+        Route attributes:
+            scope: members.write
+
+        :param async_job_id: Id of the asynchronous job. This is the value of a
+            response returned from the method that launched the job.
+        :type async_job_id: str
+        :rtype: :class:`dropbox.team.MembersSuspendBatchJobStatus`
+        :raises: :class:`.exceptions.ApiError`
+
+        If this raises, ApiError will contain:
+            :class:`dropbox.async_.PollError`
+        """
+        arg = async_.PollArg(async_job_id)
+        r = self.request(
+            team.members_suspend_batch_job_status_check,
+            "team",
+            arg,
+            None,
+        )
+        return r
+
     def team_members_unsuspend(self, user):
         """
         Unsuspend a member from a team. Permission : Team member management

@@ -11005,6 +11005,548 @@ class MembersSetProfilePhotoError(MemberSelectorError):
 MembersSetProfilePhotoError_validator = bv.Union(MembersSetProfilePhotoError)
 
 
+class MembersSuspendBatchArg(bb.Struct):
+    """
+    Launches one action-specific member suspension batch job.
+
+    :ivar MembersSuspendBatchArg.members:
+        Must contain between 1 and 500 targets. The launch handler also rejects
+        duplicate client item IDs and duplicate member selectors.
+    """
+
+    __slots__ = [
+        "_members_value",
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self, members=None):
+        self._members_value = bb.NOT_SET
+        if members is not None:
+            self.members = members
+
+    # Instance attribute type: list of [MembersSuspendBatchTarget] (validator is set below)
+    members = bb.Attribute("members")
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(MembersSuspendBatchArg, self)._process_custom_annotations(
+            annotation_type, field_path, processor
+        )
+
+
+MembersSuspendBatchArg_validator = bv.Struct(MembersSuspendBatchArg)
+
+
+class MembersSuspendBatchComplete(bb.Struct):
+    __slots__ = [
+        "_requested_value",
+        "_suspended_value",
+        "_failed_value",
+        "_unknown_value",
+        "_report_delivery_value",
+    ]
+
+    _has_required_fields = True
+
+    def __init__(
+        self, requested=None, suspended=None, failed=None, unknown=None, report_delivery=None
+    ):
+        self._requested_value = bb.NOT_SET
+        self._suspended_value = bb.NOT_SET
+        self._failed_value = bb.NOT_SET
+        self._unknown_value = bb.NOT_SET
+        self._report_delivery_value = bb.NOT_SET
+        if requested is not None:
+            self.requested = requested
+        if suspended is not None:
+            self.suspended = suspended
+        if failed is not None:
+            self.failed = failed
+        if unknown is not None:
+            self.unknown = unknown
+        if report_delivery is not None:
+            self.report_delivery = report_delivery
+
+    # Instance attribute type: int (validator is set below)
+    requested = bb.Attribute("requested")
+
+    # Instance attribute type: int (validator is set below)
+    suspended = bb.Attribute("suspended")
+
+    # Instance attribute type: int (validator is set below)
+    failed = bb.Attribute("failed")
+
+    # Instance attribute type: int (validator is set below)
+    unknown = bb.Attribute("unknown")
+
+    # Instance attribute type: MembersSuspendBatchReportDeliveryStatus (validator is set below)
+    report_delivery = bb.Attribute("report_delivery", user_defined=True)
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(MembersSuspendBatchComplete, self)._process_custom_annotations(
+            annotation_type, field_path, processor
+        )
+
+
+MembersSuspendBatchComplete_validator = bv.Struct(MembersSuspendBatchComplete)
+
+
+class MembersSuspendBatchError(bb.Union):
+    """
+    A typed launch rejection. Authorization failures continue to use the API v2
+    authentication/permission error surface.
+
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+
+    :ivar MembersSuspendBatchError.too_many_members:
+        The request contains more than 500 members.
+    :ivar MembersSuspendBatchError.duplicate_client_item_id:
+        More than one target uses the same client item ID.
+    :ivar MembersSuspendBatchError.duplicate_team_member_id:
+        More than one target selects the same team member.
+    :ivar MembersSuspendBatchError.acting_admin:
+        The acting administrator cannot suspend their own account.
+    :ivar MembersSuspendBatchError.last_admin:
+        Suspending the selected members would leave the team without an active
+        admin.
+    """
+
+    _catch_all = "other"
+    # Attribute is overwritten below the class definition
+    too_many_members = None
+    # Attribute is overwritten below the class definition
+    duplicate_client_item_id = None
+    # Attribute is overwritten below the class definition
+    duplicate_team_member_id = None
+    # Attribute is overwritten below the class definition
+    acting_admin = None
+    # Attribute is overwritten below the class definition
+    last_admin = None
+    # Attribute is overwritten below the class definition
+    other = None
+
+    def is_too_many_members(self):
+        """
+        Check if the union tag is ``too_many_members``.
+
+        :rtype: bool
+        """
+        return self._tag == "too_many_members"
+
+    def is_duplicate_client_item_id(self):
+        """
+        Check if the union tag is ``duplicate_client_item_id``.
+
+        :rtype: bool
+        """
+        return self._tag == "duplicate_client_item_id"
+
+    def is_duplicate_team_member_id(self):
+        """
+        Check if the union tag is ``duplicate_team_member_id``.
+
+        :rtype: bool
+        """
+        return self._tag == "duplicate_team_member_id"
+
+    def is_acting_admin(self):
+        """
+        Check if the union tag is ``acting_admin``.
+
+        :rtype: bool
+        """
+        return self._tag == "acting_admin"
+
+    def is_last_admin(self):
+        """
+        Check if the union tag is ``last_admin``.
+
+        :rtype: bool
+        """
+        return self._tag == "last_admin"
+
+    def is_other(self):
+        """
+        Check if the union tag is ``other``.
+
+        :rtype: bool
+        """
+        return self._tag == "other"
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(MembersSuspendBatchError, self)._process_custom_annotations(
+            annotation_type, field_path, processor
+        )
+
+
+MembersSuspendBatchError_validator = bv.Union(MembersSuspendBatchError)
+
+
+class MembersSuspendBatchJobStatus(async_.PollResultBase):
+    """
+    Coarse job state. Live row progress and report contents are intentionally
+    omitted; the authorized team admin who initiated the batch receives row
+    details in the terminal email report.
+
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+    """
+
+    _catch_all = "other"
+    # Attribute is overwritten below the class definition
+    other = None
+
+    @classmethod
+    def complete(cls, val):
+        """
+        Create an instance of this class set to the ``complete`` tag with value
+        ``val``.
+
+        :param MembersSuspendBatchComplete val:
+        :rtype: MembersSuspendBatchJobStatus
+        """
+        return cls("complete", val)
+
+    @classmethod
+    def failed(cls, val):
+        """
+        Create an instance of this class set to the ``failed`` tag with value
+        ``val``.
+
+        :param MembersSuspendBatchTaskFailure val:
+        :rtype: MembersSuspendBatchJobStatus
+        """
+        return cls("failed", val)
+
+    def is_complete(self):
+        """
+        Check if the union tag is ``complete``.
+
+        :rtype: bool
+        """
+        return self._tag == "complete"
+
+    def is_failed(self):
+        """
+        Check if the union tag is ``failed``.
+
+        :rtype: bool
+        """
+        return self._tag == "failed"
+
+    def is_other(self):
+        """
+        Check if the union tag is ``other``.
+
+        :rtype: bool
+        """
+        return self._tag == "other"
+
+    def get_complete(self):
+        """
+        Only call this if :meth:`is_complete` is true.
+
+        :rtype: MembersSuspendBatchComplete
+        """
+        if not self.is_complete():
+            raise AttributeError("tag 'complete' not set")
+        return self._value
+
+    def get_failed(self):
+        """
+        Only call this if :meth:`is_failed` is true.
+
+        :rtype: MembersSuspendBatchTaskFailure
+        """
+        if not self.is_failed():
+            raise AttributeError("tag 'failed' not set")
+        return self._value
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(MembersSuspendBatchJobStatus, self)._process_custom_annotations(
+            annotation_type, field_path, processor
+        )
+
+
+MembersSuspendBatchJobStatus_validator = bv.Union(MembersSuspendBatchJobStatus)
+
+
+class MembersSuspendBatchReportDeliveryStatus(bb.Union):
+    """
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+    """
+
+    _catch_all = "other"
+    # Attribute is overwritten below the class definition
+    members_suspend_batch_report_delivery_status_unspecified = None
+    # Attribute is overwritten below the class definition
+    members_suspend_batch_report_delivery_status_pending = None
+    # Attribute is overwritten below the class definition
+    members_suspend_batch_report_delivery_status_delivered = None
+    # Attribute is overwritten below the class definition
+    members_suspend_batch_report_delivery_status_failed = None
+    # Attribute is overwritten below the class definition
+    other = None
+
+    def is_members_suspend_batch_report_delivery_status_unspecified(self):
+        """
+        Check if the union tag is ``members_suspend_batch_report_delivery_status_unspecified``.
+
+        :rtype: bool
+        """
+        return self._tag == "members_suspend_batch_report_delivery_status_unspecified"
+
+    def is_members_suspend_batch_report_delivery_status_pending(self):
+        """
+        Check if the union tag is ``members_suspend_batch_report_delivery_status_pending``.
+
+        :rtype: bool
+        """
+        return self._tag == "members_suspend_batch_report_delivery_status_pending"
+
+    def is_members_suspend_batch_report_delivery_status_delivered(self):
+        """
+        Check if the union tag is ``members_suspend_batch_report_delivery_status_delivered``.
+
+        :rtype: bool
+        """
+        return self._tag == "members_suspend_batch_report_delivery_status_delivered"
+
+    def is_members_suspend_batch_report_delivery_status_failed(self):
+        """
+        Check if the union tag is ``members_suspend_batch_report_delivery_status_failed``.
+
+        :rtype: bool
+        """
+        return self._tag == "members_suspend_batch_report_delivery_status_failed"
+
+    def is_other(self):
+        """
+        Check if the union tag is ``other``.
+
+        :rtype: bool
+        """
+        return self._tag == "other"
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(MembersSuspendBatchReportDeliveryStatus, self)._process_custom_annotations(
+            annotation_type, field_path, processor
+        )
+
+
+MembersSuspendBatchReportDeliveryStatus_validator = bv.Union(
+    MembersSuspendBatchReportDeliveryStatus
+)
+
+
+class MembersSuspendBatchRowFailure(MembersSuspendError):
+    """
+    Stable machine-readable reasons used by the terminal row report.
+
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+    """
+
+    # Attribute is overwritten below the class definition
+    protected_acting_admin = None
+    # Attribute is overwritten below the class definition
+    permission_changed = None
+    # Attribute is overwritten below the class definition
+    suspend_failed = None
+
+    def is_protected_acting_admin(self):
+        """
+        Check if the union tag is ``protected_acting_admin``.
+
+        :rtype: bool
+        """
+        return self._tag == "protected_acting_admin"
+
+    def is_permission_changed(self):
+        """
+        Check if the union tag is ``permission_changed``.
+
+        :rtype: bool
+        """
+        return self._tag == "permission_changed"
+
+    def is_suspend_failed(self):
+        """
+        Check if the union tag is ``suspend_failed``.
+
+        :rtype: bool
+        """
+        return self._tag == "suspend_failed"
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(MembersSuspendBatchRowFailure, self)._process_custom_annotations(
+            annotation_type, field_path, processor
+        )
+
+
+MembersSuspendBatchRowFailure_validator = bv.Union(MembersSuspendBatchRowFailure)
+
+
+class MembersSuspendBatchRowOutcome(bb.Union):
+    """
+    The terminal outcome for one requested member. Row outcomes are delivered in
+    the report rather than embedded in the status response.
+
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+    """
+
+    _catch_all = "other"
+    # Attribute is overwritten below the class definition
+    suspended = None
+    # Attribute is overwritten below the class definition
+    unknown = None
+    # Attribute is overwritten below the class definition
+    other = None
+
+    @classmethod
+    def failed(cls, val):
+        """
+        Create an instance of this class set to the ``failed`` tag with value
+        ``val``.
+
+        :param MembersSuspendBatchRowFailure val:
+        :rtype: MembersSuspendBatchRowOutcome
+        """
+        return cls("failed", val)
+
+    def is_suspended(self):
+        """
+        Check if the union tag is ``suspended``.
+
+        :rtype: bool
+        """
+        return self._tag == "suspended"
+
+    def is_failed(self):
+        """
+        Check if the union tag is ``failed``.
+
+        :rtype: bool
+        """
+        return self._tag == "failed"
+
+    def is_unknown(self):
+        """
+        Check if the union tag is ``unknown``.
+
+        :rtype: bool
+        """
+        return self._tag == "unknown"
+
+    def is_other(self):
+        """
+        Check if the union tag is ``other``.
+
+        :rtype: bool
+        """
+        return self._tag == "other"
+
+    def get_failed(self):
+        """
+        Only call this if :meth:`is_failed` is true.
+
+        :rtype: MembersSuspendBatchRowFailure
+        """
+        if not self.is_failed():
+            raise AttributeError("tag 'failed' not set")
+        return self._value
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(MembersSuspendBatchRowOutcome, self)._process_custom_annotations(
+            annotation_type, field_path, processor
+        )
+
+
+MembersSuspendBatchRowOutcome_validator = bv.Union(MembersSuspendBatchRowOutcome)
+
+
+class MembersSuspendBatchTarget(bb.Struct):
+    """
+    One member selected for suspension. The opaque client item ID correlates the
+    eventual report row with the caller's input without sending CSV data.
+    """
+
+    __slots__ = [
+        "_client_item_id_value",
+        "_suspend_arg_value",
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self, client_item_id=None, suspend_arg=None):
+        self._client_item_id_value = bb.NOT_SET
+        self._suspend_arg_value = bb.NOT_SET
+        if client_item_id is not None:
+            self.client_item_id = client_item_id
+        if suspend_arg is not None:
+            self.suspend_arg = suspend_arg
+
+    # Instance attribute type: str (validator is set below)
+    client_item_id = bb.Attribute("client_item_id")
+
+    # Instance attribute type: MembersDeactivateArg (validator is set below)
+    suspend_arg = bb.Attribute("suspend_arg", user_defined=True)
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(MembersSuspendBatchTarget, self)._process_custom_annotations(
+            annotation_type, field_path, processor
+        )
+
+
+MembersSuspendBatchTarget_validator = bv.Struct(MembersSuspendBatchTarget)
+
+
+class MembersSuspendBatchTaskFailure(bb.Union):
+    """
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+    """
+
+    _catch_all = "other"
+    # Attribute is overwritten below the class definition
+    unusable_result = None
+    # Attribute is overwritten below the class definition
+    other = None
+
+    def is_unusable_result(self):
+        """
+        Check if the union tag is ``unusable_result``.
+
+        :rtype: bool
+        """
+        return self._tag == "unusable_result"
+
+    def is_other(self):
+        """
+        Check if the union tag is ``other``.
+
+        :rtype: bool
+        """
+        return self._tag == "other"
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(MembersSuspendBatchTaskFailure, self)._process_custom_annotations(
+            annotation_type, field_path, processor
+        )
+
+
+MembersSuspendBatchTaskFailure_validator = bv.Union(MembersSuspendBatchTaskFailure)
+
+
 class MembersTransferFormerMembersFilesError(MembersTransferFilesError):
     """
     This class acts as a tagged union. Only one of the ``is_*`` methods will
@@ -18596,6 +19138,161 @@ MembersSetProfilePhotoError.set_profile_disallowed = MembersSetProfilePhotoError
 )
 MembersSetProfilePhotoError.other = MembersSetProfilePhotoError("other")
 
+MembersSuspendBatchArg.members.validator = bv.List(
+    MembersSuspendBatchTarget_validator, min_items=1, max_items=500
+)
+MembersSuspendBatchArg._all_field_names_ = set(["members"])
+MembersSuspendBatchArg._all_fields_ = [("members", MembersSuspendBatchArg.members.validator)]
+
+MembersSuspendBatchComplete.requested.validator = bv.Int64()
+MembersSuspendBatchComplete.suspended.validator = bv.Int64()
+MembersSuspendBatchComplete.failed.validator = bv.Int64()
+MembersSuspendBatchComplete.unknown.validator = bv.Int64()
+MembersSuspendBatchComplete.report_delivery.validator = (
+    MembersSuspendBatchReportDeliveryStatus_validator
+)
+MembersSuspendBatchComplete._all_field_names_ = set(
+    [
+        "requested",
+        "suspended",
+        "failed",
+        "unknown",
+        "report_delivery",
+    ]
+)
+MembersSuspendBatchComplete._all_fields_ = [
+    ("requested", MembersSuspendBatchComplete.requested.validator),
+    ("suspended", MembersSuspendBatchComplete.suspended.validator),
+    ("failed", MembersSuspendBatchComplete.failed.validator),
+    ("unknown", MembersSuspendBatchComplete.unknown.validator),
+    ("report_delivery", MembersSuspendBatchComplete.report_delivery.validator),
+]
+
+MembersSuspendBatchError._too_many_members_validator = bv.Void()
+MembersSuspendBatchError._duplicate_client_item_id_validator = bv.Void()
+MembersSuspendBatchError._duplicate_team_member_id_validator = bv.Void()
+MembersSuspendBatchError._acting_admin_validator = bv.Void()
+MembersSuspendBatchError._last_admin_validator = bv.Void()
+MembersSuspendBatchError._other_validator = bv.Void()
+MembersSuspendBatchError._tagmap = {
+    "too_many_members": MembersSuspendBatchError._too_many_members_validator,
+    "duplicate_client_item_id": MembersSuspendBatchError._duplicate_client_item_id_validator,
+    "duplicate_team_member_id": MembersSuspendBatchError._duplicate_team_member_id_validator,
+    "acting_admin": MembersSuspendBatchError._acting_admin_validator,
+    "last_admin": MembersSuspendBatchError._last_admin_validator,
+    "other": MembersSuspendBatchError._other_validator,
+}
+
+MembersSuspendBatchError.too_many_members = MembersSuspendBatchError("too_many_members")
+MembersSuspendBatchError.duplicate_client_item_id = MembersSuspendBatchError(
+    "duplicate_client_item_id"
+)
+MembersSuspendBatchError.duplicate_team_member_id = MembersSuspendBatchError(
+    "duplicate_team_member_id"
+)
+MembersSuspendBatchError.acting_admin = MembersSuspendBatchError("acting_admin")
+MembersSuspendBatchError.last_admin = MembersSuspendBatchError("last_admin")
+MembersSuspendBatchError.other = MembersSuspendBatchError("other")
+
+MembersSuspendBatchJobStatus._complete_validator = MembersSuspendBatchComplete_validator
+MembersSuspendBatchJobStatus._failed_validator = MembersSuspendBatchTaskFailure_validator
+MembersSuspendBatchJobStatus._other_validator = bv.Void()
+MembersSuspendBatchJobStatus._tagmap = {
+    "complete": MembersSuspendBatchJobStatus._complete_validator,
+    "failed": MembersSuspendBatchJobStatus._failed_validator,
+    "other": MembersSuspendBatchJobStatus._other_validator,
+}
+MembersSuspendBatchJobStatus._tagmap.update(async_.PollResultBase._tagmap)
+
+MembersSuspendBatchJobStatus.other = MembersSuspendBatchJobStatus("other")
+
+MembersSuspendBatchReportDeliveryStatus._members_suspend_batch_report_delivery_status_unspecified_validator = bv.Void()
+MembersSuspendBatchReportDeliveryStatus._members_suspend_batch_report_delivery_status_pending_validator = bv.Void()
+MembersSuspendBatchReportDeliveryStatus._members_suspend_batch_report_delivery_status_delivered_validator = bv.Void()
+MembersSuspendBatchReportDeliveryStatus._members_suspend_batch_report_delivery_status_failed_validator = bv.Void()
+MembersSuspendBatchReportDeliveryStatus._other_validator = bv.Void()
+MembersSuspendBatchReportDeliveryStatus._tagmap = {
+    "members_suspend_batch_report_delivery_status_unspecified": MembersSuspendBatchReportDeliveryStatus._members_suspend_batch_report_delivery_status_unspecified_validator,
+    "members_suspend_batch_report_delivery_status_pending": MembersSuspendBatchReportDeliveryStatus._members_suspend_batch_report_delivery_status_pending_validator,
+    "members_suspend_batch_report_delivery_status_delivered": MembersSuspendBatchReportDeliveryStatus._members_suspend_batch_report_delivery_status_delivered_validator,
+    "members_suspend_batch_report_delivery_status_failed": MembersSuspendBatchReportDeliveryStatus._members_suspend_batch_report_delivery_status_failed_validator,
+    "other": MembersSuspendBatchReportDeliveryStatus._other_validator,
+}
+
+MembersSuspendBatchReportDeliveryStatus.members_suspend_batch_report_delivery_status_unspecified = (
+    MembersSuspendBatchReportDeliveryStatus(
+        "members_suspend_batch_report_delivery_status_unspecified"
+    )
+)
+MembersSuspendBatchReportDeliveryStatus.members_suspend_batch_report_delivery_status_pending = (
+    MembersSuspendBatchReportDeliveryStatus("members_suspend_batch_report_delivery_status_pending")
+)
+MembersSuspendBatchReportDeliveryStatus.members_suspend_batch_report_delivery_status_delivered = (
+    MembersSuspendBatchReportDeliveryStatus(
+        "members_suspend_batch_report_delivery_status_delivered"
+    )
+)
+MembersSuspendBatchReportDeliveryStatus.members_suspend_batch_report_delivery_status_failed = (
+    MembersSuspendBatchReportDeliveryStatus("members_suspend_batch_report_delivery_status_failed")
+)
+MembersSuspendBatchReportDeliveryStatus.other = MembersSuspendBatchReportDeliveryStatus("other")
+
+MembersSuspendBatchRowFailure._protected_acting_admin_validator = bv.Void()
+MembersSuspendBatchRowFailure._permission_changed_validator = bv.Void()
+MembersSuspendBatchRowFailure._suspend_failed_validator = bv.Void()
+MembersSuspendBatchRowFailure._tagmap = {
+    "protected_acting_admin": MembersSuspendBatchRowFailure._protected_acting_admin_validator,
+    "permission_changed": MembersSuspendBatchRowFailure._permission_changed_validator,
+    "suspend_failed": MembersSuspendBatchRowFailure._suspend_failed_validator,
+}
+MembersSuspendBatchRowFailure._tagmap.update(MembersSuspendError._tagmap)
+
+MembersSuspendBatchRowFailure.protected_acting_admin = MembersSuspendBatchRowFailure(
+    "protected_acting_admin"
+)
+MembersSuspendBatchRowFailure.permission_changed = MembersSuspendBatchRowFailure(
+    "permission_changed"
+)
+MembersSuspendBatchRowFailure.suspend_failed = MembersSuspendBatchRowFailure("suspend_failed")
+
+MembersSuspendBatchRowOutcome._suspended_validator = bv.Void()
+MembersSuspendBatchRowOutcome._failed_validator = MembersSuspendBatchRowFailure_validator
+MembersSuspendBatchRowOutcome._unknown_validator = bv.Void()
+MembersSuspendBatchRowOutcome._other_validator = bv.Void()
+MembersSuspendBatchRowOutcome._tagmap = {
+    "suspended": MembersSuspendBatchRowOutcome._suspended_validator,
+    "failed": MembersSuspendBatchRowOutcome._failed_validator,
+    "unknown": MembersSuspendBatchRowOutcome._unknown_validator,
+    "other": MembersSuspendBatchRowOutcome._other_validator,
+}
+
+MembersSuspendBatchRowOutcome.suspended = MembersSuspendBatchRowOutcome("suspended")
+MembersSuspendBatchRowOutcome.unknown = MembersSuspendBatchRowOutcome("unknown")
+MembersSuspendBatchRowOutcome.other = MembersSuspendBatchRowOutcome("other")
+
+MembersSuspendBatchTarget.client_item_id.validator = bv.String(min_length=1, max_length=128)
+MembersSuspendBatchTarget.suspend_arg.validator = MembersDeactivateArg_validator
+MembersSuspendBatchTarget._all_field_names_ = set(
+    [
+        "client_item_id",
+        "suspend_arg",
+    ]
+)
+MembersSuspendBatchTarget._all_fields_ = [
+    ("client_item_id", MembersSuspendBatchTarget.client_item_id.validator),
+    ("suspend_arg", MembersSuspendBatchTarget.suspend_arg.validator),
+]
+
+MembersSuspendBatchTaskFailure._unusable_result_validator = bv.Void()
+MembersSuspendBatchTaskFailure._other_validator = bv.Void()
+MembersSuspendBatchTaskFailure._tagmap = {
+    "unusable_result": MembersSuspendBatchTaskFailure._unusable_result_validator,
+    "other": MembersSuspendBatchTaskFailure._other_validator,
+}
+
+MembersSuspendBatchTaskFailure.unusable_result = MembersSuspendBatchTaskFailure("unusable_result")
+MembersSuspendBatchTaskFailure.other = MembersSuspendBatchTaskFailure("other")
+
 MembersTransferFormerMembersFilesError._user_data_is_being_transferred_validator = bv.Void()
 MembersTransferFormerMembersFilesError._user_not_removed_validator = bv.Void()
 MembersTransferFormerMembersFilesError._user_data_cannot_be_transferred_validator = bv.Void()
@@ -20343,6 +21040,24 @@ members_suspend = bb.Route(
     MembersSuspendError_validator,
     {"auth": "team", "host": "api", "style": "rpc"},
 )
+members_suspend_batch = bb.Route(
+    "members/suspend_batch",
+    1,
+    False,
+    MembersSuspendBatchArg_validator,
+    async_.LaunchResultBase_validator,
+    MembersSuspendBatchError_validator,
+    {"auth": "team", "host": "api", "style": "rpc"},
+)
+members_suspend_batch_job_status_check = bb.Route(
+    "members/suspend_batch/job_status/check",
+    1,
+    False,
+    async_.PollArg_validator,
+    MembersSuspendBatchJobStatus_validator,
+    async_.PollError_validator,
+    {"auth": "team", "host": "api", "style": "rpc"},
+)
 members_unsuspend = bb.Route(
     "members/unsuspend",
     1,
@@ -20640,6 +21355,8 @@ ROUTES = {
     "members/set_profile_photo": members_set_profile_photo,
     "members/set_profile_photo:2": members_set_profile_photo_v2,
     "members/suspend": members_suspend,
+    "members/suspend_batch": members_suspend_batch,
+    "members/suspend_batch/job_status/check": members_suspend_batch_job_status_check,
     "members/unsuspend": members_unsuspend,
     "namespaces/list": namespaces_list,
     "namespaces/list/continue": namespaces_list_continue,
