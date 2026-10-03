@@ -20,7 +20,13 @@ from dropbox.dropbox_client import (
     RouteResult,
     USER_AUTH,
 )
-from dropbox.exceptions import ApiError, AuthError, BadInputError
+from dropbox.exceptions import (
+    ApiError,
+    AuthError,
+    BadInputError,
+    InternalServerError,
+    RateLimitError,
+)
 from dropbox.oauth import OAuth2FlowNoRedirectResult, DropboxOAuth2FlowNoRedirect
 
 APP_KEY = "dummy_app_key"
@@ -662,6 +668,27 @@ class TestClient:
         # TypeError from calling len() before the isinstance check.
         with pytest.raises(BadInputException):
             Dropbox(oauth2_access_token=ACCESS_TOKEN, scope=12345, session=session_instance)
+
+    @pytest.mark.parametrize(
+        "setting, error",
+        [
+            ("max_retries_on_error", InternalServerError("request-id", 500, "error")),
+            ("max_retries_on_rate_limit", RateLimitError("request-id")),
+        ],
+    )
+    def test_clone_can_disable_retries(self, session_instance, mocker, setting, error):
+        dbx = Dropbox(ACCESS_TOKEN, session=session_instance, **{setting: 2})
+        cloned = dbx.clone(**{setting: 0})
+        request = mocker.patch.object(cloned, "request_json_string", side_effect=error)
+        sleep = mocker.patch("dropbox.dropbox_client.time.sleep")
+
+        with pytest.raises(type(error)):
+            cloned.request_json_string_with_retry("api", "test", "rpc", "{}", USER_AUTH, None)
+
+        request.assert_called_once()
+        sleep.assert_not_called()
+        assert getattr(dbx, "_" + setting) == 2
+        assert getattr(dbx.clone(), "_" + setting) == 2
 
     def test_clone_does_not_double_user_agent(self, session_instance):
         dbx = Dropbox(
