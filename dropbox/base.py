@@ -4505,6 +4505,79 @@ class DropboxBase(object):
     # ------------------------------------------
     # Routes in riviera namespace
 
+    def riviera_download_transform_output(self, output_handle):
+        """
+        Download the output of a completed `get_transform_async` job. Pass the
+        `output_handle` from the job's `complete` result. The body is the
+        produced file, and the `Dropbox-API-Result` header describes it. A
+        handle can only be redeemed by the user who requested the transform, and
+        only until its `expires_ts`; after that this route fails with
+        `expired_handle_error`, and the transform has to be requested again. A
+        handle that was never valid, or that belongs to another user, fails with
+        `user_error`.
+
+        Route attributes:
+            scope: files.content.read
+
+        :param output_handle: The `output_handle` from a `complete`
+            `get_transform_async/check` result.
+        :type output_handle: str
+        :rtype: (:class:`dropbox.riviera.DownloadTransformOutputResult`,
+                 :class:`requests.models.Response`)
+        :raises: :class:`.exceptions.ApiError`
+
+        If this raises, ApiError will contain:
+            :class:`dropbox.riviera.TransformApiV2Error`
+
+        If you do not consume the entire response body, then you must call close
+        on the response object, otherwise you will max out your available
+        connections. We recommend using the `contextlib.closing
+        <https://docs.python.org/2/library/contextlib.html#contextlib.closing>`_
+        context manager to ensure this.
+        """
+        arg = riviera.DownloadTransformOutputArgs(output_handle)
+        r = self.request(
+            riviera.download_transform_output,
+            "riviera",
+            arg,
+            None,
+        )
+        return r
+
+    def riviera_download_transform_output_to_file(self, download_path, output_handle):
+        """
+        Download the output of a completed `get_transform_async` job. Pass the
+        `output_handle` from the job's `complete` result. The body is the
+        produced file, and the `Dropbox-API-Result` header describes it. A
+        handle can only be redeemed by the user who requested the transform, and
+        only until its `expires_ts`; after that this route fails with
+        `expired_handle_error`, and the transform has to be requested again. A
+        handle that was never valid, or that belongs to another user, fails with
+        `user_error`.
+
+        Route attributes:
+            scope: files.content.read
+
+        :param str download_path: Path on local machine to save file.
+        :param output_handle: The `output_handle` from a `complete`
+            `get_transform_async/check` result.
+        :type output_handle: str
+        :rtype: :class:`dropbox.riviera.DownloadTransformOutputResult`
+        :raises: :class:`.exceptions.ApiError`
+
+        If this raises, ApiError will contain:
+            :class:`dropbox.riviera.TransformApiV2Error`
+        """
+        arg = riviera.DownloadTransformOutputArgs(output_handle)
+        r = self.request(
+            riviera.download_transform_output,
+            "riviera",
+            arg,
+            None,
+        )
+        self._save_body_to_file(download_path, r[1])
+        return r[0]
+
     def riviera_get_keyframes_async(
         self, file_id_or_url=None, scene_change_threshold=0.0, include_images=False
     ):
@@ -4921,6 +4994,105 @@ class DropboxBase(object):
         arg = async_.PollArg(async_job_id)
         r = self.request(
             riviera.get_transcript_async_check,
+            "riviera",
+            arg,
+            None,
+        )
+        return r
+
+    def riviera_get_transform_async(
+        self, transform_type, file_id_or_url=None, thumbnail=None, image=None, video_frame=None
+    ):
+        """
+        Asynchronous file transformation: produces a new file from an existing
+        one. One route covers many conversions. Name the source file in
+        `file_id_or_url`, say what you want back in `transform_type`, and supply
+        that type's options message if it needs one: - `pdf`: documents and
+        images, to PDF. - `html`: spreadsheets, to HTML, preserving the sheet
+        layout. - `image`: images and single document pages, to JPEG or PNG. -
+        `thumbnail`: any thumbnailable source, resized to a named size bucket. -
+        `image_pdf`: documents, to a page image rendered by way of PDF. -
+        `video_frame`: one still frame from a video, at a requested offset. The
+        accepted input formats differ per transform -- they are not one shared
+        list -- and each is the intersection of the source format with the
+        pipeline that transform uses: - `pdf` and `image_pdf`: word-processing,
+        presentation and spreadsheet documents (.doc, .docx, .ppt, .pptx, .xls,
+        .xlsx, .odt, .odp, .ods, .rtf, .epub, .gdoc, .gslides, .hwp, .ai, .eps,
+        .dwg among others). Images are not accepted. - `html`: spreadsheets only
+        -- .xls, .xlsm, .xlsx, .ods, .gsheet. This is the complete list. Note
+        that .csv and .txt are *not* accepted here. - `image`: the documents
+        above, plus .pdf and .html, plus the iWork and design formats .pages,
+        .key, .numbers, .sketch, .xd, .indd and .psd, plus .avif, .heic, .svg
+        and camera RAW, plus fonts (.otf, .ttf), plus video. Formats a browser
+        can already display (.bmp, .gif, .ico, .jpeg, .png, .tif, .tiff, .webp)
+        are not accepted; use `thumbnail` for those. - `thumbnail`: everything
+        `image` accepts, plus .bmp, .gif, .ico, .jpeg, .png, .tif, .tiff, .webp
+        and JPEG 2000. - `video_frame`: .3g2, .3gp, .3gpp, .3gpp2, .asf, .avi,
+        .dv, .flv, .m2t, .m2ts, .m4v, .mkv, .mov, .mp4, .mpeg, .mpg, .mts, .mxf,
+        .ogv, .rm, .ts, .vob, .webm, .wmv. This is the complete list. These
+        lists track Riviera's capability registry
+        (`dropbox/riviera/supported_types/previews_supported_types.yaml`), which
+        is generated and authoritative; treat it rather than this comment as the
+        final word. Formats the requested transform does not support fail with
+        `unsupported_format_error`. Options belonging to a different transform
+        type than the one requested fail with `invalid_options_error`. The
+        produced bytes are not returned by this route, and not by its `/check`
+        poll either. Poll `get_transform_async/check` with the returned async
+        job ID until it reports `complete` or `failed`; a `complete` result
+        carries a `TransformOutput` whose `output_handle`
+        `download_transform_output` exchanges for the bytes. Splitting retrieval
+        out this way is what lets the route return outputs larger than an async
+        result can carry.
+
+        Route attributes:
+            scope: files.content.read
+
+        :param file_id_or_url: Identifier of the source file to transform.
+            Callers must set exactly one of the `FileIdOrUrl` variants. The
+            referenced file must be in a format the requested `transform_type`
+            supports; see the route description for the per-transform format
+            lists. Requests against unsupported formats fail with
+            `unsupported_format_error`.
+        :type file_id_or_url: Nullable[:class:`dropbox.riviera.FileIdOrUrl`]
+        :param transform_type: What to produce from the source file. Required.
+        :type transform_type: :class:`dropbox.riviera.TransformType`
+        :param thumbnail: Options for `TransformType.thumbnail`.
+        :type thumbnail: Nullable[:class:`dropbox.riviera.ThumbnailOptions`]
+        :param image: Options for `TransformType.image` and
+            `TransformType.image_pdf`.
+        :type image: Nullable[:class:`dropbox.riviera.ImageOptions`]
+        :param video_frame: Options for `TransformType.video_frame`.
+        :type video_frame: Nullable[:class:`dropbox.riviera.VideoFrameOptions`]
+        :rtype: :class:`dropbox.async_.LaunchResultBase`
+        """
+        arg = riviera.TransformArgs(transform_type, file_id_or_url, thumbnail, image, video_frame)
+        r = self.request(
+            riviera.get_transform_async,
+            "riviera",
+            arg,
+            None,
+        )
+        return r
+
+    def riviera_get_transform_async_check(self, async_job_id):
+        """
+        Returns the status or result of specified get_transform_async task.
+
+        Route attributes:
+            scope: files.content.read
+
+        :param async_job_id: Id of the asynchronous job. This is the value of a
+            response returned from the method that launched the job.
+        :type async_job_id: str
+        :rtype: :class:`dropbox.riviera.GetTransformAsyncCheckResult`
+        :raises: :class:`.exceptions.ApiError`
+
+        If this raises, ApiError will contain:
+            :class:`dropbox.async_.PollError`
+        """
+        arg = async_.PollArg(async_job_id)
+        r = self.request(
+            riviera.get_transform_async_check,
             "riviera",
             arg,
             None,
