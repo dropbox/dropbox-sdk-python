@@ -2912,6 +2912,13 @@ class FileStatus(bb.Union):
     This class acts as a tagged union. Only one of the ``is_*`` methods will
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
+
+    :ivar FileStatus.deleted:
+        Field is deprecated. Deprecated. Deleted-file search does not work and
+        should not be used. Use
+        :meth:`dropbox.dropbox_client.Dropbox.files_list_folder` with
+        ``ListFolderArg.include_deleted`` set to ``True`` to enumerate deleted
+        entries; this does not provide equivalent full-text search.
     """
 
     _catch_all = "other"
@@ -8654,7 +8661,10 @@ class SearchOptions(bb.Struct):
         Specified property of the order of search results. By default, results
         are sorted by relevance.
     :ivar SearchOptions.file_status:
-        Restricts search to the given file status.
+        Restricts search to the given file status. The ``FileStatus.deleted``
+        value is deprecated and should not be used. This also applies to
+        searches continued with
+        :meth:`dropbox.dropbox_client.Dropbox.files_search_continue`.
     :ivar SearchOptions.filename_only:
         Restricts search to only match on filenames.
     :ivar SearchOptions.file_extensions:

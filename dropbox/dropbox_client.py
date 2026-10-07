@@ -771,8 +771,8 @@ class _DropboxTransport(object):
         :type http_resp: :class:`requests.models.Response`
         :rtype: None
         """
-        with open(download_path, "wb") as f:
-            with contextlib.closing(http_resp):
+        with contextlib.closing(http_resp):
+            with open(download_path, "wb") as f:
                 for c in http_resp.iter_content(chunksize):
                     f.write(c)
 

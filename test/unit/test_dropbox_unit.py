@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 import inspect
+import io
 import json
 import pickle
 from datetime import datetime, timedelta
@@ -8,6 +9,7 @@ from unittest import mock
 
 import pytest
 import requests
+from urllib3.response import HTTPResponse
 
 # Tests OAuth Flow
 from dropbox import DropboxOAuth2Flow, session, Dropbox, create_session
@@ -305,6 +307,21 @@ class TestOAuth:
 
 
 class TestClient:
+    @pytest.mark.parametrize("missing_parent", [False, True])
+    def test_download_closes_response(self, session_instance, tmp_path, missing_parent):
+        response = requests.Response()
+        response.raw = HTTPResponse(body=io.BytesIO(b"downloaded content"), preload_content=False)
+        dbx = Dropbox(ACCESS_TOKEN, session=session_instance)
+        destination = tmp_path / "download.bin"
+        if missing_parent:
+            destination = tmp_path / "missing" / "download.bin"
+            with pytest.raises(FileNotFoundError):
+                dbx._save_body_to_file(destination, response)
+        else:
+            dbx._save_body_to_file(destination, response)
+            assert destination.read_bytes() == b"downloaded content"
+        assert response.raw.closed
+
     @pytest.fixture(scope="function")
     def session_instance(self, mocker):
         session_obj = create_session()
