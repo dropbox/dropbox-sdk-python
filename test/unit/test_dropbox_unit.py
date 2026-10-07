@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 import inspect
+import io
 import json
 import pickle
 from datetime import datetime, timedelta
@@ -8,6 +9,7 @@ from unittest import mock
 
 import pytest
 import requests
+from urllib3.response import HTTPResponse
 
 # Tests OAuth Flow
 from dropbox import DropboxOAuth2Flow, session, Dropbox, create_session
@@ -311,6 +313,21 @@ class TestOAuth:
 
 
 class TestClient:
+    @pytest.mark.parametrize("missing_parent", [False, True])
+    def test_download_closes_response(self, session_instance, tmp_path, missing_parent):
+        response = requests.Response()
+        response.raw = HTTPResponse(body=io.BytesIO(b"downloaded content"), preload_content=False)
+        dbx = Dropbox(ACCESS_TOKEN, session=session_instance)
+        destination = tmp_path / "download.bin"
+        if missing_parent:
+            destination = tmp_path / "missing" / "download.bin"
+            with pytest.raises(FileNotFoundError):
+                dbx._save_body_to_file(destination, response)
+        else:
+            dbx._save_body_to_file(destination, response)
+            assert destination.read_bytes() == b"downloaded content"
+        assert response.raw.closed
+
     @pytest.fixture(scope="function")
     def session_instance(self, mocker):
         session_obj = create_session()
@@ -542,6 +559,17 @@ class TestClient:
         dbx = Dropbox(oauth2_access_token=ACCESS_TOKEN, session=session_instance)
         dbx.check_and_refresh_access_token()
         session_instance.post.assert_not_called()
+
+    @pytest.mark.parametrize("timeout", [None, 30])
+    def test_refresh_respects_client_timeout(self, session_instance, timeout):
+        dbx = Dropbox(
+            oauth2_refresh_token=REFRESH_TOKEN,
+            app_key=APP_KEY,
+            session=session_instance,
+            timeout=timeout,
+        )
+        dbx.refresh_access_token()
+        assert session_instance.post.call_args.kwargs["timeout"] == timeout
 
     def test_check_refresh_with_valid_online_token(self, session_instance):
         # Test Online Case w/ valid access

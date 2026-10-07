@@ -448,13 +448,9 @@ class _DropboxTransport(object):
             scope = " ".join(scope)
             body["scope"] = scope
 
-        timeout = DEFAULT_TIMEOUT
-        if self._timeout:
-            timeout = self._timeout
-
         attempt = 0
         while True:
-            res = self._session.post(url, data=body, timeout=timeout)
+            res = self._session.post(url, data=body, timeout=self._timeout)
             try:
                 self.raise_dropbox_error_for_resp(res)
                 break
@@ -779,8 +775,8 @@ class _DropboxTransport(object):
         :type http_resp: :class:`requests.models.Response`
         :rtype: None
         """
-        with open(download_path, "wb") as f:
-            with contextlib.closing(http_resp):
+        with contextlib.closing(http_resp):
+            with open(download_path, "wb") as f:
                 for c in http_resp.iter_content(chunksize):
                     f.write(c)
 
