@@ -16158,6 +16158,61 @@ class EventDetails(bb.Union):
         return cls("protect_action_stop_sharing_details", val)
 
     @classmethod
+    def protect_custom_data_type_created_details(cls, val):
+        """
+        Create an instance of this class set to the
+        ``protect_custom_data_type_created_details`` tag with value ``val``.
+
+        :param ProtectCustomDataTypeCreatedDetails val:
+        :rtype: EventDetails
+        """
+        return cls("protect_custom_data_type_created_details", val)
+
+    @classmethod
+    def protect_custom_data_type_deleted_details(cls, val):
+        """
+        Create an instance of this class set to the
+        ``protect_custom_data_type_deleted_details`` tag with value ``val``.
+
+        :param ProtectCustomDataTypeDeletedDetails val:
+        :rtype: EventDetails
+        """
+        return cls("protect_custom_data_type_deleted_details", val)
+
+    @classmethod
+    def protect_custom_data_type_disabled_details(cls, val):
+        """
+        Create an instance of this class set to the
+        ``protect_custom_data_type_disabled_details`` tag with value ``val``.
+
+        :param ProtectCustomDataTypeDisabledDetails val:
+        :rtype: EventDetails
+        """
+        return cls("protect_custom_data_type_disabled_details", val)
+
+    @classmethod
+    def protect_custom_data_type_enabled_details(cls, val):
+        """
+        Create an instance of this class set to the
+        ``protect_custom_data_type_enabled_details`` tag with value ``val``.
+
+        :param ProtectCustomDataTypeEnabledDetails val:
+        :rtype: EventDetails
+        """
+        return cls("protect_custom_data_type_enabled_details", val)
+
+    @classmethod
+    def protect_custom_data_type_modified_details(cls, val):
+        """
+        Create an instance of this class set to the
+        ``protect_custom_data_type_modified_details`` tag with value ``val``.
+
+        :param ProtectCustomDataTypeModifiedDetails val:
+        :rtype: EventDetails
+        """
+        return cls("protect_custom_data_type_modified_details", val)
+
+    @classmethod
     def protect_internal_domains_changed_details(cls, val):
         """
         Create an instance of this class set to the
@@ -22365,6 +22420,46 @@ class EventDetails(bb.Union):
         """
         return self._tag == "protect_action_stop_sharing_details"
 
+    def is_protect_custom_data_type_created_details(self):
+        """
+        Check if the union tag is ``protect_custom_data_type_created_details``.
+
+        :rtype: bool
+        """
+        return self._tag == "protect_custom_data_type_created_details"
+
+    def is_protect_custom_data_type_deleted_details(self):
+        """
+        Check if the union tag is ``protect_custom_data_type_deleted_details``.
+
+        :rtype: bool
+        """
+        return self._tag == "protect_custom_data_type_deleted_details"
+
+    def is_protect_custom_data_type_disabled_details(self):
+        """
+        Check if the union tag is ``protect_custom_data_type_disabled_details``.
+
+        :rtype: bool
+        """
+        return self._tag == "protect_custom_data_type_disabled_details"
+
+    def is_protect_custom_data_type_enabled_details(self):
+        """
+        Check if the union tag is ``protect_custom_data_type_enabled_details``.
+
+        :rtype: bool
+        """
+        return self._tag == "protect_custom_data_type_enabled_details"
+
+    def is_protect_custom_data_type_modified_details(self):
+        """
+        Check if the union tag is ``protect_custom_data_type_modified_details``.
+
+        :rtype: bool
+        """
+        return self._tag == "protect_custom_data_type_modified_details"
+
     def is_protect_internal_domains_changed_details(self):
         """
         Check if the union tag is ``protect_internal_domains_changed_details``.
@@ -28045,6 +28140,56 @@ class EventDetails(bb.Union):
             raise AttributeError("tag 'protect_action_stop_sharing_details' not set")
         return self._value
 
+    def get_protect_custom_data_type_created_details(self):
+        """
+        Only call this if :meth:`is_protect_custom_data_type_created_details` is true.
+
+        :rtype: ProtectCustomDataTypeCreatedDetails
+        """
+        if not self.is_protect_custom_data_type_created_details():
+            raise AttributeError("tag 'protect_custom_data_type_created_details' not set")
+        return self._value
+
+    def get_protect_custom_data_type_deleted_details(self):
+        """
+        Only call this if :meth:`is_protect_custom_data_type_deleted_details` is true.
+
+        :rtype: ProtectCustomDataTypeDeletedDetails
+        """
+        if not self.is_protect_custom_data_type_deleted_details():
+            raise AttributeError("tag 'protect_custom_data_type_deleted_details' not set")
+        return self._value
+
+    def get_protect_custom_data_type_disabled_details(self):
+        """
+        Only call this if :meth:`is_protect_custom_data_type_disabled_details` is true.
+
+        :rtype: ProtectCustomDataTypeDisabledDetails
+        """
+        if not self.is_protect_custom_data_type_disabled_details():
+            raise AttributeError("tag 'protect_custom_data_type_disabled_details' not set")
+        return self._value
+
+    def get_protect_custom_data_type_enabled_details(self):
+        """
+        Only call this if :meth:`is_protect_custom_data_type_enabled_details` is true.
+
+        :rtype: ProtectCustomDataTypeEnabledDetails
+        """
+        if not self.is_protect_custom_data_type_enabled_details():
+            raise AttributeError("tag 'protect_custom_data_type_enabled_details' not set")
+        return self._value
+
+    def get_protect_custom_data_type_modified_details(self):
+        """
+        Only call this if :meth:`is_protect_custom_data_type_modified_details` is true.
+
+        :rtype: ProtectCustomDataTypeModifiedDetails
+        """
+        if not self.is_protect_custom_data_type_modified_details():
+            raise AttributeError("tag 'protect_custom_data_type_modified_details' not set")
+        return self._value
+
     def get_protect_internal_domains_changed_details(self):
         """
         Only call this if :meth:`is_protect_internal_domains_changed_details` is true.
@@ -32509,6 +32654,21 @@ class EventType(bb.Union):
     :ivar EventType.protect_action_stop_sharing:
         (protect) Stopped sharing content via Dropbox Protect
     :vartype EventType.protect_action_stop_sharing: ProtectActionStopSharingType
+    :ivar EventType.protect_custom_data_type_created:
+        (protect) Created a Dropbox Protect custom data type
+    :vartype EventType.protect_custom_data_type_created: ProtectCustomDataTypeCreatedType
+    :ivar EventType.protect_custom_data_type_deleted:
+        (protect) Deleted a Dropbox Protect custom data type
+    :vartype EventType.protect_custom_data_type_deleted: ProtectCustomDataTypeDeletedType
+    :ivar EventType.protect_custom_data_type_disabled:
+        (protect) Disabled a Dropbox Protect custom data type
+    :vartype EventType.protect_custom_data_type_disabled: ProtectCustomDataTypeDisabledType
+    :ivar EventType.protect_custom_data_type_enabled:
+        (protect) Enabled a Dropbox Protect custom data type
+    :vartype EventType.protect_custom_data_type_enabled: ProtectCustomDataTypeEnabledType
+    :ivar EventType.protect_custom_data_type_modified:
+        (protect) Modified a Dropbox Protect custom data type
+    :vartype EventType.protect_custom_data_type_modified: ProtectCustomDataTypeModifiedType
     :ivar EventType.protect_internal_domains_changed:
         (protect) Modified Protect internal domains list
     :vartype EventType.protect_internal_domains_changed: ProtectInternalDomainsChangedType
@@ -36774,6 +36934,61 @@ class EventType(bb.Union):
         :rtype: EventType
         """
         return cls("protect_action_stop_sharing", val)
+
+    @classmethod
+    def protect_custom_data_type_created(cls, val):
+        """
+        Create an instance of this class set to the
+        ``protect_custom_data_type_created`` tag with value ``val``.
+
+        :param ProtectCustomDataTypeCreatedType val:
+        :rtype: EventType
+        """
+        return cls("protect_custom_data_type_created", val)
+
+    @classmethod
+    def protect_custom_data_type_deleted(cls, val):
+        """
+        Create an instance of this class set to the
+        ``protect_custom_data_type_deleted`` tag with value ``val``.
+
+        :param ProtectCustomDataTypeDeletedType val:
+        :rtype: EventType
+        """
+        return cls("protect_custom_data_type_deleted", val)
+
+    @classmethod
+    def protect_custom_data_type_disabled(cls, val):
+        """
+        Create an instance of this class set to the
+        ``protect_custom_data_type_disabled`` tag with value ``val``.
+
+        :param ProtectCustomDataTypeDisabledType val:
+        :rtype: EventType
+        """
+        return cls("protect_custom_data_type_disabled", val)
+
+    @classmethod
+    def protect_custom_data_type_enabled(cls, val):
+        """
+        Create an instance of this class set to the
+        ``protect_custom_data_type_enabled`` tag with value ``val``.
+
+        :param ProtectCustomDataTypeEnabledType val:
+        :rtype: EventType
+        """
+        return cls("protect_custom_data_type_enabled", val)
+
+    @classmethod
+    def protect_custom_data_type_modified(cls, val):
+        """
+        Create an instance of this class set to the
+        ``protect_custom_data_type_modified`` tag with value ``val``.
+
+        :param ProtectCustomDataTypeModifiedType val:
+        :rtype: EventType
+        """
+        return cls("protect_custom_data_type_modified", val)
 
     @classmethod
     def protect_internal_domains_changed(cls, val):
@@ -42928,6 +43143,46 @@ class EventType(bb.Union):
         :rtype: bool
         """
         return self._tag == "protect_action_stop_sharing"
+
+    def is_protect_custom_data_type_created(self):
+        """
+        Check if the union tag is ``protect_custom_data_type_created``.
+
+        :rtype: bool
+        """
+        return self._tag == "protect_custom_data_type_created"
+
+    def is_protect_custom_data_type_deleted(self):
+        """
+        Check if the union tag is ``protect_custom_data_type_deleted``.
+
+        :rtype: bool
+        """
+        return self._tag == "protect_custom_data_type_deleted"
+
+    def is_protect_custom_data_type_disabled(self):
+        """
+        Check if the union tag is ``protect_custom_data_type_disabled``.
+
+        :rtype: bool
+        """
+        return self._tag == "protect_custom_data_type_disabled"
+
+    def is_protect_custom_data_type_enabled(self):
+        """
+        Check if the union tag is ``protect_custom_data_type_enabled``.
+
+        :rtype: bool
+        """
+        return self._tag == "protect_custom_data_type_enabled"
+
+    def is_protect_custom_data_type_modified(self):
+        """
+        Check if the union tag is ``protect_custom_data_type_modified``.
+
+        :rtype: bool
+        """
+        return self._tag == "protect_custom_data_type_modified"
 
     def is_protect_internal_domains_changed(self):
         """
@@ -49174,6 +49429,66 @@ class EventType(bb.Union):
             raise AttributeError("tag 'protect_action_stop_sharing' not set")
         return self._value
 
+    def get_protect_custom_data_type_created(self):
+        """
+        (protect) Created a Dropbox Protect custom data type
+
+        Only call this if :meth:`is_protect_custom_data_type_created` is true.
+
+        :rtype: ProtectCustomDataTypeCreatedType
+        """
+        if not self.is_protect_custom_data_type_created():
+            raise AttributeError("tag 'protect_custom_data_type_created' not set")
+        return self._value
+
+    def get_protect_custom_data_type_deleted(self):
+        """
+        (protect) Deleted a Dropbox Protect custom data type
+
+        Only call this if :meth:`is_protect_custom_data_type_deleted` is true.
+
+        :rtype: ProtectCustomDataTypeDeletedType
+        """
+        if not self.is_protect_custom_data_type_deleted():
+            raise AttributeError("tag 'protect_custom_data_type_deleted' not set")
+        return self._value
+
+    def get_protect_custom_data_type_disabled(self):
+        """
+        (protect) Disabled a Dropbox Protect custom data type
+
+        Only call this if :meth:`is_protect_custom_data_type_disabled` is true.
+
+        :rtype: ProtectCustomDataTypeDisabledType
+        """
+        if not self.is_protect_custom_data_type_disabled():
+            raise AttributeError("tag 'protect_custom_data_type_disabled' not set")
+        return self._value
+
+    def get_protect_custom_data_type_enabled(self):
+        """
+        (protect) Enabled a Dropbox Protect custom data type
+
+        Only call this if :meth:`is_protect_custom_data_type_enabled` is true.
+
+        :rtype: ProtectCustomDataTypeEnabledType
+        """
+        if not self.is_protect_custom_data_type_enabled():
+            raise AttributeError("tag 'protect_custom_data_type_enabled' not set")
+        return self._value
+
+    def get_protect_custom_data_type_modified(self):
+        """
+        (protect) Modified a Dropbox Protect custom data type
+
+        Only call this if :meth:`is_protect_custom_data_type_modified` is true.
+
+        :rtype: ProtectCustomDataTypeModifiedType
+        """
+        if not self.is_protect_custom_data_type_modified():
+            raise AttributeError("tag 'protect_custom_data_type_modified' not set")
+        return self._value
+
     def get_protect_internal_domains_changed(self):
         """
         (protect) Modified Protect internal domains list
@@ -54060,6 +54375,16 @@ class EventTypeArg(bb.Union):
         (protect) Removed a link via Dropbox Protect
     :ivar EventTypeArg.protect_action_stop_sharing:
         (protect) Stopped sharing content via Dropbox Protect
+    :ivar EventTypeArg.protect_custom_data_type_created:
+        (protect) Created a Dropbox Protect custom data type
+    :ivar EventTypeArg.protect_custom_data_type_deleted:
+        (protect) Deleted a Dropbox Protect custom data type
+    :ivar EventTypeArg.protect_custom_data_type_disabled:
+        (protect) Disabled a Dropbox Protect custom data type
+    :ivar EventTypeArg.protect_custom_data_type_enabled:
+        (protect) Enabled a Dropbox Protect custom data type
+    :ivar EventTypeArg.protect_custom_data_type_modified:
+        (protect) Modified a Dropbox Protect custom data type
     :ivar EventTypeArg.protect_internal_domains_changed:
         (protect) Modified Protect internal domains list
     :ivar EventTypeArg.protect_policy_activated:
@@ -55403,6 +55728,16 @@ class EventTypeArg(bb.Union):
     protect_action_remove_link = None
     # Attribute is overwritten below the class definition
     protect_action_stop_sharing = None
+    # Attribute is overwritten below the class definition
+    protect_custom_data_type_created = None
+    # Attribute is overwritten below the class definition
+    protect_custom_data_type_deleted = None
+    # Attribute is overwritten below the class definition
+    protect_custom_data_type_disabled = None
+    # Attribute is overwritten below the class definition
+    protect_custom_data_type_enabled = None
+    # Attribute is overwritten below the class definition
+    protect_custom_data_type_modified = None
     # Attribute is overwritten below the class definition
     protect_internal_domains_changed = None
     # Attribute is overwritten below the class definition
@@ -58385,6 +58720,46 @@ class EventTypeArg(bb.Union):
         :rtype: bool
         """
         return self._tag == "protect_action_stop_sharing"
+
+    def is_protect_custom_data_type_created(self):
+        """
+        Check if the union tag is ``protect_custom_data_type_created``.
+
+        :rtype: bool
+        """
+        return self._tag == "protect_custom_data_type_created"
+
+    def is_protect_custom_data_type_deleted(self):
+        """
+        Check if the union tag is ``protect_custom_data_type_deleted``.
+
+        :rtype: bool
+        """
+        return self._tag == "protect_custom_data_type_deleted"
+
+    def is_protect_custom_data_type_disabled(self):
+        """
+        Check if the union tag is ``protect_custom_data_type_disabled``.
+
+        :rtype: bool
+        """
+        return self._tag == "protect_custom_data_type_disabled"
+
+    def is_protect_custom_data_type_enabled(self):
+        """
+        Check if the union tag is ``protect_custom_data_type_enabled``.
+
+        :rtype: bool
+        """
+        return self._tag == "protect_custom_data_type_enabled"
+
+    def is_protect_custom_data_type_modified(self):
+        """
+        Check if the union tag is ``protect_custom_data_type_modified``.
+
+        :rtype: bool
+        """
+        return self._tag == "protect_custom_data_type_modified"
 
     def is_protect_internal_domains_changed(self):
         """
@@ -81105,6 +81480,326 @@ class ProtectActionStopSharingType(bb.Struct):
 
 
 ProtectActionStopSharingType_validator = bv.Struct(ProtectActionStopSharingType)
+
+
+class ProtectCustomDataTypeCreatedDetails(bb.Struct):
+    """
+    Created a Dropbox Protect custom data type.
+
+    :ivar ProtectCustomDataTypeCreatedDetails.custom_data_type_id:
+        ID.
+    :ivar ProtectCustomDataTypeCreatedDetails.name:
+        Name.
+    """
+
+    __slots__ = [
+        "_custom_data_type_id_value",
+        "_name_value",
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self, custom_data_type_id=None, name=None):
+        self._custom_data_type_id_value = bb.NOT_SET
+        self._name_value = bb.NOT_SET
+        if custom_data_type_id is not None:
+            self.custom_data_type_id = custom_data_type_id
+        if name is not None:
+            self.name = name
+
+    # Instance attribute type: str (validator is set below)
+    custom_data_type_id = bb.Attribute("custom_data_type_id")
+
+    # Instance attribute type: str (validator is set below)
+    name = bb.Attribute("name")
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(ProtectCustomDataTypeCreatedDetails, self)._process_custom_annotations(
+            annotation_type, field_path, processor
+        )
+
+
+ProtectCustomDataTypeCreatedDetails_validator = bv.Struct(ProtectCustomDataTypeCreatedDetails)
+
+
+class ProtectCustomDataTypeCreatedType(bb.Struct):
+    __slots__ = [
+        "_description_value",
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self, description=None):
+        self._description_value = bb.NOT_SET
+        if description is not None:
+            self.description = description
+
+    # Instance attribute type: str (validator is set below)
+    description = bb.Attribute("description")
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(ProtectCustomDataTypeCreatedType, self)._process_custom_annotations(
+            annotation_type, field_path, processor
+        )
+
+
+ProtectCustomDataTypeCreatedType_validator = bv.Struct(ProtectCustomDataTypeCreatedType)
+
+
+class ProtectCustomDataTypeDeletedDetails(bb.Struct):
+    """
+    Deleted a Dropbox Protect custom data type.
+
+    :ivar ProtectCustomDataTypeDeletedDetails.custom_data_type_id:
+        ID.
+    :ivar ProtectCustomDataTypeDeletedDetails.name:
+        Name.
+    """
+
+    __slots__ = [
+        "_custom_data_type_id_value",
+        "_name_value",
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self, custom_data_type_id=None, name=None):
+        self._custom_data_type_id_value = bb.NOT_SET
+        self._name_value = bb.NOT_SET
+        if custom_data_type_id is not None:
+            self.custom_data_type_id = custom_data_type_id
+        if name is not None:
+            self.name = name
+
+    # Instance attribute type: str (validator is set below)
+    custom_data_type_id = bb.Attribute("custom_data_type_id")
+
+    # Instance attribute type: str (validator is set below)
+    name = bb.Attribute("name")
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(ProtectCustomDataTypeDeletedDetails, self)._process_custom_annotations(
+            annotation_type, field_path, processor
+        )
+
+
+ProtectCustomDataTypeDeletedDetails_validator = bv.Struct(ProtectCustomDataTypeDeletedDetails)
+
+
+class ProtectCustomDataTypeDeletedType(bb.Struct):
+    __slots__ = [
+        "_description_value",
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self, description=None):
+        self._description_value = bb.NOT_SET
+        if description is not None:
+            self.description = description
+
+    # Instance attribute type: str (validator is set below)
+    description = bb.Attribute("description")
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(ProtectCustomDataTypeDeletedType, self)._process_custom_annotations(
+            annotation_type, field_path, processor
+        )
+
+
+ProtectCustomDataTypeDeletedType_validator = bv.Struct(ProtectCustomDataTypeDeletedType)
+
+
+class ProtectCustomDataTypeDisabledDetails(bb.Struct):
+    """
+    Disabled a Dropbox Protect custom data type.
+
+    :ivar ProtectCustomDataTypeDisabledDetails.custom_data_type_id:
+        ID.
+    :ivar ProtectCustomDataTypeDisabledDetails.name:
+        Name.
+    """
+
+    __slots__ = [
+        "_custom_data_type_id_value",
+        "_name_value",
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self, custom_data_type_id=None, name=None):
+        self._custom_data_type_id_value = bb.NOT_SET
+        self._name_value = bb.NOT_SET
+        if custom_data_type_id is not None:
+            self.custom_data_type_id = custom_data_type_id
+        if name is not None:
+            self.name = name
+
+    # Instance attribute type: str (validator is set below)
+    custom_data_type_id = bb.Attribute("custom_data_type_id")
+
+    # Instance attribute type: str (validator is set below)
+    name = bb.Attribute("name")
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(ProtectCustomDataTypeDisabledDetails, self)._process_custom_annotations(
+            annotation_type, field_path, processor
+        )
+
+
+ProtectCustomDataTypeDisabledDetails_validator = bv.Struct(ProtectCustomDataTypeDisabledDetails)
+
+
+class ProtectCustomDataTypeDisabledType(bb.Struct):
+    __slots__ = [
+        "_description_value",
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self, description=None):
+        self._description_value = bb.NOT_SET
+        if description is not None:
+            self.description = description
+
+    # Instance attribute type: str (validator is set below)
+    description = bb.Attribute("description")
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(ProtectCustomDataTypeDisabledType, self)._process_custom_annotations(
+            annotation_type, field_path, processor
+        )
+
+
+ProtectCustomDataTypeDisabledType_validator = bv.Struct(ProtectCustomDataTypeDisabledType)
+
+
+class ProtectCustomDataTypeEnabledDetails(bb.Struct):
+    """
+    Enabled a Dropbox Protect custom data type.
+
+    :ivar ProtectCustomDataTypeEnabledDetails.custom_data_type_id:
+        ID.
+    :ivar ProtectCustomDataTypeEnabledDetails.name:
+        Name.
+    """
+
+    __slots__ = [
+        "_custom_data_type_id_value",
+        "_name_value",
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self, custom_data_type_id=None, name=None):
+        self._custom_data_type_id_value = bb.NOT_SET
+        self._name_value = bb.NOT_SET
+        if custom_data_type_id is not None:
+            self.custom_data_type_id = custom_data_type_id
+        if name is not None:
+            self.name = name
+
+    # Instance attribute type: str (validator is set below)
+    custom_data_type_id = bb.Attribute("custom_data_type_id")
+
+    # Instance attribute type: str (validator is set below)
+    name = bb.Attribute("name")
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(ProtectCustomDataTypeEnabledDetails, self)._process_custom_annotations(
+            annotation_type, field_path, processor
+        )
+
+
+ProtectCustomDataTypeEnabledDetails_validator = bv.Struct(ProtectCustomDataTypeEnabledDetails)
+
+
+class ProtectCustomDataTypeEnabledType(bb.Struct):
+    __slots__ = [
+        "_description_value",
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self, description=None):
+        self._description_value = bb.NOT_SET
+        if description is not None:
+            self.description = description
+
+    # Instance attribute type: str (validator is set below)
+    description = bb.Attribute("description")
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(ProtectCustomDataTypeEnabledType, self)._process_custom_annotations(
+            annotation_type, field_path, processor
+        )
+
+
+ProtectCustomDataTypeEnabledType_validator = bv.Struct(ProtectCustomDataTypeEnabledType)
+
+
+class ProtectCustomDataTypeModifiedDetails(bb.Struct):
+    """
+    Modified a Dropbox Protect custom data type.
+
+    :ivar ProtectCustomDataTypeModifiedDetails.custom_data_type_id:
+        ID.
+    :ivar ProtectCustomDataTypeModifiedDetails.name:
+        Name.
+    """
+
+    __slots__ = [
+        "_custom_data_type_id_value",
+        "_name_value",
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self, custom_data_type_id=None, name=None):
+        self._custom_data_type_id_value = bb.NOT_SET
+        self._name_value = bb.NOT_SET
+        if custom_data_type_id is not None:
+            self.custom_data_type_id = custom_data_type_id
+        if name is not None:
+            self.name = name
+
+    # Instance attribute type: str (validator is set below)
+    custom_data_type_id = bb.Attribute("custom_data_type_id")
+
+    # Instance attribute type: str (validator is set below)
+    name = bb.Attribute("name")
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(ProtectCustomDataTypeModifiedDetails, self)._process_custom_annotations(
+            annotation_type, field_path, processor
+        )
+
+
+ProtectCustomDataTypeModifiedDetails_validator = bv.Struct(ProtectCustomDataTypeModifiedDetails)
+
+
+class ProtectCustomDataTypeModifiedType(bb.Struct):
+    __slots__ = [
+        "_description_value",
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self, description=None):
+        self._description_value = bb.NOT_SET
+        if description is not None:
+            self.description = description
+
+    # Instance attribute type: str (validator is set below)
+    description = bb.Attribute("description")
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(ProtectCustomDataTypeModifiedType, self)._process_custom_annotations(
+            annotation_type, field_path, processor
+        )
+
+
+ProtectCustomDataTypeModifiedType_validator = bv.Struct(ProtectCustomDataTypeModifiedType)
 
 
 class ProtectInternalDomainsChangedDetails(bb.Struct):
@@ -104992,6 +105687,21 @@ EventDetails._protect_action_remove_link_details_validator = (
 EventDetails._protect_action_stop_sharing_details_validator = (
     ProtectActionStopSharingDetails_validator
 )
+EventDetails._protect_custom_data_type_created_details_validator = (
+    ProtectCustomDataTypeCreatedDetails_validator
+)
+EventDetails._protect_custom_data_type_deleted_details_validator = (
+    ProtectCustomDataTypeDeletedDetails_validator
+)
+EventDetails._protect_custom_data_type_disabled_details_validator = (
+    ProtectCustomDataTypeDisabledDetails_validator
+)
+EventDetails._protect_custom_data_type_enabled_details_validator = (
+    ProtectCustomDataTypeEnabledDetails_validator
+)
+EventDetails._protect_custom_data_type_modified_details_validator = (
+    ProtectCustomDataTypeModifiedDetails_validator
+)
 EventDetails._protect_internal_domains_changed_details_validator = (
     ProtectInternalDomainsChangedDetails_validator
 )
@@ -106084,6 +106794,11 @@ EventDetails._tagmap = {
     "protect_action_remove_domains_details": EventDetails._protect_action_remove_domains_details_validator,
     "protect_action_remove_link_details": EventDetails._protect_action_remove_link_details_validator,
     "protect_action_stop_sharing_details": EventDetails._protect_action_stop_sharing_details_validator,
+    "protect_custom_data_type_created_details": EventDetails._protect_custom_data_type_created_details_validator,
+    "protect_custom_data_type_deleted_details": EventDetails._protect_custom_data_type_deleted_details_validator,
+    "protect_custom_data_type_disabled_details": EventDetails._protect_custom_data_type_disabled_details_validator,
+    "protect_custom_data_type_enabled_details": EventDetails._protect_custom_data_type_enabled_details_validator,
+    "protect_custom_data_type_modified_details": EventDetails._protect_custom_data_type_modified_details_validator,
     "protect_internal_domains_changed_details": EventDetails._protect_internal_domains_changed_details_validator,
     "protect_policy_activated_details": EventDetails._protect_policy_activated_details_validator,
     "protect_policy_deactivated_details": EventDetails._protect_policy_deactivated_details_validator,
@@ -106823,6 +107538,11 @@ EventType._protect_action_remove_collaborator_validator = (
 EventType._protect_action_remove_domains_validator = ProtectActionRemoveDomainsType_validator
 EventType._protect_action_remove_link_validator = ProtectActionRemoveLinkType_validator
 EventType._protect_action_stop_sharing_validator = ProtectActionStopSharingType_validator
+EventType._protect_custom_data_type_created_validator = ProtectCustomDataTypeCreatedType_validator
+EventType._protect_custom_data_type_deleted_validator = ProtectCustomDataTypeDeletedType_validator
+EventType._protect_custom_data_type_disabled_validator = ProtectCustomDataTypeDisabledType_validator
+EventType._protect_custom_data_type_enabled_validator = ProtectCustomDataTypeEnabledType_validator
+EventType._protect_custom_data_type_modified_validator = ProtectCustomDataTypeModifiedType_validator
 EventType._protect_internal_domains_changed_validator = ProtectInternalDomainsChangedType_validator
 EventType._protect_policy_activated_validator = ProtectPolicyActivatedType_validator
 EventType._protect_policy_deactivated_validator = ProtectPolicyDeactivatedType_validator
@@ -107672,6 +108392,11 @@ EventType._tagmap = {
     "protect_action_remove_domains": EventType._protect_action_remove_domains_validator,
     "protect_action_remove_link": EventType._protect_action_remove_link_validator,
     "protect_action_stop_sharing": EventType._protect_action_stop_sharing_validator,
+    "protect_custom_data_type_created": EventType._protect_custom_data_type_created_validator,
+    "protect_custom_data_type_deleted": EventType._protect_custom_data_type_deleted_validator,
+    "protect_custom_data_type_disabled": EventType._protect_custom_data_type_disabled_validator,
+    "protect_custom_data_type_enabled": EventType._protect_custom_data_type_enabled_validator,
+    "protect_custom_data_type_modified": EventType._protect_custom_data_type_modified_validator,
     "protect_internal_domains_changed": EventType._protect_internal_domains_changed_validator,
     "protect_policy_activated": EventType._protect_policy_activated_validator,
     "protect_policy_deactivated": EventType._protect_policy_deactivated_validator,
@@ -108312,6 +109037,11 @@ EventTypeArg._protect_action_remove_collaborator_validator = bv.Void()
 EventTypeArg._protect_action_remove_domains_validator = bv.Void()
 EventTypeArg._protect_action_remove_link_validator = bv.Void()
 EventTypeArg._protect_action_stop_sharing_validator = bv.Void()
+EventTypeArg._protect_custom_data_type_created_validator = bv.Void()
+EventTypeArg._protect_custom_data_type_deleted_validator = bv.Void()
+EventTypeArg._protect_custom_data_type_disabled_validator = bv.Void()
+EventTypeArg._protect_custom_data_type_enabled_validator = bv.Void()
+EventTypeArg._protect_custom_data_type_modified_validator = bv.Void()
 EventTypeArg._protect_internal_domains_changed_validator = bv.Void()
 EventTypeArg._protect_policy_activated_validator = bv.Void()
 EventTypeArg._protect_policy_deactivated_validator = bv.Void()
@@ -108949,6 +109679,11 @@ EventTypeArg._tagmap = {
     "protect_action_remove_domains": EventTypeArg._protect_action_remove_domains_validator,
     "protect_action_remove_link": EventTypeArg._protect_action_remove_link_validator,
     "protect_action_stop_sharing": EventTypeArg._protect_action_stop_sharing_validator,
+    "protect_custom_data_type_created": EventTypeArg._protect_custom_data_type_created_validator,
+    "protect_custom_data_type_deleted": EventTypeArg._protect_custom_data_type_deleted_validator,
+    "protect_custom_data_type_disabled": EventTypeArg._protect_custom_data_type_disabled_validator,
+    "protect_custom_data_type_enabled": EventTypeArg._protect_custom_data_type_enabled_validator,
+    "protect_custom_data_type_modified": EventTypeArg._protect_custom_data_type_modified_validator,
     "protect_internal_domains_changed": EventTypeArg._protect_internal_domains_changed_validator,
     "protect_policy_activated": EventTypeArg._protect_policy_activated_validator,
     "protect_policy_deactivated": EventTypeArg._protect_policy_deactivated_validator,
@@ -109665,6 +110400,11 @@ EventTypeArg.protect_action_remove_collaborator = EventTypeArg("protect_action_r
 EventTypeArg.protect_action_remove_domains = EventTypeArg("protect_action_remove_domains")
 EventTypeArg.protect_action_remove_link = EventTypeArg("protect_action_remove_link")
 EventTypeArg.protect_action_stop_sharing = EventTypeArg("protect_action_stop_sharing")
+EventTypeArg.protect_custom_data_type_created = EventTypeArg("protect_custom_data_type_created")
+EventTypeArg.protect_custom_data_type_deleted = EventTypeArg("protect_custom_data_type_deleted")
+EventTypeArg.protect_custom_data_type_disabled = EventTypeArg("protect_custom_data_type_disabled")
+EventTypeArg.protect_custom_data_type_enabled = EventTypeArg("protect_custom_data_type_enabled")
+EventTypeArg.protect_custom_data_type_modified = EventTypeArg("protect_custom_data_type_modified")
 EventTypeArg.protect_internal_domains_changed = EventTypeArg("protect_internal_domains_changed")
 EventTypeArg.protect_policy_activated = EventTypeArg("protect_policy_activated")
 EventTypeArg.protect_policy_deactivated = EventTypeArg("protect_policy_deactivated")
@@ -115453,6 +116193,101 @@ ProtectActionStopSharingType.description.validator = bv.String()
 ProtectActionStopSharingType._all_field_names_ = set(["description"])
 ProtectActionStopSharingType._all_fields_ = [
     ("description", ProtectActionStopSharingType.description.validator)
+]
+
+ProtectCustomDataTypeCreatedDetails.custom_data_type_id.validator = bv.String()
+ProtectCustomDataTypeCreatedDetails.name.validator = bv.String()
+ProtectCustomDataTypeCreatedDetails._all_field_names_ = set(
+    [
+        "custom_data_type_id",
+        "name",
+    ]
+)
+ProtectCustomDataTypeCreatedDetails._all_fields_ = [
+    ("custom_data_type_id", ProtectCustomDataTypeCreatedDetails.custom_data_type_id.validator),
+    ("name", ProtectCustomDataTypeCreatedDetails.name.validator),
+]
+
+ProtectCustomDataTypeCreatedType.description.validator = bv.String()
+ProtectCustomDataTypeCreatedType._all_field_names_ = set(["description"])
+ProtectCustomDataTypeCreatedType._all_fields_ = [
+    ("description", ProtectCustomDataTypeCreatedType.description.validator)
+]
+
+ProtectCustomDataTypeDeletedDetails.custom_data_type_id.validator = bv.String()
+ProtectCustomDataTypeDeletedDetails.name.validator = bv.String()
+ProtectCustomDataTypeDeletedDetails._all_field_names_ = set(
+    [
+        "custom_data_type_id",
+        "name",
+    ]
+)
+ProtectCustomDataTypeDeletedDetails._all_fields_ = [
+    ("custom_data_type_id", ProtectCustomDataTypeDeletedDetails.custom_data_type_id.validator),
+    ("name", ProtectCustomDataTypeDeletedDetails.name.validator),
+]
+
+ProtectCustomDataTypeDeletedType.description.validator = bv.String()
+ProtectCustomDataTypeDeletedType._all_field_names_ = set(["description"])
+ProtectCustomDataTypeDeletedType._all_fields_ = [
+    ("description", ProtectCustomDataTypeDeletedType.description.validator)
+]
+
+ProtectCustomDataTypeDisabledDetails.custom_data_type_id.validator = bv.String()
+ProtectCustomDataTypeDisabledDetails.name.validator = bv.String()
+ProtectCustomDataTypeDisabledDetails._all_field_names_ = set(
+    [
+        "custom_data_type_id",
+        "name",
+    ]
+)
+ProtectCustomDataTypeDisabledDetails._all_fields_ = [
+    ("custom_data_type_id", ProtectCustomDataTypeDisabledDetails.custom_data_type_id.validator),
+    ("name", ProtectCustomDataTypeDisabledDetails.name.validator),
+]
+
+ProtectCustomDataTypeDisabledType.description.validator = bv.String()
+ProtectCustomDataTypeDisabledType._all_field_names_ = set(["description"])
+ProtectCustomDataTypeDisabledType._all_fields_ = [
+    ("description", ProtectCustomDataTypeDisabledType.description.validator)
+]
+
+ProtectCustomDataTypeEnabledDetails.custom_data_type_id.validator = bv.String()
+ProtectCustomDataTypeEnabledDetails.name.validator = bv.String()
+ProtectCustomDataTypeEnabledDetails._all_field_names_ = set(
+    [
+        "custom_data_type_id",
+        "name",
+    ]
+)
+ProtectCustomDataTypeEnabledDetails._all_fields_ = [
+    ("custom_data_type_id", ProtectCustomDataTypeEnabledDetails.custom_data_type_id.validator),
+    ("name", ProtectCustomDataTypeEnabledDetails.name.validator),
+]
+
+ProtectCustomDataTypeEnabledType.description.validator = bv.String()
+ProtectCustomDataTypeEnabledType._all_field_names_ = set(["description"])
+ProtectCustomDataTypeEnabledType._all_fields_ = [
+    ("description", ProtectCustomDataTypeEnabledType.description.validator)
+]
+
+ProtectCustomDataTypeModifiedDetails.custom_data_type_id.validator = bv.String()
+ProtectCustomDataTypeModifiedDetails.name.validator = bv.String()
+ProtectCustomDataTypeModifiedDetails._all_field_names_ = set(
+    [
+        "custom_data_type_id",
+        "name",
+    ]
+)
+ProtectCustomDataTypeModifiedDetails._all_fields_ = [
+    ("custom_data_type_id", ProtectCustomDataTypeModifiedDetails.custom_data_type_id.validator),
+    ("name", ProtectCustomDataTypeModifiedDetails.name.validator),
+]
+
+ProtectCustomDataTypeModifiedType.description.validator = bv.String()
+ProtectCustomDataTypeModifiedType._all_field_names_ = set(["description"])
+ProtectCustomDataTypeModifiedType._all_fields_ = [
+    ("description", ProtectCustomDataTypeModifiedType.description.validator)
 ]
 
 ProtectInternalDomainsChangedDetails.domains_added.validator = bv.Nullable(bv.List(bv.String()))

@@ -1424,7 +1424,7 @@ class DropboxTeamBase(object):
 
     def team_members_bulk_suspend(self, members):
         """
-        Launch a bulk suspend job. The server enforces a maximum of 500 members.
+        Deprecated compatibility alias for MembersSuspendBatch.
 
         Route attributes:
             scope: members.write
@@ -1432,14 +1432,18 @@ class DropboxTeamBase(object):
         :param members: Must contain between 1 and 500 targets. The launch
             handler also rejects duplicate client item IDs and duplicate member
             selectors.
-        :type members: List[:class:`dropbox.team.BulkSuspendMemberTarget`]
+        :type members: List[:class:`dropbox.team.MembersSuspendBatchTarget`]
         :rtype: :class:`dropbox.async_.LaunchResultBase`
         :raises: :class:`.exceptions.ApiError`
 
         If this raises, ApiError will contain:
-            :class:`dropbox.team.BulkSuspendError`
+            :class:`dropbox.team.MembersSuspendBatchError`
         """
-        arg = team.BulkSuspendArg(members)
+        warnings.warn(
+            "members/bulk_suspend is deprecated.",
+            DeprecationWarning,
+        )
+        arg = team.MembersSuspendBatchArg(members)
         r = self.request(
             team.members_bulk_suspend,
             "team",
@@ -1450,7 +1454,7 @@ class DropboxTeamBase(object):
 
     def team_members_bulk_suspend_job_status_check(self, async_job_id):
         """
-        Poll a previously launched bulk suspend job.
+        Deprecated compatibility alias for MembersSuspendBatchJobStatusCheck.
 
         Route attributes:
             scope: members.write
@@ -1458,12 +1462,16 @@ class DropboxTeamBase(object):
         :param async_job_id: Id of the asynchronous job. This is the value of a
             response returned from the method that launched the job.
         :type async_job_id: str
-        :rtype: :class:`dropbox.team.BulkSuspendJobStatus`
+        :rtype: :class:`dropbox.team.MembersSuspendBatchJobStatus`
         :raises: :class:`.exceptions.ApiError`
 
         If this raises, ApiError will contain:
             :class:`dropbox.async_.PollError`
         """
+        warnings.warn(
+            "members/bulk_suspend/job_status/check is deprecated.",
+            DeprecationWarning,
+        )
         arg = async_.PollArg(async_job_id)
         r = self.request(
             team.members_bulk_suspend_job_status_check,
@@ -2263,6 +2271,58 @@ class DropboxTeamBase(object):
             None,
         )
         return None
+
+    def team_members_suspend_batch(self, members):
+        """
+        Launch a member suspension batch. The server enforces a maximum of 500
+        members.
+
+        Route attributes:
+            scope: members.write
+
+        :param members: Must contain between 1 and 500 targets. The launch
+            handler also rejects duplicate client item IDs and duplicate member
+            selectors.
+        :type members: List[:class:`dropbox.team.MembersSuspendBatchTarget`]
+        :rtype: :class:`dropbox.async_.LaunchResultBase`
+        :raises: :class:`.exceptions.ApiError`
+
+        If this raises, ApiError will contain:
+            :class:`dropbox.team.MembersSuspendBatchError`
+        """
+        arg = team.MembersSuspendBatchArg(members)
+        r = self.request(
+            team.members_suspend_batch,
+            "team",
+            arg,
+            None,
+        )
+        return r
+
+    def team_members_suspend_batch_job_status_check(self, async_job_id):
+        """
+        Poll a previously launched member suspension batch job.
+
+        Route attributes:
+            scope: members.write
+
+        :param async_job_id: Id of the asynchronous job. This is the value of a
+            response returned from the method that launched the job.
+        :type async_job_id: str
+        :rtype: :class:`dropbox.team.MembersSuspendBatchJobStatus`
+        :raises: :class:`.exceptions.ApiError`
+
+        If this raises, ApiError will contain:
+            :class:`dropbox.async_.PollError`
+        """
+        arg = async_.PollArg(async_job_id)
+        r = self.request(
+            team.members_suspend_batch_job_status_check,
+            "team",
+            arg,
+            None,
+        )
+        return r
 
     def team_members_unsuspend(self, user):
         """
