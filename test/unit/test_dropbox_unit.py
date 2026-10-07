@@ -554,6 +554,17 @@ class TestClient:
         dbx.check_and_refresh_access_token()
         session_instance.post.assert_not_called()
 
+    @pytest.mark.parametrize("timeout", [None, 30])
+    def test_refresh_respects_client_timeout(self, session_instance, timeout):
+        dbx = Dropbox(
+            oauth2_refresh_token=REFRESH_TOKEN,
+            app_key=APP_KEY,
+            session=session_instance,
+            timeout=timeout,
+        )
+        dbx.refresh_access_token()
+        assert session_instance.post.call_args.kwargs["timeout"] == timeout
+
     def test_check_refresh_with_valid_online_token(self, session_instance):
         # Test Online Case w/ valid access
         dbx = Dropbox(
