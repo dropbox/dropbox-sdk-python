@@ -12540,6 +12540,133 @@ class EnforceLinkPasswordPolicy(bb.Union):
 EnforceLinkPasswordPolicy_validator = bv.Union(EnforceLinkPasswordPolicy)
 
 
+class EnterpriseManagedAuthPolicy(bb.Union):
+    """
+    Enterprise managed authorization policy
+
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+    """
+
+    _catch_all = "other"
+    # Attribute is overwritten below the class definition
+    default = None
+    # Attribute is overwritten below the class definition
+    disabled = None
+    # Attribute is overwritten below the class definition
+    enabled = None
+    # Attribute is overwritten below the class definition
+    other = None
+
+    def is_default(self):
+        """
+        Check if the union tag is ``default``.
+
+        :rtype: bool
+        """
+        return self._tag == "default"
+
+    def is_disabled(self):
+        """
+        Check if the union tag is ``disabled``.
+
+        :rtype: bool
+        """
+        return self._tag == "disabled"
+
+    def is_enabled(self):
+        """
+        Check if the union tag is ``enabled``.
+
+        :rtype: bool
+        """
+        return self._tag == "enabled"
+
+    def is_other(self):
+        """
+        Check if the union tag is ``other``.
+
+        :rtype: bool
+        """
+        return self._tag == "other"
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(EnterpriseManagedAuthPolicy, self)._process_custom_annotations(
+            annotation_type, field_path, processor
+        )
+
+
+EnterpriseManagedAuthPolicy_validator = bv.Union(EnterpriseManagedAuthPolicy)
+
+
+class EnterpriseManagedAuthPolicyChangedDetails(bb.Struct):
+    """
+    Changed enterprise managed authorization policy for team.
+
+    :ivar EnterpriseManagedAuthPolicyChangedDetails.new_value:
+        New enterprise managed authorization policy.
+    :ivar EnterpriseManagedAuthPolicyChangedDetails.previous_value:
+        Previous enterprise managed authorization policy. Might be missing due
+        to historical data gap.
+    """
+
+    __slots__ = [
+        "_new_value_value",
+        "_previous_value_value",
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self, new_value=None, previous_value=None):
+        self._new_value_value = bb.NOT_SET
+        self._previous_value_value = bb.NOT_SET
+        if new_value is not None:
+            self.new_value = new_value
+        if previous_value is not None:
+            self.previous_value = previous_value
+
+    # Instance attribute type: EnterpriseManagedAuthPolicy (validator is set below)
+    new_value = bb.Attribute("new_value", user_defined=True)
+
+    # Instance attribute type: EnterpriseManagedAuthPolicy (validator is set below)
+    previous_value = bb.Attribute("previous_value", nullable=True, user_defined=True)
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(EnterpriseManagedAuthPolicyChangedDetails, self)._process_custom_annotations(
+            annotation_type, field_path, processor
+        )
+
+
+EnterpriseManagedAuthPolicyChangedDetails_validator = bv.Struct(
+    EnterpriseManagedAuthPolicyChangedDetails
+)
+
+
+class EnterpriseManagedAuthPolicyChangedType(bb.Struct):
+    __slots__ = [
+        "_description_value",
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self, description=None):
+        self._description_value = bb.NOT_SET
+        if description is not None:
+            self.description = description
+
+    # Instance attribute type: str (validator is set below)
+    description = bb.Attribute("description")
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(EnterpriseManagedAuthPolicyChangedType, self)._process_custom_annotations(
+            annotation_type, field_path, processor
+        )
+
+
+EnterpriseManagedAuthPolicyChangedType_validator = bv.Struct(EnterpriseManagedAuthPolicyChangedType)
+
+
 class EnterpriseSettingsLockingDetails(bb.Struct):
     """
     Changed who can update a setting.
@@ -18661,6 +18788,18 @@ class EventDetails(bb.Union):
         return cls("emm_remove_exception_details", val)
 
     @classmethod
+    def enterprise_managed_auth_policy_changed_details(cls, val):
+        """
+        Create an instance of this class set to the
+        ``enterprise_managed_auth_policy_changed_details`` tag with value
+        ``val``.
+
+        :param EnterpriseManagedAuthPolicyChangedDetails val:
+        :rtype: EventDetails
+        """
+        return cls("enterprise_managed_auth_policy_changed_details", val)
+
+    @classmethod
     def extended_version_history_change_policy_details(cls, val):
         """
         Create an instance of this class set to the
@@ -24219,6 +24358,14 @@ class EventDetails(bb.Union):
         :rtype: bool
         """
         return self._tag == "emm_remove_exception_details"
+
+    def is_enterprise_managed_auth_policy_changed_details(self):
+        """
+        Check if the union tag is ``enterprise_managed_auth_policy_changed_details``.
+
+        :rtype: bool
+        """
+        return self._tag == "enterprise_managed_auth_policy_changed_details"
 
     def is_extended_version_history_change_policy_details(self):
         """
@@ -30406,6 +30553,16 @@ class EventDetails(bb.Union):
             raise AttributeError("tag 'emm_remove_exception_details' not set")
         return self._value
 
+    def get_enterprise_managed_auth_policy_changed_details(self):
+        """
+        Only call this if :meth:`is_enterprise_managed_auth_policy_changed_details` is true.
+
+        :rtype: EnterpriseManagedAuthPolicyChangedDetails
+        """
+        if not self.is_enterprise_managed_auth_policy_changed_details():
+            raise AttributeError("tag 'enterprise_managed_auth_policy_changed_details' not set")
+        return self._value
+
     def get_extended_version_history_change_policy_details(self):
         """
         Only call this if :meth:`is_extended_version_history_change_policy_details` is true.
@@ -33364,6 +33521,9 @@ class EventType(bb.Union):
     :ivar EventType.emm_remove_exception:
         (team_policies) Removed members from EMM exception list
     :vartype EventType.emm_remove_exception: EmmRemoveExceptionType
+    :ivar EventType.enterprise_managed_auth_policy_changed:
+        (team_policies) Changed enterprise managed authorization policy for team
+    :vartype EventType.enterprise_managed_auth_policy_changed: EnterpriseManagedAuthPolicyChangedType
     :ivar EventType.extended_version_history_change_policy:
         (team_policies) Accepted/opted out of extended version history
     :vartype EventType.extended_version_history_change_policy: ExtendedVersionHistoryChangePolicyType
@@ -39417,6 +39577,17 @@ class EventType(bb.Union):
         return cls("emm_remove_exception", val)
 
     @classmethod
+    def enterprise_managed_auth_policy_changed(cls, val):
+        """
+        Create an instance of this class set to the
+        ``enterprise_managed_auth_policy_changed`` tag with value ``val``.
+
+        :param EnterpriseManagedAuthPolicyChangedType val:
+        :rtype: EventType
+        """
+        return cls("enterprise_managed_auth_policy_changed", val)
+
+    @classmethod
     def extended_version_history_change_policy(cls, val):
         """
         Create an instance of this class set to the
@@ -44943,6 +45114,14 @@ class EventType(bb.Union):
         :rtype: bool
         """
         return self._tag == "emm_remove_exception"
+
+    def is_enterprise_managed_auth_policy_changed(self):
+        """
+        Check if the union tag is ``enterprise_managed_auth_policy_changed``.
+
+        :rtype: bool
+        """
+        return self._tag == "enterprise_managed_auth_policy_changed"
 
     def is_extended_version_history_change_policy(self):
         """
@@ -52166,6 +52345,18 @@ class EventType(bb.Union):
             raise AttributeError("tag 'emm_remove_exception' not set")
         return self._value
 
+    def get_enterprise_managed_auth_policy_changed(self):
+        """
+        (team_policies) Changed enterprise managed authorization policy for team
+
+        Only call this if :meth:`is_enterprise_managed_auth_policy_changed` is true.
+
+        :rtype: EnterpriseManagedAuthPolicyChangedType
+        """
+        if not self.is_enterprise_managed_auth_policy_changed():
+            raise AttributeError("tag 'enterprise_managed_auth_policy_changed' not set")
+        return self._value
+
     def get_extended_version_history_change_policy(self):
         """
         (team_policies) Accepted/opted out of extended version history
@@ -54860,6 +55051,8 @@ class EventTypeArg(bb.Union):
         members
     :ivar EventTypeArg.emm_remove_exception:
         (team_policies) Removed members from EMM exception list
+    :ivar EventTypeArg.enterprise_managed_auth_policy_changed:
+        (team_policies) Changed enterprise managed authorization policy for team
     :ivar EventTypeArg.extended_version_history_change_policy:
         (team_policies) Accepted/opted out of extended version history
     :ivar EventTypeArg.external_drive_backup_policy_changed:
@@ -56178,6 +56371,8 @@ class EventTypeArg(bb.Union):
     emm_change_policy = None
     # Attribute is overwritten below the class definition
     emm_remove_exception = None
+    # Attribute is overwritten below the class definition
+    enterprise_managed_auth_policy_changed = None
     # Attribute is overwritten below the class definition
     extended_version_history_change_policy = None
     # Attribute is overwritten below the class definition
@@ -60520,6 +60715,14 @@ class EventTypeArg(bb.Union):
         :rtype: bool
         """
         return self._tag == "emm_remove_exception"
+
+    def is_enterprise_managed_auth_policy_changed(self):
+        """
+        Check if the union tag is ``enterprise_managed_auth_policy_changed``.
+
+        :rtype: bool
+        """
+        return self._tag == "enterprise_managed_auth_policy_changed"
 
     def is_extended_version_history_change_policy(self):
         """
@@ -105022,6 +105225,45 @@ EnforceLinkPasswordPolicy.optional = EnforceLinkPasswordPolicy("optional")
 EnforceLinkPasswordPolicy.required = EnforceLinkPasswordPolicy("required")
 EnforceLinkPasswordPolicy.other = EnforceLinkPasswordPolicy("other")
 
+EnterpriseManagedAuthPolicy._default_validator = bv.Void()
+EnterpriseManagedAuthPolicy._disabled_validator = bv.Void()
+EnterpriseManagedAuthPolicy._enabled_validator = bv.Void()
+EnterpriseManagedAuthPolicy._other_validator = bv.Void()
+EnterpriseManagedAuthPolicy._tagmap = {
+    "default": EnterpriseManagedAuthPolicy._default_validator,
+    "disabled": EnterpriseManagedAuthPolicy._disabled_validator,
+    "enabled": EnterpriseManagedAuthPolicy._enabled_validator,
+    "other": EnterpriseManagedAuthPolicy._other_validator,
+}
+
+EnterpriseManagedAuthPolicy.default = EnterpriseManagedAuthPolicy("default")
+EnterpriseManagedAuthPolicy.disabled = EnterpriseManagedAuthPolicy("disabled")
+EnterpriseManagedAuthPolicy.enabled = EnterpriseManagedAuthPolicy("enabled")
+EnterpriseManagedAuthPolicy.other = EnterpriseManagedAuthPolicy("other")
+
+EnterpriseManagedAuthPolicyChangedDetails.new_value.validator = (
+    EnterpriseManagedAuthPolicy_validator
+)
+EnterpriseManagedAuthPolicyChangedDetails.previous_value.validator = bv.Nullable(
+    EnterpriseManagedAuthPolicy_validator
+)
+EnterpriseManagedAuthPolicyChangedDetails._all_field_names_ = set(
+    [
+        "new_value",
+        "previous_value",
+    ]
+)
+EnterpriseManagedAuthPolicyChangedDetails._all_fields_ = [
+    ("new_value", EnterpriseManagedAuthPolicyChangedDetails.new_value.validator),
+    ("previous_value", EnterpriseManagedAuthPolicyChangedDetails.previous_value.validator),
+]
+
+EnterpriseManagedAuthPolicyChangedType.description.validator = bv.String()
+EnterpriseManagedAuthPolicyChangedType._all_field_names_ = set(["description"])
+EnterpriseManagedAuthPolicyChangedType._all_fields_ = [
+    ("description", EnterpriseManagedAuthPolicyChangedType.description.validator)
+]
+
 EnterpriseSettingsLockingDetails.team_name.validator = bv.String()
 EnterpriseSettingsLockingDetails.settings_page_name.validator = bv.String()
 EnterpriseSettingsLockingDetails.previous_settings_page_locking_state.validator = bv.String()
@@ -106170,6 +106412,9 @@ EventDetails._email_ingest_policy_changed_details_validator = (
 EventDetails._emm_add_exception_details_validator = EmmAddExceptionDetails_validator
 EventDetails._emm_change_policy_details_validator = EmmChangePolicyDetails_validator
 EventDetails._emm_remove_exception_details_validator = EmmRemoveExceptionDetails_validator
+EventDetails._enterprise_managed_auth_policy_changed_details_validator = (
+    EnterpriseManagedAuthPolicyChangedDetails_validator
+)
 EventDetails._extended_version_history_change_policy_details_validator = (
     ExtendedVersionHistoryChangePolicyDetails_validator
 )
@@ -107019,6 +107264,7 @@ EventDetails._tagmap = {
     "emm_add_exception_details": EventDetails._emm_add_exception_details_validator,
     "emm_change_policy_details": EventDetails._emm_change_policy_details_validator,
     "emm_remove_exception_details": EventDetails._emm_remove_exception_details_validator,
+    "enterprise_managed_auth_policy_changed_details": EventDetails._enterprise_managed_auth_policy_changed_details_validator,
     "extended_version_history_change_policy_details": EventDetails._extended_version_history_change_policy_details_validator,
     "external_drive_backup_policy_changed_details": EventDetails._external_drive_backup_policy_changed_details_validator,
     "file_comments_change_policy_details": EventDetails._file_comments_change_policy_details_validator,
@@ -107871,6 +108117,9 @@ EventType._email_ingest_policy_changed_validator = EmailIngestPolicyChangedType_
 EventType._emm_add_exception_validator = EmmAddExceptionType_validator
 EventType._emm_change_policy_validator = EmmChangePolicyType_validator
 EventType._emm_remove_exception_validator = EmmRemoveExceptionType_validator
+EventType._enterprise_managed_auth_policy_changed_validator = (
+    EnterpriseManagedAuthPolicyChangedType_validator
+)
 EventType._extended_version_history_change_policy_validator = (
     ExtendedVersionHistoryChangePolicyType_validator
 )
@@ -108617,6 +108866,7 @@ EventType._tagmap = {
     "emm_add_exception": EventType._emm_add_exception_validator,
     "emm_change_policy": EventType._emm_change_policy_validator,
     "emm_remove_exception": EventType._emm_remove_exception_validator,
+    "enterprise_managed_auth_policy_changed": EventType._enterprise_managed_auth_policy_changed_validator,
     "extended_version_history_change_policy": EventType._extended_version_history_change_policy_validator,
     "external_drive_backup_policy_changed": EventType._external_drive_backup_policy_changed_validator,
     "file_comments_change_policy": EventType._file_comments_change_policy_validator,
@@ -109262,6 +109512,7 @@ EventTypeArg._email_ingest_policy_changed_validator = bv.Void()
 EventTypeArg._emm_add_exception_validator = bv.Void()
 EventTypeArg._emm_change_policy_validator = bv.Void()
 EventTypeArg._emm_remove_exception_validator = bv.Void()
+EventTypeArg._enterprise_managed_auth_policy_changed_validator = bv.Void()
 EventTypeArg._extended_version_history_change_policy_validator = bv.Void()
 EventTypeArg._external_drive_backup_policy_changed_validator = bv.Void()
 EventTypeArg._file_comments_change_policy_validator = bv.Void()
@@ -109904,6 +110155,7 @@ EventTypeArg._tagmap = {
     "emm_add_exception": EventTypeArg._emm_add_exception_validator,
     "emm_change_policy": EventTypeArg._emm_change_policy_validator,
     "emm_remove_exception": EventTypeArg._emm_remove_exception_validator,
+    "enterprise_managed_auth_policy_changed": EventTypeArg._enterprise_managed_auth_policy_changed_validator,
     "extended_version_history_change_policy": EventTypeArg._extended_version_history_change_policy_validator,
     "external_drive_backup_policy_changed": EventTypeArg._external_drive_backup_policy_changed_validator,
     "file_comments_change_policy": EventTypeArg._file_comments_change_policy_validator,
@@ -110719,6 +110971,9 @@ EventTypeArg.email_ingest_policy_changed = EventTypeArg("email_ingest_policy_cha
 EventTypeArg.emm_add_exception = EventTypeArg("emm_add_exception")
 EventTypeArg.emm_change_policy = EventTypeArg("emm_change_policy")
 EventTypeArg.emm_remove_exception = EventTypeArg("emm_remove_exception")
+EventTypeArg.enterprise_managed_auth_policy_changed = EventTypeArg(
+    "enterprise_managed_auth_policy_changed"
+)
 EventTypeArg.extended_version_history_change_policy = EventTypeArg(
     "extended_version_history_change_policy"
 )
