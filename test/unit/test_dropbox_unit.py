@@ -13,6 +13,7 @@ from urllib3.response import HTTPResponse
 
 # Tests OAuth Flow
 from dropbox import DropboxOAuth2Flow, session, Dropbox, create_session
+from dropbox import auth
 from dropbox.base import DropboxBase
 from dropbox.common import PathRoot
 from dropbox.content_hash import content_hash
@@ -786,6 +787,29 @@ class TestClient:
             dbx.check_and_refresh_access_token()
         # Initial attempt + 2 retries.
         assert server_error_session_instance.post.call_count == 3
+
+    def test_refresh_on_expired_access_token_uses_client_scope(self, session_instance, mocker):
+        # A 401 expired_access_token triggers a refresh, which must request the
+        # scope the client was configured with, like check_and_refresh_access_token.
+        dbx = Dropbox(
+            oauth2_access_token=ACCESS_TOKEN,
+            oauth2_refresh_token=REFRESH_TOKEN,
+            oauth2_access_token_expiration=EXPIRATION,
+            app_key=APP_KEY,
+            app_secret=APP_SECRET,
+            scope=SCOPE_LIST,
+            session=session_instance,
+        )
+        expired = AuthError("request-id", auth.AuthError.expired_access_token)
+        request = mocker.patch.object(dbx, "request_json_string", side_effect=[expired, "{}"])
+
+        result = dbx.request_json_string_with_retry("api", "test", "rpc", "{}", USER_AUTH, None)
+
+        assert result == "{}"
+        assert request.call_count == 2
+        session_instance.post.assert_called_once()
+        token_body = session_instance.post.call_args.kwargs["data"]
+        assert token_body.get("scope") == " ".join(SCOPE_LIST)
 
 
 class TestAutoContentHash:

@@ -564,7 +564,7 @@ class _DropboxTransport(object):
                             "ExpiredCredentials status_code=%s: Refreshing and Retrying",
                             e.status_code,
                         )
-                        self.refresh_access_token()
+                        self.refresh_access_token(scope=self._scope)
                         has_refreshed = True
                 else:
                     raise
