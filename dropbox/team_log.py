@@ -8835,6 +8835,122 @@ class DefaultLinkExpirationDaysPolicy(bb.Union):
 DefaultLinkExpirationDaysPolicy_validator = bv.Union(DefaultLinkExpirationDaysPolicy)
 
 
+class DefaultTeamFolderSyncPolicy(bb.Union):
+    """
+    Default sync setting for newly created team folders.
+
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+    """
+
+    _catch_all = "other"
+    # Attribute is overwritten below the class definition
+    do_not_sync = None
+    # Attribute is overwritten below the class definition
+    sync = None
+    # Attribute is overwritten below the class definition
+    other = None
+
+    def is_do_not_sync(self):
+        """
+        Check if the union tag is ``do_not_sync``.
+
+        :rtype: bool
+        """
+        return self._tag == "do_not_sync"
+
+    def is_sync(self):
+        """
+        Check if the union tag is ``sync``.
+
+        :rtype: bool
+        """
+        return self._tag == "sync"
+
+    def is_other(self):
+        """
+        Check if the union tag is ``other``.
+
+        :rtype: bool
+        """
+        return self._tag == "other"
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(DefaultTeamFolderSyncPolicy, self)._process_custom_annotations(
+            annotation_type, field_path, processor
+        )
+
+
+DefaultTeamFolderSyncPolicy_validator = bv.Union(DefaultTeamFolderSyncPolicy)
+
+
+class DefaultTeamFolderSyncPolicyChangedDetails(bb.Struct):
+    """
+    Changed the default sync setting for new team folders.
+
+    :ivar DefaultTeamFolderSyncPolicyChangedDetails.new_value:
+        New default sync setting for team folders.
+    :ivar DefaultTeamFolderSyncPolicyChangedDetails.previous_value:
+        Previous default sync setting for team folders.
+    """
+
+    __slots__ = [
+        "_new_value_value",
+        "_previous_value_value",
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self, new_value=None, previous_value=None):
+        self._new_value_value = bb.NOT_SET
+        self._previous_value_value = bb.NOT_SET
+        if new_value is not None:
+            self.new_value = new_value
+        if previous_value is not None:
+            self.previous_value = previous_value
+
+    # Instance attribute type: DefaultTeamFolderSyncPolicy (validator is set below)
+    new_value = bb.Attribute("new_value", user_defined=True)
+
+    # Instance attribute type: DefaultTeamFolderSyncPolicy (validator is set below)
+    previous_value = bb.Attribute("previous_value", user_defined=True)
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(DefaultTeamFolderSyncPolicyChangedDetails, self)._process_custom_annotations(
+            annotation_type, field_path, processor
+        )
+
+
+DefaultTeamFolderSyncPolicyChangedDetails_validator = bv.Struct(
+    DefaultTeamFolderSyncPolicyChangedDetails
+)
+
+
+class DefaultTeamFolderSyncPolicyChangedType(bb.Struct):
+    __slots__ = [
+        "_description_value",
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self, description=None):
+        self._description_value = bb.NOT_SET
+        if description is not None:
+            self.description = description
+
+    # Instance attribute type: str (validator is set below)
+    description = bb.Attribute("description")
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(DefaultTeamFolderSyncPolicyChangedType, self)._process_custom_annotations(
+            annotation_type, field_path, processor
+        )
+
+
+DefaultTeamFolderSyncPolicyChangedType_validator = bv.Struct(DefaultTeamFolderSyncPolicyChangedType)
+
+
 class DeleteTeamInviteLinkDetails(bb.Struct):
     """
     Deleted team invite link.
@@ -18640,6 +18756,18 @@ class EventDetails(bb.Union):
         return cls("data_placement_restriction_satisfy_policy_details", val)
 
     @classmethod
+    def default_team_folder_sync_policy_changed_details(cls, val):
+        """
+        Create an instance of this class set to the
+        ``default_team_folder_sync_policy_changed_details`` tag with value
+        ``val``.
+
+        :param DefaultTeamFolderSyncPolicyChangedDetails val:
+        :rtype: EventDetails
+        """
+        return cls("default_team_folder_sync_policy_changed_details", val)
+
+    @classmethod
     def device_approvals_add_exception_details(cls, val):
         """
         Create an instance of this class set to the
@@ -24254,6 +24382,14 @@ class EventDetails(bb.Union):
         :rtype: bool
         """
         return self._tag == "data_placement_restriction_satisfy_policy_details"
+
+    def is_default_team_folder_sync_policy_changed_details(self):
+        """
+        Check if the union tag is ``default_team_folder_sync_policy_changed_details``.
+
+        :rtype: bool
+        """
+        return self._tag == "default_team_folder_sync_policy_changed_details"
 
     def is_device_approvals_add_exception_details(self):
         """
@@ -30423,6 +30559,16 @@ class EventDetails(bb.Union):
             raise AttributeError("tag 'data_placement_restriction_satisfy_policy_details' not set")
         return self._value
 
+    def get_default_team_folder_sync_policy_changed_details(self):
+        """
+        Only call this if :meth:`is_default_team_folder_sync_policy_changed_details` is true.
+
+        :rtype: DefaultTeamFolderSyncPolicyChangedDetails
+        """
+        if not self.is_default_team_folder_sync_policy_changed_details():
+            raise AttributeError("tag 'default_team_folder_sync_policy_changed_details' not set")
+        return self._value
+
     def get_device_approvals_add_exception_details(self):
         """
         Only call this if :meth:`is_device_approvals_add_exception_details` is true.
@@ -33477,6 +33623,9 @@ class EventType(bb.Union):
         (team_policies) Completed restrictions on data center locations where
         team data resides
     :vartype EventType.data_placement_restriction_satisfy_policy: DataPlacementRestrictionSatisfyPolicyType
+    :ivar EventType.default_team_folder_sync_policy_changed:
+        (team_policies) Changed the default sync setting for new team folders
+    :vartype EventType.default_team_folder_sync_policy_changed: DefaultTeamFolderSyncPolicyChangedType
     :ivar EventType.device_approvals_add_exception:
         (team_policies) Added members to device approvals exception list
     :vartype EventType.device_approvals_add_exception: DeviceApprovalsAddExceptionType
@@ -39434,6 +39583,17 @@ class EventType(bb.Union):
         return cls("data_placement_restriction_satisfy_policy", val)
 
     @classmethod
+    def default_team_folder_sync_policy_changed(cls, val):
+        """
+        Create an instance of this class set to the
+        ``default_team_folder_sync_policy_changed`` tag with value ``val``.
+
+        :param DefaultTeamFolderSyncPolicyChangedType val:
+        :rtype: EventType
+        """
+        return cls("default_team_folder_sync_policy_changed", val)
+
+    @classmethod
     def device_approvals_add_exception(cls, val):
         """
         Create an instance of this class set to the
@@ -45010,6 +45170,14 @@ class EventType(bb.Union):
         :rtype: bool
         """
         return self._tag == "data_placement_restriction_satisfy_policy"
+
+    def is_default_team_folder_sync_policy_changed(self):
+        """
+        Check if the union tag is ``default_team_folder_sync_policy_changed``.
+
+        :rtype: bool
+        """
+        return self._tag == "default_team_folder_sync_policy_changed"
 
     def is_device_approvals_add_exception(self):
         """
@@ -52184,6 +52352,18 @@ class EventType(bb.Union):
             raise AttributeError("tag 'data_placement_restriction_satisfy_policy' not set")
         return self._value
 
+    def get_default_team_folder_sync_policy_changed(self):
+        """
+        (team_policies) Changed the default sync setting for new team folders
+
+        Only call this if :meth:`is_default_team_folder_sync_policy_changed` is true.
+
+        :rtype: DefaultTeamFolderSyncPolicyChangedType
+        """
+        if not self.is_default_team_folder_sync_policy_changed():
+            raise AttributeError("tag 'default_team_folder_sync_policy_changed' not set")
+        return self._value
+
     def get_device_approvals_add_exception(self):
         """
         (team_policies) Added members to device approvals exception list
@@ -55020,6 +55200,8 @@ class EventTypeArg(bb.Union):
     :ivar EventTypeArg.data_placement_restriction_satisfy_policy:
         (team_policies) Completed restrictions on data center locations where
         team data resides
+    :ivar EventTypeArg.default_team_folder_sync_policy_changed:
+        (team_policies) Changed the default sync setting for new team folders
     :ivar EventTypeArg.device_approvals_add_exception:
         (team_policies) Added members to device approvals exception list
     :ivar EventTypeArg.device_approvals_change_desktop_policy:
@@ -56345,6 +56527,8 @@ class EventTypeArg(bb.Union):
     data_placement_restriction_change_policy = None
     # Attribute is overwritten below the class definition
     data_placement_restriction_satisfy_policy = None
+    # Attribute is overwritten below the class definition
+    default_team_folder_sync_policy_changed = None
     # Attribute is overwritten below the class definition
     device_approvals_add_exception = None
     # Attribute is overwritten below the class definition
@@ -60611,6 +60795,14 @@ class EventTypeArg(bb.Union):
         :rtype: bool
         """
         return self._tag == "data_placement_restriction_satisfy_policy"
+
+    def is_default_team_folder_sync_policy_changed(self):
+        """
+        Check if the union tag is ``default_team_folder_sync_policy_changed``.
+
+        :rtype: bool
+        """
+        return self._tag == "default_team_folder_sync_policy_changed"
 
     def is_device_approvals_add_exception(self):
         """
@@ -104263,6 +104455,42 @@ DefaultLinkExpirationDaysPolicy.none = DefaultLinkExpirationDaysPolicy("none")
 DefaultLinkExpirationDaysPolicy.year_1 = DefaultLinkExpirationDaysPolicy("year_1")
 DefaultLinkExpirationDaysPolicy.other = DefaultLinkExpirationDaysPolicy("other")
 
+DefaultTeamFolderSyncPolicy._do_not_sync_validator = bv.Void()
+DefaultTeamFolderSyncPolicy._sync_validator = bv.Void()
+DefaultTeamFolderSyncPolicy._other_validator = bv.Void()
+DefaultTeamFolderSyncPolicy._tagmap = {
+    "do_not_sync": DefaultTeamFolderSyncPolicy._do_not_sync_validator,
+    "sync": DefaultTeamFolderSyncPolicy._sync_validator,
+    "other": DefaultTeamFolderSyncPolicy._other_validator,
+}
+
+DefaultTeamFolderSyncPolicy.do_not_sync = DefaultTeamFolderSyncPolicy("do_not_sync")
+DefaultTeamFolderSyncPolicy.sync = DefaultTeamFolderSyncPolicy("sync")
+DefaultTeamFolderSyncPolicy.other = DefaultTeamFolderSyncPolicy("other")
+
+DefaultTeamFolderSyncPolicyChangedDetails.new_value.validator = (
+    DefaultTeamFolderSyncPolicy_validator
+)
+DefaultTeamFolderSyncPolicyChangedDetails.previous_value.validator = (
+    DefaultTeamFolderSyncPolicy_validator
+)
+DefaultTeamFolderSyncPolicyChangedDetails._all_field_names_ = set(
+    [
+        "new_value",
+        "previous_value",
+    ]
+)
+DefaultTeamFolderSyncPolicyChangedDetails._all_fields_ = [
+    ("new_value", DefaultTeamFolderSyncPolicyChangedDetails.new_value.validator),
+    ("previous_value", DefaultTeamFolderSyncPolicyChangedDetails.previous_value.validator),
+]
+
+DefaultTeamFolderSyncPolicyChangedType.description.validator = bv.String()
+DefaultTeamFolderSyncPolicyChangedType._all_field_names_ = set(["description"])
+DefaultTeamFolderSyncPolicyChangedType._all_fields_ = [
+    ("description", DefaultTeamFolderSyncPolicyChangedType.description.validator)
+]
+
 DeleteTeamInviteLinkDetails.link_url.validator = bv.String()
 DeleteTeamInviteLinkDetails._all_field_names_ = set(["link_url"])
 DeleteTeamInviteLinkDetails._all_fields_ = [
@@ -106379,6 +106607,9 @@ EventDetails._data_placement_restriction_change_policy_details_validator = (
 EventDetails._data_placement_restriction_satisfy_policy_details_validator = (
     DataPlacementRestrictionSatisfyPolicyDetails_validator
 )
+EventDetails._default_team_folder_sync_policy_changed_details_validator = (
+    DefaultTeamFolderSyncPolicyChangedDetails_validator
+)
 EventDetails._device_approvals_add_exception_details_validator = (
     DeviceApprovalsAddExceptionDetails_validator
 )
@@ -107251,6 +107482,7 @@ EventDetails._tagmap = {
     "dash_external_sharing_policy_changed_details": EventDetails._dash_external_sharing_policy_changed_details_validator,
     "data_placement_restriction_change_policy_details": EventDetails._data_placement_restriction_change_policy_details_validator,
     "data_placement_restriction_satisfy_policy_details": EventDetails._data_placement_restriction_satisfy_policy_details_validator,
+    "default_team_folder_sync_policy_changed_details": EventDetails._default_team_folder_sync_policy_changed_details_validator,
     "device_approvals_add_exception_details": EventDetails._device_approvals_add_exception_details_validator,
     "device_approvals_change_desktop_policy_details": EventDetails._device_approvals_change_desktop_policy_details_validator,
     "device_approvals_change_mobile_policy_details": EventDetails._device_approvals_change_mobile_policy_details_validator,
@@ -108090,6 +108322,9 @@ EventType._data_placement_restriction_change_policy_validator = (
 EventType._data_placement_restriction_satisfy_policy_validator = (
     DataPlacementRestrictionSatisfyPolicyType_validator
 )
+EventType._default_team_folder_sync_policy_changed_validator = (
+    DefaultTeamFolderSyncPolicyChangedType_validator
+)
 EventType._device_approvals_add_exception_validator = DeviceApprovalsAddExceptionType_validator
 EventType._device_approvals_change_desktop_policy_validator = (
     DeviceApprovalsChangeDesktopPolicyType_validator
@@ -108853,6 +109088,7 @@ EventType._tagmap = {
     "dash_external_sharing_policy_changed": EventType._dash_external_sharing_policy_changed_validator,
     "data_placement_restriction_change_policy": EventType._data_placement_restriction_change_policy_validator,
     "data_placement_restriction_satisfy_policy": EventType._data_placement_restriction_satisfy_policy_validator,
+    "default_team_folder_sync_policy_changed": EventType._default_team_folder_sync_policy_changed_validator,
     "device_approvals_add_exception": EventType._device_approvals_add_exception_validator,
     "device_approvals_change_desktop_policy": EventType._device_approvals_change_desktop_policy_validator,
     "device_approvals_change_mobile_policy": EventType._device_approvals_change_mobile_policy_validator,
@@ -109499,6 +109735,7 @@ EventTypeArg._content_deletion_protection_change_policy_validator = bv.Void()
 EventTypeArg._dash_external_sharing_policy_changed_validator = bv.Void()
 EventTypeArg._data_placement_restriction_change_policy_validator = bv.Void()
 EventTypeArg._data_placement_restriction_satisfy_policy_validator = bv.Void()
+EventTypeArg._default_team_folder_sync_policy_changed_validator = bv.Void()
 EventTypeArg._device_approvals_add_exception_validator = bv.Void()
 EventTypeArg._device_approvals_change_desktop_policy_validator = bv.Void()
 EventTypeArg._device_approvals_change_mobile_policy_validator = bv.Void()
@@ -110142,6 +110379,7 @@ EventTypeArg._tagmap = {
     "dash_external_sharing_policy_changed": EventTypeArg._dash_external_sharing_policy_changed_validator,
     "data_placement_restriction_change_policy": EventTypeArg._data_placement_restriction_change_policy_validator,
     "data_placement_restriction_satisfy_policy": EventTypeArg._data_placement_restriction_satisfy_policy_validator,
+    "default_team_folder_sync_policy_changed": EventTypeArg._default_team_folder_sync_policy_changed_validator,
     "device_approvals_add_exception": EventTypeArg._device_approvals_add_exception_validator,
     "device_approvals_change_desktop_policy": EventTypeArg._device_approvals_change_desktop_policy_validator,
     "device_approvals_change_mobile_policy": EventTypeArg._device_approvals_change_mobile_policy_validator,
@@ -110947,6 +111185,9 @@ EventTypeArg.data_placement_restriction_change_policy = EventTypeArg(
 )
 EventTypeArg.data_placement_restriction_satisfy_policy = EventTypeArg(
     "data_placement_restriction_satisfy_policy"
+)
+EventTypeArg.default_team_folder_sync_policy_changed = EventTypeArg(
+    "default_team_folder_sync_policy_changed"
 )
 EventTypeArg.device_approvals_add_exception = EventTypeArg("device_approvals_add_exception")
 EventTypeArg.device_approvals_change_desktop_policy = EventTypeArg(

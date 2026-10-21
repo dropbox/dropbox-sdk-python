@@ -2224,6 +2224,11 @@ class SharedLinkMetadata(bb.Struct):
         The team information of the content's owner. This field will only be
         present if the content's owner is a team member and the content's owner
         team is different from the link's owner team.
+    :ivar SharedLinkMetadata.preview_type:
+        The preview type is determined by the file extension of the shared link.
+        It will be null if the file cannot be previewed by the file viewer.
+    :ivar SharedLinkMetadata.created_timestamp:
+        The time the shared link was created.
     """
 
     __slots__ = [
@@ -2235,6 +2240,8 @@ class SharedLinkMetadata(bb.Struct):
         "_link_permissions_value",
         "_team_member_info_value",
         "_content_owner_team_info_value",
+        "_preview_type_value",
+        "_created_timestamp_value",
     ]
 
     _has_required_fields = True
@@ -2249,6 +2256,8 @@ class SharedLinkMetadata(bb.Struct):
         path_lower=None,
         team_member_info=None,
         content_owner_team_info=None,
+        preview_type=None,
+        created_timestamp=None,
     ):
         self._url_value = bb.NOT_SET
         self._id_value = bb.NOT_SET
@@ -2258,6 +2267,8 @@ class SharedLinkMetadata(bb.Struct):
         self._link_permissions_value = bb.NOT_SET
         self._team_member_info_value = bb.NOT_SET
         self._content_owner_team_info_value = bb.NOT_SET
+        self._preview_type_value = bb.NOT_SET
+        self._created_timestamp_value = bb.NOT_SET
         if url is not None:
             self.url = url
         if id is not None:
@@ -2274,6 +2285,10 @@ class SharedLinkMetadata(bb.Struct):
             self.team_member_info = team_member_info
         if content_owner_team_info is not None:
             self.content_owner_team_info = content_owner_team_info
+        if preview_type is not None:
+            self.preview_type = preview_type
+        if created_timestamp is not None:
+            self.created_timestamp = created_timestamp
 
     # Instance attribute type: str (validator is set below)
     url = bb.Attribute("url")
@@ -2298,6 +2313,12 @@ class SharedLinkMetadata(bb.Struct):
 
     # Instance attribute type: users.Team (validator is set below)
     content_owner_team_info = bb.Attribute("content_owner_team_info", nullable=True)
+
+    # Instance attribute type: str (validator is set below)
+    preview_type = bb.Attribute("preview_type", nullable=True)
+
+    # Instance attribute type: datetime.datetime (validator is set below)
+    created_timestamp = bb.Attribute("created_timestamp", nullable=True)
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(SharedLinkMetadata, self)._process_custom_annotations(
@@ -2351,6 +2372,8 @@ class FileLinkMetadata(SharedLinkMetadata):
         path_lower=None,
         team_member_info=None,
         content_owner_team_info=None,
+        preview_type=None,
+        created_timestamp=None,
     ):
         super(FileLinkMetadata, self).__init__(
             url,
@@ -2361,6 +2384,8 @@ class FileLinkMetadata(SharedLinkMetadata):
             path_lower,
             team_member_info,
             content_owner_team_info,
+            preview_type,
+            created_timestamp,
         )
         self._client_modified_value = bb.NOT_SET
         self._server_modified_value = bb.NOT_SET
@@ -3069,6 +3094,8 @@ class FolderLinkMetadata(SharedLinkMetadata):
         path_lower=None,
         team_member_info=None,
         content_owner_team_info=None,
+        preview_type=None,
+        created_timestamp=None,
     ):
         super(FolderLinkMetadata, self).__init__(
             url,
@@ -3079,6 +3106,8 @@ class FolderLinkMetadata(SharedLinkMetadata):
             path_lower,
             team_member_info,
             content_owner_team_info,
+            preview_type,
+            created_timestamp,
         )
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
@@ -3935,6 +3964,8 @@ class MembershipInfo(bb.Struct):
         Field is deprecated. Never set.
     :ivar MembershipInfo.is_inherited:
         True if the member has access on a parent folder.
+    :ivar MembershipInfo.inherited_access_type:
+        The access type from parent folder for this member.
     """
 
     __slots__ = [
@@ -3942,15 +3973,24 @@ class MembershipInfo(bb.Struct):
         "_permissions_value",
         "_initials_value",
         "_is_inherited_value",
+        "_inherited_access_type_value",
     ]
 
     _has_required_fields = True
 
-    def __init__(self, access_type=None, permissions=None, initials=None, is_inherited=None):
+    def __init__(
+        self,
+        access_type=None,
+        permissions=None,
+        initials=None,
+        is_inherited=None,
+        inherited_access_type=None,
+    ):
         self._access_type_value = bb.NOT_SET
         self._permissions_value = bb.NOT_SET
         self._initials_value = bb.NOT_SET
         self._is_inherited_value = bb.NOT_SET
+        self._inherited_access_type_value = bb.NOT_SET
         if access_type is not None:
             self.access_type = access_type
         if permissions is not None:
@@ -3959,6 +3999,8 @@ class MembershipInfo(bb.Struct):
             self.initials = initials
         if is_inherited is not None:
             self.is_inherited = is_inherited
+        if inherited_access_type is not None:
+            self.inherited_access_type = inherited_access_type
 
     # Instance attribute type: AccessLevel (validator is set below)
     access_type = bb.Attribute("access_type", user_defined=True)
@@ -3971,6 +4013,9 @@ class MembershipInfo(bb.Struct):
 
     # Instance attribute type: bool (validator is set below)
     is_inherited = bb.Attribute("is_inherited")
+
+    # Instance attribute type: AccessLevel (validator is set below)
+    inherited_access_type = bb.Attribute("inherited_access_type", nullable=True, user_defined=True)
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(MembershipInfo, self)._process_custom_annotations(
@@ -3996,9 +4041,17 @@ class GroupMembershipInfo(MembershipInfo):
     _has_required_fields = True
 
     def __init__(
-        self, access_type=None, group=None, permissions=None, initials=None, is_inherited=None
+        self,
+        access_type=None,
+        group=None,
+        permissions=None,
+        initials=None,
+        is_inherited=None,
+        inherited_access_type=None,
     ):
-        super(GroupMembershipInfo, self).__init__(access_type, permissions, initials, is_inherited)
+        super(GroupMembershipInfo, self).__init__(
+            access_type, permissions, initials, is_inherited, inherited_access_type
+        )
         self._group_value = bb.NOT_SET
         if group is not None:
             self.group = group
@@ -4190,10 +4243,11 @@ class InviteeMembershipInfo(MembershipInfo):
         permissions=None,
         initials=None,
         is_inherited=None,
+        inherited_access_type=None,
         user=None,
     ):
         super(InviteeMembershipInfo, self).__init__(
-            access_type, permissions, initials, is_inherited
+            access_type, permissions, initials, is_inherited, inherited_access_type
         )
         self._invitee_value = bb.NOT_SET
         self._user_value = bb.NOT_SET
@@ -6508,11 +6562,15 @@ class ListSharedLinksError(bb.Union):
         Indicates that the cursor has been invalidated. Call
         :meth:`dropbox.dropbox_client.Dropbox.sharing_list_shared_links` to
         obtain a new cursor.
+    :ivar ListSharedLinksError.permission_denied:
+        The user does not have permissions to list links to the content.
     """
 
     _catch_all = "other"
     # Attribute is overwritten below the class definition
     reset = None
+    # Attribute is overwritten below the class definition
+    permission_denied = None
     # Attribute is overwritten below the class definition
     other = None
 
@@ -6542,6 +6600,14 @@ class ListSharedLinksError(bb.Union):
         :rtype: bool
         """
         return self._tag == "reset"
+
+    def is_permission_denied(self):
+        """
+        Check if the union tag is ``permission_denied``.
+
+        :rtype: bool
+        """
+        return self._tag == "permission_denied"
 
     def is_other(self):
         """
@@ -12651,9 +12717,17 @@ class UserMembershipInfo(MembershipInfo):
     _has_required_fields = True
 
     def __init__(
-        self, access_type=None, user=None, permissions=None, initials=None, is_inherited=None
+        self,
+        access_type=None,
+        user=None,
+        permissions=None,
+        initials=None,
+        is_inherited=None,
+        inherited_access_type=None,
     ):
-        super(UserMembershipInfo, self).__init__(access_type, permissions, initials, is_inherited)
+        super(UserMembershipInfo, self).__init__(
+            access_type, permissions, initials, is_inherited, inherited_access_type
+        )
         self._user_value = bb.NOT_SET
         if user is not None:
             self.user = user
@@ -12697,11 +12771,12 @@ class UserFileMembershipInfo(UserMembershipInfo):
         permissions=None,
         initials=None,
         is_inherited=None,
+        inherited_access_type=None,
         time_last_seen=None,
         platform_type=None,
     ):
         super(UserFileMembershipInfo, self).__init__(
-            access_type, user, permissions, initials, is_inherited
+            access_type, user, permissions, initials, is_inherited, inherited_access_type
         )
         self._time_last_seen_value = bb.NOT_SET
         self._platform_type_value = bb.NOT_SET
@@ -13492,6 +13567,8 @@ SharedLinkMetadata.path_lower.validator = bv.Nullable(bv.String())
 SharedLinkMetadata.link_permissions.validator = LinkPermissions_validator
 SharedLinkMetadata.team_member_info.validator = bv.Nullable(TeamMemberInfo_validator)
 SharedLinkMetadata.content_owner_team_info.validator = bv.Nullable(TeamInfo_validator)
+SharedLinkMetadata.preview_type.validator = bv.Nullable(bv.String())
+SharedLinkMetadata.created_timestamp.validator = bv.Nullable(common.DropboxTimestamp_validator)
 SharedLinkMetadata._field_names_ = set(
     [
         "url",
@@ -13502,6 +13579,8 @@ SharedLinkMetadata._field_names_ = set(
         "link_permissions",
         "team_member_info",
         "content_owner_team_info",
+        "preview_type",
+        "created_timestamp",
     ]
 )
 SharedLinkMetadata._all_field_names_ = SharedLinkMetadata._field_names_
@@ -13514,6 +13593,8 @@ SharedLinkMetadata._fields_ = [
     ("link_permissions", SharedLinkMetadata.link_permissions.validator),
     ("team_member_info", SharedLinkMetadata.team_member_info.validator),
     ("content_owner_team_info", SharedLinkMetadata.content_owner_team_info.validator),
+    ("preview_type", SharedLinkMetadata.preview_type.validator),
+    ("created_timestamp", SharedLinkMetadata.created_timestamp.validator),
 ]
 SharedLinkMetadata._all_fields_ = SharedLinkMetadata._fields_
 
@@ -13879,12 +13960,14 @@ MembershipInfo.access_type.validator = AccessLevel_validator
 MembershipInfo.permissions.validator = bv.Nullable(bv.List(MemberPermission_validator))
 MembershipInfo.initials.validator = bv.Nullable(bv.String())
 MembershipInfo.is_inherited.validator = bv.Boolean()
+MembershipInfo.inherited_access_type.validator = bv.Nullable(AccessLevel_validator)
 MembershipInfo._all_field_names_ = set(
     [
         "access_type",
         "permissions",
         "initials",
         "is_inherited",
+        "inherited_access_type",
     ]
 )
 MembershipInfo._all_fields_ = [
@@ -13892,6 +13975,7 @@ MembershipInfo._all_fields_ = [
     ("permissions", MembershipInfo.permissions.validator),
     ("initials", MembershipInfo.initials.validator),
     ("is_inherited", MembershipInfo.is_inherited.validator),
+    ("inherited_access_type", MembershipInfo.inherited_access_type.validator),
 ]
 
 GroupMembershipInfo.group.validator = GroupInfo_validator
@@ -14494,14 +14578,17 @@ ListSharedLinksArg._all_fields_ = [
 
 ListSharedLinksError._path_validator = files.LookupError_validator
 ListSharedLinksError._reset_validator = bv.Void()
+ListSharedLinksError._permission_denied_validator = bv.Void()
 ListSharedLinksError._other_validator = bv.Void()
 ListSharedLinksError._tagmap = {
     "path": ListSharedLinksError._path_validator,
     "reset": ListSharedLinksError._reset_validator,
+    "permission_denied": ListSharedLinksError._permission_denied_validator,
     "other": ListSharedLinksError._other_validator,
 }
 
 ListSharedLinksError.reset = ListSharedLinksError("reset")
+ListSharedLinksError.permission_denied = ListSharedLinksError("permission_denied")
 ListSharedLinksError.other = ListSharedLinksError("other")
 
 ListSharedLinksResult.links.validator = bv.List(SharedLinkMetadata_validator)
