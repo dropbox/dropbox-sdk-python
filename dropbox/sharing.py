@@ -2224,6 +2224,11 @@ class SharedLinkMetadata(bb.Struct):
         The team information of the content's owner. This field will only be
         present if the content's owner is a team member and the content's owner
         team is different from the link's owner team.
+    :ivar SharedLinkMetadata.preview_type:
+        The preview type is determined by the file extension of the shared link.
+        It will be null if the file cannot be previewed by the file viewer.
+    :ivar SharedLinkMetadata.created_timestamp:
+        The time the shared link was created.
     """
 
     __slots__ = [
@@ -2235,6 +2240,8 @@ class SharedLinkMetadata(bb.Struct):
         "_link_permissions_value",
         "_team_member_info_value",
         "_content_owner_team_info_value",
+        "_preview_type_value",
+        "_created_timestamp_value",
     ]
 
     _has_required_fields = True
@@ -2249,6 +2256,8 @@ class SharedLinkMetadata(bb.Struct):
         path_lower=None,
         team_member_info=None,
         content_owner_team_info=None,
+        preview_type=None,
+        created_timestamp=None,
     ):
         self._url_value = bb.NOT_SET
         self._id_value = bb.NOT_SET
@@ -2258,6 +2267,8 @@ class SharedLinkMetadata(bb.Struct):
         self._link_permissions_value = bb.NOT_SET
         self._team_member_info_value = bb.NOT_SET
         self._content_owner_team_info_value = bb.NOT_SET
+        self._preview_type_value = bb.NOT_SET
+        self._created_timestamp_value = bb.NOT_SET
         if url is not None:
             self.url = url
         if id is not None:
@@ -2274,6 +2285,10 @@ class SharedLinkMetadata(bb.Struct):
             self.team_member_info = team_member_info
         if content_owner_team_info is not None:
             self.content_owner_team_info = content_owner_team_info
+        if preview_type is not None:
+            self.preview_type = preview_type
+        if created_timestamp is not None:
+            self.created_timestamp = created_timestamp
 
     # Instance attribute type: str (validator is set below)
     url = bb.Attribute("url")
@@ -2298,6 +2313,12 @@ class SharedLinkMetadata(bb.Struct):
 
     # Instance attribute type: users.Team (validator is set below)
     content_owner_team_info = bb.Attribute("content_owner_team_info", nullable=True)
+
+    # Instance attribute type: str (validator is set below)
+    preview_type = bb.Attribute("preview_type", nullable=True)
+
+    # Instance attribute type: datetime.datetime (validator is set below)
+    created_timestamp = bb.Attribute("created_timestamp", nullable=True)
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(SharedLinkMetadata, self)._process_custom_annotations(
@@ -2351,6 +2372,8 @@ class FileLinkMetadata(SharedLinkMetadata):
         path_lower=None,
         team_member_info=None,
         content_owner_team_info=None,
+        preview_type=None,
+        created_timestamp=None,
     ):
         super(FileLinkMetadata, self).__init__(
             url,
@@ -2361,6 +2384,8 @@ class FileLinkMetadata(SharedLinkMetadata):
             path_lower,
             team_member_info,
             content_owner_team_info,
+            preview_type,
+            created_timestamp,
         )
         self._client_modified_value = bb.NOT_SET
         self._server_modified_value = bb.NOT_SET
@@ -3069,6 +3094,8 @@ class FolderLinkMetadata(SharedLinkMetadata):
         path_lower=None,
         team_member_info=None,
         content_owner_team_info=None,
+        preview_type=None,
+        created_timestamp=None,
     ):
         super(FolderLinkMetadata, self).__init__(
             url,
@@ -3079,6 +3106,8 @@ class FolderLinkMetadata(SharedLinkMetadata):
             path_lower,
             team_member_info,
             content_owner_team_info,
+            preview_type,
+            created_timestamp,
         )
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
@@ -3935,6 +3964,8 @@ class MembershipInfo(bb.Struct):
         Field is deprecated. Never set.
     :ivar MembershipInfo.is_inherited:
         True if the member has access on a parent folder.
+    :ivar MembershipInfo.inherited_access_type:
+        The access type from parent folder for this member.
     """
 
     __slots__ = [
@@ -3942,15 +3973,24 @@ class MembershipInfo(bb.Struct):
         "_permissions_value",
         "_initials_value",
         "_is_inherited_value",
+        "_inherited_access_type_value",
     ]
 
     _has_required_fields = True
 
-    def __init__(self, access_type=None, permissions=None, initials=None, is_inherited=None):
+    def __init__(
+        self,
+        access_type=None,
+        permissions=None,
+        initials=None,
+        is_inherited=None,
+        inherited_access_type=None,
+    ):
         self._access_type_value = bb.NOT_SET
         self._permissions_value = bb.NOT_SET
         self._initials_value = bb.NOT_SET
         self._is_inherited_value = bb.NOT_SET
+        self._inherited_access_type_value = bb.NOT_SET
         if access_type is not None:
             self.access_type = access_type
         if permissions is not None:
@@ -3959,6 +3999,8 @@ class MembershipInfo(bb.Struct):
             self.initials = initials
         if is_inherited is not None:
             self.is_inherited = is_inherited
+        if inherited_access_type is not None:
+            self.inherited_access_type = inherited_access_type
 
     # Instance attribute type: AccessLevel (validator is set below)
     access_type = bb.Attribute("access_type", user_defined=True)
@@ -3971,6 +4013,9 @@ class MembershipInfo(bb.Struct):
 
     # Instance attribute type: bool (validator is set below)
     is_inherited = bb.Attribute("is_inherited")
+
+    # Instance attribute type: AccessLevel (validator is set below)
+    inherited_access_type = bb.Attribute("inherited_access_type", nullable=True, user_defined=True)
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(MembershipInfo, self)._process_custom_annotations(
@@ -3996,9 +4041,17 @@ class GroupMembershipInfo(MembershipInfo):
     _has_required_fields = True
 
     def __init__(
-        self, access_type=None, group=None, permissions=None, initials=None, is_inherited=None
+        self,
+        access_type=None,
+        group=None,
+        permissions=None,
+        initials=None,
+        is_inherited=None,
+        inherited_access_type=None,
     ):
-        super(GroupMembershipInfo, self).__init__(access_type, permissions, initials, is_inherited)
+        super(GroupMembershipInfo, self).__init__(
+            access_type, permissions, initials, is_inherited, inherited_access_type
+        )
         self._group_value = bb.NOT_SET
         if group is not None:
             self.group = group
@@ -4190,10 +4243,11 @@ class InviteeMembershipInfo(MembershipInfo):
         permissions=None,
         initials=None,
         is_inherited=None,
+        inherited_access_type=None,
         user=None,
     ):
         super(InviteeMembershipInfo, self).__init__(
-            access_type, permissions, initials, is_inherited
+            access_type, permissions, initials, is_inherited, inherited_access_type
         )
         self._invitee_value = bb.NOT_SET
         self._user_value = bb.NOT_SET
@@ -6508,11 +6562,15 @@ class ListSharedLinksError(bb.Union):
         Indicates that the cursor has been invalidated. Call
         :meth:`dropbox.dropbox_client.Dropbox.sharing_list_shared_links` to
         obtain a new cursor.
+    :ivar ListSharedLinksError.permission_denied:
+        The user does not have permissions to list links to the content.
     """
 
     _catch_all = "other"
     # Attribute is overwritten below the class definition
     reset = None
+    # Attribute is overwritten below the class definition
+    permission_denied = None
     # Attribute is overwritten below the class definition
     other = None
 
@@ -6542,6 +6600,14 @@ class ListSharedLinksError(bb.Union):
         :rtype: bool
         """
         return self._tag == "reset"
+
+    def is_permission_denied(self):
+        """
+        Check if the union tag is ``permission_denied``.
+
+        :rtype: bool
+        """
+        return self._tag == "permission_denied"
 
     def is_other(self):
         """
@@ -7162,6 +7228,9 @@ class MountFolderError(bb.Union):
     :ivar MountFolderError.must_automount:
         The shared folder is not mountable by directly call APIs, instead the
         automounter is responsible for mounting it.
+    :ivar MountFolderError.too_many_mounts:
+        User will have too many mounts after this operation.
+    :vartype MountFolderError.too_many_mounts: TooManyMountsError
     """
 
     _catch_all = "other"
@@ -7199,6 +7268,17 @@ class MountFolderError(bb.Union):
         :rtype: MountFolderError
         """
         return cls("insufficient_quota", val)
+
+    @classmethod
+    def too_many_mounts(cls, val):
+        """
+        Create an instance of this class set to the ``too_many_mounts`` tag with
+        value ``val``.
+
+        :param TooManyMountsError val:
+        :rtype: MountFolderError
+        """
+        return cls("too_many_mounts", val)
 
     def is_access_error(self):
         """
@@ -7256,6 +7336,14 @@ class MountFolderError(bb.Union):
         """
         return self._tag == "must_automount"
 
+    def is_too_many_mounts(self):
+        """
+        Check if the union tag is ``too_many_mounts``.
+
+        :rtype: bool
+        """
+        return self._tag == "too_many_mounts"
+
     def is_other(self):
         """
         Check if the union tag is ``other``.
@@ -7286,6 +7374,18 @@ class MountFolderError(bb.Union):
             raise AttributeError("tag 'insufficient_quota' not set")
         return self._value
 
+    def get_too_many_mounts(self):
+        """
+        User will have too many mounts after this operation.
+
+        Only call this if :meth:`is_too_many_mounts` is true.
+
+        :rtype: TooManyMountsError
+        """
+        if not self.is_too_many_mounts():
+            raise AttributeError("tag 'too_many_mounts' not set")
+        return self._value
+
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(MountFolderError, self)._process_custom_annotations(
             annotation_type, field_path, processor
@@ -7293,6 +7393,57 @@ class MountFolderError(bb.Union):
 
 
 MountFolderError_validator = bv.Union(MountFolderError)
+
+
+class MountLimitsInfo(bb.Struct):
+    """
+    Information about the mount limit that the operation would exceed.
+
+    :ivar MountLimitsInfo.limit:
+        The maximum number allowed for this limit.
+    :ivar MountLimitsInfo.current_count:
+        The current number of mounts for the user, or of namespaces in the
+        folder tree.
+    :ivar MountLimitsInfo.new_count:
+        The number of mounts for the user, or of namespaces in the folder tree,
+        if the operation were completed.
+    """
+
+    __slots__ = [
+        "_limit_value",
+        "_current_count_value",
+        "_new_count_value",
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self, limit=None, current_count=None, new_count=None):
+        self._limit_value = bb.NOT_SET
+        self._current_count_value = bb.NOT_SET
+        self._new_count_value = bb.NOT_SET
+        if limit is not None:
+            self.limit = limit
+        if current_count is not None:
+            self.current_count = current_count
+        if new_count is not None:
+            self.new_count = new_count
+
+    # Instance attribute type: int (validator is set below)
+    limit = bb.Attribute("limit")
+
+    # Instance attribute type: int (validator is set below)
+    current_count = bb.Attribute("current_count")
+
+    # Instance attribute type: int (validator is set below)
+    new_count = bb.Attribute("new_count")
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(MountLimitsInfo, self)._process_custom_annotations(
+            annotation_type, field_path, processor
+        )
+
+
+MountLimitsInfo_validator = bv.Struct(MountLimitsInfo)
 
 
 class ParentFolderAccessInfo(bb.Struct):
@@ -8989,6 +9140,9 @@ class ShareFolderErrorBase(bb.Union):
     :ivar ShareFolderErrorBase.disallowed_shared_link_policy:
         The current user's account is not allowed to select the specified
         ``ShareFolderArg.shared_link_policy``.
+    :ivar ShareFolderErrorBase.too_many_mounts:
+        User will have too many mounts after the operation.
+    :vartype ShareFolderErrorBase.too_many_mounts: TooManyMountsError
     """
 
     _catch_all = "other"
@@ -9011,6 +9165,17 @@ class ShareFolderErrorBase(bb.Union):
         :rtype: ShareFolderErrorBase
         """
         return cls("bad_path", val)
+
+    @classmethod
+    def too_many_mounts(cls, val):
+        """
+        Create an instance of this class set to the ``too_many_mounts`` tag with
+        value ``val``.
+
+        :param TooManyMountsError val:
+        :rtype: ShareFolderErrorBase
+        """
+        return cls("too_many_mounts", val)
 
     def is_email_unverified(self):
         """
@@ -9044,6 +9209,14 @@ class ShareFolderErrorBase(bb.Union):
         """
         return self._tag == "disallowed_shared_link_policy"
 
+    def is_too_many_mounts(self):
+        """
+        Check if the union tag is ``too_many_mounts``.
+
+        :rtype: bool
+        """
+        return self._tag == "too_many_mounts"
+
     def is_other(self):
         """
         Check if the union tag is ``other``.
@@ -9062,6 +9235,18 @@ class ShareFolderErrorBase(bb.Union):
         """
         if not self.is_bad_path():
             raise AttributeError("tag 'bad_path' not set")
+        return self._value
+
+    def get_too_many_mounts(self):
+        """
+        User will have too many mounts after the operation.
+
+        Only call this if :meth:`is_too_many_mounts` is true.
+
+        :rtype: TooManyMountsError
+        """
+        if not self.is_too_many_mounts():
+            raise AttributeError("tag 'too_many_mounts' not set")
         return self._value
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
@@ -11225,6 +11410,145 @@ class TeamMemberInfo(bb.Struct):
 TeamMemberInfo_validator = bv.Struct(TeamMemberInfo)
 
 
+class TooManyMountsError(bb.Union):
+    """
+    This operation would exceed the maximum number of mounts allowed.
+
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+
+    :ivar TooManyMountsError.total_mounts_exceeded:
+        The user can't add more mounts because it would exceed the maximum
+        number of mounts allowed.
+    :vartype TooManyMountsError.total_mounts_exceeded: MountLimitsInfo
+    :ivar TooManyMountsError.home_mounts_exceeded:
+        The user can't add more mounts because it would exceed the mount limit
+        for their home namespace.
+    :vartype TooManyMountsError.home_mounts_exceeded: MountLimitsInfo
+    :ivar TooManyMountsError.tree_size_exceeded:
+        The user can't create a new nested share because doing so would exceed
+        the maximum number of namespaces allowed in the folder tree.
+    :vartype TooManyMountsError.tree_size_exceeded: MountLimitsInfo
+    """
+
+    _catch_all = "other"
+    # Attribute is overwritten below the class definition
+    other = None
+
+    @classmethod
+    def total_mounts_exceeded(cls, val):
+        """
+        Create an instance of this class set to the ``total_mounts_exceeded``
+        tag with value ``val``.
+
+        :param MountLimitsInfo val:
+        :rtype: TooManyMountsError
+        """
+        return cls("total_mounts_exceeded", val)
+
+    @classmethod
+    def home_mounts_exceeded(cls, val):
+        """
+        Create an instance of this class set to the ``home_mounts_exceeded`` tag
+        with value ``val``.
+
+        :param MountLimitsInfo val:
+        :rtype: TooManyMountsError
+        """
+        return cls("home_mounts_exceeded", val)
+
+    @classmethod
+    def tree_size_exceeded(cls, val):
+        """
+        Create an instance of this class set to the ``tree_size_exceeded`` tag
+        with value ``val``.
+
+        :param MountLimitsInfo val:
+        :rtype: TooManyMountsError
+        """
+        return cls("tree_size_exceeded", val)
+
+    def is_total_mounts_exceeded(self):
+        """
+        Check if the union tag is ``total_mounts_exceeded``.
+
+        :rtype: bool
+        """
+        return self._tag == "total_mounts_exceeded"
+
+    def is_home_mounts_exceeded(self):
+        """
+        Check if the union tag is ``home_mounts_exceeded``.
+
+        :rtype: bool
+        """
+        return self._tag == "home_mounts_exceeded"
+
+    def is_tree_size_exceeded(self):
+        """
+        Check if the union tag is ``tree_size_exceeded``.
+
+        :rtype: bool
+        """
+        return self._tag == "tree_size_exceeded"
+
+    def is_other(self):
+        """
+        Check if the union tag is ``other``.
+
+        :rtype: bool
+        """
+        return self._tag == "other"
+
+    def get_total_mounts_exceeded(self):
+        """
+        The user can't add more mounts because it would exceed the maximum
+        number of mounts allowed.
+
+        Only call this if :meth:`is_total_mounts_exceeded` is true.
+
+        :rtype: MountLimitsInfo
+        """
+        if not self.is_total_mounts_exceeded():
+            raise AttributeError("tag 'total_mounts_exceeded' not set")
+        return self._value
+
+    def get_home_mounts_exceeded(self):
+        """
+        The user can't add more mounts because it would exceed the mount limit
+        for their home namespace.
+
+        Only call this if :meth:`is_home_mounts_exceeded` is true.
+
+        :rtype: MountLimitsInfo
+        """
+        if not self.is_home_mounts_exceeded():
+            raise AttributeError("tag 'home_mounts_exceeded' not set")
+        return self._value
+
+    def get_tree_size_exceeded(self):
+        """
+        The user can't create a new nested share because doing so would exceed
+        the maximum number of namespaces allowed in the folder tree.
+
+        Only call this if :meth:`is_tree_size_exceeded` is true.
+
+        :rtype: MountLimitsInfo
+        """
+        if not self.is_tree_size_exceeded():
+            raise AttributeError("tag 'tree_size_exceeded' not set")
+        return self._value
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(TooManyMountsError, self)._process_custom_annotations(
+            annotation_type, field_path, processor
+        )
+
+
+TooManyMountsError_validator = bv.Union(TooManyMountsError)
+
+
 class TransferFolderArg(bb.Struct):
     """
     :ivar TransferFolderArg.shared_folder_id:
@@ -12393,9 +12717,17 @@ class UserMembershipInfo(MembershipInfo):
     _has_required_fields = True
 
     def __init__(
-        self, access_type=None, user=None, permissions=None, initials=None, is_inherited=None
+        self,
+        access_type=None,
+        user=None,
+        permissions=None,
+        initials=None,
+        is_inherited=None,
+        inherited_access_type=None,
     ):
-        super(UserMembershipInfo, self).__init__(access_type, permissions, initials, is_inherited)
+        super(UserMembershipInfo, self).__init__(
+            access_type, permissions, initials, is_inherited, inherited_access_type
+        )
         self._user_value = bb.NOT_SET
         if user is not None:
             self.user = user
@@ -12439,11 +12771,12 @@ class UserFileMembershipInfo(UserMembershipInfo):
         permissions=None,
         initials=None,
         is_inherited=None,
+        inherited_access_type=None,
         time_last_seen=None,
         platform_type=None,
     ):
         super(UserFileMembershipInfo, self).__init__(
-            access_type, user, permissions, initials, is_inherited
+            access_type, user, permissions, initials, is_inherited, inherited_access_type
         )
         self._time_last_seen_value = bb.NOT_SET
         self._platform_type_value = bb.NOT_SET
@@ -13234,6 +13567,8 @@ SharedLinkMetadata.path_lower.validator = bv.Nullable(bv.String())
 SharedLinkMetadata.link_permissions.validator = LinkPermissions_validator
 SharedLinkMetadata.team_member_info.validator = bv.Nullable(TeamMemberInfo_validator)
 SharedLinkMetadata.content_owner_team_info.validator = bv.Nullable(TeamInfo_validator)
+SharedLinkMetadata.preview_type.validator = bv.Nullable(bv.String())
+SharedLinkMetadata.created_timestamp.validator = bv.Nullable(common.DropboxTimestamp_validator)
 SharedLinkMetadata._field_names_ = set(
     [
         "url",
@@ -13244,6 +13579,8 @@ SharedLinkMetadata._field_names_ = set(
         "link_permissions",
         "team_member_info",
         "content_owner_team_info",
+        "preview_type",
+        "created_timestamp",
     ]
 )
 SharedLinkMetadata._all_field_names_ = SharedLinkMetadata._field_names_
@@ -13256,6 +13593,8 @@ SharedLinkMetadata._fields_ = [
     ("link_permissions", SharedLinkMetadata.link_permissions.validator),
     ("team_member_info", SharedLinkMetadata.team_member_info.validator),
     ("content_owner_team_info", SharedLinkMetadata.content_owner_team_info.validator),
+    ("preview_type", SharedLinkMetadata.preview_type.validator),
+    ("created_timestamp", SharedLinkMetadata.created_timestamp.validator),
 ]
 SharedLinkMetadata._all_fields_ = SharedLinkMetadata._fields_
 
@@ -13621,12 +13960,14 @@ MembershipInfo.access_type.validator = AccessLevel_validator
 MembershipInfo.permissions.validator = bv.Nullable(bv.List(MemberPermission_validator))
 MembershipInfo.initials.validator = bv.Nullable(bv.String())
 MembershipInfo.is_inherited.validator = bv.Boolean()
+MembershipInfo.inherited_access_type.validator = bv.Nullable(AccessLevel_validator)
 MembershipInfo._all_field_names_ = set(
     [
         "access_type",
         "permissions",
         "initials",
         "is_inherited",
+        "inherited_access_type",
     ]
 )
 MembershipInfo._all_fields_ = [
@@ -13634,6 +13975,7 @@ MembershipInfo._all_fields_ = [
     ("permissions", MembershipInfo.permissions.validator),
     ("initials", MembershipInfo.initials.validator),
     ("is_inherited", MembershipInfo.is_inherited.validator),
+    ("inherited_access_type", MembershipInfo.inherited_access_type.validator),
 ]
 
 GroupMembershipInfo.group.validator = GroupInfo_validator
@@ -14236,14 +14578,17 @@ ListSharedLinksArg._all_fields_ = [
 
 ListSharedLinksError._path_validator = files.LookupError_validator
 ListSharedLinksError._reset_validator = bv.Void()
+ListSharedLinksError._permission_denied_validator = bv.Void()
 ListSharedLinksError._other_validator = bv.Void()
 ListSharedLinksError._tagmap = {
     "path": ListSharedLinksError._path_validator,
     "reset": ListSharedLinksError._reset_validator,
+    "permission_denied": ListSharedLinksError._permission_denied_validator,
     "other": ListSharedLinksError._other_validator,
 }
 
 ListSharedLinksError.reset = ListSharedLinksError("reset")
+ListSharedLinksError.permission_denied = ListSharedLinksError("permission_denied")
 ListSharedLinksError.other = ListSharedLinksError("other")
 
 ListSharedLinksResult.links.validator = bv.List(SharedLinkMetadata_validator)
@@ -14387,6 +14732,7 @@ MountFolderError._already_mounted_validator = bv.Void()
 MountFolderError._no_permission_validator = bv.Void()
 MountFolderError._not_mountable_validator = bv.Void()
 MountFolderError._must_automount_validator = bv.Void()
+MountFolderError._too_many_mounts_validator = TooManyMountsError_validator
 MountFolderError._other_validator = bv.Void()
 MountFolderError._tagmap = {
     "access_error": MountFolderError._access_error_validator,
@@ -14396,6 +14742,7 @@ MountFolderError._tagmap = {
     "no_permission": MountFolderError._no_permission_validator,
     "not_mountable": MountFolderError._not_mountable_validator,
     "must_automount": MountFolderError._must_automount_validator,
+    "too_many_mounts": MountFolderError._too_many_mounts_validator,
     "other": MountFolderError._other_validator,
 }
 
@@ -14405,6 +14752,22 @@ MountFolderError.no_permission = MountFolderError("no_permission")
 MountFolderError.not_mountable = MountFolderError("not_mountable")
 MountFolderError.must_automount = MountFolderError("must_automount")
 MountFolderError.other = MountFolderError("other")
+
+MountLimitsInfo.limit.validator = bv.UInt64()
+MountLimitsInfo.current_count.validator = bv.UInt64()
+MountLimitsInfo.new_count.validator = bv.UInt64()
+MountLimitsInfo._all_field_names_ = set(
+    [
+        "limit",
+        "current_count",
+        "new_count",
+    ]
+)
+MountLimitsInfo._all_fields_ = [
+    ("limit", MountLimitsInfo.limit.validator),
+    ("current_count", MountLimitsInfo.current_count.validator),
+    ("new_count", MountLimitsInfo.new_count.validator),
+]
 
 ParentFolderAccessInfo.folder_name.validator = bv.String()
 ParentFolderAccessInfo.shared_folder_id.validator = common.SharedFolderId_validator
@@ -14778,12 +15141,14 @@ ShareFolderErrorBase._email_unverified_validator = bv.Void()
 ShareFolderErrorBase._bad_path_validator = SharePathError_validator
 ShareFolderErrorBase._team_policy_disallows_member_policy_validator = bv.Void()
 ShareFolderErrorBase._disallowed_shared_link_policy_validator = bv.Void()
+ShareFolderErrorBase._too_many_mounts_validator = TooManyMountsError_validator
 ShareFolderErrorBase._other_validator = bv.Void()
 ShareFolderErrorBase._tagmap = {
     "email_unverified": ShareFolderErrorBase._email_unverified_validator,
     "bad_path": ShareFolderErrorBase._bad_path_validator,
     "team_policy_disallows_member_policy": ShareFolderErrorBase._team_policy_disallows_member_policy_validator,
     "disallowed_shared_link_policy": ShareFolderErrorBase._disallowed_shared_link_policy_validator,
+    "too_many_mounts": ShareFolderErrorBase._too_many_mounts_validator,
     "other": ShareFolderErrorBase._other_validator,
 }
 
@@ -15309,6 +15674,19 @@ TeamMemberInfo._all_fields_ = [
     ("display_name", TeamMemberInfo.display_name.validator),
     ("member_id", TeamMemberInfo.member_id.validator),
 ]
+
+TooManyMountsError._total_mounts_exceeded_validator = MountLimitsInfo_validator
+TooManyMountsError._home_mounts_exceeded_validator = MountLimitsInfo_validator
+TooManyMountsError._tree_size_exceeded_validator = MountLimitsInfo_validator
+TooManyMountsError._other_validator = bv.Void()
+TooManyMountsError._tagmap = {
+    "total_mounts_exceeded": TooManyMountsError._total_mounts_exceeded_validator,
+    "home_mounts_exceeded": TooManyMountsError._home_mounts_exceeded_validator,
+    "tree_size_exceeded": TooManyMountsError._tree_size_exceeded_validator,
+    "other": TooManyMountsError._other_validator,
+}
+
+TooManyMountsError.other = TooManyMountsError("other")
 
 TransferFolderArg.shared_folder_id.validator = common.SharedFolderId_validator
 TransferFolderArg.to_dropbox_id.validator = DropboxId_validator
@@ -15943,15 +16321,6 @@ relinquish_folder_membership = bb.Route(
     RelinquishFolderMembershipError_validator,
     {"auth": "user", "host": "api", "style": "rpc"},
 )
-remove_file_member = bb.Route(
-    "remove_file_member",
-    1,
-    True,
-    RemoveFileMemberArg_validator,
-    FileMemberActionIndividualResult_validator,
-    RemoveFileMemberError_validator,
-    {"auth": "user", "host": "api", "style": "rpc"},
-)
 remove_file_member_2 = bb.Route(
     "remove_file_member_2",
     1,
@@ -16101,7 +16470,6 @@ ROUTES = {
     "relinquish_access": relinquish_access,
     "relinquish_file_membership": relinquish_file_membership,
     "relinquish_folder_membership": relinquish_folder_membership,
-    "remove_file_member": remove_file_member,
     "remove_file_member_2": remove_file_member_2,
     "remove_folder_member": remove_folder_member,
     "revoke_shared_link": revoke_shared_link,
