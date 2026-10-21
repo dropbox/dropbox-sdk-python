@@ -7162,6 +7162,9 @@ class MountFolderError(bb.Union):
     :ivar MountFolderError.must_automount:
         The shared folder is not mountable by directly call APIs, instead the
         automounter is responsible for mounting it.
+    :ivar MountFolderError.too_many_mounts:
+        User will have too many mounts after this operation.
+    :vartype MountFolderError.too_many_mounts: TooManyMountsError
     """
 
     _catch_all = "other"
@@ -7199,6 +7202,17 @@ class MountFolderError(bb.Union):
         :rtype: MountFolderError
         """
         return cls("insufficient_quota", val)
+
+    @classmethod
+    def too_many_mounts(cls, val):
+        """
+        Create an instance of this class set to the ``too_many_mounts`` tag with
+        value ``val``.
+
+        :param TooManyMountsError val:
+        :rtype: MountFolderError
+        """
+        return cls("too_many_mounts", val)
 
     def is_access_error(self):
         """
@@ -7256,6 +7270,14 @@ class MountFolderError(bb.Union):
         """
         return self._tag == "must_automount"
 
+    def is_too_many_mounts(self):
+        """
+        Check if the union tag is ``too_many_mounts``.
+
+        :rtype: bool
+        """
+        return self._tag == "too_many_mounts"
+
     def is_other(self):
         """
         Check if the union tag is ``other``.
@@ -7286,6 +7308,18 @@ class MountFolderError(bb.Union):
             raise AttributeError("tag 'insufficient_quota' not set")
         return self._value
 
+    def get_too_many_mounts(self):
+        """
+        User will have too many mounts after this operation.
+
+        Only call this if :meth:`is_too_many_mounts` is true.
+
+        :rtype: TooManyMountsError
+        """
+        if not self.is_too_many_mounts():
+            raise AttributeError("tag 'too_many_mounts' not set")
+        return self._value
+
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(MountFolderError, self)._process_custom_annotations(
             annotation_type, field_path, processor
@@ -7293,6 +7327,57 @@ class MountFolderError(bb.Union):
 
 
 MountFolderError_validator = bv.Union(MountFolderError)
+
+
+class MountLimitsInfo(bb.Struct):
+    """
+    Information about the mount limit that the operation would exceed.
+
+    :ivar MountLimitsInfo.limit:
+        The maximum number allowed for this limit.
+    :ivar MountLimitsInfo.current_count:
+        The current number of mounts for the user, or of namespaces in the
+        folder tree.
+    :ivar MountLimitsInfo.new_count:
+        The number of mounts for the user, or of namespaces in the folder tree,
+        if the operation were completed.
+    """
+
+    __slots__ = [
+        "_limit_value",
+        "_current_count_value",
+        "_new_count_value",
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self, limit=None, current_count=None, new_count=None):
+        self._limit_value = bb.NOT_SET
+        self._current_count_value = bb.NOT_SET
+        self._new_count_value = bb.NOT_SET
+        if limit is not None:
+            self.limit = limit
+        if current_count is not None:
+            self.current_count = current_count
+        if new_count is not None:
+            self.new_count = new_count
+
+    # Instance attribute type: int (validator is set below)
+    limit = bb.Attribute("limit")
+
+    # Instance attribute type: int (validator is set below)
+    current_count = bb.Attribute("current_count")
+
+    # Instance attribute type: int (validator is set below)
+    new_count = bb.Attribute("new_count")
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(MountLimitsInfo, self)._process_custom_annotations(
+            annotation_type, field_path, processor
+        )
+
+
+MountLimitsInfo_validator = bv.Struct(MountLimitsInfo)
 
 
 class ParentFolderAccessInfo(bb.Struct):
@@ -8989,6 +9074,9 @@ class ShareFolderErrorBase(bb.Union):
     :ivar ShareFolderErrorBase.disallowed_shared_link_policy:
         The current user's account is not allowed to select the specified
         ``ShareFolderArg.shared_link_policy``.
+    :ivar ShareFolderErrorBase.too_many_mounts:
+        User will have too many mounts after the operation.
+    :vartype ShareFolderErrorBase.too_many_mounts: TooManyMountsError
     """
 
     _catch_all = "other"
@@ -9011,6 +9099,17 @@ class ShareFolderErrorBase(bb.Union):
         :rtype: ShareFolderErrorBase
         """
         return cls("bad_path", val)
+
+    @classmethod
+    def too_many_mounts(cls, val):
+        """
+        Create an instance of this class set to the ``too_many_mounts`` tag with
+        value ``val``.
+
+        :param TooManyMountsError val:
+        :rtype: ShareFolderErrorBase
+        """
+        return cls("too_many_mounts", val)
 
     def is_email_unverified(self):
         """
@@ -9044,6 +9143,14 @@ class ShareFolderErrorBase(bb.Union):
         """
         return self._tag == "disallowed_shared_link_policy"
 
+    def is_too_many_mounts(self):
+        """
+        Check if the union tag is ``too_many_mounts``.
+
+        :rtype: bool
+        """
+        return self._tag == "too_many_mounts"
+
     def is_other(self):
         """
         Check if the union tag is ``other``.
@@ -9062,6 +9169,18 @@ class ShareFolderErrorBase(bb.Union):
         """
         if not self.is_bad_path():
             raise AttributeError("tag 'bad_path' not set")
+        return self._value
+
+    def get_too_many_mounts(self):
+        """
+        User will have too many mounts after the operation.
+
+        Only call this if :meth:`is_too_many_mounts` is true.
+
+        :rtype: TooManyMountsError
+        """
+        if not self.is_too_many_mounts():
+            raise AttributeError("tag 'too_many_mounts' not set")
         return self._value
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
@@ -11223,6 +11342,145 @@ class TeamMemberInfo(bb.Struct):
 
 
 TeamMemberInfo_validator = bv.Struct(TeamMemberInfo)
+
+
+class TooManyMountsError(bb.Union):
+    """
+    This operation would exceed the maximum number of mounts allowed.
+
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+
+    :ivar TooManyMountsError.total_mounts_exceeded:
+        The user can't add more mounts because it would exceed the maximum
+        number of mounts allowed.
+    :vartype TooManyMountsError.total_mounts_exceeded: MountLimitsInfo
+    :ivar TooManyMountsError.home_mounts_exceeded:
+        The user can't add more mounts because it would exceed the mount limit
+        for their home namespace.
+    :vartype TooManyMountsError.home_mounts_exceeded: MountLimitsInfo
+    :ivar TooManyMountsError.tree_size_exceeded:
+        The user can't create a new nested share because doing so would exceed
+        the maximum number of namespaces allowed in the folder tree.
+    :vartype TooManyMountsError.tree_size_exceeded: MountLimitsInfo
+    """
+
+    _catch_all = "other"
+    # Attribute is overwritten below the class definition
+    other = None
+
+    @classmethod
+    def total_mounts_exceeded(cls, val):
+        """
+        Create an instance of this class set to the ``total_mounts_exceeded``
+        tag with value ``val``.
+
+        :param MountLimitsInfo val:
+        :rtype: TooManyMountsError
+        """
+        return cls("total_mounts_exceeded", val)
+
+    @classmethod
+    def home_mounts_exceeded(cls, val):
+        """
+        Create an instance of this class set to the ``home_mounts_exceeded`` tag
+        with value ``val``.
+
+        :param MountLimitsInfo val:
+        :rtype: TooManyMountsError
+        """
+        return cls("home_mounts_exceeded", val)
+
+    @classmethod
+    def tree_size_exceeded(cls, val):
+        """
+        Create an instance of this class set to the ``tree_size_exceeded`` tag
+        with value ``val``.
+
+        :param MountLimitsInfo val:
+        :rtype: TooManyMountsError
+        """
+        return cls("tree_size_exceeded", val)
+
+    def is_total_mounts_exceeded(self):
+        """
+        Check if the union tag is ``total_mounts_exceeded``.
+
+        :rtype: bool
+        """
+        return self._tag == "total_mounts_exceeded"
+
+    def is_home_mounts_exceeded(self):
+        """
+        Check if the union tag is ``home_mounts_exceeded``.
+
+        :rtype: bool
+        """
+        return self._tag == "home_mounts_exceeded"
+
+    def is_tree_size_exceeded(self):
+        """
+        Check if the union tag is ``tree_size_exceeded``.
+
+        :rtype: bool
+        """
+        return self._tag == "tree_size_exceeded"
+
+    def is_other(self):
+        """
+        Check if the union tag is ``other``.
+
+        :rtype: bool
+        """
+        return self._tag == "other"
+
+    def get_total_mounts_exceeded(self):
+        """
+        The user can't add more mounts because it would exceed the maximum
+        number of mounts allowed.
+
+        Only call this if :meth:`is_total_mounts_exceeded` is true.
+
+        :rtype: MountLimitsInfo
+        """
+        if not self.is_total_mounts_exceeded():
+            raise AttributeError("tag 'total_mounts_exceeded' not set")
+        return self._value
+
+    def get_home_mounts_exceeded(self):
+        """
+        The user can't add more mounts because it would exceed the mount limit
+        for their home namespace.
+
+        Only call this if :meth:`is_home_mounts_exceeded` is true.
+
+        :rtype: MountLimitsInfo
+        """
+        if not self.is_home_mounts_exceeded():
+            raise AttributeError("tag 'home_mounts_exceeded' not set")
+        return self._value
+
+    def get_tree_size_exceeded(self):
+        """
+        The user can't create a new nested share because doing so would exceed
+        the maximum number of namespaces allowed in the folder tree.
+
+        Only call this if :meth:`is_tree_size_exceeded` is true.
+
+        :rtype: MountLimitsInfo
+        """
+        if not self.is_tree_size_exceeded():
+            raise AttributeError("tag 'tree_size_exceeded' not set")
+        return self._value
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(TooManyMountsError, self)._process_custom_annotations(
+            annotation_type, field_path, processor
+        )
+
+
+TooManyMountsError_validator = bv.Union(TooManyMountsError)
 
 
 class TransferFolderArg(bb.Struct):
@@ -14387,6 +14645,7 @@ MountFolderError._already_mounted_validator = bv.Void()
 MountFolderError._no_permission_validator = bv.Void()
 MountFolderError._not_mountable_validator = bv.Void()
 MountFolderError._must_automount_validator = bv.Void()
+MountFolderError._too_many_mounts_validator = TooManyMountsError_validator
 MountFolderError._other_validator = bv.Void()
 MountFolderError._tagmap = {
     "access_error": MountFolderError._access_error_validator,
@@ -14396,6 +14655,7 @@ MountFolderError._tagmap = {
     "no_permission": MountFolderError._no_permission_validator,
     "not_mountable": MountFolderError._not_mountable_validator,
     "must_automount": MountFolderError._must_automount_validator,
+    "too_many_mounts": MountFolderError._too_many_mounts_validator,
     "other": MountFolderError._other_validator,
 }
 
@@ -14405,6 +14665,22 @@ MountFolderError.no_permission = MountFolderError("no_permission")
 MountFolderError.not_mountable = MountFolderError("not_mountable")
 MountFolderError.must_automount = MountFolderError("must_automount")
 MountFolderError.other = MountFolderError("other")
+
+MountLimitsInfo.limit.validator = bv.UInt64()
+MountLimitsInfo.current_count.validator = bv.UInt64()
+MountLimitsInfo.new_count.validator = bv.UInt64()
+MountLimitsInfo._all_field_names_ = set(
+    [
+        "limit",
+        "current_count",
+        "new_count",
+    ]
+)
+MountLimitsInfo._all_fields_ = [
+    ("limit", MountLimitsInfo.limit.validator),
+    ("current_count", MountLimitsInfo.current_count.validator),
+    ("new_count", MountLimitsInfo.new_count.validator),
+]
 
 ParentFolderAccessInfo.folder_name.validator = bv.String()
 ParentFolderAccessInfo.shared_folder_id.validator = common.SharedFolderId_validator
@@ -14778,12 +15054,14 @@ ShareFolderErrorBase._email_unverified_validator = bv.Void()
 ShareFolderErrorBase._bad_path_validator = SharePathError_validator
 ShareFolderErrorBase._team_policy_disallows_member_policy_validator = bv.Void()
 ShareFolderErrorBase._disallowed_shared_link_policy_validator = bv.Void()
+ShareFolderErrorBase._too_many_mounts_validator = TooManyMountsError_validator
 ShareFolderErrorBase._other_validator = bv.Void()
 ShareFolderErrorBase._tagmap = {
     "email_unverified": ShareFolderErrorBase._email_unverified_validator,
     "bad_path": ShareFolderErrorBase._bad_path_validator,
     "team_policy_disallows_member_policy": ShareFolderErrorBase._team_policy_disallows_member_policy_validator,
     "disallowed_shared_link_policy": ShareFolderErrorBase._disallowed_shared_link_policy_validator,
+    "too_many_mounts": ShareFolderErrorBase._too_many_mounts_validator,
     "other": ShareFolderErrorBase._other_validator,
 }
 
@@ -15309,6 +15587,19 @@ TeamMemberInfo._all_fields_ = [
     ("display_name", TeamMemberInfo.display_name.validator),
     ("member_id", TeamMemberInfo.member_id.validator),
 ]
+
+TooManyMountsError._total_mounts_exceeded_validator = MountLimitsInfo_validator
+TooManyMountsError._home_mounts_exceeded_validator = MountLimitsInfo_validator
+TooManyMountsError._tree_size_exceeded_validator = MountLimitsInfo_validator
+TooManyMountsError._other_validator = bv.Void()
+TooManyMountsError._tagmap = {
+    "total_mounts_exceeded": TooManyMountsError._total_mounts_exceeded_validator,
+    "home_mounts_exceeded": TooManyMountsError._home_mounts_exceeded_validator,
+    "tree_size_exceeded": TooManyMountsError._tree_size_exceeded_validator,
+    "other": TooManyMountsError._other_validator,
+}
+
+TooManyMountsError.other = TooManyMountsError("other")
 
 TransferFolderArg.shared_folder_id.validator = common.SharedFolderId_validator
 TransferFolderArg.to_dropbox_id.validator = DropboxId_validator
@@ -15943,15 +16234,6 @@ relinquish_folder_membership = bb.Route(
     RelinquishFolderMembershipError_validator,
     {"auth": "user", "host": "api", "style": "rpc"},
 )
-remove_file_member = bb.Route(
-    "remove_file_member",
-    1,
-    True,
-    RemoveFileMemberArg_validator,
-    FileMemberActionIndividualResult_validator,
-    RemoveFileMemberError_validator,
-    {"auth": "user", "host": "api", "style": "rpc"},
-)
 remove_file_member_2 = bb.Route(
     "remove_file_member_2",
     1,
@@ -16101,7 +16383,6 @@ ROUTES = {
     "relinquish_access": relinquish_access,
     "relinquish_file_membership": relinquish_file_membership,
     "relinquish_folder_membership": relinquish_folder_membership,
-    "remove_file_member": remove_file_member,
     "remove_file_member_2": remove_file_member_2,
     "remove_folder_member": remove_folder_member,
     "revoke_shared_link": revoke_shared_link,
