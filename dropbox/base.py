@@ -6051,39 +6051,6 @@ class DropboxBase(object):
         )
         return r
 
-    def sharing_remove_file_member(self, file, member):
-        """
-        Identical to remove_file_member_2 but with less information returned.
-
-        Route attributes:
-            scope: sharing.write
-
-        :param file: File from which to remove members.
-        :type file: str
-        :param member: Member to remove from this file. Note that even if an
-            email is specified, it may result in the removal of a user (not an
-            invitee) if the user's main account corresponds to that email
-            address.
-        :type member: :class:`dropbox.sharing.MemberSelector`
-        :rtype: :class:`dropbox.sharing.FileMemberActionIndividualResult`
-        :raises: :class:`.exceptions.ApiError`
-
-        If this raises, ApiError will contain:
-            :class:`dropbox.sharing.RemoveFileMemberError`
-        """
-        warnings.warn(
-            "remove_file_member is deprecated.",
-            DeprecationWarning,
-        )
-        arg = sharing.RemoveFileMemberArg(file, member)
-        r = self.request(
-            sharing.remove_file_member,
-            "sharing",
-            arg,
-            None,
-        )
-        return r
-
     def sharing_remove_file_member_2(self, file, member):
         """
         Removes a specified member from the file.
