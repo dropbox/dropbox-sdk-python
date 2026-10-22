@@ -17699,6 +17699,17 @@ class EventDetails(bb.Union):
         return cls("shared_folder_nest_details", val)
 
     @classmethod
+    def shared_folder_transfer_membership_details(cls, val):
+        """
+        Create an instance of this class set to the
+        ``shared_folder_transfer_membership_details`` tag with value ``val``.
+
+        :param SharedFolderTransferMembershipDetails val:
+        :rtype: EventDetails
+        """
+        return cls("shared_folder_transfer_membership_details", val)
+
+    @classmethod
     def shared_folder_transfer_ownership_details(cls, val):
         """
         Create an instance of this class set to the
@@ -23622,6 +23633,14 @@ class EventDetails(bb.Union):
         :rtype: bool
         """
         return self._tag == "shared_folder_nest_details"
+
+    def is_shared_folder_transfer_membership_details(self):
+        """
+        Check if the union tag is ``shared_folder_transfer_membership_details``.
+
+        :rtype: bool
+        """
+        return self._tag == "shared_folder_transfer_membership_details"
 
     def is_shared_folder_transfer_ownership_details(self):
         """
@@ -29601,6 +29620,16 @@ class EventDetails(bb.Union):
             raise AttributeError("tag 'shared_folder_nest_details' not set")
         return self._value
 
+    def get_shared_folder_transfer_membership_details(self):
+        """
+        Only call this if :meth:`is_shared_folder_transfer_membership_details` is true.
+
+        :rtype: SharedFolderTransferMembershipDetails
+        """
+        if not self.is_shared_folder_transfer_membership_details():
+            raise AttributeError("tag 'shared_folder_transfer_membership_details' not set")
+        return self._value
+
     def get_shared_folder_transfer_ownership_details(self):
         """
         Only call this if :meth:`is_shared_folder_transfer_ownership_details` is true.
@@ -33333,6 +33362,9 @@ class EventType(bb.Union):
     :ivar EventType.shared_folder_nest:
         (sharing) Changed parent of shared folder
     :vartype EventType.shared_folder_nest: SharedFolderNestType
+    :ivar EventType.shared_folder_transfer_membership:
+        (sharing) Transferred shared folder membership to another member
+    :vartype EventType.shared_folder_transfer_membership: SharedFolderTransferMembershipType
     :ivar EventType.shared_folder_transfer_ownership:
         (sharing) Transferred ownership of shared folder to another member
     :vartype EventType.shared_folder_transfer_ownership: SharedFolderTransferOwnershipType
@@ -38534,6 +38566,17 @@ class EventType(bb.Union):
         :rtype: EventType
         """
         return cls("shared_folder_nest", val)
+
+    @classmethod
+    def shared_folder_transfer_membership(cls, val):
+        """
+        Create an instance of this class set to the
+        ``shared_folder_transfer_membership`` tag with value ``val``.
+
+        :param SharedFolderTransferMembershipType val:
+        :rtype: EventType
+        """
+        return cls("shared_folder_transfer_membership", val)
 
     @classmethod
     def shared_folder_transfer_ownership(cls, val):
@@ -44410,6 +44453,14 @@ class EventType(bb.Union):
         :rtype: bool
         """
         return self._tag == "shared_folder_nest"
+
+    def is_shared_folder_transfer_membership(self):
+        """
+        Check if the union tag is ``shared_folder_transfer_membership``.
+
+        :rtype: bool
+        """
+        return self._tag == "shared_folder_transfer_membership"
 
     def is_shared_folder_transfer_ownership(self):
         """
@@ -51205,6 +51256,18 @@ class EventType(bb.Union):
             raise AttributeError("tag 'shared_folder_nest' not set")
         return self._value
 
+    def get_shared_folder_transfer_membership(self):
+        """
+        (sharing) Transferred shared folder membership to another member
+
+        Only call this if :meth:`is_shared_folder_transfer_membership` is true.
+
+        :rtype: SharedFolderTransferMembershipType
+        """
+        if not self.is_shared_folder_transfer_membership():
+            raise AttributeError("tag 'shared_folder_transfer_membership' not set")
+        return self._value
+
     def get_shared_folder_transfer_ownership(self):
         """
         (sharing) Transferred ownership of shared folder to another member
@@ -55005,6 +55068,8 @@ class EventTypeArg(bb.Union):
         (sharing) Added shared folder to own Dropbox
     :ivar EventTypeArg.shared_folder_nest:
         (sharing) Changed parent of shared folder
+    :ivar EventTypeArg.shared_folder_transfer_membership:
+        (sharing) Transferred shared folder membership to another member
     :ivar EventTypeArg.shared_folder_transfer_ownership:
         (sharing) Transferred ownership of shared folder to another member
     :ivar EventTypeArg.shared_folder_unmount:
@@ -56337,6 +56402,8 @@ class EventTypeArg(bb.Union):
     shared_folder_mount = None
     # Attribute is overwritten below the class definition
     shared_folder_nest = None
+    # Attribute is overwritten below the class definition
+    shared_folder_transfer_membership = None
     # Attribute is overwritten below the class definition
     shared_folder_transfer_ownership = None
     # Attribute is overwritten below the class definition
@@ -60035,6 +60102,14 @@ class EventTypeArg(bb.Union):
         :rtype: bool
         """
         return self._tag == "shared_folder_nest"
+
+    def is_shared_folder_transfer_membership(self):
+        """
+        Check if the union tag is ``shared_folder_transfer_membership``.
+
+        :rtype: bool
+        """
+        return self._tag == "shared_folder_transfer_membership"
 
     def is_shared_folder_transfer_ownership(self):
         """
@@ -89047,6 +89122,86 @@ class SharedFolderNestType(bb.Struct):
 SharedFolderNestType_validator = bv.Struct(SharedFolderNestType)
 
 
+class SharedFolderTransferMembershipDetails(bb.Struct):
+    """
+    Transferred shared folder membership to another member.
+
+    :ivar SharedFolderTransferMembershipDetails.previous_member_account_id:
+        The account that previously held the access being transferred.
+    :ivar SharedFolderTransferMembershipDetails.new_member_account_id:
+        The account that received the transferred access.
+    :ivar SharedFolderTransferMembershipDetails.shared_content_access_level:
+        The shared folder access level that was transferred. This is the level
+        at the time of the transfer and does not change if the member's access
+        is updated later.
+    """
+
+    __slots__ = [
+        "_previous_member_account_id_value",
+        "_new_member_account_id_value",
+        "_shared_content_access_level_value",
+    ]
+
+    _has_required_fields = True
+
+    def __init__(
+        self,
+        previous_member_account_id=None,
+        new_member_account_id=None,
+        shared_content_access_level=None,
+    ):
+        self._previous_member_account_id_value = bb.NOT_SET
+        self._new_member_account_id_value = bb.NOT_SET
+        self._shared_content_access_level_value = bb.NOT_SET
+        if previous_member_account_id is not None:
+            self.previous_member_account_id = previous_member_account_id
+        if new_member_account_id is not None:
+            self.new_member_account_id = new_member_account_id
+        if shared_content_access_level is not None:
+            self.shared_content_access_level = shared_content_access_level
+
+    # Instance attribute type: str (validator is set below)
+    previous_member_account_id = bb.Attribute("previous_member_account_id")
+
+    # Instance attribute type: str (validator is set below)
+    new_member_account_id = bb.Attribute("new_member_account_id")
+
+    # Instance attribute type: sharing.AccessLevel (validator is set below)
+    shared_content_access_level = bb.Attribute("shared_content_access_level", user_defined=True)
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(SharedFolderTransferMembershipDetails, self)._process_custom_annotations(
+            annotation_type, field_path, processor
+        )
+
+
+SharedFolderTransferMembershipDetails_validator = bv.Struct(SharedFolderTransferMembershipDetails)
+
+
+class SharedFolderTransferMembershipType(bb.Struct):
+    __slots__ = [
+        "_description_value",
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self, description=None):
+        self._description_value = bb.NOT_SET
+        if description is not None:
+            self.description = description
+
+    # Instance attribute type: str (validator is set below)
+    description = bb.Attribute("description")
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(SharedFolderTransferMembershipType, self)._process_custom_annotations(
+            annotation_type, field_path, processor
+        )
+
+
+SharedFolderTransferMembershipType_validator = bv.Struct(SharedFolderTransferMembershipType)
+
+
 class SharedFolderTransferOwnershipDetails(bb.Struct):
     """
     Transferred ownership of shared folder to another member.
@@ -106430,6 +106585,9 @@ EventDetails._shared_folder_decline_invitation_details_validator = (
 )
 EventDetails._shared_folder_mount_details_validator = SharedFolderMountDetails_validator
 EventDetails._shared_folder_nest_details_validator = SharedFolderNestDetails_validator
+EventDetails._shared_folder_transfer_membership_details_validator = (
+    SharedFolderTransferMembershipDetails_validator
+)
 EventDetails._shared_folder_transfer_ownership_details_validator = (
     SharedFolderTransferOwnershipDetails_validator
 )
@@ -107387,6 +107545,7 @@ EventDetails._tagmap = {
     "shared_folder_decline_invitation_details": EventDetails._shared_folder_decline_invitation_details_validator,
     "shared_folder_mount_details": EventDetails._shared_folder_mount_details_validator,
     "shared_folder_nest_details": EventDetails._shared_folder_nest_details_validator,
+    "shared_folder_transfer_membership_details": EventDetails._shared_folder_transfer_membership_details_validator,
     "shared_folder_transfer_ownership_details": EventDetails._shared_folder_transfer_ownership_details_validator,
     "shared_folder_unmount_details": EventDetails._shared_folder_unmount_details_validator,
     "shared_link_add_expiry_details": EventDetails._shared_link_add_expiry_details_validator,
@@ -108187,6 +108346,9 @@ EventType._shared_folder_create_validator = SharedFolderCreateType_validator
 EventType._shared_folder_decline_invitation_validator = SharedFolderDeclineInvitationType_validator
 EventType._shared_folder_mount_validator = SharedFolderMountType_validator
 EventType._shared_folder_nest_validator = SharedFolderNestType_validator
+EventType._shared_folder_transfer_membership_validator = (
+    SharedFolderTransferMembershipType_validator
+)
 EventType._shared_folder_transfer_ownership_validator = SharedFolderTransferOwnershipType_validator
 EventType._shared_folder_unmount_validator = SharedFolderUnmountType_validator
 EventType._shared_link_add_expiry_validator = SharedLinkAddExpiryType_validator
@@ -108993,6 +109155,7 @@ EventType._tagmap = {
     "shared_folder_decline_invitation": EventType._shared_folder_decline_invitation_validator,
     "shared_folder_mount": EventType._shared_folder_mount_validator,
     "shared_folder_nest": EventType._shared_folder_nest_validator,
+    "shared_folder_transfer_membership": EventType._shared_folder_transfer_membership_validator,
     "shared_folder_transfer_ownership": EventType._shared_folder_transfer_ownership_validator,
     "shared_folder_unmount": EventType._shared_folder_unmount_validator,
     "shared_link_add_expiry": EventType._shared_link_add_expiry_validator,
@@ -109640,6 +109803,7 @@ EventTypeArg._shared_folder_create_validator = bv.Void()
 EventTypeArg._shared_folder_decline_invitation_validator = bv.Void()
 EventTypeArg._shared_folder_mount_validator = bv.Void()
 EventTypeArg._shared_folder_nest_validator = bv.Void()
+EventTypeArg._shared_folder_transfer_membership_validator = bv.Void()
 EventTypeArg._shared_folder_transfer_ownership_validator = bv.Void()
 EventTypeArg._shared_folder_unmount_validator = bv.Void()
 EventTypeArg._shared_link_add_expiry_validator = bv.Void()
@@ -110284,6 +110448,7 @@ EventTypeArg._tagmap = {
     "shared_folder_decline_invitation": EventTypeArg._shared_folder_decline_invitation_validator,
     "shared_folder_mount": EventTypeArg._shared_folder_mount_validator,
     "shared_folder_nest": EventTypeArg._shared_folder_nest_validator,
+    "shared_folder_transfer_membership": EventTypeArg._shared_folder_transfer_membership_validator,
     "shared_folder_transfer_ownership": EventTypeArg._shared_folder_transfer_ownership_validator,
     "shared_folder_unmount": EventTypeArg._shared_folder_unmount_validator,
     "shared_link_add_expiry": EventTypeArg._shared_link_add_expiry_validator,
@@ -111053,6 +111218,7 @@ EventTypeArg.shared_folder_create = EventTypeArg("shared_folder_create")
 EventTypeArg.shared_folder_decline_invitation = EventTypeArg("shared_folder_decline_invitation")
 EventTypeArg.shared_folder_mount = EventTypeArg("shared_folder_mount")
 EventTypeArg.shared_folder_nest = EventTypeArg("shared_folder_nest")
+EventTypeArg.shared_folder_transfer_membership = EventTypeArg("shared_folder_transfer_membership")
 EventTypeArg.shared_folder_transfer_ownership = EventTypeArg("shared_folder_transfer_ownership")
 EventTypeArg.shared_folder_unmount = EventTypeArg("shared_folder_unmount")
 EventTypeArg.shared_link_add_expiry = EventTypeArg("shared_link_add_expiry")
@@ -118736,6 +118902,43 @@ SharedFolderNestDetails._all_fields_ = [
 SharedFolderNestType.description.validator = bv.String()
 SharedFolderNestType._all_field_names_ = set(["description"])
 SharedFolderNestType._all_fields_ = [("description", SharedFolderNestType.description.validator)]
+
+SharedFolderTransferMembershipDetails.previous_member_account_id.validator = (
+    users_common.AccountId_validator
+)
+SharedFolderTransferMembershipDetails.new_member_account_id.validator = (
+    users_common.AccountId_validator
+)
+SharedFolderTransferMembershipDetails.shared_content_access_level.validator = (
+    sharing.AccessLevel_validator
+)
+SharedFolderTransferMembershipDetails._all_field_names_ = set(
+    [
+        "previous_member_account_id",
+        "new_member_account_id",
+        "shared_content_access_level",
+    ]
+)
+SharedFolderTransferMembershipDetails._all_fields_ = [
+    (
+        "previous_member_account_id",
+        SharedFolderTransferMembershipDetails.previous_member_account_id.validator,
+    ),
+    (
+        "new_member_account_id",
+        SharedFolderTransferMembershipDetails.new_member_account_id.validator,
+    ),
+    (
+        "shared_content_access_level",
+        SharedFolderTransferMembershipDetails.shared_content_access_level.validator,
+    ),
+]
+
+SharedFolderTransferMembershipType.description.validator = bv.String()
+SharedFolderTransferMembershipType._all_field_names_ = set(["description"])
+SharedFolderTransferMembershipType._all_fields_ = [
+    ("description", SharedFolderTransferMembershipType.description.validator)
+]
 
 SharedFolderTransferOwnershipDetails.previous_owner_email.validator = bv.Nullable(
     EmailAddress_validator
