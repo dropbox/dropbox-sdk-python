@@ -68,10 +68,13 @@ class BadInputError(HttpError):
 
 
 class AuthError(HttpError):
-    """Errors due to invalid authentication credentials."""
+    """Errors due to invalid authentication credentials.
 
-    def __init__(self, request_id, error):
-        super(AuthError, self).__init__(request_id, 401, None)
+    The optional ``body`` contains the original HTTP response body, when available.
+    """
+
+    def __init__(self, request_id, error, body=None):
+        super(AuthError, self).__init__(request_id, 401, body)
         self.error = error
 
     def __repr__(self):
