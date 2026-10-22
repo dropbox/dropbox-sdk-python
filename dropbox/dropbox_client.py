@@ -18,6 +18,7 @@ from dropbox._version import __version__
 from stone.backends.python_rsrc import stone_serializers
 
 from dropbox import files
+from dropbox.auth import AuthError as AuthErrorUnion
 from dropbox.auth import (
     AuthError_validator,
     RateLimitError_validator,
@@ -726,8 +727,19 @@ class _DropboxTransport(object):
                 "Expected content-type to be application/json, got %r"
                 % res.headers.get("content-type")
             )
-            err = stone_serializers.json_compat_obj_decode(AuthError_validator, res.json()["error"])
-            raise AuthError(request_id, err)
+            raw_error = res.json()["error"]
+            # Stone reserves the catch-all tag for unknown variants and rejects
+            # it on the wire, even with strict=False. Some 401 responses send
+            # "other" explicitly; keep those as authentication errors too.
+            if raw_error == "other" or (
+                isinstance(raw_error, dict) and raw_error.get(".tag") == "other"
+            ):
+                err = AuthErrorUnion.other
+            else:
+                err = stone_serializers.json_compat_obj_decode(
+                    AuthError_validator, raw_error, strict=False
+                )
+            raise AuthError(request_id, err, body=res.text)
         elif res.status_code == HTTP_STATUS_INVALID_PATH_ROOT:
             err = stone_serializers.json_compat_obj_decode(
                 PathRootError_validator, res.json()["error"]
