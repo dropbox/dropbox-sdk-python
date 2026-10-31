@@ -90881,21 +90881,30 @@ class SharedLinkViewDetails(bb.Struct):
 
     :ivar SharedLinkViewDetails.shared_link_owner:
         Shared link owner details. Might be missing due to historical data gap.
+    :ivar SharedLinkViewDetails.subdomain:
+        Team subdomain used to access the shared link.
     """
 
     __slots__ = [
         "_shared_link_owner_value",
+        "_subdomain_value",
     ]
 
     _has_required_fields = False
 
-    def __init__(self, shared_link_owner=None):
+    def __init__(self, shared_link_owner=None, subdomain=None):
         self._shared_link_owner_value = bb.NOT_SET
+        self._subdomain_value = bb.NOT_SET
         if shared_link_owner is not None:
             self.shared_link_owner = shared_link_owner
+        if subdomain is not None:
+            self.subdomain = subdomain
 
     # Instance attribute type: UserLogInfo (validator is set below)
     shared_link_owner = bb.Attribute("shared_link_owner", nullable=True, user_defined=True)
+
+    # Instance attribute type: str (validator is set below)
+    subdomain = bb.Attribute("subdomain", nullable=True)
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(SharedLinkViewDetails, self)._process_custom_annotations(
@@ -119481,9 +119490,16 @@ SharedLinkShareType._all_field_names_ = set(["description"])
 SharedLinkShareType._all_fields_ = [("description", SharedLinkShareType.description.validator)]
 
 SharedLinkViewDetails.shared_link_owner.validator = bv.Nullable(UserLogInfo_validator)
-SharedLinkViewDetails._all_field_names_ = set(["shared_link_owner"])
+SharedLinkViewDetails.subdomain.validator = bv.Nullable(bv.String())
+SharedLinkViewDetails._all_field_names_ = set(
+    [
+        "shared_link_owner",
+        "subdomain",
+    ]
+)
 SharedLinkViewDetails._all_fields_ = [
-    ("shared_link_owner", SharedLinkViewDetails.shared_link_owner.validator)
+    ("shared_link_owner", SharedLinkViewDetails.shared_link_owner.validator),
+    ("subdomain", SharedLinkViewDetails.subdomain.validator),
 ]
 
 SharedLinkViewType.description.validator = bv.String()
