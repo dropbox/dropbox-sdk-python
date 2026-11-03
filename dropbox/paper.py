@@ -388,10 +388,15 @@ class DocLookupError(PaperApiBaseError):
 
     :ivar DocLookupError.doc_not_found:
         The required doc was not found.
+    :ivar DocLookupError.folder_not_found:
+        Cloud Docs do not have legacy Paper folders. Use the Dropbox filesystem
+        APIs to look up their containing folders.
     """
 
     # Attribute is overwritten below the class definition
     doc_not_found = None
+    # Attribute is overwritten below the class definition
+    folder_not_found = None
 
     def is_doc_not_found(self):
         """
@@ -400,6 +405,14 @@ class DocLookupError(PaperApiBaseError):
         :rtype: bool
         """
         return self._tag == "doc_not_found"
+
+    def is_folder_not_found(self):
+        """
+        Check if the union tag is ``folder_not_found``.
+
+        :rtype: bool
+        """
+        return self._tag == "folder_not_found"
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(DocLookupError, self)._process_custom_annotations(
@@ -2874,12 +2887,15 @@ PaperApiBaseError.insufficient_permissions = PaperApiBaseError("insufficient_per
 PaperApiBaseError.other = PaperApiBaseError("other")
 
 DocLookupError._doc_not_found_validator = bv.Void()
+DocLookupError._folder_not_found_validator = bv.Void()
 DocLookupError._tagmap = {
     "doc_not_found": DocLookupError._doc_not_found_validator,
+    "folder_not_found": DocLookupError._folder_not_found_validator,
 }
 DocLookupError._tagmap.update(PaperApiBaseError._tagmap)
 
 DocLookupError.doc_not_found = DocLookupError("doc_not_found")
+DocLookupError.folder_not_found = DocLookupError("folder_not_found")
 
 DocSubscriptionLevel._default_validator = bv.Void()
 DocSubscriptionLevel._ignore_validator = bv.Void()
