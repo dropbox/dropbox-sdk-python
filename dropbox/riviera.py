@@ -1146,6 +1146,809 @@ class DownloadTransformOutputResult(bb.Struct):
 DownloadTransformOutputResult_validator = bv.Struct(DownloadTransformOutputResult)
 
 
+class ExtractApiV2Error(bb.Union):
+    """
+    Reason an extraction job failed. Returned in the `failed` variant of
+    `ExtractAsyncCheckResult`. This is a semantic error union: the HTTP status
+    of the poll request itself is unaffected (a poll that surfaces a failed job
+    is still a normal successful poll response). Callers should branch on the
+    variant.
+
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+
+    :ivar ExtractApiV2Error.server_error:
+        An unexpected, typically transient, server-side failure. The string is a
+        human-readable message; retrying with backoff may succeed.
+    :vartype ExtractApiV2Error.server_error: str
+    :ivar ExtractApiV2Error.user_error:
+        The request could not be processed as supplied (a problem with the
+        caller's input), for example an out-of-range option. The string is a
+        human-readable message; retrying the same request will not help.
+    :vartype ExtractApiV2Error.user_error: str
+    :ivar ExtractApiV2Error.unsupported_format_error:
+        The source file is not in a format the requested `extract_type`
+        supports.
+    :ivar ExtractApiV2Error.link_download_disabled_error:
+        `FileIdOrUrl.url` referenced a Dropbox shared link whose owner has
+        disabled downloads.
+    :ivar ExtractApiV2Error.shared_link_password_protected:
+        `FileIdOrUrl.url` referenced a password-protected Dropbox shared link.
+        Riviera cannot supply the password, so such links cannot be read.
+    :ivar ExtractApiV2Error.limit_exceeded_error:
+        A resource limit was exceeded: the source file is larger than the
+        requested `extract_type` accepts, or the result would be too large to
+        return. For `keyframes`, raise `scene_change_threshold` or turn off
+        `include_images`; for `markdown`, turn off `embed_images`.
+    :ivar ExtractApiV2Error.conversion_failure_error:
+        The source file was readable but could not be processed, for example
+        because it is corrupt.
+    :ivar ExtractApiV2Error.not_found_error:
+        The referenced file does not exist or is not accessible.
+    :ivar ExtractApiV2Error.is_a_folder_error:
+        The target is a folder, not a file.
+    :ivar ExtractApiV2Error.no_audio_error:
+        `transcript` only: the source file has no audio track.
+    """
+
+    _catch_all = "other"
+    # Attribute is overwritten below the class definition
+    unsupported_format_error = None
+    # Attribute is overwritten below the class definition
+    link_download_disabled_error = None
+    # Attribute is overwritten below the class definition
+    shared_link_password_protected = None
+    # Attribute is overwritten below the class definition
+    limit_exceeded_error = None
+    # Attribute is overwritten below the class definition
+    conversion_failure_error = None
+    # Attribute is overwritten below the class definition
+    not_found_error = None
+    # Attribute is overwritten below the class definition
+    is_a_folder_error = None
+    # Attribute is overwritten below the class definition
+    no_audio_error = None
+    # Attribute is overwritten below the class definition
+    other = None
+
+    @classmethod
+    def server_error(cls, val):
+        """
+        Create an instance of this class set to the ``server_error`` tag with
+        value ``val``.
+
+        :param str val:
+        :rtype: ExtractApiV2Error
+        """
+        return cls("server_error", val)
+
+    @classmethod
+    def user_error(cls, val):
+        """
+        Create an instance of this class set to the ``user_error`` tag with
+        value ``val``.
+
+        :param str val:
+        :rtype: ExtractApiV2Error
+        """
+        return cls("user_error", val)
+
+    def is_server_error(self):
+        """
+        Check if the union tag is ``server_error``.
+
+        :rtype: bool
+        """
+        return self._tag == "server_error"
+
+    def is_user_error(self):
+        """
+        Check if the union tag is ``user_error``.
+
+        :rtype: bool
+        """
+        return self._tag == "user_error"
+
+    def is_unsupported_format_error(self):
+        """
+        Check if the union tag is ``unsupported_format_error``.
+
+        :rtype: bool
+        """
+        return self._tag == "unsupported_format_error"
+
+    def is_link_download_disabled_error(self):
+        """
+        Check if the union tag is ``link_download_disabled_error``.
+
+        :rtype: bool
+        """
+        return self._tag == "link_download_disabled_error"
+
+    def is_shared_link_password_protected(self):
+        """
+        Check if the union tag is ``shared_link_password_protected``.
+
+        :rtype: bool
+        """
+        return self._tag == "shared_link_password_protected"
+
+    def is_limit_exceeded_error(self):
+        """
+        Check if the union tag is ``limit_exceeded_error``.
+
+        :rtype: bool
+        """
+        return self._tag == "limit_exceeded_error"
+
+    def is_conversion_failure_error(self):
+        """
+        Check if the union tag is ``conversion_failure_error``.
+
+        :rtype: bool
+        """
+        return self._tag == "conversion_failure_error"
+
+    def is_not_found_error(self):
+        """
+        Check if the union tag is ``not_found_error``.
+
+        :rtype: bool
+        """
+        return self._tag == "not_found_error"
+
+    def is_is_a_folder_error(self):
+        """
+        Check if the union tag is ``is_a_folder_error``.
+
+        :rtype: bool
+        """
+        return self._tag == "is_a_folder_error"
+
+    def is_no_audio_error(self):
+        """
+        Check if the union tag is ``no_audio_error``.
+
+        :rtype: bool
+        """
+        return self._tag == "no_audio_error"
+
+    def is_other(self):
+        """
+        Check if the union tag is ``other``.
+
+        :rtype: bool
+        """
+        return self._tag == "other"
+
+    def get_server_error(self):
+        """
+        An unexpected, typically transient, server-side failure. The string is a
+        human-readable message; retrying with backoff may succeed.
+
+        Only call this if :meth:`is_server_error` is true.
+
+        :rtype: str
+        """
+        if not self.is_server_error():
+            raise AttributeError("tag 'server_error' not set")
+        return self._value
+
+    def get_user_error(self):
+        """
+        The request could not be processed as supplied (a problem with the
+        caller's input), for example an out-of-range option. The string is a
+        human-readable message; retrying the same request will not help.
+
+        Only call this if :meth:`is_user_error` is true.
+
+        :rtype: str
+        """
+        if not self.is_user_error():
+            raise AttributeError("tag 'user_error' not set")
+        return self._value
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(ExtractApiV2Error, self)._process_custom_annotations(
+            annotation_type, field_path, processor
+        )
+
+
+ExtractApiV2Error_validator = bv.Union(ExtractApiV2Error)
+
+
+class ExtractArgs(bb.Struct):
+    """
+    Arguments for the asynchronous `extract_async` route. Exactly one of
+    `file_id`, `path`, or `url` must be supplied via `file_id_or_url` to
+    identify the source file, and `extract_type` must say what to extract from
+    it.
+
+    :ivar ExtractArgs.file_id_or_url:
+        Identifier of the source file. Callers must set exactly one of the
+        `FileIdOrUrl` variants. The file must be in a format the requested
+        `extract_type` supports; see `ExtractType` for the per-type lists.
+    :ivar ExtractArgs.extract_type:
+        What to extract, and that extraction's options. Required.
+    """
+
+    __slots__ = [
+        "_file_id_or_url_value",
+        "_extract_type_value",
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self, extract_type=None, file_id_or_url=None):
+        self._file_id_or_url_value = bb.NOT_SET
+        self._extract_type_value = bb.NOT_SET
+        if file_id_or_url is not None:
+            self.file_id_or_url = file_id_or_url
+        if extract_type is not None:
+            self.extract_type = extract_type
+
+    # Instance attribute type: FileIdOrUrl (validator is set below)
+    file_id_or_url = bb.Attribute("file_id_or_url", nullable=True, user_defined=True)
+
+    # Instance attribute type: ExtractType (validator is set below)
+    extract_type = bb.Attribute("extract_type", user_defined=True)
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(ExtractArgs, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+
+ExtractArgs_validator = bv.Struct(ExtractArgs)
+
+
+class ExtractAsyncCheckResult(bb.Union):
+    """
+    Status of an extraction job started by `extract_async`, as returned by
+    `extract_async/check`.
+
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+
+    :ivar ExtractAsyncCheckResult.in_progress:
+        The job has not finished yet. Poll again.
+    :ivar ExtractAsyncCheckResult.complete:
+        The job finished successfully.
+    :vartype ExtractAsyncCheckResult.complete: ExtractResult
+    :ivar ExtractAsyncCheckResult.failed:
+        The job finished unsuccessfully.
+    :vartype ExtractAsyncCheckResult.failed: ExtractApiV2Error
+    """
+
+    _catch_all = "other"
+    # Attribute is overwritten below the class definition
+    in_progress = None
+    # Attribute is overwritten below the class definition
+    other = None
+
+    @classmethod
+    def complete(cls, val):
+        """
+        Create an instance of this class set to the ``complete`` tag with value
+        ``val``.
+
+        :param ExtractResult val:
+        :rtype: ExtractAsyncCheckResult
+        """
+        return cls("complete", val)
+
+    @classmethod
+    def failed(cls, val):
+        """
+        Create an instance of this class set to the ``failed`` tag with value
+        ``val``.
+
+        :param ExtractApiV2Error val:
+        :rtype: ExtractAsyncCheckResult
+        """
+        return cls("failed", val)
+
+    def is_in_progress(self):
+        """
+        Check if the union tag is ``in_progress``.
+
+        :rtype: bool
+        """
+        return self._tag == "in_progress"
+
+    def is_complete(self):
+        """
+        Check if the union tag is ``complete``.
+
+        :rtype: bool
+        """
+        return self._tag == "complete"
+
+    def is_failed(self):
+        """
+        Check if the union tag is ``failed``.
+
+        :rtype: bool
+        """
+        return self._tag == "failed"
+
+    def is_other(self):
+        """
+        Check if the union tag is ``other``.
+
+        :rtype: bool
+        """
+        return self._tag == "other"
+
+    def get_complete(self):
+        """
+        The job finished successfully.
+
+        Only call this if :meth:`is_complete` is true.
+
+        :rtype: ExtractResult
+        """
+        if not self.is_complete():
+            raise AttributeError("tag 'complete' not set")
+        return self._value
+
+    def get_failed(self):
+        """
+        The job finished unsuccessfully.
+
+        Only call this if :meth:`is_failed` is true.
+
+        :rtype: ExtractApiV2Error
+        """
+        if not self.is_failed():
+            raise AttributeError("tag 'failed' not set")
+        return self._value
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(ExtractAsyncCheckResult, self)._process_custom_annotations(
+            annotation_type, field_path, processor
+        )
+
+
+ExtractAsyncCheckResult_validator = bv.Union(ExtractAsyncCheckResult)
+
+
+class ExtractResult(bb.Union):
+    """
+    A completed extraction. The variant always matches the `ExtractType` that
+    was requested.
+
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+
+    :ivar ExtractResult.markdown:
+        The markdown the document was converted to. May be empty when the
+        document has no extractable text.
+    :vartype ExtractResult.markdown: GetMarkdownResult
+    :ivar ExtractResult.text:
+        The plain text of the document. May be empty when no text is found.
+    :vartype ExtractResult.text: GetTextResult
+    :ivar ExtractResult.ocr:
+        The OCR text and hOCR. Both may be empty when no text is detected.
+    :vartype ExtractResult.ocr: GetOcrResult
+    :ivar ExtractResult.transcript:
+        The transcript. Its segments are empty when no speech is detected.
+    :vartype ExtractResult.transcript: GetTranscriptResult
+    :ivar ExtractResult.keyframes:
+        The keyframes. Empty when no scene changes are detected.
+    :vartype ExtractResult.keyframes: GetKeyframesResult
+    """
+
+    _catch_all = "other"
+    # Attribute is overwritten below the class definition
+    other = None
+
+    @classmethod
+    def markdown(cls, val):
+        """
+        Create an instance of this class set to the ``markdown`` tag with value
+        ``val``.
+
+        :param GetMarkdownResult val:
+        :rtype: ExtractResult
+        """
+        return cls("markdown", val)
+
+    @classmethod
+    def text(cls, val):
+        """
+        Create an instance of this class set to the ``text`` tag with value
+        ``val``.
+
+        :param GetTextResult val:
+        :rtype: ExtractResult
+        """
+        return cls("text", val)
+
+    @classmethod
+    def ocr(cls, val):
+        """
+        Create an instance of this class set to the ``ocr`` tag with value
+        ``val``.
+
+        :param GetOcrResult val:
+        :rtype: ExtractResult
+        """
+        return cls("ocr", val)
+
+    @classmethod
+    def transcript(cls, val):
+        """
+        Create an instance of this class set to the ``transcript`` tag with
+        value ``val``.
+
+        :param GetTranscriptResult val:
+        :rtype: ExtractResult
+        """
+        return cls("transcript", val)
+
+    @classmethod
+    def keyframes(cls, val):
+        """
+        Create an instance of this class set to the ``keyframes`` tag with value
+        ``val``.
+
+        :param GetKeyframesResult val:
+        :rtype: ExtractResult
+        """
+        return cls("keyframes", val)
+
+    def is_markdown(self):
+        """
+        Check if the union tag is ``markdown``.
+
+        :rtype: bool
+        """
+        return self._tag == "markdown"
+
+    def is_text(self):
+        """
+        Check if the union tag is ``text``.
+
+        :rtype: bool
+        """
+        return self._tag == "text"
+
+    def is_ocr(self):
+        """
+        Check if the union tag is ``ocr``.
+
+        :rtype: bool
+        """
+        return self._tag == "ocr"
+
+    def is_transcript(self):
+        """
+        Check if the union tag is ``transcript``.
+
+        :rtype: bool
+        """
+        return self._tag == "transcript"
+
+    def is_keyframes(self):
+        """
+        Check if the union tag is ``keyframes``.
+
+        :rtype: bool
+        """
+        return self._tag == "keyframes"
+
+    def is_other(self):
+        """
+        Check if the union tag is ``other``.
+
+        :rtype: bool
+        """
+        return self._tag == "other"
+
+    def get_markdown(self):
+        """
+        The markdown the document was converted to. May be empty when the
+        document has no extractable text.
+
+        Only call this if :meth:`is_markdown` is true.
+
+        :rtype: GetMarkdownResult
+        """
+        if not self.is_markdown():
+            raise AttributeError("tag 'markdown' not set")
+        return self._value
+
+    def get_text(self):
+        """
+        The plain text of the document. May be empty when no text is found.
+
+        Only call this if :meth:`is_text` is true.
+
+        :rtype: GetTextResult
+        """
+        if not self.is_text():
+            raise AttributeError("tag 'text' not set")
+        return self._value
+
+    def get_ocr(self):
+        """
+        The OCR text and hOCR. Both may be empty when no text is detected.
+
+        Only call this if :meth:`is_ocr` is true.
+
+        :rtype: GetOcrResult
+        """
+        if not self.is_ocr():
+            raise AttributeError("tag 'ocr' not set")
+        return self._value
+
+    def get_transcript(self):
+        """
+        The transcript. Its segments are empty when no speech is detected.
+
+        Only call this if :meth:`is_transcript` is true.
+
+        :rtype: GetTranscriptResult
+        """
+        if not self.is_transcript():
+            raise AttributeError("tag 'transcript' not set")
+        return self._value
+
+    def get_keyframes(self):
+        """
+        The keyframes. Empty when no scene changes are detected.
+
+        Only call this if :meth:`is_keyframes` is true.
+
+        :rtype: GetKeyframesResult
+        """
+        if not self.is_keyframes():
+            raise AttributeError("tag 'keyframes' not set")
+        return self._value
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(ExtractResult, self)._process_custom_annotations(
+            annotation_type, field_path, processor
+        )
+
+
+ExtractResult_validator = bv.Union(ExtractResult)
+
+
+class ExtractType(bb.Union):
+    """
+    What to extract from the source file, with that extraction's options.
+    Exactly one variant must be set. Every variant carries an options message,
+    so always send the object form -- for example `{".tag": "text"}` -- rather
+    than a bare tag string. Option fields may be omitted to take their defaults.
+
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+
+    :ivar ExtractType.markdown:
+        Convert a document to markdown, preserving structure such as headings,
+        lists, and tables. Supported formats: .binder, .docx, .html, .paper,
+        .papert, .pptx, .xlsx, .gsheet, .ods, .pdf. At most 50 MB.
+    :vartype ExtractType.markdown: MarkdownExtractOptions
+    :ivar ExtractType.text:
+        Extract the plain text of a document. Supported formats: .doc, .docx,
+        .docm, .rtf, .ppt, .pptx, .pptm, .xls, .xlsx, .xlsm, .pdf, .paper,
+        .papert, .binder, .gdoc, .gsheet, .gslides, .txt, .vtt. At most 50 MB.
+    :vartype ExtractType.text: TextExtractOptions
+    :ivar ExtractType.ocr:
+        Run OCR on an image or a scanned PDF, returning reading-ordered text
+        plus hOCR with per-word coordinates. Supported formats: .bmp, .gif,
+        .heic, .jpeg, .jpg, .png, .tif, .tiff, .webp, .pdf. A PDF that already
+        has a text layer is not OCRed and yields an empty result; use `text` for
+        it. External (non-Dropbox) URLs are not supported.
+    :vartype ExtractType.ocr: OcrExtractOptions
+    :ivar ExtractType.transcript:
+        Transcribe the audio of an audio or video file into timestamped
+        segments. Supported audio formats: .aac, .aif, .aiff, .flac, .m4a, .m4r,
+        .mp3, .oga, .ogg, .wav, .wma; video formats as for `keyframes`. At most
+        10 GB, with at most 1 hour of audio. A file with no audio track fails
+        with `no_audio_error`.
+    :vartype ExtractType.transcript: TranscriptExtractOptions
+    :ivar ExtractType.keyframes:
+        Detect scene changes in a video and return one keyframe per scene.
+        Supported formats: .3gp, .3gpp, .3gpp2, .asf, .avi, .dv, .flv, .m2t,
+        .m2ts, .m4v, .mkv, .mov, .mp4, .mpeg, .mpg, .mts, .mxf, .oggtheora,
+        .ogv, .rm, .ts, .vob, .webm, .wmv. At most 10 GB.
+    :vartype ExtractType.keyframes: KeyframesExtractOptions
+    """
+
+    _catch_all = "other"
+    # Attribute is overwritten below the class definition
+    other = None
+
+    @classmethod
+    def markdown(cls, val):
+        """
+        Create an instance of this class set to the ``markdown`` tag with value
+        ``val``.
+
+        :param MarkdownExtractOptions val:
+        :rtype: ExtractType
+        """
+        return cls("markdown", val)
+
+    @classmethod
+    def text(cls, val):
+        """
+        Create an instance of this class set to the ``text`` tag with value
+        ``val``.
+
+        :param TextExtractOptions val:
+        :rtype: ExtractType
+        """
+        return cls("text", val)
+
+    @classmethod
+    def ocr(cls, val):
+        """
+        Create an instance of this class set to the ``ocr`` tag with value
+        ``val``.
+
+        :param OcrExtractOptions val:
+        :rtype: ExtractType
+        """
+        return cls("ocr", val)
+
+    @classmethod
+    def transcript(cls, val):
+        """
+        Create an instance of this class set to the ``transcript`` tag with
+        value ``val``.
+
+        :param TranscriptExtractOptions val:
+        :rtype: ExtractType
+        """
+        return cls("transcript", val)
+
+    @classmethod
+    def keyframes(cls, val):
+        """
+        Create an instance of this class set to the ``keyframes`` tag with value
+        ``val``.
+
+        :param KeyframesExtractOptions val:
+        :rtype: ExtractType
+        """
+        return cls("keyframes", val)
+
+    def is_markdown(self):
+        """
+        Check if the union tag is ``markdown``.
+
+        :rtype: bool
+        """
+        return self._tag == "markdown"
+
+    def is_text(self):
+        """
+        Check if the union tag is ``text``.
+
+        :rtype: bool
+        """
+        return self._tag == "text"
+
+    def is_ocr(self):
+        """
+        Check if the union tag is ``ocr``.
+
+        :rtype: bool
+        """
+        return self._tag == "ocr"
+
+    def is_transcript(self):
+        """
+        Check if the union tag is ``transcript``.
+
+        :rtype: bool
+        """
+        return self._tag == "transcript"
+
+    def is_keyframes(self):
+        """
+        Check if the union tag is ``keyframes``.
+
+        :rtype: bool
+        """
+        return self._tag == "keyframes"
+
+    def is_other(self):
+        """
+        Check if the union tag is ``other``.
+
+        :rtype: bool
+        """
+        return self._tag == "other"
+
+    def get_markdown(self):
+        """
+        Convert a document to markdown, preserving structure such as headings,
+        lists, and tables. Supported formats: .binder, .docx, .html, .paper,
+        .papert, .pptx, .xlsx, .gsheet, .ods, .pdf. At most 50 MB.
+
+        Only call this if :meth:`is_markdown` is true.
+
+        :rtype: MarkdownExtractOptions
+        """
+        if not self.is_markdown():
+            raise AttributeError("tag 'markdown' not set")
+        return self._value
+
+    def get_text(self):
+        """
+        Extract the plain text of a document. Supported formats: .doc, .docx,
+        .docm, .rtf, .ppt, .pptx, .pptm, .xls, .xlsx, .xlsm, .pdf, .paper,
+        .papert, .binder, .gdoc, .gsheet, .gslides, .txt, .vtt. At most 50 MB.
+
+        Only call this if :meth:`is_text` is true.
+
+        :rtype: TextExtractOptions
+        """
+        if not self.is_text():
+            raise AttributeError("tag 'text' not set")
+        return self._value
+
+    def get_ocr(self):
+        """
+        Run OCR on an image or a scanned PDF, returning reading-ordered text
+        plus hOCR with per-word coordinates. Supported formats: .bmp, .gif,
+        .heic, .jpeg, .jpg, .png, .tif, .tiff, .webp, .pdf. A PDF that already
+        has a text layer is not OCRed and yields an empty result; use `text` for
+        it. External (non-Dropbox) URLs are not supported.
+
+        Only call this if :meth:`is_ocr` is true.
+
+        :rtype: OcrExtractOptions
+        """
+        if not self.is_ocr():
+            raise AttributeError("tag 'ocr' not set")
+        return self._value
+
+    def get_transcript(self):
+        """
+        Transcribe the audio of an audio or video file into timestamped
+        segments. Supported audio formats: .aac, .aif, .aiff, .flac, .m4a, .m4r,
+        .mp3, .oga, .ogg, .wav, .wma; video formats as for `keyframes`. At most
+        10 GB, with at most 1 hour of audio. A file with no audio track fails
+        with `no_audio_error`.
+
+        Only call this if :meth:`is_transcript` is true.
+
+        :rtype: TranscriptExtractOptions
+        """
+        if not self.is_transcript():
+            raise AttributeError("tag 'transcript' not set")
+        return self._value
+
+    def get_keyframes(self):
+        """
+        Detect scene changes in a video and return one keyframe per scene.
+        Supported formats: .3gp, .3gpp, .3gpp2, .asf, .avi, .dv, .flv, .m2t,
+        .m2ts, .m4v, .mkv, .mov, .mp4, .mpeg, .mpg, .mts, .mxf, .oggtheora,
+        .ogv, .rm, .ts, .vob, .webm, .wmv. At most 10 GB.
+
+        Only call this if :meth:`is_keyframes` is true.
+
+        :rtype: KeyframesExtractOptions
+        """
+        if not self.is_keyframes():
+            raise AttributeError("tag 'keyframes' not set")
+        return self._value
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(ExtractType, self)._process_custom_annotations(annotation_type, field_path, processor)
+
+
+ExtractType_validator = bv.Union(ExtractType)
+
+
 class FileIdOrUrl(bb.Union):
     """
     This class acts as a tagged union. Only one of the ``is_*`` methods will
@@ -2615,6 +3418,51 @@ class ImageOptions(bb.Struct):
 ImageOptions_validator = bv.Struct(ImageOptions)
 
 
+class KeyframesExtractOptions(bb.Struct):
+    """
+    Options for `ExtractType.keyframes`.
+
+    :ivar KeyframesExtractOptions.scene_change_threshold:
+        Sensitivity of scene-change detection. A keyframe is emitted whenever
+        the frame-to-frame scene score crosses this threshold, so a LOWER value
+        yields MORE keyframes. When omitted (0.0) the service uses 0.3, a good
+        starting point for most videos. Values above 1.0 fail with `user_error`.
+    :ivar KeyframesExtractOptions.include_images:
+        When true, each keyframe carries its JPEG image, base64-encoded, in
+        `ApiKeyframe.image_base64`. When false (the default), only timestamps
+        and scene scores are returned, which keeps the result small.
+    """
+
+    __slots__ = [
+        "_scene_change_threshold_value",
+        "_include_images_value",
+    ]
+
+    _has_required_fields = False
+
+    def __init__(self, scene_change_threshold=None, include_images=None):
+        self._scene_change_threshold_value = bb.NOT_SET
+        self._include_images_value = bb.NOT_SET
+        if scene_change_threshold is not None:
+            self.scene_change_threshold = scene_change_threshold
+        if include_images is not None:
+            self.include_images = include_images
+
+    # Instance attribute type: float (validator is set below)
+    scene_change_threshold = bb.Attribute("scene_change_threshold")
+
+    # Instance attribute type: bool (validator is set below)
+    include_images = bb.Attribute("include_images")
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(KeyframesExtractOptions, self)._process_custom_annotations(
+            annotation_type, field_path, processor
+        )
+
+
+KeyframesExtractOptions_validator = bv.Struct(KeyframesExtractOptions)
+
+
 class KeyframesExtractionApiV2Error(bb.Union):
     """
     Reason a keyframe extraction job failed. Returned in the `failed` variant of
@@ -3012,6 +3860,48 @@ class MarkdownConversionApiV2Error(bb.Union):
 MarkdownConversionApiV2Error_validator = bv.Union(MarkdownConversionApiV2Error)
 
 
+class MarkdownExtractOptions(bb.Struct):
+    """
+    Options for `ExtractType.markdown`.
+
+    :ivar MarkdownExtractOptions.enable_ocr:
+        Run OCR on PDF documents, so that scanned pages contribute text.
+        Processing is slower when enabled.
+    :ivar MarkdownExtractOptions.embed_images:
+        Embed images as base64 data URIs in the markdown. This can significantly
+        increase the size of the result.
+    """
+
+    __slots__ = [
+        "_enable_ocr_value",
+        "_embed_images_value",
+    ]
+
+    _has_required_fields = False
+
+    def __init__(self, enable_ocr=None, embed_images=None):
+        self._enable_ocr_value = bb.NOT_SET
+        self._embed_images_value = bb.NOT_SET
+        if enable_ocr is not None:
+            self.enable_ocr = enable_ocr
+        if embed_images is not None:
+            self.embed_images = embed_images
+
+    # Instance attribute type: bool (validator is set below)
+    enable_ocr = bb.Attribute("enable_ocr")
+
+    # Instance attribute type: bool (validator is set below)
+    embed_images = bb.Attribute("embed_images")
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(MarkdownExtractOptions, self)._process_custom_annotations(
+            annotation_type, field_path, processor
+        )
+
+
+MarkdownExtractOptions_validator = bv.Struct(MarkdownExtractOptions)
+
+
 class MediaDurationError(bb.Struct):
     """
     :ivar MediaDurationError.limit:
@@ -3339,6 +4229,28 @@ class MetadataType(bb.Union):
 MetadataType_validator = bv.Union(MetadataType)
 
 
+class OcrExtractOptions(bb.Struct):
+    """
+    Options for `ExtractType.ocr`. There are none yet; the variant carries a
+    message so that options can be added later without changing its shape.
+    """
+
+    __slots__ = []
+
+    _has_required_fields = False
+
+    def __init__(self):
+        pass
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(OcrExtractOptions, self)._process_custom_annotations(
+            annotation_type, field_path, processor
+        )
+
+
+OcrExtractOptions_validator = bv.Struct(OcrExtractOptions)
+
+
 class OcrExtractionApiV2Error(bb.Union):
     """
     Reason an OCR extraction job failed. Returned in the `failed` variant of
@@ -3604,6 +4516,28 @@ class OfficeFileType(bb.Union):
 
 
 OfficeFileType_validator = bv.Union(OfficeFileType)
+
+
+class TextExtractOptions(bb.Struct):
+    """
+    Options for `ExtractType.text`. There are none yet; the variant carries a
+    message so that options can be added later without changing its shape.
+    """
+
+    __slots__ = []
+
+    _has_required_fields = False
+
+    def __init__(self):
+        pass
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(TextExtractOptions, self)._process_custom_annotations(
+            annotation_type, field_path, processor
+        )
+
+
+TextExtractOptions_validator = bv.Struct(TextExtractOptions)
 
 
 class TextExtractionApiV2Error(bb.Union):
@@ -4199,6 +5133,60 @@ class TimestampLevel(bb.Union):
 
 
 TimestampLevel_validator = bv.Union(TimestampLevel)
+
+
+class TranscriptExtractOptions(bb.Struct):
+    """
+    Options for `ExtractType.transcript`.
+
+    :ivar TranscriptExtractOptions.timestamp_level:
+        Granularity of the time offsets returned for each transcript segment.
+        Defaults to `sentence`.
+    :ivar TranscriptExtractOptions.included_special_words:
+        Comma-delimited list of non-lexical filler words to keep in the
+        transcript, e.g. "uh, ah, uhm". By default these fillers are stripped.
+        Unrecognized tokens are ignored.
+    :ivar TranscriptExtractOptions.audio_language:
+        Hint for the spoken language of the audio, as an ISO 639-1 code such as
+        "en" or "ja". When empty, the service detects the language. A language
+        the service does not support fails with `user_error`.
+    """
+
+    __slots__ = [
+        "_timestamp_level_value",
+        "_included_special_words_value",
+        "_audio_language_value",
+    ]
+
+    _has_required_fields = False
+
+    def __init__(self, timestamp_level=None, included_special_words=None, audio_language=None):
+        self._timestamp_level_value = bb.NOT_SET
+        self._included_special_words_value = bb.NOT_SET
+        self._audio_language_value = bb.NOT_SET
+        if timestamp_level is not None:
+            self.timestamp_level = timestamp_level
+        if included_special_words is not None:
+            self.included_special_words = included_special_words
+        if audio_language is not None:
+            self.audio_language = audio_language
+
+    # Instance attribute type: TimestampLevel (validator is set below)
+    timestamp_level = bb.Attribute("timestamp_level", user_defined=True)
+
+    # Instance attribute type: str (validator is set below)
+    included_special_words = bb.Attribute("included_special_words")
+
+    # Instance attribute type: str (validator is set below)
+    audio_language = bb.Attribute("audio_language")
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(TranscriptExtractOptions, self)._process_custom_annotations(
+            annotation_type, field_path, processor
+        )
+
+
+TranscriptExtractOptions_validator = bv.Struct(TranscriptExtractOptions)
 
 
 class TransformApiV2Error(bb.Union):
@@ -5235,6 +6223,104 @@ DownloadTransformOutputResult._all_fields_ = [
     ("mime_type", DownloadTransformOutputResult.mime_type.validator),
 ]
 
+ExtractApiV2Error._server_error_validator = bv.String()
+ExtractApiV2Error._user_error_validator = bv.String()
+ExtractApiV2Error._unsupported_format_error_validator = bv.Void()
+ExtractApiV2Error._link_download_disabled_error_validator = bv.Void()
+ExtractApiV2Error._shared_link_password_protected_validator = bv.Void()
+ExtractApiV2Error._limit_exceeded_error_validator = bv.Void()
+ExtractApiV2Error._conversion_failure_error_validator = bv.Void()
+ExtractApiV2Error._not_found_error_validator = bv.Void()
+ExtractApiV2Error._is_a_folder_error_validator = bv.Void()
+ExtractApiV2Error._no_audio_error_validator = bv.Void()
+ExtractApiV2Error._other_validator = bv.Void()
+ExtractApiV2Error._tagmap = {
+    "server_error": ExtractApiV2Error._server_error_validator,
+    "user_error": ExtractApiV2Error._user_error_validator,
+    "unsupported_format_error": ExtractApiV2Error._unsupported_format_error_validator,
+    "link_download_disabled_error": ExtractApiV2Error._link_download_disabled_error_validator,
+    "shared_link_password_protected": ExtractApiV2Error._shared_link_password_protected_validator,
+    "limit_exceeded_error": ExtractApiV2Error._limit_exceeded_error_validator,
+    "conversion_failure_error": ExtractApiV2Error._conversion_failure_error_validator,
+    "not_found_error": ExtractApiV2Error._not_found_error_validator,
+    "is_a_folder_error": ExtractApiV2Error._is_a_folder_error_validator,
+    "no_audio_error": ExtractApiV2Error._no_audio_error_validator,
+    "other": ExtractApiV2Error._other_validator,
+}
+
+ExtractApiV2Error.unsupported_format_error = ExtractApiV2Error("unsupported_format_error")
+ExtractApiV2Error.link_download_disabled_error = ExtractApiV2Error("link_download_disabled_error")
+ExtractApiV2Error.shared_link_password_protected = ExtractApiV2Error(
+    "shared_link_password_protected"
+)
+ExtractApiV2Error.limit_exceeded_error = ExtractApiV2Error("limit_exceeded_error")
+ExtractApiV2Error.conversion_failure_error = ExtractApiV2Error("conversion_failure_error")
+ExtractApiV2Error.not_found_error = ExtractApiV2Error("not_found_error")
+ExtractApiV2Error.is_a_folder_error = ExtractApiV2Error("is_a_folder_error")
+ExtractApiV2Error.no_audio_error = ExtractApiV2Error("no_audio_error")
+ExtractApiV2Error.other = ExtractApiV2Error("other")
+
+ExtractArgs.file_id_or_url.validator = bv.Nullable(FileIdOrUrl_validator)
+ExtractArgs.extract_type.validator = ExtractType_validator
+ExtractArgs._all_field_names_ = set(
+    [
+        "file_id_or_url",
+        "extract_type",
+    ]
+)
+ExtractArgs._all_fields_ = [
+    ("file_id_or_url", ExtractArgs.file_id_or_url.validator),
+    ("extract_type", ExtractArgs.extract_type.validator),
+]
+
+ExtractAsyncCheckResult._in_progress_validator = bv.Void()
+ExtractAsyncCheckResult._complete_validator = ExtractResult_validator
+ExtractAsyncCheckResult._failed_validator = ExtractApiV2Error_validator
+ExtractAsyncCheckResult._other_validator = bv.Void()
+ExtractAsyncCheckResult._tagmap = {
+    "in_progress": ExtractAsyncCheckResult._in_progress_validator,
+    "complete": ExtractAsyncCheckResult._complete_validator,
+    "failed": ExtractAsyncCheckResult._failed_validator,
+    "other": ExtractAsyncCheckResult._other_validator,
+}
+
+ExtractAsyncCheckResult.in_progress = ExtractAsyncCheckResult("in_progress")
+ExtractAsyncCheckResult.other = ExtractAsyncCheckResult("other")
+
+ExtractResult._markdown_validator = GetMarkdownResult_validator
+ExtractResult._text_validator = GetTextResult_validator
+ExtractResult._ocr_validator = GetOcrResult_validator
+ExtractResult._transcript_validator = GetTranscriptResult_validator
+ExtractResult._keyframes_validator = GetKeyframesResult_validator
+ExtractResult._other_validator = bv.Void()
+ExtractResult._tagmap = {
+    "markdown": ExtractResult._markdown_validator,
+    "text": ExtractResult._text_validator,
+    "ocr": ExtractResult._ocr_validator,
+    "transcript": ExtractResult._transcript_validator,
+    "keyframes": ExtractResult._keyframes_validator,
+    "other": ExtractResult._other_validator,
+}
+
+ExtractResult.other = ExtractResult("other")
+
+ExtractType._markdown_validator = MarkdownExtractOptions_validator
+ExtractType._text_validator = TextExtractOptions_validator
+ExtractType._ocr_validator = OcrExtractOptions_validator
+ExtractType._transcript_validator = TranscriptExtractOptions_validator
+ExtractType._keyframes_validator = KeyframesExtractOptions_validator
+ExtractType._other_validator = bv.Void()
+ExtractType._tagmap = {
+    "markdown": ExtractType._markdown_validator,
+    "text": ExtractType._text_validator,
+    "ocr": ExtractType._ocr_validator,
+    "transcript": ExtractType._transcript_validator,
+    "keyframes": ExtractType._keyframes_validator,
+    "other": ExtractType._other_validator,
+}
+
+ExtractType.other = ExtractType("other")
+
 FileIdOrUrl._file_id_validator = bv.String()
 FileIdOrUrl._url_validator = bv.String()
 FileIdOrUrl._path_validator = bv.String()
@@ -5466,6 +6552,19 @@ ImageOptions._all_fields_ = [
     ("scale_percent", ImageOptions.scale_percent.validator),
 ]
 
+KeyframesExtractOptions.scene_change_threshold.validator = bv.Float64()
+KeyframesExtractOptions.include_images.validator = bv.Boolean()
+KeyframesExtractOptions._all_field_names_ = set(
+    [
+        "scene_change_threshold",
+        "include_images",
+    ]
+)
+KeyframesExtractOptions._all_fields_ = [
+    ("scene_change_threshold", KeyframesExtractOptions.scene_change_threshold.validator),
+    ("include_images", KeyframesExtractOptions.include_images.validator),
+]
+
 KeyframesExtractionApiV2Error._server_error_validator = bv.String()
 KeyframesExtractionApiV2Error._user_error_validator = bv.String()
 KeyframesExtractionApiV2Error._unsupported_format_error_validator = bv.Void()
@@ -5550,6 +6649,19 @@ MarkdownConversionApiV2Error.not_found_error = MarkdownConversionApiV2Error("not
 MarkdownConversionApiV2Error.is_a_folder_error = MarkdownConversionApiV2Error("is_a_folder_error")
 MarkdownConversionApiV2Error.other = MarkdownConversionApiV2Error("other")
 
+MarkdownExtractOptions.enable_ocr.validator = bv.Boolean()
+MarkdownExtractOptions.embed_images.validator = bv.Boolean()
+MarkdownExtractOptions._all_field_names_ = set(
+    [
+        "enable_ocr",
+        "embed_images",
+    ]
+)
+MarkdownExtractOptions._all_fields_ = [
+    ("enable_ocr", MarkdownExtractOptions.enable_ocr.validator),
+    ("embed_images", MarkdownExtractOptions.embed_images.validator),
+]
+
 MediaDurationError.limit.validator = bv.Int32()
 MediaDurationError._all_field_names_ = set(["limit"])
 MediaDurationError._all_fields_ = [("limit", MediaDurationError.limit.validator)]
@@ -5618,6 +6730,9 @@ MetadataType.metadata_type_pdf = MetadataType("metadata_type_pdf")
 MetadataType.metadata_type_office = MetadataType("metadata_type_office")
 MetadataType.other = MetadataType("other")
 
+OcrExtractOptions._all_field_names_ = set([])
+OcrExtractOptions._all_fields_ = []
+
 OcrExtractionApiV2Error._server_error_validator = bv.String()
 OcrExtractionApiV2Error._user_error_validator = bv.String()
 OcrExtractionApiV2Error._unsupported_format_error_validator = bv.Void()
@@ -5676,6 +6791,9 @@ OfficeFileType.office_filetype_word = OfficeFileType("office_filetype_word")
 OfficeFileType.office_filetype_powerpoint = OfficeFileType("office_filetype_powerpoint")
 OfficeFileType.office_filetype_excel = OfficeFileType("office_filetype_excel")
 OfficeFileType.other = OfficeFileType("other")
+
+TextExtractOptions._all_field_names_ = set([])
+TextExtractOptions._all_fields_ = []
 
 TextExtractionApiV2Error._server_error_validator = bv.String()
 TextExtractionApiV2Error._user_error_validator = bv.String()
@@ -5814,6 +6932,22 @@ TimestampLevel._tagmap = {
 TimestampLevel.sentence = TimestampLevel("sentence")
 TimestampLevel.word = TimestampLevel("word")
 TimestampLevel.other = TimestampLevel("other")
+
+TranscriptExtractOptions.timestamp_level.validator = TimestampLevel_validator
+TranscriptExtractOptions.included_special_words.validator = bv.String()
+TranscriptExtractOptions.audio_language.validator = bv.String()
+TranscriptExtractOptions._all_field_names_ = set(
+    [
+        "timestamp_level",
+        "included_special_words",
+        "audio_language",
+    ]
+)
+TranscriptExtractOptions._all_fields_ = [
+    ("timestamp_level", TranscriptExtractOptions.timestamp_level.validator),
+    ("included_special_words", TranscriptExtractOptions.included_special_words.validator),
+    ("audio_language", TranscriptExtractOptions.audio_language.validator),
+]
 
 TransformApiV2Error._server_error_validator = bv.String()
 TransformApiV2Error._user_error_validator = bv.String()
@@ -6030,10 +7164,17 @@ GetTranscriptArgs.included_special_words.default = ""
 GetTranscriptArgs.audio_language.default = ""
 ImageOptions.page_number.default = 1
 ImageOptions.scale_percent.default = 100
+KeyframesExtractOptions.scene_change_threshold.default = 0.0
+KeyframesExtractOptions.include_images.default = False
+MarkdownExtractOptions.enable_ocr.default = False
+MarkdownExtractOptions.embed_images.default = False
 MediaDurationError.limit.default = 0
 ThumbnailOptions.size.default = ThumbnailSize.w64h64
 ThumbnailOptions.mode.default = ThumbnailMode.strict
 ThumbnailOptions.format.default = ThumbnailFormat.jpeg
+TranscriptExtractOptions.timestamp_level.default = TimestampLevel.sentence
+TranscriptExtractOptions.included_special_words.default = ""
+TranscriptExtractOptions.audio_language.default = ""
 TransformOutput.output_handle.default = ""
 TransformOutput.size.default = 0
 TransformOutput.format.default = ""
@@ -6049,6 +7190,24 @@ download_transform_output = bb.Route(
     DownloadTransformOutputResult_validator,
     TransformApiV2Error_validator,
     {"auth": "app, user", "host": "content", "style": "download"},
+)
+extract_async = bb.Route(
+    "extract_async",
+    1,
+    False,
+    ExtractArgs_validator,
+    async_.LaunchResultBase_validator,
+    bv.Void(),
+    {"auth": "app, user", "host": "api", "style": "rpc"},
+)
+extract_async_check = bb.Route(
+    "extract_async/check",
+    1,
+    False,
+    async_.PollArg_validator,
+    ExtractAsyncCheckResult_validator,
+    async_.PollError_validator,
+    {"auth": "app, user", "host": "api", "style": "rpc"},
 )
 get_keyframes_async = bb.Route(
     "get_keyframes_async",
@@ -6179,6 +7338,8 @@ get_transform_async_check = bb.Route(
 
 ROUTES = {
     "download_transform_output": download_transform_output,
+    "extract_async": extract_async,
+    "extract_async/check": extract_async_check,
     "get_keyframes_async": get_keyframes_async,
     "get_keyframes_async/check": get_keyframes_async_check,
     "get_markdown_async": get_markdown_async,

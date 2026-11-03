@@ -4578,6 +4578,71 @@ class DropboxBase(object):
         self._save_body_to_file(download_path, r[1])
         return r[0]
 
+    def riviera_extract_async(self, extract_type, file_id_or_url=None):
+        """
+        Asynchronous content extraction from a single file. One route covers
+        every Riviera extraction. Name the source file in `file_id_or_url`, and
+        say what to extract in `extract_type`, whose variant carries that
+        extraction's options: - `markdown`: a document, converted to markdown
+        that preserves its structure. - `text`: the plain text of a document. -
+        `ocr`: the text of an image or scanned PDF, plus hOCR with per-word
+        coordinates. - `transcript`: the timestamped transcript of an audio or
+        video file. - `keyframes`: one keyframe per scene change in a video. The
+        accepted formats and size limits differ per extraction; see
+        `ExtractType`. Formats the requested extraction does not support fail
+        with `unsupported_format_error`, and files over its size limit fail with
+        `limit_exceeded_error`. The result is not returned by this route. Poll
+        `extract_async/check` with the returned async job ID until it reports
+        `complete` or `failed`. A `complete` result is an `ExtractResult` whose
+        variant matches the requested `extract_type`.
+
+        Route attributes:
+            scope: files.content.read
+
+        :param file_id_or_url: Identifier of the source file. Callers must set
+            exactly one of the `FileIdOrUrl` variants. The file must be in a
+            format the requested `extract_type` supports; see `ExtractType` for
+            the per-type lists.
+        :type file_id_or_url: Nullable[:class:`dropbox.riviera.FileIdOrUrl`]
+        :param extract_type: What to extract, and that extraction's options.
+            Required.
+        :type extract_type: :class:`dropbox.riviera.ExtractType`
+        :rtype: :class:`dropbox.async_.LaunchResultBase`
+        """
+        arg = riviera.ExtractArgs(extract_type, file_id_or_url)
+        r = self.request(
+            riviera.extract_async,
+            "riviera",
+            arg,
+            None,
+        )
+        return r
+
+    def riviera_extract_async_check(self, async_job_id):
+        """
+        Returns the status or result of specified extract_async task.
+
+        Route attributes:
+            scope: files.content.read
+
+        :param async_job_id: Id of the asynchronous job. This is the value of a
+            response returned from the method that launched the job.
+        :type async_job_id: str
+        :rtype: :class:`dropbox.riviera.ExtractAsyncCheckResult`
+        :raises: :class:`.exceptions.ApiError`
+
+        If this raises, ApiError will contain:
+            :class:`dropbox.async_.PollError`
+        """
+        arg = async_.PollArg(async_job_id)
+        r = self.request(
+            riviera.extract_async_check,
+            "riviera",
+            arg,
+            None,
+        )
+        return r
+
     def riviera_get_keyframes_async(
         self, file_id_or_url=None, scene_change_threshold=0.0, include_images=False
     ):
