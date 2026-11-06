@@ -13012,6 +13012,79 @@ class TeamFolderGetInfoItem(bb.Union):
 TeamFolderGetInfoItem_validator = bv.Union(TeamFolderGetInfoItem)
 
 
+class TeamFolderGetSpaceLimitError(BaseTeamFolderError):
+    """
+    Errors for
+    :meth:`dropbox.dropbox_client.Dropbox.team_team_folder_space_limit_get`.
+
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+    """
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(TeamFolderGetSpaceLimitError, self)._process_custom_annotations(
+            annotation_type, field_path, processor
+        )
+
+
+TeamFolderGetSpaceLimitError_validator = bv.Union(TeamFolderGetSpaceLimitError)
+
+
+class TeamFolderGetSpaceLimitResponse(bb.Struct):
+    """
+    The space limit configuration of a team folder. If no space limit has ever
+    been set for the team folder, ``space_limit_bytes`` is 0, ``caps_type`` is
+    ``TeamFolderSpaceLimitCapsType.off``, and ``notification_target`` is
+    ``TeamFolderSpaceLimitNotificationTarget.admins``.
+
+    :ivar TeamFolderGetSpaceLimitResponse.space_limit_bytes:
+        The maximum total size, in bytes, of all content in the team folder and
+        its subfolders. Only meaningful when ``caps_type`` is not
+        ``TeamFolderSpaceLimitCapsType.off``.
+    :ivar TeamFolderGetSpaceLimitResponse.caps_type:
+        The caps type currently applied to the team folder.
+    :ivar TeamFolderGetSpaceLimitResponse.notification_target:
+        Who currently receives usage notifications for the team folder.
+    """
+
+    __slots__ = [
+        "_space_limit_bytes_value",
+        "_caps_type_value",
+        "_notification_target_value",
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self, caps_type=None, notification_target=None, space_limit_bytes=None):
+        self._space_limit_bytes_value = bb.NOT_SET
+        self._caps_type_value = bb.NOT_SET
+        self._notification_target_value = bb.NOT_SET
+        if space_limit_bytes is not None:
+            self.space_limit_bytes = space_limit_bytes
+        if caps_type is not None:
+            self.caps_type = caps_type
+        if notification_target is not None:
+            self.notification_target = notification_target
+
+    # Instance attribute type: int (validator is set below)
+    space_limit_bytes = bb.Attribute("space_limit_bytes")
+
+    # Instance attribute type: TeamFolderSpaceLimitCapsType (validator is set below)
+    caps_type = bb.Attribute("caps_type", user_defined=True)
+
+    # Instance attribute type: TeamFolderSpaceLimitNotificationTarget (validator is set below)
+    notification_target = bb.Attribute("notification_target", user_defined=True)
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(TeamFolderGetSpaceLimitResponse, self)._process_custom_annotations(
+            annotation_type, field_path, processor
+        )
+
+
+TeamFolderGetSpaceLimitResponse_validator = bv.Struct(TeamFolderGetSpaceLimitResponse)
+
+
 class TeamFolderIdListArg(bb.Struct):
     """
     :ivar TeamFolderIdListArg.team_folder_ids:
@@ -13507,6 +13580,274 @@ class TeamFolderRestoreError(BaseTeamFolderError):
 
 
 TeamFolderRestoreError_validator = bv.Union(TeamFolderRestoreError)
+
+
+class TeamFolderSetSpaceLimitArg(TeamFolderIdArg):
+    """
+    Arguments for
+    :meth:`dropbox.dropbox_client.Dropbox.team_team_folder_space_limit_set`.
+
+    :ivar TeamFolderSetSpaceLimitArg.space_limit_bytes:
+        The maximum total size, in bytes, of all content in the team folder and
+        its subfolders. When ``caps_type`` is
+        ``TeamFolderSpaceLimitCapsType.soft`` or
+        ``TeamFolderSpaceLimitCapsType.hard``, this must be at least 2 GB
+        (2147483648 bytes). It must never exceed the team's total storage
+        capacity. When ``caps_type`` is ``TeamFolderSpaceLimitCapsType.off``,
+        the value is stored but has no effect, and it may be 0.
+    :ivar TeamFolderSetSpaceLimitArg.caps_type:
+        The caps type to apply to the specified team folder.
+    :ivar TeamFolderSetSpaceLimitArg.notification_target:
+        Who receives usage notifications for the specified team folder.
+    """
+
+    __slots__ = [
+        "_space_limit_bytes_value",
+        "_caps_type_value",
+        "_notification_target_value",
+    ]
+
+    _has_required_fields = True
+
+    def __init__(
+        self, team_folder_id=None, space_limit_bytes=None, caps_type=None, notification_target=None
+    ):
+        super(TeamFolderSetSpaceLimitArg, self).__init__(team_folder_id)
+        self._space_limit_bytes_value = bb.NOT_SET
+        self._caps_type_value = bb.NOT_SET
+        self._notification_target_value = bb.NOT_SET
+        if space_limit_bytes is not None:
+            self.space_limit_bytes = space_limit_bytes
+        if caps_type is not None:
+            self.caps_type = caps_type
+        if notification_target is not None:
+            self.notification_target = notification_target
+
+    # Instance attribute type: int (validator is set below)
+    space_limit_bytes = bb.Attribute("space_limit_bytes")
+
+    # Instance attribute type: TeamFolderSpaceLimitCapsType (validator is set below)
+    caps_type = bb.Attribute("caps_type", user_defined=True)
+
+    # Instance attribute type: TeamFolderSpaceLimitNotificationTarget (validator is set below)
+    notification_target = bb.Attribute("notification_target", user_defined=True)
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(TeamFolderSetSpaceLimitArg, self)._process_custom_annotations(
+            annotation_type, field_path, processor
+        )
+
+
+TeamFolderSetSpaceLimitArg_validator = bv.Struct(TeamFolderSetSpaceLimitArg)
+
+
+class TeamFolderSetSpaceLimitError(BaseTeamFolderError):
+    """
+    Errors for
+    :meth:`dropbox.dropbox_client.Dropbox.team_team_folder_space_limit_set`.
+
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+
+    :ivar TeamFolderSetSpaceLimitError.limit_below_minimum:
+        ``TeamFolderSetSpaceLimitArg.space_limit_bytes`` is below the 2 GB
+        minimum. Only returned when ``TeamFolderSetSpaceLimitArg.caps_type`` is
+        ``TeamFolderSpaceLimitCapsType.soft`` or
+        ``TeamFolderSpaceLimitCapsType.hard``.
+    :ivar TeamFolderSetSpaceLimitError.limit_exceeds_team_quota:
+        ``TeamFolderSetSpaceLimitArg.space_limit_bytes`` exceeds the team's
+        total storage capacity.
+    """
+
+    # Attribute is overwritten below the class definition
+    limit_below_minimum = None
+    # Attribute is overwritten below the class definition
+    limit_exceeds_team_quota = None
+
+    def is_limit_below_minimum(self):
+        """
+        Check if the union tag is ``limit_below_minimum``.
+
+        :rtype: bool
+        """
+        return self._tag == "limit_below_minimum"
+
+    def is_limit_exceeds_team_quota(self):
+        """
+        Check if the union tag is ``limit_exceeds_team_quota``.
+
+        :rtype: bool
+        """
+        return self._tag == "limit_exceeds_team_quota"
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(TeamFolderSetSpaceLimitError, self)._process_custom_annotations(
+            annotation_type, field_path, processor
+        )
+
+
+TeamFolderSetSpaceLimitError_validator = bv.Union(TeamFolderSetSpaceLimitError)
+
+
+class TeamFolderSpaceLimitCapsType(bb.Union):
+    """
+    How a team folder's space limit is enforced.
+
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+
+    :ivar TeamFolderSpaceLimitCapsType.off:
+        No space limit is enforced and no usage notifications are sent. Any
+        stored space limit value is ignored.
+    :ivar TeamFolderSpaceLimitCapsType.soft:
+        The space limit is advisory. Members can keep adding content after the
+        team folder reaches the limit, but usage notifications are sent as
+        described in :class:`TeamFolderSpaceLimitNotificationTarget`.
+    :ivar TeamFolderSpaceLimitCapsType.hard:
+        The space limit is enforced. Once the total size of the team folder,
+        including all of its subfolders, reaches the limit, uploads and other
+        writes that add content to the team folder fail until space is freed or
+        the limit is raised. Usage notifications are sent as for ``soft``.
+    """
+
+    _catch_all = "other"
+    # Attribute is overwritten below the class definition
+    off = None
+    # Attribute is overwritten below the class definition
+    soft = None
+    # Attribute is overwritten below the class definition
+    hard = None
+    # Attribute is overwritten below the class definition
+    other = None
+
+    def is_off(self):
+        """
+        Check if the union tag is ``off``.
+
+        :rtype: bool
+        """
+        return self._tag == "off"
+
+    def is_soft(self):
+        """
+        Check if the union tag is ``soft``.
+
+        :rtype: bool
+        """
+        return self._tag == "soft"
+
+    def is_hard(self):
+        """
+        Check if the union tag is ``hard``.
+
+        :rtype: bool
+        """
+        return self._tag == "hard"
+
+    def is_other(self):
+        """
+        Check if the union tag is ``other``.
+
+        :rtype: bool
+        """
+        return self._tag == "other"
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(TeamFolderSpaceLimitCapsType, self)._process_custom_annotations(
+            annotation_type, field_path, processor
+        )
+
+
+TeamFolderSpaceLimitCapsType_validator = bv.Union(TeamFolderSpaceLimitCapsType)
+
+
+class TeamFolderSpaceLimitNotificationTarget(bb.Union):
+    """
+    Who receives email notifications when a team folder's usage reaches 80% of
+    its space limit, and when usage reaches or exceeds the limit. These
+    notifications are sent asynchronously, so they can arrive some time after
+    usage crosses a threshold. They are only sent when the caps type is
+    ``TeamFolderSpaceLimitCapsType.soft`` or
+    ``TeamFolderSpaceLimitCapsType.hard``. Regardless of this setting, team
+    admins and all members with edit access to the team folder are notified when
+    a space limit is added, changed, or removed.
+
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+
+    :ivar TeamFolderSpaceLimitNotificationTarget.admins:
+        Team admins who can manage team folders.
+    :ivar TeamFolderSpaceLimitNotificationTarget.editors:
+        Members with edit access to the team folder, excluding team admins.
+    :ivar TeamFolderSpaceLimitNotificationTarget.both:
+        Both team admins who can manage team folders and members with edit
+        access to the team folder.
+    :ivar TeamFolderSpaceLimitNotificationTarget.silent:
+        No usage notifications are sent.
+    """
+
+    _catch_all = "other"
+    # Attribute is overwritten below the class definition
+    admins = None
+    # Attribute is overwritten below the class definition
+    editors = None
+    # Attribute is overwritten below the class definition
+    both = None
+    # Attribute is overwritten below the class definition
+    silent = None
+    # Attribute is overwritten below the class definition
+    other = None
+
+    def is_admins(self):
+        """
+        Check if the union tag is ``admins``.
+
+        :rtype: bool
+        """
+        return self._tag == "admins"
+
+    def is_editors(self):
+        """
+        Check if the union tag is ``editors``.
+
+        :rtype: bool
+        """
+        return self._tag == "editors"
+
+    def is_both(self):
+        """
+        Check if the union tag is ``both``.
+
+        :rtype: bool
+        """
+        return self._tag == "both"
+
+    def is_silent(self):
+        """
+        Check if the union tag is ``silent``.
+
+        :rtype: bool
+        """
+        return self._tag == "silent"
+
+    def is_other(self):
+        """
+        Check if the union tag is ``other``.
+
+        :rtype: bool
+        """
+        return self._tag == "other"
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(TeamFolderSpaceLimitNotificationTarget, self)._process_custom_annotations(
+            annotation_type, field_path, processor
+        )
+
+
+TeamFolderSpaceLimitNotificationTarget_validator = bv.Union(TeamFolderSpaceLimitNotificationTarget)
 
 
 class TeamFolderStatus(bb.Union):
@@ -18464,6 +18805,27 @@ TeamFolderGetInfoItem._tagmap = {
     "team_folder_metadata": TeamFolderGetInfoItem._team_folder_metadata_validator,
 }
 
+TeamFolderGetSpaceLimitError._tagmap = {}
+TeamFolderGetSpaceLimitError._tagmap.update(BaseTeamFolderError._tagmap)
+
+TeamFolderGetSpaceLimitResponse.space_limit_bytes.validator = bv.UInt64()
+TeamFolderGetSpaceLimitResponse.caps_type.validator = TeamFolderSpaceLimitCapsType_validator
+TeamFolderGetSpaceLimitResponse.notification_target.validator = (
+    TeamFolderSpaceLimitNotificationTarget_validator
+)
+TeamFolderGetSpaceLimitResponse._all_field_names_ = set(
+    [
+        "space_limit_bytes",
+        "caps_type",
+        "notification_target",
+    ]
+)
+TeamFolderGetSpaceLimitResponse._all_fields_ = [
+    ("space_limit_bytes", TeamFolderGetSpaceLimitResponse.space_limit_bytes.validator),
+    ("caps_type", TeamFolderGetSpaceLimitResponse.caps_type.validator),
+    ("notification_target", TeamFolderGetSpaceLimitResponse.notification_target.validator),
+]
+
 TeamFolderIdListArg.team_folder_ids.validator = bv.List(
     common.SharedFolderId_validator, min_items=1
 )
@@ -18588,6 +18950,76 @@ TeamFolderRestoreError._tagmap.update(BaseTeamFolderError._tagmap)
 TeamFolderRestoreError.folder_count_limit_exceeded = TeamFolderRestoreError(
     "folder_count_limit_exceeded"
 )
+
+TeamFolderSetSpaceLimitArg.space_limit_bytes.validator = bv.UInt64()
+TeamFolderSetSpaceLimitArg.caps_type.validator = TeamFolderSpaceLimitCapsType_validator
+TeamFolderSetSpaceLimitArg.notification_target.validator = (
+    TeamFolderSpaceLimitNotificationTarget_validator
+)
+TeamFolderSetSpaceLimitArg._all_field_names_ = TeamFolderIdArg._all_field_names_.union(
+    set(
+        [
+            "space_limit_bytes",
+            "caps_type",
+            "notification_target",
+        ]
+    )
+)
+TeamFolderSetSpaceLimitArg._all_fields_ = TeamFolderIdArg._all_fields_ + [
+    ("space_limit_bytes", TeamFolderSetSpaceLimitArg.space_limit_bytes.validator),
+    ("caps_type", TeamFolderSetSpaceLimitArg.caps_type.validator),
+    ("notification_target", TeamFolderSetSpaceLimitArg.notification_target.validator),
+]
+
+TeamFolderSetSpaceLimitError._limit_below_minimum_validator = bv.Void()
+TeamFolderSetSpaceLimitError._limit_exceeds_team_quota_validator = bv.Void()
+TeamFolderSetSpaceLimitError._tagmap = {
+    "limit_below_minimum": TeamFolderSetSpaceLimitError._limit_below_minimum_validator,
+    "limit_exceeds_team_quota": TeamFolderSetSpaceLimitError._limit_exceeds_team_quota_validator,
+}
+TeamFolderSetSpaceLimitError._tagmap.update(BaseTeamFolderError._tagmap)
+
+TeamFolderSetSpaceLimitError.limit_below_minimum = TeamFolderSetSpaceLimitError(
+    "limit_below_minimum"
+)
+TeamFolderSetSpaceLimitError.limit_exceeds_team_quota = TeamFolderSetSpaceLimitError(
+    "limit_exceeds_team_quota"
+)
+
+TeamFolderSpaceLimitCapsType._off_validator = bv.Void()
+TeamFolderSpaceLimitCapsType._soft_validator = bv.Void()
+TeamFolderSpaceLimitCapsType._hard_validator = bv.Void()
+TeamFolderSpaceLimitCapsType._other_validator = bv.Void()
+TeamFolderSpaceLimitCapsType._tagmap = {
+    "off": TeamFolderSpaceLimitCapsType._off_validator,
+    "soft": TeamFolderSpaceLimitCapsType._soft_validator,
+    "hard": TeamFolderSpaceLimitCapsType._hard_validator,
+    "other": TeamFolderSpaceLimitCapsType._other_validator,
+}
+
+TeamFolderSpaceLimitCapsType.off = TeamFolderSpaceLimitCapsType("off")
+TeamFolderSpaceLimitCapsType.soft = TeamFolderSpaceLimitCapsType("soft")
+TeamFolderSpaceLimitCapsType.hard = TeamFolderSpaceLimitCapsType("hard")
+TeamFolderSpaceLimitCapsType.other = TeamFolderSpaceLimitCapsType("other")
+
+TeamFolderSpaceLimitNotificationTarget._admins_validator = bv.Void()
+TeamFolderSpaceLimitNotificationTarget._editors_validator = bv.Void()
+TeamFolderSpaceLimitNotificationTarget._both_validator = bv.Void()
+TeamFolderSpaceLimitNotificationTarget._silent_validator = bv.Void()
+TeamFolderSpaceLimitNotificationTarget._other_validator = bv.Void()
+TeamFolderSpaceLimitNotificationTarget._tagmap = {
+    "admins": TeamFolderSpaceLimitNotificationTarget._admins_validator,
+    "editors": TeamFolderSpaceLimitNotificationTarget._editors_validator,
+    "both": TeamFolderSpaceLimitNotificationTarget._both_validator,
+    "silent": TeamFolderSpaceLimitNotificationTarget._silent_validator,
+    "other": TeamFolderSpaceLimitNotificationTarget._other_validator,
+}
+
+TeamFolderSpaceLimitNotificationTarget.admins = TeamFolderSpaceLimitNotificationTarget("admins")
+TeamFolderSpaceLimitNotificationTarget.editors = TeamFolderSpaceLimitNotificationTarget("editors")
+TeamFolderSpaceLimitNotificationTarget.both = TeamFolderSpaceLimitNotificationTarget("both")
+TeamFolderSpaceLimitNotificationTarget.silent = TeamFolderSpaceLimitNotificationTarget("silent")
+TeamFolderSpaceLimitNotificationTarget.other = TeamFolderSpaceLimitNotificationTarget("other")
 
 TeamFolderStatus._active_validator = bv.Void()
 TeamFolderStatus._archived_validator = bv.Void()
@@ -19014,6 +19446,7 @@ NamespaceMetadata.quota_limit.default = 0
 RevokeDesktopClientArg.delete_on_unlink.default = False
 RevokeLinkedApiAppArg.keep_app_folder.default = True
 TeamFolderArchiveArg.force_async_off.default = False
+TeamFolderGetSpaceLimitResponse.space_limit_bytes.default = 0
 TeamFolderListArg.limit.default = 1000
 TeamFolderMetadata.quota_limit.default = 0
 TeamGetInfoResult.num_used_licenses.default = 0
@@ -19819,6 +20252,24 @@ team_folder_restore = bb.Route(
     TeamFolderRestoreError_validator,
     {"auth": "team", "host": "api", "style": "rpc"},
 )
+team_folder_space_limit_get = bb.Route(
+    "team_folder/space_limit/get",
+    1,
+    False,
+    TeamFolderIdArg_validator,
+    TeamFolderGetSpaceLimitResponse_validator,
+    TeamFolderGetSpaceLimitError_validator,
+    {"auth": "team", "host": "api", "style": "rpc"},
+)
+team_folder_space_limit_set = bb.Route(
+    "team_folder/space_limit/set",
+    1,
+    False,
+    TeamFolderSetSpaceLimitArg_validator,
+    bv.Void(),
+    TeamFolderSetSpaceLimitError_validator,
+    {"auth": "team", "host": "api", "style": "rpc"},
+)
 team_folder_update_sync_settings = bb.Route(
     "team_folder/update_sync_settings",
     1,
@@ -19928,6 +20379,8 @@ ROUTES = {
     "team_folder/permanently_delete": team_folder_permanently_delete,
     "team_folder/rename": team_folder_rename,
     "team_folder/restore": team_folder_restore,
+    "team_folder/space_limit/get": team_folder_space_limit_get,
+    "team_folder/space_limit/set": team_folder_space_limit_set,
     "team_folder/update_sync_settings": team_folder_update_sync_settings,
     "token/get_authenticated_admin": token_get_authenticated_admin,
 }
