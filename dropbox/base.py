@@ -6,27 +6,29 @@
 from abc import ABCMeta, abstractmethod
 import warnings
 
-from dropbox import account
-from dropbox import async_
-from dropbox import auth
-from dropbox import check
-from dropbox import common
-from dropbox import contacts
-from dropbox import file_properties
-from dropbox import file_requests
-from dropbox import files
-from dropbox import openid
-from dropbox import paper
-from dropbox import riviera
-from dropbox import secondary_emails
-from dropbox import seen_state
-from dropbox import sharing
-from dropbox import team
-from dropbox import team_common
-from dropbox import team_log
-from dropbox import team_policies
-from dropbox import users
-from dropbox import users_common
+from dropbox._lazy_namespace import LazyNamespace
+
+account = LazyNamespace("dropbox.account")
+async_ = LazyNamespace("dropbox.async_")
+auth = LazyNamespace("dropbox.auth")
+check = LazyNamespace("dropbox.check")
+common = LazyNamespace("dropbox.common")
+contacts = LazyNamespace("dropbox.contacts")
+file_properties = LazyNamespace("dropbox.file_properties")
+file_requests = LazyNamespace("dropbox.file_requests")
+files = LazyNamespace("dropbox.files")
+openid = LazyNamespace("dropbox.openid")
+paper = LazyNamespace("dropbox.paper")
+riviera = LazyNamespace("dropbox.riviera")
+secondary_emails = LazyNamespace("dropbox.secondary_emails")
+seen_state = LazyNamespace("dropbox.seen_state")
+sharing = LazyNamespace("dropbox.sharing")
+team = LazyNamespace("dropbox.team")
+team_common = LazyNamespace("dropbox.team_common")
+team_log = LazyNamespace("dropbox.team_log")
+team_policies = LazyNamespace("dropbox.team_policies")
+users = LazyNamespace("dropbox.users")
+users_common = LazyNamespace("dropbox.users_common")
 
 
 class DropboxBase(object):
