@@ -7212,7 +7212,7 @@ extract_async_check = bb.Route(
 get_keyframes_async = bb.Route(
     "get_keyframes_async",
     1,
-    False,
+    True,
     GetKeyframesArgs_validator,
     async_.LaunchResultBase_validator,
     bv.Void(),
@@ -7221,7 +7221,7 @@ get_keyframes_async = bb.Route(
 get_keyframes_async_check = bb.Route(
     "get_keyframes_async/check",
     1,
-    False,
+    True,
     async_.PollArg_validator,
     GetKeyframesAsyncCheckResult_validator,
     async_.PollError_validator,
@@ -7230,7 +7230,7 @@ get_keyframes_async_check = bb.Route(
 get_markdown_async = bb.Route(
     "get_markdown_async",
     1,
-    False,
+    True,
     GetMarkdownArgs_validator,
     async_.LaunchResultBase_validator,
     bv.Void(),
@@ -7239,7 +7239,7 @@ get_markdown_async = bb.Route(
 get_markdown_async_check = bb.Route(
     "get_markdown_async/check",
     1,
-    False,
+    True,
     async_.PollArg_validator,
     GetMarkdownAsyncCheckResult_validator,
     async_.PollError_validator,
@@ -7266,7 +7266,7 @@ get_metadata_async_check = bb.Route(
 get_ocr_async = bb.Route(
     "get_ocr_async",
     1,
-    False,
+    True,
     GetOcrArgs_validator,
     async_.LaunchResultBase_validator,
     bv.Void(),
@@ -7275,7 +7275,7 @@ get_ocr_async = bb.Route(
 get_ocr_async_check = bb.Route(
     "get_ocr_async/check",
     1,
-    False,
+    True,
     async_.PollArg_validator,
     GetOcrAsyncCheckResult_validator,
     async_.PollError_validator,
@@ -7284,7 +7284,7 @@ get_ocr_async_check = bb.Route(
 get_text_async = bb.Route(
     "get_text_async",
     1,
-    False,
+    True,
     GetTextArgs_validator,
     async_.LaunchResultBase_validator,
     bv.Void(),
@@ -7293,7 +7293,7 @@ get_text_async = bb.Route(
 get_text_async_check = bb.Route(
     "get_text_async/check",
     1,
-    False,
+    True,
     async_.PollArg_validator,
     GetTextAsyncCheckResult_validator,
     async_.PollError_validator,
@@ -7302,7 +7302,7 @@ get_text_async_check = bb.Route(
 get_transcript_async = bb.Route(
     "get_transcript_async",
     1,
-    False,
+    True,
     GetTranscriptArgs_validator,
     async_.LaunchResultBase_validator,
     bv.Void(),
@@ -7311,7 +7311,7 @@ get_transcript_async = bb.Route(
 get_transcript_async_check = bb.Route(
     "get_transcript_async/check",
     1,
-    False,
+    True,
     async_.PollArg_validator,
     GetTranscriptAsyncCheckResult_validator,
     async_.PollError_validator,
