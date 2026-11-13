@@ -60,6 +60,50 @@ We provide `Examples`_ to help get you started with a lot of the basic functiona
     - `Reliable file transfer <https://github.com/dropbox/dropbox-sdk-python/blob/main/example/file_transfer.py>`_ - Downloads and uploads files with retry, progress, and content validation helpers.
     - `Backup and Restore <https://github.com/dropbox/dropbox-sdk-python/tree/main/example/back-up-and-restore>`_ - Sample application that shows how you can backup a file and restore previous versions if the file was modified/corrupted in any way.
 
+Reusing Cached Access Tokens
+===========================
+
+``Dropbox.get_access_token_snapshot()`` and
+``DropboxTeam.get_access_token_snapshot()`` read local cached credentials without
+HTTP requests or refreshing. They return an immutable ``AccessTokenSnapshot``
+with ``access_token`` and ``expires_at``, or ``None`` if no access token is cached.
+Expiration is a ``datetime`` using the constructor's expiration convention
+(naive UTC for SDK refreshes), or ``None`` when unknown.
+
+.. code-block:: python
+
+    import dropbox
+
+    # Load refresh credentials separately from your application's secure storage.
+    dbx = dropbox.Dropbox(
+        oauth2_refresh_token=refresh_token,
+        app_key=app_key,
+        app_secret=app_secret,
+    )
+    dbx.users_get_current_account()  # Automatically refreshes when needed.
+    snapshot = dbx.get_access_token_snapshot()
+    if snapshot is not None:
+        # Persist snapshot.access_token and snapshot.expires_at securely.
+        next_dbx = dropbox.Dropbox(
+            oauth2_access_token=snapshot.access_token,
+            oauth2_access_token_expiration=snapshot.expires_at,
+            oauth2_refresh_token=refresh_token,
+            app_key=app_key,
+            app_secret=app_secret,
+        )
+        next_dbx.users_get_current_account()
+
+An explicit ``dbx.refresh_access_token()`` also updates the cache. Reading a
+snapshot never refreshes credentials: tokens may be expired or revoked, and an
+unknown expiration does not imply unlimited lifetime. Store access tokens securely
+and never log them. Snapshots never include refresh tokens.
+
+``clone()``, ``with_path_root()``, ``as_user()``, and ``as_admin()`` copy the cached
+credentials at creation. Each client subsequently refreshes independently;
+unlike the .NET SDK, these clients do not share mutable credential state.
+Concurrent refreshes remain independent requests; each successful completion
+publishes a complete token/expiration pair, and failures preserve the cache.
+
 Reliable File Transfers
 =======================
 
