@@ -8835,6 +8835,122 @@ class DefaultLinkExpirationDaysPolicy(bb.Union):
 DefaultLinkExpirationDaysPolicy_validator = bv.Union(DefaultLinkExpirationDaysPolicy)
 
 
+class DefaultTeamFolderSyncPolicy(bb.Union):
+    """
+    Default sync setting for newly created team folders.
+
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+    """
+
+    _catch_all = "other"
+    # Attribute is overwritten below the class definition
+    do_not_sync = None
+    # Attribute is overwritten below the class definition
+    sync = None
+    # Attribute is overwritten below the class definition
+    other = None
+
+    def is_do_not_sync(self):
+        """
+        Check if the union tag is ``do_not_sync``.
+
+        :rtype: bool
+        """
+        return self._tag == "do_not_sync"
+
+    def is_sync(self):
+        """
+        Check if the union tag is ``sync``.
+
+        :rtype: bool
+        """
+        return self._tag == "sync"
+
+    def is_other(self):
+        """
+        Check if the union tag is ``other``.
+
+        :rtype: bool
+        """
+        return self._tag == "other"
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(DefaultTeamFolderSyncPolicy, self)._process_custom_annotations(
+            annotation_type, field_path, processor
+        )
+
+
+DefaultTeamFolderSyncPolicy_validator = bv.Union(DefaultTeamFolderSyncPolicy)
+
+
+class DefaultTeamFolderSyncPolicyChangedDetails(bb.Struct):
+    """
+    Changed the default sync setting for new team folders.
+
+    :ivar DefaultTeamFolderSyncPolicyChangedDetails.new_value:
+        New default sync setting for team folders.
+    :ivar DefaultTeamFolderSyncPolicyChangedDetails.previous_value:
+        Previous default sync setting for team folders.
+    """
+
+    __slots__ = [
+        "_new_value_value",
+        "_previous_value_value",
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self, new_value=None, previous_value=None):
+        self._new_value_value = bb.NOT_SET
+        self._previous_value_value = bb.NOT_SET
+        if new_value is not None:
+            self.new_value = new_value
+        if previous_value is not None:
+            self.previous_value = previous_value
+
+    # Instance attribute type: DefaultTeamFolderSyncPolicy (validator is set below)
+    new_value = bb.Attribute("new_value", user_defined=True)
+
+    # Instance attribute type: DefaultTeamFolderSyncPolicy (validator is set below)
+    previous_value = bb.Attribute("previous_value", user_defined=True)
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(DefaultTeamFolderSyncPolicyChangedDetails, self)._process_custom_annotations(
+            annotation_type, field_path, processor
+        )
+
+
+DefaultTeamFolderSyncPolicyChangedDetails_validator = bv.Struct(
+    DefaultTeamFolderSyncPolicyChangedDetails
+)
+
+
+class DefaultTeamFolderSyncPolicyChangedType(bb.Struct):
+    __slots__ = [
+        "_description_value",
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self, description=None):
+        self._description_value = bb.NOT_SET
+        if description is not None:
+            self.description = description
+
+    # Instance attribute type: str (validator is set below)
+    description = bb.Attribute("description")
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(DefaultTeamFolderSyncPolicyChangedType, self)._process_custom_annotations(
+            annotation_type, field_path, processor
+        )
+
+
+DefaultTeamFolderSyncPolicyChangedType_validator = bv.Struct(DefaultTeamFolderSyncPolicyChangedType)
+
+
 class DeleteTeamInviteLinkDetails(bb.Struct):
     """
     Deleted team invite link.
@@ -12540,6 +12656,133 @@ class EnforceLinkPasswordPolicy(bb.Union):
 EnforceLinkPasswordPolicy_validator = bv.Union(EnforceLinkPasswordPolicy)
 
 
+class EnterpriseManagedAuthPolicy(bb.Union):
+    """
+    Enterprise managed authorization policy
+
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+    """
+
+    _catch_all = "other"
+    # Attribute is overwritten below the class definition
+    default = None
+    # Attribute is overwritten below the class definition
+    disabled = None
+    # Attribute is overwritten below the class definition
+    enabled = None
+    # Attribute is overwritten below the class definition
+    other = None
+
+    def is_default(self):
+        """
+        Check if the union tag is ``default``.
+
+        :rtype: bool
+        """
+        return self._tag == "default"
+
+    def is_disabled(self):
+        """
+        Check if the union tag is ``disabled``.
+
+        :rtype: bool
+        """
+        return self._tag == "disabled"
+
+    def is_enabled(self):
+        """
+        Check if the union tag is ``enabled``.
+
+        :rtype: bool
+        """
+        return self._tag == "enabled"
+
+    def is_other(self):
+        """
+        Check if the union tag is ``other``.
+
+        :rtype: bool
+        """
+        return self._tag == "other"
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(EnterpriseManagedAuthPolicy, self)._process_custom_annotations(
+            annotation_type, field_path, processor
+        )
+
+
+EnterpriseManagedAuthPolicy_validator = bv.Union(EnterpriseManagedAuthPolicy)
+
+
+class EnterpriseManagedAuthPolicyChangedDetails(bb.Struct):
+    """
+    Changed enterprise managed authorization policy for team.
+
+    :ivar EnterpriseManagedAuthPolicyChangedDetails.new_value:
+        New enterprise managed authorization policy.
+    :ivar EnterpriseManagedAuthPolicyChangedDetails.previous_value:
+        Previous enterprise managed authorization policy. Might be missing due
+        to historical data gap.
+    """
+
+    __slots__ = [
+        "_new_value_value",
+        "_previous_value_value",
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self, new_value=None, previous_value=None):
+        self._new_value_value = bb.NOT_SET
+        self._previous_value_value = bb.NOT_SET
+        if new_value is not None:
+            self.new_value = new_value
+        if previous_value is not None:
+            self.previous_value = previous_value
+
+    # Instance attribute type: EnterpriseManagedAuthPolicy (validator is set below)
+    new_value = bb.Attribute("new_value", user_defined=True)
+
+    # Instance attribute type: EnterpriseManagedAuthPolicy (validator is set below)
+    previous_value = bb.Attribute("previous_value", nullable=True, user_defined=True)
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(EnterpriseManagedAuthPolicyChangedDetails, self)._process_custom_annotations(
+            annotation_type, field_path, processor
+        )
+
+
+EnterpriseManagedAuthPolicyChangedDetails_validator = bv.Struct(
+    EnterpriseManagedAuthPolicyChangedDetails
+)
+
+
+class EnterpriseManagedAuthPolicyChangedType(bb.Struct):
+    __slots__ = [
+        "_description_value",
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self, description=None):
+        self._description_value = bb.NOT_SET
+        if description is not None:
+            self.description = description
+
+    # Instance attribute type: str (validator is set below)
+    description = bb.Attribute("description")
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(EnterpriseManagedAuthPolicyChangedType, self)._process_custom_annotations(
+            annotation_type, field_path, processor
+        )
+
+
+EnterpriseManagedAuthPolicyChangedType_validator = bv.Struct(EnterpriseManagedAuthPolicyChangedType)
+
+
 class EnterpriseSettingsLockingDetails(bb.Struct):
     """
     Changed who can update a setting.
@@ -16158,6 +16401,61 @@ class EventDetails(bb.Union):
         return cls("protect_action_stop_sharing_details", val)
 
     @classmethod
+    def protect_custom_data_type_created_details(cls, val):
+        """
+        Create an instance of this class set to the
+        ``protect_custom_data_type_created_details`` tag with value ``val``.
+
+        :param ProtectCustomDataTypeCreatedDetails val:
+        :rtype: EventDetails
+        """
+        return cls("protect_custom_data_type_created_details", val)
+
+    @classmethod
+    def protect_custom_data_type_deleted_details(cls, val):
+        """
+        Create an instance of this class set to the
+        ``protect_custom_data_type_deleted_details`` tag with value ``val``.
+
+        :param ProtectCustomDataTypeDeletedDetails val:
+        :rtype: EventDetails
+        """
+        return cls("protect_custom_data_type_deleted_details", val)
+
+    @classmethod
+    def protect_custom_data_type_disabled_details(cls, val):
+        """
+        Create an instance of this class set to the
+        ``protect_custom_data_type_disabled_details`` tag with value ``val``.
+
+        :param ProtectCustomDataTypeDisabledDetails val:
+        :rtype: EventDetails
+        """
+        return cls("protect_custom_data_type_disabled_details", val)
+
+    @classmethod
+    def protect_custom_data_type_enabled_details(cls, val):
+        """
+        Create an instance of this class set to the
+        ``protect_custom_data_type_enabled_details`` tag with value ``val``.
+
+        :param ProtectCustomDataTypeEnabledDetails val:
+        :rtype: EventDetails
+        """
+        return cls("protect_custom_data_type_enabled_details", val)
+
+    @classmethod
+    def protect_custom_data_type_modified_details(cls, val):
+        """
+        Create an instance of this class set to the
+        ``protect_custom_data_type_modified_details`` tag with value ``val``.
+
+        :param ProtectCustomDataTypeModifiedDetails val:
+        :rtype: EventDetails
+        """
+        return cls("protect_custom_data_type_modified_details", val)
+
+    @classmethod
     def protect_internal_domains_changed_details(cls, val):
         """
         Create an instance of this class set to the
@@ -17401,6 +17699,17 @@ class EventDetails(bb.Union):
         return cls("shared_folder_nest_details", val)
 
     @classmethod
+    def shared_folder_transfer_membership_details(cls, val):
+        """
+        Create an instance of this class set to the
+        ``shared_folder_transfer_membership_details`` tag with value ``val``.
+
+        :param SharedFolderTransferMembershipDetails val:
+        :rtype: EventDetails
+        """
+        return cls("shared_folder_transfer_membership_details", val)
+
+    @classmethod
     def shared_folder_transfer_ownership_details(cls, val):
         """
         Create an instance of this class set to the
@@ -18458,6 +18767,18 @@ class EventDetails(bb.Union):
         return cls("data_placement_restriction_satisfy_policy_details", val)
 
     @classmethod
+    def default_team_folder_sync_policy_changed_details(cls, val):
+        """
+        Create an instance of this class set to the
+        ``default_team_folder_sync_policy_changed_details`` tag with value
+        ``val``.
+
+        :param DefaultTeamFolderSyncPolicyChangedDetails val:
+        :rtype: EventDetails
+        """
+        return cls("default_team_folder_sync_policy_changed_details", val)
+
+    @classmethod
     def device_approvals_add_exception_details(cls, val):
         """
         Create an instance of this class set to the
@@ -18604,6 +18925,18 @@ class EventDetails(bb.Union):
         :rtype: EventDetails
         """
         return cls("emm_remove_exception_details", val)
+
+    @classmethod
+    def enterprise_managed_auth_policy_changed_details(cls, val):
+        """
+        Create an instance of this class set to the
+        ``enterprise_managed_auth_policy_changed_details`` tag with value
+        ``val``.
+
+        :param EnterpriseManagedAuthPolicyChangedDetails val:
+        :rtype: EventDetails
+        """
+        return cls("enterprise_managed_auth_policy_changed_details", val)
 
     @classmethod
     def extended_version_history_change_policy_details(cls, val):
@@ -19019,6 +19352,17 @@ class EventDetails(bb.Union):
         :rtype: EventDetails
         """
         return cls("paper_enabled_users_group_removal_details", val)
+
+    @classmethod
+    def paper_offline_mode_policy_changed_details(cls, val):
+        """
+        Create an instance of this class set to the
+        ``paper_offline_mode_policy_changed_details`` tag with value ``val``.
+
+        :param PaperOfflineModePolicyChangedDetails val:
+        :rtype: EventDetails
+        """
+        return cls("paper_offline_mode_policy_changed_details", val)
 
     @classmethod
     def passkey_login_policy_changed_details(cls, val):
@@ -22354,6 +22698,46 @@ class EventDetails(bb.Union):
         """
         return self._tag == "protect_action_stop_sharing_details"
 
+    def is_protect_custom_data_type_created_details(self):
+        """
+        Check if the union tag is ``protect_custom_data_type_created_details``.
+
+        :rtype: bool
+        """
+        return self._tag == "protect_custom_data_type_created_details"
+
+    def is_protect_custom_data_type_deleted_details(self):
+        """
+        Check if the union tag is ``protect_custom_data_type_deleted_details``.
+
+        :rtype: bool
+        """
+        return self._tag == "protect_custom_data_type_deleted_details"
+
+    def is_protect_custom_data_type_disabled_details(self):
+        """
+        Check if the union tag is ``protect_custom_data_type_disabled_details``.
+
+        :rtype: bool
+        """
+        return self._tag == "protect_custom_data_type_disabled_details"
+
+    def is_protect_custom_data_type_enabled_details(self):
+        """
+        Check if the union tag is ``protect_custom_data_type_enabled_details``.
+
+        :rtype: bool
+        """
+        return self._tag == "protect_custom_data_type_enabled_details"
+
+    def is_protect_custom_data_type_modified_details(self):
+        """
+        Check if the union tag is ``protect_custom_data_type_modified_details``.
+
+        :rtype: bool
+        """
+        return self._tag == "protect_custom_data_type_modified_details"
+
     def is_protect_internal_domains_changed_details(self):
         """
         Check if the union tag is ``protect_internal_domains_changed_details``.
@@ -23250,6 +23634,14 @@ class EventDetails(bb.Union):
         """
         return self._tag == "shared_folder_nest_details"
 
+    def is_shared_folder_transfer_membership_details(self):
+        """
+        Check if the union tag is ``shared_folder_transfer_membership_details``.
+
+        :rtype: bool
+        """
+        return self._tag == "shared_folder_transfer_membership_details"
+
     def is_shared_folder_transfer_ownership_details(self):
         """
         Check if the union tag is ``shared_folder_transfer_ownership_details``.
@@ -24010,6 +24402,14 @@ class EventDetails(bb.Union):
         """
         return self._tag == "data_placement_restriction_satisfy_policy_details"
 
+    def is_default_team_folder_sync_policy_changed_details(self):
+        """
+        Check if the union tag is ``default_team_folder_sync_policy_changed_details``.
+
+        :rtype: bool
+        """
+        return self._tag == "default_team_folder_sync_policy_changed_details"
+
     def is_device_approvals_add_exception_details(self):
         """
         Check if the union tag is ``device_approvals_add_exception_details``.
@@ -24113,6 +24513,14 @@ class EventDetails(bb.Union):
         :rtype: bool
         """
         return self._tag == "emm_remove_exception_details"
+
+    def is_enterprise_managed_auth_policy_changed_details(self):
+        """
+        Check if the union tag is ``enterprise_managed_auth_policy_changed_details``.
+
+        :rtype: bool
+        """
+        return self._tag == "enterprise_managed_auth_policy_changed_details"
 
     def is_extended_version_history_change_policy_details(self):
         """
@@ -24409,6 +24817,14 @@ class EventDetails(bb.Union):
         :rtype: bool
         """
         return self._tag == "paper_enabled_users_group_removal_details"
+
+    def is_paper_offline_mode_policy_changed_details(self):
+        """
+        Check if the union tag is ``paper_offline_mode_policy_changed_details``.
+
+        :rtype: bool
+        """
+        return self._tag == "paper_offline_mode_policy_changed_details"
 
     def is_passkey_login_policy_changed_details(self):
         """
@@ -28026,6 +28442,56 @@ class EventDetails(bb.Union):
             raise AttributeError("tag 'protect_action_stop_sharing_details' not set")
         return self._value
 
+    def get_protect_custom_data_type_created_details(self):
+        """
+        Only call this if :meth:`is_protect_custom_data_type_created_details` is true.
+
+        :rtype: ProtectCustomDataTypeCreatedDetails
+        """
+        if not self.is_protect_custom_data_type_created_details():
+            raise AttributeError("tag 'protect_custom_data_type_created_details' not set")
+        return self._value
+
+    def get_protect_custom_data_type_deleted_details(self):
+        """
+        Only call this if :meth:`is_protect_custom_data_type_deleted_details` is true.
+
+        :rtype: ProtectCustomDataTypeDeletedDetails
+        """
+        if not self.is_protect_custom_data_type_deleted_details():
+            raise AttributeError("tag 'protect_custom_data_type_deleted_details' not set")
+        return self._value
+
+    def get_protect_custom_data_type_disabled_details(self):
+        """
+        Only call this if :meth:`is_protect_custom_data_type_disabled_details` is true.
+
+        :rtype: ProtectCustomDataTypeDisabledDetails
+        """
+        if not self.is_protect_custom_data_type_disabled_details():
+            raise AttributeError("tag 'protect_custom_data_type_disabled_details' not set")
+        return self._value
+
+    def get_protect_custom_data_type_enabled_details(self):
+        """
+        Only call this if :meth:`is_protect_custom_data_type_enabled_details` is true.
+
+        :rtype: ProtectCustomDataTypeEnabledDetails
+        """
+        if not self.is_protect_custom_data_type_enabled_details():
+            raise AttributeError("tag 'protect_custom_data_type_enabled_details' not set")
+        return self._value
+
+    def get_protect_custom_data_type_modified_details(self):
+        """
+        Only call this if :meth:`is_protect_custom_data_type_modified_details` is true.
+
+        :rtype: ProtectCustomDataTypeModifiedDetails
+        """
+        if not self.is_protect_custom_data_type_modified_details():
+            raise AttributeError("tag 'protect_custom_data_type_modified_details' not set")
+        return self._value
+
     def get_protect_internal_domains_changed_details(self):
         """
         Only call this if :meth:`is_protect_internal_domains_changed_details` is true.
@@ -29154,6 +29620,16 @@ class EventDetails(bb.Union):
             raise AttributeError("tag 'shared_folder_nest_details' not set")
         return self._value
 
+    def get_shared_folder_transfer_membership_details(self):
+        """
+        Only call this if :meth:`is_shared_folder_transfer_membership_details` is true.
+
+        :rtype: SharedFolderTransferMembershipDetails
+        """
+        if not self.is_shared_folder_transfer_membership_details():
+            raise AttributeError("tag 'shared_folder_transfer_membership_details' not set")
+        return self._value
+
     def get_shared_folder_transfer_ownership_details(self):
         """
         Only call this if :meth:`is_shared_folder_transfer_ownership_details` is true.
@@ -30112,6 +30588,16 @@ class EventDetails(bb.Union):
             raise AttributeError("tag 'data_placement_restriction_satisfy_policy_details' not set")
         return self._value
 
+    def get_default_team_folder_sync_policy_changed_details(self):
+        """
+        Only call this if :meth:`is_default_team_folder_sync_policy_changed_details` is true.
+
+        :rtype: DefaultTeamFolderSyncPolicyChangedDetails
+        """
+        if not self.is_default_team_folder_sync_policy_changed_details():
+            raise AttributeError("tag 'default_team_folder_sync_policy_changed_details' not set")
+        return self._value
+
     def get_device_approvals_add_exception_details(self):
         """
         Only call this if :meth:`is_device_approvals_add_exception_details` is true.
@@ -30240,6 +30726,16 @@ class EventDetails(bb.Union):
         """
         if not self.is_emm_remove_exception_details():
             raise AttributeError("tag 'emm_remove_exception_details' not set")
+        return self._value
+
+    def get_enterprise_managed_auth_policy_changed_details(self):
+        """
+        Only call this if :meth:`is_enterprise_managed_auth_policy_changed_details` is true.
+
+        :rtype: EnterpriseManagedAuthPolicyChangedDetails
+        """
+        if not self.is_enterprise_managed_auth_policy_changed_details():
+            raise AttributeError("tag 'enterprise_managed_auth_policy_changed_details' not set")
         return self._value
 
     def get_extended_version_history_change_policy_details(self):
@@ -30614,6 +31110,16 @@ class EventDetails(bb.Union):
         """
         if not self.is_paper_enabled_users_group_removal_details():
             raise AttributeError("tag 'paper_enabled_users_group_removal_details' not set")
+        return self._value
+
+    def get_paper_offline_mode_policy_changed_details(self):
+        """
+        Only call this if :meth:`is_paper_offline_mode_policy_changed_details` is true.
+
+        :rtype: PaperOfflineModePolicyChangedDetails
+        """
+        if not self.is_paper_offline_mode_policy_changed_details():
+            raise AttributeError("tag 'paper_offline_mode_policy_changed_details' not set")
         return self._value
 
     def get_passkey_login_policy_changed_details(self):
@@ -32480,6 +32986,21 @@ class EventType(bb.Union):
     :ivar EventType.protect_action_stop_sharing:
         (protect) Stopped sharing content via Dropbox Protect
     :vartype EventType.protect_action_stop_sharing: ProtectActionStopSharingType
+    :ivar EventType.protect_custom_data_type_created:
+        (protect) Created a Dropbox Protect custom data type
+    :vartype EventType.protect_custom_data_type_created: ProtectCustomDataTypeCreatedType
+    :ivar EventType.protect_custom_data_type_deleted:
+        (protect) Deleted a Dropbox Protect custom data type
+    :vartype EventType.protect_custom_data_type_deleted: ProtectCustomDataTypeDeletedType
+    :ivar EventType.protect_custom_data_type_disabled:
+        (protect) Disabled a Dropbox Protect custom data type
+    :vartype EventType.protect_custom_data_type_disabled: ProtectCustomDataTypeDisabledType
+    :ivar EventType.protect_custom_data_type_enabled:
+        (protect) Enabled a Dropbox Protect custom data type
+    :vartype EventType.protect_custom_data_type_enabled: ProtectCustomDataTypeEnabledType
+    :ivar EventType.protect_custom_data_type_modified:
+        (protect) Modified a Dropbox Protect custom data type
+    :vartype EventType.protect_custom_data_type_modified: ProtectCustomDataTypeModifiedType
     :ivar EventType.protect_internal_domains_changed:
         (protect) Modified Protect internal domains list
     :vartype EventType.protect_internal_domains_changed: ProtectInternalDomainsChangedType
@@ -32841,6 +33362,9 @@ class EventType(bb.Union):
     :ivar EventType.shared_folder_nest:
         (sharing) Changed parent of shared folder
     :vartype EventType.shared_folder_nest: SharedFolderNestType
+    :ivar EventType.shared_folder_transfer_membership:
+        (sharing) Transferred shared folder membership to another member
+    :vartype EventType.shared_folder_transfer_membership: SharedFolderTransferMembershipType
     :ivar EventType.shared_folder_transfer_ownership:
         (sharing) Transferred ownership of shared folder to another member
     :vartype EventType.shared_folder_transfer_ownership: SharedFolderTransferOwnershipType
@@ -33131,6 +33655,9 @@ class EventType(bb.Union):
         (team_policies) Completed restrictions on data center locations where
         team data resides
     :vartype EventType.data_placement_restriction_satisfy_policy: DataPlacementRestrictionSatisfyPolicyType
+    :ivar EventType.default_team_folder_sync_policy_changed:
+        (team_policies) Changed the default sync setting for new team folders
+    :vartype EventType.default_team_folder_sync_policy_changed: DefaultTeamFolderSyncPolicyChangedType
     :ivar EventType.device_approvals_add_exception:
         (team_policies) Added members to device approvals exception list
     :vartype EventType.device_approvals_add_exception: DeviceApprovalsAddExceptionType
@@ -33175,6 +33702,9 @@ class EventType(bb.Union):
     :ivar EventType.emm_remove_exception:
         (team_policies) Removed members from EMM exception list
     :vartype EventType.emm_remove_exception: EmmRemoveExceptionType
+    :ivar EventType.enterprise_managed_auth_policy_changed:
+        (team_policies) Changed enterprise managed authorization policy for team
+    :vartype EventType.enterprise_managed_auth_policy_changed: EnterpriseManagedAuthPolicyChangedType
     :ivar EventType.extended_version_history_change_policy:
         (team_policies) Accepted/opted out of extended version history
     :vartype EventType.extended_version_history_change_policy: ExtendedVersionHistoryChangePolicyType
@@ -33293,6 +33823,9 @@ class EventType(bb.Union):
     :ivar EventType.paper_enabled_users_group_removal:
         (team_policies) Removed users from Paper-enabled users list
     :vartype EventType.paper_enabled_users_group_removal: PaperEnabledUsersGroupRemovalType
+    :ivar EventType.paper_offline_mode_policy_changed:
+        (team_policies) Enabled/disabled Paper offline mode for team
+    :vartype EventType.paper_offline_mode_policy_changed: PaperOfflineModePolicyChangedType
     :ivar EventType.passkey_login_policy_changed:
         (team_policies) Changed passkey login policy for team
     :vartype EventType.passkey_login_policy_changed: PasskeyLoginPolicyChangedType
@@ -36744,6 +37277,61 @@ class EventType(bb.Union):
         return cls("protect_action_stop_sharing", val)
 
     @classmethod
+    def protect_custom_data_type_created(cls, val):
+        """
+        Create an instance of this class set to the
+        ``protect_custom_data_type_created`` tag with value ``val``.
+
+        :param ProtectCustomDataTypeCreatedType val:
+        :rtype: EventType
+        """
+        return cls("protect_custom_data_type_created", val)
+
+    @classmethod
+    def protect_custom_data_type_deleted(cls, val):
+        """
+        Create an instance of this class set to the
+        ``protect_custom_data_type_deleted`` tag with value ``val``.
+
+        :param ProtectCustomDataTypeDeletedType val:
+        :rtype: EventType
+        """
+        return cls("protect_custom_data_type_deleted", val)
+
+    @classmethod
+    def protect_custom_data_type_disabled(cls, val):
+        """
+        Create an instance of this class set to the
+        ``protect_custom_data_type_disabled`` tag with value ``val``.
+
+        :param ProtectCustomDataTypeDisabledType val:
+        :rtype: EventType
+        """
+        return cls("protect_custom_data_type_disabled", val)
+
+    @classmethod
+    def protect_custom_data_type_enabled(cls, val):
+        """
+        Create an instance of this class set to the
+        ``protect_custom_data_type_enabled`` tag with value ``val``.
+
+        :param ProtectCustomDataTypeEnabledType val:
+        :rtype: EventType
+        """
+        return cls("protect_custom_data_type_enabled", val)
+
+    @classmethod
+    def protect_custom_data_type_modified(cls, val):
+        """
+        Create an instance of this class set to the
+        ``protect_custom_data_type_modified`` tag with value ``val``.
+
+        :param ProtectCustomDataTypeModifiedType val:
+        :rtype: EventType
+        """
+        return cls("protect_custom_data_type_modified", val)
+
+    @classmethod
     def protect_internal_domains_changed(cls, val):
         """
         Create an instance of this class set to the
@@ -37980,6 +38568,17 @@ class EventType(bb.Union):
         return cls("shared_folder_nest", val)
 
     @classmethod
+    def shared_folder_transfer_membership(cls, val):
+        """
+        Create an instance of this class set to the
+        ``shared_folder_transfer_membership`` tag with value ``val``.
+
+        :param SharedFolderTransferMembershipType val:
+        :rtype: EventType
+        """
+        return cls("shared_folder_transfer_membership", val)
+
+    @classmethod
     def shared_folder_transfer_ownership(cls, val):
         """
         Create an instance of this class set to the
@@ -39027,6 +39626,17 @@ class EventType(bb.Union):
         return cls("data_placement_restriction_satisfy_policy", val)
 
     @classmethod
+    def default_team_folder_sync_policy_changed(cls, val):
+        """
+        Create an instance of this class set to the
+        ``default_team_folder_sync_policy_changed`` tag with value ``val``.
+
+        :param DefaultTeamFolderSyncPolicyChangedType val:
+        :rtype: EventType
+        """
+        return cls("default_team_folder_sync_policy_changed", val)
+
+    @classmethod
     def device_approvals_add_exception(cls, val):
         """
         Create an instance of this class set to the
@@ -39168,6 +39778,17 @@ class EventType(bb.Union):
         :rtype: EventType
         """
         return cls("emm_remove_exception", val)
+
+    @classmethod
+    def enterprise_managed_auth_policy_changed(cls, val):
+        """
+        Create an instance of this class set to the
+        ``enterprise_managed_auth_policy_changed`` tag with value ``val``.
+
+        :param EnterpriseManagedAuthPolicyChangedType val:
+        :rtype: EventType
+        """
+        return cls("enterprise_managed_auth_policy_changed", val)
 
     @classmethod
     def extended_version_history_change_policy(cls, val):
@@ -39575,6 +40196,17 @@ class EventType(bb.Union):
         :rtype: EventType
         """
         return cls("paper_enabled_users_group_removal", val)
+
+    @classmethod
+    def paper_offline_mode_policy_changed(cls, val):
+        """
+        Create an instance of this class set to the
+        ``paper_offline_mode_policy_changed`` tag with value ``val``.
+
+        :param PaperOfflineModePolicyChangedType val:
+        :rtype: EventType
+        """
+        return cls("paper_offline_mode_policy_changed", val)
 
     @classmethod
     def passkey_login_policy_changed(cls, val):
@@ -42886,6 +43518,46 @@ class EventType(bb.Union):
         """
         return self._tag == "protect_action_stop_sharing"
 
+    def is_protect_custom_data_type_created(self):
+        """
+        Check if the union tag is ``protect_custom_data_type_created``.
+
+        :rtype: bool
+        """
+        return self._tag == "protect_custom_data_type_created"
+
+    def is_protect_custom_data_type_deleted(self):
+        """
+        Check if the union tag is ``protect_custom_data_type_deleted``.
+
+        :rtype: bool
+        """
+        return self._tag == "protect_custom_data_type_deleted"
+
+    def is_protect_custom_data_type_disabled(self):
+        """
+        Check if the union tag is ``protect_custom_data_type_disabled``.
+
+        :rtype: bool
+        """
+        return self._tag == "protect_custom_data_type_disabled"
+
+    def is_protect_custom_data_type_enabled(self):
+        """
+        Check if the union tag is ``protect_custom_data_type_enabled``.
+
+        :rtype: bool
+        """
+        return self._tag == "protect_custom_data_type_enabled"
+
+    def is_protect_custom_data_type_modified(self):
+        """
+        Check if the union tag is ``protect_custom_data_type_modified``.
+
+        :rtype: bool
+        """
+        return self._tag == "protect_custom_data_type_modified"
+
     def is_protect_internal_domains_changed(self):
         """
         Check if the union tag is ``protect_internal_domains_changed``.
@@ -43782,6 +44454,14 @@ class EventType(bb.Union):
         """
         return self._tag == "shared_folder_nest"
 
+    def is_shared_folder_transfer_membership(self):
+        """
+        Check if the union tag is ``shared_folder_transfer_membership``.
+
+        :rtype: bool
+        """
+        return self._tag == "shared_folder_transfer_membership"
+
     def is_shared_folder_transfer_ownership(self):
         """
         Check if the union tag is ``shared_folder_transfer_ownership``.
@@ -44542,6 +45222,14 @@ class EventType(bb.Union):
         """
         return self._tag == "data_placement_restriction_satisfy_policy"
 
+    def is_default_team_folder_sync_policy_changed(self):
+        """
+        Check if the union tag is ``default_team_folder_sync_policy_changed``.
+
+        :rtype: bool
+        """
+        return self._tag == "default_team_folder_sync_policy_changed"
+
     def is_device_approvals_add_exception(self):
         """
         Check if the union tag is ``device_approvals_add_exception``.
@@ -44645,6 +45333,14 @@ class EventType(bb.Union):
         :rtype: bool
         """
         return self._tag == "emm_remove_exception"
+
+    def is_enterprise_managed_auth_policy_changed(self):
+        """
+        Check if the union tag is ``enterprise_managed_auth_policy_changed``.
+
+        :rtype: bool
+        """
+        return self._tag == "enterprise_managed_auth_policy_changed"
 
     def is_extended_version_history_change_policy(self):
         """
@@ -44941,6 +45637,14 @@ class EventType(bb.Union):
         :rtype: bool
         """
         return self._tag == "paper_enabled_users_group_removal"
+
+    def is_paper_offline_mode_policy_changed(self):
+        """
+        Check if the union tag is ``paper_offline_mode_policy_changed``.
+
+        :rtype: bool
+        """
+        return self._tag == "paper_offline_mode_policy_changed"
 
     def is_passkey_login_policy_changed(self):
         """
@@ -49123,6 +49827,66 @@ class EventType(bb.Union):
             raise AttributeError("tag 'protect_action_stop_sharing' not set")
         return self._value
 
+    def get_protect_custom_data_type_created(self):
+        """
+        (protect) Created a Dropbox Protect custom data type
+
+        Only call this if :meth:`is_protect_custom_data_type_created` is true.
+
+        :rtype: ProtectCustomDataTypeCreatedType
+        """
+        if not self.is_protect_custom_data_type_created():
+            raise AttributeError("tag 'protect_custom_data_type_created' not set")
+        return self._value
+
+    def get_protect_custom_data_type_deleted(self):
+        """
+        (protect) Deleted a Dropbox Protect custom data type
+
+        Only call this if :meth:`is_protect_custom_data_type_deleted` is true.
+
+        :rtype: ProtectCustomDataTypeDeletedType
+        """
+        if not self.is_protect_custom_data_type_deleted():
+            raise AttributeError("tag 'protect_custom_data_type_deleted' not set")
+        return self._value
+
+    def get_protect_custom_data_type_disabled(self):
+        """
+        (protect) Disabled a Dropbox Protect custom data type
+
+        Only call this if :meth:`is_protect_custom_data_type_disabled` is true.
+
+        :rtype: ProtectCustomDataTypeDisabledType
+        """
+        if not self.is_protect_custom_data_type_disabled():
+            raise AttributeError("tag 'protect_custom_data_type_disabled' not set")
+        return self._value
+
+    def get_protect_custom_data_type_enabled(self):
+        """
+        (protect) Enabled a Dropbox Protect custom data type
+
+        Only call this if :meth:`is_protect_custom_data_type_enabled` is true.
+
+        :rtype: ProtectCustomDataTypeEnabledType
+        """
+        if not self.is_protect_custom_data_type_enabled():
+            raise AttributeError("tag 'protect_custom_data_type_enabled' not set")
+        return self._value
+
+    def get_protect_custom_data_type_modified(self):
+        """
+        (protect) Modified a Dropbox Protect custom data type
+
+        Only call this if :meth:`is_protect_custom_data_type_modified` is true.
+
+        :rtype: ProtectCustomDataTypeModifiedType
+        """
+        if not self.is_protect_custom_data_type_modified():
+            raise AttributeError("tag 'protect_custom_data_type_modified' not set")
+        return self._value
+
     def get_protect_internal_domains_changed(self):
         """
         (protect) Modified Protect internal domains list
@@ -50492,6 +51256,18 @@ class EventType(bb.Union):
             raise AttributeError("tag 'shared_folder_nest' not set")
         return self._value
 
+    def get_shared_folder_transfer_membership(self):
+        """
+        (sharing) Transferred shared folder membership to another member
+
+        Only call this if :meth:`is_shared_folder_transfer_membership` is true.
+
+        :rtype: SharedFolderTransferMembershipType
+        """
+        if not self.is_shared_folder_transfer_membership():
+            raise AttributeError("tag 'shared_folder_transfer_membership' not set")
+        return self._value
+
     def get_shared_folder_transfer_ownership(self):
         """
         (sharing) Transferred ownership of shared folder to another member
@@ -51639,6 +52415,18 @@ class EventType(bb.Union):
             raise AttributeError("tag 'data_placement_restriction_satisfy_policy' not set")
         return self._value
 
+    def get_default_team_folder_sync_policy_changed(self):
+        """
+        (team_policies) Changed the default sync setting for new team folders
+
+        Only call this if :meth:`is_default_team_folder_sync_policy_changed` is true.
+
+        :rtype: DefaultTeamFolderSyncPolicyChangedType
+        """
+        if not self.is_default_team_folder_sync_policy_changed():
+            raise AttributeError("tag 'default_team_folder_sync_policy_changed' not set")
+        return self._value
+
     def get_device_approvals_add_exception(self):
         """
         (team_policies) Added members to device approvals exception list
@@ -51798,6 +52586,18 @@ class EventType(bb.Union):
         """
         if not self.is_emm_remove_exception():
             raise AttributeError("tag 'emm_remove_exception' not set")
+        return self._value
+
+    def get_enterprise_managed_auth_policy_changed(self):
+        """
+        (team_policies) Changed enterprise managed authorization policy for team
+
+        Only call this if :meth:`is_enterprise_managed_auth_policy_changed` is true.
+
+        :rtype: EnterpriseManagedAuthPolicyChangedType
+        """
+        if not self.is_enterprise_managed_auth_policy_changed():
+            raise AttributeError("tag 'enterprise_managed_auth_policy_changed' not set")
         return self._value
 
     def get_extended_version_history_change_policy(self):
@@ -52249,6 +53049,18 @@ class EventType(bb.Union):
         """
         if not self.is_paper_enabled_users_group_removal():
             raise AttributeError("tag 'paper_enabled_users_group_removal' not set")
+        return self._value
+
+    def get_paper_offline_mode_policy_changed(self):
+        """
+        (team_policies) Enabled/disabled Paper offline mode for team
+
+        Only call this if :meth:`is_paper_offline_mode_policy_changed` is true.
+
+        :rtype: PaperOfflineModePolicyChangedType
+        """
+        if not self.is_paper_offline_mode_policy_changed():
+            raise AttributeError("tag 'paper_offline_mode_policy_changed' not set")
         return self._value
 
     def get_passkey_login_policy_changed(self):
@@ -53997,6 +54809,16 @@ class EventTypeArg(bb.Union):
         (protect) Removed a link via Dropbox Protect
     :ivar EventTypeArg.protect_action_stop_sharing:
         (protect) Stopped sharing content via Dropbox Protect
+    :ivar EventTypeArg.protect_custom_data_type_created:
+        (protect) Created a Dropbox Protect custom data type
+    :ivar EventTypeArg.protect_custom_data_type_deleted:
+        (protect) Deleted a Dropbox Protect custom data type
+    :ivar EventTypeArg.protect_custom_data_type_disabled:
+        (protect) Disabled a Dropbox Protect custom data type
+    :ivar EventTypeArg.protect_custom_data_type_enabled:
+        (protect) Enabled a Dropbox Protect custom data type
+    :ivar EventTypeArg.protect_custom_data_type_modified:
+        (protect) Modified a Dropbox Protect custom data type
     :ivar EventTypeArg.protect_internal_domains_changed:
         (protect) Modified Protect internal domains list
     :ivar EventTypeArg.protect_policy_activated:
@@ -54246,6 +55068,8 @@ class EventTypeArg(bb.Union):
         (sharing) Added shared folder to own Dropbox
     :ivar EventTypeArg.shared_folder_nest:
         (sharing) Changed parent of shared folder
+    :ivar EventTypeArg.shared_folder_transfer_membership:
+        (sharing) Transferred shared folder membership to another member
     :ivar EventTypeArg.shared_folder_transfer_ownership:
         (sharing) Transferred ownership of shared folder to another member
     :ivar EventTypeArg.shared_folder_unmount:
@@ -54441,6 +55265,8 @@ class EventTypeArg(bb.Union):
     :ivar EventTypeArg.data_placement_restriction_satisfy_policy:
         (team_policies) Completed restrictions on data center locations where
         team data resides
+    :ivar EventTypeArg.default_team_folder_sync_policy_changed:
+        (team_policies) Changed the default sync setting for new team folders
     :ivar EventTypeArg.device_approvals_add_exception:
         (team_policies) Added members to device approvals exception list
     :ivar EventTypeArg.device_approvals_change_desktop_policy:
@@ -54472,6 +55298,8 @@ class EventTypeArg(bb.Union):
         members
     :ivar EventTypeArg.emm_remove_exception:
         (team_policies) Removed members from EMM exception list
+    :ivar EventTypeArg.enterprise_managed_auth_policy_changed:
+        (team_policies) Changed enterprise managed authorization policy for team
     :ivar EventTypeArg.extended_version_history_change_policy:
         (team_policies) Accepted/opted out of extended version history
     :ivar EventTypeArg.external_drive_backup_policy_changed:
@@ -54553,6 +55381,8 @@ class EventTypeArg(bb.Union):
         (team_policies) Added users to Paper-enabled users list
     :ivar EventTypeArg.paper_enabled_users_group_removal:
         (team_policies) Removed users from Paper-enabled users list
+    :ivar EventTypeArg.paper_offline_mode_policy_changed:
+        (team_policies) Enabled/disabled Paper offline mode for team
     :ivar EventTypeArg.passkey_login_policy_changed:
         (team_policies) Changed passkey login policy for team
     :ivar EventTypeArg.password_strength_requirements_change_policy:
@@ -55339,6 +56169,16 @@ class EventTypeArg(bb.Union):
     # Attribute is overwritten below the class definition
     protect_action_stop_sharing = None
     # Attribute is overwritten below the class definition
+    protect_custom_data_type_created = None
+    # Attribute is overwritten below the class definition
+    protect_custom_data_type_deleted = None
+    # Attribute is overwritten below the class definition
+    protect_custom_data_type_disabled = None
+    # Attribute is overwritten below the class definition
+    protect_custom_data_type_enabled = None
+    # Attribute is overwritten below the class definition
+    protect_custom_data_type_modified = None
+    # Attribute is overwritten below the class definition
     protect_internal_domains_changed = None
     # Attribute is overwritten below the class definition
     protect_policy_activated = None
@@ -55563,6 +56403,8 @@ class EventTypeArg(bb.Union):
     # Attribute is overwritten below the class definition
     shared_folder_nest = None
     # Attribute is overwritten below the class definition
+    shared_folder_transfer_membership = None
+    # Attribute is overwritten below the class definition
     shared_folder_transfer_ownership = None
     # Attribute is overwritten below the class definition
     shared_folder_unmount = None
@@ -55753,6 +56595,8 @@ class EventTypeArg(bb.Union):
     # Attribute is overwritten below the class definition
     data_placement_restriction_satisfy_policy = None
     # Attribute is overwritten below the class definition
+    default_team_folder_sync_policy_changed = None
+    # Attribute is overwritten below the class definition
     device_approvals_add_exception = None
     # Attribute is overwritten below the class definition
     device_approvals_change_desktop_policy = None
@@ -55778,6 +56622,8 @@ class EventTypeArg(bb.Union):
     emm_change_policy = None
     # Attribute is overwritten below the class definition
     emm_remove_exception = None
+    # Attribute is overwritten below the class definition
+    enterprise_managed_auth_policy_changed = None
     # Attribute is overwritten below the class definition
     extended_version_history_change_policy = None
     # Attribute is overwritten below the class definition
@@ -55852,6 +56698,8 @@ class EventTypeArg(bb.Union):
     paper_enabled_users_group_addition = None
     # Attribute is overwritten below the class definition
     paper_enabled_users_group_removal = None
+    # Attribute is overwritten below the class definition
+    paper_offline_mode_policy_changed = None
     # Attribute is overwritten below the class definition
     passkey_login_policy_changed = None
     # Attribute is overwritten below the class definition
@@ -58319,6 +59167,46 @@ class EventTypeArg(bb.Union):
         """
         return self._tag == "protect_action_stop_sharing"
 
+    def is_protect_custom_data_type_created(self):
+        """
+        Check if the union tag is ``protect_custom_data_type_created``.
+
+        :rtype: bool
+        """
+        return self._tag == "protect_custom_data_type_created"
+
+    def is_protect_custom_data_type_deleted(self):
+        """
+        Check if the union tag is ``protect_custom_data_type_deleted``.
+
+        :rtype: bool
+        """
+        return self._tag == "protect_custom_data_type_deleted"
+
+    def is_protect_custom_data_type_disabled(self):
+        """
+        Check if the union tag is ``protect_custom_data_type_disabled``.
+
+        :rtype: bool
+        """
+        return self._tag == "protect_custom_data_type_disabled"
+
+    def is_protect_custom_data_type_enabled(self):
+        """
+        Check if the union tag is ``protect_custom_data_type_enabled``.
+
+        :rtype: bool
+        """
+        return self._tag == "protect_custom_data_type_enabled"
+
+    def is_protect_custom_data_type_modified(self):
+        """
+        Check if the union tag is ``protect_custom_data_type_modified``.
+
+        :rtype: bool
+        """
+        return self._tag == "protect_custom_data_type_modified"
+
     def is_protect_internal_domains_changed(self):
         """
         Check if the union tag is ``protect_internal_domains_changed``.
@@ -59215,6 +60103,14 @@ class EventTypeArg(bb.Union):
         """
         return self._tag == "shared_folder_nest"
 
+    def is_shared_folder_transfer_membership(self):
+        """
+        Check if the union tag is ``shared_folder_transfer_membership``.
+
+        :rtype: bool
+        """
+        return self._tag == "shared_folder_transfer_membership"
+
     def is_shared_folder_transfer_ownership(self):
         """
         Check if the union tag is ``shared_folder_transfer_ownership``.
@@ -59975,6 +60871,14 @@ class EventTypeArg(bb.Union):
         """
         return self._tag == "data_placement_restriction_satisfy_policy"
 
+    def is_default_team_folder_sync_policy_changed(self):
+        """
+        Check if the union tag is ``default_team_folder_sync_policy_changed``.
+
+        :rtype: bool
+        """
+        return self._tag == "default_team_folder_sync_policy_changed"
+
     def is_device_approvals_add_exception(self):
         """
         Check if the union tag is ``device_approvals_add_exception``.
@@ -60078,6 +60982,14 @@ class EventTypeArg(bb.Union):
         :rtype: bool
         """
         return self._tag == "emm_remove_exception"
+
+    def is_enterprise_managed_auth_policy_changed(self):
+        """
+        Check if the union tag is ``enterprise_managed_auth_policy_changed``.
+
+        :rtype: bool
+        """
+        return self._tag == "enterprise_managed_auth_policy_changed"
 
     def is_extended_version_history_change_policy(self):
         """
@@ -60374,6 +61286,14 @@ class EventTypeArg(bb.Union):
         :rtype: bool
         """
         return self._tag == "paper_enabled_users_group_removal"
+
+    def is_paper_offline_mode_policy_changed(self):
+        """
+        Check if the union tag is ``paper_offline_mode_policy_changed``.
+
+        :rtype: bool
+        """
+        return self._tag == "paper_offline_mode_policy_changed"
 
     def is_passkey_login_policy_changed(self):
         """
@@ -78910,6 +79830,130 @@ class PaperMemberPolicy(bb.Union):
 PaperMemberPolicy_validator = bv.Union(PaperMemberPolicy)
 
 
+class PaperOfflineModePolicy(bb.Union):
+    """
+    Policy for controlling if team members can use Paper offline mode
+
+    This class acts as a tagged union. Only one of the ``is_*`` methods will
+    return true. To get the associated value of a tag (if one exists), use the
+    corresponding ``get_*`` method.
+    """
+
+    _catch_all = "other"
+    # Attribute is overwritten below the class definition
+    default = None
+    # Attribute is overwritten below the class definition
+    disabled = None
+    # Attribute is overwritten below the class definition
+    enabled = None
+    # Attribute is overwritten below the class definition
+    other = None
+
+    def is_default(self):
+        """
+        Check if the union tag is ``default``.
+
+        :rtype: bool
+        """
+        return self._tag == "default"
+
+    def is_disabled(self):
+        """
+        Check if the union tag is ``disabled``.
+
+        :rtype: bool
+        """
+        return self._tag == "disabled"
+
+    def is_enabled(self):
+        """
+        Check if the union tag is ``enabled``.
+
+        :rtype: bool
+        """
+        return self._tag == "enabled"
+
+    def is_other(self):
+        """
+        Check if the union tag is ``other``.
+
+        :rtype: bool
+        """
+        return self._tag == "other"
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(PaperOfflineModePolicy, self)._process_custom_annotations(
+            annotation_type, field_path, processor
+        )
+
+
+PaperOfflineModePolicy_validator = bv.Union(PaperOfflineModePolicy)
+
+
+class PaperOfflineModePolicyChangedDetails(bb.Struct):
+    """
+    Enabled/disabled Paper offline mode for team.
+
+    :ivar PaperOfflineModePolicyChangedDetails.new_value:
+        New Paper offline mode policy.
+    :ivar PaperOfflineModePolicyChangedDetails.previous_value:
+        Previous Paper offline mode policy.
+    """
+
+    __slots__ = [
+        "_new_value_value",
+        "_previous_value_value",
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self, new_value=None, previous_value=None):
+        self._new_value_value = bb.NOT_SET
+        self._previous_value_value = bb.NOT_SET
+        if new_value is not None:
+            self.new_value = new_value
+        if previous_value is not None:
+            self.previous_value = previous_value
+
+    # Instance attribute type: PaperOfflineModePolicy (validator is set below)
+    new_value = bb.Attribute("new_value", user_defined=True)
+
+    # Instance attribute type: PaperOfflineModePolicy (validator is set below)
+    previous_value = bb.Attribute("previous_value", user_defined=True)
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(PaperOfflineModePolicyChangedDetails, self)._process_custom_annotations(
+            annotation_type, field_path, processor
+        )
+
+
+PaperOfflineModePolicyChangedDetails_validator = bv.Struct(PaperOfflineModePolicyChangedDetails)
+
+
+class PaperOfflineModePolicyChangedType(bb.Struct):
+    __slots__ = [
+        "_description_value",
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self, description=None):
+        self._description_value = bb.NOT_SET
+        if description is not None:
+            self.description = description
+
+    # Instance attribute type: str (validator is set below)
+    description = bb.Attribute("description")
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(PaperOfflineModePolicyChangedType, self)._process_custom_annotations(
+            annotation_type, field_path, processor
+        )
+
+
+PaperOfflineModePolicyChangedType_validator = bv.Struct(PaperOfflineModePolicyChangedType)
+
+
 class PaperPublishedLinkChangePermissionDetails(bb.Struct):
     """
     Changed permissions for published doc.
@@ -80906,6 +81950,326 @@ class ProtectActionStopSharingType(bb.Struct):
 
 
 ProtectActionStopSharingType_validator = bv.Struct(ProtectActionStopSharingType)
+
+
+class ProtectCustomDataTypeCreatedDetails(bb.Struct):
+    """
+    Created a Dropbox Protect custom data type.
+
+    :ivar ProtectCustomDataTypeCreatedDetails.custom_data_type_id:
+        ID.
+    :ivar ProtectCustomDataTypeCreatedDetails.name:
+        Name.
+    """
+
+    __slots__ = [
+        "_custom_data_type_id_value",
+        "_name_value",
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self, custom_data_type_id=None, name=None):
+        self._custom_data_type_id_value = bb.NOT_SET
+        self._name_value = bb.NOT_SET
+        if custom_data_type_id is not None:
+            self.custom_data_type_id = custom_data_type_id
+        if name is not None:
+            self.name = name
+
+    # Instance attribute type: str (validator is set below)
+    custom_data_type_id = bb.Attribute("custom_data_type_id")
+
+    # Instance attribute type: str (validator is set below)
+    name = bb.Attribute("name")
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(ProtectCustomDataTypeCreatedDetails, self)._process_custom_annotations(
+            annotation_type, field_path, processor
+        )
+
+
+ProtectCustomDataTypeCreatedDetails_validator = bv.Struct(ProtectCustomDataTypeCreatedDetails)
+
+
+class ProtectCustomDataTypeCreatedType(bb.Struct):
+    __slots__ = [
+        "_description_value",
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self, description=None):
+        self._description_value = bb.NOT_SET
+        if description is not None:
+            self.description = description
+
+    # Instance attribute type: str (validator is set below)
+    description = bb.Attribute("description")
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(ProtectCustomDataTypeCreatedType, self)._process_custom_annotations(
+            annotation_type, field_path, processor
+        )
+
+
+ProtectCustomDataTypeCreatedType_validator = bv.Struct(ProtectCustomDataTypeCreatedType)
+
+
+class ProtectCustomDataTypeDeletedDetails(bb.Struct):
+    """
+    Deleted a Dropbox Protect custom data type.
+
+    :ivar ProtectCustomDataTypeDeletedDetails.custom_data_type_id:
+        ID.
+    :ivar ProtectCustomDataTypeDeletedDetails.name:
+        Name.
+    """
+
+    __slots__ = [
+        "_custom_data_type_id_value",
+        "_name_value",
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self, custom_data_type_id=None, name=None):
+        self._custom_data_type_id_value = bb.NOT_SET
+        self._name_value = bb.NOT_SET
+        if custom_data_type_id is not None:
+            self.custom_data_type_id = custom_data_type_id
+        if name is not None:
+            self.name = name
+
+    # Instance attribute type: str (validator is set below)
+    custom_data_type_id = bb.Attribute("custom_data_type_id")
+
+    # Instance attribute type: str (validator is set below)
+    name = bb.Attribute("name")
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(ProtectCustomDataTypeDeletedDetails, self)._process_custom_annotations(
+            annotation_type, field_path, processor
+        )
+
+
+ProtectCustomDataTypeDeletedDetails_validator = bv.Struct(ProtectCustomDataTypeDeletedDetails)
+
+
+class ProtectCustomDataTypeDeletedType(bb.Struct):
+    __slots__ = [
+        "_description_value",
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self, description=None):
+        self._description_value = bb.NOT_SET
+        if description is not None:
+            self.description = description
+
+    # Instance attribute type: str (validator is set below)
+    description = bb.Attribute("description")
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(ProtectCustomDataTypeDeletedType, self)._process_custom_annotations(
+            annotation_type, field_path, processor
+        )
+
+
+ProtectCustomDataTypeDeletedType_validator = bv.Struct(ProtectCustomDataTypeDeletedType)
+
+
+class ProtectCustomDataTypeDisabledDetails(bb.Struct):
+    """
+    Disabled a Dropbox Protect custom data type.
+
+    :ivar ProtectCustomDataTypeDisabledDetails.custom_data_type_id:
+        ID.
+    :ivar ProtectCustomDataTypeDisabledDetails.name:
+        Name.
+    """
+
+    __slots__ = [
+        "_custom_data_type_id_value",
+        "_name_value",
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self, custom_data_type_id=None, name=None):
+        self._custom_data_type_id_value = bb.NOT_SET
+        self._name_value = bb.NOT_SET
+        if custom_data_type_id is not None:
+            self.custom_data_type_id = custom_data_type_id
+        if name is not None:
+            self.name = name
+
+    # Instance attribute type: str (validator is set below)
+    custom_data_type_id = bb.Attribute("custom_data_type_id")
+
+    # Instance attribute type: str (validator is set below)
+    name = bb.Attribute("name")
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(ProtectCustomDataTypeDisabledDetails, self)._process_custom_annotations(
+            annotation_type, field_path, processor
+        )
+
+
+ProtectCustomDataTypeDisabledDetails_validator = bv.Struct(ProtectCustomDataTypeDisabledDetails)
+
+
+class ProtectCustomDataTypeDisabledType(bb.Struct):
+    __slots__ = [
+        "_description_value",
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self, description=None):
+        self._description_value = bb.NOT_SET
+        if description is not None:
+            self.description = description
+
+    # Instance attribute type: str (validator is set below)
+    description = bb.Attribute("description")
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(ProtectCustomDataTypeDisabledType, self)._process_custom_annotations(
+            annotation_type, field_path, processor
+        )
+
+
+ProtectCustomDataTypeDisabledType_validator = bv.Struct(ProtectCustomDataTypeDisabledType)
+
+
+class ProtectCustomDataTypeEnabledDetails(bb.Struct):
+    """
+    Enabled a Dropbox Protect custom data type.
+
+    :ivar ProtectCustomDataTypeEnabledDetails.custom_data_type_id:
+        ID.
+    :ivar ProtectCustomDataTypeEnabledDetails.name:
+        Name.
+    """
+
+    __slots__ = [
+        "_custom_data_type_id_value",
+        "_name_value",
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self, custom_data_type_id=None, name=None):
+        self._custom_data_type_id_value = bb.NOT_SET
+        self._name_value = bb.NOT_SET
+        if custom_data_type_id is not None:
+            self.custom_data_type_id = custom_data_type_id
+        if name is not None:
+            self.name = name
+
+    # Instance attribute type: str (validator is set below)
+    custom_data_type_id = bb.Attribute("custom_data_type_id")
+
+    # Instance attribute type: str (validator is set below)
+    name = bb.Attribute("name")
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(ProtectCustomDataTypeEnabledDetails, self)._process_custom_annotations(
+            annotation_type, field_path, processor
+        )
+
+
+ProtectCustomDataTypeEnabledDetails_validator = bv.Struct(ProtectCustomDataTypeEnabledDetails)
+
+
+class ProtectCustomDataTypeEnabledType(bb.Struct):
+    __slots__ = [
+        "_description_value",
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self, description=None):
+        self._description_value = bb.NOT_SET
+        if description is not None:
+            self.description = description
+
+    # Instance attribute type: str (validator is set below)
+    description = bb.Attribute("description")
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(ProtectCustomDataTypeEnabledType, self)._process_custom_annotations(
+            annotation_type, field_path, processor
+        )
+
+
+ProtectCustomDataTypeEnabledType_validator = bv.Struct(ProtectCustomDataTypeEnabledType)
+
+
+class ProtectCustomDataTypeModifiedDetails(bb.Struct):
+    """
+    Modified a Dropbox Protect custom data type.
+
+    :ivar ProtectCustomDataTypeModifiedDetails.custom_data_type_id:
+        ID.
+    :ivar ProtectCustomDataTypeModifiedDetails.name:
+        Name.
+    """
+
+    __slots__ = [
+        "_custom_data_type_id_value",
+        "_name_value",
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self, custom_data_type_id=None, name=None):
+        self._custom_data_type_id_value = bb.NOT_SET
+        self._name_value = bb.NOT_SET
+        if custom_data_type_id is not None:
+            self.custom_data_type_id = custom_data_type_id
+        if name is not None:
+            self.name = name
+
+    # Instance attribute type: str (validator is set below)
+    custom_data_type_id = bb.Attribute("custom_data_type_id")
+
+    # Instance attribute type: str (validator is set below)
+    name = bb.Attribute("name")
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(ProtectCustomDataTypeModifiedDetails, self)._process_custom_annotations(
+            annotation_type, field_path, processor
+        )
+
+
+ProtectCustomDataTypeModifiedDetails_validator = bv.Struct(ProtectCustomDataTypeModifiedDetails)
+
+
+class ProtectCustomDataTypeModifiedType(bb.Struct):
+    __slots__ = [
+        "_description_value",
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self, description=None):
+        self._description_value = bb.NOT_SET
+        if description is not None:
+            self.description = description
+
+    # Instance attribute type: str (validator is set below)
+    description = bb.Attribute("description")
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(ProtectCustomDataTypeModifiedType, self)._process_custom_annotations(
+            annotation_type, field_path, processor
+        )
+
+
+ProtectCustomDataTypeModifiedType_validator = bv.Struct(ProtectCustomDataTypeModifiedType)
 
 
 class ProtectInternalDomainsChangedDetails(bb.Struct):
@@ -87758,6 +89122,86 @@ class SharedFolderNestType(bb.Struct):
 SharedFolderNestType_validator = bv.Struct(SharedFolderNestType)
 
 
+class SharedFolderTransferMembershipDetails(bb.Struct):
+    """
+    Transferred shared folder membership to another member.
+
+    :ivar SharedFolderTransferMembershipDetails.previous_member_account_id:
+        The account that previously held the access being transferred.
+    :ivar SharedFolderTransferMembershipDetails.new_member_account_id:
+        The account that received the transferred access.
+    :ivar SharedFolderTransferMembershipDetails.shared_content_access_level:
+        The shared folder access level that was transferred. This is the level
+        at the time of the transfer and does not change if the member's access
+        is updated later.
+    """
+
+    __slots__ = [
+        "_previous_member_account_id_value",
+        "_new_member_account_id_value",
+        "_shared_content_access_level_value",
+    ]
+
+    _has_required_fields = True
+
+    def __init__(
+        self,
+        previous_member_account_id=None,
+        new_member_account_id=None,
+        shared_content_access_level=None,
+    ):
+        self._previous_member_account_id_value = bb.NOT_SET
+        self._new_member_account_id_value = bb.NOT_SET
+        self._shared_content_access_level_value = bb.NOT_SET
+        if previous_member_account_id is not None:
+            self.previous_member_account_id = previous_member_account_id
+        if new_member_account_id is not None:
+            self.new_member_account_id = new_member_account_id
+        if shared_content_access_level is not None:
+            self.shared_content_access_level = shared_content_access_level
+
+    # Instance attribute type: str (validator is set below)
+    previous_member_account_id = bb.Attribute("previous_member_account_id")
+
+    # Instance attribute type: str (validator is set below)
+    new_member_account_id = bb.Attribute("new_member_account_id")
+
+    # Instance attribute type: sharing.AccessLevel (validator is set below)
+    shared_content_access_level = bb.Attribute("shared_content_access_level", user_defined=True)
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(SharedFolderTransferMembershipDetails, self)._process_custom_annotations(
+            annotation_type, field_path, processor
+        )
+
+
+SharedFolderTransferMembershipDetails_validator = bv.Struct(SharedFolderTransferMembershipDetails)
+
+
+class SharedFolderTransferMembershipType(bb.Struct):
+    __slots__ = [
+        "_description_value",
+    ]
+
+    _has_required_fields = True
+
+    def __init__(self, description=None):
+        self._description_value = bb.NOT_SET
+        if description is not None:
+            self.description = description
+
+    # Instance attribute type: str (validator is set below)
+    description = bb.Attribute("description")
+
+    def _process_custom_annotations(self, annotation_type, field_path, processor):
+        super(SharedFolderTransferMembershipType, self)._process_custom_annotations(
+            annotation_type, field_path, processor
+        )
+
+
+SharedFolderTransferMembershipType_validator = bv.Struct(SharedFolderTransferMembershipType)
+
+
 class SharedFolderTransferOwnershipDetails(bb.Struct):
     """
     Transferred ownership of shared folder to another member.
@@ -88302,23 +89746,32 @@ class SharedLinkCreateDetails(bb.Struct):
     :ivar SharedLinkCreateDetails.shared_link_access_level:
         Defines who can access the shared link. Might be missing due to
         historical data gap.
+    :ivar SharedLinkCreateDetails.subdomain:
+        Team subdomain associated with this shared-link action.
     """
 
     __slots__ = [
         "_shared_link_access_level_value",
+        "_subdomain_value",
     ]
 
     _has_required_fields = False
 
-    def __init__(self, shared_link_access_level=None):
+    def __init__(self, shared_link_access_level=None, subdomain=None):
         self._shared_link_access_level_value = bb.NOT_SET
+        self._subdomain_value = bb.NOT_SET
         if shared_link_access_level is not None:
             self.shared_link_access_level = shared_link_access_level
+        if subdomain is not None:
+            self.subdomain = subdomain
 
     # Instance attribute type: SharedLinkAccessLevel (validator is set below)
     shared_link_access_level = bb.Attribute(
         "shared_link_access_level", nullable=True, user_defined=True
     )
+
+    # Instance attribute type: str (validator is set below)
+    subdomain = bb.Attribute("subdomain", nullable=True)
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(SharedLinkCreateDetails, self)._process_custom_annotations(
@@ -89428,21 +90881,30 @@ class SharedLinkViewDetails(bb.Struct):
 
     :ivar SharedLinkViewDetails.shared_link_owner:
         Shared link owner details. Might be missing due to historical data gap.
+    :ivar SharedLinkViewDetails.subdomain:
+        Team subdomain used to access the shared link.
     """
 
     __slots__ = [
         "_shared_link_owner_value",
+        "_subdomain_value",
     ]
 
     _has_required_fields = False
 
-    def __init__(self, shared_link_owner=None):
+    def __init__(self, shared_link_owner=None, subdomain=None):
         self._shared_link_owner_value = bb.NOT_SET
+        self._subdomain_value = bb.NOT_SET
         if shared_link_owner is not None:
             self.shared_link_owner = shared_link_owner
+        if subdomain is not None:
+            self.subdomain = subdomain
 
     # Instance attribute type: UserLogInfo (validator is set below)
     shared_link_owner = bb.Attribute("shared_link_owner", nullable=True, user_defined=True)
+
+    # Instance attribute type: str (validator is set below)
+    subdomain = bb.Attribute("subdomain", nullable=True)
 
     def _process_custom_annotations(self, annotation_type, field_path, processor):
         super(SharedLinkViewDetails, self)._process_custom_annotations(
@@ -103166,6 +104628,42 @@ DefaultLinkExpirationDaysPolicy.none = DefaultLinkExpirationDaysPolicy("none")
 DefaultLinkExpirationDaysPolicy.year_1 = DefaultLinkExpirationDaysPolicy("year_1")
 DefaultLinkExpirationDaysPolicy.other = DefaultLinkExpirationDaysPolicy("other")
 
+DefaultTeamFolderSyncPolicy._do_not_sync_validator = bv.Void()
+DefaultTeamFolderSyncPolicy._sync_validator = bv.Void()
+DefaultTeamFolderSyncPolicy._other_validator = bv.Void()
+DefaultTeamFolderSyncPolicy._tagmap = {
+    "do_not_sync": DefaultTeamFolderSyncPolicy._do_not_sync_validator,
+    "sync": DefaultTeamFolderSyncPolicy._sync_validator,
+    "other": DefaultTeamFolderSyncPolicy._other_validator,
+}
+
+DefaultTeamFolderSyncPolicy.do_not_sync = DefaultTeamFolderSyncPolicy("do_not_sync")
+DefaultTeamFolderSyncPolicy.sync = DefaultTeamFolderSyncPolicy("sync")
+DefaultTeamFolderSyncPolicy.other = DefaultTeamFolderSyncPolicy("other")
+
+DefaultTeamFolderSyncPolicyChangedDetails.new_value.validator = (
+    DefaultTeamFolderSyncPolicy_validator
+)
+DefaultTeamFolderSyncPolicyChangedDetails.previous_value.validator = (
+    DefaultTeamFolderSyncPolicy_validator
+)
+DefaultTeamFolderSyncPolicyChangedDetails._all_field_names_ = set(
+    [
+        "new_value",
+        "previous_value",
+    ]
+)
+DefaultTeamFolderSyncPolicyChangedDetails._all_fields_ = [
+    ("new_value", DefaultTeamFolderSyncPolicyChangedDetails.new_value.validator),
+    ("previous_value", DefaultTeamFolderSyncPolicyChangedDetails.previous_value.validator),
+]
+
+DefaultTeamFolderSyncPolicyChangedType.description.validator = bv.String()
+DefaultTeamFolderSyncPolicyChangedType._all_field_names_ = set(["description"])
+DefaultTeamFolderSyncPolicyChangedType._all_fields_ = [
+    ("description", DefaultTeamFolderSyncPolicyChangedType.description.validator)
+]
+
 DeleteTeamInviteLinkDetails.link_url.validator = bv.String()
 DeleteTeamInviteLinkDetails._all_field_names_ = set(["link_url"])
 DeleteTeamInviteLinkDetails._all_fields_ = [
@@ -104128,6 +105626,45 @@ EnforceLinkPasswordPolicy.optional = EnforceLinkPasswordPolicy("optional")
 EnforceLinkPasswordPolicy.required = EnforceLinkPasswordPolicy("required")
 EnforceLinkPasswordPolicy.other = EnforceLinkPasswordPolicy("other")
 
+EnterpriseManagedAuthPolicy._default_validator = bv.Void()
+EnterpriseManagedAuthPolicy._disabled_validator = bv.Void()
+EnterpriseManagedAuthPolicy._enabled_validator = bv.Void()
+EnterpriseManagedAuthPolicy._other_validator = bv.Void()
+EnterpriseManagedAuthPolicy._tagmap = {
+    "default": EnterpriseManagedAuthPolicy._default_validator,
+    "disabled": EnterpriseManagedAuthPolicy._disabled_validator,
+    "enabled": EnterpriseManagedAuthPolicy._enabled_validator,
+    "other": EnterpriseManagedAuthPolicy._other_validator,
+}
+
+EnterpriseManagedAuthPolicy.default = EnterpriseManagedAuthPolicy("default")
+EnterpriseManagedAuthPolicy.disabled = EnterpriseManagedAuthPolicy("disabled")
+EnterpriseManagedAuthPolicy.enabled = EnterpriseManagedAuthPolicy("enabled")
+EnterpriseManagedAuthPolicy.other = EnterpriseManagedAuthPolicy("other")
+
+EnterpriseManagedAuthPolicyChangedDetails.new_value.validator = (
+    EnterpriseManagedAuthPolicy_validator
+)
+EnterpriseManagedAuthPolicyChangedDetails.previous_value.validator = bv.Nullable(
+    EnterpriseManagedAuthPolicy_validator
+)
+EnterpriseManagedAuthPolicyChangedDetails._all_field_names_ = set(
+    [
+        "new_value",
+        "previous_value",
+    ]
+)
+EnterpriseManagedAuthPolicyChangedDetails._all_fields_ = [
+    ("new_value", EnterpriseManagedAuthPolicyChangedDetails.new_value.validator),
+    ("previous_value", EnterpriseManagedAuthPolicyChangedDetails.previous_value.validator),
+]
+
+EnterpriseManagedAuthPolicyChangedType.description.validator = bv.String()
+EnterpriseManagedAuthPolicyChangedType._all_field_names_ = set(["description"])
+EnterpriseManagedAuthPolicyChangedType._all_fields_ = [
+    ("description", EnterpriseManagedAuthPolicyChangedType.description.validator)
+]
+
 EnterpriseSettingsLockingDetails.team_name.validator = bv.String()
 EnterpriseSettingsLockingDetails.settings_page_name.validator = bv.String()
 EnterpriseSettingsLockingDetails.previous_settings_page_locking_state.validator = bv.String()
@@ -104793,6 +106330,21 @@ EventDetails._protect_action_remove_link_details_validator = (
 EventDetails._protect_action_stop_sharing_details_validator = (
     ProtectActionStopSharingDetails_validator
 )
+EventDetails._protect_custom_data_type_created_details_validator = (
+    ProtectCustomDataTypeCreatedDetails_validator
+)
+EventDetails._protect_custom_data_type_deleted_details_validator = (
+    ProtectCustomDataTypeDeletedDetails_validator
+)
+EventDetails._protect_custom_data_type_disabled_details_validator = (
+    ProtectCustomDataTypeDisabledDetails_validator
+)
+EventDetails._protect_custom_data_type_enabled_details_validator = (
+    ProtectCustomDataTypeEnabledDetails_validator
+)
+EventDetails._protect_custom_data_type_modified_details_validator = (
+    ProtectCustomDataTypeModifiedDetails_validator
+)
 EventDetails._protect_internal_domains_changed_details_validator = (
     ProtectInternalDomainsChangedDetails_validator
 )
@@ -105051,6 +106603,9 @@ EventDetails._shared_folder_decline_invitation_details_validator = (
 )
 EventDetails._shared_folder_mount_details_validator = SharedFolderMountDetails_validator
 EventDetails._shared_folder_nest_details_validator = SharedFolderNestDetails_validator
+EventDetails._shared_folder_transfer_membership_details_validator = (
+    SharedFolderTransferMembershipDetails_validator
+)
 EventDetails._shared_folder_transfer_ownership_details_validator = (
     SharedFolderTransferOwnershipDetails_validator
 )
@@ -105228,6 +106783,9 @@ EventDetails._data_placement_restriction_change_policy_details_validator = (
 EventDetails._data_placement_restriction_satisfy_policy_details_validator = (
     DataPlacementRestrictionSatisfyPolicyDetails_validator
 )
+EventDetails._default_team_folder_sync_policy_changed_details_validator = (
+    DefaultTeamFolderSyncPolicyChangedDetails_validator
+)
 EventDetails._device_approvals_add_exception_details_validator = (
     DeviceApprovalsAddExceptionDetails_validator
 )
@@ -105261,6 +106819,9 @@ EventDetails._email_ingest_policy_changed_details_validator = (
 EventDetails._emm_add_exception_details_validator = EmmAddExceptionDetails_validator
 EventDetails._emm_change_policy_details_validator = EmmChangePolicyDetails_validator
 EventDetails._emm_remove_exception_details_validator = EmmRemoveExceptionDetails_validator
+EventDetails._enterprise_managed_auth_policy_changed_details_validator = (
+    EnterpriseManagedAuthPolicyChangedDetails_validator
+)
 EventDetails._extended_version_history_change_policy_details_validator = (
     ExtendedVersionHistoryChangePolicyDetails_validator
 )
@@ -105367,6 +106928,9 @@ EventDetails._paper_enabled_users_group_addition_details_validator = (
 )
 EventDetails._paper_enabled_users_group_removal_details_validator = (
     PaperEnabledUsersGroupRemovalDetails_validator
+)
+EventDetails._paper_offline_mode_policy_changed_details_validator = (
+    PaperOfflineModePolicyChangedDetails_validator
 )
 EventDetails._passkey_login_policy_changed_details_validator = (
     PasskeyLoginPolicyChangedDetails_validator
@@ -105882,6 +107446,11 @@ EventDetails._tagmap = {
     "protect_action_remove_domains_details": EventDetails._protect_action_remove_domains_details_validator,
     "protect_action_remove_link_details": EventDetails._protect_action_remove_link_details_validator,
     "protect_action_stop_sharing_details": EventDetails._protect_action_stop_sharing_details_validator,
+    "protect_custom_data_type_created_details": EventDetails._protect_custom_data_type_created_details_validator,
+    "protect_custom_data_type_deleted_details": EventDetails._protect_custom_data_type_deleted_details_validator,
+    "protect_custom_data_type_disabled_details": EventDetails._protect_custom_data_type_disabled_details_validator,
+    "protect_custom_data_type_enabled_details": EventDetails._protect_custom_data_type_enabled_details_validator,
+    "protect_custom_data_type_modified_details": EventDetails._protect_custom_data_type_modified_details_validator,
     "protect_internal_domains_changed_details": EventDetails._protect_internal_domains_changed_details_validator,
     "protect_policy_activated_details": EventDetails._protect_policy_activated_details_validator,
     "protect_policy_deactivated_details": EventDetails._protect_policy_deactivated_details_validator,
@@ -105994,6 +107563,7 @@ EventDetails._tagmap = {
     "shared_folder_decline_invitation_details": EventDetails._shared_folder_decline_invitation_details_validator,
     "shared_folder_mount_details": EventDetails._shared_folder_mount_details_validator,
     "shared_folder_nest_details": EventDetails._shared_folder_nest_details_validator,
+    "shared_folder_transfer_membership_details": EventDetails._shared_folder_transfer_membership_details_validator,
     "shared_folder_transfer_ownership_details": EventDetails._shared_folder_transfer_ownership_details_validator,
     "shared_folder_unmount_details": EventDetails._shared_folder_unmount_details_validator,
     "shared_link_add_expiry_details": EventDetails._shared_link_add_expiry_details_validator,
@@ -106089,6 +107659,7 @@ EventDetails._tagmap = {
     "dash_external_sharing_policy_changed_details": EventDetails._dash_external_sharing_policy_changed_details_validator,
     "data_placement_restriction_change_policy_details": EventDetails._data_placement_restriction_change_policy_details_validator,
     "data_placement_restriction_satisfy_policy_details": EventDetails._data_placement_restriction_satisfy_policy_details_validator,
+    "default_team_folder_sync_policy_changed_details": EventDetails._default_team_folder_sync_policy_changed_details_validator,
     "device_approvals_add_exception_details": EventDetails._device_approvals_add_exception_details_validator,
     "device_approvals_change_desktop_policy_details": EventDetails._device_approvals_change_desktop_policy_details_validator,
     "device_approvals_change_mobile_policy_details": EventDetails._device_approvals_change_mobile_policy_details_validator,
@@ -106102,6 +107673,7 @@ EventDetails._tagmap = {
     "emm_add_exception_details": EventDetails._emm_add_exception_details_validator,
     "emm_change_policy_details": EventDetails._emm_change_policy_details_validator,
     "emm_remove_exception_details": EventDetails._emm_remove_exception_details_validator,
+    "enterprise_managed_auth_policy_changed_details": EventDetails._enterprise_managed_auth_policy_changed_details_validator,
     "extended_version_history_change_policy_details": EventDetails._extended_version_history_change_policy_details_validator,
     "external_drive_backup_policy_changed_details": EventDetails._external_drive_backup_policy_changed_details_validator,
     "file_comments_change_policy_details": EventDetails._file_comments_change_policy_details_validator,
@@ -106139,6 +107711,7 @@ EventDetails._tagmap = {
     "paper_desktop_policy_changed_details": EventDetails._paper_desktop_policy_changed_details_validator,
     "paper_enabled_users_group_addition_details": EventDetails._paper_enabled_users_group_addition_details_validator,
     "paper_enabled_users_group_removal_details": EventDetails._paper_enabled_users_group_removal_details_validator,
+    "paper_offline_mode_policy_changed_details": EventDetails._paper_offline_mode_policy_changed_details_validator,
     "passkey_login_policy_changed_details": EventDetails._passkey_login_policy_changed_details_validator,
     "password_strength_requirements_change_policy_details": EventDetails._password_strength_requirements_change_policy_details_validator,
     "permanent_delete_change_policy_details": EventDetails._permanent_delete_change_policy_details_validator,
@@ -106620,6 +108193,11 @@ EventType._protect_action_remove_collaborator_validator = (
 EventType._protect_action_remove_domains_validator = ProtectActionRemoveDomainsType_validator
 EventType._protect_action_remove_link_validator = ProtectActionRemoveLinkType_validator
 EventType._protect_action_stop_sharing_validator = ProtectActionStopSharingType_validator
+EventType._protect_custom_data_type_created_validator = ProtectCustomDataTypeCreatedType_validator
+EventType._protect_custom_data_type_deleted_validator = ProtectCustomDataTypeDeletedType_validator
+EventType._protect_custom_data_type_disabled_validator = ProtectCustomDataTypeDisabledType_validator
+EventType._protect_custom_data_type_enabled_validator = ProtectCustomDataTypeEnabledType_validator
+EventType._protect_custom_data_type_modified_validator = ProtectCustomDataTypeModifiedType_validator
 EventType._protect_internal_domains_changed_validator = ProtectInternalDomainsChangedType_validator
 EventType._protect_policy_activated_validator = ProtectPolicyActivatedType_validator
 EventType._protect_policy_deactivated_validator = ProtectPolicyDeactivatedType_validator
@@ -106786,6 +108364,9 @@ EventType._shared_folder_create_validator = SharedFolderCreateType_validator
 EventType._shared_folder_decline_invitation_validator = SharedFolderDeclineInvitationType_validator
 EventType._shared_folder_mount_validator = SharedFolderMountType_validator
 EventType._shared_folder_nest_validator = SharedFolderNestType_validator
+EventType._shared_folder_transfer_membership_validator = (
+    SharedFolderTransferMembershipType_validator
+)
 EventType._shared_folder_transfer_ownership_validator = SharedFolderTransferOwnershipType_validator
 EventType._shared_folder_unmount_validator = SharedFolderUnmountType_validator
 EventType._shared_link_add_expiry_validator = SharedLinkAddExpiryType_validator
@@ -106921,6 +108502,9 @@ EventType._data_placement_restriction_change_policy_validator = (
 EventType._data_placement_restriction_satisfy_policy_validator = (
     DataPlacementRestrictionSatisfyPolicyType_validator
 )
+EventType._default_team_folder_sync_policy_changed_validator = (
+    DefaultTeamFolderSyncPolicyChangedType_validator
+)
 EventType._device_approvals_add_exception_validator = DeviceApprovalsAddExceptionType_validator
 EventType._device_approvals_change_desktop_policy_validator = (
     DeviceApprovalsChangeDesktopPolicyType_validator
@@ -106948,6 +108532,9 @@ EventType._email_ingest_policy_changed_validator = EmailIngestPolicyChangedType_
 EventType._emm_add_exception_validator = EmmAddExceptionType_validator
 EventType._emm_change_policy_validator = EmmChangePolicyType_validator
 EventType._emm_remove_exception_validator = EmmRemoveExceptionType_validator
+EventType._enterprise_managed_auth_policy_changed_validator = (
+    EnterpriseManagedAuthPolicyChangedType_validator
+)
 EventType._extended_version_history_change_policy_validator = (
     ExtendedVersionHistoryChangePolicyType_validator
 )
@@ -107017,6 +108604,7 @@ EventType._paper_enabled_users_group_addition_validator = (
     PaperEnabledUsersGroupAdditionType_validator
 )
 EventType._paper_enabled_users_group_removal_validator = PaperEnabledUsersGroupRemovalType_validator
+EventType._paper_offline_mode_policy_changed_validator = PaperOfflineModePolicyChangedType_validator
 EventType._passkey_login_policy_changed_validator = PasskeyLoginPolicyChangedType_validator
 EventType._password_strength_requirements_change_policy_validator = (
     PasswordStrengthRequirementsChangePolicyType_validator
@@ -107468,6 +109056,11 @@ EventType._tagmap = {
     "protect_action_remove_domains": EventType._protect_action_remove_domains_validator,
     "protect_action_remove_link": EventType._protect_action_remove_link_validator,
     "protect_action_stop_sharing": EventType._protect_action_stop_sharing_validator,
+    "protect_custom_data_type_created": EventType._protect_custom_data_type_created_validator,
+    "protect_custom_data_type_deleted": EventType._protect_custom_data_type_deleted_validator,
+    "protect_custom_data_type_disabled": EventType._protect_custom_data_type_disabled_validator,
+    "protect_custom_data_type_enabled": EventType._protect_custom_data_type_enabled_validator,
+    "protect_custom_data_type_modified": EventType._protect_custom_data_type_modified_validator,
     "protect_internal_domains_changed": EventType._protect_internal_domains_changed_validator,
     "protect_policy_activated": EventType._protect_policy_activated_validator,
     "protect_policy_deactivated": EventType._protect_policy_deactivated_validator,
@@ -107580,6 +109173,7 @@ EventType._tagmap = {
     "shared_folder_decline_invitation": EventType._shared_folder_decline_invitation_validator,
     "shared_folder_mount": EventType._shared_folder_mount_validator,
     "shared_folder_nest": EventType._shared_folder_nest_validator,
+    "shared_folder_transfer_membership": EventType._shared_folder_transfer_membership_validator,
     "shared_folder_transfer_ownership": EventType._shared_folder_transfer_ownership_validator,
     "shared_folder_unmount": EventType._shared_folder_unmount_validator,
     "shared_link_add_expiry": EventType._shared_link_add_expiry_validator,
@@ -107675,6 +109269,7 @@ EventType._tagmap = {
     "dash_external_sharing_policy_changed": EventType._dash_external_sharing_policy_changed_validator,
     "data_placement_restriction_change_policy": EventType._data_placement_restriction_change_policy_validator,
     "data_placement_restriction_satisfy_policy": EventType._data_placement_restriction_satisfy_policy_validator,
+    "default_team_folder_sync_policy_changed": EventType._default_team_folder_sync_policy_changed_validator,
     "device_approvals_add_exception": EventType._device_approvals_add_exception_validator,
     "device_approvals_change_desktop_policy": EventType._device_approvals_change_desktop_policy_validator,
     "device_approvals_change_mobile_policy": EventType._device_approvals_change_mobile_policy_validator,
@@ -107688,6 +109283,7 @@ EventType._tagmap = {
     "emm_add_exception": EventType._emm_add_exception_validator,
     "emm_change_policy": EventType._emm_change_policy_validator,
     "emm_remove_exception": EventType._emm_remove_exception_validator,
+    "enterprise_managed_auth_policy_changed": EventType._enterprise_managed_auth_policy_changed_validator,
     "extended_version_history_change_policy": EventType._extended_version_history_change_policy_validator,
     "external_drive_backup_policy_changed": EventType._external_drive_backup_policy_changed_validator,
     "file_comments_change_policy": EventType._file_comments_change_policy_validator,
@@ -107725,6 +109321,7 @@ EventType._tagmap = {
     "paper_desktop_policy_changed": EventType._paper_desktop_policy_changed_validator,
     "paper_enabled_users_group_addition": EventType._paper_enabled_users_group_addition_validator,
     "paper_enabled_users_group_removal": EventType._paper_enabled_users_group_removal_validator,
+    "paper_offline_mode_policy_changed": EventType._paper_offline_mode_policy_changed_validator,
     "passkey_login_policy_changed": EventType._passkey_login_policy_changed_validator,
     "password_strength_requirements_change_policy": EventType._password_strength_requirements_change_policy_validator,
     "permanent_delete_change_policy": EventType._permanent_delete_change_policy_validator,
@@ -108107,6 +109704,11 @@ EventTypeArg._protect_action_remove_collaborator_validator = bv.Void()
 EventTypeArg._protect_action_remove_domains_validator = bv.Void()
 EventTypeArg._protect_action_remove_link_validator = bv.Void()
 EventTypeArg._protect_action_stop_sharing_validator = bv.Void()
+EventTypeArg._protect_custom_data_type_created_validator = bv.Void()
+EventTypeArg._protect_custom_data_type_deleted_validator = bv.Void()
+EventTypeArg._protect_custom_data_type_disabled_validator = bv.Void()
+EventTypeArg._protect_custom_data_type_enabled_validator = bv.Void()
+EventTypeArg._protect_custom_data_type_modified_validator = bv.Void()
 EventTypeArg._protect_internal_domains_changed_validator = bv.Void()
 EventTypeArg._protect_policy_activated_validator = bv.Void()
 EventTypeArg._protect_policy_deactivated_validator = bv.Void()
@@ -108219,6 +109821,7 @@ EventTypeArg._shared_folder_create_validator = bv.Void()
 EventTypeArg._shared_folder_decline_invitation_validator = bv.Void()
 EventTypeArg._shared_folder_mount_validator = bv.Void()
 EventTypeArg._shared_folder_nest_validator = bv.Void()
+EventTypeArg._shared_folder_transfer_membership_validator = bv.Void()
 EventTypeArg._shared_folder_transfer_ownership_validator = bv.Void()
 EventTypeArg._shared_folder_unmount_validator = bv.Void()
 EventTypeArg._shared_link_add_expiry_validator = bv.Void()
@@ -108314,6 +109917,7 @@ EventTypeArg._content_deletion_protection_change_policy_validator = bv.Void()
 EventTypeArg._dash_external_sharing_policy_changed_validator = bv.Void()
 EventTypeArg._data_placement_restriction_change_policy_validator = bv.Void()
 EventTypeArg._data_placement_restriction_satisfy_policy_validator = bv.Void()
+EventTypeArg._default_team_folder_sync_policy_changed_validator = bv.Void()
 EventTypeArg._device_approvals_add_exception_validator = bv.Void()
 EventTypeArg._device_approvals_change_desktop_policy_validator = bv.Void()
 EventTypeArg._device_approvals_change_mobile_policy_validator = bv.Void()
@@ -108327,6 +109931,7 @@ EventTypeArg._email_ingest_policy_changed_validator = bv.Void()
 EventTypeArg._emm_add_exception_validator = bv.Void()
 EventTypeArg._emm_change_policy_validator = bv.Void()
 EventTypeArg._emm_remove_exception_validator = bv.Void()
+EventTypeArg._enterprise_managed_auth_policy_changed_validator = bv.Void()
 EventTypeArg._extended_version_history_change_policy_validator = bv.Void()
 EventTypeArg._external_drive_backup_policy_changed_validator = bv.Void()
 EventTypeArg._file_comments_change_policy_validator = bv.Void()
@@ -108364,6 +109969,7 @@ EventTypeArg._paper_default_folder_policy_changed_validator = bv.Void()
 EventTypeArg._paper_desktop_policy_changed_validator = bv.Void()
 EventTypeArg._paper_enabled_users_group_addition_validator = bv.Void()
 EventTypeArg._paper_enabled_users_group_removal_validator = bv.Void()
+EventTypeArg._paper_offline_mode_policy_changed_validator = bv.Void()
 EventTypeArg._passkey_login_policy_changed_validator = bv.Void()
 EventTypeArg._password_strength_requirements_change_policy_validator = bv.Void()
 EventTypeArg._permanent_delete_change_policy_validator = bv.Void()
@@ -108743,6 +110349,11 @@ EventTypeArg._tagmap = {
     "protect_action_remove_domains": EventTypeArg._protect_action_remove_domains_validator,
     "protect_action_remove_link": EventTypeArg._protect_action_remove_link_validator,
     "protect_action_stop_sharing": EventTypeArg._protect_action_stop_sharing_validator,
+    "protect_custom_data_type_created": EventTypeArg._protect_custom_data_type_created_validator,
+    "protect_custom_data_type_deleted": EventTypeArg._protect_custom_data_type_deleted_validator,
+    "protect_custom_data_type_disabled": EventTypeArg._protect_custom_data_type_disabled_validator,
+    "protect_custom_data_type_enabled": EventTypeArg._protect_custom_data_type_enabled_validator,
+    "protect_custom_data_type_modified": EventTypeArg._protect_custom_data_type_modified_validator,
     "protect_internal_domains_changed": EventTypeArg._protect_internal_domains_changed_validator,
     "protect_policy_activated": EventTypeArg._protect_policy_activated_validator,
     "protect_policy_deactivated": EventTypeArg._protect_policy_deactivated_validator,
@@ -108855,6 +110466,7 @@ EventTypeArg._tagmap = {
     "shared_folder_decline_invitation": EventTypeArg._shared_folder_decline_invitation_validator,
     "shared_folder_mount": EventTypeArg._shared_folder_mount_validator,
     "shared_folder_nest": EventTypeArg._shared_folder_nest_validator,
+    "shared_folder_transfer_membership": EventTypeArg._shared_folder_transfer_membership_validator,
     "shared_folder_transfer_ownership": EventTypeArg._shared_folder_transfer_ownership_validator,
     "shared_folder_unmount": EventTypeArg._shared_folder_unmount_validator,
     "shared_link_add_expiry": EventTypeArg._shared_link_add_expiry_validator,
@@ -108950,6 +110562,7 @@ EventTypeArg._tagmap = {
     "dash_external_sharing_policy_changed": EventTypeArg._dash_external_sharing_policy_changed_validator,
     "data_placement_restriction_change_policy": EventTypeArg._data_placement_restriction_change_policy_validator,
     "data_placement_restriction_satisfy_policy": EventTypeArg._data_placement_restriction_satisfy_policy_validator,
+    "default_team_folder_sync_policy_changed": EventTypeArg._default_team_folder_sync_policy_changed_validator,
     "device_approvals_add_exception": EventTypeArg._device_approvals_add_exception_validator,
     "device_approvals_change_desktop_policy": EventTypeArg._device_approvals_change_desktop_policy_validator,
     "device_approvals_change_mobile_policy": EventTypeArg._device_approvals_change_mobile_policy_validator,
@@ -108963,6 +110576,7 @@ EventTypeArg._tagmap = {
     "emm_add_exception": EventTypeArg._emm_add_exception_validator,
     "emm_change_policy": EventTypeArg._emm_change_policy_validator,
     "emm_remove_exception": EventTypeArg._emm_remove_exception_validator,
+    "enterprise_managed_auth_policy_changed": EventTypeArg._enterprise_managed_auth_policy_changed_validator,
     "extended_version_history_change_policy": EventTypeArg._extended_version_history_change_policy_validator,
     "external_drive_backup_policy_changed": EventTypeArg._external_drive_backup_policy_changed_validator,
     "file_comments_change_policy": EventTypeArg._file_comments_change_policy_validator,
@@ -109000,6 +110614,7 @@ EventTypeArg._tagmap = {
     "paper_desktop_policy_changed": EventTypeArg._paper_desktop_policy_changed_validator,
     "paper_enabled_users_group_addition": EventTypeArg._paper_enabled_users_group_addition_validator,
     "paper_enabled_users_group_removal": EventTypeArg._paper_enabled_users_group_removal_validator,
+    "paper_offline_mode_policy_changed": EventTypeArg._paper_offline_mode_policy_changed_validator,
     "passkey_login_policy_changed": EventTypeArg._passkey_login_policy_changed_validator,
     "password_strength_requirements_change_policy": EventTypeArg._password_strength_requirements_change_policy_validator,
     "permanent_delete_change_policy": EventTypeArg._permanent_delete_change_policy_validator,
@@ -109458,6 +111073,11 @@ EventTypeArg.protect_action_remove_collaborator = EventTypeArg("protect_action_r
 EventTypeArg.protect_action_remove_domains = EventTypeArg("protect_action_remove_domains")
 EventTypeArg.protect_action_remove_link = EventTypeArg("protect_action_remove_link")
 EventTypeArg.protect_action_stop_sharing = EventTypeArg("protect_action_stop_sharing")
+EventTypeArg.protect_custom_data_type_created = EventTypeArg("protect_custom_data_type_created")
+EventTypeArg.protect_custom_data_type_deleted = EventTypeArg("protect_custom_data_type_deleted")
+EventTypeArg.protect_custom_data_type_disabled = EventTypeArg("protect_custom_data_type_disabled")
+EventTypeArg.protect_custom_data_type_enabled = EventTypeArg("protect_custom_data_type_enabled")
+EventTypeArg.protect_custom_data_type_modified = EventTypeArg("protect_custom_data_type_modified")
 EventTypeArg.protect_internal_domains_changed = EventTypeArg("protect_internal_domains_changed")
 EventTypeArg.protect_policy_activated = EventTypeArg("protect_policy_activated")
 EventTypeArg.protect_policy_deactivated = EventTypeArg("protect_policy_deactivated")
@@ -109616,6 +111236,7 @@ EventTypeArg.shared_folder_create = EventTypeArg("shared_folder_create")
 EventTypeArg.shared_folder_decline_invitation = EventTypeArg("shared_folder_decline_invitation")
 EventTypeArg.shared_folder_mount = EventTypeArg("shared_folder_mount")
 EventTypeArg.shared_folder_nest = EventTypeArg("shared_folder_nest")
+EventTypeArg.shared_folder_transfer_membership = EventTypeArg("shared_folder_transfer_membership")
 EventTypeArg.shared_folder_transfer_ownership = EventTypeArg("shared_folder_transfer_ownership")
 EventTypeArg.shared_folder_unmount = EventTypeArg("shared_folder_unmount")
 EventTypeArg.shared_link_add_expiry = EventTypeArg("shared_link_add_expiry")
@@ -109749,6 +111370,9 @@ EventTypeArg.data_placement_restriction_change_policy = EventTypeArg(
 EventTypeArg.data_placement_restriction_satisfy_policy = EventTypeArg(
     "data_placement_restriction_satisfy_policy"
 )
+EventTypeArg.default_team_folder_sync_policy_changed = EventTypeArg(
+    "default_team_folder_sync_policy_changed"
+)
 EventTypeArg.device_approvals_add_exception = EventTypeArg("device_approvals_add_exception")
 EventTypeArg.device_approvals_change_desktop_policy = EventTypeArg(
     "device_approvals_change_desktop_policy"
@@ -109772,6 +111396,9 @@ EventTypeArg.email_ingest_policy_changed = EventTypeArg("email_ingest_policy_cha
 EventTypeArg.emm_add_exception = EventTypeArg("emm_add_exception")
 EventTypeArg.emm_change_policy = EventTypeArg("emm_change_policy")
 EventTypeArg.emm_remove_exception = EventTypeArg("emm_remove_exception")
+EventTypeArg.enterprise_managed_auth_policy_changed = EventTypeArg(
+    "enterprise_managed_auth_policy_changed"
+)
 EventTypeArg.extended_version_history_change_policy = EventTypeArg(
     "extended_version_history_change_policy"
 )
@@ -109835,6 +111462,7 @@ EventTypeArg.paper_default_folder_policy_changed = EventTypeArg(
 EventTypeArg.paper_desktop_policy_changed = EventTypeArg("paper_desktop_policy_changed")
 EventTypeArg.paper_enabled_users_group_addition = EventTypeArg("paper_enabled_users_group_addition")
 EventTypeArg.paper_enabled_users_group_removal = EventTypeArg("paper_enabled_users_group_removal")
+EventTypeArg.paper_offline_mode_policy_changed = EventTypeArg("paper_offline_mode_policy_changed")
 EventTypeArg.passkey_login_policy_changed = EventTypeArg("passkey_login_policy_changed")
 EventTypeArg.password_strength_requirements_change_policy = EventTypeArg(
     "password_strength_requirements_change_policy"
@@ -114714,6 +116342,41 @@ PaperMemberPolicy.only_team = PaperMemberPolicy("only_team")
 PaperMemberPolicy.team_and_explicitly_shared = PaperMemberPolicy("team_and_explicitly_shared")
 PaperMemberPolicy.other = PaperMemberPolicy("other")
 
+PaperOfflineModePolicy._default_validator = bv.Void()
+PaperOfflineModePolicy._disabled_validator = bv.Void()
+PaperOfflineModePolicy._enabled_validator = bv.Void()
+PaperOfflineModePolicy._other_validator = bv.Void()
+PaperOfflineModePolicy._tagmap = {
+    "default": PaperOfflineModePolicy._default_validator,
+    "disabled": PaperOfflineModePolicy._disabled_validator,
+    "enabled": PaperOfflineModePolicy._enabled_validator,
+    "other": PaperOfflineModePolicy._other_validator,
+}
+
+PaperOfflineModePolicy.default = PaperOfflineModePolicy("default")
+PaperOfflineModePolicy.disabled = PaperOfflineModePolicy("disabled")
+PaperOfflineModePolicy.enabled = PaperOfflineModePolicy("enabled")
+PaperOfflineModePolicy.other = PaperOfflineModePolicy("other")
+
+PaperOfflineModePolicyChangedDetails.new_value.validator = PaperOfflineModePolicy_validator
+PaperOfflineModePolicyChangedDetails.previous_value.validator = PaperOfflineModePolicy_validator
+PaperOfflineModePolicyChangedDetails._all_field_names_ = set(
+    [
+        "new_value",
+        "previous_value",
+    ]
+)
+PaperOfflineModePolicyChangedDetails._all_fields_ = [
+    ("new_value", PaperOfflineModePolicyChangedDetails.new_value.validator),
+    ("previous_value", PaperOfflineModePolicyChangedDetails.previous_value.validator),
+]
+
+PaperOfflineModePolicyChangedType.description.validator = bv.String()
+PaperOfflineModePolicyChangedType._all_field_names_ = set(["description"])
+PaperOfflineModePolicyChangedType._all_fields_ = [
+    ("description", PaperOfflineModePolicyChangedType.description.validator)
+]
+
 PaperPublishedLinkChangePermissionDetails.event_uuid.validator = bv.String()
 PaperPublishedLinkChangePermissionDetails.new_permission_level.validator = bv.String()
 PaperPublishedLinkChangePermissionDetails.previous_permission_level.validator = bv.String()
@@ -115210,6 +116873,101 @@ ProtectActionStopSharingType.description.validator = bv.String()
 ProtectActionStopSharingType._all_field_names_ = set(["description"])
 ProtectActionStopSharingType._all_fields_ = [
     ("description", ProtectActionStopSharingType.description.validator)
+]
+
+ProtectCustomDataTypeCreatedDetails.custom_data_type_id.validator = bv.String()
+ProtectCustomDataTypeCreatedDetails.name.validator = bv.String()
+ProtectCustomDataTypeCreatedDetails._all_field_names_ = set(
+    [
+        "custom_data_type_id",
+        "name",
+    ]
+)
+ProtectCustomDataTypeCreatedDetails._all_fields_ = [
+    ("custom_data_type_id", ProtectCustomDataTypeCreatedDetails.custom_data_type_id.validator),
+    ("name", ProtectCustomDataTypeCreatedDetails.name.validator),
+]
+
+ProtectCustomDataTypeCreatedType.description.validator = bv.String()
+ProtectCustomDataTypeCreatedType._all_field_names_ = set(["description"])
+ProtectCustomDataTypeCreatedType._all_fields_ = [
+    ("description", ProtectCustomDataTypeCreatedType.description.validator)
+]
+
+ProtectCustomDataTypeDeletedDetails.custom_data_type_id.validator = bv.String()
+ProtectCustomDataTypeDeletedDetails.name.validator = bv.String()
+ProtectCustomDataTypeDeletedDetails._all_field_names_ = set(
+    [
+        "custom_data_type_id",
+        "name",
+    ]
+)
+ProtectCustomDataTypeDeletedDetails._all_fields_ = [
+    ("custom_data_type_id", ProtectCustomDataTypeDeletedDetails.custom_data_type_id.validator),
+    ("name", ProtectCustomDataTypeDeletedDetails.name.validator),
+]
+
+ProtectCustomDataTypeDeletedType.description.validator = bv.String()
+ProtectCustomDataTypeDeletedType._all_field_names_ = set(["description"])
+ProtectCustomDataTypeDeletedType._all_fields_ = [
+    ("description", ProtectCustomDataTypeDeletedType.description.validator)
+]
+
+ProtectCustomDataTypeDisabledDetails.custom_data_type_id.validator = bv.String()
+ProtectCustomDataTypeDisabledDetails.name.validator = bv.String()
+ProtectCustomDataTypeDisabledDetails._all_field_names_ = set(
+    [
+        "custom_data_type_id",
+        "name",
+    ]
+)
+ProtectCustomDataTypeDisabledDetails._all_fields_ = [
+    ("custom_data_type_id", ProtectCustomDataTypeDisabledDetails.custom_data_type_id.validator),
+    ("name", ProtectCustomDataTypeDisabledDetails.name.validator),
+]
+
+ProtectCustomDataTypeDisabledType.description.validator = bv.String()
+ProtectCustomDataTypeDisabledType._all_field_names_ = set(["description"])
+ProtectCustomDataTypeDisabledType._all_fields_ = [
+    ("description", ProtectCustomDataTypeDisabledType.description.validator)
+]
+
+ProtectCustomDataTypeEnabledDetails.custom_data_type_id.validator = bv.String()
+ProtectCustomDataTypeEnabledDetails.name.validator = bv.String()
+ProtectCustomDataTypeEnabledDetails._all_field_names_ = set(
+    [
+        "custom_data_type_id",
+        "name",
+    ]
+)
+ProtectCustomDataTypeEnabledDetails._all_fields_ = [
+    ("custom_data_type_id", ProtectCustomDataTypeEnabledDetails.custom_data_type_id.validator),
+    ("name", ProtectCustomDataTypeEnabledDetails.name.validator),
+]
+
+ProtectCustomDataTypeEnabledType.description.validator = bv.String()
+ProtectCustomDataTypeEnabledType._all_field_names_ = set(["description"])
+ProtectCustomDataTypeEnabledType._all_fields_ = [
+    ("description", ProtectCustomDataTypeEnabledType.description.validator)
+]
+
+ProtectCustomDataTypeModifiedDetails.custom_data_type_id.validator = bv.String()
+ProtectCustomDataTypeModifiedDetails.name.validator = bv.String()
+ProtectCustomDataTypeModifiedDetails._all_field_names_ = set(
+    [
+        "custom_data_type_id",
+        "name",
+    ]
+)
+ProtectCustomDataTypeModifiedDetails._all_fields_ = [
+    ("custom_data_type_id", ProtectCustomDataTypeModifiedDetails.custom_data_type_id.validator),
+    ("name", ProtectCustomDataTypeModifiedDetails.name.validator),
+]
+
+ProtectCustomDataTypeModifiedType.description.validator = bv.String()
+ProtectCustomDataTypeModifiedType._all_field_names_ = set(["description"])
+ProtectCustomDataTypeModifiedType._all_fields_ = [
+    ("description", ProtectCustomDataTypeModifiedType.description.validator)
 ]
 
 ProtectInternalDomainsChangedDetails.domains_added.validator = bv.Nullable(bv.List(bv.String()))
@@ -117163,6 +118921,43 @@ SharedFolderNestType.description.validator = bv.String()
 SharedFolderNestType._all_field_names_ = set(["description"])
 SharedFolderNestType._all_fields_ = [("description", SharedFolderNestType.description.validator)]
 
+SharedFolderTransferMembershipDetails.previous_member_account_id.validator = (
+    users_common.AccountId_validator
+)
+SharedFolderTransferMembershipDetails.new_member_account_id.validator = (
+    users_common.AccountId_validator
+)
+SharedFolderTransferMembershipDetails.shared_content_access_level.validator = (
+    sharing.AccessLevel_validator
+)
+SharedFolderTransferMembershipDetails._all_field_names_ = set(
+    [
+        "previous_member_account_id",
+        "new_member_account_id",
+        "shared_content_access_level",
+    ]
+)
+SharedFolderTransferMembershipDetails._all_fields_ = [
+    (
+        "previous_member_account_id",
+        SharedFolderTransferMembershipDetails.previous_member_account_id.validator,
+    ),
+    (
+        "new_member_account_id",
+        SharedFolderTransferMembershipDetails.new_member_account_id.validator,
+    ),
+    (
+        "shared_content_access_level",
+        SharedFolderTransferMembershipDetails.shared_content_access_level.validator,
+    ),
+]
+
+SharedFolderTransferMembershipType.description.validator = bv.String()
+SharedFolderTransferMembershipType._all_field_names_ = set(["description"])
+SharedFolderTransferMembershipType._all_fields_ = [
+    ("description", SharedFolderTransferMembershipType.description.validator)
+]
+
 SharedFolderTransferOwnershipDetails.previous_owner_email.validator = bv.Nullable(
     EmailAddress_validator
 )
@@ -117315,9 +119110,16 @@ SharedLinkCopyType._all_fields_ = [("description", SharedLinkCopyType.descriptio
 SharedLinkCreateDetails.shared_link_access_level.validator = bv.Nullable(
     SharedLinkAccessLevel_validator
 )
-SharedLinkCreateDetails._all_field_names_ = set(["shared_link_access_level"])
+SharedLinkCreateDetails.subdomain.validator = bv.Nullable(bv.String())
+SharedLinkCreateDetails._all_field_names_ = set(
+    [
+        "shared_link_access_level",
+        "subdomain",
+    ]
+)
 SharedLinkCreateDetails._all_fields_ = [
-    ("shared_link_access_level", SharedLinkCreateDetails.shared_link_access_level.validator)
+    ("shared_link_access_level", SharedLinkCreateDetails.shared_link_access_level.validator),
+    ("subdomain", SharedLinkCreateDetails.subdomain.validator),
 ]
 
 SharedLinkCreateType.description.validator = bv.String()
@@ -117688,9 +119490,16 @@ SharedLinkShareType._all_field_names_ = set(["description"])
 SharedLinkShareType._all_fields_ = [("description", SharedLinkShareType.description.validator)]
 
 SharedLinkViewDetails.shared_link_owner.validator = bv.Nullable(UserLogInfo_validator)
-SharedLinkViewDetails._all_field_names_ = set(["shared_link_owner"])
+SharedLinkViewDetails.subdomain.validator = bv.Nullable(bv.String())
+SharedLinkViewDetails._all_field_names_ = set(
+    [
+        "shared_link_owner",
+        "subdomain",
+    ]
+)
 SharedLinkViewDetails._all_fields_ = [
-    ("shared_link_owner", SharedLinkViewDetails.shared_link_owner.validator)
+    ("shared_link_owner", SharedLinkViewDetails.shared_link_owner.validator),
+    ("subdomain", SharedLinkViewDetails.subdomain.validator),
 ]
 
 SharedLinkViewType.description.validator = bv.String()

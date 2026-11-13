@@ -128,8 +128,10 @@ class StreamHasher(object):
         return b
 
     def write(self, b):
-        self._hasher.update(b)
-        return self._f.write(b)
+        written = self._f.write(b)
+        if written:
+            self._hasher.update(b[:written])
+        return written
 
     def __iter__(self):
         return self

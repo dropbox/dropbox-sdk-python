@@ -1,16 +1,19 @@
 #!/usr/bin/env python
 
 import inspect
+import io
 import json
 import pickle
 from datetime import datetime, timedelta
+from unittest import mock
 
-import mock
 import pytest
 import requests
+from urllib3.response import HTTPResponse
 
 # Tests OAuth Flow
 from dropbox import DropboxOAuth2Flow, session, Dropbox, create_session
+from dropbox import auth
 from dropbox.base import DropboxBase
 from dropbox.common import PathRoot
 from dropbox.content_hash import content_hash
@@ -20,7 +23,13 @@ from dropbox.dropbox_client import (
     RouteResult,
     USER_AUTH,
 )
-from dropbox.exceptions import ApiError, AuthError, BadInputError
+from dropbox.exceptions import (
+    ApiError,
+    AuthError,
+    BadInputError,
+    InternalServerError,
+    RateLimitError,
+)
 from dropbox.oauth import OAuth2FlowNoRedirectResult, DropboxOAuth2FlowNoRedirect
 
 APP_KEY = "dummy_app_key"
@@ -305,6 +314,21 @@ class TestOAuth:
 
 
 class TestClient:
+    @pytest.mark.parametrize("missing_parent", [False, True])
+    def test_download_closes_response(self, session_instance, tmp_path, missing_parent):
+        response = requests.Response()
+        response.raw = HTTPResponse(body=io.BytesIO(b"downloaded content"), preload_content=False)
+        dbx = Dropbox(ACCESS_TOKEN, session=session_instance)
+        destination = tmp_path / "download.bin"
+        if missing_parent:
+            destination = tmp_path / "missing" / "download.bin"
+            with pytest.raises(FileNotFoundError):
+                dbx._save_body_to_file(destination, response)
+        else:
+            dbx._save_body_to_file(destination, response)
+            assert destination.read_bytes() == b"downloaded content"
+        assert response.raw.closed
+
     @pytest.fixture(scope="function")
     def session_instance(self, mocker):
         session_obj = create_session()
@@ -537,6 +561,17 @@ class TestClient:
         dbx.check_and_refresh_access_token()
         session_instance.post.assert_not_called()
 
+    @pytest.mark.parametrize("timeout", [None, 30])
+    def test_refresh_respects_client_timeout(self, session_instance, timeout):
+        dbx = Dropbox(
+            oauth2_refresh_token=REFRESH_TOKEN,
+            app_key=APP_KEY,
+            session=session_instance,
+            timeout=timeout,
+        )
+        dbx.refresh_access_token()
+        assert session_instance.post.call_args.kwargs["timeout"] == timeout
+
     def test_check_refresh_with_valid_online_token(self, session_instance):
         # Test Online Case w/ valid access
         dbx = Dropbox(
@@ -663,6 +698,27 @@ class TestClient:
         with pytest.raises(BadInputException):
             Dropbox(oauth2_access_token=ACCESS_TOKEN, scope=12345, session=session_instance)
 
+    @pytest.mark.parametrize(
+        "setting, error",
+        [
+            ("max_retries_on_error", InternalServerError("request-id", 500, "error")),
+            ("max_retries_on_rate_limit", RateLimitError("request-id")),
+        ],
+    )
+    def test_clone_can_disable_retries(self, session_instance, mocker, setting, error):
+        dbx = Dropbox(ACCESS_TOKEN, session=session_instance, **{setting: 2})
+        cloned = dbx.clone(**{setting: 0})
+        request = mocker.patch.object(cloned, "request_json_string", side_effect=error)
+        sleep = mocker.patch("dropbox.dropbox_client.time.sleep")
+
+        with pytest.raises(type(error)):
+            cloned.request_json_string_with_retry("api", "test", "rpc", "{}", USER_AUTH, None)
+
+        request.assert_called_once()
+        sleep.assert_not_called()
+        assert getattr(dbx, "_" + setting) == 2
+        assert getattr(dbx.clone(), "_" + setting) == 2
+
     def test_clone_does_not_double_user_agent(self, session_instance):
         dbx = Dropbox(
             oauth2_access_token=ACCESS_TOKEN,
@@ -731,6 +787,74 @@ class TestClient:
             dbx.check_and_refresh_access_token()
         # Initial attempt + 2 retries.
         assert server_error_session_instance.post.call_count == 3
+
+    @pytest.mark.parametrize(
+        "raw_error, expected_tag",
+        [
+            ("other", "other"),
+            ({".tag": "other"}, "other"),
+            ("future_auth_error", "other"),
+            ({".tag": "future_auth_error", "details": "new server error"}, "other"),
+            ("invalid_access_token", "invalid_access_token"),
+            ({".tag": "invalid_access_token", "future_field": True}, "invalid_access_token"),
+            (
+                {
+                    ".tag": "missing_scope",
+                    "required_scope": "files.content.write",
+                    "future_field": True,
+                },
+                "missing_scope",
+            ),
+        ],
+    )
+    def test_upload_preserves_auth_errors(self, session_instance, mocker, raw_error, expected_tag):
+        response = requests.Response()
+        response.status_code = 401
+        response.headers = {
+            "content-type": "application/json",
+            "x-dropbox-request-id": "auth-request-id",
+        }
+        response._content = json.dumps(
+            {"error": raw_error, "error_summary": "authentication failed"}
+        ).encode("utf-8")
+        session_instance.post.return_value = response
+        dbx = Dropbox(ACCESS_TOKEN, session=session_instance)
+        refresh = mocker.patch.object(dbx, "refresh_access_token")
+
+        with pytest.raises(AuthError) as caught:
+            dbx.files_upload(b"contents", "/test.txt")
+
+        assert getattr(caught.value.error, "is_" + expected_tag)()
+        if expected_tag == "missing_scope":
+            assert caught.value.error.get_missing_scope().required_scope == "files.content.write"
+        assert caught.value.status_code == 401
+        assert caught.value.request_id == "auth-request-id"
+        assert caught.value.body == response.text
+        session_instance.post.assert_called_once()
+        refresh.assert_not_called()
+
+    def test_refresh_on_expired_access_token_uses_client_scope(self, session_instance, mocker):
+        # A 401 expired_access_token triggers a refresh, which must request the
+        # scope the client was configured with, like check_and_refresh_access_token.
+        dbx = Dropbox(
+            oauth2_access_token=ACCESS_TOKEN,
+            oauth2_refresh_token=REFRESH_TOKEN,
+            oauth2_access_token_expiration=EXPIRATION,
+            app_key=APP_KEY,
+            app_secret=APP_SECRET,
+            scope=SCOPE_LIST,
+            session=session_instance,
+        )
+        expired = AuthError("request-id", auth.AuthError.expired_access_token)
+        request = mocker.patch.object(dbx, "request_json_string", side_effect=[expired, "{}"])
+
+        result = dbx.request_json_string_with_retry("api", "test", "rpc", "{}", USER_AUTH, None)
+
+        assert result == "{}"
+        assert request.call_count == 2
+        session_instance.post.assert_called_once()
+        token_body = session_instance.post.call_args.kwargs["data"]
+        assert token_body.get("scope") == " ".join(SCOPE_LIST)
 
 
 class TestAutoContentHash:

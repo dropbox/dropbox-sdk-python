@@ -1,6 +1,7 @@
 """Cached credential tests: no Dropbox credentials or real HTTP requests."""
 
 import json
+import logging
 from concurrent.futures import ThreadPoolExecutor
 from datetime import datetime, timedelta
 from threading import Event, Lock
@@ -81,6 +82,30 @@ def test_cached_snapshot_never_refreshes(client_type, http, expiration):
     assert "refresh-secret" not in repr(snapshot)
     check.assert_not_called()
     refresh.assert_not_called()
+    http.assert_not_called()
+
+
+@pytest.mark.parametrize("render", [repr, str], ids=["repr", "str"])
+def test_snapshot_text_redacts_access_token(client_type, http, render):
+    snapshot = make_client(client_type, token="sensitive-access-token").get_access_token_snapshot()
+    text = render(snapshot)
+    assert "sensitive-access-token" not in text
+    assert "<redacted>" in text
+    assert snapshot.access_token == "sensitive-access-token"
+    assert tuple(snapshot) == ("sensitive-access-token", OLD_EXPIRATION)
+    http.assert_not_called()
+
+
+@pytest.mark.parametrize("placeholder", ["%s", "%r"])
+def test_snapshot_logging_redacts_access_token(client_type, http, caplog, placeholder):
+    snapshot = make_client(client_type, token="sensitive-access-token").get_access_token_snapshot()
+    logger = logging.getLogger(__name__)
+    with caplog.at_level(logging.WARNING, logger=__name__):
+        logger.warning("Cached credentials: " + placeholder, snapshot)
+    assert len(caplog.records) == 1
+    assert "sensitive-access-token" not in caplog.text
+    assert "<redacted>" in caplog.records[0].getMessage()
+    assert snapshot.access_token == "sensitive-access-token"
     http.assert_not_called()
 
 
@@ -261,7 +286,20 @@ def test_concurrent_refreshes_and_reads(client_type, http):
     assert http.call_count == 2
 
 
-def test_snapshot_waits_for_complete_publication(client_type, http):
+@pytest.mark.parametrize(
+    "client_type,reader",
+    [
+        (Dropbox, "snapshot"),
+        (Dropbox, "clone"),
+        (Dropbox, "with_path_root"),
+        (DropboxTeam, "snapshot"),
+        (DropboxTeam, "clone"),
+        (DropboxTeam, "with_path_root"),
+        (DropboxTeam, "as_user"),
+        (DropboxTeam, "as_admin"),
+    ],
+)
+def test_snapshot_waits_for_complete_publication(client_type, http, reader):
     token_written = Event()
     finish_publication = Event()
     reader_entered = Event()
@@ -271,8 +309,11 @@ def test_snapshot_waits_for_complete_publication(client_type, http):
             self.lock = Lock()
 
         def __enter__(self):
-            reader_entered.set()
-            self.lock.acquire()
+            if not self.lock.acquire(blocking=False):
+                # Signal actual contention, not merely a thread about to acquire.
+                # This makes missing publication/read locks fail deterministically.
+                reader_entered.set()
+                self.lock.acquire()
 
         def __exit__(self, *args):
             self.lock.release()
@@ -288,13 +329,24 @@ def test_snapshot_waits_for_complete_publication(client_type, http):
     client._access_token_lock = ObservedLock()
     http.side_effect = None
     http.return_value = response({"access_token": "new-token", "expires_in": 3600})
+
+    def read_credentials():
+        if reader == "snapshot":
+            return client.get_access_token_snapshot()
+        if reader == "clone":
+            child = client.clone()
+        elif reader == "with_path_root":
+            child = client.with_path_root(PathRoot.home)
+        else:
+            child = getattr(client, reader)("member-id")
+        return child.get_access_token_snapshot()
+
     with ThreadPoolExecutor(max_workers=2) as executor:
         refresh = executor.submit(client.refresh_access_token)
         try:
             # Pause the real refresh between its two field assignments.
             assert token_written.wait(10)
-            reader_entered.clear()
-            read = executor.submit(client.get_access_token_snapshot)
+            read = executor.submit(read_credentials)
             assert reader_entered.wait(10)
         finally:
             finish_publication.set()

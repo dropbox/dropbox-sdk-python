@@ -61,7 +61,7 @@ We provide `Examples`_ to help get you started with a lot of the basic functiona
     - `Backup and Restore <https://github.com/dropbox/dropbox-sdk-python/tree/main/example/back-up-and-restore>`_ - Sample application that shows how you can backup a file and restore previous versions if the file was modified/corrupted in any way.
 
 Reusing Cached Access Tokens
-===========================
+============================
 
 ``Dropbox.get_access_token_snapshot()`` and
 ``DropboxTeam.get_access_token_snapshot()`` read local cached credentials without

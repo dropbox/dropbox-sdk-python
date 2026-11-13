@@ -1422,57 +1422,6 @@ class DropboxTeamBase(object):
         )
         return r
 
-    def team_members_bulk_suspend(self, members):
-        """
-        Launch a bulk suspend job. The server enforces a maximum of 500 members.
-
-        Route attributes:
-            scope: members.write
-
-        :param members: Must contain between 1 and 500 targets. The launch
-            handler also rejects duplicate client item IDs and duplicate member
-            selectors.
-        :type members: List[:class:`dropbox.team.BulkSuspendMemberTarget`]
-        :rtype: :class:`dropbox.async_.LaunchResultBase`
-        :raises: :class:`.exceptions.ApiError`
-
-        If this raises, ApiError will contain:
-            :class:`dropbox.team.BulkSuspendError`
-        """
-        arg = team.BulkSuspendArg(members)
-        r = self.request(
-            team.members_bulk_suspend,
-            "team",
-            arg,
-            None,
-        )
-        return r
-
-    def team_members_bulk_suspend_job_status_check(self, async_job_id):
-        """
-        Poll a previously launched bulk suspend job.
-
-        Route attributes:
-            scope: members.write
-
-        :param async_job_id: Id of the asynchronous job. This is the value of a
-            response returned from the method that launched the job.
-        :type async_job_id: str
-        :rtype: :class:`dropbox.team.BulkSuspendJobStatus`
-        :raises: :class:`.exceptions.ApiError`
-
-        If this raises, ApiError will contain:
-            :class:`dropbox.async_.PollError`
-        """
-        arg = async_.PollArg(async_job_id)
-        r = self.request(
-            team.members_bulk_suspend_job_status_check,
-            "team",
-            arg,
-            None,
-        )
-        return r
-
     def team_members_delete_former_member_files(self, user):
         """
         Permanently delete the files of a user who has been removed from the
@@ -2264,6 +2213,58 @@ class DropboxTeamBase(object):
         )
         return None
 
+    def team_members_suspend_batch(self, members):
+        """
+        Launch a member suspension batch. The server enforces a maximum of 500
+        members.
+
+        Route attributes:
+            scope: members.write
+
+        :param members: Must contain between 1 and 500 targets. The launch
+            handler also rejects duplicate client item IDs and duplicate member
+            selectors.
+        :type members: List[:class:`dropbox.team.MembersSuspendBatchTarget`]
+        :rtype: :class:`dropbox.async_.LaunchResultBase`
+        :raises: :class:`.exceptions.ApiError`
+
+        If this raises, ApiError will contain:
+            :class:`dropbox.team.MembersSuspendBatchError`
+        """
+        arg = team.MembersSuspendBatchArg(members)
+        r = self.request(
+            team.members_suspend_batch,
+            "team",
+            arg,
+            None,
+        )
+        return r
+
+    def team_members_suspend_batch_job_status_check(self, async_job_id):
+        """
+        Poll a previously launched member suspension batch job.
+
+        Route attributes:
+            scope: members.write
+
+        :param async_job_id: Id of the asynchronous job. This is the value of a
+            response returned from the method that launched the job.
+        :type async_job_id: str
+        :rtype: :class:`dropbox.team.MembersSuspendBatchJobStatus`
+        :raises: :class:`.exceptions.ApiError`
+
+        If this raises, ApiError will contain:
+            :class:`dropbox.async_.PollError`
+        """
+        arg = async_.PollArg(async_job_id)
+        r = self.request(
+            team.members_suspend_batch_job_status_check,
+            "team",
+            arg,
+            None,
+        )
+        return r
+
     def team_members_unsuspend(self, user):
         """
         Unsuspend a member from a team. Permission : Team member management
@@ -2900,6 +2901,71 @@ class DropboxTeamBase(object):
             None,
         )
         return r
+
+    def team_team_folder_space_limit_get(self, team_folder_id):
+        """
+        Returns the space limit configuration of a team folder. See
+        :class:`dropbox.team.TeamFolderSpaceLimitCapsType` for how space limits
+        are enforced.
+
+        Route attributes:
+            scope: team_data.content.read
+
+        :param team_folder_id: The ID of the team folder.
+        :type team_folder_id: str
+        :rtype: :class:`dropbox.team.TeamFolderGetSpaceLimitResponse`
+        """
+        arg = team.TeamFolderIdArg(team_folder_id)
+        r = self.request(
+            team.team_folder_space_limit_get,
+            "team",
+            arg,
+            None,
+        )
+        return r
+
+    def team_team_folder_space_limit_set(
+        self, team_folder_id, space_limit_bytes, caps_type, notification_target
+    ):
+        """
+        Sets the space limit configuration of a team folder, replacing any
+        existing configuration. See
+        :class:`dropbox.team.TeamFolderSpaceLimitCapsType` for how space limits
+        are enforced.
+
+        Route attributes:
+            scope: team_data.content.write
+
+        :param space_limit_bytes: The maximum total size, in bytes, of all
+            content in the team folder and its subfolders. When ``caps_type`` is
+            ``TeamFolderSpaceLimitCapsType.soft`` or
+            ``TeamFolderSpaceLimitCapsType.hard``, this must be at least 2 GB
+            (2147483648 bytes). It must never exceed the team's total storage
+            capacity. When ``caps_type`` is
+            ``TeamFolderSpaceLimitCapsType.off``, the value is stored but has no
+            effect, and it may be 0.
+        :type space_limit_bytes: int
+        :param caps_type: The caps type to apply to the specified team folder.
+        :type caps_type: :class:`dropbox.team.TeamFolderSpaceLimitCapsType`
+        :param notification_target: Who receives usage notifications for the
+            specified team folder.
+        :type notification_target: :class:`dropbox.team.TeamFolderSpaceLimitNotificationTarget`
+        :rtype: None
+        :raises: :class:`.exceptions.ApiError`
+
+        If this raises, ApiError will contain:
+            :class:`dropbox.team.TeamFolderSetSpaceLimitError`
+        """
+        arg = team.TeamFolderSetSpaceLimitArg(
+            team_folder_id, space_limit_bytes, caps_type, notification_target
+        )
+        r = self.request(
+            team.team_folder_space_limit_set,
+            "team",
+            arg,
+            None,
+        )
+        return None
 
     def team_team_folder_update_sync_settings(
         self, team_folder_id, sync_setting=None, content_sync_settings=None

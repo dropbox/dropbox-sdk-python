@@ -2912,6 +2912,13 @@ class FileStatus(bb.Union):
     This class acts as a tagged union. Only one of the ``is_*`` methods will
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
+
+    :ivar FileStatus.deleted:
+        Field is deprecated. Deprecated. Deleted-file search does not work and
+        should not be used. Use
+        :meth:`dropbox.dropbox_client.Dropbox.files_list_folder` with
+        ``ListFolderArg.include_deleted`` set to ``True`` to enumerate deleted
+        entries; this does not provide equivalent full-text search.
     """
 
     _catch_all = "other"
@@ -5620,6 +5627,8 @@ MoveIntoFamilyError_validator = bv.Union(MoveIntoFamilyError)
 
 class MoveIntoVaultError(bb.Union):
     """
+    Deprecated: the server no longer emits this error.
+
     This class acts as a tagged union. Only one of the ``is_*`` methods will
     return true. To get the associated value of a tag (if one exists), use the
     corresponding ``get_*`` method.
@@ -6628,8 +6637,9 @@ class RelocationError(bb.Union):
     :ivar RelocationError.cant_move_shared_folder:
         Can't move the shared folder to the given destination.
     :ivar RelocationError.cant_move_into_vault:
-        Some content cannot be moved into Vault under certain circumstances, see
-        detailed error.
+        Field is deprecated. Some content cannot be moved into Vault under
+        certain circumstances, see detailed error. Deprecated: the server no
+        longer emits this error.
     :vartype RelocationError.cant_move_into_vault: MoveIntoVaultError
     :ivar RelocationError.cant_move_into_family:
         Some content cannot be moved into the Family Room folder under certain
@@ -6890,8 +6900,9 @@ class RelocationError(bb.Union):
 
     def get_cant_move_into_vault(self):
         """
-        Some content cannot be moved into Vault under certain circumstances, see
-        detailed error.
+        Field is deprecated. Some content cannot be moved into Vault under
+        certain circumstances, see detailed error. Deprecated: the server no
+        longer emits this error.
 
         Only call this if :meth:`is_cant_move_into_vault` is true.
 
@@ -8650,7 +8661,10 @@ class SearchOptions(bb.Struct):
         Specified property of the order of search results. By default, results
         are sorted by relevance.
     :ivar SearchOptions.file_status:
-        Restricts search to the given file status.
+        Restricts search to the given file status. The ``FileStatus.deleted``
+        value is deprecated and should not be used. This also applies to
+        searches continued with
+        :meth:`dropbox.dropbox_client.Dropbox.files_search_continue`.
     :ivar SearchOptions.filename_only:
         Restricts search to only match on filenames.
     :ivar SearchOptions.file_extensions:

@@ -20,6 +20,7 @@ from dropbox._version import __version__
 from stone.backends.python_rsrc import stone_serializers
 
 from dropbox import files
+from dropbox.auth import AuthError as AuthErrorUnion
 from dropbox.auth import (
     AuthError_validator,
     RateLimitError_validator,
@@ -290,8 +291,12 @@ class _DropboxTransport(object):
 
         return self.__class__(
             oauth2_access_token or cached_token,
-            max_retries_on_error or self._max_retries_on_error,
-            max_retries_on_rate_limit or self._max_retries_on_rate_limit,
+            self._max_retries_on_error if max_retries_on_error is None else max_retries_on_error,
+            (
+                self._max_retries_on_rate_limit
+                if max_retries_on_rate_limit is None
+                else max_retries_on_rate_limit
+            ),
             user_agent or self._raw_user_agent,
             session or self._session,
             headers or self._headers,
@@ -484,13 +489,9 @@ class _DropboxTransport(object):
             scope = " ".join(scope)
             body["scope"] = scope
 
-        timeout = DEFAULT_TIMEOUT
-        if self._timeout:
-            timeout = self._timeout
-
         attempt = 0
         while True:
-            res = self._session.post(url, data=body, timeout=timeout)
+            res = self._session.post(url, data=body, timeout=self._timeout)
             try:
                 self.raise_dropbox_error_for_resp(res)
                 break
@@ -605,7 +606,7 @@ class _DropboxTransport(object):
                             "ExpiredCredentials status_code=%s: Refreshing and Retrying",
                             e.status_code,
                         )
-                        self.refresh_access_token()
+                        self.refresh_access_token(scope=self._scope)
                         has_refreshed = True
                 else:
                     raise
@@ -767,8 +768,19 @@ class _DropboxTransport(object):
                 "Expected content-type to be application/json, got %r"
                 % res.headers.get("content-type")
             )
-            err = stone_serializers.json_compat_obj_decode(AuthError_validator, res.json()["error"])
-            raise AuthError(request_id, err)
+            raw_error = res.json()["error"]
+            # Stone reserves the catch-all tag for unknown variants and rejects
+            # it on the wire, even with strict=False. Some 401 responses send
+            # "other" explicitly; keep those as authentication errors too.
+            if raw_error == "other" or (
+                isinstance(raw_error, dict) and raw_error.get(".tag") == "other"
+            ):
+                err = AuthErrorUnion.other
+            else:
+                err = stone_serializers.json_compat_obj_decode(
+                    AuthError_validator, raw_error, strict=False
+                )
+            raise AuthError(request_id, err, body=res.text)
         elif res.status_code == HTTP_STATUS_INVALID_PATH_ROOT:
             err = stone_serializers.json_compat_obj_decode(
                 PathRootError_validator, res.json()["error"]
@@ -816,8 +828,8 @@ class _DropboxTransport(object):
         :type http_resp: :class:`requests.models.Response`
         :rtype: None
         """
-        with open(download_path, "wb") as f:
-            with contextlib.closing(http_resp):
+        with contextlib.closing(http_resp):
+            with open(download_path, "wb") as f:
                 for c in http_resp.iter_content(chunksize):
                     f.write(c)
 

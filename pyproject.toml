@@ -34,7 +34,7 @@ Homepage = "http://www.dropbox.com/developers"
 Source = "https://github.com/dropbox/dropbox-sdk-python"
 
 [project.optional-dependencies]
-test = ["pytest", "mock", "pytest-mock", "coverage", "stone>=3.5.3,<4"]
+test = ["pytest", "pytest-mock", "coverage", "stone>=3.5.3,<4"]
 docs = ["sphinx", "sphinx_rtd_theme"]
 dev = ["flake8", "twine", "wheel", "build"]
 

@@ -96,6 +96,32 @@ class TestStreamHasher:
         assert out.getvalue() == data
         assert hasher.hexdigest() == content_hash(data)
 
+    @pytest.mark.parametrize("written", [0, 3, None])
+    def test_write_hashes_only_accepted_bytes(self, written):
+        class ShortWriter(io.BytesIO):
+            def write(self, data):
+                if written is not None:
+                    super().write(data[:written])
+                return written
+
+        hasher = DropboxContentHasher()
+        out = ShortWriter()
+        wrapped = StreamHasher(out, hasher)
+        assert wrapped.write(b"partial write") == written
+        assert hasher.hexdigest() == content_hash(out.getvalue())
+
+    def test_failed_write_does_not_change_hash(self):
+        class FailingWriter(io.BytesIO):
+            def write(self, data):
+                raise OSError("write failed")
+
+        hasher = DropboxContentHasher()
+        hasher.update(b"already written")
+        wrapped = StreamHasher(FailingWriter(), hasher)
+        with pytest.raises(OSError, match="write failed"):
+            wrapped.write(b"not written")
+        assert hasher.hexdigest() == content_hash(b"already written")
+
     def test_readlines_hashes_and_returns_all_lines(self):
         lines = [b"first\n", b"second\n"]
         hasher = DropboxContentHasher()
