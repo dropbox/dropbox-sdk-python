@@ -11,7 +11,9 @@ import json
 import logging
 import random
 import time
+from collections import namedtuple
 from datetime import datetime, timedelta
+from threading import Lock
 
 import requests
 from dropbox._version import __version__
@@ -59,6 +61,21 @@ USER_AUTH = "user"
 TEAM_AUTH = "team"
 APP_AUTH = "app"
 NO_AUTH = "noauth"
+
+
+class AccessTokenSnapshot(namedtuple("AccessTokenSnapshot", "access_token expires_at")):
+    """Immutable cached access token and expiration, without refresh credentials.
+
+    ``expires_at`` is a datetime in the constructor's expiration convention
+    (naive UTC for SDK refreshes), or None if unknown.
+    """
+
+    __slots__ = ()
+
+    def __repr__(self):
+        return "AccessTokenSnapshot(access_token=<redacted>, expires_at={!r})".format(
+            self.expires_at
+        )
 
 
 class RouteResult(object):
@@ -202,6 +219,7 @@ class _DropboxTransport(object):
         if scope is not None and (not isinstance(scope, list) or len(scope) == 0):
             raise BadInputException("Scope list must be of type list")
 
+        self._access_token_lock = Lock()
         self._oauth2_access_token = oauth2_access_token
         self._oauth2_refresh_token = oauth2_refresh_token
         self._oauth2_access_token_expiration = oauth2_access_token_expiration
@@ -267,8 +285,12 @@ class _DropboxTransport(object):
         :rtype: Dropbox
         """
 
+        with self._access_token_lock:
+            cached_token = self._oauth2_access_token
+            cached_expiration = self._oauth2_access_token_expiration
+
         return self.__class__(
-            oauth2_access_token or self._oauth2_access_token,
+            oauth2_access_token or cached_token,
             self._max_retries_on_error if max_retries_on_error is None else max_retries_on_error,
             (
                 self._max_retries_on_rate_limit
@@ -280,7 +302,7 @@ class _DropboxTransport(object):
             headers or self._headers,
             timeout or self._timeout,
             oauth2_refresh_token or self._oauth2_refresh_token,
-            oauth2_access_token_expiration or self._oauth2_access_token_expiration,
+            oauth2_access_token_expiration or cached_expiration,
             app_key or self._app_key,
             app_secret or self._app_secret,
             scope or self._scope,
@@ -403,18 +425,36 @@ class _DropboxTransport(object):
         request_arg.content_hash = _content_hash(request_binary)
         return request_arg
 
+    def get_access_token_snapshot(self):
+        """Read cached credentials without HTTP requests or token refresh.
+
+        The snapshot may contain an expired or revoked token. Unknown expiration
+        does not imply unlimited lifetime. Store access tokens securely.
+
+        :return: An immutable snapshot, or None when no access token is cached.
+        :rtype: AccessTokenSnapshot or None
+        """
+        with self._access_token_lock:
+            if not self._oauth2_access_token:
+                return None
+            return AccessTokenSnapshot(
+                self._oauth2_access_token, self._oauth2_access_token_expiration
+            )
+
     def check_and_refresh_access_token(self):
         """
         Checks if access token needs to be refreshed and refreshes if possible
         :return:
         """
+        with self._access_token_lock:
+            access_token = self._oauth2_access_token
+            expiration = self._oauth2_access_token_expiration
         can_refresh = self._oauth2_refresh_token and self._app_key
         needs_refresh = self._oauth2_refresh_token and (
-            not self._oauth2_access_token_expiration
-            or (datetime.utcnow() + timedelta(seconds=TOKEN_EXPIRATION_BUFFER))
-            >= self._oauth2_access_token_expiration
+            not expiration
+            or (datetime.utcnow() + timedelta(seconds=TOKEN_EXPIRATION_BUFFER)) >= expiration
         )
-        needs_token = not self._oauth2_access_token
+        needs_token = not access_token
         if (needs_refresh or needs_token) and can_refresh:
             self.refresh_access_token(scope=self._scope)
 
@@ -471,10 +511,11 @@ class _DropboxTransport(object):
                     raise
 
         token_content = res.json()
-        self._oauth2_access_token = token_content["access_token"]
-        self._oauth2_access_token_expiration = datetime.utcnow() + timedelta(
-            seconds=int(token_content["expires_in"])
-        )
+        access_token = token_content["access_token"]
+        expiration = datetime.utcnow() + timedelta(seconds=int(token_content["expires_in"]))
+        with self._access_token_lock:
+            self._oauth2_access_token = access_token
+            self._oauth2_access_token_expiration = expiration
 
     def request_json_object(
         self,
@@ -880,10 +921,13 @@ class DropboxTeam(_DropboxTransport, DropboxTeamBase):
 
         new_headers = self._headers.copy() if self._headers else {}
         new_headers[select_header_name] = team_member_id
+        with self._access_token_lock:
+            access_token = self._oauth2_access_token
+            expiration = self._oauth2_access_token_expiration
         return Dropbox(
-            oauth2_access_token=self._oauth2_access_token,
+            oauth2_access_token=access_token,
             oauth2_refresh_token=self._oauth2_refresh_token,
-            oauth2_access_token_expiration=self._oauth2_access_token_expiration,
+            oauth2_access_token_expiration=expiration,
             max_retries_on_error=self._max_retries_on_error,
             max_retries_on_rate_limit=self._max_retries_on_rate_limit,
             timeout=self._timeout,
