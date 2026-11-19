@@ -12521,7 +12521,7 @@ Rev_validator = bv.String(min_length=9, pattern="[0-9a-f]+")
 SearchV2Cursor_validator = bv.String(min_length=1)
 Sha256HexHash_validator = bv.String(min_length=64, max_length=64)
 SharedLinkUrl_validator = bv.String()
-TagText_validator = bv.String(min_length=1, max_length=32, pattern="[\\w]+")
+TagText_validator = bv.String(min_length=1, max_length=32, pattern="[\\w ]+")
 WritePath_validator = bv.String(pattern="(/(.|[\\r\\n])*)|(ns:[0-9]+(/(.|[\\r\\n])*)?)")
 WritePathOrId_validator = bv.String(pattern="(/(.|[\\r\\n])*)|(ns:[0-9]+(/(.|[\\r\\n])*)?)|(id:.*)")
 AddTagArg.path.validator = Path_validator
