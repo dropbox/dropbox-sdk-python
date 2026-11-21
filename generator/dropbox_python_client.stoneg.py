@@ -1,6 +1,6 @@
 from stone.backends import python_client
 from stone.backends.helpers import fmt_underscores
-from stone.backends.python_helpers import fmt_func
+from stone.backends.python_helpers import fmt_func, fmt_namespace
 from stone.ir import (
     is_nullable_type,
     is_struct_type,
@@ -44,6 +44,20 @@ class DropboxPythonClientBackend(python_client.PythonClientBackend):
                     self.emit("pass")
                 self.emit()
                 self._generate_route_methods(api.namespaces.values())
+
+    def _generate_imports(self, namespaces):
+        """Refer to namespace modules lazily.
+
+        Importing every namespace up front costs about 30 MB, mostly team_log,
+        even when an app only calls a few routes. Each namespace is imported on
+        first use instead (see dropbox/_lazy_namespace.py).
+        """
+        self.emit("from {}._lazy_namespace import LazyNamespace".format(self.args.types_package))
+        self.emit()
+        for namespace in namespaces:
+            if namespace.data_types:
+                name = fmt_namespace(namespace.name)
+                self.emit('{} = LazyNamespace("{}.{}")'.format(name, self.args.types_package, name))
 
     @staticmethod
     def _supports_extra_headers(namespace, route):
